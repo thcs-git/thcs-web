@@ -1,0 +1,9 @@
+{
+  "search.exclude": {
+    "**/node_modules": true,
+    "**/dist": true,
+    "**/coverge": true
+  },
+  "editor.rulers": [120],
+  "editor.formatOnSave": true,
+}
