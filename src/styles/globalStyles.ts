@@ -20,7 +20,7 @@ export default createGlobalStyle`
   }
 
   html {
-    background: var(--primary);
+    /* background: var(--primary); */
   }
   :root {
     --primary: #000;

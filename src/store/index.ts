@@ -21,6 +21,6 @@ const store = createStore(
   compose(applyMiddleware(...middlewares))
 );
 
-;(store as any).sagaTask = sagaMiddleware.run(rootSaga);
+sagaMiddleware.run(rootSaga);
 
 export default store;
