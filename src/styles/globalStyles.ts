@@ -12,6 +12,7 @@ export default createGlobalStyle`
     max-width: 100vw;
     width: 100%;
     height: 100%;
+    background-color: var(--gray-light);
   }
 
   *, button, input {
@@ -23,9 +24,14 @@ export default createGlobalStyle`
     /* background: var(--primary); */
   }
   :root {
-    --primary: #000;
-    --secondary: #15181C;
-    --gray: #7A7A7A;
+    --primary: #16679A;
+    --secondary: #16679A8D;
+    --gray: #CCCCCC;
+    --gray-light: #F2F2F2;
+    --gray-dark: #999999;
     --outline: #2F3336;
+    --success: #4FC66A;
+    --danger: #FF6565;
+    --white: #FFFFFF;
   }
 `;

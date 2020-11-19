@@ -1,4 +1,3 @@
-
 import { HTMLProps } from 'react';
 import styled, { css } from 'styled-components';
 import Button from '@material-ui/core/Button';
@@ -26,11 +25,8 @@ const background = {
   `,
 };
 
-
 const ButtonComponent = styled(Button)`
-  /* background-color: ${(props) => props.background || 'var(--primary)'}; */
-
-  ${props => background[ || 'default']}
+  ${(props) => background['default']}
 `;
 
 export default ButtonComponent;
