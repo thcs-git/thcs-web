@@ -13,7 +13,7 @@ const Routes = () => (
       <Route path="/login" component={Login} />
 
       <Route path="/customer" component={CustomerList} exact />
-      <Route path="/customer/:id" component={CustomerForm} />
+      <Route path="/customer/:id/edit" component={CustomerForm} />
       <Route path="/customer/create" component={CustomerForm} />
     </Switch>
   </BrowserRouter>

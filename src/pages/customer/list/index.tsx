@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useHistory } from 'react-router-dom';
 import { Container, FormControl, InputLabel, OutlinedInput, InputAdornment, IconButton, Button } from '@material-ui/core';
 import { SearchOutlined } from '@material-ui/icons';
 
@@ -18,6 +19,8 @@ import {
 } from './styles';
 
 export default function CustomerList() {
+  const history = useHistory();
+
   const [search, setSearch] = useState('');
 
   const [customers, setCustomers] = useState([
@@ -62,7 +65,7 @@ export default function CustomerList() {
 
           <List>
             {customers.map((customer) => (
-              <ListLink to={`/customer/${customer.id}`}>
+              <ListLink to={`/customer/${customer.id}/edit`}>
                 <ListItem variant="outlined">
                   <ListItemContent>
                     <ListItemStatus active={customer.active}>{customer.active ? 'Ativo' : 'Inativo'}</ListItemStatus>
@@ -77,7 +80,7 @@ export default function CustomerList() {
           </List>
 
           <ButtonsContent>
-            <Button variant="contained" color="primary">
+            <Button variant="contained" color="primary" onClick={() => history.push('/customer/create/')}>
               Novo
             </Button>
           </ButtonsContent>
