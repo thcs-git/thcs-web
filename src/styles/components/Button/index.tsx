@@ -40,6 +40,7 @@ const ButtonComponent = styled(Button)`
   ${(props: IButtonProps)  => background[props.background || 'var(--primary)']}
 
   padding: 10px 0;
+  text-transform: capitalize;
 `;
 
 export default ButtonComponent;

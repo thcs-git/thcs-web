@@ -95,35 +95,12 @@ export default function Sibebar(props: Props<any>) {
   };
 
   const handleDrawerClose = () => {
-    setOpen(false);
+    setOpen(prev => !prev);
   };
 
   return (
     <div className={classes.root}>
       <CssBaseline />
-      <AppBar
-        position="fixed"
-        className={clsx(classes.appBar, {
-          [classes.appBarShift]: open,
-        })}
-      >
-
-          <IconButton
-            color="inherit"
-            aria-label="open drawer"
-            onClick={handleDrawerOpen}
-            edge="start"
-            className={clsx(classes.menuButton, {
-              [classes.hide]: open,
-            })}
-          >
-            <MenuIcon />
-          </IconButton>
-          <Typography variant="h6" noWrap>
-            Mini variant drawer
-          </Typography>
-
-      </AppBar>
       <Drawer
         variant="permanent"
         className={clsx(classes.drawer, {
@@ -139,7 +116,7 @@ export default function Sibebar(props: Props<any>) {
       >
         <div className={classes.toolbar}>
           <IconButton onClick={handleDrawerClose}>
-            {theme.direction === 'rtl' ? <ChevronRightIcon /> : <ChevronLeftIcon />}
+            {open ? <ChevronLeftIcon /> :<MenuIcon />}
           </IconButton>
         </div>
         <Divider />
@@ -162,7 +139,6 @@ export default function Sibebar(props: Props<any>) {
         </List>
       </Drawer>
       <main className={classes.content}>
-        <div className={classes.toolbar} />
         {props.children}
       </main>
     </div>
