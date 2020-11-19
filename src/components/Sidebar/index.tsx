@@ -107,7 +107,7 @@ export default function Sibebar(props: Props<any>) {
           [classes.appBarShift]: open,
         })}
       >
-        <Toolbar>
+
           <IconButton
             color="inherit"
             aria-label="open drawer"
@@ -122,7 +122,7 @@ export default function Sibebar(props: Props<any>) {
           <Typography variant="h6" noWrap>
             Mini variant drawer
           </Typography>
-        </Toolbar>
+
       </AppBar>
       <Drawer
         variant="permanent"
