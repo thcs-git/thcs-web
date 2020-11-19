@@ -7,7 +7,7 @@ import Checkbox from '@material-ui/core/Checkbox';
 import Link from '@material-ui/core/Link';
 import Grid from '@material-ui/core/Grid';
 import Box from '@material-ui/core/Box';
-import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
+import HomeIcon from '@material-ui/icons/HomeOutlined';
 import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
@@ -55,12 +55,13 @@ export default function SignIn() {
     <Container component="main" maxWidth="xs">
       <CssBaseline />
       <div className={classes.paper}>
-        <Avatar className={classes.avatar}>
-          <LockOutlinedIcon />
-        </Avatar>
-        <Typography component="h1" variant="h5">
-          Sign in
-        </Typography>
+          <Box display="flex" justifyContent="center" alignItems="center">
+            <HomeIcon fontSize="large" />
+
+            <Typography component="h1" variant="h5">
+              Sign in
+            </Typography>
+          </Box>
         <form className={classes.form} noValidate>
           <TextField
             variant="outlined"
@@ -89,7 +90,6 @@ export default function SignIn() {
             label="Remember me"
           />
           <Button
-            background=""
             type="submit"
             fullWidth
             variant="contained"

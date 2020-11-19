@@ -1,10 +1,14 @@
 
 import { HTMLProps } from 'react';
-import styled, { css } from 'styled-components';
-import Button from '@material-ui/core/Button';
+import styled, { css, StyledComponent, StyledComponentProps } from 'styled-components';
+import Button, { ButtonProps } from '@material-ui/core/Button';
 import { ButtonTypes } from './types';
 
-const background = {
+interface IButtonProps {
+  background?: string;
+}
+
+const background: any = {
   default: css`
     background: #7289da;
     &:hover {
@@ -28,9 +32,7 @@ const background = {
 
 
 const ButtonComponent = styled(Button)`
-  /* background-color: ${(props) => props.background || 'var(--primary)'}; */
-
-  ${props => background[ || 'default']}
+  ${(props: IButtonProps)  => background[props.background || 'var(--primary)']}
 `;
 
 export default ButtonComponent;
