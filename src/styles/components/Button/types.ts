@@ -1,1 +1,1 @@
-export type ButtonTypes = "default" | "danger" | "success" | "gray"
+export type ButtonTypes = "default" | "danger" | "gray"

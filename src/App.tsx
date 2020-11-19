@@ -4,14 +4,13 @@ import { Provider } from 'react-redux';
 import store from './store';
 import GlobalStyles from './styles/globalStyles';
 
-
-import Login from './pages/login'
+import Routes from './routes';
 
 function App() {
   return (
     <Provider store={store}>
-      <Login />
       <GlobalStyles />
+      <Routes />
     </Provider>
   );
 }
