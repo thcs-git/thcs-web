@@ -10,6 +10,11 @@ export const ContainerLogin = styled(Container)`
   height: 100%;
 `;
 
+export const WelcomeTextWrapper = styled.div`
+  width: 100%;
+  padding: 30px 0 0;
+`;
+
 export const HomeIconLogo = styled(HomeIcon)`
   margin-bottom: 8px
 `;
@@ -21,7 +26,7 @@ export const LogoText = styled(Typography)`
   margin-left: 10px;
 `;
 
-export const ForgotPassword = styled.p`
+export const TextGray = styled.p`
   font-size: 12px;
   color: #666;
 `;

@@ -10,7 +10,7 @@ import Box from '@material-ui/core/Box';
 import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
 
-import { ContainerLogin, HomeIconLogo, LogoText, ForgotPassword } from './styles';
+import { ContainerLogin, WelcomeTextWrapper, HomeIconLogo, LogoText, TextGray } from './styles';
 import Button from '../../styles/components/Button';
 
 function Copyright() {
@@ -59,6 +59,12 @@ export default function SignIn() {
               Portal Sollar
             </LogoText>
           </Box>
+
+         <WelcomeTextWrapper>
+          <TextGray>
+              Bem-vindo(a)! Realize seu login para continuar:
+            </TextGray>
+         </WelcomeTextWrapper>
         <form className={classes.form} noValidate>
           <TextField
             variant="outlined"
@@ -97,13 +103,13 @@ export default function SignIn() {
           </Button>
           <Grid container>
             <Box textAlign="center" width="100%">
-            <ForgotPassword >
+            <TextGray >
               Esqueceu a senha? {' '}
                 <Link href="#">
                   Clique aqui{' '}
                 </Link>
                 parar recuperar
-            </ForgotPassword>
+            </TextGray>
             </Box>
           </Grid>
         </form>
