@@ -1,4 +1,8 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { loadRequest } from '../../../store/ducks/customers/actions';
+import { ApplicationState } from '../../../store';
+
 import { useHistory, RouteComponentProps } from 'react-router-dom';
 import {
 	Button,
@@ -27,8 +31,6 @@ import {
 	FormGroupSection
 } from './styles';
 
-import { getAddress } from '../../../providers/correios';
-
 interface IFormFields {
 	id?: string;
 	socialName?: string;
@@ -50,7 +52,9 @@ interface IPageParams {
 }
 
 export default function CustomerForm(props: RouteComponentProps<IPageParams>) {
-	const history = useHistory();
+  const history = useHistory();
+  const dispatch = useDispatch();
+  const customerState = useSelector((state: ApplicationState) => state.customers).data;
 
 	const [ state, setState ] = useState<IFormFields>({
 		id: props.match.params.id || '',
@@ -68,24 +72,12 @@ export default function CustomerForm(props: RouteComponentProps<IPageParams>) {
 		cellphone: ''
 	});
 
-	const [ openModalCancel, setOpenModalCancel ] = useState(false);
+  const [ openModalCancel, setOpenModalCancel ] = useState(false);
 
-	async function handleCep(cep: string) {
-		if (cep.length === 0) return;
-
-		const address = await getAddress(cep);
-
-		if (address.data.cep) {
-			const { bairro: neighborhood, localidade: city, logradouro: addressName } = address.data;
-
-			setState({
-				...state,
-				neighborhood,
-				city,
-				address: addressName
-			});
-		}
-	}
+  useEffect(() => {
+    dispatch(loadRequest());
+    setState({...state, ...customerState})
+  }, [dispatch]);
 
 	function handleSaveFormCustomer() {
 		console.log(state);
@@ -106,6 +98,7 @@ export default function CustomerForm(props: RouteComponentProps<IPageParams>) {
 
 	return (
 		<Sidebar>
+      {console.log('customerState', customerState)}
 			<FormSection>
 				<FormContent>
 					<FormTitle>Cadastro de Clientes</FormTitle>
@@ -175,7 +168,6 @@ export default function CustomerForm(props: RouteComponentProps<IPageParams>) {
 										placeholder="00000-000"
 										value={state.postalCode}
 										onChange={(element) => setState({ ...state, postalCode: element.target.value })}
-										onBlur={(element) => handleCep(element.target.value)}
 										endAdornment={
 											<InputAdornment position="end">
 												<SearchOutlined style={{ color: 'var(--primary)' }} />
