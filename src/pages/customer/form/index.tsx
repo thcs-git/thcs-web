@@ -20,6 +20,9 @@ import { SearchOutlined } from '@material-ui/icons';
 
 import Sidebar from '../../../components/Sidebar';
 import { FormTitle } from '../../../styles/components/Form';
+
+import DatePicker from '../../../styles/components/DatePicker';
+
 import {
 	ButtonsContent,
 	ButtonDefeault,
@@ -98,12 +101,12 @@ export default function CustomerForm(props: RouteComponentProps<IPageParams>) {
 
 	return (
 		<Sidebar>
-      {console.log('customerState', customerState)}
 			<FormSection>
 				<FormContent>
 					<FormTitle>Cadastro de Clientes</FormTitle>
 
 					<FormGroupSection>
+
 						<Grid container>
 							<Grid item md={2} xs={4}>
 								<TextField
