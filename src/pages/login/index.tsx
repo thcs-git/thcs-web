@@ -7,23 +7,20 @@ import Checkbox from '@material-ui/core/Checkbox';
 import Link from '@material-ui/core/Link';
 import Grid from '@material-ui/core/Grid';
 import Box from '@material-ui/core/Box';
-import HomeIcon from '@material-ui/icons/HomeOutlined';
 import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
-import Container from '@material-ui/core/Container';
 
-
-import Button from '../../styles/components/Button'
+import { ContainerLogin, HomeIconLogo, LogoText, ForgotPassword } from './styles';
+import Button from '../../styles/components/Button';
 
 function Copyright() {
   return (
     <Typography variant="body2" color="textSecondary" align="center">
       {'Copyright © '}
-      <Link color="inherit" href="https://material-ui.com/">
-        Your Website
+      <Link color="inherit" href="/">
+        Sollar
       </Link>{' '}
       {new Date().getFullYear()}
-      {'.'}
     </Typography>
   );
 }
@@ -52,15 +49,15 @@ export default function SignIn() {
   const classes = useStyles();
 
   return (
-    <Container component="main" maxWidth="xs">
+    <ContainerLogin maxWidth="xs">
       <CssBaseline />
       <div className={classes.paper}>
           <Box display="flex" justifyContent="center" alignItems="center">
-            <HomeIcon fontSize="large" />
+            <HomeIconLogo />
 
-            <Typography component="h1" variant="h5">
-              Sign in
-            </Typography>
+            <LogoText variant="h5">
+              Portal Sollar
+            </LogoText>
           </Box>
         <form className={classes.form} noValidate>
           <TextField
@@ -68,10 +65,9 @@ export default function SignIn() {
             margin="normal"
             required
             fullWidth
-            id="email"
-            label="Email Address"
-            name="email"
-            autoComplete="email"
+            label="CPF"
+            name="cpf"
+            autoComplete="number"
             autoFocus
           />
           <TextField
@@ -80,41 +76,41 @@ export default function SignIn() {
             required
             fullWidth
             name="password"
-            label="Password"
+            label="Senha"
             type="password"
             id="password"
             autoComplete="current-password"
           />
           <FormControlLabel
             control={<Checkbox value="remember" color="primary" />}
-            label="Remember me"
+            label="Lembrar de mim neste computador"
           />
           <Button
+            background="success"
             type="submit"
             fullWidth
             variant="contained"
             color="primary"
             className={classes.submit}
           >
-            Sign In
+            Cadastrar
           </Button>
           <Grid container>
-            <Grid item xs>
-              <Link href="#" variant="body2">
-                Forgot password?
-              </Link>
-            </Grid>
-            <Grid item>
-              <Link href="#" variant="body2">
-                {"Don't have an account? Sign Up"}
-              </Link>
-            </Grid>
+            <Box textAlign="center" width="100%">
+            <ForgotPassword >
+              Esqueceu a senha? {' '}
+                <Link href="#">
+                  Clique aqui{' '}
+                </Link>
+                parar recuperar
+            </ForgotPassword>
+            </Box>
           </Grid>
         </form>
       </div>
       <Box mt={8}>
         <Copyright />
       </Box>
-    </Container>
+    </ContainerLogin>
   );
 }

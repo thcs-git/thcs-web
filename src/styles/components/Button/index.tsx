@@ -1,4 +1,3 @@
-
 import { HTMLProps } from 'react';
 import styled, { css, StyledComponent, StyledComponentProps } from 'styled-components';
 import Button, { ButtonProps } from '@material-ui/core/Button';
@@ -28,11 +27,19 @@ const background: any = {
       background: #999;
     }
   `,
+  success: css`
+    background: var(--success);
+    color: var(--white);
+    &:hover {
+      background: var(--success-hover);
+    }
+  `,
 };
-
 
 const ButtonComponent = styled(Button)`
   ${(props: IButtonProps)  => background[props.background || 'var(--primary)']}
+
+  padding: 10px 0;
 `;
 
 export default ButtonComponent;
