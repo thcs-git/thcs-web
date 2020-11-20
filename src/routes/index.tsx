@@ -1,15 +1,15 @@
 import React from 'react';
 import { Route, BrowserRouter, Switch } from 'react-router-dom';
 
-import Dashboard from './pages/dashboard';
+import Dashboard from '../pages/dashboard';
 
-import CompanyList from './pages/company/list';
-import CompanyForm from './pages/company/form';
+import CompanyList from '../pages/company/list';
+import CompanyForm from '../pages/company/form';
 
-import CustomerList from './pages/customer/list';
-import CustomerForm from './pages/customer/form';
+import CustomerList from '../pages/customer/list';
+import CustomerForm from '../pages/customer/form';
 
-import Login from './pages/login';
+import Login from '../pages/login';
 
 const Routes = () => (
   <BrowserRouter>
@@ -18,7 +18,7 @@ const Routes = () => (
 
       <Route path="/login" component={Login} />
 
-      <Route path="/dashboard" component={Dashboard} exat />
+      <Route path="/dashboard" component={Dashboard} exact />
 
       {/* Clientes */}
       <Route path="/customer" component={CustomerList} exact />

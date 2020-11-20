@@ -12,6 +12,7 @@ export enum LoginTypes {
  */
 
 export interface CredentialsInterface {
+  payload?: Object;
   email: string;
   password: string;
 }

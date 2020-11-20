@@ -1,3 +1,5 @@
+import { RouterState } from 'connected-react-router';
+
 import { INITIAL_STATE } from './login'
 import { LoginState } from './login/types'
 
@@ -14,6 +16,7 @@ export interface IInitialState {
   login: Readonly<LoginState>;
   customers: Readonly<CustomerState>;
   companies: Readonly<CompanyState>;
+  router?: any
 }
 
 /**
