@@ -18,6 +18,12 @@ import ListItemText from '@material-ui/core/ListItemText';
 import InboxIcon from '@material-ui/icons/MoveToInbox';
 import MailIcon from '@material-ui/icons/Mail';
 
+import SupervisorAccountIcon from '@material-ui/icons/SupervisorAccount';
+import {AccordionSummary, AccordionDetails} from '@material-ui/core';
+import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
+
+import { AccordionMenu } from './styles';
+
 const drawerWidth = 220;
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -89,6 +95,7 @@ export default function Sibebar(props: Props<any>) {
   const classes = useStyles();
   const theme = useTheme();
   const [open, setOpen] = useState(false);
+  const [open, setOpen] = useState(false);
 
   const handleDrawerOpen = () => {
     setOpen(true);
@@ -96,6 +103,10 @@ export default function Sibebar(props: Props<any>) {
 
   const handleDrawerClose = () => {
     setOpen(prev => !prev);
+  };
+
+  const openDropDownAndMenu = () => {
+    setOpen(true);
   };
 
   return (
@@ -120,23 +131,35 @@ export default function Sibebar(props: Props<any>) {
           </IconButton>
         </div>
         <Divider />
-        <List>
-          {['Inbox', 'Starred', 'Send email', 'Drafts'].map((text, index) => (
-            <ListItem button key={text}>
-              <ListItemIcon>{index % 2 === 0 ? <InboxIcon /> : <MailIcon />}</ListItemIcon>
-              <ListItemText primary={text} />
-            </ListItem>
-          ))}
+        <List disablePadding={true}>
+          <AccordionMenu
+            onClick={openDropDownAndMenu}
+            onChange={(event,expanded) => console.log(expanded)}
+          >
+            <AccordionSummary
+              expandIcon={open && <ExpandMoreIcon />}
+              aria-controls="panel1a-content"
+              id="panel1a-header"
+            >
+              <Typography><SupervisorAccountIcon />{open && 'Administrador'}</Typography>
+            </AccordionSummary>
+            <AccordionDetails>
+              <Typography>
+                Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse malesuada lacus ex,
+                sit amet blandit leo lobortis eget.
+              </Typography>
+            </AccordionDetails>
+          </AccordionMenu>
         </List>
         <Divider />
-        <List>
+        {/* <List>
           {['All mail', 'Trash', 'Spam'].map((text, index) => (
             <ListItem button key={text}>
               <ListItemIcon>{index % 2 === 0 ? <InboxIcon /> : <MailIcon />}</ListItemIcon>
               <ListItemText primary={text} />
             </ListItem>
           ))}
-        </List>
+        </List> */}
       </Drawer>
       <main className={classes.content}>
         {props.children}
@@ -144,3 +167,4 @@ export default function Sibebar(props: Props<any>) {
     </div>
   );
 }
+
