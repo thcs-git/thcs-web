@@ -34,6 +34,13 @@ const background: any = {
       background: var(--success-hover);
     }
   `,
+  primary: css`
+    background: var(--primary);
+    color: var(--white);
+    &:hover {
+      background: var(--primary-hover);
+    }
+  `,
 };
 
 const ButtonComponent = styled(Button)`
