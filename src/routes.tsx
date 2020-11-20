@@ -1,6 +1,8 @@
 import React from 'react';
 import { Route, BrowserRouter, Switch } from 'react-router-dom';
 
+import Dashboard from './pages/dashboard';
+
 import CompanyList from './pages/company/list';
 import CompanyForm from './pages/company/form';
 
@@ -15,6 +17,8 @@ const Routes = () => (
       <Route path="/" component={Login} exact />
 
       <Route path="/login" component={Login} />
+
+      <Route path="/dashboard" component={Dashboard} exat />
 
       {/* Clientes */}
       <Route path="/customer" component={CustomerList} exact />
