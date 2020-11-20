@@ -19,14 +19,14 @@ import {
   ButtonsContent,
 } from './styles';
 
-export default function CustomerList() {
+export default function CompanyList() {
   const history = useHistory();
 
   const [search, setSearch] = useState('');
 
-  const [customers, setCustomers] = useState([
-    { id: 1, name: 'customer 1', fiscalNumber: '00.000.000/0000-00', active: true },
-    { id: 2, name: 'customer 2', fiscalNumber: '00.000.000/0000-00', active: false },
+  const [companies, setCompanies] = useState([
+    { id: 1, name: 'company 1', customer: 'customer 1', fiscalNumber: '00.000.000/0000-00', active: true },
+    { id: 2, name: 'company 2', customer: 'customer 1', fiscalNumber: '00.000.000/0000-00', active: false },
   ]);
 
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
@@ -43,7 +43,7 @@ export default function CustomerList() {
     <>
       <Sidebar>
         <Container>
-          <FormTitle>Lista de Clientes</FormTitle>
+          <FormTitle>Lista de Empresas</FormTitle>
 
           <FormSearch noValidate autoComplete="off">
             <FormControl variant="outlined" size="small" fullWidth>
@@ -65,15 +65,16 @@ export default function CustomerList() {
           </FormSearch>
 
           <List>
-            {customers.map((customer, index) => (
-              <ListLink key={index} to={`/customer/${customer.id}/edit`}>
+            {companies.map((company, index) => (
+              <ListLink key={index} to={`/company/${company.id}/edit`}>
                 <ListItem variant="outlined">
                   <ListItemContent>
-                    <ListItemStatus active={customer.active}>{customer.active ? 'Ativo' : 'Inativo'}</ListItemStatus>
-                    <div>
-                      <ListItemTitle>{customer.name}</ListItemTitle>
-                      <ListItemSubTitle>{customer.fiscalNumber}</ListItemSubTitle>
-                    </div>
+                    <ListItemStatus active={company.active}>{company.active ? 'Ativo' : 'Inativo'}</ListItemStatus>
+                      <div>
+                        <ListItemTitle>{company.name}</ListItemTitle>
+                        <ListItemSubTitle>{company.customer}</ListItemSubTitle>
+                        <ListItemSubTitle>{company.fiscalNumber}</ListItemSubTitle>
+                      </div>
                   </ListItemContent>
                 </ListItem>
               </ListLink>
@@ -81,7 +82,7 @@ export default function CustomerList() {
           </List>
 
           <ButtonsContent>
-            <Button variant="contained" background="primary" onClick={() => history.push('/customer/create/')}>
+            <Button variant="contained" background="primary" onClick={() => history.push('/company/create/')}>
               Novo
             </Button>
           </ButtonsContent>
