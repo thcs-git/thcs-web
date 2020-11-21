@@ -9,9 +9,16 @@ interface IButtonProps {
 
 const background: any = {
   default: css`
-    background: #7289da;
+    background: var(--white);
+    border: 1px solid var(--primary);
+    color: var(--primary);
+
+    text-transform: capitalize;
+    font-weight: 600;
+    font-size: 14px;
+
     &:hover {
-      background: #5f73bc;
+      background: var(--gray-light);
     }
   `,
   danger: css`
@@ -44,9 +51,9 @@ const background: any = {
 };
 
 const ButtonComponent = styled(Button)`
-  ${(props: IButtonProps)  => background[props.background || 'var(--primary)']}
+  ${(props: IButtonProps) => background[props.background || 'var(--primary)']}
 
-  padding: 10px 0;
+  padding: 10px;
   text-transform: capitalize;
 `;
 

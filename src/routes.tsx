@@ -9,6 +9,9 @@ import CompanyForm from './pages/company/form';
 import CustomerList from './pages/customer/list';
 import CustomerForm from './pages/customer/form';
 
+import EspecialtyList from './pages/especialty/list';
+import EspecialtyForm from './pages/especialty/form';
+
 import Login from './pages/login';
 
 const Routes = () => (
@@ -29,6 +32,11 @@ const Routes = () => (
       <Route path="/company" component={CompanyList} exact />
       <Route path="/company/:id/edit" component={CompanyForm} />
       <Route path="/company/create" component={CompanyForm} />
+
+      {/* Especialidades */}
+      <Route path="/especialty" component={EspecialtyList} exact />
+      <Route path="/especialty/:id/edit" component={EspecialtyForm} />
+      <Route path="/especialty/create" component={EspecialtyForm} />
     </Switch>
   </BrowserRouter>
 );
