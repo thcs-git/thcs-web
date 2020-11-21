@@ -1,6 +1,7 @@
 import { createStore, applyMiddleware, compose } from 'redux';
 import createSagaMiddleware from 'redux-saga';
 
+import { AreaState } from './ducks/areas/types';
 import { CompanyState } from './ducks/companies/types';
 import { CouncilState } from './ducks/councils/types';
 import { CustomerState } from './ducks/customers/types';
@@ -12,6 +13,7 @@ import { combinedReducers } from './ducks/rootReducer';
 import rootSaga from './ducks/rootSaga';
 
 export interface ApplicationState {
+  areas: AreaState;
   login: LoginState;
   customers: CustomerState;
   companies: CompanyState;
