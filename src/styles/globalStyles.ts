@@ -12,7 +12,7 @@ export default createGlobalStyle`
     max-width: 100vw;
     width: 100%;
     height: 100%;
-    background-color: var(--gray-light);
+    background-color: var(--background);
   }
 
   *, button, input {
@@ -35,5 +35,6 @@ export default createGlobalStyle`
     --success-hover: #4FC66A99;
     --danger: #FF6565;
     --white: #FFFFFF;
+    --background: #FAFAFA;
   }
 `;
