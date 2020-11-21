@@ -1,5 +1,8 @@
 import { all, takeLatest } from "redux-saga/effects";
 
+import { AreaTypes } from "./areas/types";
+import { get as getAreas } from "./areas/sagas";
+
 import { LoginTypes } from "./login/types";
 import { doLogin } from "./login/sagas";
 
@@ -17,6 +20,7 @@ import { get as getCouncil } from './councils/sagas';
 
 export default function* rootSaga() {
   return yield all([
+    takeLatest(AreaTypes.LOAD_REQUEST, getAreas),
     takeLatest(LoginTypes.LOAD_REQUEST, doLogin),
     takeLatest(CustomerTypes.LOAD_REQUEST, get),
     takeLatest(CompanyTypes.LOAD_REQUEST, getCompany),

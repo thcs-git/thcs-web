@@ -26,7 +26,7 @@ export default createGlobalStyle`
   :root {
     --primary: #16679A;
     --primary-hover: #16679A99;
-    --secondary: #16679A8D;
+    --secondary: #0899BA;
     --gray: #CCCCCC;
     --gray-light: #F2F2F2;
     --gray-dark: #666666;
@@ -36,5 +36,6 @@ export default createGlobalStyle`
     --danger: #FF6565;
     --white: #FFFFFF;
     --background: #FAFAFA;
+    --switch-hover: rgba(8, 153, 186, 0.04)
   }
 `;

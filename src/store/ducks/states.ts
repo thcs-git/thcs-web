@@ -13,10 +13,14 @@ import { EspecialtyState } from './especialties/types'
 import { INITIAL_STATE as INITIAL_STATE_COUNCIL } from './councils';
 import { CouncilState } from './councils/types'
 
+import { INITIAL_STATE as INITIAL_STATE_AREA } from './areas';
+import { AreaState } from './areas/types'
+
 /**
  * Initial state tree interface
  */
 export interface IInitialState {
+  areas: Readonly<AreaState>;
   login: Readonly<LoginState>;
   customers: Readonly<CustomerState>;
   companies: Readonly<CompanyState>;
@@ -28,6 +32,7 @@ export interface IInitialState {
  * Initial state tree
  */
 export const InitialState: IInitialState = {
+  areas: INITIAL_STATE_AREA,
   login: INITIAL_STATE,
   customers: INITIAL_STATE_CUSTOMER,
   companies: INITIAL_STATE_COMPANY,
