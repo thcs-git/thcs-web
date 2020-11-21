@@ -2,6 +2,7 @@ import { createStore, applyMiddleware, compose } from 'redux';
 import createSagaMiddleware from 'redux-saga';
 
 import { CompanyState } from './ducks/companies/types';
+import { CouncilState } from './ducks/councils/types';
 import { CustomerState } from './ducks/customers/types';
 import { EspecialtyState } from './ducks/especialties/types';
 import { LoginState } from './ducks/login/types';
@@ -15,6 +16,7 @@ export interface ApplicationState {
   customers: CustomerState;
   companies: CompanyState;
   especialties: EspecialtyState;
+  councils: CouncilState;
 }
 
 const sagaMiddleware = createSagaMiddleware();

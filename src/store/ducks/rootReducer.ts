@@ -7,6 +7,7 @@ import { IInitialState } from './states';
 import login from './login';
 import customers from './customers';
 import companies from './companies';
+import councils from './councils';
 import especialties from './especialties';
 
 export const combinedReducers = combineReducers<IInitialState>({
@@ -14,4 +15,5 @@ export const combinedReducers = combineReducers<IInitialState>({
   customers,
   companies,
   especialties,
+  councils,
 });
