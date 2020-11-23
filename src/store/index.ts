@@ -1,14 +1,26 @@
 import { createStore, applyMiddleware, compose } from 'redux';
 import createSagaMiddleware from 'redux-saga';
 
+import { AreaState } from './ducks/areas/types';
+import { CompanyState } from './ducks/companies/types';
+import { CouncilState } from './ducks/councils/types';
+import { CustomerState } from './ducks/customers/types';
+import { EspecialtyState } from './ducks/especialties/types';
 import { LoginState } from './ducks/login/types';
+import { UserState } from './ducks/users/types';
 
 import { InitialState } from './ducks/states';
 import { combinedReducers } from './ducks/rootReducer';
 import rootSaga from './ducks/rootSaga';
 
 export interface ApplicationState {
+  areas: AreaState;
   login: LoginState;
+  customers: CustomerState;
+  companies: CompanyState;
+  especialties: EspecialtyState;
+  councils: CouncilState;
+  users: UserState;
 }
 
 const sagaMiddleware = createSagaMiddleware();
@@ -21,6 +33,6 @@ const store = createStore(
   compose(applyMiddleware(...middlewares))
 );
 
-;(store as any).sagaTask = sagaMiddleware.run(rootSaga);
+sagaMiddleware.run(rootSaga);
 
 export default store;

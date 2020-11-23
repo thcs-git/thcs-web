@@ -4,14 +4,20 @@ import { combineReducers } from 'redux';
 import { IInitialState } from './states';
 
 /** Reducers  */
+import areas from './areas';
 import login from './login';
-
-import { CredentialsInterface } from './login/types';
-
-export interface ApplicationState {
-  login: CredentialsInterface;
-}
+import customers from './customers';
+import companies from './companies';
+import councils from './councils';
+import especialties from './especialties';
+import users from './users';
 
 export const combinedReducers = combineReducers<IInitialState>({
-  login
+  areas,
+  login,
+  customers,
+  companies,
+  especialties,
+  councils,
+  users,
 });

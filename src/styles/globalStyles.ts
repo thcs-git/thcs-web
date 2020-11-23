@@ -12,6 +12,7 @@ export default createGlobalStyle`
     max-width: 100vw;
     width: 100%;
     height: 100%;
+    background-color: var(--background);
   }
 
   *, button, input {
@@ -20,12 +21,21 @@ export default createGlobalStyle`
   }
 
   html {
-    background: var(--primary);
+    /* background: var(--primary); */
   }
   :root {
-    --primary: #000;
-    --secondary: #15181C;
-    --gray: #7A7A7A;
+    --primary: #16679A;
+    --primary-hover: #16679A99;
+    --secondary: #0899BA;
+    --gray: #CCCCCC;
+    --gray-light: #F2F2F2;
+    --gray-dark: #666666;
     --outline: #2F3336;
+    --success: #4FC66A;
+    --success-hover: #4FC66A99;
+    --danger: #FF6565;
+    --white: #FFFFFF;
+    --background: #FAFAFA;
+    --switch-hover: rgba(8, 153, 186, 0.04)
   }
 `;
