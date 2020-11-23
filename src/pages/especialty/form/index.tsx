@@ -78,7 +78,7 @@ export default function EspecialtyForm(props: RouteComponentProps<IPageParams>) 
 
   function handleCancelForm() {
     setOpenModalCancel(false);
-    history.back();
+    // history.back();
   }
 
   return (

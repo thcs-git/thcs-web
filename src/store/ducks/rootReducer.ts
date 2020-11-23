@@ -10,6 +10,7 @@ import customers from './customers';
 import companies from './companies';
 import councils from './councils';
 import especialties from './especialties';
+import users from './users';
 
 export const combinedReducers = combineReducers<IInitialState>({
   areas,
@@ -18,4 +19,5 @@ export const combinedReducers = combineReducers<IInitialState>({
   companies,
   especialties,
   councils,
+  users,
 });

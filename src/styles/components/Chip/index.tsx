@@ -6,4 +6,8 @@ export const ChipComponent = styled(Chip)`
   color: var(--white);
 
   margin: 0 10px 10px 0;
+
+  &:focus {
+    background: var(--secondary);
+  }
 `;

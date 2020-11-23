@@ -23,10 +23,10 @@ import Autocomplete from '@material-ui/lab/Autocomplete';
 import Sidebar from '../../../components/Sidebar';
 import { FormTitle } from '../../../styles/components/Form';
 import Button from '../../../styles/components/Button';
-import { TabAppBar, TabContent, TabNavigation } from '../../../styles/components/Tabs';
 import { ChipComponent as Chip } from '../../../styles/components/Chip';
 import { SliderComponent as Slider } from '../../../styles/components/Slider';
 import { SwitchComponent as Switch } from '../../../styles/components/Switch';
+import { TabContent, TabNav, TabNavItem, TabBody, TabBodyItem } from '../../../styles/components/Tabs';
 
 import {
   ButtonsContent,
@@ -103,6 +103,11 @@ export default function AreaForm(props: RouteComponentProps<IPageParams>) {
     active: true
   });
 
+  const [currentTab, setCurrentTab] = useState(0);
+  const selectTab = useCallback((index: number) => {
+    setCurrentTab(index);
+  }, [currentTab]);
+
   const [openModalCancel, setOpenModalCancel] = useState(false);
 
   useEffect(() => {
@@ -125,34 +130,6 @@ export default function AreaForm(props: RouteComponentProps<IPageParams>) {
   function handleCancelForm() {
     setOpenModalCancel(false);
     // history.back();
-  }
-
-  /** TAB */
-  function TabPanel(props: TabPanelProps) {
-    const { children, value, index, ...other } = props;
-
-    return (
-      <div
-        role="tabpanel"
-        hidden={value !== index}
-        id={`simple-tabpanel-${index}`}
-        aria-labelledby={`simple-tab-${index}`}
-        {...other}
-      >
-        {value === index && (
-          <TabContent p={3}>
-            <div>{children}</div>
-          </TabContent>
-        )}
-      </div>
-    );
-  }
-
-  function a11yProps(index: any) {
-    return {
-      id: `simple-tab-${index}`,
-      'aria-controls': `simple-tabpanel-${index}`,
-    };
   }
 
   function handleChangeSupply(value: any) {
@@ -228,163 +205,167 @@ export default function AreaForm(props: RouteComponentProps<IPageParams>) {
         <FormSection>
           <FormContent>
             <FormTitle>Cadastro de Área</FormTitle>
-            <TabAppBar position="static">
-              <Tabs value={value} onChange={handleChange} aria-label="simple tabs example">
-                <TabNavigation label="Dados da Área" {...a11yProps(0)} />
-                <TabNavigation label={
+            <TabContent>
+              <TabNav>
+                <TabNavItem className={currentTab === 0 ? 'active' : ''} onClick={() => selectTab(0)}>
+                  Dados da Área
+                </TabNavItem>
+                <TabNavItem className={currentTab === 1 ? 'active' : ''} onClick={() => selectTab(1)}>
                   <Badge badgeContent={state.neighborhoods.length} max={99} color="primary">
                     {`Bairros`}
                   </Badge>
-                } {...a11yProps(1)} />
-                <TabNavigation label={
+                </TabNavItem>
+                <TabNavItem className={currentTab === 2 ? 'active' : ''} onClick={() => selectTab(2)}>
                   <Badge badgeContent={state.users.length} max={99} color="primary">
                     {`Prestadores`}
                   </Badge>
-                } {...a11yProps(2)} />
-              </Tabs>
-            </TabAppBar>
-            <TabPanel value={value} index={0}>
-              <Grid container>
-                {state?.id && (
-                  <Grid item md={12} xs={12}>
-                    <FormGroupSection>
-                      <TextField
-                        id="input-customer-id"
-                        label="ID"
-                        variant="outlined"
-                        size="small"
-                        value={state.id}
-                        fullWidth
-                        disabled
-                      />
-                    </FormGroupSection>
+                </TabNavItem>
+              </TabNav>
+              <TabBody>
+                <TabBodyItem className={currentTab === 0 ? 'show' : ''}>
+                  <Grid container>
+                    {state?.id && (
+                      <Grid item md={12} xs={12}>
+                        <FormGroupSection>
+                          <TextField
+                            id="input-customer-id"
+                            label="ID"
+                            variant="outlined"
+                            size="small"
+                            value={state.id}
+                            fullWidth
+                            disabled
+                          />
+                        </FormGroupSection>
+                      </Grid>
+                    )}
+                    <Grid item md={12} xs={12}>
+                      <FormGroupSection>
+                        <TextField
+                          id="input-social-name"
+                          label="Descrição"
+                          variant="outlined"
+                          size="small"
+                          value={state.description}
+                          onChange={(element) => setState(prevState => ({ ...prevState, description: element.target.value }))}
+                          fullWidth
+                        />
+                      </FormGroupSection>
+                    </Grid>
+                    <Grid item md={7} xs={12}>
+                      <FormGroupSection>
+                        <p>Abastecimento/dias</p>
+                        <div style={{ paddingLeft: 10 }}>
+                          <Slider
+                            marks={supplyIntervals}
+                            defaultValue={state.supplyDay || 0}
+                            getAriaValueText={value => `${value}°C`}
+                            aria-labelledby="discrete-slider-restrict"
+                            step={null}
+                            min={7}
+                            max={70}
+                            valueLabelDisplay="auto"
+                            onChange={(event, value) => handleChangeSupply(value)}
+                          />
+                        </div>
+                      </FormGroupSection>
+                    </Grid>
+                    <Grid item md={5}>
+                    </Grid>
+                    <Grid item md={4} xs={12}>
+                      <FormGroupSection>
+                        <Autocomplete
+                          id="combo-box-demo"
+                          options={daysOfTheWeek}
+                          getOptionLabel={(option) => option.name}
+                          renderInput={(params) => <TextField {...params} label="Dia da semana" variant="outlined" />}
+                          value={state.form?.dayOfTheWeek}
+                          getOptionSelected={(option, value) => option.id === state.dayOfTheWeek}
+                          onChange={(event: any, newValue) => {
+                            handleDayOfTheWeek(event, newValue);
+                          }}
+                          size="small"
+                          fullWidth
+                        />
+                      </FormGroupSection>
+                    </Grid>
+                    {/* {state?.id && ( */}
+                    <Grid item md={12} xs={12}>
+                      <FormControlLabel control={<Switch checked={state.active} onChange={(event) => {
+                        setState(prevState => ({
+                          ...prevState,
+                          active: event.target.checked
+                        }))
+                      }} />} label="Ativo?" />
+                    </Grid>
+                    {/* )} */}
                   </Grid>
-                )}
-                <Grid item md={12} xs={12}>
-                  <FormGroupSection>
-                    <TextField
-                      id="input-social-name"
-                      label="Descrição"
-                      variant="outlined"
-                      size="small"
-                      value={state.description}
-                      onChange={(element) => setState(prevState => ({ ...prevState, description: element.target.value }))}
-                      fullWidth
-                    />
-                  </FormGroupSection>
-                </Grid>
-                <Grid item md={7} xs={12}>
-                  <FormGroupSection>
-                    <p>Abastecimento/dias</p>
-                    <div style={{ paddingLeft: 10 }}>
-                      <Slider
-                        marks={supplyIntervals}
-                        defaultValue={state.supplyDay || 0}
-                        getAriaValueText={value => `${value}°C`}
-                        aria-labelledby="discrete-slider-restrict"
-                        step={null}
-                        min={7}
-                        max={70}
-                        valueLabelDisplay="auto"
-                        onChange={(event, value) => handleChangeSupply(value)}
-                      />
-                    </div>
-                  </FormGroupSection>
-                </Grid>
-                <Grid item md={5}>
-                </Grid>
-                <Grid item md={4} xs={12}>
-                  <FormGroupSection>
-                    <Autocomplete
-                      id="combo-box-demo"
-                      options={daysOfTheWeek}
-                      getOptionLabel={(option) => option.name}
-                      renderInput={(params) => <TextField {...params} label="Dia da semana" variant="outlined" />}
-                      value={state.form?.dayOfTheWeek}
-                      getOptionSelected={(option, value) => option.id === state.dayOfTheWeek}
-                      onChange={(event: any, newValue) => {
-                        handleDayOfTheWeek(event, newValue);
-                      }}
-                      size="small"
-                      fullWidth
-                    />
-                  </FormGroupSection>
-                </Grid>
-                {/* {state?.id && ( */}
-                <Grid item>
-                  <FormControlLabel control={<Switch checked={state.active} onChange={(event) => {
-                    setState(prevState => ({
-                      ...prevState,
-                      active: event.target.checked
-                    }))
-                  }} />} label="Ativo?" />
-                </Grid>
-                {/* )} */}
-              </Grid>
-            </TabPanel>
-            {/* BAIRROS */}
-            <TabPanel value={value} index={1}>
-              <Grid container>
-                <Grid item md={5} xs={12}>
-                  <FormGroupSection>
-                    <Autocomplete
-                      id="combo-box-demo"
-                      options={neighborhoods}
-                      getOptionLabel={(option) => option.name}
-                      renderInput={(params) => <TextField {...params} label="Bairros" variant="outlined" />}
-                      size="small"
-                      onChange={(event, value) => {
-                        if (value) {
-                          handleSelectNeighborhood(value)
-                        }
-                      }}
-                      fullWidth
-                    />
-                  </FormGroupSection>
-                </Grid>
-                <Grid item md={12} xs={12}>
-                  {state.neighborhoods.map((item: any, index) => (
-                    <Chip
-                      key={`neighborhook_selected_${index}`}
-                      label={item.name}
-                      onDelete={event => handleDeleteNeighborhood(item)}
-                    />
-                  ))}
-                </Grid>
-              </Grid>
-            </TabPanel>
-            {/* PRESTADORES */}
-            <TabPanel value={value} index={2}>
-              <Grid container>
-                <Grid item md={5} xs={12}>
-                  <FormGroupSection>
-                    <Autocomplete
-                      id="combo-box-demo"
-                      options={users}
-                      getOptionLabel={(option) => option.name}
-                      renderInput={(params) => <TextField {...params} label="Prestador" variant="outlined" />}
-                      size="small"
-                      onChange={(event, value) => {
-                        if (value) {
-                          handleSelectUser(value)
-                        }
-                      }}
-                      fullWidth
-                    />
-                  </FormGroupSection>
-                </Grid>
-                <Grid item md={12} xs={12}>
-                  {state.users.map((item: any, index) => (
-                    <div key={`user_selected_${index}`}>
-                      <Chip
-                        label={item.name}
-                        onDelete={event => handleDeleteUser(item)}
-                      />
-                    </div>
-                  ))}
-                </Grid>
-              </Grid>
-            </TabPanel>
+
+                </TabBodyItem>
+                <TabBodyItem className={currentTab === 1 ? 'show' : ''}>
+                  <Grid container>
+                    <Grid item md={5} xs={12}>
+                      <FormGroupSection>
+                        <Autocomplete
+                          id="combo-box-demo"
+                          options={neighborhoods}
+                          getOptionLabel={(option) => option.name}
+                          renderInput={(params) => <TextField {...params} label="Bairros" variant="outlined" />}
+                          size="small"
+                          onChange={(event, value) => {
+                            if (value) {
+                              handleSelectNeighborhood(value)
+                            }
+                          }}
+                          fullWidth
+                        />
+                      </FormGroupSection>
+                    </Grid>
+                    <Grid item md={12} xs={12}>
+                      {state.neighborhoods.map((item: any, index) => (
+                        <Chip
+                          key={`neighborhook_selected_${index}`}
+                          label={item.name}
+                          onDelete={event => handleDeleteNeighborhood(item)}
+                        />
+                      ))}
+                    </Grid>
+                  </Grid>
+                </TabBodyItem>
+                <TabBodyItem className={currentTab === 2 ? 'show' : ''}>
+                  <Grid container>
+                    <Grid item md={5} xs={12}>
+                      <FormGroupSection>
+                        <Autocomplete
+                          id="combo-box-demo"
+                          options={users}
+                          getOptionLabel={(option) => option.name}
+                          renderInput={(params) => <TextField {...params} label="Prestador" variant="outlined" />}
+                          size="small"
+                          onChange={(event, value) => {
+                            if (value) {
+                              handleSelectUser(value)
+                            }
+                          }}
+                          fullWidth
+                        />
+                      </FormGroupSection>
+                    </Grid>
+                    <Grid item md={12} xs={12}>
+                      {state.users.map((item: any, index) => (
+                        <div key={`user_selected_${index}`}>
+                          <Chip
+                            label={item.name}
+                            onDelete={event => handleDeleteUser(item)}
+                          />
+                        </div>
+                      ))}
+                    </Grid>
+                  </Grid>
+
+                </TabBodyItem>
+              </TabBody>
+            </TabContent>
           </FormContent>
 
           <ButtonsContent>

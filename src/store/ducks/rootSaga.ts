@@ -18,6 +18,9 @@ import { get as getEspecialty } from './especialties/sagas';
 import { CouncilTypes } from './councils/types';
 import { get as getCouncil } from './councils/sagas';
 
+import { UserTypes } from './users/types';
+import { get as getUser } from './users/sagas';
+
 export default function* rootSaga() {
   return yield all([
     takeLatest(AreaTypes.LOAD_REQUEST, getAreas),
@@ -26,5 +29,6 @@ export default function* rootSaga() {
     takeLatest(CompanyTypes.LOAD_REQUEST, getCompany),
     takeLatest(EspecialtyTypes.LOAD_REQUEST, getEspecialty),
     takeLatest(CouncilTypes.LOAD_REQUEST, getCouncil),
+    takeLatest(UserTypes.LOAD_REQUEST, getUser),
   ]);
 }
