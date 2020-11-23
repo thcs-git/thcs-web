@@ -18,6 +18,9 @@ import CouncilForm from './pages/council/form';
 import AreaList from './pages/area/list';
 import AreaForm from './pages/area/form';
 
+import UserList from './pages/user/list';
+import UserForm from './pages/user/form';
+
 import Login from './pages/login';
 
 const Routes = () => (
@@ -53,6 +56,11 @@ const Routes = () => (
       <Route path="/area" component={AreaList} exact />
       <Route path="/area/:id/edit" component={AreaForm} />
       <Route path="/area/create" component={AreaForm} />
+
+      {/* Usuário */}
+      <Route path="/user" component={UserList} exact />
+      <Route path="/user/:id/edit" component={UserForm} />
+      <Route path="/user/create" component={UserForm} />
     </Switch>
   </BrowserRouter>
 );

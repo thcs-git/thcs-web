@@ -2,19 +2,22 @@ import { INITIAL_STATE } from './login'
 import { LoginState } from './login/types'
 
 import { INITIAL_STATE as INITIAL_STATE_CUSTOMER } from './customers';
-import { CustomerState } from './customers/types'
+import { CustomerState } from './customers/types';
 
 import { INITIAL_STATE as INITIAL_STATE_COMPANY } from './companies';
-import { CompanyState } from './companies/types'
+import { CompanyState } from './companies/types';
 
 import { INITIAL_STATE as INITIAL_STATE_ESPECIALTY } from './especialties';
 import { EspecialtyState } from './especialties/types'
 
 import { INITIAL_STATE as INITIAL_STATE_COUNCIL } from './councils';
-import { CouncilState } from './councils/types'
+import { CouncilState } from './councils/types';
 
 import { INITIAL_STATE as INITIAL_STATE_AREA } from './areas';
-import { AreaState } from './areas/types'
+import { AreaState } from './areas/types';
+
+import { INITIAL_STATE as INITIAL_STATE_USER } from './users';
+import { UserState } from './users/types';
 
 /**
  * Initial state tree interface
@@ -26,6 +29,7 @@ export interface IInitialState {
   companies: Readonly<CompanyState>;
   especialties: Readonly<EspecialtyState>;
   councils: Readonly<CouncilState>;
+  users: Readonly<UserState>;
 }
 
 /**
@@ -38,4 +42,5 @@ export const InitialState: IInitialState = {
   companies: INITIAL_STATE_COMPANY,
   especialties: INITIAL_STATE_ESPECIALTY,
   councils: INITIAL_STATE_COUNCIL,
+  users: INITIAL_STATE_USER,
 }

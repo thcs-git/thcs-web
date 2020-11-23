@@ -7,6 +7,7 @@ import { CouncilState } from './ducks/councils/types';
 import { CustomerState } from './ducks/customers/types';
 import { EspecialtyState } from './ducks/especialties/types';
 import { LoginState } from './ducks/login/types';
+import { UserState } from './ducks/users/types';
 
 import { InitialState } from './ducks/states';
 import { combinedReducers } from './ducks/rootReducer';
@@ -19,6 +20,7 @@ export interface ApplicationState {
   companies: CompanyState;
   especialties: EspecialtyState;
   councils: CouncilState;
+  users: UserState;
 }
 
 const sagaMiddleware = createSagaMiddleware();

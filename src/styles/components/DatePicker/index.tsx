@@ -8,6 +8,7 @@ const DatePicker = styled(TextField).attrs({
   size: "small"
 })`
   background: var(--white);
+  padding-right: 12px;
 `;
 
 export default DatePicker;
