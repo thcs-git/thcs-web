@@ -20,8 +20,8 @@ import { SearchOutlined } from '@material-ui/icons';
 
 import Sidebar from '../../../components/Sidebar';
 import { FormTitle } from '../../../styles/components/Form';
-
-import DatePicker from '../../../styles/components/DatePicker';
+// import AutoComplete from '../../../styles/components/Autocomplete';
+import Autocomplete from '@material-ui/lab/Autocomplete';
 
 import {
 	ButtonsContent,
@@ -35,7 +35,8 @@ import {
 } from './styles';
 
 interface IFormFields {
-	id?: string;
+  id?: string;
+  customerId: string;
 	socialName?: string;
 	fantasyName?: string;
 	fiscalNumber?: string;
@@ -54,13 +55,18 @@ interface IPageParams {
 	id?: string;
 }
 
-export default function CustomerForm(props: RouteComponentProps<IPageParams>) {
+export default function CompanyForm(props: RouteComponentProps<IPageParams>) {
   const history = useHistory();
   const dispatch = useDispatch();
-  const customerState = useSelector((state: ApplicationState) => state.customers).data;
+  const companyState = useSelector((state: ApplicationState) => state.companies).data;
+  const customers = [
+    {id: 1, name: 'customer 1'},
+    {id: 2, name: 'customer 2'},
+  ]
 
 	const [ state, setState ] = useState<IFormFields>({
-		id: props.match.params.id || '',
+    id: props.match.params.id || '',
+    customerId: '',
 		socialName: '',
 		fantasyName: '',
 		fiscalNumber: '',
@@ -79,7 +85,7 @@ export default function CustomerForm(props: RouteComponentProps<IPageParams>) {
 
   useEffect(() => {
     dispatch(loadRequest());
-    setState({...state, ...customerState})
+    setState({...state, ...companyState})
   }, [dispatch]);
 
 	function handleSaveFormCustomer() {
@@ -96,19 +102,20 @@ export default function CustomerForm(props: RouteComponentProps<IPageParams>) {
 
 	function handleCancelForm() {
 		setOpenModalCancel(false);
-		history.back();
+		// history.goBack();
 	}
 
 	return (
 		<Sidebar>
+      {console.log('companyState', companyState)}
 			<FormSection>
 				<FormContent>
-					<FormTitle>Cadastro de Clientes</FormTitle>
+					<FormTitle>Cadastro de Empresas</FormTitle>
 
 					<FormGroupSection>
-
 						<Grid container>
-							<Grid item md={2} xs={4}>
+              {state?.id && (
+                <Grid item md={2} xs={4}>
 								<TextField
 									id="input-customer-id"
 									label="ID"
@@ -119,7 +126,20 @@ export default function CustomerForm(props: RouteComponentProps<IPageParams>) {
 									disabled
 								/>
 							</Grid>
+              )}
 							<Grid item md={5} xs={12}>
+                <Autocomplete
+                  id="combo-box-demo"
+                  options={customers}
+                  getOptionLabel={(option) => option.name}
+                  renderInput={(params) => <TextField {...params} label="Cliente" variant="outlined" />}
+                  size="small"
+                  fullWidth
+                />
+							</Grid>
+            </Grid>
+            <Grid container>
+							<Grid item md={6} xs={12}>
 								<TextField
 									id="input-social-name"
 									label="Nome Social"
@@ -130,7 +150,7 @@ export default function CustomerForm(props: RouteComponentProps<IPageParams>) {
 									fullWidth
 								/>
 							</Grid>
-							<Grid item md={4} xs={12}>
+							<Grid item md={5} xs={12}>
 								<TextField
 									id="input-fantasy-name"
 									label="Nome Fantasia"

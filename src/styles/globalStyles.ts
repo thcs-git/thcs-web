@@ -25,10 +25,11 @@ export default createGlobalStyle`
   }
   :root {
     --primary: #16679A;
+    --primary-hover: #16679A99;
     --secondary: #16679A8D;
     --gray: #CCCCCC;
     --gray-light: #F2F2F2;
-    --gray-dark: #999999;
+    --gray-dark: #666666;
     --outline: #2F3336;
     --success: #4FC66A;
     --success-hover: #4FC66A99;

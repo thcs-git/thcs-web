@@ -1,4 +1,4 @@
-import React, { useState, Props, HtmlHTMLAttributes } from 'react';
+import React, { useState, Props, useRef, useEffect, useCallback } from 'react';
 import clsx from 'clsx';
 import { createStyles, makeStyles, useTheme, Theme } from '@material-ui/core/styles';
 import Drawer from '@material-ui/core/Drawer';
@@ -95,18 +95,21 @@ export default function Sibebar(props: Props<any>) {
   const classes = useStyles();
   const theme = useTheme();
   const [open, setOpen] = useState(false);
-  const [open, setOpen] = useState(false);
+  const AccordionRef = useRef<HTMLDivElement>(null);
 
-  const handleDrawerOpen = () => {
-    setOpen(true);
-  };
+  useEffect(() => {
+    // console.log('entrou')
+    // if (!open) AccordionRef.current?.removeAttribute('expanded')
+    // else AccordionRef.current?.setAttribute('expanded', 'true');
+  }, [open]);
 
-  const handleDrawerClose = () => {
+  const handleDrawerClose = useCallback(() => {
     setOpen(prev => !prev);
-  };
+  }, []);
 
   const openDropDownAndMenu = () => {
-    setOpen(true);
+    // setOpen(true);
+    // console.log('open', open);
   };
 
   return (
@@ -133,8 +136,10 @@ export default function Sibebar(props: Props<any>) {
         <Divider />
         <List disablePadding={true}>
           <AccordionMenu
-            onClick={openDropDownAndMenu}
-            onChange={(event,expanded) => console.log(expanded)}
+            ref={AccordionRef}
+            // onClick={openDropDownAndMenu}
+            // {...(!open ? { expanded: true } : {})}
+            expanded={false}
           >
             <AccordionSummary
               expandIcon={open && <ExpandMoreIcon />}
