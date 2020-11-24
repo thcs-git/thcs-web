@@ -16,7 +16,7 @@ apiSollar.interceptors.request.use(
     const token = localStorage.getItem(LOCALSTORAGE.TOKEN);
 
     if (token) {
-      config.headers.Authorization = `Bearer ${token}`;
+      config.headers.token = `${token}`;
     }
 
     return config;

@@ -3,32 +3,34 @@ import { UserState, UserTypes } from './types';
 
 export const INITIAL_STATE: UserState = {
   data: {
-    id: '',
-    companyId: '',
+    companies: [],
     name: '',
-    birthdayDate: '',
+    birthday: '',
     gender: '',
-    rg: '',
-    dispatchingAgency: '',
-    fiscalNumber: '',
-    motherName: '',
+    national_id: '',
+    issuing_organ: '',
+    fiscal_number: '',
+    mother_name: '',
     nationality: '',
-    postalCode: '',
-    city: '',
-    neighborhood: '',
-    address: '',
-    addressNumber: '',
-    addressComplement: '',
-    state: '',
+    address: {
+      postal_code: '',
+      street: '',
+      number: '',
+      district: '',
+      city: '',
+      state: '',
+      complement: '',
+    },
     email: '',
     phone: '',
     cellphone: '',
-    userType: '',
-    especialties: [],
-    council: '',
-    councilNumber: '',
+    user_type_id: '',
+    specialties: [],
+    council_id: '',
+    council_number: '',
     active: true,
   },
+  success: false,
   error: false,
   loading: false,
 };
@@ -42,10 +44,41 @@ const reducer: Reducer<UserState> = (state = INITIAL_STATE, action) => {
         ...state,
         data: action.payload,
         loading: false,
+        success: false,
       };
     case UserTypes.LOAD_FAILURE:
       return {
-      ...state, loading: false, error: true
+        ...state, loading: false, error: true
+      };
+    case UserTypes.CREATE_USER_REQUEST:
+      return {
+        ...state, loading: false, error: false
+      };
+    case UserTypes.CREATE_USER_SUCCESS:
+      return {
+        ...state,
+        loading: false,
+        error: false,
+        success: true
+      };
+    case UserTypes.LOAD_RESPONSE_ADDRESS:
+      return {
+        ...state,
+        data: {
+          ...state.data,
+          address: {
+            ...state.data.address,
+            postal_code: action.payload.data.cep,
+            street: action.payload.data.logradouro,
+            number: '',
+            district: action.payload.data.bairro,
+            city: action.payload.data.localidade,
+            state: action.payload.data.uf,
+            complement: action.payload.data.complemento,
+          }
+        },
+        loading: false,
+        error: false,
       };
     default:
       return state;

@@ -1,41 +1,112 @@
 import { put, call } from 'redux-saga/effects';
+import { AxiosResponse } from 'axios';
 
-// import axios from '../../../services/axios';
+import { apiSollar, viacep } from '../../../services/axios';
 
-import { loadSuccess, loadFailure } from './actions';
-import { UserInterface } from './types';
+import { loadSuccess, loadFailure, successGetAddress, createUserSuccess } from './actions';
+import { UserInterface, ViacepDataInterface } from './types';
+
+const token = localStorage.getItem('token');
 
 export function* get() {
-  console.log('Executando get!!!')
+  const response:AxiosResponse = yield call(apiSollar.get, `/user`, { headers: { token } })
 
-  // const { data } = yield call(axios.get, `52131305/json`);
+  if (response.status === 200) {
+    yield put(loadSuccess(response.data))
+  } else {
+    yield put(loadFailure());
+  }
+}
 
-  // const user = {
-  //   id: '',
-  //   companyId: '',
-  //   name: '',
-  //   birthdayDate: '',
-  //   gender: '',
-  //   rg: '',
-  //   dispatchingAgency: '',
-  //   fiscalNumber: '',
-  //   motherName: '',
-  //   nationality: '',
-  //   postalCode: '',
-  //   city: '',
-  //   neighborhood: '',
-  //   address: '',
-  //   addressNumber: '',
-  //   addressComplement: '',
-  //   state: '',
-  //   email: '',
-  //   phone: '',
-  //   cellphone: '',
-  //   userType: '',
-  //   especialties: [],
-  //   council: '',
-  //   councilNumber: '',
-  // };
+export function* getUserById({ payload: { id: _id } }: any) {
+  const response:AxiosResponse = yield call(apiSollar.get, `/user`, { headers: { token }, params: { _id } })
 
-  // yield put(loadSuccess(user));
+  if (response.status === 200) {
+    yield put(loadSuccess(response.data[0]))
+  } else {
+    yield put(loadFailure());
+  }
+}
+
+export function* createUser({payload: { data }}: any) {
+  console.log('create user payload', data)
+
+  const phones = [];
+
+  if (data.phone.length > 0) {
+    phones.push({
+      whatsapp: false,
+      telegram: false,
+      number: data.phone
+    });
+  }
+
+  if (data.cellphone.length > 0) {
+    phones.push({
+      whatsapp: false,
+      telegram: false,
+      number: data.cellphone
+    });
+  }
+
+  data.username = data.email;
+  data.password = data.cpf;
+  data.phones = phones;
+
+  try {
+    const response:AxiosResponse = yield call(apiSollar.post, `/user/store`, data, { headers: { token } })
+    yield put(createUserSuccess(response.data))
+  } catch(e) {
+    yield put(loadFailure());
+  }
+}
+
+export function* updateUser({ payload: { data } }: any) {
+  const { _id } = data;
+
+  const phones = [];
+
+  if (data.phone.length > 0) {
+    phones.push({
+      whatsapp: false,
+      telegram: false,
+      number: data.phone
+    });
+  }
+
+  if (data.cellphone.length > 0) {
+    phones.push({
+      whatsapp: false,
+      telegram: false,
+      number: data.cellphone
+    });
+  }
+
+  data.phones = phones;
+
+  const response:AxiosResponse = yield call(apiSollar.put, `/user/${_id}/update`, { ...data }, { headers: { token } })
+
+  console.log('update response', response);
+
+  if (response.status === 200) {
+    yield put(loadSuccess(response.data[0]))
+  } else {
+    yield put(loadFailure());
+  }
+}
+
+export function* getAddress({payload}:any) {
+  try {
+    const { data }: AxiosResponse<ViacepDataInterface> = yield call(viacep.get, `${payload.postalCode}/json`);
+
+    if (data.erro) {
+      yield put(loadFailure());
+      return;
+    }
+
+    yield put(successGetAddress(data));
+  } catch (error) {
+
+    yield put(loadFailure());
+  }
 }

@@ -1,7 +1,10 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useHistory } from 'react-router-dom';
 import { Container, FormControl, InputLabel, OutlinedInput, InputAdornment, IconButton } from '@material-ui/core';
 import { SearchOutlined } from '@material-ui/icons';
+import { UserInterface } from '../../../store/ducks/users/types';
+
+// import { backend } from '../../../services/axios';
 
 import Sidebar from '../../../components/Sidebar';
 
@@ -19,17 +22,20 @@ import {
   ButtonsContent,
 } from './styles';
 
+const token = window.localStorage.getItem('token');
+
 export default function UserList() {
   const history = useHistory();
 
   const [search, setSearch] = useState('');
 
-  const [users, setUsers] = useState([
-    { id: 1, name: 'user 1', user_type_id: { id: 1, description: 'Medico' }, especialties: [{ id: 1, description: 'Cardiologista' }], active: true },
-    { id: 2, name: 'user 2', user_type_id: { id: 1, description: 'Medico' }, especialties: [{ id: 1, description: 'Cardiologista' }], active: false },
-  ]);
+  const [users, setUsers] = useState<UserInterface[]>([]);
 
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
+
+  useEffect(() => {
+    handleUsers();
+  }, [])
 
   const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
     setAnchorEl(event.currentTarget);
@@ -37,6 +43,14 @@ export default function UserList() {
 
   const handleClose = () => {
     setAnchorEl(null);
+  };
+
+  const handleUsers = async () => {
+    // const response = await backend.get('/user', { headers: { token } });
+
+    // console.log(response);
+
+    // setUsers(response.data);
   };
 
   return (
@@ -66,13 +80,13 @@ export default function UserList() {
 
           <List>
             {users.map((user, index) => (
-              <ListLink key={index} to={`/user/${user.id}/edit`}>
+              <ListLink key={index} to={`/user/${user._id}/edit`}>
                 <ListItem variant="outlined">
                   <ListItemContent>
                     <ListItemStatus active={user.active}>{user.active ? 'Ativo' : 'Inativo'}</ListItemStatus>
                     <div>
                       <ListItemTitle>{user.name}</ListItemTitle>
-                      <ListItemSubTitle>{user.user_type_id.description} • {user.especialties[0].description}</ListItemSubTitle>
+                      {/* <ListItemSubTitle>{user.user_type_id.description} • {user.especialties[0].description}</ListItemSubTitle> */}
                     </div>
                   </ListItemContent>
                 </ListItem>

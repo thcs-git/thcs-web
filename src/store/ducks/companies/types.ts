@@ -17,18 +17,22 @@ export enum CompanyTypes {
 export interface CompanyInterface {
   id?: string;
   customerId: string;
-	socialName: string;
+	name: string;
 	fantasyName: string;
 	fiscalNumber: string;
-	postalCode: string;
-	city: string;
-	neighborhood: string;
-	address: string;
-	addressNumber: string;
-	addressComplement: string;
+	address: {
+    postalCode: string;
+    street: string,
+    number: string,
+    district: string;
+    city: string;
+    state: string;
+    complement: string;
+  };
 	email: string;
 	phone: string;
 	cellphone: string;
+	active: boolean;
 }
 
 export interface ViacepDataInterface {

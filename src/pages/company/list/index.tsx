@@ -1,5 +1,7 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useHistory } from 'react-router-dom';
+import { CompanyInterface } from '../../../store/ducks/companies/types';
+
 import { Container, FormControl, InputLabel, OutlinedInput, InputAdornment, IconButton } from '@material-ui/core';
 import { SearchOutlined } from '@material-ui/icons';
 
@@ -19,17 +21,20 @@ import {
   ButtonsContent,
 } from './styles';
 
+const token = window.localStorage.getItem('token');
+
 export default function CompanyList() {
   const history = useHistory();
 
   const [search, setSearch] = useState('');
 
-  const [companies, setCompanies] = useState([
-    { id: 1, name: 'company 1', customer: 'customer 1', fiscalNumber: '00.000.000/0000-00', active: true },
-    { id: 2, name: 'company 2', customer: 'customer 1', fiscalNumber: '00.000.000/0000-00', active: false },
-  ]);
+  const [companies, setCompanies] = useState<CompanyInterface[]>([]);
 
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
+
+  useEffect(() => {
+    handleCompanies();
+  }, [])
 
   const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
     setAnchorEl(event.currentTarget);
@@ -38,6 +43,12 @@ export default function CompanyList() {
   const handleClose = () => {
     setAnchorEl(null);
   };
+
+  const handleCompanies = async () => {
+    // const response = await backend.get('/companies', { headers: { token } });
+
+    // setCompanies(response.data);
+  }
 
   return (
     <>
@@ -65,16 +76,16 @@ export default function CompanyList() {
           </FormSearch>
 
           <List>
-            {companies.map((company, index) => (
+            {companies.map((company: CompanyInterface, index: number) => (
               <ListLink key={index} to={`/company/${company.id}/edit`}>
                 <ListItem variant="outlined">
                   <ListItemContent>
                     <ListItemStatus active={company.active}>{company.active ? 'Ativo' : 'Inativo'}</ListItemStatus>
-                      <div>
-                        <ListItemTitle>{company.name}</ListItemTitle>
-                        <ListItemSubTitle>{company.customer}</ListItemSubTitle>
-                        <ListItemSubTitle>{company.fiscalNumber}</ListItemSubTitle>
-                      </div>
+                    <div>
+                      <ListItemTitle>{company.name}</ListItemTitle>
+                      {/* <ListItemSubTitle>{company.customer}</ListItemSubTitle> */}
+                      <ListItemSubTitle>{company.fiscalNumber}</ListItemSubTitle>
+                    </div>
                   </ListItemContent>
                 </ListItem>
               </ListLink>
