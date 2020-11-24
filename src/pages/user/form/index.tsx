@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useCallback } from 'react';
 
 import { useDispatch, useSelector } from 'react-redux';
-import { loadRequest } from '../../../store/ducks/users/actions';
+import { loadRequest, createUserRequest, updateUserRequest, getAddress as getAddressAction, loadUserById } from '../../../store/ducks/users/actions';
 import { UserInterface, EspecialtiesUserInterface } from '../../../store/ducks/users/types';
 import { ApplicationState } from '../../../store';
 
@@ -20,15 +20,18 @@ import {
   InputLabel,
   InputAdornment,
   MenuItem,
+  Snackbar,
 } from '@material-ui/core';
 import { SearchOutlined } from '@material-ui/icons';
 import Autocomplete from '@material-ui/lab/Autocomplete';
 import DayJsUtils from '@date-io/dayjs';
 
+import Alert from '../../../components/Alert';
 import Sidebar from '../../../components/Sidebar';
 import { FormTitle, SelectComponent as Select } from '../../../styles/components/Form';
 import { SwitchComponent as Switch } from '../../../styles/components/Switch';
 import { ChipComponent as Chip } from '../../../styles/components/Chip';
+
 import { formatToISOString } from '../../../helpers/date';
 
 import DatePicker from '../../../styles/components/DatePicker';
@@ -45,11 +48,9 @@ import {
   FormGroupSection
 } from './styles';
 
-interface IFormFields extends UserInterface {
-  form?: {
-    userType?: { id: string, description: string } | null,
-    council?: { id: string, description: string } | null,
-  }
+interface IFormFields {
+  userType: { id: string, description: string } | null,
+  council: { id: string, description: string } | null,
 }
 
 interface IPageParams {
@@ -59,28 +60,32 @@ interface IPageParams {
 export default function UserForm(props: RouteComponentProps<IPageParams>) {
   const history = useHistory();
   const dispatch = useDispatch();
-  const customerState = useSelector((state: ApplicationState) => state.users).data;
+  const userState = useSelector((state: ApplicationState) => state.users);
+
+  const { params } = props.match;
 
   const [currentTab, setCurrentTab] = useState(0);
 
-  const [state, setState] = useState<IFormFields>({
-    id: '',
-    companyId: '',
+  const [state, setState] = useState<UserInterface>({
+    _id: '',
+    companies: ['5ee65a9b1a550217e4a8c0f4'], //empresa que vai vir do login
     name: '',
     birthdayDate: '',
     gender: '',
     rg: '',
-    dispatchingAgency: '',
-    fiscalNumber: '',
-    motherName: '',
+    issuing_organ: '',
+    cpf: '',
+    mother_name: '',
     nationality: '',
-    postalCode: '',
-    city: '',
-    neighborhood: '',
-    address: '',
-    addressNumber: '',
-    addressComplement: '',
-    state: '',
+    address: {
+      postal_code: '',
+      street: '',
+      number: '',
+      district: '',
+      city: '',
+      state: '',
+      complement: '',
+    },
     email: '',
     phone: '',
     cellphone: '',
@@ -89,6 +94,11 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
     council: '',
     councilNumber: '',
     active: true,
+  });
+
+  const [form, setForm] = useState<IFormFields>({
+    userType: null,
+    council: null,
   });
 
   const especialties = [
@@ -103,8 +113,49 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
   const [openModalCancel, setOpenModalCancel] = useState(false);
 
   useEffect(() => {
+    if (params.id) {
+      getUserDataById(params.id);
+    }
+  }, [])
+
+  useEffect(() => {
     dispatch(loadRequest());
-    setState({ ...state, ...customerState })
+  }, [dispatch]);
+
+  useEffect(() => {
+    if (userState.error) {
+      setState(prevState => {
+        return {
+          ...prevState,
+          address: {
+            ...prevState.address,
+            street: '',
+            number: '',
+            district: '',
+            city: '',
+            state: '',
+            complement: '',
+          },
+        }
+      })
+
+      return;
+    }
+
+    console.log('prevState', userState.data)
+
+    setState(prevState => {
+      // const { address } = userState.data;
+
+      return {
+        ...prevState,
+        ...userState.data
+      }
+    })
+  }, [userState]);
+
+  const getUserDataById = useCallback((id: string) => {
+    dispatch(loadUserById(id))
   }, [dispatch]);
 
   const selectTab = useCallback((index: number) => {
@@ -114,32 +165,32 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
   const handleUserType = useCallback((event: any, newValue: any) => {
     console.log('handleUserType', newValue)
     console.log('handleUserType', event.target.value)
-    setState(prevState => ({
+    setForm(prevState => ({
       ...prevState,
-      userType: event.target.value,
-      form: {
-        ...prevState.form,
-        userType: newValue,
-      }
+      userType: newValue,
     }));
   }, [state.userType]);
 
   const handleCouncil = useCallback((event: any, newValue: any) => {
     console.log('handleCouncil', newValue)
     console.log('handleCouncil', event.target.value)
-    setState(prevState => ({
+    setForm(prevState => ({
       ...prevState,
-      council: event.target.value,
-      form: {
-        ...prevState.form,
-        council: newValue,
-      }
+      council: newValue,
     }));
   }, [state.council]);
 
-  function handleSaveForm() {
-    console.log(state);
-  }
+  const getAddress = useCallback(() => {
+    dispatch(getAddressAction(state.address.postal_code));
+  }, [state.address.postal_code]);
+
+  const handleSaveFormUser = useCallback(() => {
+    if (state?._id) {
+      dispatch(updateUserRequest(state));
+    } else {
+      dispatch(createUserRequest(state));
+    }
+  }, [state]);
 
   function handleOpenModalCancel() {
     setOpenModalCancel(true);
@@ -151,7 +202,7 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
 
   function handleCancelForm() {
     setOpenModalCancel(false);
-    // history.back();
+    history.push(`/user`);
   }
 
   // Especialides
@@ -212,7 +263,7 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
 
                       <Grid item md={2} xs={12}>
                         <DatePicker
-                          id="input-fiscal-number"
+                          id="input-fiscal-birthdate"
                           label="Data de Nascimento"
                           value={state.birthdayDate}
                           onChange={(element) => setState({ ...state, birthdayDate: element.target.value })}
@@ -233,7 +284,7 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
                             <MenuItem value="">
                               <em>None</em>
                             </MenuItem>
-                            {genders.map(gender => <MenuItem value={gender}>{gender}</MenuItem>)}
+                            {genders.map(gender => <MenuItem key={`gender_${gender}`} value={gender}>{gender}</MenuItem>)}
                           </Select>
                         </FormControl>
                       </Grid>
@@ -243,8 +294,8 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
                           label="Nome da mãe"
                           variant="outlined"
                           size="small"
-                          value={state.motherName}
-                          onChange={(element) => setState({ ...state, motherName: element.target.value })}
+                          value={state.mother_name}
+                          onChange={(element) => setState({ ...state, mother_name: element.target.value })}
                           fullWidth
                         />
                       </Grid>
@@ -256,15 +307,15 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
                           label="CPF"
                           variant="outlined"
                           size="small"
-                          value={state.fiscalNumber}
-                          onChange={(element) => setState({ ...state, fiscalNumber: element.target.value })}
+                          value={state.cpf}
+                          onChange={(element) => setState({ ...state, cpf: element.target.value })}
                           placeholder="000.000.000-00"
                           fullWidth
                         />
                       </Grid>
                       <Grid item md={2} xs={12}>
                         <TextField
-                          id="input-fiscal-number"
+                          id="input-nation-id"
                           label="RG"
                           variant="outlined"
                           size="small"
@@ -277,19 +328,19 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
 
                       <Grid item md={2} xs={12}>
                         <TextField
-                          id="input-fiscal-number"
+                          id="input-emitting-organ"
                           label="Órgão Emissor"
                           variant="outlined"
                           size="small"
-                          value={state.dispatchingAgency}
-                          onChange={(element) => setState({ ...state, dispatchingAgency: element.target.value })}
+                          value={state.issuing_organ}
+                          onChange={(element) => setState({ ...state, issuing_organ: element.target.value })}
                           fullWidth
                         />
                       </Grid>
 
                       <Grid item md={2} xs={12}>
                         <TextField
-                          id="input-fiscal-number"
+                          id="input-nationality"
                           label="Nacionalidade"
                           variant="outlined"
                           size="small"
@@ -313,8 +364,9 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
                             id="input-postal-code"
                             label="CEP"
                             placeholder="00000-000"
-                            value={state.postalCode}
-                            onChange={(element) => setState({ ...state, postalCode: element.target.value })}
+                            value={state.address.postal_code}
+                            onChange={(element) => setState({ ...state, address: { ...state.address, postal_code: element.target.value } })}
+                            onBlur={getAddress}
                             endAdornment={
                               <InputAdornment position="end">
                                 <SearchOutlined style={{ color: 'var(--primary)' }} />
@@ -332,8 +384,8 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
                           label="Endereço"
                           variant="outlined"
                           size="small"
-                          value={state.address}
-                          onChange={(element) => setState({ ...state, address: element.target.value })}
+                          value={state.address.street}
+                          onChange={(element) => setState({ ...state, address: { ...state.address, street: element.target.value } })}
                           fullWidth
                         />
                       </Grid>
@@ -343,8 +395,8 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
                           label="Número"
                           variant="outlined"
                           size="small"
-                          value={state.addressNumber}
-                          onChange={(element) => setState({ ...state, addressNumber: element.target.value })}
+                          value={state.address.number}
+                          onChange={(element) => setState({ ...state, address: { ...state.address, number: element.target.value } })}
                           fullWidth
                         />
                       </Grid>
@@ -355,8 +407,8 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
                           label="Bairro"
                           variant="outlined"
                           size="small"
-                          value={state.neighborhood}
-                          onChange={(element) => setState({ ...state, neighborhood: element.target.value })}
+                          value={state.address.district}
+                          onChange={(element) => setState({ ...state, address: { ...state.address, district: element.target.value } })}
                           fullWidth
                         />
                       </Grid>
@@ -367,8 +419,8 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
                           label="Cidade"
                           variant="outlined"
                           size="small"
-                          value={state.city}
-                          onChange={(element) => setState({ ...state, city: element.target.value })}
+                          value={state.address.city}
+                          onChange={(element) => setState({ ...state, address: { ...state.address, city: element.target.value } })}
                           fullWidth
                         />
                       </Grid>
@@ -379,20 +431,20 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
                           label="Complemento"
                           variant="outlined"
                           size="small"
-                          value={state.addressComplement}
-                          onChange={(element) => setState({ ...state, addressComplement: element.target.value })}
+                          value={state.address.complement}
+                          onChange={(element) => setState({ ...state, address: { ...state.address, complement: element.target.value } })}
                           fullWidth
                         />
                       </Grid>
 
                       <Grid item md={1} xs={12}>
                         <TextField
-                          id="input-address-complement"
+                          id="input-address-uf"
                           label="UF"
                           variant="outlined"
                           size="small"
-                          value={state.addressComplement}
-                          onChange={(element) => setState({ ...state, addressComplement: element.target.value })}
+                          value={state.address.state}
+                          onChange={(element) => setState({ ...state, address: { ...state.address, state: element.target.value } })}
                           fullWidth
                         />
                       </Grid>
@@ -440,12 +492,12 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
                     <Grid item md={2} xs={12}>
                       <FormGroupSection>
                         <Autocomplete
-                          id="combo-box-demo"
+                          id="combo-box-user-type"
                           options={userTypes}
                           getOptionLabel={(option) => option.description}
                           renderInput={(params) => <TextField {...params} label="Tipo do Usuário" variant="outlined" />}
-                          value={state.form?.userType}
-                          getOptionSelected={(option, value) => option.id === state.userType}
+                          value={form?.userType}
+                          getOptionSelected={(option, value) => option.id === form?.userType?.id}
                           onChange={(event: any, newValue) => {
                             handleUserType(event, newValue);
                           }}
@@ -457,12 +509,12 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
                     <Grid item md={2} xs={12}>
                       <FormGroupSection>
                         <Autocomplete
-                          id="combo-box-demo"
+                          id="combo-box-council"
                           options={councils}
                           getOptionLabel={(option) => option.description}
                           renderInput={(params) => <TextField {...params} label="Conselho" variant="outlined" />}
-                          value={state.form?.council}
-                          getOptionSelected={(option, value) => option.id === state.council}
+                          value={form?.council}
+                          getOptionSelected={(option, value) => option.id === form?.council?.id}
                           onChange={(event: any, newValue) => {
                             handleCouncil(event, newValue);
                           }}
@@ -473,7 +525,7 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
                     </Grid>
                     <Grid item md={2} xs={12}>
                       <TextField
-                        id="input-cellphone"
+                        id="input-council"
                         label="Número do Conselho"
                         variant="outlined"
                         size="small"
@@ -484,7 +536,7 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
                       />
                     </Grid>
 
-                    {state?.id && (
+                    {state?._id && (
                       <Grid item xs={12} md={12}>
                         <FormControlLabel control={<Switch checked={state.active} onChange={(event) => {
                           setState(prevState => ({
@@ -501,7 +553,7 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
                     <Grid item md={5} xs={12}>
                       <FormGroupSection>
                         <Autocomplete
-                          id="combo-box-demo"
+                          id="combo-box-especialty"
                           options={especialties}
                           getOptionLabel={(option) => option.description}
                           renderInput={(params) => <TextField {...params} label="Especialidade" variant="outlined" />}
@@ -528,17 +580,43 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
                   </Grid>
                 </TabBodyItem>
               </TabBody>
-            </TabContent></FormContent>
+            </TabContent>
+          </FormContent>
           <ButtonsContent>
-            <ButtonComponent background="default" onClick={() => handleOpenModalCancel()}>
+            <ButtonComponent background="default" onClick={handleOpenModalCancel}>
               Cancelar
 					</ButtonComponent>
-            <ButtonComponent background="primary" onClick={() => handleSaveForm()}>
+            <ButtonComponent background="primary" onClick={handleSaveFormUser}>
               Salvar
 					</ButtonComponent>
           </ButtonsContent>
         </FormSection>
       </Container>
+
+      <Snackbar
+        autoHideDuration={10}
+        anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
+        open={userState.error}
+        key={'create_user_error'}
+        onClose={() => console.log('fechar toast')}
+      >
+        <Alert severity="error" onClose={() => console.log('2 fechar toast')}>
+          Não foi possível cadastrar o usuário
+        </Alert>
+      </Snackbar>
+
+      <Snackbar
+        autoHideDuration={10}
+        anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
+        open={userState.success && !userState.error}
+        key={'create_user_success'}
+        onClose={() => console.log('fechar toast')}
+      >
+        <Alert severity="success" onClose={() => console.log('2 fechar toast')}>
+          Usuário cadastrado com sucesso!
+        </Alert>
+      </Snackbar>
+
       <Dialog
         open={openModalCancel}
         onClose={handleCloseModalCancel}

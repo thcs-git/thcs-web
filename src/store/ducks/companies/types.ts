@@ -27,7 +27,7 @@ export interface CompanyInterface {
     district: string;
     city: string;
     state: string;
-    complement: string,
+    complement: string;
   };
 	email: string;
 	phone: string;

@@ -2,9 +2,15 @@
  * Action types
  */
 export enum UserTypes {
-  LOAD_REQUEST = "@customer/LOAD_REQUEST",
-  LOAD_SUCCCES = "@customer/LOAD_SUCCCES",
-  LOAD_FAILURE = "@customer/LOAD_FAILURE",
+  LOAD_REQUEST = "@user/LOAD_REQUEST",
+  LOAD_SUCCCES = "@user/LOAD_SUCCCES",
+  LOAD_FAILURE = "@user/LOAD_FAILURE",
+  CREATE_USER_REQUEST = "@user/CREATE_USER_REQUEST",
+  CREATE_USER_SUCCESS = "@user/CREATE_USER_SUCCESS",
+  UPDATE_USER_REQUEST = "@user/UPDATE_USER_REQUEST",
+  LOAD_REQUEST_USER_BY_ID = "@user/LOAD_REQUEST_USER_BY_ID",
+  LOAD_REQUEST_ADDRESS = "@user/LOAD_REQUEST_ADDRESS",
+  LOAD_RESPONSE_ADDRESS = "@user/LOAD_RESPONSE_ADDRESS",
 }
 
 /**
@@ -17,23 +23,25 @@ export interface EspecialtiesUserInterface {
 };
 
 export interface UserInterface {
-  id?: string;
-  companyId: string;
+  _id?: string;
+  companies: [string] | [];
 	name: string;
   birthdayDate: string;
   gender: string;
   rg: string;
-  dispatchingAgency: string;
-  fiscalNumber: string;
-  motherName: string;
+  issuing_organ: string;
+  cpf: string;
+  mother_name: string;
   nationality: string;
-	postalCode: string;
-	city: string;
-	neighborhood: string;
-	address: string;
-	addressNumber: string;
-	addressComplement: string;
-	state: string;
+	address: {
+    postal_code: string;
+    street: string,
+    number: string,
+    district: string;
+    city: string;
+    state: string;
+    complement: string;
+  };
 	email: string;
 	phone: string;
   cellphone: string;
@@ -41,7 +49,19 @@ export interface UserInterface {
   especialties: (EspecialtiesUserInterface | {})[];
   council: string;
   councilNumber: string;
-  active?: boolean;
+  username?: string;
+  password?: string;
+  active: boolean;
+}
+
+export interface ViacepDataInterface {
+  cep: string,
+  logradouro: string,
+  complemento: string,
+  bairro: string,
+  localidade: string,
+  uf: string,
+  erro?: boolean,
 }
 
 
@@ -52,4 +72,5 @@ export interface UserState {
   data: UserInterface;
   loading: boolean;
   error: boolean;
+  success: boolean;
 }
