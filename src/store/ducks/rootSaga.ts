@@ -23,6 +23,7 @@ import { get as getUser } from './users/sagas';
 
 export default function* rootSaga() {
   return yield all([
+    takeLatest(LoginTypes.LOAD_REQUEST, doLogin),
     // takeLatest(AreaTypes.LOAD_REQUEST, getAreas),
     // takeLatest(LoginTypes.LOAD_REQUEST, doLogin),
     // takeLatest(CustomerTypes.LOAD_REQUEST, get),

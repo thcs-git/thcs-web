@@ -5,18 +5,22 @@ export const INITIAL_STATE: CompanyState = {
   data: {
     id: '',
     customerId: '',
-    socialName: '',
+    name: '',
     fantasyName: '',
     fiscalNumber: '',
-    postalCode: '',
-    city: '',
-    neighborhood: '',
-    address: '',
-    addressNumber: '',
-    addressComplement: '',
+    address: {
+      postalCode: '',
+      street: '',
+      number: '',
+      district: '',
+      city: '',
+      state: '',
+      complement: '',
+    },
     email: '',
     phone: '',
     cellphone: '',
+    active: true,
   },
   error: false,
   loading: false,
@@ -43,11 +47,16 @@ const reducer: Reducer<CompanyState> = (state = INITIAL_STATE, action) => {
       error: false,
       data: {
         ...state.data,
-        postalCode: action.payload.data.cep,
-        city: action.payload.data.localidade,
-        neighborhood: action.payload.data.bairro,
-        address: action.payload.data.logradouro,
-        addressComplement: action.payload.data.complemento,
+        address: {
+          ...state.data.address,
+          postalCode: action.payload.data.cep,
+          street: action.payload.data.logradouro,
+          number: '',
+          district: action.payload.data.bairro,
+          city: action.payload.data.localidade,
+          state: action.payload.data.uf,
+          complement: action.payload.data.complemento,
+        }
       }
       };
     default:
