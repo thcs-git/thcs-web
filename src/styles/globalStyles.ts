@@ -38,4 +38,25 @@ export default createGlobalStyle`
     --background: #FAFAFA;
     --switch-hover: rgba(8, 153, 186, 0.04)
   }
+
+  .blur {
+    filter: blur(2px);
+  }
+
+  /* Spinner */
+  body .spinner-loading {
+    position: absolute !important;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: #ffffff99;
+    z-index: 300000;
+    top: 0;
+  }
+
+  body .spinner-loading div {
+    left: unset !important;
+  }
 `;

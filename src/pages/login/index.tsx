@@ -26,6 +26,9 @@ import { makeStyles } from '@material-ui/core/styles';
 import { ContainerLogin, WelcomeTextWrapper, HomeIconLogo, LogoText, TextGray } from './styles';
 import Button from '../../styles/components/Button';
 import Alert from '../../components/Alert';
+import Loading from '../../components/Loading';
+
+import validateEmail from '../../utils/validateEmail'
 
 function Copyright() {
   return (
@@ -59,12 +62,14 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
+const SIZE_INPUT_PASSWORD = 3;
+
 export default function SignIn() {
   const dispatch = useDispatch();
   const loginState = useSelector((state: ApplicationState) => state.login);
 
-  const [username, setUsername] = useState('heytor');
-  const [password, setPassword] = useState('admin');
+  const [inputEmail, setInputEmail] = useState({ value: '', error: false });
+  const [inputPassword, setInputPassword] = useState({ value: '', error: false });
   const [showPassword, setShowPassword] = useState(false);
   const classes = useStyles();
 
@@ -72,15 +77,36 @@ export default function SignIn() {
     setShowPassword(prev => !prev);
   }, []);
 
-  const handleLogin = useCallback((event) => {
+  const handleLogin = useCallback(async (event) => {
     event.preventDefault();
-    dispatch(loadRequest({ email: 'heytor.cavalcanti@outlook.com', password: 'admin' }))
-  }, [])
+
+    if (inputEmail.error || inputPassword.error) return;
+
+    dispatch(loadRequest({ email: inputEmail.value, password: inputPassword.value }));
+  }, [inputPassword, inputEmail]);
+
+  const handleEmailValidator = useCallback(() => {
+    if (!validateEmail(inputEmail.value)) {
+      setInputEmail(prev => ({
+        ...prev,
+        error: true
+      }))
+    } else {
+      setInputEmail(prev => ({
+        ...prev,
+        error: false
+      }))
+    }
+  }, [inputEmail]);
+
+  const handlePasswordValitor = useCallback(() => {
+    setInputPassword(prev => ({ ...prev, error:  !(inputPassword.value.length >= SIZE_INPUT_PASSWORD) }));
+  }, [inputPassword]);
 
   return (
     <>
+      {loginState.loading && <Loading />}
       <ContainerLogin maxWidth="xs">
-        {console.log(loginState)}
         <CssBaseline />
         <div className={classes.paper}>
           <Box display="flex" justifyContent="center" alignItems="center">
@@ -98,22 +124,33 @@ export default function SignIn() {
           </WelcomeTextWrapper>
           <form className={classes.form} noValidate>
             <TextField
+              error={inputEmail.error}
               variant="outlined"
               margin="normal"
               required
               fullWidth
-              label="CPF"
-              name="cpf"
+              label="E-mail"
+              name="email"
               autoComplete="number"
               autoFocus
+              onChange={inputValue => setInputEmail(prev => ({
+                ...prev,
+                value: inputValue.target.value
+              }))}
+              onBlur={handleEmailValidator}
             />
             <FormControl fullWidth margin='normal' variant="outlined">
               <InputLabel htmlFor="outlined-adornment-password">Password</InputLabel>
               <OutlinedInput
                 id="outlined-adornment-password"
                 type={showPassword ? 'text' : 'password'}
-                // value={password}
-                // onChange={handleChange('password')}
+                value={inputPassword.value}
+                onChange={inputValue => setInputPassword(prev => ({
+                  ...prev,
+                  value: inputValue.target.value
+                }))}
+                onBlur={handlePasswordValitor}
+                error={inputPassword.error}
                 endAdornment={
                   <InputAdornment position="end">
                     <IconButton
@@ -168,8 +205,8 @@ export default function SignIn() {
         key={'login_error'}
       >
         <Alert severity="error">
-          This is a success message!
-          </Alert>
+          E-mail e/ou senha inválida
+        </Alert>
       </Snackbar>
     </>
   );

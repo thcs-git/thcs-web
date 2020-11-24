@@ -24,10 +24,10 @@ import { get as getUser } from './users/sagas';
 export default function* rootSaga() {
   return yield all([
     // takeLatest(AreaTypes.LOAD_REQUEST, getAreas),
-    // takeLatest(LoginTypes.LOAD_REQUEST, doLogin),
     // takeLatest(CustomerTypes.LOAD_REQUEST, get),
     // takeLatest(EspecialtyTypes.LOAD_REQUEST, getEspecialty),
     // takeLatest(CouncilTypes.LOAD_REQUEST, getCouncil),
+    takeLatest(LoginTypes.LOAD_REQUEST, doLogin),
     takeLatest(CompanyTypes.CREATE_COMPANY_REQUEST, createCompany),
     takeLatest(CompanyTypes.LOAD_REQUEST_ADDRESS, getAddress),
   ]);
