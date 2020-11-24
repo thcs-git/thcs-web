@@ -1,6 +1,9 @@
 import React from 'react';
 import { Route, BrowserRouter, Switch } from 'react-router-dom';
 
+import GuestRoute from './guest';
+import PrivateRoute from './private';
+
 import Dashboard from '../pages/dashboard';
 
 import CompanyList from '../pages/company/list';
@@ -29,11 +32,9 @@ import Login from '../pages/login';
 const Routes = () => (
   <BrowserRouter>
     <Switch>
-      <Route path="/" component={Login} exact />
+      <GuestRoute path="/login" component={Login} />
 
-      <Route path="/login" component={Login} />
-
-      <Route path="/dashboard" component={Dashboard} exat />
+      <PrivateRoute path="/" component={Dashboard} />
 
       {/* Clientes */}
       <Route path="/customer" component={CustomerList} exact />

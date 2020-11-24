@@ -25,4 +25,5 @@ export interface LoginState {
   credentials: CredentialsInterface;
   loading: boolean;
   error: boolean;
+  signedIn: boolean;
 }

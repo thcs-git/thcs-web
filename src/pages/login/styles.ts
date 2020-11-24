@@ -16,7 +16,7 @@ export const WelcomeTextWrapper = styled.div`
 `;
 
 export const HomeIconLogo = styled(HomeIcon)`
-  margin-bottom: 8px
+  margin-bottom: 8px;
 `;
 
 export const LogoText = styled(Typography)`

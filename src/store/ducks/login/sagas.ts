@@ -1,19 +1,19 @@
 import { put, call } from 'redux-saga/effects';
 
-import api from '../../../services/api';
+import { apiSollar } from '../../../services/axios';
 import history from '../../../routes/history';
+
+import LOCALSTORAGE from '../../../helpers/constants/localStorage';
 
 import { loadSuccess, loadFailure } from './actions';
 
 export function* doLogin({ payload }: any) {
   try {
-
-    console.log(payload);
-
-    const response = yield call(api.post, `/user/login`, payload.credentials)
-    console.log(response);
+    const response = yield call(apiSollar.post, `/user/login`, payload.credentials)
 
     const { data } = response;
+
+    localStorage.setItem(LOCALSTORAGE.TOKEN, data.token)
 
     yield put(loadSuccess(data));
 
