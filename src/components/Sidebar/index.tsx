@@ -18,6 +18,18 @@ import ListItemText from '@material-ui/core/ListItemText';
 import InboxIcon from '@material-ui/icons/MoveToInbox';
 import MailIcon from '@material-ui/icons/Mail';
 
+/**
+ * Icons
+ */
+import DashboardIcon from '@material-ui/icons/Dashboard';
+import AssignmentIndIcon from '@material-ui/icons/AssignmentInd';
+import BusinessIcon from '@material-ui/icons/Business';
+import FolderSpecialIcon from '@material-ui/icons/FolderSpecial';
+import GavelIcon from '@material-ui/icons/Gavel';
+import ExtensionIcon from '@material-ui/icons/Extension';
+import PersonIcon from '@material-ui/icons/Person';
+import GroupAddIcon from '@material-ui/icons/GroupAdd';
+
 import SupervisorAccountIcon from '@material-ui/icons/SupervisorAccount';
 import {AccordionSummary, AccordionDetails} from '@material-ui/core';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
@@ -25,6 +37,17 @@ import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import { AccordionMenu } from './styles';
 
 const drawerWidth = 220;
+
+const itemsMenu = [
+  { title: 'Dashboard', route: '/', icon: <DashboardIcon /> },
+  { title: 'Clientes', route: '/customer', icon: <AssignmentIndIcon /> },
+  { title: 'Empresas', route: '/company', icon: <BusinessIcon /> },
+  { title: 'Especialidade', route: '/specialty', icon: <FolderSpecialIcon /> },
+  { title: 'Conselhos', route: '/council', icon: <GavelIcon /> },
+  { title: 'Área', route: '/area', icon: <ExtensionIcon /> },
+  { title: 'Usuários', route: '/user', icon: <PersonIcon /> },
+  { title: 'Pacientes', route: '/patient', icon: <GroupAddIcon /> },
+]
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -91,6 +114,7 @@ const useStyles = makeStyles((theme: Theme) =>
   })
 );
 
+
 export default function Sibebar(props: Props<any>) {
   const classes = useStyles();
   const theme = useTheme();
@@ -135,7 +159,15 @@ export default function Sibebar(props: Props<any>) {
         </div>
         <Divider />
         <List disablePadding={true}>
-          <AccordionMenu
+          {itemsMenu.map((item, index) => (
+            <ListItem key={index} component="a" button href={item.route}>
+              <ListItemIcon>
+                {item.icon}
+              </ListItemIcon>
+              <ListItemText primary={item.title} />
+            </ListItem>
+          ))}
+          {/* <AccordionMenu
             ref={AccordionRef}
             // onClick={openDropDownAndMenu}
             // {...(!open ? { expanded: true } : {})}
@@ -154,7 +186,7 @@ export default function Sibebar(props: Props<any>) {
                 sit amet blandit leo lobortis eget.
               </Typography>
             </AccordionDetails>
-          </AccordionMenu>
+          </AccordionMenu> */}
         </List>
         <Divider />
         {/* <List>

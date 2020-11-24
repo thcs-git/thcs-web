@@ -34,7 +34,7 @@ const Routes = () => (
     <Switch>
       <GuestRoute path="/login" component={Login} />
 
-      <PrivateRoute path="/" component={Dashboard} />
+      <PrivateRoute path="/" component={Dashboard} exact />
 
       {/* Clientes */}
       <PrivateRoute path="/customer" component={CustomerList} exact />
@@ -47,9 +47,9 @@ const Routes = () => (
       <PrivateRoute path="/company/create" component={CompanyForm} />
 
       {/* Especialidades */}
-      <PrivateRoute path="/especialty" component={EspecialtyList} exact />
-      <PrivateRoute path="/especialty/:id/edit" component={EspecialtyForm} />
-      <PrivateRoute path="/especialty/create" component={EspecialtyForm} />
+      <PrivateRoute path="/specialty" component={EspecialtyList} exact />
+      <PrivateRoute path="/specialty/:id/edit" component={EspecialtyForm} />
+      <PrivateRoute path="/specialty/create" component={EspecialtyForm} />
 
       {/* Conselhos */}
       <PrivateRoute path="/council" component={CouncilList} exact />
