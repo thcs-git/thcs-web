@@ -5,6 +5,9 @@ export enum CompanyTypes {
   LOAD_REQUEST = "@customer/LOAD_REQUEST",
   LOAD_SUCCCES = "@customer/LOAD_SUCCCES",
   LOAD_FAILURE = "@customer/LOAD_FAILURE",
+  LOAD_REQUEST_ADDRESS = "@customer/LOAD_REQUEST_ADDRESS",
+  LOAD_RESPONSE_ADDRESS = "@customer/LOAD_RESPONSE_ADDRESS",
+  CREATE_COMPANY_REQUEST = "@customer/CREATE_COMPANY_REQUEST",
 }
 
 /**
@@ -13,7 +16,7 @@ export enum CompanyTypes {
 
 export interface CompanyInterface {
   id?: string;
-  companyId: string;
+  customerId: string;
 	socialName: string;
 	fantasyName: string;
 	fiscalNumber: string;
@@ -26,6 +29,16 @@ export interface CompanyInterface {
 	email: string;
 	phone: string;
 	cellphone: string;
+}
+
+export interface ViacepDataInterface {
+  cep: string,
+  logradouro: string,
+  complemento: string,
+  bairro: string,
+  localidade: string,
+  uf: string,
+  erro?: boolean,
 }
 
 

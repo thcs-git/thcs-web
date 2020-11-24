@@ -1,6 +1,7 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { loadRequest } from '../../../store/ducks/customers/actions';
+import { loadRequest,  getAddress as getAddressAction, createCompanyRequest } from '../../../store/ducks/companies/actions';
+import { CompanyInterface } from '../../../store/ducks/companies/types';
 import { ApplicationState } from '../../../store';
 
 import { useHistory, RouteComponentProps } from 'react-router-dom';
@@ -34,23 +35,6 @@ import {
   FormGroupSection
 } from './styles';
 
-interface IFormFields {
-  id?: string;
-  customerId: string;
-  socialName?: string;
-  fantasyName?: string;
-  fiscalNumber?: string;
-  postalCode?: string;
-  city?: string;
-  neighborhood?: string;
-  address?: string;
-  addressNumber?: string;
-  addressComplement?: string;
-  email?: string;
-  phone?: string;
-  cellphone?: string;
-}
-
 interface IPageParams {
   id?: string;
 }
@@ -58,13 +42,13 @@ interface IPageParams {
 export default function CompanyForm(props: RouteComponentProps<IPageParams>) {
   const history = useHistory();
   const dispatch = useDispatch();
-  const companyState = useSelector((state: ApplicationState) => state.companies).data;
+  const companyState = useSelector((state: ApplicationState) => state.companies);
   const customers = [
     { id: 1, name: 'customer 1' },
     { id: 2, name: 'customer 2' },
   ]
 
-  const [state, setState] = useState<IFormFields>({
+  const [state, setState] = useState<CompanyInterface>({
     id: props.match.params.id || '',
     customerId: '',
     socialName: '',
@@ -85,12 +69,39 @@ export default function CompanyForm(props: RouteComponentProps<IPageParams>) {
 
   useEffect(() => {
     dispatch(loadRequest());
-    setState({ ...state, ...companyState })
   }, [dispatch]);
 
-  function handleSaveFormCustomer() {
-    console.log(state);
-  }
+  useEffect(() => {
+    if (companyState.error) {
+      setState(prevState => {
+        return {
+          ...prevState,
+          address: "",
+          addressComplement: "",
+          city: "",
+          neighborhood: "",
+        }
+      })
+
+      return;
+    }
+
+    setState(prevState => {
+      const { address, addressComplement, city, neighborhood } = companyState.data;
+
+      return {
+        ...prevState,
+        address,
+        addressComplement,
+        city,
+        neighborhood,
+      }
+    })
+  }, [companyState]);
+
+  const handleSaveFormCustomer = useCallback(() => {
+    dispatch(createCompanyRequest(state));
+  }, [state]);
 
   function handleOpenModalCancel() {
     setOpenModalCancel(true);
@@ -105,9 +116,13 @@ export default function CompanyForm(props: RouteComponentProps<IPageParams>) {
     history.back();
   }
 
+  const getAddress = useCallback(() => {
+    dispatch(getAddressAction(state.postalCode));
+  }, [state.postalCode]);
+
   return (
     <Sidebar>
-      {console.log('companyState', companyState)}
+      {/* {console.log('companyState', companyState)} */}
       <FormSection>
         <FormContent>
           <FormTitle>Cadastro de Empresas</FormTitle>
@@ -162,7 +177,7 @@ export default function CompanyForm(props: RouteComponentProps<IPageParams>) {
                 />
               </Grid>
 
-              <Grid item md={2} xs={12}>
+              <Grid item md={3} xs={12}>
                 <TextField
                   id="input-fiscal-number"
                   label="CNPJ"
@@ -182,7 +197,7 @@ export default function CompanyForm(props: RouteComponentProps<IPageParams>) {
           {/*  */}
           <FormGroupSection>
             <Grid container>
-              <Grid item md={2} xs={12}>
+              <Grid item md={3} xs={12}>
                 <FormControl variant="outlined" size="small" fullWidth>
                   <InputLabel htmlFor="search-input">CEP</InputLabel>
                   <OutlinedInputFiled
@@ -191,6 +206,7 @@ export default function CompanyForm(props: RouteComponentProps<IPageParams>) {
                     placeholder="00000-000"
                     value={state.postalCode}
                     onChange={(element) => setState({ ...state, postalCode: element.target.value })}
+                    onBlur={getAddress}
                     endAdornment={
                       <InputAdornment position="end">
                         <SearchOutlined style={{ color: 'var(--primary)' }} />
@@ -304,10 +320,10 @@ export default function CompanyForm(props: RouteComponentProps<IPageParams>) {
           </Grid>
         </FormContent>
         <ButtonsContent>
-          <ButtonDefeault variant="outlined" color="default" onClick={() => handleOpenModalCancel()}>
+          <ButtonDefeault variant="outlined" color="default" onClick={handleOpenModalCancel}>
             Cancelar
 					</ButtonDefeault>
-          <ButtonPrimary variant="contained" color="primary" onClick={() => handleSaveFormCustomer()}>
+          <ButtonPrimary variant="contained" color="primary" onClick={handleSaveFormCustomer}>
             Salvar
 					</ButtonPrimary>
         </ButtonsContent>

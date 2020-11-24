@@ -4,7 +4,7 @@ import { CompanyState, CompanyTypes } from './types';
 export const INITIAL_STATE: CompanyState = {
   data: {
     id: '',
-    companyId: '',
+    customerId: '',
     socialName: '',
     fantasyName: '',
     fiscalNumber: '',
@@ -35,6 +35,20 @@ const reducer: Reducer<CompanyState> = (state = INITIAL_STATE, action) => {
     case CompanyTypes.LOAD_FAILURE:
       return {
       ...state, loading: false, error: true
+      };
+    case CompanyTypes.LOAD_RESPONSE_ADDRESS:
+      return {
+      ...state,
+      loading: false,
+      error: false,
+      data: {
+        ...state.data,
+        postalCode: action.payload.data.cep,
+        city: action.payload.data.localidade,
+        neighborhood: action.payload.data.bairro,
+        address: action.payload.data.logradouro,
+        addressComplement: action.payload.data.complemento,
+      }
       };
     default:
       return state;

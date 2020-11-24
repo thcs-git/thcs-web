@@ -1,7 +1,6 @@
 import axios from 'axios';
 
-const api = axios.create({
+export const viacep = axios.create({
   baseURL: 'http://viacep.com.br/ws/',
 });
 
-export default api;
