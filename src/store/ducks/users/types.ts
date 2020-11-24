@@ -17,7 +17,7 @@ export enum UserTypes {
  * Data types
  */
 
-export interface EspecialtiesUserInterface {
+export interface SpecialtiesUserInterface {
   id: string;
   description: string;
 };
@@ -26,11 +26,11 @@ export interface UserInterface {
   _id?: string;
   companies: [string] | [];
 	name: string;
-  birthdayDate: string;
+  birthday: string;
   gender: string;
-  rg: string;
+  national_id: string;
   issuing_organ: string;
-  cpf: string;
+  fiscal_number: string;
   mother_name: string;
   nationality: string;
 	address: {
@@ -45,10 +45,10 @@ export interface UserInterface {
 	email: string;
 	phone: string;
   cellphone: string;
-  userType: string;
-  especialties: (EspecialtiesUserInterface | {})[];
-  council: string;
-  councilNumber: string;
+  user_type_id: string;
+  specialties: (SpecialtiesUserInterface | {})[];
+  council_id: string;
+  council_number: string;
   username?: string;
   password?: string;
   active: boolean;

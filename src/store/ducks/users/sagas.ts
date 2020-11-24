@@ -47,12 +47,11 @@ export function* createUser({payload: { data }}: any) {
       telegram: false,
       number: data.cellphone
     });
-
-    delete data.cellphone;
   }
 
   data.username = data.email;
   data.password = data.cpf;
+  data.phones = phones;
 
   try {
     const response:AxiosResponse = yield call(backend.post, `/user/store`, data, { headers: { token } })
@@ -65,11 +64,27 @@ export function* createUser({payload: { data }}: any) {
 export function* updateUser({ payload: { data } }: any) {
   const { _id } = data;
 
-  console.log('update', data);
+  const phones = [];
 
-  delete data._id;
+  if (data.phone.length > 0) {
+    phones.push({
+      whatsapp: false,
+      telegram: false,
+      number: data.phone
+    });
+  }
 
-  const response:AxiosResponse = yield call(backend.put, `/user/${_id}/update`, { data }, { headers: { token } })
+  if (data.cellphone.length > 0) {
+    phones.push({
+      whatsapp: false,
+      telegram: false,
+      number: data.cellphone
+    });
+  }
+
+  data.phones = phones;
+
+  const response:AxiosResponse = yield call(backend.put, `/user/${_id}/update`, { ...data }, { headers: { token } })
 
   console.log('update response', response);
 

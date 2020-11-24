@@ -2,7 +2,7 @@ import React, { useState, useEffect, useCallback } from 'react';
 
 import { useDispatch, useSelector } from 'react-redux';
 import { loadRequest, createUserRequest, updateUserRequest, getAddress as getAddressAction, loadUserById } from '../../../store/ducks/users/actions';
-import { UserInterface, EspecialtiesUserInterface } from '../../../store/ducks/users/types';
+import { UserInterface, SpecialtiesUserInterface } from '../../../store/ducks/users/types';
 import { ApplicationState } from '../../../store';
 
 import { useHistory, RouteComponentProps } from 'react-router-dom';
@@ -70,11 +70,11 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
     _id: '',
     companies: ['5ee65a9b1a550217e4a8c0f4'], //empresa que vai vir do login
     name: '',
-    birthdayDate: '',
+    birthday: '',
     gender: '',
-    rg: '',
+    national_id: '',
     issuing_organ: '',
-    cpf: '',
+    fiscal_number: '',
     mother_name: '',
     nationality: '',
     address: {
@@ -89,10 +89,10 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
     email: '',
     phone: '',
     cellphone: '',
-    userType: '',
-    especialties: [],
-    council: '',
-    councilNumber: '',
+    user_type_id: '',
+    specialties: [],
+    council_id: '',
+    council_number: '',
     active: true,
   });
 
@@ -101,7 +101,7 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
     council: null,
   });
 
-  const especialties = [
+  const specialties = [
     { id: '1', description: 'especialty 1' },
     { id: '2', description: 'especialty 2' },
   ];
@@ -169,7 +169,7 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
       ...prevState,
       userType: newValue,
     }));
-  }, [state.userType]);
+  }, [state.user_type_id]);
 
   const handleCouncil = useCallback((event: any, newValue: any) => {
     console.log('handleCouncil', newValue)
@@ -178,7 +178,7 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
       ...prevState,
       council: newValue,
     }));
-  }, [state.council]);
+  }, [state.council_id]);
 
   const getAddress = useCallback(() => {
     dispatch(getAddressAction(state.address.postal_code));
@@ -206,26 +206,26 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
   }
 
   // Especialides
-  function handleSelectEspecialty(value: EspecialtiesUserInterface) {
+  function handleSelectEspecialty(value: SpecialtiesUserInterface) {
     setState(prevState => ({
       ...prevState,
-      especialties: [...prevState.especialties, value]
+      specialties: [...prevState.specialties, value]
     }));
   }
 
-  function handleDeleteEspecialty(especialty: EspecialtiesUserInterface) {
-    let especialtiesSelected = [...state.especialties];
-    const especialtyFounded = especialtiesSelected.findIndex((item: any) => {
+  function handleDeleteEspecialty(especialty: SpecialtiesUserInterface) {
+    let specialtiesSelected = [...state.specialties];
+    const especialtyFounded = specialtiesSelected.findIndex((item: any) => {
       return especialty.id === item.id
     });
 
     if (especialtyFounded > -1) {
-      especialtiesSelected.splice(especialtyFounded, 1);
+      specialtiesSelected.splice(especialtyFounded, 1);
     };
 
     setState(prevState => ({
       ...prevState,
-      especialties: especialtiesSelected
+      specialties: specialtiesSelected
     }))
   }
 
@@ -265,8 +265,8 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
                         <DatePicker
                           id="input-fiscal-birthdate"
                           label="Data de Nascimento"
-                          value={state.birthdayDate}
-                          onChange={(element) => setState({ ...state, birthdayDate: element.target.value })}
+                          value={state.birthday}
+                          onChange={(element) => setState({ ...state, birthday: element.target.value })}
                           fullWidth
                         />
                       </Grid>
@@ -282,7 +282,7 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
                             labelWidth={40}
                           >
                             <MenuItem value="">
-                              <em>None</em>
+                              <em>&nbsp;</em>
                             </MenuItem>
                             {genders.map(gender => <MenuItem key={`gender_${gender}`} value={gender}>{gender}</MenuItem>)}
                           </Select>
@@ -307,8 +307,8 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
                           label="CPF"
                           variant="outlined"
                           size="small"
-                          value={state.cpf}
-                          onChange={(element) => setState({ ...state, cpf: element.target.value })}
+                          value={state.fiscal_number}
+                          onChange={(element) => setState({ ...state, fiscal_number: element.target.value })}
                           placeholder="000.000.000-00"
                           fullWidth
                         />
@@ -319,8 +319,8 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
                           label="RG"
                           variant="outlined"
                           size="small"
-                          value={state.rg}
-                          onChange={(element) => setState({ ...state, rg: element.target.value })}
+                          value={state.national_id}
+                          onChange={(element) => setState({ ...state, national_id: element.target.value })}
                           placeholder="0.000-000"
                           fullWidth
                         />
@@ -529,8 +529,8 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
                         label="Número do Conselho"
                         variant="outlined"
                         size="small"
-                        value={state.councilNumber}
-                        onChange={(element) => setState({ ...state, councilNumber: element.target.value })}
+                        value={state.council_number}
+                        onChange={(element) => setState({ ...state, council_number: element.target.value })}
                         placeholder="00000-0000"
                         fullWidth
                       />
@@ -554,7 +554,7 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
                       <FormGroupSection>
                         <Autocomplete
                           id="combo-box-especialty"
-                          options={especialties}
+                          options={specialties}
                           getOptionLabel={(option) => option.description}
                           renderInput={(params) => <TextField {...params} label="Especialidade" variant="outlined" />}
                           size="small"
@@ -568,7 +568,7 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
                       </FormGroupSection>
                     </Grid>
                     <Grid item md={12} xs={12}>
-                      {state.especialties.map((item: any, index) => (
+                      {state.specialties.map((item: any, index) => (
                         <div key={`especialty_selected_${index}`}>
                           <Chip
                             label={item.description}
@@ -585,10 +585,10 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
           <ButtonsContent>
             <ButtonComponent background="default" onClick={handleOpenModalCancel}>
               Cancelar
-					</ButtonComponent>
+            </ButtonComponent>
             <ButtonComponent background="primary" onClick={handleSaveFormUser}>
               Salvar
-					</ButtonComponent>
+            </ButtonComponent>
           </ButtonsContent>
         </FormSection>
       </Container>
