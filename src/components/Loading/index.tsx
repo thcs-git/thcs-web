@@ -3,8 +3,6 @@ import { createPortal } from 'react-dom';
 import { makeStyles, createStyles, Theme } from '@material-ui/core/styles';
 import CircularProgress, { CircularProgressProps } from '@material-ui/core/CircularProgress';
 
-import { Container } from './styles';
-
 const useStylesFacebook = makeStyles((theme: Theme) =>
   createStyles({
     bottom: {

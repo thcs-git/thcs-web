@@ -1,5 +1,5 @@
 import React from 'react';
-import { Route, BrowserRouter, Switch } from 'react-router-dom';
+import { BrowserRouter, Switch } from 'react-router-dom';
 
 import GuestRoute from './guest';
 import PrivateRoute from './private';
@@ -37,37 +37,37 @@ const Routes = () => (
       <PrivateRoute path="/" component={Dashboard} />
 
       {/* Clientes */}
-      <Route path="/customer" component={CustomerList} exact />
-      <Route path="/customer/:id/edit" component={CustomerForm} />
-      <Route path="/customer/create" component={CustomerForm} />
+      <PrivateRoute path="/customer" component={CustomerList} exact />
+      <PrivateRoute path="/customer/:id/edit" component={CustomerForm} />
+      <PrivateRoute path="/customer/create" component={CustomerForm} />
 
       {/* Empresas */}
-      <Route path="/company" component={CompanyList} exact />
-      <Route path="/company/:id/edit" component={CompanyForm} />
-      <Route path="/company/create" component={CompanyForm} />
+      <PrivateRoute path="/company" component={CompanyList} exact />
+      <PrivateRoute path="/company/:id/edit" component={CompanyForm} />
+      <PrivateRoute path="/company/create" component={CompanyForm} />
 
       {/* Especialidades */}
-      <Route path="/especialty" component={EspecialtyList} exact />
-      <Route path="/especialty/:id/edit" component={EspecialtyForm} />
-      <Route path="/especialty/create" component={EspecialtyForm} />
+      <PrivateRoute path="/especialty" component={EspecialtyList} exact />
+      <PrivateRoute path="/especialty/:id/edit" component={EspecialtyForm} />
+      <PrivateRoute path="/especialty/create" component={EspecialtyForm} />
 
       {/* Conselhos */}
-      <Route path="/council" component={CouncilList} exact />
-      <Route path="/council/:id/edit" component={CouncilForm} />
-      <Route path="/council/create" component={CouncilForm} />
+      <PrivateRoute path="/council" component={CouncilList} exact />
+      <PrivateRoute path="/council/:id/edit" component={CouncilForm} />
+      <PrivateRoute path="/council/create" component={CouncilForm} />
 
       {/* Areas */}
-      <Route path="/area" component={AreaList} exact />
-      <Route path="/area/:id/edit" component={AreaForm} />
-      <Route path="/area/create" component={AreaForm} />
+      <PrivateRoute path="/area" component={AreaList} exact />
+      <PrivateRoute path="/area/:id/edit" component={AreaForm} />
+      <PrivateRoute path="/area/create" component={AreaForm} />
 
       {/* Usuário */}
-      <Route path="/user" component={UserList} exact />
-      <Route path="/user/:id/edit" component={UserForm} />
-      <Route path="/user/create" component={UserForm} />
+      <PrivateRoute path="/user" component={UserList} exact />
+      <PrivateRoute path="/user/:id/edit" component={UserForm} />
+      <PrivateRoute path="/user/create" component={UserForm} />
 
       {/* Patient */}
-      <Route path="/patient" component={PatientList} exact />
+      <PrivateRoute path="/patient" component={PatientList} exact />
       {/* <Route path="/patient/:id/edit" component={PatientForm} />
       <Route path="/patient/create" component={PatientForm} /> */}
     </Switch>

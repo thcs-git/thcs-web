@@ -146,7 +146,7 @@ export default function Sibebar(props: Props<any>) {
               aria-controls="panel1a-content"
               id="panel1a-header"
             >
-              <Typography><SupervisorAccountIcon />{open && 'Administrador'}</Typography>
+              <Typography display="block"><SupervisorAccountIcon />{open && 'Administrador'}</Typography>
             </AccordionSummary>
             <AccordionDetails>
               <Typography>
