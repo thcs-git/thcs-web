@@ -39,7 +39,7 @@ export const INITIAL_STATE: UserState = {
 const reducer: Reducer<UserState> = (state = INITIAL_STATE, action) => {
   switch (action.type) {
     case UserTypes.LOAD_REQUEST:
-      return { ...state, loading: true };
+      return { ...state, loading: true, success: false, };
     case UserTypes.LOAD_SUCCCES:
       return {
         ...state,
@@ -48,21 +48,41 @@ const reducer: Reducer<UserState> = (state = INITIAL_STATE, action) => {
         success: false,
         error: false
       };
+    case UserTypes.LOAD_REQUEST_USER_BY_ID:
+      return {
+        ...state, error: false, loading: true, success: false
+      }
     case UserTypes.LOAD_SUCCCES_USER_BY_ID:
       return {
         ...state,
         data: action.payload.data,
         loading: false,
         error: false,
-        success: true,
+        success: false,
+      }
+    case UserTypes.UPDATE_USER_REQUEST:
+      return {
+        ...state,
+        data: action.payload.data,
+        loading: true,
+        error: false,
+        success: true
+      }
+    case UserTypes.UPDATE_USER_SUCCESS:
+      return {
+        ...state,
+        data: action.payload.data,
+        loading: false,
+        error: false,
+        success: true
       }
     case UserTypes.LOAD_FAILURE:
       return {
-        ...state, loading: false, error: true
+        ...state, loading: false, error: true, success: false,
       };
     case UserTypes.CREATE_USER_REQUEST:
       return {
-        ...state, loading: false, error: false
+        ...state, loading: true, error: false, success: false,
       };
     case UserTypes.CREATE_USER_SUCCESS:
       return {
@@ -89,6 +109,7 @@ const reducer: Reducer<UserState> = (state = INITIAL_STATE, action) => {
         },
         loading: false,
         error: false,
+        success: false,
       };
     default:
       return state;

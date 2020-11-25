@@ -4,7 +4,7 @@ import { AxiosResponse } from 'axios';
 
 import { apiSollar, viacep } from '../../../services/axios';
 
-import { loadSuccess, loadFailure, successGetAddress, createUserSuccess, loadSuccessGetUserById } from './actions';
+import { loadSuccess, loadFailure, successGetAddress, createUserSuccess, loadSuccessGetUserById, updateUserSuccess } from './actions';
 import { UserInterface, ViacepDataInterface } from './types';
 
 const token = localStorage.getItem('token');
@@ -93,8 +93,9 @@ export function* updateUser({ payload: { data } }: any) {
     const response: AxiosResponse = yield call(apiSollar.put, `/user/${_id}/update`, { ...data }, { headers: { token } })
 
     toast.success('Usuário atualizado com sucesso!');
-    yield put(loadSuccessGetUserById(response.data[0]))
+    yield put(updateUserSuccess(response.data[0]))
   } catch (error) {
+    toast.error("Não foi possível atualizar os dados do usuario");
     yield put(loadFailure());
   }
 }

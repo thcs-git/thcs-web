@@ -15,6 +15,7 @@ export const createUserRequest = (data: UserInterface) => action(UserTypes.CREAT
 export const createUserSuccess = (data: UserInterface) => action(UserTypes.CREATE_USER_SUCCESS, { data });
 
 export const updateUserRequest = (data: UserInterface) => action(UserTypes.UPDATE_USER_REQUEST, { data });
+export const updateUserSuccess = (data: UserInterface) => action(UserTypes.UPDATE_USER_SUCCESS, { data });
 
 export const loadUserById = (id: string) => action(UserTypes.LOAD_REQUEST_USER_BY_ID, { id });
 

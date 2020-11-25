@@ -5,6 +5,8 @@ import { Container, FormControl, InputLabel, OutlinedInput, InputAdornment, Icon
 import { SearchOutlined } from '@material-ui/icons';
 import { UserInterface } from '../../../store/ducks/users/types';
 
+import Loading from '../../../components/Loading';
+
 import { ApplicationState } from '../../../store';
 import { loadRequest } from '../../../store/ducks/users/actions';
 
@@ -52,6 +54,7 @@ export default function UserList() {
 
   return (
     <>
+      {userState.loading && <Loading />}
       <Sidebar>
         <Container>
           <FormTitle>Lista de Usuários</FormTitle>

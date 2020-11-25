@@ -5,6 +5,8 @@ import { loadRequest, createUserRequest, updateUserRequest, getAddress as getAdd
 import { UserInterface, SpecialtiesUserInterface } from '../../../store/ducks/users/types';
 import { ApplicationState } from '../../../store';
 
+import Loading from '../../../components/Loading';
+
 import { useHistory, RouteComponentProps } from 'react-router-dom';
 import {
   Button,
@@ -142,8 +144,6 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
       return;
     }
 
-    console.log('prevState', userState.data)
-
     setState(prevState => {
       // const { address } = userState.data;
 
@@ -159,8 +159,6 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
   }, [currentTab]);
 
   const handleUserType = useCallback((event: any, newValue: any) => {
-    console.log('handleUserType', newValue)
-    console.log('handleUserType', event.target.value)
     setForm(prevState => ({
       ...prevState,
       userType: newValue,
@@ -168,8 +166,6 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
   }, [state.user_type_id]);
 
   const handleCouncil = useCallback((event: any, newValue: any) => {
-    console.log('handleCouncil', newValue)
-    console.log('handleCouncil', event.target.value)
     setForm(prevState => ({
       ...prevState,
       council: newValue,
@@ -227,6 +223,7 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
 
   return (
     <Sidebar>
+      {userState.loading && <Loading />}
       <Container>
         <FormSection>
           <FormContent>
