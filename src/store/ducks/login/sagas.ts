@@ -1,4 +1,5 @@
 import { put, call } from 'redux-saga/effects';
+import { toast } from 'react-toastify';
 
 import { apiSollar } from '../../../services/axios';
 import history from '../../../routes/history';
@@ -21,8 +22,9 @@ export function* doLogin({ payload }: any) {
     location.reload();
 
   } catch (err) {
-    console.log(err);
-    yield put(loadFailure());
+    yield put(loadFailure()); console.log('passoiu');
+
+    toast.error("E-mail e/ou senha errada.");
   }
 
 

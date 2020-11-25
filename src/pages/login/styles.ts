@@ -1,14 +1,7 @@
 import styled from 'styled-components';
 import Container from '@material-ui/core/Container';
 import Typography from '@material-ui/core/Typography';
-import  { ReactComponent as HomeIcon } from '../../assets/img/marca-sollar-home.svg';
-
-export const ContainerLogin = styled(Container)`
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  height: 100%;
-`;
+import  { ReactComponent as HomeIcon } from '../../assets/img/marca-sollar-azul.svg';
 
 export const WelcomeTextWrapper = styled.div`
   width: 100%;

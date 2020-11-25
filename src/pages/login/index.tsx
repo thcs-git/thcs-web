@@ -3,6 +3,8 @@ import { useDispatch, useSelector } from 'react-redux';
 import { loadRequest } from '../../store/ducks/login/actions';
 import { ApplicationState } from '../../store';
 
+import Container from '@material-ui/core/Container';
+import Button from '@material-ui/core/Button';
 import Box from '@material-ui/core/Box';
 import Grid from '@material-ui/core/Grid';
 import Link from '@material-ui/core/Link';
@@ -23,8 +25,9 @@ import VisibilityOff from '@material-ui/icons/VisibilityOff';
 
 import { makeStyles } from '@material-ui/core/styles';
 
-import { ContainerLogin, WelcomeTextWrapper, HomeIconLogo, LogoText, TextGray } from './styles';
-import Button from '../../styles/components/Button';
+import { WelcomeTextWrapper, HomeIconLogo, LogoText, TextGray } from './styles';
+
+// import Button from '../../styles/components/Button';
 import Alert from '../../components/Alert';
 import Loading from '../../components/Loading';
 
@@ -43,8 +46,13 @@ function Copyright() {
 }
 
 const useStyles = makeStyles((theme) => ({
+  container: {
+    display: 'flex',
+    flexDirection: 'column',
+    justifyContent: 'center',
+    height: '100%'
+  },
   paper: {
-    marginTop: theme.spacing(8),
     display: 'flex',
     flexDirection: 'column',
     alignItems: 'center',
@@ -59,6 +67,13 @@ const useStyles = makeStyles((theme) => ({
   },
   submit: {
     margin: theme.spacing(3, 0, 2),
+    padding: '10px',
+    textTransform: 'capitalize',
+    fontSize: '18px',
+    backgroundColor: 'var(--success)',
+    '&:hover': {
+      backgroundColor: 'var(--success-hover)'
+    }
   },
 }));
 
@@ -106,15 +121,13 @@ export default function SignIn() {
   return (
     <>
       {loginState.loading && <Loading />}
-      <ContainerLogin maxWidth="xs">
+      <Container className={classes.container} maxWidth="xs">
         <CssBaseline />
         <div className={classes.paper}>
           <Box display="flex" justifyContent="center" alignItems="center">
             <HomeIconLogo />
 
-            <LogoText variant="h5">
-              Portal Sollar
-          </LogoText>
+            <LogoText />
           </Box>
 
           <WelcomeTextWrapper>
@@ -171,7 +184,6 @@ export default function SignIn() {
               label="Lembrar de mim neste computador"
             />
             <Button
-              background="success"
               type="submit"
               fullWidth
               variant="contained"
@@ -197,8 +209,8 @@ export default function SignIn() {
         <Box mt={8}>
           <Copyright />
         </Box>
-      </ContainerLogin>
-      <Snackbar
+      </Container>
+      {/* <Snackbar
         autoHideDuration={2000}
         anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
         open={loginState.error}
@@ -207,7 +219,7 @@ export default function SignIn() {
         <Alert severity="error">
           E-mail e/ou senha inválida
         </Alert>
-      </Snackbar>
+      </Snackbar> */}
     </>
   );
 }
