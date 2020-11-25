@@ -8,9 +8,11 @@ export enum UserTypes {
   CREATE_USER_REQUEST = "@user/CREATE_USER_REQUEST",
   CREATE_USER_SUCCESS = "@user/CREATE_USER_SUCCESS",
   UPDATE_USER_REQUEST = "@user/UPDATE_USER_REQUEST",
-  LOAD_REQUEST_USER_BY_ID = "@user/LOAD_REQUEST_USER_BY_ID",
   LOAD_REQUEST_ADDRESS = "@user/LOAD_REQUEST_ADDRESS",
   LOAD_RESPONSE_ADDRESS = "@user/LOAD_RESPONSE_ADDRESS",
+
+  LOAD_REQUEST_USER_BY_ID = "@user/LOAD_REQUEST_USER_BY_ID",
+  LOAD_SUCCCES_USER_BY_ID = "@user/LOAD_SUCCCES_USER_BY_ID",
 }
 
 /**
@@ -22,10 +24,17 @@ export interface SpecialtiesUserInterface {
   description: string;
 };
 
+export interface UserList {
+  _id: string;
+  name: string;
+  email: string;
+  active: boolean;
+}
+
 export interface UserInterface {
   _id?: string;
   companies: [string] | [];
-	name: string;
+	name: string; // name
   birthday: string;
   gender: string;
   national_id: string;
@@ -42,7 +51,7 @@ export interface UserInterface {
     state: string;
     complement: string;
   };
-	email: string;
+	email: string; // email
 	phone: string;
   cellphone: string;
   user_type_id: string;
@@ -51,7 +60,7 @@ export interface UserInterface {
   council_number: string;
   username?: string;
   password?: string;
-  active: boolean;
+  active: boolean; // active
 }
 
 export interface ViacepDataInterface {
@@ -70,6 +79,7 @@ export interface ViacepDataInterface {
  */
 export interface UserState {
   data: UserInterface;
+  list: UserList[];
   loading: boolean;
   error: boolean;
   success: boolean;

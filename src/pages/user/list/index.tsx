@@ -1,10 +1,12 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import { Container, FormControl, InputLabel, OutlinedInput, InputAdornment, IconButton } from '@material-ui/core';
 import { SearchOutlined } from '@material-ui/icons';
 import { UserInterface } from '../../../store/ducks/users/types';
 
-// import { backend } from '../../../services/axios';
+import { ApplicationState } from '../../../store';
+import { loadRequest } from '../../../store/ducks/users/actions';
 
 import Sidebar from '../../../components/Sidebar';
 
@@ -25,7 +27,9 @@ import {
 const token = window.localStorage.getItem('token');
 
 export default function UserList() {
+  const dispatch = useDispatch();
   const history = useHistory();
+  const userState = useSelector((state: ApplicationState) => state.users);
 
   const [search, setSearch] = useState('');
 
@@ -34,7 +38,7 @@ export default function UserList() {
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
 
   useEffect(() => {
-    handleUsers();
+    dispatch(loadRequest());
   }, [])
 
   const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
@@ -45,13 +49,6 @@ export default function UserList() {
     setAnchorEl(null);
   };
 
-  const handleUsers = async () => {
-    // const response = await backend.get('/user', { headers: { token } });
-
-    // console.log(response);
-
-    // setUsers(response.data);
-  };
 
   return (
     <>
@@ -79,7 +76,7 @@ export default function UserList() {
           </FormSearch>
 
           <List>
-            {users.map((user, index) => (
+            {userState.list.map((user, index) => (
               <ListLink key={index} to={`/user/${user._id}/edit`}>
                 <ListItem variant="outlined">
                   <ListItemContent>

@@ -19,7 +19,7 @@ import { CouncilTypes } from './councils/types';
 import { get as getCouncil } from './councils/sagas';
 
 import { UserTypes } from './users/types';
-import { createUser, getAddress as getAddressUser, getUserById, updateUser } from './users/sagas';
+import { createUser, getAddress as getAddressUser, getUserById, updateUser, get as getUsers } from './users/sagas';
 
 export default function* rootSaga() {
   return yield all([
@@ -31,6 +31,9 @@ export default function* rootSaga() {
     takeLatest(LoginTypes.LOAD_REQUEST, doLogin),
     takeLatest(CompanyTypes.CREATE_COMPANY_REQUEST, createCompany),
     takeLatest(CompanyTypes.LOAD_REQUEST_ADDRESS, getAddress),
+
+    // Users
+    takeLatest(UserTypes.LOAD_REQUEST, getUsers),
     takeLatest(UserTypes.CREATE_USER_REQUEST, createUser),
     takeLatest(UserTypes.LOAD_REQUEST_ADDRESS, getAddressUser),
     takeLatest(UserTypes.LOAD_REQUEST_USER_BY_ID, getUserById),

@@ -30,6 +30,7 @@ export const INITIAL_STATE: UserState = {
     council_number: '',
     active: true,
   },
+  list: [],
   success: false,
   error: false,
   loading: false,
@@ -42,10 +43,18 @@ const reducer: Reducer<UserState> = (state = INITIAL_STATE, action) => {
     case UserTypes.LOAD_SUCCCES:
       return {
         ...state,
-        data: action.payload,
+        list: action.payload.data,
         loading: false,
         success: false,
+        error: false
       };
+    case UserTypes.LOAD_SUCCCES_USER_BY_ID:
+      return {
+        ...state,
+        data: action.payload.data,
+        loading: false,
+        error: false
+      }
     case UserTypes.LOAD_FAILURE:
       return {
         ...state, loading: false, error: true

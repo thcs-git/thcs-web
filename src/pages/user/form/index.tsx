@@ -116,11 +116,15 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
     if (params.id) {
       getUserDataById(params.id);
     }
-  }, [])
+  }, []);
 
-  useEffect(() => {
-    dispatch(loadRequest());
+  const getUserDataById = useCallback((id: string) => {
+    dispatch(loadUserById(id))
   }, [dispatch]);
+
+  // useEffect(() => {
+  //   dispatch(loadRequest());
+  // }, [dispatch]);
 
   useEffect(() => {
     if (userState.error) {
@@ -153,10 +157,6 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
       }
     })
   }, [userState]);
-
-  const getUserDataById = useCallback((id: string) => {
-    dispatch(loadUserById(id))
-  }, [dispatch]);
 
   const selectTab = useCallback((index: number) => {
     setCurrentTab(index);
