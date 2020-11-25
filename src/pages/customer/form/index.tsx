@@ -96,7 +96,7 @@ export default function CustomerForm(props: RouteComponentProps<IPageParams>) {
 
   function handleCancelForm() {
     setOpenModalCancel(false);
-    history.back();
+    history.push('/customer');
   }
 
   return (

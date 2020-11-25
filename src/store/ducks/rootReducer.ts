@@ -9,7 +9,7 @@ import login from './login';
 import customers from './customers';
 import companies from './companies';
 import councils from './councils';
-import especialties from './especialties';
+import specialties from './specialties';
 import users from './users';
 
 export default combineReducers<IInitialState>({
@@ -17,7 +17,7 @@ export default combineReducers<IInitialState>({
   login,
   customers,
   companies,
-  especialties,
+  specialties,
   councils,
   users,
 });

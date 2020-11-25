@@ -44,8 +44,9 @@ export default function EspecialtyForm(props: RouteComponentProps<IPageParams>) 
   const councilState = useSelector((state: ApplicationState) => state.councils).data;
 
   const [state, setState] = useState<IFormFields>({
-    id: props.match.params.id || '',
-    description: '',
+    _id: props.match.params.id || '',
+    name: '',
+    describe: '',
     initials: '',
     active: true
   });
@@ -71,7 +72,7 @@ export default function EspecialtyForm(props: RouteComponentProps<IPageParams>) 
 
   function handleCancelForm() {
     setOpenModalCancel(false);
-    // history.back();
+    history.back();
   }
 
   return (
@@ -84,27 +85,14 @@ export default function EspecialtyForm(props: RouteComponentProps<IPageParams>) 
 
             <FormGroupSection>
               <Grid container>
-                {state?.id && (
-                  <Grid item md={12} xs={12}>
-                    <TextField
-                      id="input-customer-id"
-                      label="ID"
-                      variant="outlined"
-                      size="small"
-                      value={state.id}
-                      fullWidth
-                      disabled
-                    />
-                  </Grid>
-                )}
                 <Grid item md={12} xs={12}>
                   <TextField
                     id="input-social-name"
                     label="Descrição"
                     variant="outlined"
                     size="small"
-                    value={state.description}
-                    onChange={(element) => setState({ ...state, description: element.target.value })}
+                    value={state.name}
+                    onChange={(element) => setState({ ...state, name: element.target.value })}
                     fullWidth
                   />
                 </Grid>
@@ -119,7 +107,7 @@ export default function EspecialtyForm(props: RouteComponentProps<IPageParams>) 
                     fullWidth
                   />
                 </Grid>
-                {state?.id && (
+                {state?._id && (
                   <Grid item>
                     <FormControlLabel control={<Switch onChange={(event) => setState({ ...state, active: event.target.checked })} />} label="Ativo?" />
                   </Grid>

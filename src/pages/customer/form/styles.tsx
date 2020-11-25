@@ -3,9 +3,13 @@ import { TextField, OutlinedInput, Button } from '@material-ui/core';
 
 export const ButtonsContent = styled.div`
   display: flex;
-  justify-content: space-between;
+  justify-content: flex-end;
 
   margin-bottom: 20px;
+
+  & > button:first-child {
+    margin-right: 10px;
+  }
 `;
 
 export const FormSection = styled.div`

@@ -5,7 +5,7 @@ export const INITIAL_STATE: UserState = {
   data: {
     companies: [],
     name: '',
-    birthday: '',
+    birthdate: '',
     gender: '',
     national_id: '',
     issuing_organ: '',
@@ -26,7 +26,10 @@ export const INITIAL_STATE: UserState = {
     cellphone: '',
     user_type_id: '',
     specialties: [],
-    council_id: '',
+    council_id: {
+      _id: '',
+      name: '',
+    },
     council_number: '',
     active: true,
   },

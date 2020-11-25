@@ -25,7 +25,7 @@ export enum UserTypes {
 
 export interface SpecialtiesUserInterface {
   id: string;
-  description: string;
+  name: string;
 };
 
 export interface UserList {
@@ -39,7 +39,7 @@ export interface UserInterface {
   _id?: string;
   companies: [string] | [];
 	name: string; // name
-  birthday: string;
+  birthdate: string;
   gender: string;
   national_id: string;
   issuing_organ: string;
@@ -60,7 +60,13 @@ export interface UserInterface {
   cellphone: string;
   user_type_id: string;
   specialties: (SpecialtiesUserInterface | {})[];
-  council_id: string;
+  council_id: {
+    _id: string;
+    name: string;
+    describe?: string;
+    initials?: string;
+    active?: boolean;
+  };
   council_number: string;
   username?: string;
   password?: string;

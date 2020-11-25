@@ -24,11 +24,12 @@ import VisibilityOff from '@material-ui/icons/VisibilityOff';
 import { makeStyles } from '@material-ui/core/styles';
 
 import { ContainerLogin, WelcomeTextWrapper, HomeIconLogo, LogoText, TextGray } from './styles';
+
 import Button from '../../styles/components/Button';
 import Alert from '../../components/Alert';
 import Loading from '../../components/Loading';
 
-import validateEmail from '../../utils/validateEmail'
+import validateEmail from '../../utils/validateEmail';
 
 function Copyright() {
   return (
@@ -44,7 +45,7 @@ function Copyright() {
 
 const useStyles = makeStyles((theme) => ({
   paper: {
-    marginTop: theme.spacing(8),
+    marginTop: theme.spacing(2),
     display: 'flex',
     flexDirection: 'column',
     alignItems: 'center',
@@ -100,7 +101,7 @@ export default function SignIn() {
   }, [inputEmail]);
 
   const handlePasswordValitor = useCallback(() => {
-    setInputPassword(prev => ({ ...prev, error:  !(inputPassword.value.length >= SIZE_INPUT_PASSWORD) }));
+    setInputPassword(prev => ({ ...prev, error: !(inputPassword.value.length >= SIZE_INPUT_PASSWORD) }));
   }, [inputPassword]);
 
   return (
@@ -111,10 +112,6 @@ export default function SignIn() {
         <div className={classes.paper}>
           <Box display="flex" justifyContent="center" alignItems="center">
             <HomeIconLogo />
-
-            <LogoText variant="h5">
-              Portal Sollar
-          </LogoText>
           </Box>
 
           <WelcomeTextWrapper>

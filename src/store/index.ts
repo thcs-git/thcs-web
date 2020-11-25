@@ -5,7 +5,7 @@ import { AreaState } from './ducks/areas/types';
 import { CompanyState } from './ducks/companies/types';
 import { CouncilState } from './ducks/councils/types';
 import { CustomerState } from './ducks/customers/types';
-import { EspecialtyState } from './ducks/especialties/types';
+import { SpecialtyState } from './ducks/specialties/types';
 import { LoginState } from './ducks/login/types';
 import { UserState } from './ducks/users/types';
 
@@ -18,7 +18,7 @@ export interface ApplicationState {
   login: LoginState;
   customers: CustomerState;
   companies: CompanyState;
-  especialties: EspecialtyState;
+  specialties: SpecialtyState;
   councils: CouncilState;
   users: UserState;
 }

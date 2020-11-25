@@ -7,8 +7,8 @@ import { CustomerState } from './customers/types';
 import { INITIAL_STATE as INITIAL_STATE_COMPANY } from './companies';
 import { CompanyState } from './companies/types';
 
-import { INITIAL_STATE as INITIAL_STATE_ESPECIALTY } from './especialties';
-import { EspecialtyState } from './especialties/types'
+import { INITIAL_STATE as INITIAL_STATE_SPECIALTY } from './specialties';
+import { SpecialtyState } from './specialties/types'
 
 import { INITIAL_STATE as INITIAL_STATE_COUNCIL } from './councils';
 import { CouncilState } from './councils/types';
@@ -27,7 +27,7 @@ export interface IInitialState {
   login: Readonly<LoginState>;
   customers: Readonly<CustomerState>;
   companies: Readonly<CompanyState>;
-  especialties: Readonly<EspecialtyState>;
+  specialties: Readonly<SpecialtyState>;
   councils: Readonly<CouncilState>;
   users: Readonly<UserState>;
 }
@@ -40,7 +40,7 @@ export const InitialState: IInitialState = {
   login: INITIAL_STATE,
   customers: INITIAL_STATE_CUSTOMER,
   companies: INITIAL_STATE_COMPANY,
-  especialties: INITIAL_STATE_ESPECIALTY,
+  specialties: INITIAL_STATE_SPECIALTY,
   councils: INITIAL_STATE_COUNCIL,
   users: INITIAL_STATE_USER,
 }

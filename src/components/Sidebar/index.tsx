@@ -30,8 +30,10 @@ import ExtensionIcon from '@material-ui/icons/Extension';
 import PersonIcon from '@material-ui/icons/Person';
 import GroupAddIcon from '@material-ui/icons/GroupAdd';
 
+import { Link } from 'react-router-dom';
+
 import SupervisorAccountIcon from '@material-ui/icons/SupervisorAccount';
-import {AccordionSummary, AccordionDetails} from '@material-ui/core';
+import { AccordionSummary, AccordionDetails } from '@material-ui/core';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 
 import { AccordionMenu } from './styles';
@@ -39,14 +41,14 @@ import { AccordionMenu } from './styles';
 const drawerWidth = 220;
 
 const itemsMenu = [
-  { title: 'Dashboard', route: '/', icon: <DashboardIcon /> },
-  { title: 'Clientes', route: '/customer', icon: <AssignmentIndIcon /> },
-  { title: 'Empresas', route: '/company', icon: <BusinessIcon /> },
-  { title: 'Especialidade', route: '/specialty', icon: <FolderSpecialIcon /> },
-  { title: 'Conselhos', route: '/council', icon: <GavelIcon /> },
-  { title: 'Área', route: '/area', icon: <ExtensionIcon /> },
-  { title: 'Usuários', route: '/user', icon: <PersonIcon /> },
-  { title: 'Pacientes', route: '/patient', icon: <GroupAddIcon /> },
+  { title: 'Dashboard', route: '/', icon: <DashboardIcon style={{ color: '#fff' }} /> },
+  { title: 'Clientes', route: '/customer', icon: <AssignmentIndIcon style={{ color: '#fff' }} /> },
+  { title: 'Empresas', route: '/company', icon: <BusinessIcon style={{ color: '#fff' }} /> },
+  { title: 'Especialidade', route: '/specialty', icon: <FolderSpecialIcon style={{ color: '#fff' }} /> },
+  { title: 'Conselhos', route: '/council', icon: <GavelIcon style={{ color: '#fff' }} /> },
+  { title: 'Área', route: '/area', icon: <ExtensionIcon style={{ color: '#fff' }} /> },
+  { title: 'Usuários', route: '/user', icon: <PersonIcon style={{ color: '#fff' }} /> },
+  { title: 'Pacientes', route: '/patient', icon: <GroupAddIcon style={{ color: '#fff' }} /> },
 ]
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -55,24 +57,6 @@ const useStyles = makeStyles((theme: Theme) =>
       display: 'flex',
       height: '100%',
     },
-    appBar: {
-      zIndex: theme.zIndex.drawer + 1,
-      transition: theme.transitions.create(['width', 'margin'], {
-        easing: theme.transitions.easing.sharp,
-        duration: theme.transitions.duration.leavingScreen,
-      }),
-    },
-    appBarShift: {
-      marginLeft: drawerWidth,
-      width: `calc(100% - ${drawerWidth}px)`,
-      transition: theme.transitions.create(['width', 'margin'], {
-        easing: theme.transitions.easing.sharp,
-        duration: theme.transitions.duration.enteringScreen,
-      }),
-    },
-    menuButton: {
-      marginRight: 36,
-    },
     hide: {
       display: 'none',
     },
@@ -80,6 +64,7 @@ const useStyles = makeStyles((theme: Theme) =>
       width: drawerWidth,
       flexShrink: 0,
       whiteSpace: 'nowrap',
+      background: '#0899BA',
     },
     drawerOpen: {
       width: drawerWidth,
@@ -87,6 +72,8 @@ const useStyles = makeStyles((theme: Theme) =>
         easing: theme.transitions.easing.sharp,
         duration: theme.transitions.duration.enteringScreen,
       }),
+      background: '#0899BA',
+      color: '#fff',
     },
     drawerClose: {
       transition: theme.transitions.create('width', {
@@ -98,6 +85,8 @@ const useStyles = makeStyles((theme: Theme) =>
       [theme.breakpoints.up('sm')]: {
         width: theme.spacing(9) + 1,
       },
+      background: '#0899BA',
+      color: '#fff',
     },
     toolbar: {
       display: 'flex',
@@ -154,18 +143,20 @@ export default function Sibebar(props: Props<any>) {
       >
         <div className={classes.toolbar}>
           <IconButton onClick={handleDrawerClose}>
-            {open ? <ChevronLeftIcon /> :<MenuIcon />}
+            {open ? <ChevronLeftIcon style={{ color: '#fff' }} /> : <MenuIcon style={{ color: '#fff' }} />}
           </IconButton>
         </div>
-        <Divider />
+        {/* <Divider /> */}
         <List disablePadding={true}>
           {itemsMenu.map((item, index) => (
-            <ListItem key={index} component="a" button href={item.route}>
-              <ListItemIcon>
-                {item.icon}
-              </ListItemIcon>
-              <ListItemText primary={item.title} />
-            </ListItem>
+            <Link key={index} to={item.route} style={{ color: '#fff', textDecoration: 'none' }}>
+              <ListItem style={{ marginLeft: 10 }}>
+                <ListItemIcon>
+                  {item.icon}
+                </ListItemIcon>
+                <ListItemText primary={item.title} />
+              </ListItem>
+            </Link>
           ))}
           {/* <AccordionMenu
             ref={AccordionRef}
@@ -188,7 +179,7 @@ export default function Sibebar(props: Props<any>) {
             </AccordionDetails>
           </AccordionMenu> */}
         </List>
-        <Divider />
+        {/* <Divider /> */}
         {/* <List>
           {['All mail', 'Trash', 'Spam'].map((text, index) => (
             <ListItem button key={text}>
