@@ -1,7 +1,7 @@
 import styled from 'styled-components';
 import Container from '@material-ui/core/Container';
 import Typography from '@material-ui/core/Typography';
-import  { ReactComponent as HomeIcon } from '../../assets/img/sollar-marca.svg';
+import  { ReactComponent as HomeIcon } from '../../assets/img/marca-sollar-azul.svg';
 
 export const ContainerLogin = styled(Container)`
   display: flex;
