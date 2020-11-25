@@ -53,7 +53,8 @@ const reducer: Reducer<UserState> = (state = INITIAL_STATE, action) => {
         ...state,
         data: action.payload.data,
         loading: false,
-        error: false
+        error: false,
+        success: true,
       }
     case UserTypes.LOAD_FAILURE:
       return {

@@ -114,13 +114,9 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
 
   useEffect(() => {
     if (params.id) {
-      getUserDataById(params.id);
+      dispatch(loadUserById(params.id))
     }
-  }, []);
-
-  const getUserDataById = useCallback((id: string) => {
-    dispatch(loadUserById(id))
-  }, [dispatch]);
+  }, [dispatch, params]);
 
   // useEffect(() => {
   //   dispatch(loadRequest());
@@ -583,7 +579,7 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
             </TabContent>
           </FormContent>
           <ButtonsContent>
-            <ButtonComponent background="default" onClick={handleOpenModalCancel}>
+            <ButtonComponent background="default" onClick={() => userState.success ? history.push('/user') : handleOpenModalCancel()}>
               Cancelar
             </ButtonComponent>
             <ButtonComponent background="primary" onClick={handleSaveFormUser}>
@@ -593,7 +589,7 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
         </FormSection>
       </Container>
 
-      <Snackbar
+      {/* <Snackbar
         autoHideDuration={10}
         anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
         open={userState.error}
@@ -603,9 +599,9 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
         <Alert severity="error" onClose={() => console.log('2 fechar toast')}>
           Não foi possível cadastrar o usuário
         </Alert>
-      </Snackbar>
+      </Snackbar> */}
 
-      <Snackbar
+      {/* <Snackbar
         autoHideDuration={10}
         anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
         open={userState.success && !userState.error}
@@ -615,29 +611,29 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
         <Alert severity="success" onClose={() => console.log('2 fechar toast')}>
           Usuário cadastrado com sucesso!
         </Alert>
-      </Snackbar>
+      </Snackbar> */}
 
-      <Dialog
-        open={openModalCancel}
-        onClose={handleCloseModalCancel}
-        aria-labelledby="alert-dialog-title"
-        aria-describedby="alert-dialog-description"
-      >
-        <DialogTitle id="alert-dialog-title">Cancelar</DialogTitle>
-        <DialogContent>
-          <DialogContentText id="alert-dialog-description">
-            Tem certeza que deseja cancelar este cadastro?
-					</DialogContentText>
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={handleCloseModalCancel} color="primary">
-            Não
-					</Button>
-          <Button onClick={handleCancelForm} color="primary" autoFocus>
-            Sim
-					</Button>
-        </DialogActions>
-      </Dialog>
+        <Dialog
+          open={openModalCancel}
+          onClose={handleCloseModalCancel}
+          aria-labelledby="alert-dialog-title"
+          aria-describedby="alert-dialog-description"
+        >
+          <DialogTitle id="alert-dialog-title">Cancelar</DialogTitle>
+          <DialogContent>
+            <DialogContentText id="alert-dialog-description">
+              Tem certeza que deseja cancelar este cadastro?
+            </DialogContentText>
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={handleCloseModalCancel} color="primary">
+              Não
+            </Button>
+            <Button onClick={handleCancelForm} color="primary" autoFocus>
+              Sim
+            </Button>
+          </DialogActions>
+        </Dialog>
     </Sidebar>
   );
 }

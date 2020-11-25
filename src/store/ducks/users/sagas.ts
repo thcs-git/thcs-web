@@ -1,4 +1,5 @@
 import { put, call } from 'redux-saga/effects';
+import { toast } from 'react-toastify';
 import { AxiosResponse } from 'axios';
 
 import { apiSollar, viacep } from '../../../services/axios';
@@ -88,13 +89,12 @@ export function* updateUser({ payload: { data } }: any) {
 
   data.phones = phones;
 
-  const response:AxiosResponse = yield call(apiSollar.put, `/user/${_id}/update`, { ...data }, { headers: { token } })
+  try {
+    const response: AxiosResponse = yield call(apiSollar.put, `/user/${_id}/update`, { ...data }, { headers: { token } })
 
-  console.log('update response', response);
-
-  if (response.status === 200) {
-    yield put(loadSuccess(response.data[0]))
-  } else {
+    toast.success('Usuário atualizado com sucesso!');
+    yield put(loadSuccessGetUserById(response.data[0]))
+  } catch (error) {
     yield put(loadFailure());
   }
 }
