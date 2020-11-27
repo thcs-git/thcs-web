@@ -225,7 +225,7 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
   return (
     <Sidebar>
       {userState.loading && <Loading />}
-      {console.log(userState)}
+      {console.log('specialtyState.list', specialtyState.list)}
       <Container>
         <FormSection>
           <FormContent>
