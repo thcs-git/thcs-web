@@ -23,6 +23,11 @@ export default createGlobalStyle`
   html {
     /* background: var(--primary); */
   }
+
+  a, a:hover {
+    text-decoration: none;
+  }
+
   :root {
     --primary: #16679A;
     --primary-hover: #16679A99;

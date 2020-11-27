@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { loadRequest, getAddress as getAddressAction, createCompanyRequest } from '../../../store/ducks/companies/actions';
+import { loadRequest, getAddress as getAddressAction, createCompanyRequest, loadCompanyById } from '../../../store/ducks/companies/actions';
 import { CompanyInterface } from '../../../store/ducks/companies/types';
 import { ApplicationState } from '../../../store';
 
@@ -19,13 +19,14 @@ import {
   Snackbar,
   Container
 } from '@material-ui/core';
+import Autocomplete from '@material-ui/lab/Autocomplete';
 import { SearchOutlined } from '@material-ui/icons';
 
 import Sidebar from '../../../components/Sidebar';
-import { FormTitle } from '../../../styles/components/Form';
 import Alert from '../../../components/Alert';
-// import AutoComplete from '../../../styles/components/Autocomplete';
-import Autocomplete from '@material-ui/lab/Autocomplete';
+
+import ButtonComponent from '../../../styles/components/Button';
+import { FormTitle } from '../../../styles/components/Form';
 
 import {
   ButtonsContent,
@@ -49,13 +50,16 @@ export default function CompanyForm(props: RouteComponentProps<IPageParams>) {
   const customers = [
     { id: 1, name: 'customer 1' },
     { id: 2, name: 'customer 2' },
-  ]
+  ];
+
+  const { params } = props.match;
 
   const [state, setState] = useState<CompanyInterface>({
+    _id: params.id || '',
     customerId: '',
     name: '',
-    fantasyName: '',
-    fiscalNumber: '',
+    fantasy_name: '',
+    fiscal_number: '',
     address: {
       postalCode: '',
       street: '',
@@ -74,7 +78,9 @@ export default function CompanyForm(props: RouteComponentProps<IPageParams>) {
   const [openModalCancel, setOpenModalCancel] = useState(false);
 
   useEffect(() => {
-    dispatch(loadRequest());
+    if (params.id) {
+      dispatch(loadCompanyById(params.id))
+    }
   }, [dispatch]);
 
   useEffect(() => {
@@ -102,7 +108,7 @@ export default function CompanyForm(props: RouteComponentProps<IPageParams>) {
 
       return {
         ...prevState,
-        address
+        ...companyState.data
       }
     })
   }, [companyState]);
@@ -121,7 +127,7 @@ export default function CompanyForm(props: RouteComponentProps<IPageParams>) {
 
   function handleCancelForm() {
     setOpenModalCancel(false);
-    history.back();
+    history.push(`/company`);
   }
 
   const getAddress = useCallback(() => {
@@ -130,7 +136,6 @@ export default function CompanyForm(props: RouteComponentProps<IPageParams>) {
 
   return (
     <Sidebar>
-      {console.log('companyState', companyState)}
       <Container>
         <FormSection>
           <FormContent>
@@ -138,19 +143,6 @@ export default function CompanyForm(props: RouteComponentProps<IPageParams>) {
 
             <FormGroupSection>
               <Grid container>
-                {state?.id && (
-                  <Grid item md={2} xs={4}>
-                    <TextField
-                      id="input-customer-id"
-                      label="ID"
-                      variant="outlined"
-                      size="small"
-                      value={state.id}
-                      fullWidth
-                      disabled
-                    />
-                  </Grid>
-                )}
                 <Grid item md={6} xs={12}>
                   <Autocomplete
                     id="combo-box-demo"
@@ -180,8 +172,8 @@ export default function CompanyForm(props: RouteComponentProps<IPageParams>) {
                     label="Nome Fantasia"
                     variant="outlined"
                     size="small"
-                    value={state.fantasyName}
-                    onChange={(element) => setState({ ...state, fantasyName: element.target.value })}
+                    value={state.fantasy_name}
+                    onChange={(element) => setState({ ...state, fantasy_name: element.target.value })}
                     fullWidth
                   />
                 </Grid>
@@ -192,8 +184,8 @@ export default function CompanyForm(props: RouteComponentProps<IPageParams>) {
                     label="CNPJ"
                     variant="outlined"
                     size="small"
-                    value={state.fiscalNumber}
-                    onChange={(element) => setState({ ...state, fiscalNumber: element.target.value })}
+                    value={state.fiscal_number}
+                    onChange={(element) => setState({ ...state, fiscal_number: element.target.value })}
                     placeholder="00.000.000/0000-00"
                     fullWidth
                   />
@@ -340,12 +332,12 @@ export default function CompanyForm(props: RouteComponentProps<IPageParams>) {
             </Grid>
           </FormContent>
           <ButtonsContent>
-            <ButtonDefeault variant="outlined" color="default" onClick={handleOpenModalCancel}>
+            <ButtonComponent background="default" onClick={handleOpenModalCancel}>
               Cancelar
-					</ButtonDefeault>
-            <ButtonPrimary variant="contained" color="primary" onClick={handleSaveFormCustomer}>
+					  </ButtonComponent>
+            <ButtonComponent background="success" onClick={handleSaveFormCustomer}>
               Salvar
-					</ButtonPrimary>
+					  </ButtonComponent>
           </ButtonsContent>
         </FormSection>
       </Container>

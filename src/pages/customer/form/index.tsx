@@ -83,7 +83,6 @@ export default function CustomerForm(props: RouteComponentProps<IPageParams>) {
   }, [dispatch]);
 
   function handleSaveFormCustomer() {
-    console.log(state);
   }
 
   function handleOpenModalCancel() {

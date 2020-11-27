@@ -34,8 +34,6 @@ export function* getUserById({ payload: { id: _id } }: any) {
 }
 
 export function* createUser({payload: { data }}: any) {
-  console.log('create user payload', data)
-
   const phones = [];
 
   if (data.phone.length > 0) {

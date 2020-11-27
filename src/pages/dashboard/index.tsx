@@ -1,6 +1,7 @@
 import React from 'react';
 
 import { Container, Grid } from '@material-ui/core';
+import { Link } from 'react-router-dom';
 
 import Sidebar from '../../components/Sidebar';
 import { Title } from '../../styles/components/Text';
@@ -36,31 +37,39 @@ export default function Dashboard() {
 
           <Grid container>
             <Grid item xs={4} md={3}>
-              <ActionCard elevation={0}>
-                <UserCheckIconImage />
-                <p>Cadastro de Paciente</p>
-              </ActionCard>
+              <Link to='/patient'>
+                <ActionCard elevation={0}>
+                  <UserCheckIconImage />
+                  <p>Cadastro de Paciente</p>
+                </ActionCard>
+              </Link>
             </Grid>
 
             <Grid item xs={4} md={3}>
-              <ActionCard elevation={0}>
-                <MeasurementIconImage />
-                <p>Aferição do Paciente</p>
-              </ActionCard>
+              <Link to='/patient'>
+                <ActionCard elevation={0}>
+                  <MeasurementIconImage />
+                  <p>Aferição do Paciente</p>
+                </ActionCard>
+              </Link>
             </Grid>
 
             <Grid item xs={4} md={3}>
-              <ActionCard elevation={0}>
-                <MeasurementIconImage />
-                <p>Cadastro de Prestador</p>
-              </ActionCard>
+              <Link to='/user'>
+                <ActionCard elevation={0}>
+                  <MeasurementIconImage />
+                  <p>Cadastro de Prestador</p>
+                </ActionCard>
+              </Link>
             </Grid>
 
             <Grid item xs={4} md={3}>
-              <ActionCard elevation={0}>
-                <PatientPlusIconImage />
-                <p>Cadastrar Atendimento</p>
-              </ActionCard>
+              <Link to='/care'>
+                <ActionCard elevation={0}>
+                  <PatientPlusIconImage />
+                  <p>Cadastrar Atendimento</p>
+                </ActionCard>
+              </Link>
             </Grid>
 
           </Grid>

@@ -1,19 +1,28 @@
 import { AxiosResponse } from 'axios';
 import { put, call } from 'redux-saga/effects';
+import { toast } from 'react-toastify';
 
 import { viacep, apiSollar } from '../../../services/axios';
 
-import { loadSuccess, loadFailure, successGetAddress } from './actions';
+import { loadSuccess, loadFailure, successGetAddress, createCompanySuccess, loadSuccessGetCompanyById, updateCompanySuccess } from './actions';
 import { ViacepDataInterface } from './types';
 
 const token = localStorage.getItem('token');
+
+export function* get() {
+  const response: AxiosResponse = yield call(apiSollar.get, `/companies`);
+
+  try {
+    yield put(loadSuccess(response.data))
+  } catch (error) {
+    yield put(loadFailure());
+  }
+}
 
 export function* getAddress({payload}:any) {
 
   try {
     const { data }: AxiosResponse<ViacepDataInterface> = yield call(viacep.get, `${payload.postalCode}/json`);
-
-    console.log('saga data', data)
 
     if (data.erro) {
       yield put(loadFailure());
@@ -28,11 +37,9 @@ export function* getAddress({payload}:any) {
 }
 
 export function* createCompany({ payload: { data } }: any) {
-  console.log('saga', data);
-
   try {
     const response:AxiosResponse = yield call(apiSollar.post, `/companies/store`, data, { headers: { token } })
-    console.log(response);
+
     yield put(loadSuccess(response.data))
   } catch(e) {
     yield put(loadFailure());
@@ -40,12 +47,37 @@ export function* createCompany({ payload: { data } }: any) {
 
 }
 
-export function* get() {
-  const response:AxiosResponse = yield call(apiSollar.get, `/companies`, { headers: { token } })
+export function* store({ payload }: any) {
+  const response: AxiosResponse = yield call(apiSollar.post, `/companies/store`, { ...payload });
 
-  if (response.status === 200) {
-    yield put(loadSuccess(response.data))
-  } else {
+  try {
+    yield put(createCompanySuccess(response.data))
+  } catch (error) {
+    yield put(loadFailure());
+  }
+}
+
+export function* getById({ payload: { id: _id } }: any) {
+  try {
+    const response: AxiosResponse = yield call(apiSollar.get, `/companies`, { params: { _id } })
+    yield put(loadSuccessGetCompanyById(response.data[0]))
+
+  } catch (error) {
+    yield put(loadFailure());
+  }
+}
+
+
+export function* update({ payload: { data } }: any) {
+  const { _id } = data;
+
+  try {
+    const response: AxiosResponse = yield call(apiSollar.put, `/companies/${_id}/update`, { ...data })
+
+    toast.success('Empresa atualizada com sucesso!');
+    yield put(updateCompanySuccess(response.data[0]))
+  } catch (error) {
+    toast.error("Não foi possível atualizar os dados da empresa");
     yield put(loadFailure());
   }
 }

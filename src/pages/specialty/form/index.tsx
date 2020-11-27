@@ -52,7 +52,7 @@ export default function SpecialtyForm(props: RouteComponentProps<IPageParams>) {
     _id: props.match.params.id || '',
     name: '',
     describe: '',
-    council: '',
+    council: { _id: '' },
     active: true
   });
 
@@ -79,7 +79,7 @@ export default function SpecialtyForm(props: RouteComponentProps<IPageParams>) {
   const handleCouncil = useCallback((event: any, newValue: any) => {
     setState(prevState => ({
       ...prevState,
-      council: newValue._id,
+      council: { _id: newValue._id },
     }));
 
   }, [state.council]);
@@ -98,7 +98,6 @@ export default function SpecialtyForm(props: RouteComponentProps<IPageParams>) {
     } else {
       dispatch(createSpecialtyRequest(state))
     }
-    console.log(state);
   }
 
   function handleCancelForm() {
@@ -107,13 +106,14 @@ export default function SpecialtyForm(props: RouteComponentProps<IPageParams>) {
   }
 
   const selectCouncil = useCallback(() => {
-    const selected = councilState.list.filter(item => item._id === state.council);
+    const selected = councilState.list.filter(item => item._id === state.council._id);
     return (selected[0]) ? selected[0] : null;
   }, [state.council]);
 
   return (
     <Sidebar>
       {specialtyState.loading && <Loading />}
+      {console.log('state', state)}
       <Container>
         <FormSection>
           <FormContent>
@@ -139,7 +139,7 @@ export default function SpecialtyForm(props: RouteComponentProps<IPageParams>) {
                     getOptionLabel={(option) => option.name}
                     renderInput={(params) => <TextField {...params} label="Conselho" variant="outlined" />}
                     value={selectCouncil()}
-                    getOptionSelected={(option, value) => option._id === state.council}
+                    getOptionSelected={(option, value) => option._id === state.council._id}
                     onChange={(event: any, newValue) => {
                       handleCouncil(event, newValue);
                     }}

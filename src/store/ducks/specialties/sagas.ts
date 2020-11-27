@@ -8,11 +8,7 @@ import { loadSuccess, loadFailure, createSpecialtySuccess, loadSuccessGetSpecial
 import { SpecialtyInterface } from './types';
 
 export function* get() {
-  console.log('Executando get!!!')
-
   const response: AxiosResponse = yield call(apiSollar.get, `/specialty`);
-
-  console.log('specialty', response.data);
 
   try {
     yield put(loadSuccess(response.data))
@@ -22,8 +18,6 @@ export function* get() {
 }
 
 export function* store({ payload }: any) {
-  console.log('Executando store!!!');
-
   const response: AxiosResponse = yield call(apiSollar.post, `/specialty/store`, { ...payload });
 
   try {

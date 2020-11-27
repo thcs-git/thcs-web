@@ -22,7 +22,7 @@ export enum SpecialtyTypes {
 
 export interface SpecialtyInterface {
   _id?: string;
-  council: string;
+  council: { _id: string};
 	name: string;
 	describe: string;
 	active: boolean;

@@ -116,7 +116,6 @@ export default function AreaForm(props: RouteComponentProps<IPageParams>) {
   }, [dispatch]);
 
   function handleSaveFormCustomer() {
-    console.log(state);
   }
 
   function handleOpenModalCancel() {

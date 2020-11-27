@@ -4,7 +4,7 @@ import { SpecialtyState, SpecialtyTypes } from './types';
 export const INITIAL_STATE: SpecialtyState = {
   data: {
     _id: '',
-    council: '',
+    council: { _id: '' },
     name: '',
     describe: '',
     active: true,
