@@ -1,9 +1,17 @@
 import { put, call } from 'redux-saga/effects';
 
-// import axios from '../../../services/axios';
+import { apiSollar } from '../../../services/axios';
 
 import { loadSuccess, loadFailure } from './actions';
-import { CustomerInterface } from './types';
 
 export function* get() {
+
+  try {
+    const { data } = yield call(apiSollar.get, '/client');
+
+    yield put(loadSuccess(data));
+  } catch (error) {
+    yield put(loadFailure());
+  }
+
 }

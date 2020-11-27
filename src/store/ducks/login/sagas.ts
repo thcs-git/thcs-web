@@ -18,7 +18,7 @@ export function* doLogin({ payload }: any) {
 
     yield put(loadSuccess(data));
 
-    history.push('/dashboard');
+    history.push('/');
     location.reload();
 
   } catch (err) {

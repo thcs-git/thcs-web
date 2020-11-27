@@ -23,6 +23,8 @@ import {
   DialogTitle,
 } from '@material-ui/core';
 
+import { useHistory } from "react-router-dom";
+
 /**
  * Icons
  */
@@ -42,6 +44,8 @@ import { AccordionSummary, AccordionDetails } from '@material-ui/core';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 
 import { AccordionMenu } from './styles';
+import LOCALSTORAGE from '../../helpers/constants/localStorage';
+
 
 const drawerWidth = 220;
 
@@ -110,12 +114,18 @@ const useStyles = makeStyles((theme: Theme) =>
     },
   })
 );
+console.log(localStorage.getItem(LOCALSTORAGE.TOGGLE_SIDEBAR));
 
 
 export default function Sibebar(props: Props<any>) {
+  const history = useHistory();
   const classes = useStyles();
   const theme = useTheme();
-  const [open, setOpen] = useState(false);
+  const [open, setOpen] = useState<Boolean>(() => {
+    let toggleSidebar = localStorage.getItem(LOCALSTORAGE.TOGGLE_SIDEBAR) || 'false';
+    return JSON.parse(toggleSidebar)
+  });
+
   const [openModalLogout, setOpenModalLogout] = useState(false);
 
   const AccordionRef = useRef<HTMLDivElement>(null);
@@ -126,7 +136,10 @@ export default function Sibebar(props: Props<any>) {
   }, [open]);
 
   const handleDrawerClose = useCallback(() => {
-    setOpen(prev => !prev);
+    setOpen(prev => {
+      localStorage.setItem(LOCALSTORAGE.TOGGLE_SIDEBAR, JSON.stringify(!prev));
+      return !prev
+    });
   }, []);
 
   const openDropDownAndMenu = () => {
@@ -166,20 +179,17 @@ export default function Sibebar(props: Props<any>) {
             {open ? <ChevronLeftIcon style={{ color: '#fff' }} /> : <MenuIcon style={{ color: '#fff' }} />}
           </IconButton>
         </div>
-        <div>
-          {/* <Divider /> */}
-          <List disablePadding={true}>
-            {itemsMenu.map((item, index) => (
-              <Link key={index} to={item.route} style={{ color: '#fff', textDecoration: 'none' }}>
-                <ListItem style={{ marginLeft: 10 }}>
-                  <ListItemIcon>
-                    {item.icon}
-                  </ListItemIcon>
-                  <ListItemText primary={item.title} />
-                </ListItem>
-              </Link>
-            ))}
-            {/* <AccordionMenu
+        {/* <Divider /> */}
+        <List disablePadding={true}>
+          {itemsMenu.map((item, index) => (
+            <ListItem key={index} component="button" button onClick={() => history.push(item.route)}>
+              <ListItemIcon>
+                {item.icon}
+              </ListItemIcon>
+              <ListItemText primary={item.title} />
+            </ListItem>
+          ))}
+          {/* <AccordionMenu
             ref={AccordionRef}
             // onClick={openDropDownAndMenu}
             // {...(!open ? { expanded: true } : {})}
@@ -199,22 +209,20 @@ export default function Sibebar(props: Props<any>) {
               </Typography>
             </AccordionDetails>
           </AccordionMenu> */}
-          </List>
-          <Divider />
-          <List disablePadding={true}>
-            <ListItem style={{ marginLeft: 10 }} className={classes.logOutButton} onClick={handleOpenModalLogout}>
-              <ListItemIcon>
-                <ExitToApp style={{ color: '#fff' }} />
-              </ListItemIcon>
-              <ListItemText primary="Sair" />
-            </ListItem>
-          </List>
-        </div>
+        </List>
+        <Divider />
+        <List disablePadding={true}>
+          <ListItem style={{ marginLeft: 10 }} className={classes.logOutButton} onClick={handleOpenModalLogout}>
+            <ListItemIcon>
+              <ExitToApp style={{ color: '#fff' }} />
+            </ListItemIcon>
+            <ListItemText primary="Sair" />
+          </ListItem>
+        </List>
       </Drawer>
       <main className={classes.content}>
         {props.children}
       </main>
-
 
       <Dialog
         open={openModalLogout}

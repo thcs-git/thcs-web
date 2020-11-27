@@ -17,6 +17,7 @@ export const INITIAL_STATE: CustomerState = {
     phone: '',
     cellphone: '',
   },
+  list: [],
   error: false,
   loading: false,
 };
@@ -28,7 +29,7 @@ const reducer: Reducer<CustomerState> = (state = INITIAL_STATE, action) => {
     case CustomerTypes.LOAD_SUCCCES:
       return {
         ...state,
-        data: action.payload,
+        list: action.payload.data,
         loading: false,
       };
     case CustomerTypes.LOAD_FAILURE:

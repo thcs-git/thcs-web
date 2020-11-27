@@ -27,12 +27,20 @@ export interface CustomerInterface {
 	cellphone: string;
 }
 
+export interface CustomerList {
+  _id: string;
+  name: string;
+  active: boolean;
+  email: string;
+}
+
 
 /**
  * State type
  */
 export interface CustomerState {
   data: CustomerInterface;
+  list: CustomerList[];
   loading: boolean;
   error: boolean;
 }
