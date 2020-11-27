@@ -39,6 +39,8 @@ import { AccordionSummary, AccordionDetails } from '@material-ui/core';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 
 import { AccordionMenu } from './styles';
+import LOCALSTORAGE from '../../helpers/constants/localStorage';
+
 
 const drawerWidth = 220;
 
@@ -104,13 +106,18 @@ const useStyles = makeStyles((theme: Theme) =>
     },
   })
 );
+console.log(localStorage.getItem(LOCALSTORAGE.TOGGLE_SIDEBAR));
 
 
 export default function Sibebar(props: Props<any>) {
   const history = useHistory();
   const classes = useStyles();
   const theme = useTheme();
-  const [open, setOpen] = useState(false);
+  const [open, setOpen] = useState<Boolean>(() => {
+    let toggleSidebar = localStorage.getItem(LOCALSTORAGE.TOGGLE_SIDEBAR) || 'false';
+    return JSON.parse(toggleSidebar)
+  });
+
   const AccordionRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -120,13 +127,11 @@ export default function Sibebar(props: Props<any>) {
   }, [open]);
 
   const handleDrawerClose = useCallback(() => {
-    setOpen(prev => !prev);
+    setOpen(prev => {
+      localStorage.setItem(LOCALSTORAGE.TOGGLE_SIDEBAR, JSON.stringify(!prev));
+      return !prev
+    });
   }, []);
-
-  const openDropDownAndMenu = () => {
-    // setOpen(true);
-    // console.log('open', open);
-  };
 
   return (
     <div className={classes.root}>
