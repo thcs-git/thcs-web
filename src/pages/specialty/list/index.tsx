@@ -7,6 +7,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { ApplicationState } from '../../../store/';
 import { loadRequest } from '../../../store/ducks/specialties/actions';
 
+import Loading from '../../../components/Loading';
 import Sidebar from '../../../components/Sidebar';
 
 import { FormTitle } from '../../../styles/components/Form';
@@ -30,11 +31,6 @@ export default function SpecialtyList() {
 
   const [search, setSearch] = useState('');
 
-  const [specialties, setSpecialties] = useState([
-    { id: 1, name: 'specialty 1', active: true },
-    { id: 2, name: 'specialty 2', active: false },
-  ]);
-
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
 
   useEffect(() => {
@@ -52,6 +48,7 @@ export default function SpecialtyList() {
   return (
     <>
       <Sidebar>
+        {especialtyState.loading && <Loading />}
         <Container>
           <FormTitle>Lista de Especialidades</FormTitle>
 

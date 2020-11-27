@@ -16,7 +16,7 @@ import { SpecialtyTypes } from './specialties/types';
 import { get as getSpecialty, store as storeSpecialty, getById as getSpecialtyById, update as updateSpecialty } from './specialties/sagas';
 
 import { CouncilTypes } from './councils/types';
-import { get as getCouncil } from './councils/sagas';
+import { get as getCouncil, store as storeCouncil, getById as getCouncilById, update as updateCouncil } from './councils/sagas';
 
 import { UserTypes } from './users/types';
 import { createUser, getAddress as getAddressUser, getUserById, updateUser, get as getUsers } from './users/sagas';
@@ -26,7 +26,12 @@ export default function* rootSaga() {
     takeLatest(LoginTypes.LOAD_REQUEST, doLogin),
     // takeLatest(AreaTypes.LOAD_REQUEST, getAreas),
     // takeLatest(CustomerTypes.LOAD_REQUEST, get),
+
+    // Council
     takeLatest(CouncilTypes.LOAD_REQUEST, getCouncil),
+    takeLatest(CouncilTypes.LOAD_REQUEST_COUNCIL_BY_ID, getCouncilById),
+    takeLatest(CouncilTypes.CREATE_COUNCIL_REQUEST, storeCouncil),
+    takeLatest(CouncilTypes.UPDATE_COUNCIL_REQUEST, updateCouncil),
 
     // Specialty
     takeLatest(SpecialtyTypes.LOAD_REQUEST, getSpecialty),

@@ -1,8 +1,13 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useHistory } from 'react-router-dom';
 import { Container, FormControl, InputLabel, OutlinedInput, InputAdornment, IconButton } from '@material-ui/core';
 import { SearchOutlined } from '@material-ui/icons';
 
+import { useDispatch, useSelector } from 'react-redux';
+import { ApplicationState } from '../../../store/';
+import { loadRequest } from '../../../store/ducks/councils/actions';
+
+import Loading from '../../../components/Loading';
 import Sidebar from '../../../components/Sidebar';
 
 import { FormTitle } from '../../../styles/components/Form';
@@ -21,15 +26,16 @@ import {
 
 export default function CouncilList() {
   const history = useHistory();
+  const dispatch = useDispatch();
+  const councilState = useSelector((state: ApplicationState) => state.councils);
 
   const [search, setSearch] = useState('');
 
-  const [especialties, setEspecialties] = useState([
-    { id: 1, description: 'council 1', initials: 'CRM', active: true },
-    { id: 2, description: 'council 2', initials: 'CRO', active: false },
-  ]);
-
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
+
+  useEffect(() => {
+    dispatch(loadRequest());
+  }, [])
 
   const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
     setAnchorEl(event.currentTarget);
@@ -42,6 +48,7 @@ export default function CouncilList() {
   return (
     <>
       <Sidebar>
+        {councilState.loading && <Loading />}
         <Container>
           <FormTitle>Lista de Conselhos</FormTitle>
 
@@ -65,14 +72,14 @@ export default function CouncilList() {
           </FormSearch>
 
           <List>
-            {especialties.map((especialty, index) => (
-              <ListLink key={index} to={`/council/${especialty.id}/edit`}>
+            {councilState.list.map((council, index) => (
+              <ListLink key={index} to={`/council/${council._id}/edit`}>
                 <ListItem variant="outlined">
                   <ListItemContent>
-                    <ListItemStatus active={especialty.active}>{especialty.active ? 'Ativo' : 'Inativo'}</ListItemStatus>
+                    <ListItemStatus active={council?.active || true}>{council.active ? 'Ativo' : 'Inativo'}</ListItemStatus>
                     <div>
-                      <ListItemTitle>{especialty.description}</ListItemTitle>
-                      <ListItemSubTitle>{especialty.initials}</ListItemSubTitle>
+                      <ListItemTitle>{council.name}</ListItemTitle>
+                      <ListItemSubTitle>{council.initials}</ListItemSubTitle>
                     </div>
                   </ListItemContent>
                 </ListItem>

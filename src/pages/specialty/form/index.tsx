@@ -114,8 +114,6 @@ export default function SpecialtyForm(props: RouteComponentProps<IPageParams>) {
   return (
     <Sidebar>
       {specialtyState.loading && <Loading />}
-      {console.log('specialtyState', specialtyState)}
-      {console.log('state', state)}
       <Container>
         <FormSection>
           <FormContent>
@@ -134,22 +132,20 @@ export default function SpecialtyForm(props: RouteComponentProps<IPageParams>) {
                     fullWidth
                   />
                 </Grid>
-                <Grid item md={4} xs={12}>
-                  <FormGroupSection>
-                    <Autocomplete
-                      id="combo-box-council"
-                      options={councilState.list}
-                      getOptionLabel={(option) => option.name}
-                      renderInput={(params) => <TextField {...params} label="Conselho" variant="outlined" />}
-                      value={selectCouncil()}
-                      getOptionSelected={(option, value) => option._id === state.council}
-                      onChange={(event: any, newValue) => {
-                        handleCouncil(event, newValue);
-                      }}
-                      size="small"
-                      fullWidth
-                    />
-                  </FormGroupSection>
+                <Grid item md={12} xs={12}>
+                  <Autocomplete
+                    id="combo-box-council"
+                    options={councilState.list}
+                    getOptionLabel={(option) => option.name}
+                    renderInput={(params) => <TextField {...params} label="Conselho" variant="outlined" />}
+                    value={selectCouncil()}
+                    getOptionSelected={(option, value) => option._id === state.council}
+                    onChange={(event: any, newValue) => {
+                      handleCouncil(event, newValue);
+                    }}
+                    size="small"
+                    fullWidth
+                  />
                 </Grid>
 
                 {state?._id && (
@@ -168,10 +164,10 @@ export default function SpecialtyForm(props: RouteComponentProps<IPageParams>) {
           <ButtonsContent>
             <ButtonComponent background="default" onClick={() => specialtyState.success ? history.push('/specialty') : handleOpenModalCancel()}>
               Cancelar
-              </ButtonComponent>
+            </ButtonComponent>
             <ButtonComponent variant="contained" background="success" onClick={() => handleSaveFormCustomer()}>
               Salvar
-					</ButtonComponent>
+					  </ButtonComponent>
           </ButtonsContent>
         </FormSection>
       </Container>
