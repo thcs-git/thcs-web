@@ -25,13 +25,15 @@ export default function* rootSaga() {
   return yield all([
     takeLatest(LoginTypes.LOAD_REQUEST, doLogin),
     // takeLatest(AreaTypes.LOAD_REQUEST, getAreas),
-    // takeLatest(CustomerTypes.LOAD_REQUEST, get),
     // takeLatest(EspecialtyTypes.LOAD_REQUEST, getEspecialty),
     // takeLatest(CouncilTypes.LOAD_REQUEST, getCouncil),
     takeLatest(CompanyTypes.CREATE_COMPANY_REQUEST, createCompany),
     takeLatest(CompanyTypes.LOAD_REQUEST_ADDRESS, getAddress),
 
-    // Users
+    /** Customers */
+    takeLatest(CustomerTypes.LOAD_REQUEST, get),
+
+    /** Users */
     takeLatest(UserTypes.LOAD_REQUEST, getUsers),
     takeLatest(UserTypes.CREATE_USER_REQUEST, createUser),
     takeLatest(UserTypes.LOAD_REQUEST_ADDRESS, getAddressUser),

@@ -18,6 +18,8 @@ import ListItemText from '@material-ui/core/ListItemText';
 import InboxIcon from '@material-ui/icons/MoveToInbox';
 import MailIcon from '@material-ui/icons/Mail';
 
+import { useHistory } from "react-router-dom";
+
 /**
  * Icons
  */
@@ -116,6 +118,7 @@ const useStyles = makeStyles((theme: Theme) =>
 
 
 export default function Sibebar(props: Props<any>) {
+  const history = useHistory();
   const classes = useStyles();
   const theme = useTheme();
   const [open, setOpen] = useState(false);
@@ -160,7 +163,7 @@ export default function Sibebar(props: Props<any>) {
         <Divider />
         <List disablePadding={true}>
           {itemsMenu.map((item, index) => (
-            <ListItem key={index} component="a" button href={item.route}>
+            <ListItem key={index} component="button" button onClick={() => history.push(item.route)}>
               <ListItemIcon>
                 {item.icon}
               </ListItemIcon>
