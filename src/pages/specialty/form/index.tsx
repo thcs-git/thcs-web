@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { loadRequest } from '../../../store/ducks/especialties/actions';
+import { loadRequest } from '../../../store/ducks/specialties/actions';
 import { ApplicationState } from '../../../store';
 
 import { useHistory, RouteComponentProps } from 'react-router-dom';
@@ -41,10 +41,10 @@ interface IPageParams {
   id?: string;
 }
 
-export default function EspecialtyForm(props: RouteComponentProps<IPageParams>) {
+export default function SpecialtyForm(props: RouteComponentProps<IPageParams>) {
   const history = useHistory();
   const dispatch = useDispatch();
-  const especialtyState = useSelector((state: ApplicationState) => state.especialties).data;
+  const especialtyState = useSelector((state: ApplicationState) => state.specialties).data;
   const councils = [
     { id: '1', description: 'CRM' },
     { id: '2', description: 'CRO' },

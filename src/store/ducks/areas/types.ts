@@ -2,9 +2,9 @@
  * Action types
  */
 export enum AreaTypes {
-  LOAD_REQUEST = "@customer/LOAD_REQUEST",
-  LOAD_SUCCCES = "@customer/LOAD_SUCCCES",
-  LOAD_FAILURE = "@customer/LOAD_FAILURE",
+  LOAD_REQUEST = "@area/LOAD_REQUEST",
+  LOAD_SUCCCES = "@area/LOAD_SUCCCES",
+  LOAD_FAILURE = "@area/LOAD_FAILURE",
 }
 
 /**

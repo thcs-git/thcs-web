@@ -12,8 +12,8 @@ import { get } from './customers/sagas';
 import { CompanyTypes } from './companies/types';
 import { getAddress, createCompany } from './companies/sagas';
 
-import { EspecialtyTypes } from './especialties/types';
-import { get as getEspecialty } from './especialties/sagas';
+import { SpecialtyTypes } from './specialties/types';
+import { get as getSpecialty } from './specialties/sagas';
 
 import { CouncilTypes } from './councils/types';
 import { get as getCouncil } from './councils/sagas';
@@ -27,6 +27,11 @@ export default function* rootSaga() {
     // takeLatest(AreaTypes.LOAD_REQUEST, getAreas),
     // takeLatest(EspecialtyTypes.LOAD_REQUEST, getEspecialty),
     // takeLatest(CouncilTypes.LOAD_REQUEST, getCouncil),
+    // takeLatest(CustomerTypes.LOAD_REQUEST, get),
+    takeLatest(SpecialtyTypes.LOAD_REQUEST, getSpecialty),
+    takeLatest(CouncilTypes.LOAD_REQUEST, getCouncil),
+
+    // Company
     takeLatest(CompanyTypes.CREATE_COMPANY_REQUEST, createCompany),
     takeLatest(CompanyTypes.LOAD_REQUEST_ADDRESS, getAddress),
 

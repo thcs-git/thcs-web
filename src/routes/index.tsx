@@ -12,8 +12,8 @@ import CompanyForm from '../pages/company/form';
 import CustomerList from '../pages/customer/list';
 import CustomerForm from '../pages/customer/form';
 
-import EspecialtyList from '../pages/especialty/list';
-import EspecialtyForm from '../pages/especialty/form';
+import SpecialtyList from '../pages/specialty/list';
+import SpecialtyForm from '../pages/specialty/form';
 
 import CouncilList from '../pages/council/list';
 import CouncilForm from '../pages/council/form';
@@ -35,6 +35,7 @@ const Routes = () => (
       <GuestRoute path="/login" component={Login} />
 
       <PrivateRoute path="/" component={Dashboard} exact />
+      <PrivateRoute path="/dashboard" component={Dashboard} />
 
       {/* Clientes */}
       <PrivateRoute path="/customer" component={CustomerList} exact />
@@ -47,9 +48,9 @@ const Routes = () => (
       <PrivateRoute path="/company/create" component={CompanyForm} />
 
       {/* Especialidades */}
-      <PrivateRoute path="/specialty" component={EspecialtyList} exact />
-      <PrivateRoute path="/specialty/:id/edit" component={EspecialtyForm} />
-      <PrivateRoute path="/specialty/create" component={EspecialtyForm} />
+      <PrivateRoute path="/specialty" component={SpecialtyList} exact />
+      <PrivateRoute path="/specialty/:id/edit" component={SpecialtyForm} />
+      <PrivateRoute path="/specialty/create" component={SpecialtyForm} />
 
       {/* Conselhos */}
       <PrivateRoute path="/council" component={CouncilList} exact />

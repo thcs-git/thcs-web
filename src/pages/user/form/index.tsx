@@ -1,8 +1,15 @@
 import React, { useState, useEffect, useCallback } from 'react';
 
 import { useDispatch, useSelector } from 'react-redux';
-import { loadRequest, createUserRequest, updateUserRequest, getAddress as getAddressAction, loadUserById } from '../../../store/ducks/users/actions';
-import { UserInterface, SpecialtiesUserInterface } from '../../../store/ducks/users/types';
+import { createUserRequest, updateUserRequest, getAddress as getAddressAction, loadUserById } from '../../../store/ducks/users/actions';
+import { UserInterface } from '../../../store/ducks/users/types';
+
+import { loadRequest as getSpecialtiesAction } from '../../../store/ducks/specialties/actions';
+import { SpecialtyInterface } from '../../../store/ducks/specialties/types';
+
+import { loadRequest as getCouncilsAction } from '../../../store/ducks/councils/actions';
+import { CouncilInterface } from '../../../store/ducks/councils/types';
+
 import { ApplicationState } from '../../../store';
 
 import Loading from '../../../components/Loading';
@@ -34,7 +41,7 @@ import { FormTitle, SelectComponent as Select } from '../../../styles/components
 import { SwitchComponent as Switch } from '../../../styles/components/Switch';
 import { ChipComponent as Chip } from '../../../styles/components/Chip';
 
-import { formatToISOString } from '../../../helpers/date';
+import { formatDate } from '../../../helpers/date';
 
 import DatePicker from '../../../styles/components/DatePicker';
 import { TabContent, TabNav, TabNavItem, TabBody, TabBodyItem } from '../../../styles/components/Tabs';
@@ -52,7 +59,7 @@ import {
 
 interface IFormFields {
   userType: { id: string, description: string } | null,
-  council: { id: string, description: string } | null,
+  council: CouncilInterface | null,
 }
 
 interface IPageParams {
@@ -63,6 +70,8 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
   const history = useHistory();
   const dispatch = useDispatch();
   const userState = useSelector((state: ApplicationState) => state.users);
+  const specialtyState = useSelector((state: ApplicationState) => state.specialties);
+  const councilState = useSelector((state: ApplicationState) => state.councils);
 
   const { params } = props.match;
 
@@ -72,7 +81,7 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
     _id: '',
     companies: ['5ee65a9b1a550217e4a8c0f4'], //empresa que vai vir do login
     name: '',
-    birthday: '',
+    birthdate: '',
     gender: '',
     national_id: '',
     issuing_organ: '',
@@ -93,7 +102,7 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
     cellphone: '',
     user_type_id: '',
     specialties: [],
-    council_id: '',
+    council_id: { _id: '', name: '' },
     council_number: '',
     active: true,
   });
@@ -103,26 +112,18 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
     council: null,
   });
 
-  const specialties = [
-    { id: '1', description: 'especialty 1' },
-    { id: '2', description: 'especialty 2' },
-  ];
-
   const genders = ['Masculino', 'Feminino', 'Indefinido'];
   const userTypes = [{ id: '1', description: 'Medico' }, { id: '1', description: 'Enfermeiro' }, { id: '1', description: 'Administrativo' }];
-  const councils = [{ id: '1', description: 'CRM' }, { id: '1', description: 'CRO' }, { id: '1', description: 'CREFIS' }];
 
   const [openModalCancel, setOpenModalCancel] = useState(false);
 
   useEffect(() => {
     if (params.id) {
       dispatch(loadUserById(params.id))
+      dispatch(getSpecialtiesAction())
+      dispatch(getCouncilsAction())
     }
   }, [dispatch, params]);
-
-  // useEffect(() => {
-  //   dispatch(loadRequest());
-  // }, [dispatch]);
 
   useEffect(() => {
     if (userState.error) {
@@ -145,8 +146,6 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
     }
 
     setState(prevState => {
-      // const { address } = userState.data;
-
       return {
         ...prevState,
         ...userState.data
@@ -176,14 +175,6 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
     dispatch(getAddressAction(state.address.postal_code));
   }, [state.address.postal_code]);
 
-  const handleSaveFormUser = useCallback(() => {
-    if (state?._id) {
-      dispatch(updateUserRequest(state));
-    } else {
-      dispatch(createUserRequest(state));
-    }
-  }, [state]);
-
   function handleOpenModalCancel() {
     setOpenModalCancel(true);
   }
@@ -198,17 +189,17 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
   }
 
   // Especialides
-  function handleSelectEspecialty(value: SpecialtiesUserInterface) {
+  function handleSelectEspecialty(value: SpecialtyInterface) {
     setState(prevState => ({
       ...prevState,
       specialties: [...prevState.specialties, value]
     }));
   }
 
-  function handleDeleteEspecialty(especialty: SpecialtiesUserInterface) {
+  function handleDeleteEspecialty(especialty: SpecialtyInterface) {
     let specialtiesSelected = [...state.specialties];
     const especialtyFounded = specialtiesSelected.findIndex((item: any) => {
-      return especialty.id === item.id
+      return especialty._id === item._id
     });
 
     if (especialtyFounded > -1) {
@@ -221,9 +212,20 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
     }))
   }
 
+  const handleSaveFormUser = useCallback(() => {
+    if (state?._id) {
+      dispatch(updateUserRequest(state));
+    } else {
+      dispatch(createUserRequest(state));
+    }
+
+    console.log('state', state);
+  }, [state]);
+
   return (
     <Sidebar>
       {userState.loading && <Loading />}
+      {console.log(userState)}
       <Container>
         <FormSection>
           <FormContent>
@@ -258,8 +260,8 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
                         <DatePicker
                           id="input-fiscal-birthdate"
                           label="Data de Nascimento"
-                          value={state.birthday}
-                          onChange={(element) => setState({ ...state, birthday: element.target.value })}
+                          value={state.birthdate.length > 10 ? formatDate(state.birthdate, 'YYYY-MM-DD') : state.birthdate}
+                          onChange={(element) => setState({ ...state, birthdate: element.target.value })}
                           fullWidth
                         />
                       </Grid>
@@ -500,14 +502,16 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
                       </FormGroupSection>
                     </Grid>
                     <Grid item md={2} xs={12}>
+                      {console.log('state.council_id._id', state.council_id._id)}
+                      {console.log('councilState.list', councilState.list)}
                       <FormGroupSection>
                         <Autocomplete
                           id="combo-box-council"
-                          options={councils}
-                          getOptionLabel={(option) => option.description}
+                          options={councilState.list}
+                          getOptionLabel={(option) => option.name}
                           renderInput={(params) => <TextField {...params} label="Conselho" variant="outlined" />}
-                          value={form?.council}
-                          getOptionSelected={(option, value) => option.id === form?.council?.id}
+                          value={userState.data?.council_id || null}
+                          getOptionSelected={(option, value) => option._id === state.council_id._id}
                           onChange={(event: any, newValue) => {
                             handleCouncil(event, newValue);
                           }}
@@ -547,8 +551,8 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
                       <FormGroupSection>
                         <Autocomplete
                           id="combo-box-especialty"
-                          options={specialties}
-                          getOptionLabel={(option) => option.description}
+                          options={specialtyState.list}
+                          getOptionLabel={(option) => option.name}
                           renderInput={(params) => <TextField {...params} label="Especialidade" variant="outlined" />}
                           size="small"
                           onChange={(event, value) => {
@@ -564,7 +568,7 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
                       {state.specialties.map((item: any, index) => (
                         <div key={`especialty_selected_${index}`}>
                           <Chip
-                            label={item.description}
+                            label={item.name}
                             onDelete={event => handleDeleteEspecialty(item)}
                           />
                         </div>
@@ -610,27 +614,27 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
         </Alert>
       </Snackbar> */}
 
-        <Dialog
-          open={openModalCancel}
-          onClose={handleCloseModalCancel}
-          aria-labelledby="alert-dialog-title"
-          aria-describedby="alert-dialog-description"
-        >
-          <DialogTitle id="alert-dialog-title">Cancelar</DialogTitle>
-          <DialogContent>
-            <DialogContentText id="alert-dialog-description">
-              Tem certeza que deseja cancelar este cadastro?
+      <Dialog
+        open={openModalCancel}
+        onClose={handleCloseModalCancel}
+        aria-labelledby="alert-dialog-title"
+        aria-describedby="alert-dialog-description"
+      >
+        <DialogTitle id="alert-dialog-title">Cancelar</DialogTitle>
+        <DialogContent>
+          <DialogContentText id="alert-dialog-description">
+            Tem certeza que deseja cancelar este cadastro?
             </DialogContentText>
-          </DialogContent>
-          <DialogActions>
-            <Button onClick={handleCloseModalCancel} color="primary">
-              Não
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleCloseModalCancel} color="primary">
+            Não
             </Button>
-            <Button onClick={handleCancelForm} color="primary" autoFocus>
-              Sim
+          <Button onClick={handleCancelForm} color="primary" autoFocus>
+            Sim
             </Button>
-          </DialogActions>
-        </Dialog>
+        </DialogActions>
+      </Dialog>
     </Sidebar>
   );
 }

@@ -9,7 +9,7 @@ const useStylesFacebook = makeStyles((theme: Theme) =>
       color: theme.palette.grey[theme.palette.type === 'light' ? 200 : 700],
     },
     top: {
-      color: '#1a90ff',
+      color: '#0899BA',
       animationDuration: '550ms',
       position: 'absolute',
       left: 0,
@@ -26,7 +26,7 @@ const divRoot = document.querySelector('#root');
 export default function FacebookCircularProgress(props: CircularProgressProps) {
   const classes = useStylesFacebook();
   const elementSpinner = useRef(document.createElement("div"))
-        elementSpinner.current.setAttribute('class', 'spinner-loading');
+  elementSpinner.current.setAttribute('class', 'spinner-loading');
 
   useEffect(() => {
     body?.appendChild(elementSpinner.current);

@@ -4,7 +4,6 @@ import { loadRequest } from '../../store/ducks/login/actions';
 import { ApplicationState } from '../../store';
 
 import Container from '@material-ui/core/Container';
-import Button from '@material-ui/core/Button';
 import Box from '@material-ui/core/Box';
 import Grid from '@material-ui/core/Grid';
 import Link from '@material-ui/core/Link';
@@ -25,13 +24,13 @@ import VisibilityOff from '@material-ui/icons/VisibilityOff';
 
 import { makeStyles } from '@material-ui/core/styles';
 
-import { WelcomeTextWrapper, HomeIconLogo, LogoText, TextGray } from './styles';
+import { ContainerLogin, WelcomeTextWrapper, HomeIconLogo, LogoText, TextGray } from './styles';
 
-// import Button from '../../styles/components/Button';
+import Button from '../../components/Button';
 import Alert from '../../components/Alert';
 import Loading from '../../components/Loading';
 
-import validateEmail from '../../utils/validateEmail'
+import validateEmail from '../../utils/validateEmail';
 
 function Copyright() {
   return (
@@ -53,6 +52,7 @@ const useStyles = makeStyles((theme) => ({
     height: '100%'
   },
   paper: {
+    marginTop: theme.spacing(2),
     display: 'flex',
     flexDirection: 'column',
     alignItems: 'center',
@@ -115,7 +115,7 @@ export default function SignIn() {
   }, [inputEmail]);
 
   const handlePasswordValitor = useCallback(() => {
-    setInputPassword(prev => ({ ...prev, error:  !(inputPassword.value.length >= SIZE_INPUT_PASSWORD) }));
+    setInputPassword(prev => ({ ...prev, error: !(inputPassword.value.length >= SIZE_INPUT_PASSWORD) }));
   }, [inputPassword]);
 
   return (
@@ -126,8 +126,6 @@ export default function SignIn() {
         <div className={classes.paper}>
           <Box display="flex" justifyContent="center" alignItems="center">
             <HomeIconLogo />
-
-            <LogoText />
           </Box>
 
           <WelcomeTextWrapper>

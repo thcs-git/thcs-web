@@ -19,14 +19,14 @@ import {
   ButtonsContent,
 } from './styles';
 
-export default function EspecialtyList() {
+export default function SpecialtyList() {
   const history = useHistory();
 
   const [search, setSearch] = useState('');
 
-  const [especialties, setEspecialties] = useState([
-    { id: 1, name: 'especialty 1', active: true },
-    { id: 2, name: 'especialty 2', active: false },
+  const [specialties, setSpecialties] = useState([
+    { id: 1, name: 'specialty 1', active: true },
+    { id: 2, name: 'specialty 2', active: false },
   ]);
 
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
@@ -65,13 +65,13 @@ export default function EspecialtyList() {
           </FormSearch>
 
           <List>
-            {especialties.map((especialty, index) => (
-              <ListLink key={index} to={`/especialty/${especialty.id}/edit`}>
+            {specialties.map((specialty, index) => (
+              <ListLink key={index} to={`/specialty/${specialty.id}/edit`}>
                 <ListItem variant="outlined">
                   <ListItemContent>
-                    <ListItemStatus active={especialty.active}>{especialty.active ? 'Ativo' : 'Inativo'}</ListItemStatus>
+                    <ListItemStatus active={specialty.active}>{specialty.active ? 'Ativo' : 'Inativo'}</ListItemStatus>
                     <div>
-                      <ListItemTitle>{especialty.name}</ListItemTitle>
+                      <ListItemTitle>{specialty.name}</ListItemTitle>
                     </div>
                   </ListItemContent>
                 </ListItem>
@@ -80,7 +80,7 @@ export default function EspecialtyList() {
           </List>
 
           <ButtonsContent>
-            <Button variant="contained" background="primary" onClick={() => history.push('/especialty/create/')}>
+            <Button variant="contained" background="primary" onClick={() => history.push('/specialty/create/')}>
               Novo
             </Button>
           </ButtonsContent>
