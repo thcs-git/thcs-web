@@ -61,7 +61,7 @@ export default function CompanyForm(props: RouteComponentProps<IPageParams>) {
     fantasy_name: '',
     fiscal_number: '',
     address: {
-      postalCode: '',
+      postal_code: '',
       street: '',
       number: '',
       district: '',
@@ -131,8 +131,8 @@ export default function CompanyForm(props: RouteComponentProps<IPageParams>) {
   }
 
   const getAddress = useCallback(() => {
-    dispatch(getAddressAction(state.address.postalCode));
-  }, [state.address.postalCode]);
+    dispatch(getAddressAction(state.address.postal_code));
+  }, [state.address.postal_code]);
 
   return (
     <Sidebar>
@@ -205,8 +205,8 @@ export default function CompanyForm(props: RouteComponentProps<IPageParams>) {
                       id="input-postal-code"
                       label="CEP"
                       placeholder="00000-000"
-                      value={state.address.postalCode}
-                      onChange={(element) => setState({ ...state, address: { ...state.address, postalCode: element.target.value } })}
+                      value={state.address.postal_code}
+                      onChange={(element) => setState({ ...state, address: { ...state.address, postal_code: element.target.value } })}
                       onBlur={getAddress}
                       endAdornment={
                         <InputAdornment position="end">

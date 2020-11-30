@@ -30,7 +30,7 @@ export interface CompanyInterface {
 	fantasy_name: string;
 	fiscal_number: string;
 	address: {
-    postalCode: string;
+    postal_code: string;
     street: string,
     number: string,
     district: string;

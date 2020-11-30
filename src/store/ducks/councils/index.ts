@@ -3,6 +3,7 @@ import { CouncilState, CouncilTypes } from './types';
 
 export const INITIAL_STATE: CouncilState = {
   data: {
+    company_id: { _id: '' },
     name: '',
     describe: '',
     initials: '',

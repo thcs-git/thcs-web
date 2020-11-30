@@ -22,6 +22,7 @@ export enum CouncilTypes {
 
 export interface CouncilInterface {
   _id?: string;
+  company_id: { _id: string; };
 	name: string;
 	describe?: string;
 	initials?: string;

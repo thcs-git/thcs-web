@@ -28,6 +28,7 @@ export const INITIAL_STATE: UserState = {
     specialties: [],
     council_id: {
       _id: '',
+      company_id: { _id: '' },
       name: '',
     },
     council_number: '',

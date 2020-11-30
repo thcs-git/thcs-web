@@ -102,7 +102,7 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
     cellphone: '',
     user_type_id: '',
     specialties: [],
-    council_id: { _id: '', name: '' },
+    council_id: { _id: '', company_id: { _id: '' }, name: '' },
     council_number: '',
     active: true,
   });

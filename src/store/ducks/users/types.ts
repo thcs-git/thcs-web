@@ -62,6 +62,7 @@ export interface UserInterface {
   specialties: (SpecialtiesUserInterface | {})[];
   council_id: {
     _id: string;
+    company_id: { _id: string; };
     name: string;
     describe?: string;
     initials?: string;

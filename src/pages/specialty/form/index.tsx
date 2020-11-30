@@ -19,7 +19,6 @@ import {
   Grid,
 } from '@material-ui/core';
 import Autocomplete from '@material-ui/lab/Autocomplete';
-import { SearchOutlined } from '@material-ui/icons';
 
 import { FormTitle } from '../../../styles/components/Form';
 import Sidebar from '../../../components/Sidebar';
@@ -52,7 +51,7 @@ export default function SpecialtyForm(props: RouteComponentProps<IPageParams>) {
     _id: props.match.params.id || '',
     name: '',
     describe: '',
-    council: { _id: '' },
+    council_id: { _id: '', name: '' },
     active: true
   });
 
@@ -79,10 +78,10 @@ export default function SpecialtyForm(props: RouteComponentProps<IPageParams>) {
   const handleCouncil = useCallback((event: any, newValue: any) => {
     setState(prevState => ({
       ...prevState,
-      council: { _id: newValue._id },
+      council_id: newValue,
     }));
 
-  }, [state.council]);
+  }, [state.council_id]);
 
   function handleOpenModalCancel() {
     setOpenModalCancel(true);
@@ -106,9 +105,9 @@ export default function SpecialtyForm(props: RouteComponentProps<IPageParams>) {
   }
 
   const selectCouncil = useCallback(() => {
-    const selected = councilState.list.filter(item => item._id === state.council._id);
+    const selected = councilState.list.filter(item => item._id === state.council_id._id);
     return (selected[0]) ? selected[0] : null;
-  }, [state.council]);
+  }, [state.council_id]);
 
   return (
     <Sidebar>
@@ -139,7 +138,7 @@ export default function SpecialtyForm(props: RouteComponentProps<IPageParams>) {
                     getOptionLabel={(option) => option.name}
                     renderInput={(params) => <TextField {...params} label="Conselho" variant="outlined" />}
                     value={selectCouncil()}
-                    getOptionSelected={(option, value) => option._id === state.council._id}
+                    getOptionSelected={(option, value) => option._id === state.council_id._id}
                     onChange={(event: any, newValue) => {
                       handleCouncil(event, newValue);
                     }}

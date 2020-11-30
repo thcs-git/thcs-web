@@ -9,7 +9,7 @@ export const INITIAL_STATE: CompanyState = {
     fantasy_name: '',
     fiscal_number: '',
     address: {
-      postalCode: '',
+      postal_code: '',
       street: '',
       number: '',
       district: '',

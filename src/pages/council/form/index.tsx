@@ -48,6 +48,7 @@ export default function EspecialtyForm(props: RouteComponentProps<IPageParams>) 
 
   const [state, setState] = useState<IFormFields>({
     _id: params.id || '',
+    company_id: { _id: '5fbc1eed871112075d3f9f7e' },
     name: '',
     describe: 'TESTE',
     initials: '',
