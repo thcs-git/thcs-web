@@ -9,7 +9,7 @@ import { loadRequest } from '../../../store/ducks/councils/actions';
 
 import Loading from '../../../components/Loading';
 import Sidebar from '../../../components/Sidebar';
-
+import SearchComponent from '../../../components/List/Search';
 import { FormTitle } from '../../../styles/components/Form';
 import Button from '../../../styles/components/Button';
 import {
@@ -52,24 +52,13 @@ export default function CouncilList() {
         <Container>
           <FormTitle>Lista de Conselhos</FormTitle>
 
-          <FormSearch noValidate autoComplete="off">
-            <FormControl variant="outlined" size="small" fullWidth>
-              <InputLabel htmlFor="search-input">Digite para pesquisar</InputLabel>
-              <OutlinedInput
-                id="search-input"
-                value={search}
-                onChange={(element) => setSearch(element.target.value)}
-                endAdornment={
-                  <InputAdornment position="end">
-                    <IconButton aria-label="search" edge="end">
-                      <SearchOutlined />
-                    </IconButton>
-                  </InputAdornment>
-                }
-                labelWidth={155}
-              />
-            </FormControl>
-          </FormSearch>
+          <SearchComponent
+            handleButton={() => history.push('/concil/create/')}
+            buttonTitle="Novo"
+            value=""
+            onChangeInput={() => {}}
+          />
+
 
           <List>
             {councilState.list.map((council, index) => (
@@ -86,12 +75,6 @@ export default function CouncilList() {
               </ListLink>
             ))}
           </List>
-
-          <ButtonsContent>
-            <Button variant="contained" background="primary" onClick={() => history.push('/council/create/')}>
-              Novo
-            </Button>
-          </ButtonsContent>
         </Container>
       </Sidebar>
     </>

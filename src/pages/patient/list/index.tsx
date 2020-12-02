@@ -4,6 +4,7 @@ import { Container, FormControl, InputLabel, OutlinedInput, InputAdornment, Icon
 import { SearchOutlined } from '@material-ui/icons';
 
 import Sidebar from '../../../components/Sidebar';
+import SearchComponent from '../../../components/List/Search';
 
 import { FormTitle } from '../../../styles/components/Form';
 import {
@@ -44,24 +45,12 @@ export default function PatientList() {
         <Container>
           <FormTitle>Lista de Pacientes</FormTitle>
 
-          <FormSearch noValidate autoComplete="off">
-            <FormControl variant="outlined" size="small" fullWidth>
-              <InputLabel htmlFor="search-input">Digite para pesquisar</InputLabel>
-              <OutlinedInput
-                id="search-input"
-                value={search}
-                onChange={(element) => setSearch(element.target.value)}
-                endAdornment={
-                  <InputAdornment position="end">
-                    <IconButton aria-label="toggle password visibility" edge="end">
-                      <SearchOutlined />
-                    </IconButton>
-                  </InputAdornment>
-                }
-                labelWidth={155}
-              />
-            </FormControl>
-          </FormSearch>
+          <SearchComponent
+            handleButton={() => history.push('/patient/create/')}
+            buttonTitle="Novo"
+            value=""
+            onChangeInput={() => {}}
+          />
 
           <List>
             {patients.map((patient) => (
@@ -78,12 +67,6 @@ export default function PatientList() {
               </ListLink>
             ))}
           </List>
-
-          <ButtonsContent>
-            <Button variant="contained" color="primary" onClick={() => history.push('/patient/create/')}>
-              Novo
-            </Button>
-          </ButtonsContent>
         </Container>
       </Sidebar>
     </>
