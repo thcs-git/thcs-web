@@ -218,8 +218,6 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
     } else {
       dispatch(createUserRequest(state));
     }
-
-    console.log('state', state);
   }, [state]);
 
   return (

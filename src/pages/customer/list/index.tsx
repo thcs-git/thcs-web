@@ -75,7 +75,7 @@ export default function CustomerList() {
           </FormSearch>
 
           <List>
-            {customerState.list.map((customer, index) => (
+            {customerState.list.map((customer) => (
               <ListLink key={customer._id} to={`/customer/${customer._id}/edit`}>
                 <ListItem variant="outlined">
                   <ListItemContent>

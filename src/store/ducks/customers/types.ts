@@ -5,6 +5,9 @@ export enum CustomerTypes {
   LOAD_REQUEST = "@customer/LOAD_REQUEST",
   LOAD_SUCCCES = "@customer/LOAD_SUCCCES",
   LOAD_FAILURE = "@customer/LOAD_FAILURE",
+
+  LOAD_REQUEST_BY_ID = "@customer/LOAD_REQUEST_BY_ID",
+  LOAD_SUCCESS_BY_ID = "@customer/LOAD_SUCCESS_BY_ID",
 }
 
 /**
@@ -13,18 +16,26 @@ export enum CustomerTypes {
 
 export interface CustomerInterface {
   id?: string;
-	socialName: string;
-	fantasyName: string;
-	fiscalNumber: string;
-	postalCode: string;
-	city: string;
-	neighborhood: string;
-	address: string;
-	addressNumber: string;
-	addressComplement: string;
-	email: string;
-	phone: string;
-	cellphone: string;
+  socialName?: string;
+  fantasyName?: string;
+  fiscalNumber?: string;
+  address: [{
+    neighborhood: string;
+    postal_code: string;
+    street: string,
+    number: string,
+    district: string;
+    city: string;
+    state: string;
+    complement: string;
+  }];
+  email?: string;
+  phones: [{
+    number: string,
+    telegram: boolean,
+    whatsapp: boolean,
+  }],
+  cellphone?: string;
 }
 
 export interface CustomerList {

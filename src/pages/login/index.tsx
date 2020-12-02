@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { loadRequest } from '../../store/ducks/login/actions';
 import { ApplicationState } from '../../store';
@@ -31,6 +31,8 @@ import Alert from '../../components/Alert';
 import Loading from '../../components/Loading';
 
 import validateEmail from '../../utils/validateEmail';
+import LOCALSTORAGE from '../../helpers/constants/localStorage';
+import { toast } from 'react-toastify';
 
 function Copyright() {
   return (
@@ -88,6 +90,15 @@ export default function SignIn() {
   const [showPassword, setShowPassword] = useState(false);
   const classes = useStyles();
 
+  useEffect(() => {
+    const expired = localStorage.getItem(LOCALSTORAGE.EXPIRED_SESSION);
+
+    if (expired) {
+      localStorage.removeItem(LOCALSTORAGE.EXPIRED_SESSION);
+      toast.error('Sessão expirada');
+    }
+  }, []);
+
   const handleClickShowPassword = useCallback(() => {
     setShowPassword(prev => !prev);
   }, []);
@@ -124,7 +135,7 @@ export default function SignIn() {
       <Container className={classes.container} maxWidth="xs">
         <CssBaseline />
         <div className={classes.paper}>
-          <Box display="flex" justifyContent="center" alignItems="center">
+          <Box display="flex" width={150} height={165} justifyContent="center" alignItems="center">
             <HomeIconLogo />
           </Box>
 

@@ -7,15 +7,23 @@ export const INITIAL_STATE: CustomerState = {
     socialName: '',
     fantasyName: '',
     fiscalNumber: '',
-    postalCode: '',
-    city: '',
-    neighborhood: '',
-    address: '',
-    addressNumber: '',
-    addressComplement: '',
+    address: [{
+      postal_code: '',
+      street: '',
+      number: '',
+      district: '',
+      city: '',
+      state: '',
+      complement: '',
+      neighborhood: ''
+    }],
     email: '',
-    phone: '',
-    cellphone: '',
+    phones: [{
+      number: '',
+      telegram: false,
+      whatsapp: false,
+    }],
+    cellphone: ''
   },
   list: [],
   error: false,
@@ -30,6 +38,12 @@ const reducer: Reducer<CustomerState> = (state = INITIAL_STATE, action) => {
       return {
         ...state,
         list: action.payload.data,
+        loading: false,
+      };
+    case CustomerTypes.LOAD_SUCCESS_BY_ID:
+      return {
+        ...state,
+        data: action.payload.data,
         loading: false,
       };
     case CustomerTypes.LOAD_FAILURE:

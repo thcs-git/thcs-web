@@ -1,4 +1,5 @@
 import axios from 'axios';
+import { toast } from 'react-toastify';
 
 import LOCALSTORAGE from '../helpers/constants/localStorage';
 
@@ -23,6 +24,23 @@ apiSollar.interceptors.request.use(
   },
   function(error) {
     // Do something with request error
+    return Promise.reject(error);
+  }
+);
+
+apiSollar.interceptors.response.use(
+  response => {
+    return response;
+  },
+  error => {
+    if (!error.response) return;
+
+    const { err } = error.response.data;
+    if (err?.name === 'TokenExpiredError') {
+      localStorage.removeItem(LOCALSTORAGE.TOKEN);
+      localStorage.setItem(LOCALSTORAGE.EXPIRED_SESSION, JSON.stringify(err));
+      window.location.href = '/login';
+    }
     return Promise.reject(error);
   }
 );
