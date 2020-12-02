@@ -10,6 +10,10 @@ export const apiSollar = axios.create({
   baseURL: 'https://sollar-backend.herokuapp.com/api',
 });
 
+export const ibge = axios.create({
+  baseURL: process.env.REACT_APP_IBGE,
+});
+
 apiSollar.interceptors.request.use(
   function(config) {
     // Do something before request is sent

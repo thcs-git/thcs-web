@@ -7,6 +7,7 @@ export const INITIAL_STATE: CouncilState = {
     name: '',
     describe: '',
     initials: '',
+    federative_unit: '',
     active: true,
   },
   list: [],

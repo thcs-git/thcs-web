@@ -25,7 +25,7 @@ import UserList from '../pages/user/list';
 import UserForm from '../pages/user/form';
 
 import PatientList from '../pages/patient/list';
-// import PatientForm from '../pages/patient/form';
+import PatientForm from '../pages/patient/form';
 
 import Login from '../pages/login';
 
@@ -69,8 +69,8 @@ const Routes = () => (
 
       {/* Patient */}
       <PrivateRoute path="/patient" component={PatientList} exact />
-      {/* <Route path="/patient/:id/edit" component={PatientForm} />
-      <Route path="/patient/create" component={PatientForm} /> */}
+      <PrivateRoute path="/patient/:id/edit" component={PatientForm} />
+      <PrivateRoute path="/patient/create" component={PatientForm} />
     </Switch>
   </BrowserRouter>
 );

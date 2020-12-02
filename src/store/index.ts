@@ -7,6 +7,7 @@ import { CouncilState } from './ducks/councils/types';
 import { CustomerState } from './ducks/customers/types';
 import { SpecialtyState } from './ducks/specialties/types';
 import { LoginState } from './ducks/login/types';
+import { PatientState } from './ducks/patients/types';
 import { UserState } from './ducks/users/types';
 
 import { InitialState } from './ducks/states';
@@ -21,6 +22,7 @@ export interface ApplicationState {
   specialties: SpecialtyState;
   councils: CouncilState;
   users: UserState;
+  patients: PatientState;
 }
 
 const sagaMiddleware = createSagaMiddleware();

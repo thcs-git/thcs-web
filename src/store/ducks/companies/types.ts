@@ -42,6 +42,7 @@ export interface CompanyInterface {
 	phone: string;
 	cellphone: string;
 	active: boolean;
+	created_by: { _id: string };
 }
 
 export interface ViacepDataInterface {

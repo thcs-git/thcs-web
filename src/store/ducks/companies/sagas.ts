@@ -37,6 +37,7 @@ export function* getAddress({payload}:any) {
 }
 
 export function* createCompany({ payload: { data } }: any) {
+  console.log('data', data);
   try {
     const response:AxiosResponse = yield call(apiSollar.post, `/companies/store`, data, { headers: { token } })
 
