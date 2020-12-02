@@ -8,12 +8,14 @@ export enum CustomerTypes {
 
   LOAD_REQUEST_BY_ID = "@customer/LOAD_REQUEST_BY_ID",
   LOAD_SUCCESS_BY_ID = "@customer/LOAD_SUCCESS_BY_ID",
+
+  LOAD_REQUEST_ADDRESS = "@customer/LOAD_REQUEST_ADDRESS",
+  LOAD_RESPONSE_ADDRESS = "@company/LOAD_RESPONSE_ADDRESS",
 }
 
 /**
  * Data types
  */
-
 export interface CustomerInterface {
   id?: string;
   socialName?: string;
@@ -36,6 +38,16 @@ export interface CustomerInterface {
     whatsapp: boolean,
   }],
   cellphone?: string;
+}
+
+export interface ViacepDataInterface {
+  cep: string,
+  logradouro: string,
+  complemento: string,
+  bairro: string,
+  localidade: string,
+  uf: string,
+  erro?: boolean,
 }
 
 export interface CustomerList {
