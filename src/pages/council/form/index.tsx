@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react';
 
 import { useDispatch, useSelector } from 'react-redux';
-import { CouncilInterface } from '../../../store/ducks/councils/types';
-import { loadRequest } from '../../../store/ducks/councils/actions';
 import { ApplicationState } from '../../../store';
+import { CouncilInterface } from '../../../store/ducks/councils/types';
+import { loadRequest, loadCouncilById, createCouncilRequest, updateCouncilRequest } from '../../../store/ducks/councils/actions';
 
 import { useHistory, RouteComponentProps } from 'react-router-dom';
 import {
@@ -15,14 +15,15 @@ import {
   DialogTitle,
   FormControlLabel,
   Grid,
-  Switch,
 } from '@material-ui/core';
-import Autocomplete from '@material-ui/lab/Autocomplete';
-import { SearchOutlined } from '@material-ui/icons';
 
+import Loading from '../../../components/Loading';
 import Sidebar from '../../../components/Sidebar';
+
 import { FormTitle } from '../../../styles/components/Form';
 import Button from '../../../styles/components/Button';
+import { SwitchComponent as Switch } from '../../../styles/components/Switch';
+import ButtonComponent from '../../../styles/components/Button';
 
 import {
   ButtonsContent,
@@ -41,12 +42,15 @@ interface IPageParams {
 export default function EspecialtyForm(props: RouteComponentProps<IPageParams>) {
   const history = useHistory();
   const dispatch = useDispatch();
-  const councilState = useSelector((state: ApplicationState) => state.councils).data;
+  const councilState = useSelector((state: ApplicationState) => state.councils);
+
+  const { params } = props.match;
 
   const [state, setState] = useState<IFormFields>({
-    _id: props.match.params.id || '',
+    _id: params.id || '',
+    company_id: { _id: '5fbc1eed871112075d3f9f7e' },
     name: '',
-    describe: '',
+    describe: 'TESTE',
     initials: '',
     active: true
   });
@@ -55,11 +59,27 @@ export default function EspecialtyForm(props: RouteComponentProps<IPageParams>) 
 
   useEffect(() => {
     dispatch(loadRequest());
-    setState({ ...state, ...councilState })
-  }, [dispatch]);
 
-  function handleSaveFormCustomer() {
-    console.log(state);
+    if (params.id) {
+      dispatch(loadCouncilById(params.id))
+    }
+  }, [dispatch, params]);
+
+  useEffect(() => {
+    setState(prevState => {
+      return {
+        ...prevState,
+        ...councilState.data
+      }
+    })
+  }, [councilState]);
+
+  function handleSaveFormCouncil() {
+    if (state?._id) {
+      dispatch(updateCouncilRequest(state));
+    } else {
+      dispatch(createCouncilRequest(state))
+    }
   }
 
   function handleOpenModalCancel() {
@@ -72,12 +92,12 @@ export default function EspecialtyForm(props: RouteComponentProps<IPageParams>) 
 
   function handleCancelForm() {
     setOpenModalCancel(false);
-    history.back();
+    history.push(`/council`);
   }
 
   return (
     <Sidebar>
-      {console.log('councilState', councilState)}
+      {councilState.loading && <Loading />}
       <Container>
         <FormSection>
           <FormContent>
@@ -87,7 +107,7 @@ export default function EspecialtyForm(props: RouteComponentProps<IPageParams>) 
               <Grid container>
                 <Grid item md={12} xs={12}>
                   <TextField
-                    id="input-social-name"
+                    id="input-description"
                     label="Descrição"
                     variant="outlined"
                     size="small"
@@ -98,7 +118,7 @@ export default function EspecialtyForm(props: RouteComponentProps<IPageParams>) 
                 </Grid>
                 <Grid item md={12} xs={12}>
                   <TextField
-                    id="input-social-name"
+                    id="input-initials"
                     label="Sigla"
                     variant="outlined"
                     size="small"
@@ -108,20 +128,25 @@ export default function EspecialtyForm(props: RouteComponentProps<IPageParams>) 
                   />
                 </Grid>
                 {state?._id && (
-                  <Grid item>
-                    <FormControlLabel control={<Switch onChange={(event) => setState({ ...state, active: event.target.checked })} />} label="Ativo?" />
+                  <Grid item xs={12} md={12}>
+                    <FormControlLabel control={<Switch checked={state.active} onChange={(event) => {
+                      setState(prevState => ({
+                        ...prevState,
+                        active: event.target.checked
+                      }))
+                    }} />} label="Ativo?" />
                   </Grid>
                 )}
               </Grid>
             </FormGroupSection>
           </FormContent>
           <ButtonsContent>
-            <Button variant="outlined" background="default" onClick={() => handleOpenModalCancel()}>
+            <ButtonComponent background="default" onClick={() => councilState.success ? history.push('/council') : handleOpenModalCancel()}>
               Cancelar
-              </Button>
-            <Button variant="contained" background="success" onClick={() => handleSaveFormCustomer()}>
+            </ButtonComponent>
+            <ButtonComponent variant="contained" background="success" onClick={() => handleSaveFormCouncil()}>
               Salvar
-					</Button>
+					  </ButtonComponent>
           </ButtonsContent>
         </FormSection>
       </Container>

@@ -10,6 +10,8 @@ export const InfoSection = styled.div`
 `;
 
 export const ActionCard = styled(Paper)`
+  cursor: pointer;
+
   margin: 10px 20px;
   padding: 20px;
 
@@ -35,6 +37,11 @@ export const ActionCard = styled(Paper)`
     font-size: 16px;
     font-weight: bold;
     color: var(--gray-dark);
+  }
+
+  &:active {
+    transform: scale(0.8);
+    transition: 0.2s ease-in-out;
   }
 
 `;

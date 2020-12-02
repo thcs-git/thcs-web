@@ -2,8 +2,6 @@ import React, { useState, Props, useRef, useEffect, useCallback } from 'react';
 import clsx from 'clsx';
 import { createStyles, makeStyles, useTheme, Theme } from '@material-ui/core/styles';
 import Drawer from '@material-ui/core/Drawer';
-import AppBar from '@material-ui/core/AppBar';
-import Toolbar from '@material-ui/core/Toolbar';
 import List from '@material-ui/core/List';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import Typography from '@material-ui/core/Typography';
@@ -11,12 +9,19 @@ import Divider from '@material-ui/core/Divider';
 import IconButton from '@material-ui/core/IconButton';
 import MenuIcon from '@material-ui/icons/Menu';
 import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
-import ChevronRightIcon from '@material-ui/icons/ChevronRight';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
-import InboxIcon from '@material-ui/icons/MoveToInbox';
-import MailIcon from '@material-ui/icons/Mail';
+import ExitToApp from '@material-ui/icons/ExitToApp';
+
+import {
+  Button,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogContentText,
+  DialogTitle,
+} from '@material-ui/core';
 
 import { useHistory } from "react-router-dom";
 
@@ -104,6 +109,9 @@ const useStyles = makeStyles((theme: Theme) =>
       flexGrow: 1,
       padding: theme.spacing(3),
     },
+    logOutButton: {
+      cursor: 'pointer',
+    },
   })
 );
 console.log(localStorage.getItem(LOCALSTORAGE.TOGGLE_SIDEBAR));
@@ -118,10 +126,11 @@ export default function Sibebar(props: Props<any>) {
     return JSON.parse(toggleSidebar)
   });
 
+  const [openModalLogout, setOpenModalLogout] = useState(false);
+
   const AccordionRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    // console.log('entrou')
     // if (!open) AccordionRef.current?.removeAttribute('expanded')
     // else AccordionRef.current?.setAttribute('expanded', 'true');
   }, [open]);
@@ -132,6 +141,22 @@ export default function Sibebar(props: Props<any>) {
       return !prev
     });
   }, []);
+
+  const openDropDownAndMenu = () => {
+  };
+
+  const handleLogout = () => {
+    localStorage.removeItem('@sollar_token');
+    window.location.reload();
+  };
+
+  const handleOpenModalLogout = () => {
+    setOpenModalLogout(true);
+  }
+
+  const handleCloseModalLogout = () => {
+    setOpenModalLogout(false);
+  }
 
   return (
     <div className={classes.root}>
@@ -185,19 +210,41 @@ export default function Sibebar(props: Props<any>) {
             </AccordionDetails>
           </AccordionMenu> */}
         </List>
-        {/* <Divider /> */}
-        {/* <List>
-          {['All mail', 'Trash', 'Spam'].map((text, index) => (
-            <ListItem button key={text}>
-              <ListItemIcon>{index % 2 === 0 ? <InboxIcon /> : <MailIcon />}</ListItemIcon>
-              <ListItemText primary={text} />
-            </ListItem>
-          ))}
-        </List> */}
+        <Divider />
+        <List disablePadding={true}>
+          <ListItem style={{ marginLeft: 10 }} className={classes.logOutButton} onClick={handleOpenModalLogout}>
+            <ListItemIcon>
+              <ExitToApp style={{ color: '#fff' }} />
+            </ListItemIcon>
+            <ListItemText primary="Sair" />
+          </ListItem>
+        </List>
       </Drawer>
       <main className={classes.content}>
         {props.children}
       </main>
+
+      <Dialog
+        open={openModalLogout}
+        onClose={handleCloseModalLogout}
+        aria-labelledby="alert-dialog-title"
+        aria-describedby="alert-dialog-description"
+      >
+        <DialogTitle id="alert-dialog-title">Já vai?</DialogTitle>
+        <DialogContent>
+          <DialogContentText id="alert-dialog-description">
+            Tem certeza que deseja sair do Sollar?
+					</DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleCloseModalLogout} color="primary">
+            Não
+					</Button>
+          <Button onClick={handleLogout} color="primary" autoFocus>
+            Sim
+					</Button>
+        </DialogActions>
+      </Dialog>
     </div>
   );
 }

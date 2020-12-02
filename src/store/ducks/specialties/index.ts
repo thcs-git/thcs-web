@@ -4,7 +4,7 @@ import { SpecialtyState, SpecialtyTypes } from './types';
 export const INITIAL_STATE: SpecialtyState = {
   data: {
     _id: '',
-    council: '',
+    council_id: { _id: '', name: '' },
     name: '',
     describe: '',
     active: true,
@@ -12,6 +12,7 @@ export const INITIAL_STATE: SpecialtyState = {
   list: [],
   error: false,
   loading: false,
+  success: false,
 };
 
 const reducer: Reducer<SpecialtyState> = (state = INITIAL_STATE, action) => {
@@ -26,8 +27,33 @@ const reducer: Reducer<SpecialtyState> = (state = INITIAL_STATE, action) => {
       };
     case SpecialtyTypes.LOAD_FAILURE:
       return {
-      ...state, loading: false, error: true
+      ...state, loading: false, error: true, success: false
       };
+    case SpecialtyTypes.LOAD_SUCCESS_SPECIALTY_BY_ID:
+      return {
+        ...state,
+        data: action.payload.data,
+        loading: false,
+        error: false,
+        success: false,
+      };
+
+    case SpecialtyTypes.UPDATE_SPECIALTY_REQUEST:
+      return {
+        ...state,
+        data: action.payload.data,
+        loading: true,
+        error: false,
+        success: true
+      }
+    case SpecialtyTypes.UPDATE_SPECIALTY_SUCCESS:
+      return {
+        ...state,
+        data: action.payload.data,
+        loading: false,
+        error: false,
+        success: true
+      }
     default:
       return state;
   }

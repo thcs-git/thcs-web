@@ -3,13 +3,13 @@ import { CompanyState, CompanyTypes } from './types';
 
 export const INITIAL_STATE: CompanyState = {
   data: {
-    id: '',
+    _id: '',
     customerId: '',
     name: '',
-    fantasyName: '',
-    fiscalNumber: '',
+    fantasy_name: '',
+    fiscal_number: '',
     address: {
-      postalCode: '',
+      postal_code: '',
       street: '',
       number: '',
       district: '',
@@ -22,8 +22,10 @@ export const INITIAL_STATE: CompanyState = {
     cellphone: '',
     active: true,
   },
+  list: [],
   error: false,
   loading: false,
+  success: false,
 };
 
 const reducer: Reducer<CompanyState> = (state = INITIAL_STATE, action) => {
@@ -33,12 +35,12 @@ const reducer: Reducer<CompanyState> = (state = INITIAL_STATE, action) => {
     case CompanyTypes.LOAD_SUCCCES:
       return {
         ...state,
-        data: action.payload,
+        list: action.payload.data,
         loading: false,
       };
     case CompanyTypes.LOAD_FAILURE:
       return {
-      ...state, loading: false, error: true
+      ...state, loading: false, error: true, success: false,
       };
     case CompanyTypes.LOAD_RESPONSE_ADDRESS:
       return {
@@ -59,6 +61,31 @@ const reducer: Reducer<CompanyState> = (state = INITIAL_STATE, action) => {
           }
         }
       };
+      case CompanyTypes.LOAD_SUCCESS_COMPANY_BY_ID:
+        return {
+          ...state,
+          data: action.payload.data,
+          loading: false,
+          error: false,
+          success: false,
+        };
+
+      case CompanyTypes.UPDATE_COMPANY_REQUEST:
+        return {
+          ...state,
+          data: action.payload.data,
+          loading: true,
+          error: false,
+          success: true
+        }
+      case CompanyTypes.UPDATE_COMPANY_SUCCESS:
+        return {
+          ...state,
+          data: action.payload.data,
+          loading: false,
+          error: false,
+          success: true
+        }
     default:
       return state;
   }

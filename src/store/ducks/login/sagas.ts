@@ -22,7 +22,7 @@ export function* doLogin({ payload }: any) {
     location.reload();
 
   } catch (err) {
-    yield put(loadFailure()); console.log('passoiu');
+    yield put(loadFailure());
 
     toast.error("E-mail e/ou senha errada.");
   }

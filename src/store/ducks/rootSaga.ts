@@ -10,16 +10,16 @@ import { CustomerTypes } from './customers/types';
 import { get, getCustomerById } from './customers/sagas';
 
 import { CompanyTypes } from './companies/types';
-import { getAddress, createCompany } from './companies/sagas';
+import { get as getCompanies, getAddress, createCompany, getById as getCompanyById, update as updateCompany } from './companies/sagas';
 
 import { SpecialtyTypes } from './specialties/types';
-import { get as getSpecialty } from './specialties/sagas';
+import { get as getSpecialties, store as storeSpecialty, getById as getSpecialtyById, update as updateSpecialty } from './specialties/sagas';
 
 import { CouncilTypes } from './councils/types';
-import { get as getCouncil } from './councils/sagas';
+import { get as getCouncils, store as storeCouncil, getById as getCouncilById, update as updateCouncil } from './councils/sagas';
 
 import { UserTypes } from './users/types';
-import { createUser, getAddress as getAddressUser, getUserById, updateUser, get as getUsers } from './users/sagas';
+import { get as getUsers, createUser, getAddress as getAddressUser, getUserById, updateUser } from './users/sagas';
 
 export default function* rootSaga() {
   return yield all([
@@ -27,12 +27,26 @@ export default function* rootSaga() {
     // takeLatest(AreaTypes.LOAD_REQUEST, getAreas),
     // takeLatest(EspecialtyTypes.LOAD_REQUEST, getEspecialty),
     // takeLatest(CouncilTypes.LOAD_REQUEST, getCouncil),
-    takeLatest(SpecialtyTypes.LOAD_REQUEST, getSpecialty),
-    takeLatest(CouncilTypes.LOAD_REQUEST, getCouncil),
+    // takeLatest(CustomerTypes.LOAD_REQUEST, get),
+
+    // Council
+    takeLatest(CouncilTypes.LOAD_REQUEST, getCouncils),
+    takeLatest(CouncilTypes.LOAD_REQUEST_COUNCIL_BY_ID, getCouncilById),
+    takeLatest(CouncilTypes.CREATE_COUNCIL_REQUEST, storeCouncil),
+    takeLatest(CouncilTypes.UPDATE_COUNCIL_REQUEST, updateCouncil),
+
+    // Specialty
+    takeLatest(SpecialtyTypes.LOAD_REQUEST, getSpecialties),
+    takeLatest(SpecialtyTypes.LOAD_REQUEST_SPECIALTY_BY_ID, getSpecialtyById),
+    takeLatest(SpecialtyTypes.CREATE_SPECIALTY_REQUEST, storeSpecialty),
+    takeLatest(SpecialtyTypes.UPDATE_SPECIALTY_REQUEST, updateSpecialty),
 
     // Company
-    takeLatest(CompanyTypes.CREATE_COMPANY_REQUEST, createCompany),
+    takeLatest(CompanyTypes.LOAD_REQUEST, getCompanies),
     takeLatest(CompanyTypes.LOAD_REQUEST_ADDRESS, getAddress),
+    takeLatest(CompanyTypes.LOAD_REQUEST_COMPANY_BY_ID, getCompanyById),
+    takeLatest(CompanyTypes.CREATE_COMPANY_REQUEST, createCompany),
+    takeLatest(CompanyTypes.UPDATE_COMPANY_REQUEST, updateCompany),
 
     /** Customers */
     takeLatest(CustomerTypes.LOAD_REQUEST, get),

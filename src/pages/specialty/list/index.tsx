@@ -1,8 +1,13 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useHistory } from 'react-router-dom';
 import { Container, FormControl, InputLabel, OutlinedInput, InputAdornment, IconButton } from '@material-ui/core';
 import { SearchOutlined } from '@material-ui/icons';
 
+import { useDispatch, useSelector } from 'react-redux';
+import { ApplicationState } from '../../../store/';
+import { loadRequest } from '../../../store/ducks/specialties/actions';
+
+import Loading from '../../../components/Loading';
 import Sidebar from '../../../components/Sidebar';
 
 import { FormTitle } from '../../../styles/components/Form';
@@ -21,15 +26,16 @@ import {
 
 export default function SpecialtyList() {
   const history = useHistory();
+  const dispatch = useDispatch();
+  const especialtyState = useSelector((state: ApplicationState) => state.specialties);
 
   const [search, setSearch] = useState('');
 
-  const [specialties, setSpecialties] = useState([
-    { id: 1, name: 'specialty 1', active: true },
-    { id: 2, name: 'specialty 2', active: false },
-  ]);
-
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
+
+  useEffect(() => {
+    dispatch(loadRequest());
+  }, [])
 
   const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
     setAnchorEl(event.currentTarget);
@@ -42,6 +48,7 @@ export default function SpecialtyList() {
   return (
     <>
       <Sidebar>
+        {especialtyState.loading && <Loading />}
         <Container>
           <FormTitle>Lista de Especialidades</FormTitle>
 
@@ -65,8 +72,8 @@ export default function SpecialtyList() {
           </FormSearch>
 
           <List>
-            {specialties.map((specialty, index) => (
-              <ListLink key={index} to={`/specialty/${specialty.id}/edit`}>
+            {especialtyState.list.map((specialty, index) => (
+              <ListLink key={index} to={`/specialty/${specialty._id}/edit`}>
                 <ListItem variant="outlined">
                   <ListItemContent>
                     <ListItemStatus active={specialty.active}>{specialty.active ? 'Ativo' : 'Inativo'}</ListItemStatus>

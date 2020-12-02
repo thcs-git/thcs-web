@@ -1,10 +1,14 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { loadRequest } from '../../../store/ducks/specialties/actions';
 import { ApplicationState } from '../../../store';
+import { loadRequest, loadSpecialtyById, createSpecialtyRequest, updateSpecialtyRequest } from '../../../store/ducks/specialties/actions';
+import { SpecialtyInterface } from '../../../store/ducks/specialties/types';
+
+import { loadRequest as getCouncilsAction } from '../../../store/ducks/councils/actions';
 
 import { useHistory, RouteComponentProps } from 'react-router-dom';
 import {
+  Button,
   Container,
   Dialog,
   DialogActions,
@@ -13,14 +17,15 @@ import {
   DialogTitle,
   FormControlLabel,
   Grid,
-  Switch,
 } from '@material-ui/core';
 import Autocomplete from '@material-ui/lab/Autocomplete';
-import { SearchOutlined } from '@material-ui/icons';
 
-import Sidebar from '../../../components/Sidebar';
 import { FormTitle } from '../../../styles/components/Form';
-import Button from '../../../styles/components/Button';
+import Sidebar from '../../../components/Sidebar';
+import { SwitchComponent as Switch } from '../../../styles/components/Switch';
+import ButtonComponent from '../../../styles/components/Button';
+
+import Loading from '../../../components/Loading';
 
 import {
   ButtonsContent,
@@ -30,13 +35,6 @@ import {
   FormGroupSection
 } from './styles';
 
-interface IFormFields {
-  id?: string;
-  description: string;
-  councilId: string,
-  active: boolean;
-}
-
 interface IPageParams {
   id?: string;
 }
@@ -44,16 +42,16 @@ interface IPageParams {
 export default function SpecialtyForm(props: RouteComponentProps<IPageParams>) {
   const history = useHistory();
   const dispatch = useDispatch();
-  const especialtyState = useSelector((state: ApplicationState) => state.specialties).data;
-  const councils = [
-    { id: '1', description: 'CRM' },
-    { id: '2', description: 'CRO' },
-  ]
+  const specialtyState = useSelector((state: ApplicationState) => state.specialties);
+  const councilState = useSelector((state: ApplicationState) => state.councils);
 
-  const [state, setState] = useState<IFormFields>({
-    id: props.match.params.id || '',
-    description: '',
-    councilId: '',
+  const { params } = props.match;
+
+  const [state, setState] = useState<SpecialtyInterface>({
+    _id: props.match.params.id || '',
+    name: '',
+    describe: '',
+    council_id: { _id: '', name: '' },
     active: true
   });
 
@@ -61,12 +59,29 @@ export default function SpecialtyForm(props: RouteComponentProps<IPageParams>) {
 
   useEffect(() => {
     dispatch(loadRequest());
-    setState({ ...state, ...especialtyState })
-  }, [dispatch]);
+    dispatch(getCouncilsAction())
 
-  function handleSaveFormCustomer() {
-    console.log(state);
-  }
+    if (params.id) {
+      dispatch(loadSpecialtyById(params.id))
+    }
+  }, [dispatch, params]);
+
+  useEffect(() => {
+    setState(prevState => {
+      return {
+        ...prevState,
+        ...specialtyState.data
+      }
+    })
+  }, [specialtyState]);
+
+  const handleCouncil = useCallback((event: any, newValue: any) => {
+    setState(prevState => ({
+      ...prevState,
+      council_id: newValue,
+    }));
+
+  }, [state.council_id]);
 
   function handleOpenModalCancel() {
     setOpenModalCancel(true);
@@ -76,14 +91,28 @@ export default function SpecialtyForm(props: RouteComponentProps<IPageParams>) {
     setOpenModalCancel(false);
   }
 
+  function handleSaveFormCustomer() {
+    if (state?._id) {
+      dispatch(updateSpecialtyRequest(state));
+    } else {
+      dispatch(createSpecialtyRequest(state))
+    }
+  }
+
   function handleCancelForm() {
     setOpenModalCancel(false);
-    // history.back();
+    history.push(`/specialty`);
   }
+
+  const selectCouncil = useCallback(() => {
+    const selected = councilState.list.filter(item => item._id === state.council_id._id);
+    return (selected[0]) ? selected[0] : null;
+  }, [state.council_id]);
 
   return (
     <Sidebar>
-      {console.log('especialtyState', especialtyState)}
+      {specialtyState.loading && <Loading />}
+      {console.log('state', state)}
       <Container>
         <FormSection>
           <FormContent>
@@ -91,58 +120,53 @@ export default function SpecialtyForm(props: RouteComponentProps<IPageParams>) {
 
             <FormGroupSection>
               <Grid container>
-                {state?.id && (
-                  <Grid item md={12} xs={12}>
-                    <TextField
-                      id="input-customer-id"
-                      label="ID"
-                      variant="outlined"
-                      size="small"
-                      value={state.id}
-                      fullWidth
-                      disabled
-                    />
-                  </Grid>
-                )}
                 <Grid item md={12} xs={12}>
                   <TextField
                     id="input-social-name"
                     label="Descrição"
                     variant="outlined"
                     size="small"
-                    value={state.description}
-                    onChange={(element) => setState({ ...state, description: element.target.value })}
+                    value={state.name}
+                    onChange={(element) => setState({ ...state, name: element.target.value })}
                     fullWidth
                   />
                 </Grid>
                 <Grid item md={12} xs={12}>
                   <Autocomplete
-                    id="combo-box-demo"
-                    options={councils}
-                    getOptionLabel={(option) => option.description}
+                    id="combo-box-council"
+                    options={councilState.list}
+                    getOptionLabel={(option) => option.name}
                     renderInput={(params) => <TextField {...params} label="Conselho" variant="outlined" />}
-                    onChange={(event, value) => {
-                      setState({ ...state, councilId: value?.id || '' });
+                    value={selectCouncil()}
+                    getOptionSelected={(option, value) => option._id === state.council_id._id}
+                    onChange={(event: any, newValue) => {
+                      handleCouncil(event, newValue);
                     }}
                     size="small"
                     fullWidth
                   />
                 </Grid>
-                {state?.id && (
-                  <Grid item>
-                    <FormControlLabel control={<Switch onChange={(event) => setState({ ...state, active: event.target.checked })} />} label="Ativo?" />
+
+                {state?._id && (
+                  <Grid item xs={12} md={12}>
+                    <FormControlLabel control={<Switch checked={state.active} onChange={(event) => {
+                      setState(prevState => ({
+                        ...prevState,
+                        active: event.target.checked
+                      }))
+                    }} />} label="Ativo?" />
                   </Grid>
                 )}
               </Grid>
             </FormGroupSection>
           </FormContent>
           <ButtonsContent>
-            <Button variant="outlined" background="default" onClick={() => handleOpenModalCancel()}>
+            <ButtonComponent background="default" onClick={() => specialtyState.success ? history.push('/specialty') : handleOpenModalCancel()}>
               Cancelar
-              </Button>
-            <Button variant="contained" background="success" onClick={() => handleSaveFormCustomer()}>
+            </ButtonComponent>
+            <ButtonComponent variant="contained" background="success" onClick={() => handleSaveFormCustomer()}>
               Salvar
-					</Button>
+					  </ButtonComponent>
           </ButtonsContent>
         </FormSection>
       </Container>

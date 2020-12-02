@@ -3,7 +3,7 @@ import { CouncilState, CouncilTypes } from './types';
 
 export const INITIAL_STATE: CouncilState = {
   data: {
-    _id: '',
+    company_id: { _id: '' },
     name: '',
     describe: '',
     initials: '',
@@ -12,6 +12,7 @@ export const INITIAL_STATE: CouncilState = {
   list: [],
   error: false,
   loading: false,
+  success: false,
 };
 
 const reducer: Reducer<CouncilState> = (state = INITIAL_STATE, action) => {
@@ -28,6 +29,31 @@ const reducer: Reducer<CouncilState> = (state = INITIAL_STATE, action) => {
       return {
       ...state, loading: false, error: true
       };
+    case CouncilTypes.LOAD_SUCCESS_COUNCIL_BY_ID:
+      return {
+        ...state,
+        data: action.payload.data,
+        loading: false,
+        error: false,
+        success: false,
+      };
+
+    case CouncilTypes.UPDATE_COUNCIL_REQUEST:
+      return {
+        ...state,
+        data: action.payload.data,
+        loading: true,
+        error: false,
+        success: true
+      }
+    case CouncilTypes.UPDATE_COUNCIL_SUCCESS:
+      return {
+        ...state,
+        data: action.payload.data,
+        loading: false,
+        error: false,
+        success: true
+      }
     default:
       return state;
   }

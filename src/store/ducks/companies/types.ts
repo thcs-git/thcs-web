@@ -5,9 +5,18 @@ export enum CompanyTypes {
   LOAD_REQUEST = "@company/LOAD_REQUEST",
   LOAD_SUCCCES = "@company/LOAD_SUCCCES",
   LOAD_FAILURE = "@company/LOAD_FAILURE",
+
   LOAD_REQUEST_ADDRESS = "@company/LOAD_REQUEST_ADDRESS",
   LOAD_RESPONSE_ADDRESS = "@company/LOAD_RESPONSE_ADDRESS",
+
   CREATE_COMPANY_REQUEST = "@company/CREATE_COMPANY_REQUEST",
+  CREATE_COMPANY_SUCCESS = "@company/CREATE_COMPANY_SUCCESS",
+
+  LOAD_REQUEST_COMPANY_BY_ID = "@council/LOAD_REQUEST_COMPANY_BY_ID",
+  LOAD_SUCCESS_COMPANY_BY_ID = "@council/LOAD_SUCCESS_COMPANY_BY_ID",
+
+  UPDATE_COMPANY_REQUEST = "@company/UPDATE_COMPANY_REQUEST",
+  UPDATE_COMPANY_SUCCESS = "@company/UPDATE_COMPANY_SUCCESS",
 }
 
 /**
@@ -15,13 +24,13 @@ export enum CompanyTypes {
  */
 
 export interface CompanyInterface {
-  id?: string;
+  _id?: string;
   customerId: string;
 	name: string;
-	fantasyName: string;
-	fiscalNumber: string;
+	fantasy_name: string;
+	fiscal_number: string;
 	address: {
-    postalCode: string;
+    postal_code: string;
     street: string,
     number: string,
     district: string;
@@ -51,6 +60,8 @@ export interface ViacepDataInterface {
  */
 export interface CompanyState {
   data: CompanyInterface;
+  list: CompanyInterface[];
   loading: boolean;
   error: boolean;
+  success: boolean;
 }

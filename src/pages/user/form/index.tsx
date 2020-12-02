@@ -102,7 +102,7 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
     cellphone: '',
     user_type_id: '',
     specialties: [],
-    council_id: { _id: '', name: '' },
+    council_id: { _id: '', company_id: { _id: '' }, name: '' },
     council_number: '',
     active: true,
   });
@@ -223,7 +223,6 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
   return (
     <Sidebar>
       {userState.loading && <Loading />}
-      {console.log(userState)}
       <Container>
         <FormSection>
           <FormContent>
@@ -500,8 +499,6 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
                       </FormGroupSection>
                     </Grid>
                     <Grid item md={2} xs={12}>
-                      {console.log('state.council_id._id', state.council_id._id)}
-                      {console.log('councilState.list', councilState.list)}
                       <FormGroupSection>
                         <Autocomplete
                           id="combo-box-council"
@@ -587,30 +584,6 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
           </ButtonsContent>
         </FormSection>
       </Container>
-
-      {/* <Snackbar
-        autoHideDuration={10}
-        anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
-        open={userState.error}
-        key={'create_user_error'}
-        onClose={() => console.log('fechar toast')}
-      >
-        <Alert severity="error" onClose={() => console.log('2 fechar toast')}>
-          Não foi possível cadastrar o usuário
-        </Alert>
-      </Snackbar> */}
-
-      {/* <Snackbar
-        autoHideDuration={10}
-        anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
-        open={userState.success && !userState.error}
-        key={'create_user_success'}
-        onClose={() => console.log('fechar toast')}
-      >
-        <Alert severity="success" onClose={() => console.log('2 fechar toast')}>
-          Usuário cadastrado com sucesso!
-        </Alert>
-      </Snackbar> */}
 
       <Dialog
         open={openModalCancel}
