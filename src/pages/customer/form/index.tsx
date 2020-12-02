@@ -1,6 +1,6 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { loadRequest } from '../../../store/ducks/customers/actions';
+import { loadRequest, loadCustomerById } from '../../../store/ducks/customers/actions';
 import { ApplicationState } from '../../../store';
 
 import { useHistory, RouteComponentProps } from 'react-router-dom';
@@ -23,6 +23,8 @@ import { FormTitle } from '../../../styles/components/Form';
 
 import DatePicker from '../../../styles/components/DatePicker';
 
+import { CustomerInterface } from '../../../store/ducks/customers/types';
+
 import {
   ButtonsContent,
   ButtonDefeault,
@@ -34,22 +36,6 @@ import {
   FormGroupSection
 } from './styles';
 
-interface IFormFields {
-  id?: string;
-  socialName?: string;
-  fantasyName?: string;
-  fiscalNumber?: string;
-  postalCode?: string;
-  city?: string;
-  neighborhood?: string;
-  address?: string;
-  addressNumber?: string;
-  addressComplement?: string;
-  email?: string;
-  phone?: string;
-  cellphone?: string;
-}
-
 interface IPageParams {
   id?: string;
 }
@@ -58,32 +44,57 @@ export default function CustomerForm(props: RouteComponentProps<IPageParams>) {
   const history = useHistory();
   const dispatch = useDispatch();
   const customerState = useSelector((state: ApplicationState) => state.customers).data;
+  const [openModalCancel, setOpenModalCancel] = useState(false);
+  const { params } = props.match;
 
-  const [state, setState] = useState<IFormFields>({
-    id: props.match.params.id || '',
-    socialName: '',
-    fantasyName: '',
-    fiscalNumber: '',
-    postalCode: '',
+  const [state, setState] = useState({
+    id: params.id || '',
+    name: '',
+    fantasy_name: '',
+    fiscal_number: '',
+    postal_code: '',
+    street: '',
+    number: '',
+    district: '',
     city: '',
+    state: '',
+    complement: '',
     neighborhood: '',
-    address: '',
-    addressNumber: '',
-    addressComplement: '',
     email: '',
     phone: '',
     cellphone: ''
   });
 
-  const [openModalCancel, setOpenModalCancel] = useState(false);
+  useEffect(() => {
+    setState(prev => ({
+      ...prev,
+      ...customerState,
+      postal_code: customerState.address[0].postal_code,
+      street: customerState.address[0].street,
+      number: customerState.address[0].number,
+      district: customerState.address[0].district,
+      city: customerState.address[0].city,
+      state: customerState.address[0].state,
+      complement: customerState.address[0].complement,
+      neighborhood: customerState.address[0].district,
+      cellphone: customerState.phones[0].number,
+    }))
+  }, [customerState]);
+
 
   useEffect(() => {
-    dispatch(loadRequest());
-    setState({ ...state, ...customerState })
-  }, [dispatch]);
+    if (params.id) {
+      dispatch(loadCustomerById(params.id))
+    }
+  }, [dispatch, params]);
 
-  function handleSaveFormCustomer() {
-  }
+  const handleSaveFormCustomer = useCallback(() => {
+    // if (state?._id) {
+      // dispatch(updateUserRequest(state));
+    // } else {
+      // dispatch(createUserRequest(state));
+    // }
+  }, []);
 
   function handleOpenModalCancel() {
     setOpenModalCancel(true);
@@ -124,8 +135,8 @@ export default function CustomerForm(props: RouteComponentProps<IPageParams>) {
                   label="Nome Social"
                   variant="outlined"
                   size="small"
-                  value={state.socialName}
-                  onChange={(element) => setState({ ...state, socialName: element.target.value })}
+                  value={state.name}
+                  onChange={(element) => setState({ ...state, name: element.target.value })}
                   fullWidth
                 />
               </Grid>
@@ -135,8 +146,8 @@ export default function CustomerForm(props: RouteComponentProps<IPageParams>) {
                   label="Nome Fantasia"
                   variant="outlined"
                   size="small"
-                  value={state.fantasyName}
-                  onChange={(element) => setState({ ...state, fantasyName: element.target.value })}
+                  value={state.fantasy_name}
+                  onChange={(element) => setState({ ...state, fantasy_name: element.target.value })}
                   fullWidth
                 />
               </Grid>
@@ -147,8 +158,8 @@ export default function CustomerForm(props: RouteComponentProps<IPageParams>) {
                   label="CNPJ"
                   variant="outlined"
                   size="small"
-                  value={state.fiscalNumber}
-                  onChange={(element) => setState({ ...state, fiscalNumber: element.target.value })}
+                  value={state.fiscal_number}
+                  onChange={(element) => setState({ ...state, fiscal_number: element.target.value })}
                   placeholder="00.000.000/0000-00"
                   fullWidth
                 />
@@ -168,8 +179,8 @@ export default function CustomerForm(props: RouteComponentProps<IPageParams>) {
                     id="input-postal-code"
                     label="CEP"
                     placeholder="00000-000"
-                    value={state.postalCode}
-                    onChange={(element) => setState({ ...state, postalCode: element.target.value })}
+                    value={state.postal_code}
+                    onChange={(element) => setState({ ...state, postal_code: element.target.value })}
                     endAdornment={
                       <InputAdornment position="end">
                         <SearchOutlined style={{ color: 'var(--primary)' }} />
@@ -212,8 +223,8 @@ export default function CustomerForm(props: RouteComponentProps<IPageParams>) {
                   label="Endereço"
                   variant="outlined"
                   size="small"
-                  value={state.address}
-                  onChange={(element) => setState({ ...state, address: element.target.value })}
+                  value={state.street}
+                  onChange={(element) => setState({ ...state, street: element.target.value })}
                   fullWidth
                 />
               </Grid>
@@ -224,8 +235,8 @@ export default function CustomerForm(props: RouteComponentProps<IPageParams>) {
                   label="Número"
                   variant="outlined"
                   size="small"
-                  value={state.addressNumber}
-                  onChange={(element) => setState({ ...state, addressNumber: element.target.value })}
+                  value={state.number}
+                  onChange={(element) => setState({ ...state, number: element.target.value })}
                   fullWidth
                 />
               </Grid>
@@ -236,8 +247,8 @@ export default function CustomerForm(props: RouteComponentProps<IPageParams>) {
                   label="Complemento"
                   variant="outlined"
                   size="small"
-                  value={state.addressComplement}
-                  onChange={(element) => setState({ ...state, addressComplement: element.target.value })}
+                  value={state.complement}
+                  onChange={(element) => setState({ ...state, complement: element.target.value })}
                   fullWidth
                 />
               </Grid>

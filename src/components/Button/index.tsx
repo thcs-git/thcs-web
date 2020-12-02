@@ -14,7 +14,7 @@ const ButtonComponent = styled(Button)`
   max-width: 19rem;
   display: block; */
   color: ${(props) => props.color || 'rgb(118, 118, 118)'};
-  width: ${(props) => props.size || '18px'};
+  width: ${(props) => props.size || '100%'};
 `;
 
 export default ButtonComponent;
