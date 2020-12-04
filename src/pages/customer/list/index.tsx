@@ -9,6 +9,7 @@ import { loadRequest } from '../../../store/ducks/customers/actions';
 import Sidebar from '../../../components/Sidebar';
 
 import Loading from '../../../components/Loading';
+import SearchComponent from '../../../components/List/Search';
 import { FormTitle } from '../../../styles/components/Form';
 import Button from '../../../styles/components/Button';
 import {
@@ -55,24 +56,12 @@ export default function CustomerList() {
         <Container>
           <FormTitle>Lista de Clientes</FormTitle>
 
-          <FormSearch noValidate autoComplete="off">
-            <FormControl variant="outlined" size="small" fullWidth>
-              <InputLabel htmlFor="search-input">Digite para pesquisar</InputLabel>
-              <OutlinedInput
-                id="search-input"
-                value={search}
-                onChange={(element) => setSearch(element.target.value)}
-                endAdornment={
-                  <InputAdornment position="end">
-                    <IconButton aria-label="toggle password visibility" edge="end">
-                      <SearchOutlined />
-                    </IconButton>
-                  </InputAdornment>
-                }
-                labelWidth={155}
-              />
-            </FormControl>
-          </FormSearch>
+          <SearchComponent
+            handleButton={() => history.push('/customer/create/')}
+            buttonTitle="Novo"
+            value=""
+            onChangeInput={() => {}}
+          />
 
           <List>
             {customerState.list.map((customer) => (
@@ -89,12 +78,6 @@ export default function CustomerList() {
               </ListLink>
             ))}
           </List>
-
-          <ButtonsContent>
-            <Button variant="contained" background="primary" onClick={() => history.push('/customer/create/')}>
-              Novo
-            </Button>
-          </ButtonsContent>
         </Container>
       </Sidebar>
     </>

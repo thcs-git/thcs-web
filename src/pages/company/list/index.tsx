@@ -11,7 +11,7 @@ import { SearchOutlined } from '@material-ui/icons';
 
 import Loading from '../../../components/Loading';
 import Sidebar from '../../../components/Sidebar';
-
+import SearchComponent from '../../../components/List/Search';
 import { FormTitle } from '../../../styles/components/Form';
 import Button from '../../../styles/components/Button';
 import {
@@ -56,24 +56,12 @@ export default function CompanyList() {
         <Container>
           <FormTitle>Lista de Empresas</FormTitle>
 
-          <FormSearch noValidate autoComplete="off">
-            <FormControl variant="outlined" size="small" fullWidth>
-              <InputLabel htmlFor="search-input">Digite para pesquisar</InputLabel>
-              <OutlinedInput
-                id="search-input"
-                value={search}
-                onChange={(element) => setSearch(element.target.value)}
-                endAdornment={
-                  <InputAdornment position="end">
-                    <IconButton aria-label="toggle password visibility" edge="end">
-                      <SearchOutlined />
-                    </IconButton>
-                  </InputAdornment>
-                }
-                labelWidth={155}
-              />
-            </FormControl>
-          </FormSearch>
+          <SearchComponent
+            handleButton={() => history.push('/company/create/')}
+            buttonTitle="Novo"
+            value=""
+            onChangeInput={() => {}}
+          />
 
           <List>
             {companyState.list.map((company: CompanyInterface, index: number) => (
@@ -91,12 +79,6 @@ export default function CompanyList() {
               </ListLink>
             ))}
           </List>
-
-          <ButtonsContent>
-            <Button variant="contained" background="primary" onClick={() => history.push('/company/create/')}>
-              Novo
-            </Button>
-          </ButtonsContent>
         </Container>
       </Sidebar>
     </>

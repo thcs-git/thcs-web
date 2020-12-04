@@ -6,7 +6,7 @@ import { SearchOutlined } from '@material-ui/icons';
 import { useDispatch, useSelector } from 'react-redux';
 import { ApplicationState } from '../../../store/';
 import { loadRequest } from '../../../store/ducks/specialties/actions';
-
+import SearchComponent from '../../../components/List/Search';
 import Loading from '../../../components/Loading';
 import Sidebar from '../../../components/Sidebar';
 
@@ -51,25 +51,12 @@ export default function SpecialtyList() {
         {especialtyState.loading && <Loading />}
         <Container>
           <FormTitle>Lista de Especialidades</FormTitle>
-
-          <FormSearch noValidate autoComplete="off">
-            <FormControl variant="outlined" size="small" fullWidth>
-              <InputLabel htmlFor="search-input">Digite para pesquisar</InputLabel>
-              <OutlinedInput
-                id="search-input"
-                value={search}
-                onChange={(element) => setSearch(element.target.value)}
-                endAdornment={
-                  <InputAdornment position="end">
-                    <IconButton aria-label="search" edge="end">
-                      <SearchOutlined />
-                    </IconButton>
-                  </InputAdornment>
-                }
-                labelWidth={155}
-              />
-            </FormControl>
-          </FormSearch>
+          <SearchComponent
+            handleButton={() => history.push('/specialty/create/')}
+            buttonTitle="Novo"
+            value=""
+            onChangeInput={() => {}}
+          />
 
           <List>
             {especialtyState.list.map((specialty, index) => (
@@ -85,12 +72,6 @@ export default function SpecialtyList() {
               </ListLink>
             ))}
           </List>
-
-          <ButtonsContent>
-            <Button variant="contained" background="primary" onClick={() => history.push('/specialty/create/')}>
-              Novo
-            </Button>
-          </ButtonsContent>
         </Container>
       </Sidebar>
     </>

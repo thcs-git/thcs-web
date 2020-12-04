@@ -11,7 +11,7 @@ import { ApplicationState } from '../../../store';
 import { loadRequest } from '../../../store/ducks/users/actions';
 
 import Sidebar from '../../../components/Sidebar';
-
+import SearchComponent from '../../../components/List/Search';
 import { FormTitle } from '../../../styles/components/Form';
 import Button from '../../../styles/components/Button';
 import {
@@ -59,24 +59,12 @@ export default function UserList() {
         <Container>
           <FormTitle>Lista de Usuários</FormTitle>
 
-          <FormSearch noValidate autoComplete="off">
-            <FormControl variant="outlined" size="small" fullWidth>
-              <InputLabel htmlFor="search-input">Digite para pesquisar</InputLabel>
-              <OutlinedInput
-                id="search-input"
-                value={search}
-                onChange={(element) => setSearch(element.target.value)}
-                endAdornment={
-                  <InputAdornment position="end">
-                    <IconButton aria-label="toggle password visibility" edge="end">
-                      <SearchOutlined />
-                    </IconButton>
-                  </InputAdornment>
-                }
-                labelWidth={155}
-              />
-            </FormControl>
-          </FormSearch>
+          <SearchComponent
+            handleButton={() => history.push('/user/create/')}
+            buttonTitle="Novo"
+            value=""
+            onChangeInput={() => {}}
+          />
 
           <List>
             {userState.list.map((user, index) => (
@@ -93,12 +81,6 @@ export default function UserList() {
               </ListLink>
             ))}
           </List>
-
-          <ButtonsContent>
-            <Button variant="contained" background="primary" onClick={() => history.push('/user/create/')}>
-              Novo
-            </Button>
-          </ButtonsContent>
         </Container>
       </Sidebar>
     </>

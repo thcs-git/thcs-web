@@ -5,6 +5,7 @@ import { SearchOutlined } from '@material-ui/icons';
 import { getDayOfTheWeekName } from '../../../helpers/date';
 
 import Sidebar from '../../../components/Sidebar';
+import SearchComponent from '../../../components/List/Search';
 
 import { FormTitle } from '../../../styles/components/Form';
 import Button from '../../../styles/components/Button';
@@ -46,24 +47,12 @@ export default function CouncilList() {
         <Container>
           <FormTitle>Lista de Áreas</FormTitle>
 
-          <FormSearch noValidate autoComplete="off">
-            <FormControl variant="outlined" size="small" fullWidth>
-              <InputLabel htmlFor="search-input">Digite para pesquisar</InputLabel>
-              <OutlinedInput
-                id="search-input"
-                value={search}
-                onChange={(element) => setSearch(element.target.value)}
-                endAdornment={
-                  <InputAdornment position="end">
-                    <IconButton aria-label="search" edge="end">
-                      <SearchOutlined />
-                    </IconButton>
-                  </InputAdornment>
-                }
-                labelWidth={155}
-              />
-            </FormControl>
-          </FormSearch>
+          <SearchComponent
+            handleButton={() => history.push('/area/create/')}
+            buttonTitle="Novo"
+            value=""
+            onChangeInput={() => {}}
+          />
 
           <List>
             {areas.map((area, index) => (
@@ -80,12 +69,6 @@ export default function CouncilList() {
               </ListLink>
             ))}
           </List>
-
-          <ButtonsContent>
-            <Button variant="contained" background="primary" onClick={() => history.push('/area/create/')}>
-              Novo
-            </Button>
-          </ButtonsContent>
         </Container>
       </Sidebar>
     </>

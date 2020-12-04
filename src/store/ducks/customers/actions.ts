@@ -1,10 +1,13 @@
 import { action } from 'typesafe-actions';
-import { CustomerTypes, CustomerInterface } from './types';
+import { CustomerTypes, CustomerInterface, ViacepDataInterface } from './types';
 
 export const loadRequest = () => action(CustomerTypes.LOAD_REQUEST);
 
 export const loadSuccess = (data: CustomerInterface) =>
   action(CustomerTypes.LOAD_SUCCCES, { data });
+
+export const getAddress = (postalCode: string) => action(CustomerTypes.LOAD_REQUEST_ADDRESS, { postalCode });
+export const successGetAddress = (data: ViacepDataInterface) => action(CustomerTypes.LOAD_RESPONSE_ADDRESS, { data });
 
 export const loadCustomerById = (id: string) => action(CustomerTypes.LOAD_REQUEST_BY_ID, { id });
 

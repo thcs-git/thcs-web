@@ -50,6 +50,25 @@ const reducer: Reducer<CustomerState> = (state = INITIAL_STATE, action) => {
       return {
       ...state, loading: false, error: true
       };
+    case CustomerTypes.LOAD_RESPONSE_ADDRESS:
+      return {
+        ...state,
+        loading: false,
+        error: false,
+        data: {
+          ...state.data,
+          address: [{
+            ...state.data.address,
+            postalCode: action.payload.data.cep,
+            street: action.payload.data.logradouro,
+            number: '',
+            district: action.payload.data.bairro,
+            city: action.payload.data.localidade,
+            state: action.payload.data.uf,
+            complement: action.payload.data.complemento,
+          }]
+        }
+      };
     default:
       return state;
   }

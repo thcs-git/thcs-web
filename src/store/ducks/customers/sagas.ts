@@ -1,9 +1,12 @@
 import { put, call } from 'redux-saga/effects';
 import { toast } from 'react-toastify';
 
-import { apiSollar } from '../../../services/axios';
+import { apiSollar, viacep } from '../../../services/axios';
 
-import { loadSuccess, loadFailure, loadSuccessCustomerById } from './actions';
+import { loadSuccess, loadFailure, loadSuccessCustomerById, successGetAddress } from './actions';
+
+import { ViacepDataInterface } from './types';
+import { AxiosResponse } from 'axios';
 
 export function* get() {
 
@@ -25,6 +28,23 @@ export function* getCustomerById({ payload: { id: _id } }: any) {
 
   } catch (error) {
     toast.error("Não foi possível carregar o cliente");
+    yield put(loadFailure());
+  }
+}
+
+export function* getAddress({payload}:any) {
+
+  try {
+    const { data }: AxiosResponse<ViacepDataInterface> = yield call(viacep.get, `${payload.postalCode}/json`);
+
+    if (data.erro) {
+      yield put(loadFailure());
+      return;
+    }
+
+    yield put(successGetAddress(data));
+  } catch (error) {
+
     yield put(loadFailure());
   }
 }

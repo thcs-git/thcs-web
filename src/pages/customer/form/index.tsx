@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { loadRequest, loadCustomerById } from '../../../store/ducks/customers/actions';
+import { loadRequest, loadCustomerById, getAddress as getAddressAction } from '../../../store/ducks/customers/actions';
 import { ApplicationState } from '../../../store';
 
 import { useHistory, RouteComponentProps } from 'react-router-dom';
@@ -96,6 +96,10 @@ export default function CustomerForm(props: RouteComponentProps<IPageParams>) {
     // }
   }, []);
 
+  const getAddress = useCallback(() => {
+    dispatch(getAddressAction(state.postal_code));
+  }, [state.postal_code]);
+
   function handleOpenModalCancel() {
     setOpenModalCancel(true);
   }
@@ -181,6 +185,7 @@ export default function CustomerForm(props: RouteComponentProps<IPageParams>) {
                     placeholder="00000-000"
                     value={state.postal_code}
                     onChange={(element) => setState({ ...state, postal_code: element.target.value })}
+                    onBlur={getAddress}
                     endAdornment={
                       <InputAdornment position="end">
                         <SearchOutlined style={{ color: 'var(--primary)' }} />
