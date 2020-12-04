@@ -33,6 +33,13 @@ export interface PatientAddressInterface {
   complement: string;
 }
 
+export interface PatientPhonesInterface {
+  whatsapp: boolean;
+  telegram: boolean;
+  cellnumber?: string;
+  number?: string;
+};
+
 export interface PatientInterface {
   _id?: string;
   companies: [string] | [];
@@ -48,10 +55,9 @@ export interface PatientInterface {
   fiscal_number: string;
   national_id: string;
   issuing_organ: string;
-	address: PatientAddressInterface;
+	address_id: PatientAddressInterface;
 	email: string;
-	phone: string;
-	cellphone: string;
+  phones: PatientPhonesInterface[] | [];
 	sus_card: string;
 	blood_type: string;
 	organ_donor: boolean;
@@ -61,8 +67,9 @@ export interface PatientInterface {
 export interface PatientList {
   _id: string;
   name: string;
-  active: boolean;
   email: string;
+  fiscal_number: string;
+  active: boolean;
 }
 
 export interface ViacepDataInterface {

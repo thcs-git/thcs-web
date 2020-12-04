@@ -52,6 +52,8 @@ import {
 
 interface IFormFields {
   bloodType: string | null,
+  cellphone: string,
+  phone: string,
 }
 
 interface IPageParams {
@@ -79,7 +81,7 @@ export default function PatientForm(props: RouteComponentProps<IPageParams>) {
     fiscal_number: '',
     national_id: '',
     issuing_organ: '',
-    address: {
+    address_id: {
       postal_code: '',
       street: '',
       number: '',
@@ -89,8 +91,7 @@ export default function PatientForm(props: RouteComponentProps<IPageParams>) {
       complement: '',
     },
     email: '',
-    phone: '',
-    cellphone: '',
+    phones: [],
     sus_card: '',
     blood_type: '',
     organ_donor: false,
@@ -99,6 +100,8 @@ export default function PatientForm(props: RouteComponentProps<IPageParams>) {
 
   const [form, setForm] = useState<IFormFields>({
     bloodType: null,
+    phone: '',
+    cellphone: '',
   });
 
   const [type, setType] = useState('registry');
@@ -110,44 +113,53 @@ export default function PatientForm(props: RouteComponentProps<IPageParams>) {
 
   useEffect(() => {
     if (params.id) {
-      dispatch(loadPatientById(params.id))
+      dispatch(loadPatientById(params.id));
     }
   }, [dispatch, params]);
 
   useEffect(() => {
-    // if (patientState.error) {
-    //   setState(prevState => {
-    //     return {
-    //       ...prevState,
-    //       address: {
-    //         ...prevState.address,
-    //         street: '',
-    //         number: '',
-    //         district: '',
-    //         city: '',
-    //         state: '',
-    //         complement: '',
-    //       },
-    //     }
-    //   })
-
-    //   return;
-    // }
-
     setState(prevState => {
       return {
         ...prevState,
-        address: {
-          ...prevState.address,
-          ...patientState.data.address
-        }
+        ...patientState.data
       }
-    });
-  }, [patientState.data.address]);
+    })
+  }, [patientState]);
+
+  // useEffect(() => {
+  //   // if (patientState.error) {
+  //   //   setState(prevState => {
+  //   //     return {
+  //   //       ...prevState,
+  //   //       address: {
+  //   //         ...prevState.address,
+  //   //         street: '',
+  //   //         number: '',
+  //   //         district: '',
+  //   //         city: '',
+  //   //         state: '',
+  //   //         complement: '',
+  //   //       },
+  //   //     }
+  //   //   })
+
+  //   //   return;
+  //   // }
+
+  //   setState(prevState => {
+  //     return {
+  //       ...prevState,
+  //       address_id: {
+  //         ...prevState.address_id,
+  //         ...patientState.data.address_id
+  //       }
+  //     }
+  //   });
+  // }, [patientState.data.address_id]);
 
   const getAddress = useCallback(() => {
-    dispatch(getAddressAction(state.address.postal_code));
-  }, [state.address.postal_code]);
+    dispatch(getAddressAction(state.address_id.postal_code));
+  }, [state.address_id.postal_code]);
 
   const handleBloodType = useCallback((event: any, newValue: any) => {
     setForm(prevState => ({
@@ -180,7 +192,13 @@ export default function PatientForm(props: RouteComponentProps<IPageParams>) {
 
   const handleSaveFormPatient = useCallback(() => {
     if (state?._id) {
-      dispatch(updatePatientRequest(state));
+      dispatch(updatePatientRequest({
+        ...state,
+        phones: [
+          { whatsapp: false, telegram: false, number: form.phone },
+          { whatsapp: false, telegram: false, cellnumber: form.cellphone },
+        ]
+      }));
     } else {
       dispatch(createPatientRequest(state));
     }
@@ -189,7 +207,6 @@ export default function PatientForm(props: RouteComponentProps<IPageParams>) {
   return (
     <Sidebar>
       {patientState.loading && <Loading />}
-      {console.log('patientState', patientState)}
       <Container>
         <FormSection>
           <FormContent>
@@ -370,8 +387,8 @@ export default function PatientForm(props: RouteComponentProps<IPageParams>) {
                       id="input-postal-code"
                       label="CEP"
                       placeholder="00000-000"
-                      value={state.address.postal_code}
-                      onChange={(element) => setState({ ...state, address: { ...state.address, postal_code: element.target.value } })}
+                      value={state.address_id.postal_code}
+                      onChange={(element) => setState({ ...state, address_id: { ...state.address_id, postal_code: element.target.value } })}
                       onBlur={getAddress}
                       endAdornment={
                         <InputAdornment position="end">
@@ -390,8 +407,8 @@ export default function PatientForm(props: RouteComponentProps<IPageParams>) {
                     label="Endereço"
                     variant="outlined"
                     size="small"
-                    value={state.address.street}
-                    onChange={(element) => setState({ ...state, address: { ...state.address, street: element.target.value } })}
+                    value={state.address_id.street}
+                    onChange={(element) => setState({ ...state, address_id: { ...state.address_id, street: element.target.value } })}
                     fullWidth
                   />
                 </Grid>
@@ -401,8 +418,8 @@ export default function PatientForm(props: RouteComponentProps<IPageParams>) {
                     label="Número"
                     variant="outlined"
                     size="small"
-                    value={state.address.number}
-                    onChange={(element) => setState({ ...state, address: { ...state.address, number: element.target.value } })}
+                    value={state.address_id.number}
+                    onChange={(element) => setState({ ...state, address_id: { ...state.address_id, number: element.target.value } })}
                     fullWidth
                   />
                 </Grid>
@@ -413,8 +430,8 @@ export default function PatientForm(props: RouteComponentProps<IPageParams>) {
                     label="Bairro"
                     variant="outlined"
                     size="small"
-                    value={state.address.district}
-                    onChange={(element) => setState({ ...state, address: { ...state.address, district: element.target.value } })}
+                    value={state.address_id.district}
+                    onChange={(element) => setState({ ...state, address_id: { ...state.address_id, district: element.target.value } })}
                     fullWidth
                   />
                 </Grid>
@@ -425,8 +442,8 @@ export default function PatientForm(props: RouteComponentProps<IPageParams>) {
                     label="Cidade"
                     variant="outlined"
                     size="small"
-                    value={state.address.city}
-                    onChange={(element) => setState({ ...state, address: { ...state.address, city: element.target.value } })}
+                    value={state.address_id.city}
+                    onChange={(element) => setState({ ...state, address_id: { ...state.address_id, city: element.target.value } })}
                     fullWidth
                   />
                 </Grid>
@@ -437,8 +454,8 @@ export default function PatientForm(props: RouteComponentProps<IPageParams>) {
                     label="Complemento"
                     variant="outlined"
                     size="small"
-                    value={state.address.complement}
-                    onChange={(element) => setState({ ...state, address: { ...state.address, complement: element.target.value } })}
+                    value={state.address_id.complement}
+                    onChange={(element) => setState({ ...state, address_id: { ...state.address_id, complement: element.target.value } })}
                     fullWidth
                   />
                 </Grid>
@@ -449,8 +466,8 @@ export default function PatientForm(props: RouteComponentProps<IPageParams>) {
                     label="UF"
                     variant="outlined"
                     size="small"
-                    value={state.address.state}
-                    onChange={(element) => setState({ ...state, address: { ...state.address, state: element.target.value } })}
+                    value={state.address_id.state}
+                    onChange={(element) => setState({ ...state, address_id: { ...state.address_id, state: element.target.value } })}
                     fullWidth
                   />
                 </Grid>
@@ -476,8 +493,13 @@ export default function PatientForm(props: RouteComponentProps<IPageParams>) {
                     label="Telefone"
                     variant="outlined"
                     size="small"
-                    value={state.phone}
-                    onChange={(element) => setState({ ...state, phone: element.target.value })}
+                    value={form.phone}
+                    onChange={(element) => {
+                      setForm(prevState => ({
+                        ...prevState,
+                        phone: element.target.value
+                      }));
+                    }}
                     placeholder="0000-0000"
                     fullWidth
                   />
@@ -488,8 +510,15 @@ export default function PatientForm(props: RouteComponentProps<IPageParams>) {
                     label="Celular"
                     variant="outlined"
                     size="small"
-                    value={state.cellphone}
-                    onChange={(element) => setState({ ...state, cellphone: element.target.value })}
+                    value={form.cellphone}
+                    onChange={(element) => {
+                      setForm(prevState => ({
+                        ...prevState,
+                        cellphone: element.target.value
+                      }));
+
+                      console.log('form', form);
+                    }}
                     placeholder="00000-0000"
                     fullWidth
                   />
@@ -515,8 +544,8 @@ export default function PatientForm(props: RouteComponentProps<IPageParams>) {
                       options={bloodTypes}
                       getOptionLabel={(option) => option}
                       renderInput={(params) => <TextField {...params} label="Tipo sanguíneo" variant="outlined" />}
-                      value={form?.bloodType}
-                      getOptionSelected={(option, value) => option === form?.bloodType}
+                      value={state?.blood_type}
+                      getOptionSelected={(option, value) => option === state?.blood_type}
                       onChange={(event: any, newValue) => {
                         handleBloodType(event, newValue);
                       }}
@@ -546,6 +575,7 @@ export default function PatientForm(props: RouteComponentProps<IPageParams>) {
                 )}
               </Grid>
             </FormGroupSection>
+
             {type === 'capture' && (
               <FormGroupSection>
                 <Grid container>

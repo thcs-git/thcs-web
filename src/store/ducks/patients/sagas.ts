@@ -49,6 +49,9 @@ export function* createPatient({payload: { data }}: any) {
     });
   }
 
+  delete data.phone;
+  delete data.cellphone;
+
   try {
     const response:AxiosResponse = yield call(apiSollar.post, `/patient/store`, data, { headers: { token } })
     yield put(createPatientSuccess(response.data))
@@ -62,31 +65,13 @@ export function* createPatient({payload: { data }}: any) {
 export function* updatePatient({ payload: { data } }: any) {
   const { _id } = data;
 
-  const phones = [];
-
-  if (data.phone.length > 0) {
-    phones.push({
-      whatsapp: false,
-      telegram: false,
-      number: data.phone
-    });
-  }
-
-  if (data.cellphone.length > 0) {
-    phones.push({
-      whatsapp: false,
-      telegram: false,
-      number: data.cellphone
-    });
-  }
-
-  data.phones = phones;
+  console.log('!!!! data', data);
 
   try {
     const response: AxiosResponse = yield call(apiSollar.put, `/patient/${_id}/update`, { ...data }, { headers: { token } })
 
     toast.success('Paciente atualizado com sucesso!');
-    yield put(updatePatientSuccess(response.data[0]))
+    yield put(updatePatientSuccess(response.data))
   } catch (error) {
     toast.error("Não foi possível atualizar os dados do paciente");
     yield put(loadFailure());

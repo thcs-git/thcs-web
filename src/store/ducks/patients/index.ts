@@ -17,7 +17,7 @@ export const INITIAL_STATE: PatientState = {
     fiscal_number: '',
     national_id: '',
     issuing_organ: '',
-    address: {
+    address_id: {
       postal_code: '',
       street: '',
       number: '',
@@ -26,9 +26,8 @@ export const INITIAL_STATE: PatientState = {
       state: '',
       complement: '',
     },
+    phones: [],
     email: '',
-    phone: '',
-    cellphone: '',
     sus_card: '',
     blood_type: '',
     organ_donor: false,
@@ -41,8 +40,6 @@ export const INITIAL_STATE: PatientState = {
 };
 
 const reducer: Reducer<PatientState> = (state = INITIAL_STATE, action) => {
-  console.log('state', state)
-
   switch (action.type) {
     case PatientTypes.LOAD_REQUEST:
       return { ...state, loading: true, success: false, };
@@ -61,7 +58,7 @@ const reducer: Reducer<PatientState> = (state = INITIAL_STATE, action) => {
     case PatientTypes.LOAD_SUCCCES_PATIENT_BY_ID:
       return {
         ...state,
-        data: action.payload.data,
+        data: {...action.payload.data},
         loading: false,
         error: false,
         success: false,
@@ -102,8 +99,8 @@ const reducer: Reducer<PatientState> = (state = INITIAL_STATE, action) => {
         ...state,
         data: {
           ...state.data,
-          address: {
-            ...state.data.address,
+          address_id: {
+            ...state.data.address_id,
             postal_code: action.payload.data.cep,
             street: action.payload.data.logradouro,
             number: '',

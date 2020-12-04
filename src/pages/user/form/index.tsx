@@ -78,7 +78,6 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
   const [currentTab, setCurrentTab] = useState(0);
 
   const [state, setState] = useState<UserInterface>({
-    _id: '',
     companies: ['5ee65a9b1a550217e4a8c0f4'], //empresa que vai vir do login
     name: '',
     birthdate: '',
@@ -102,7 +101,6 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
     cellphone: '',
     user_type_id: '',
     specialties: [],
-    council_id: { _id: '', company_id: { _id: '' }, name: '' },
     council_number: '',
     active: true,
   });
@@ -118,12 +116,25 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
   const [openModalCancel, setOpenModalCancel] = useState(false);
 
   useEffect(() => {
+    dispatch(getSpecialtiesAction())
+    dispatch(getCouncilsAction())
+  }, []);
+
+  useEffect(() => {
     if (params.id) {
       dispatch(loadUserById(params.id))
-      dispatch(getSpecialtiesAction())
-      dispatch(getCouncilsAction())
     }
-  }, [dispatch, params]);
+  }, [params]);
+
+  useEffect(() => {
+    setState(prevState => ({
+      ...userState.data
+    }));
+  }, [userState]);
+
+  useEffect(() => {
+    console.log(state);
+  }, [state]);
 
   useEffect(() => {
     if (userState.error) {
@@ -144,14 +155,7 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
 
       return;
     }
-
-    setState(prevState => {
-      return {
-        ...prevState,
-        ...userState.data
-      }
-    })
-  }, [userState]);
+  }, [userState.data.address]);
 
   const selectTab = useCallback((index: number) => {
     setCurrentTab(index);
@@ -167,8 +171,14 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
   const handleCouncil = useCallback((event: any, newValue: any) => {
     setForm(prevState => ({
       ...prevState,
-      council: newValue,
+      council_id: newValue,
     }));
+
+    setState(prevState => ({
+      ...prevState,
+      council_id: newValue
+    }));
+
   }, [state.council_id]);
 
   const getAddress = useCallback(() => {
@@ -257,7 +267,7 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
                         <DatePicker
                           id="input-fiscal-birthdate"
                           label="Data de Nascimento"
-                          value={state.birthdate.length > 10 ? formatDate(state.birthdate, 'YYYY-MM-DD') : state.birthdate}
+                          value={state?.birthdate?.length > 10 ? formatDate(state.birthdate, 'YYYY-MM-DD') : state.birthdate}
                           onChange={(element) => setState({ ...state, birthdate: element.target.value })}
                           fullWidth
                         />
@@ -506,7 +516,7 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
                           getOptionLabel={(option) => option.name}
                           renderInput={(params) => <TextField {...params} label="Conselho" variant="outlined" />}
                           value={userState.data?.council_id || null}
-                          getOptionSelected={(option, value) => option._id === state.council_id._id}
+                          getOptionSelected={(option, value) => option._id === state?.council_id?._id}
                           onChange={(event: any, newValue) => {
                             handleCouncil(event, newValue);
                           }}

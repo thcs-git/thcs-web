@@ -26,11 +26,6 @@ export const INITIAL_STATE: UserState = {
     cellphone: '',
     user_type_id: '',
     specialties: [],
-    council_id: {
-      _id: '',
-      company_id: { _id: '' },
-      name: '',
-    },
     council_number: '',
     active: true,
   },
@@ -59,7 +54,7 @@ const reducer: Reducer<UserState> = (state = INITIAL_STATE, action) => {
     case UserTypes.LOAD_SUCCCES_USER_BY_ID:
       return {
         ...state,
-        data: action.payload.data,
+        data: {...action.payload.data},
         loading: false,
         error: false,
         success: false,
@@ -75,7 +70,11 @@ const reducer: Reducer<UserState> = (state = INITIAL_STATE, action) => {
     case UserTypes.UPDATE_USER_SUCCESS:
       return {
         ...state,
-        data: action.payload.data,
+        data: {
+          ...action.payload.data,
+          phone: action.payload.data.phones[0].number,
+          cellphone: action.payload.data.phones[1].number,
+        },
         loading: false,
         error: false,
         success: true
@@ -91,6 +90,11 @@ const reducer: Reducer<UserState> = (state = INITIAL_STATE, action) => {
     case UserTypes.CREATE_USER_SUCCESS:
       return {
         ...state,
+        data: {
+          ...action.payload.data,
+          phone: action.payload.data.phones[0].number,
+          cellphone: action.payload.data.phones[1].number,
+        },
         loading: false,
         error: false,
         success: true
