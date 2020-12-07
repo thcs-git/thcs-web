@@ -9,8 +9,14 @@ export enum CustomerTypes {
   LOAD_REQUEST_BY_ID = "@customer/LOAD_REQUEST_BY_ID",
   LOAD_SUCCESS_BY_ID = "@customer/LOAD_SUCCESS_BY_ID",
 
+  CREATE_CUSTOMER_REQUEST = "@customer/CREATE_CUSTOMER_REQUEST",
+  CREATE_CUSTOMER_SUCCESS = "@customer/CREATE_CUSTOMER_SUCCESS",
+
+  UPDATE_CUSTOMER_REQUEST = "@customer/UPDATE_CUSTOMER_REQUEST",
+  UPDATE_CUSTOMER_SUCCESS = "@customer/UPDATE_CUSTOMER_SUCCESS",
+
   LOAD_REQUEST_ADDRESS = "@customer/LOAD_REQUEST_ADDRESS",
-  LOAD_RESPONSE_ADDRESS = "@company/LOAD_RESPONSE_ADDRESS",
+  LOAD_RESPONSE_ADDRESS = "@customer/LOAD_RESPONSE_ADDRESS",
 }
 
 /**
@@ -18,11 +24,11 @@ export enum CustomerTypes {
  */
 export interface CustomerInterface {
   id?: string;
-  socialName?: string;
-  fantasyName?: string;
-  fiscalNumber?: string;
-  address: [{
-    neighborhood: string;
+  name?: string;
+  fantasy_name?: string;
+  fiscal_number?: string;
+  address: {
+    _id?: string;
     postal_code: string;
     street: string,
     number: string,
@@ -30,13 +36,13 @@ export interface CustomerInterface {
     city: string;
     state: string;
     complement: string;
-  }];
+  };
   email?: string;
-  phones: [{
+  phones: {
     number: string,
     telegram: boolean,
     whatsapp: boolean,
-  }],
+  },
   cellphone?: string;
 }
 

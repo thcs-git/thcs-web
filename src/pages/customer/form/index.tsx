@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { loadRequest, loadCustomerById, getAddress as getAddressAction } from '../../../store/ducks/customers/actions';
+import { loadRequest, loadCustomerById, getAddress as getAddressAction, updateCompanyRequest, createCustomerRequest } from '../../../store/ducks/customers/actions';
 import { ApplicationState } from '../../../store';
 
 import { useHistory, RouteComponentProps } from 'react-router-dom';
@@ -43,42 +43,57 @@ interface IPageParams {
 export default function CustomerForm(props: RouteComponentProps<IPageParams>) {
   const history = useHistory();
   const dispatch = useDispatch();
-  const customerState = useSelector((state: ApplicationState) => state.customers).data;
+  const customerState = useSelector((state: ApplicationState) => state.customers);
   const [openModalCancel, setOpenModalCancel] = useState(false);
   const { params } = props.match;
 
-  const [state, setState] = useState({
+  const [state, setState] = useState<CustomerInterface>({
     id: params.id || '',
     name: '',
     fantasy_name: '',
     fiscal_number: '',
-    postal_code: '',
-    street: '',
-    number: '',
-    district: '',
-    city: '',
-    state: '',
-    complement: '',
-    neighborhood: '',
+    address: {
+      postal_code: '',
+      street: '',
+      number: '',
+      district: '',
+      city: '',
+      state: '',
+      complement: '',
+    },
     email: '',
-    phone: '',
+    phones: {
+      number: '',
+      telegram: false,
+      whatsapp: false,
+    },
     cellphone: ''
   });
 
   useEffect(() => {
-    setState(prev => ({
-      ...prev,
-      ...customerState,
-      postal_code: customerState.address[0].postal_code,
-      street: customerState.address[0].street,
-      number: customerState.address[0].number,
-      district: customerState.address[0].district,
-      city: customerState.address[0].city,
-      state: customerState.address[0].state,
-      complement: customerState.address[0].complement,
-      neighborhood: customerState.address[0].district,
-      cellphone: customerState.phones[0].number,
-    }))
+    if (customerState.error) {
+      setState(prev => ({
+        ...prev,
+        address: {
+          ...prev.address,
+          street: '',
+          number: '',
+          district: '',
+          city: '',
+          state: '',
+          complement: '',
+        },
+      }))
+
+      return;
+    }
+
+    setState(prevState => {
+      return {
+        ...prevState,
+        ...customerState.data
+      }
+    })
   }, [customerState]);
 
 
@@ -89,16 +104,18 @@ export default function CustomerForm(props: RouteComponentProps<IPageParams>) {
   }, [dispatch, params]);
 
   const handleSaveFormCustomer = useCallback(() => {
-    // if (state?._id) {
-      // dispatch(updateUserRequest(state));
-    // } else {
-      // dispatch(createUserRequest(state));
-    // }
-  }, []);
+    // console.log(params);
+
+    if (params.id) {
+      dispatch(updateCompanyRequest(state));
+    } else {
+      dispatch(createCustomerRequest(state));
+    }
+  }, [state, params]);
 
   const getAddress = useCallback(() => {
-    dispatch(getAddressAction(state.postal_code));
-  }, [state.postal_code]);
+    dispatch(getAddressAction(state.address.postal_code));
+  }, [state.address.postal_code]);
 
   function handleOpenModalCancel() {
     setOpenModalCancel(true);
@@ -183,8 +200,18 @@ export default function CustomerForm(props: RouteComponentProps<IPageParams>) {
                     id="input-postal-code"
                     label="CEP"
                     placeholder="00000-000"
-                    value={state.postal_code}
-                    onChange={(element) => setState({ ...state, postal_code: element.target.value })}
+                    value={state.address.postal_code}
+                    onChange={element => {
+                      setState(prev => {
+                        return {
+                          ...prev,
+                          address: {
+                            ...prev.address,
+                            postal_code: element.target.value
+                          }
+                        }
+                      })
+                    }}
                     onBlur={getAddress}
                     endAdornment={
                       <InputAdornment position="end">
@@ -204,8 +231,8 @@ export default function CustomerForm(props: RouteComponentProps<IPageParams>) {
                   label="Cidade"
                   variant="outlined"
                   size="small"
-                  value={state.city}
-                  onChange={(element) => setState({ ...state, city: element.target.value })}
+                  value={state.address.city}
+                  onChange={(element) => setState({ ...state, address: { ...state.address, city: element.target.value } })}
                   fullWidth
                 />
               </Grid>
@@ -216,8 +243,8 @@ export default function CustomerForm(props: RouteComponentProps<IPageParams>) {
                   label="Bairro"
                   variant="outlined"
                   size="small"
-                  value={state.neighborhood}
-                  onChange={(element) => setState({ ...state, neighborhood: element.target.value })}
+                  value={state.address.district}
+                  onChange={(element) => setState({ ...state, address: { ...state.address, district: element.target.value } })}
                   fullWidth
                 />
               </Grid>
@@ -228,8 +255,8 @@ export default function CustomerForm(props: RouteComponentProps<IPageParams>) {
                   label="Endereço"
                   variant="outlined"
                   size="small"
-                  value={state.street}
-                  onChange={(element) => setState({ ...state, street: element.target.value })}
+                  value={state.address.street}
+                  onChange={(element) => setState({ ...state, address: { ...state.address, street: element.target.value } })}
                   fullWidth
                 />
               </Grid>
@@ -240,8 +267,8 @@ export default function CustomerForm(props: RouteComponentProps<IPageParams>) {
                   label="Número"
                   variant="outlined"
                   size="small"
-                  value={state.number}
-                  onChange={(element) => setState({ ...state, number: element.target.value })}
+                  value={state.address.number}
+                  onChange={(element) => setState({ ...state, address: { ...state.address, number: element.target.value } })}
                   fullWidth
                 />
               </Grid>
@@ -252,8 +279,8 @@ export default function CustomerForm(props: RouteComponentProps<IPageParams>) {
                   label="Complemento"
                   variant="outlined"
                   size="small"
-                  value={state.complement}
-                  onChange={(element) => setState({ ...state, complement: element.target.value })}
+                  value={state.address.complement}
+                  onChange={(element) => setState({ ...state, address: { ...state.address, complement: element.target.value } })}
                   fullWidth
                 />
               </Grid>
@@ -278,8 +305,8 @@ export default function CustomerForm(props: RouteComponentProps<IPageParams>) {
                 label="Telefone"
                 variant="outlined"
                 size="small"
-                value={state.phone}
-                onChange={(element) => setState({ ...state, phone: element.target.value })}
+                value={state.phones.number}
+                onChange={(element) => setState({ ...state, phones: { ...state.phones, number: element.target.value }  })}
                 placeholder="0000-0000"
                 fullWidth
               />

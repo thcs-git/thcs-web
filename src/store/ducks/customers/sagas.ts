@@ -3,7 +3,7 @@ import { toast } from 'react-toastify';
 
 import { apiSollar, viacep } from '../../../services/axios';
 
-import { loadSuccess, loadFailure, loadSuccessCustomerById, successGetAddress } from './actions';
+import { loadSuccess, loadFailure, loadSuccessCustomerById, successGetAddress, createCustomerSuccess } from './actions';
 
 import { ViacepDataInterface } from './types';
 import { AxiosResponse } from 'axios';
@@ -28,6 +28,31 @@ export function* getCustomerById({ payload: { id: _id } }: any) {
 
   } catch (error) {
     toast.error("Não foi possível carregar o cliente");
+    yield put(loadFailure());
+  }
+}
+
+export function* createCompanyCustomer({ payload: { data } }: any) {
+  try {
+    const response: AxiosResponse = yield call(apiSollar.post, `/client/store`, data)
+
+    yield put(loadSuccess(response.data))
+  } catch(e) {
+    yield put(loadFailure());
+  }
+
+}
+
+export function* updateCompanyCustomer({ payload: { data } }: any) {
+  const { id: _id } = data;
+
+  try {
+    const response: AxiosResponse = yield call(apiSollar.put, `/client/${_id}/update`, { ...data, _id })
+
+    toast.success('Empresa atualizada com sucesso!');
+    yield put(createCustomerSuccess(response.data[0]))
+  } catch (error) {
+    toast.error("Não foi possível atualizar os dados do cliente");
     yield put(loadFailure());
   }
 }

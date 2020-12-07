@@ -4,10 +4,10 @@ import { CustomerState, CustomerTypes } from './types';
 export const INITIAL_STATE: CustomerState = {
   data: {
     id: '',
-    socialName: '',
-    fantasyName: '',
-    fiscalNumber: '',
-    address: [{
+    name: '',
+    fantasy_name: '',
+    fiscal_number: '',
+    address: {
       postal_code: '',
       street: '',
       number: '',
@@ -15,14 +15,13 @@ export const INITIAL_STATE: CustomerState = {
       city: '',
       state: '',
       complement: '',
-      neighborhood: ''
-    }],
+    },
     email: '',
-    phones: [{
+    phones: {
       number: '',
       telegram: false,
       whatsapp: false,
-    }],
+    },
     cellphone: ''
   },
   list: [],
@@ -50,6 +49,14 @@ const reducer: Reducer<CustomerState> = (state = INITIAL_STATE, action) => {
       return {
       ...state, loading: false, error: true
       };
+    case CustomerTypes.CREATE_CUSTOMER_SUCCESS:
+      return {
+        ...state,
+        data: action.payload.data,
+        loading: false,
+        error: false,
+        success: true
+      }
     case CustomerTypes.LOAD_RESPONSE_ADDRESS:
       return {
         ...state,
@@ -57,7 +64,7 @@ const reducer: Reducer<CustomerState> = (state = INITIAL_STATE, action) => {
         error: false,
         data: {
           ...state.data,
-          address: [{
+          address: {
             ...state.data.address,
             postalCode: action.payload.data.cep,
             street: action.payload.data.logradouro,
@@ -66,7 +73,7 @@ const reducer: Reducer<CustomerState> = (state = INITIAL_STATE, action) => {
             city: action.payload.data.localidade,
             state: action.payload.data.uf,
             complement: action.payload.data.complemento,
-          }]
+          }
         }
       };
     default:
