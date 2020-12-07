@@ -8,7 +8,7 @@ interface ISearchInput extends Props<any> {
   label: string;
 };
 
-export default function SearchInput(props: ISearchInput) {
+const SearchInput = (props: ISearchInput) => {
   const [search, setSearch] = useState('');
 
   const { label } = props;
@@ -34,3 +34,5 @@ export default function SearchInput(props: ISearchInput) {
     </FormSearch>
   );
 }
+
+export default React.memo(SearchInput);

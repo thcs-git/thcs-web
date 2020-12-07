@@ -114,10 +114,9 @@ const useStyles = makeStyles((theme: Theme) =>
     },
   })
 );
-console.log(localStorage.getItem(LOCALSTORAGE.TOGGLE_SIDEBAR));
 
 
-export default function Sibebar(props: Props<any>) {
+const Sibebar = (props: Props<any>) => {
   const history = useHistory();
   const classes = useStyles();
   const theme = useTheme();
@@ -130,10 +129,10 @@ export default function Sibebar(props: Props<any>) {
 
   const AccordionRef = useRef<HTMLDivElement>(null);
 
-  useEffect(() => {
+  // useEffect(() => {
     // if (!open) AccordionRef.current?.removeAttribute('expanded')
     // else AccordionRef.current?.setAttribute('expanded', 'true');
-  }, [open]);
+  // }, [open]);
 
   const handleDrawerClose = useCallback(() => {
     setOpen(prev => {
@@ -142,21 +141,21 @@ export default function Sibebar(props: Props<any>) {
     });
   }, []);
 
-  const openDropDownAndMenu = () => {
-  };
+  // const openDropDownAndMenu = () => {
+  // };
 
-  const handleLogout = () => {
+  const handleLogout = useCallback(() => {
     localStorage.removeItem('@sollar_token');
     window.location.reload();
-  };
+  }, []);
 
-  const handleOpenModalLogout = () => {
+  const handleOpenModalLogout = useCallback(() => {
     setOpenModalLogout(true);
-  }
+  }, []);
 
-  const handleCloseModalLogout = () => {
+  const handleCloseModalLogout = useCallback(() => {
     setOpenModalLogout(false);
-  }
+  }, [])
 
   return (
     <div className={classes.root}>
@@ -249,3 +248,4 @@ export default function Sibebar(props: Props<any>) {
   );
 }
 
+export default React.memo(Sibebar);

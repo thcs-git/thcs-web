@@ -5,7 +5,7 @@ import {
   ListItemContent
 } from './styles';
 
-export default function ListItem(props: Props<any>) {
+const ListItem = (props: Props<any>) => {
   return (
     <ListItemComponent variant="outlined">
       <ListItemContent>
@@ -14,3 +14,5 @@ export default function ListItem(props: Props<any>) {
     </ListItemComponent>
   );
 }
+
+export default React.memo(ListItem);

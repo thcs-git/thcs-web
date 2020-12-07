@@ -23,7 +23,7 @@ const useStylesFacebook = makeStyles((theme: Theme) =>
 const body = document.querySelector("body");
 const divRoot = document.querySelector('#root');
 
-export default function FacebookCircularProgress(props: CircularProgressProps) {
+const FacebookCircularProgress = (props: CircularProgressProps) => {
   const classes = useStylesFacebook();
   const elementSpinner = useRef(document.createElement("div"))
   elementSpinner.current.setAttribute('class', 'spinner-loading');
@@ -64,3 +64,5 @@ export default function FacebookCircularProgress(props: CircularProgressProps) {
 
   return createPortal(spinner, elementSpinner.current);
 }
+
+export default React.memo(FacebookCircularProgress);
