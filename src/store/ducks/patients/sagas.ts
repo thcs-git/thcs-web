@@ -30,42 +30,19 @@ export function* getPatientById({ payload: { id: _id } }: any) {
   }
 }
 
-export function* createPatient({payload: { data }}: any) {
-  const phones = [];
-
-  if (data.phone.length > 0) {
-    phones.push({
-      whatsapp: false,
-      telegram: false,
-      number: data.phone
-    });
-  }
-
-  if (data.cellphone.length > 0) {
-    phones.push({
-      whatsapp: false,
-      telegram: false,
-      number: data.cellphone
-    });
-  }
-
-  delete data.phone;
-  delete data.cellphone;
-
+export function* createPatient({ payload: { data } }: any) {
   try {
     const response:AxiosResponse = yield call(apiSollar.post, `/patient/store`, data, { headers: { token } })
     yield put(createPatientSuccess(response.data))
     toast.success('Paciente cadastrado com sucesso!');
   } catch(e) {
     toast.error('Erro ao cadastrar o paciente');
-    yield put(loadFailure());
+    yield put(loadFailure(data));
   }
 }
 
 export function* updatePatient({ payload: { data } }: any) {
   const { _id } = data;
-
-  console.log('!!!! data', data);
 
   try {
     const response: AxiosResponse = yield call(apiSollar.put, `/patient/${_id}/update`, { ...data }, { headers: { token } })
@@ -78,7 +55,7 @@ export function* updatePatient({ payload: { data } }: any) {
   }
 }
 
-export function* getAddress({payload}:any) {
+export function* getAddress({ payload }:any) {
   try {
     const { data }: AxiosResponse<ViacepDataInterface> = yield call(viacep.get, `${payload.postalCode}/json`);
 

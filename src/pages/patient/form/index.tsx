@@ -123,39 +123,46 @@ export default function PatientForm(props: RouteComponentProps<IPageParams>) {
         ...prevState,
         ...patientState.data
       }
-    })
+    });
+
+    setForm(prevState => ({
+      ...prevState,
+      phone: patientState.data.phones.find(phone => phone.cellnumber)?.cellnumber || '',
+      cellphone: patientState.data.phones.find(phone => phone.number)?.number || '',
+    }));
+
   }, [patientState]);
 
-  // useEffect(() => {
-  //   // if (patientState.error) {
-  //   //   setState(prevState => {
-  //   //     return {
-  //   //       ...prevState,
-  //   //       address: {
-  //   //         ...prevState.address,
-  //   //         street: '',
-  //   //         number: '',
-  //   //         district: '',
-  //   //         city: '',
-  //   //         state: '',
-  //   //         complement: '',
-  //   //       },
-  //   //     }
-  //   //   })
+  useEffect(() => {
+    // if (patientState.error) {
+    //   setState(prevState => {
+    //     return {
+    //       ...prevState,
+    //       address: {
+    //         ...prevState.address,
+    //         street: '',
+    //         number: '',
+    //         district: '',
+    //         city: '',
+    //         state: '',
+    //         complement: '',
+    //       },
+    //     }
+    //   })
 
-  //   //   return;
-  //   // }
+    //   return;
+    // }
 
-  //   setState(prevState => {
-  //     return {
-  //       ...prevState,
-  //       address_id: {
-  //         ...prevState.address_id,
-  //         ...patientState.data.address_id
-  //       }
-  //     }
-  //   });
-  // }, [patientState.data.address_id]);
+    setState(prevState => {
+      return {
+        ...prevState,
+        address_id: {
+          ...prevState.address_id,
+          ...patientState.data.address_id
+        }
+      }
+    });
+  }, [patientState.data.address_id]);
 
   const getAddress = useCallback(() => {
     dispatch(getAddressAction(state.address_id.postal_code));
@@ -191,22 +198,25 @@ export default function PatientForm(props: RouteComponentProps<IPageParams>) {
   }, [type]);
 
   const handleSaveFormPatient = useCallback(() => {
+    const patientData = {
+      ...state,
+      phones: [
+        { whatsapp: false, telegram: false, number: form.phone },
+        { whatsapp: false, telegram: false, cellnumber: form.cellphone },
+      ]
+    };
+
     if (state?._id) {
-      dispatch(updatePatientRequest({
-        ...state,
-        phones: [
-          { whatsapp: false, telegram: false, number: form.phone },
-          { whatsapp: false, telegram: false, cellnumber: form.cellphone },
-        ]
-      }));
+      dispatch(updatePatientRequest(patientData));
     } else {
-      dispatch(createPatientRequest(state));
+      dispatch(createPatientRequest(patientData));
     }
   }, [state]);
 
   return (
     <Sidebar>
       {patientState.loading && <Loading />}
+      {console.log(patientState)}
       <Container>
         <FormSection>
           <FormContent>

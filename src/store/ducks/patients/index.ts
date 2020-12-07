@@ -3,7 +3,6 @@ import { PatientState, PatientTypes } from './types';
 
 export const INITIAL_STATE: PatientState = {
   data: {
-    _id: '',
     companies: [],
     name: '',
     social_name: '',

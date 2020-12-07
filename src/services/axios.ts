@@ -12,7 +12,7 @@ export const apiSollar = axios.create({
 });
 
 export const ibge = axios.create({
-  baseURL: process.env.REACT_APP_IBGE,
+  baseURL: 'https://servicodados.ibge.gov.br/api/v1',
 });
 
 apiSollar.interceptors.request.use(

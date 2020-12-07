@@ -3,14 +3,15 @@ import { AreaState, AreaTypes } from './types';
 
 export const INITIAL_STATE: AreaState = {
   data: {
-    id: '',
-    description: '',
-    supplyDay: 0,
-    dayOfTheWeek: 0,
+    name: '',
+    supply_days: 0,
+    week_day: 0,
     users: [],
     neighborhoods: [],
     active: true,
   },
+  list: [],
+  districts: [],
   error: false,
   loading: false,
 };
@@ -18,16 +19,65 @@ export const INITIAL_STATE: AreaState = {
 const reducer: Reducer<AreaState> = (state = INITIAL_STATE, action) => {
   switch (action.type) {
     case AreaTypes.LOAD_REQUEST:
-      return { ...state, loading: true };
+      return { ...state, loading: true, success: false, };
     case AreaTypes.LOAD_SUCCCES:
       return {
         ...state,
-        data: action.payload,
+        list: action.payload.data,
         loading: false,
+        success: false,
+        error: false
       };
+    case AreaTypes.LOAD_REQUEST_AREA_BY_ID:
+      return {
+        ...state, error: false, loading: true, success: false
+      }
+    case AreaTypes.LOAD_SUCCCES_AREA_BY_ID:
+      return {
+        ...state,
+        data: {...action.payload.data},
+        loading: false,
+        error: false,
+        success: false,
+      }
+    case AreaTypes.UPDATE_AREA_REQUEST:
+      return {
+        ...state,
+        data: action.payload.data,
+        loading: true,
+        error: false,
+        success: true
+      }
+    case AreaTypes.UPDATE_AREA_SUCCESS:
+      return {
+        ...state,
+        data: action.payload.data,
+        loading: false,
+        error: false,
+        success: true
+      }
     case AreaTypes.LOAD_FAILURE:
       return {
-      ...state, loading: false, error: true
+        ...state, loading: false, error: true, success: false,
+      };
+    case AreaTypes.CREATE_AREA_REQUEST:
+      return {
+        ...state, loading: true, error: false, success: false,
+      };
+    case AreaTypes.CREATE_AREA_SUCCESS:
+      return {
+        ...state,
+        loading: false,
+        error: false,
+        success: true
+      };
+    case AreaTypes.LOAD_SUCCCES_GET_DISTRICTS:
+      return {
+        ...state,
+        districts: action.payload.data,
+        loading: false,
+        error: false,
+        success: false
       };
     default:
       return state;

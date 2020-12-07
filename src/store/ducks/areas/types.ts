@@ -5,6 +5,18 @@ export enum AreaTypes {
   LOAD_REQUEST = "@area/LOAD_REQUEST",
   LOAD_SUCCCES = "@area/LOAD_SUCCCES",
   LOAD_FAILURE = "@area/LOAD_FAILURE",
+
+  CREATE_AREA_REQUEST = "@area/CREATE_AREA_REQUEST",
+  CREATE_AREA_SUCCESS = "@area/CREATE_AREA_SUCCESS",
+
+  UPDATE_AREA_REQUEST = "@area/UPDATE_AREA_REQUEST",
+  UPDATE_AREA_SUCCESS = "@area/UPDATE_AREA_SUCCESS",
+
+  LOAD_REQUEST_AREA_BY_ID = "@area/LOAD_REQUEST_AREA_BY_ID",
+  LOAD_SUCCCES_AREA_BY_ID = "@area/LOAD_SUCCCES_AREA_BY_ID",
+
+  LOAD_GET_DISTRICTS = "@area/LOAD_GET_DISTRICTS",
+  LOAD_SUCCCES_GET_DISTRICTS = "@area/LOAD_SUCCCES_GET_DISTRICTS",
 }
 
 /**
@@ -12,31 +24,34 @@ export enum AreaTypes {
  */
 
 export interface UserAreaInterface {
-  id: string;
+  _id: string;
   name: string;
 }
 
 export interface NeighborhoodAreaInterface {
-  id: string;
+  _id: string;
   name: string;
 }
 
 export interface AreaInterface {
-  id?: string;
-	description: string;
-	supplyDay: number;
-  dayOfTheWeek: number;
+  _id?: string;
+	name: string;
+	describe?: string;
+	supply_days: number;
+  week_day: number;
   users: (UserAreaInterface | {})[],
   neighborhoods: (NeighborhoodAreaInterface | {})[],
+	created_by?: { _id: string };
 	active: boolean;
 }
-
 
 /**
  * State type
  */
 export interface AreaState {
   data: AreaInterface;
+  list: AreaInterface[];
+  districts: any[];
   loading: boolean;
   error: boolean;
 }
