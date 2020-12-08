@@ -21,6 +21,7 @@ export const INITIAL_STATE: CompanyState = {
     phone: '',
     cellphone: '',
     active: true,
+    created_by: { _id: '' }
   },
   list: [],
   error: false,
@@ -51,7 +52,7 @@ const reducer: Reducer<CompanyState> = (state = INITIAL_STATE, action) => {
           ...state.data,
           address: {
             ...state.data.address,
-            postalCode: action.payload.data.cep,
+            postal_code: action.payload.data.cep,
             street: action.payload.data.logradouro,
             number: '',
             district: action.payload.data.bairro,

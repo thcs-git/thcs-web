@@ -1,8 +1,12 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useHistory } from 'react-router-dom';
 import { Container, FormControl, InputLabel, OutlinedInput, InputAdornment, IconButton } from '@material-ui/core';
 import { SearchOutlined } from '@material-ui/icons';
 import { getDayOfTheWeekName } from '../../../helpers/date';
+
+import { useDispatch, useSelector } from 'react-redux';
+import { ApplicationState } from '../../../store/';
+import { loadRequest } from '../../../store/ducks/areas/actions';
 
 import Sidebar from '../../../components/Sidebar';
 import SearchComponent from '../../../components/List/Search';
@@ -23,13 +27,14 @@ import {
 
 export default function CouncilList() {
   const history = useHistory();
+  const dispatch = useDispatch();
+  const areaState = useSelector((state: ApplicationState) => state.areas);
+
+  useEffect(() => {
+    dispatch(loadRequest());
+  }, []);
 
   const [search, setSearch] = useState('');
-
-  const [areas, setAreas] = useState([
-    { id: 1, description: 'area 1', supply_day: 7, day_of_the_week: 1, active: true },
-    { id: 2, description: 'area 2', supply_day: 7, day_of_the_week: 3, active: false },
-  ]);
 
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
 
@@ -51,18 +56,18 @@ export default function CouncilList() {
             handleButton={() => history.push('/area/create/')}
             buttonTitle="Novo"
             value=""
-            onChangeInput={() => {}}
+            onChangeInput={() => { }}
           />
 
           <List>
-            {areas.map((area, index) => (
-              <ListLink key={index} to={`/area/${area.id}/edit`}>
+            {areaState.list.map((area, index) => (
+              <ListLink key={index} to={`/area/${area._id}/edit`}>
                 <ListItem variant="outlined">
                   <ListItemContent>
                     <ListItemStatus active={area.active}>{area.active ? 'Ativo' : 'Inativo'}</ListItemStatus>
                     <div>
-                      <ListItemTitle>{area.description}</ListItemTitle>
-                      <ListItemSubTitle>Intervalo do abastecimento: {area.supply_day} dia(s), {getDayOfTheWeekName(area.day_of_the_week)}</ListItemSubTitle>
+                      <ListItemTitle>{area.name}</ListItemTitle>
+                      <ListItemSubTitle>Intervalo do abastecimento: {area.supply_days} dia(s), {getDayOfTheWeekName(area.week_day)}</ListItemSubTitle>
                     </div>
                   </ListItemContent>
                 </ListItem>

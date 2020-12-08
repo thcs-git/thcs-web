@@ -60,7 +60,7 @@ export interface UserInterface {
   cellphone: string;
   user_type_id: string;
   specialties: (SpecialtiesUserInterface | {})[];
-  council_id: {
+  council_id?: {
     _id: string;
     company_id: { _id: string; };
     name: string;

@@ -24,6 +24,7 @@ export function* getUserById({ payload: { id: _id } }: any) {
   try {
 
     const response: AxiosResponse = yield call(apiSollar.get, `/user`, { headers: { token }, params: { _id } })
+
     yield put(loadSuccessGetUserById(response.data[0]))
 
   } catch (error) {
@@ -53,13 +54,18 @@ export function* createUser({payload: { data }}: any) {
   }
 
   data.username = data.email;
-  data.password = data.cpf;
+  data.password = data.fiscal_number;
+
   data.phones = phones;
+
+  data.user_type_id = { _id: '5fc05d1803058800244bc41b' }
 
   try {
     const response:AxiosResponse = yield call(apiSollar.post, `/user/store`, data, { headers: { token } })
     yield put(createUserSuccess(response.data))
+    toast.success('Usuário atualizado com sucesso!');
   } catch(e) {
+    toast.error('Não foi possível cadastrar o usuário');
     yield put(loadFailure());
   }
 }
@@ -69,7 +75,7 @@ export function* updateUser({ payload: { data } }: any) {
 
   const phones = [];
 
-  if (data.phone.length > 0) {
+  if (data?.phone?.length > 0) {
     phones.push({
       whatsapp: false,
       telegram: false,
@@ -77,7 +83,7 @@ export function* updateUser({ payload: { data } }: any) {
     });
   }
 
-  if (data.cellphone.length > 0) {
+  if (data?.cellphone?.length > 0) {
     phones.push({
       whatsapp: false,
       telegram: false,
@@ -87,11 +93,18 @@ export function* updateUser({ payload: { data } }: any) {
 
   data.phones = phones;
 
+  delete data.phone;
+  delete data.cellphone;
+
+  data.user_type_id = { _id: '5fc05d1803058800244bc41b' }
+
   try {
     const response: AxiosResponse = yield call(apiSollar.put, `/user/${_id}/update`, { ...data }, { headers: { token } })
 
+    console.log(response.data);
+
     toast.success('Usuário atualizado com sucesso!');
-    yield put(updateUserSuccess(response.data[0]))
+    yield put(updateUserSuccess(response.data))
   } catch (error) {
     toast.error("Não foi possível atualizar os dados do usuario");
     yield put(loadFailure());

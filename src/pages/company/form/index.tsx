@@ -73,6 +73,7 @@ export default function CompanyForm(props: RouteComponentProps<IPageParams>) {
     phone: '',
     cellphone: '',
     active: true,
+    created_by: { _id: '5e8cfe7de9b6b8501c8033ac' }
   });
 
   const [openModalCancel, setOpenModalCancel] = useState(false);
@@ -104,18 +105,13 @@ export default function CompanyForm(props: RouteComponentProps<IPageParams>) {
     }
 
     setState(prevState => {
-      const { address } = companyState.data;
-
       return {
         ...prevState,
-        ...companyState.data
+        ...companyState.data,
+        created_by: { _id: '5e8cfe7de9b6b8501c8033ac' }
       }
     })
   }, [companyState]);
-
-  const handleSaveFormCustomer = useCallback(() => {
-    dispatch(createCompanyRequest(state));
-  }, [state]);
 
   function handleOpenModalCancel() {
     setOpenModalCancel(true);
@@ -133,6 +129,10 @@ export default function CompanyForm(props: RouteComponentProps<IPageParams>) {
   const getAddress = useCallback(() => {
     dispatch(getAddressAction(state.address.postal_code));
   }, [state.address.postal_code]);
+
+  const handleSaveFormCustomer = useCallback(() => {
+    dispatch(createCompanyRequest(state));
+  }, [state]);
 
   return (
     <Sidebar>

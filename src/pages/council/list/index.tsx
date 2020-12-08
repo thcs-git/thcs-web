@@ -65,10 +65,10 @@ export default function CouncilList() {
               <ListLink key={index} to={`/council/${council._id}/edit`}>
                 <ListItem variant="outlined">
                   <ListItemContent>
-                    <ListItemStatus active={council?.active || true}>{council.active ? 'Ativo' : 'Inativo'}</ListItemStatus>
+                    <ListItemStatus active={council?.active || false}>{council.active ? 'Ativo' : 'Inativo'}</ListItemStatus>
                     <div>
                       <ListItemTitle>{council.name}</ListItemTitle>
-                      <ListItemSubTitle>{council.initials}</ListItemSubTitle>
+                      <ListItemSubTitle>{council.initials} • {council.federative_unit}</ListItemSubTitle>
                     </div>
                   </ListItemContent>
                 </ListItem>

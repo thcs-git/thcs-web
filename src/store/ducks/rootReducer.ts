@@ -10,6 +10,7 @@ import customers from './customers';
 import companies from './companies';
 import councils from './councils';
 import specialties from './specialties';
+import patients from './patients';
 import users from './users';
 
 export default combineReducers<IInitialState>({
@@ -19,5 +20,6 @@ export default combineReducers<IInitialState>({
   companies,
   specialties,
   councils,
+  patients,
   users,
 });
