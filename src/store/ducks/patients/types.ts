@@ -99,3 +99,5 @@ export interface PatientState {
   error: boolean;
   success: boolean;
 }
+
+export type LoadRequestParams = Partial<Omit<PatientList, 'data'>>
