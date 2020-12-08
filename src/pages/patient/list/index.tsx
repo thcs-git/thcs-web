@@ -5,6 +5,7 @@ import { SearchOutlined } from '@material-ui/icons';
 
 import Sidebar from '../../../components/Sidebar';
 import SearchComponent from '../../../components/List/Search';
+import PaginationComponent from '../../../components/Pagination';
 
 import { FormTitle } from '../../../styles/components/Form';
 import {
@@ -67,6 +68,7 @@ export default function PatientList() {
               </ListLink>
             ))}
           </List>
+          <PaginationComponent />
         </Container>
       </Sidebar>
     </>
