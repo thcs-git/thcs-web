@@ -4,3 +4,7 @@ import TablePagination from '@material-ui/core/TablePagination';
 export const Pagination = styled(TablePagination)`
   border-bottom: none;
 `;
+
+export const ContainerPaginationActions = styled.div`
+  flex-shrink: 0;
+`;

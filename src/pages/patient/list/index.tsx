@@ -20,9 +20,8 @@ import {
   ListItemStatus,
   ListItemTitle,
   ListItemSubTitle,
-  FormSearch,
-  ButtonsContent,
 } from './styles';
+import Loading from '../../../components/Loading';
 
 export default function PatientList() {
   const history = useHistory();
@@ -47,6 +46,7 @@ export default function PatientList() {
   return (
     <>
       <Sidebar>
+        {patientState.loading && <Loading />}
         <Container>
           <FormTitle>Lista de Pacientes</FormTitle>
 
@@ -58,7 +58,6 @@ export default function PatientList() {
           />
 
           <List>
-            {/* {console.log(patientState.list)} */}
             {patientState.list.data.map((patient, index) => (
               <ListLink key={index} to={`/patient/${patient._id}/edit`}>
                 <ListItem variant="outlined">
@@ -73,7 +72,40 @@ export default function PatientList() {
               </ListLink>
             ))}
           </List>
-          <PaginationComponent />
+          <PaginationComponent
+            page={patientState.list.page}
+            rowsPerPage={patientState.list.limit}
+            totalRows={patientState.list.total}
+
+            handleFirstPage={() => dispatch(loadRequest({
+              page: '1',
+              limit: patientState.list.limit,
+              total: patientState.list.total,
+            }))}
+
+            handleLastPage={() => dispatch(loadRequest({
+              page: (Math.ceil(+patientState.list.total / +patientState.list.limit)).toString(),
+              limit: patientState.list.limit,
+              total: patientState.list.total,
+            }))}
+
+            handleNextPage={() => dispatch(loadRequest({
+              page: (+patientState.list.page + 1).toString(),
+              limit: patientState.list.limit,
+              total: patientState.list.total,
+            }))}
+
+            handlePreviosPage={() => dispatch(loadRequest({
+              page: (+patientState.list.page - 1).toString(),
+              limit: patientState.list.limit,
+              total: patientState.list.total,
+            }))}
+
+            handleChangeRowsPerPage={event => dispatch(loadRequest({
+              limit: event.target.value,
+              page: '1'
+            }))}
+          />
         </Container>
       </Sidebar>
     </>
