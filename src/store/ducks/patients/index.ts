@@ -1,18 +1,22 @@
 import { Reducer } from 'redux';
-import { UserState, UserTypes } from './types';
+import { PatientState, PatientTypes } from './types';
 
-export const INITIAL_STATE: UserState = {
+export const INITIAL_STATE: PatientState = {
   data: {
     companies: [],
     name: '',
+    social_name: '',
     birthdate: '',
     gender: '',
+    mother_name: '',
+    profession: '',
+    nationality: '',
+    naturalness: '',
+    marital_status: '',
+    fiscal_number: '',
     national_id: '',
     issuing_organ: '',
-    fiscal_number: '',
-    mother_name: '',
-    nationality: '',
-    address: {
+    address_id: {
       postal_code: '',
       street: '',
       number: '',
@@ -21,25 +25,29 @@ export const INITIAL_STATE: UserState = {
       state: '',
       complement: '',
     },
+    phones: [],
     email: '',
-    phone: '',
-    cellphone: '',
-    user_type_id: '',
-    specialties: [],
-    council_number: '',
-    active: true,
-  },
-  list: [],
-  success: false,
-  error: false,
-  loading: false,
+    sus_card: '',
+    blood_type: '',
+    organ_donor: false,
+    active: true
+    },
+    list: {
+      data: [],
+      limit: '10',
+      page: '1',
+      total: 0
+    },
+    error: false,
+    loading: false,
+    success: false,
 };
 
-const reducer: Reducer<UserState> = (state = INITIAL_STATE, action) => {
+const reducer: Reducer<PatientState> = (state = INITIAL_STATE, action) => {
   switch (action.type) {
-    case UserTypes.LOAD_REQUEST:
+    case PatientTypes.LOAD_REQUEST:
       return { ...state, loading: true, success: false, };
-    case UserTypes.LOAD_SUCCCES:
+    case PatientTypes.LOAD_SUCCCES:
       return {
         ...state,
         list: action.payload.data,
@@ -47,11 +55,11 @@ const reducer: Reducer<UserState> = (state = INITIAL_STATE, action) => {
         success: false,
         error: false
       };
-    case UserTypes.LOAD_REQUEST_USER_BY_ID:
+    case PatientTypes.LOAD_REQUEST_PATIENT_BY_ID:
       return {
         ...state, error: false, loading: true, success: false
       }
-    case UserTypes.LOAD_SUCCCES_USER_BY_ID:
+    case PatientTypes.LOAD_SUCCCES_PATIENT_BY_ID:
       return {
         ...state,
         data: {...action.payload.data},
@@ -59,7 +67,7 @@ const reducer: Reducer<UserState> = (state = INITIAL_STATE, action) => {
         error: false,
         success: false,
       }
-    case UserTypes.UPDATE_USER_REQUEST:
+    case PatientTypes.UPDATE_PATIENT_REQUEST:
       return {
         ...state,
         data: action.payload.data,
@@ -67,45 +75,36 @@ const reducer: Reducer<UserState> = (state = INITIAL_STATE, action) => {
         error: false,
         success: true
       }
-    case UserTypes.UPDATE_USER_SUCCESS:
+    case PatientTypes.UPDATE_PATIENT_SUCCESS:
       return {
         ...state,
-        data: {
-          ...action.payload.data,
-          phone: action.payload.data.phones[0].number,
-          cellphone: action.payload.data.phones[1].number,
-        },
+        data: action.payload.data,
         loading: false,
         error: false,
         success: true
       }
-    case UserTypes.LOAD_FAILURE:
+    case PatientTypes.LOAD_FAILURE:
       return {
         ...state, loading: false, error: true, success: false,
       };
-    case UserTypes.CREATE_USER_REQUEST:
+    case PatientTypes.CREATE_PATIENT_REQUEST:
       return {
         ...state, loading: true, error: false, success: false,
       };
-    case UserTypes.CREATE_USER_SUCCESS:
+    case PatientTypes.CREATE_PATIENT_SUCCESS:
       return {
         ...state,
-        data: {
-          ...action.payload.data,
-          phone: action.payload.data.phones[0].number,
-          cellphone: action.payload.data.phones[1].number,
-        },
         loading: false,
         error: false,
         success: true
       };
-    case UserTypes.LOAD_RESPONSE_ADDRESS:
+    case PatientTypes.LOAD_RESPONSE_ADDRESS:
       return {
         ...state,
         data: {
           ...state.data,
-          address: {
-            ...state.data.address,
+          address_id: {
+            ...state.data.address_id,
             postal_code: action.payload.data.cep,
             street: action.payload.data.logradouro,
             number: '',

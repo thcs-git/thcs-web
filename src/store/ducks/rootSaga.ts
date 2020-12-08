@@ -1,7 +1,7 @@
 import { all, takeLatest } from "redux-saga/effects";
 
 import { AreaTypes } from "./areas/types";
-import { get as getAreas } from "./areas/sagas";
+import { get as getAreas, createArea, updateArea, getAreaById, getDistricts } from "./areas/sagas";
 
 import { LoginTypes } from "./login/types";
 import { doLogin } from "./login/sagas";
@@ -18,6 +18,9 @@ import { get as getSpecialties, store as storeSpecialty, getById as getSpecialty
 import { CouncilTypes } from './councils/types';
 import { get as getCouncils, store as storeCouncil, getById as getCouncilById, update as updateCouncil } from './councils/sagas';
 
+import { PatientTypes } from './patients/types';
+import { get as getPatients, createPatient, getAddress as getAddressPatient, getPatientById, updatePatient } from './patients/sagas';
+
 import { UserTypes } from './users/types';
 import { get as getUsers, createUser, getAddress as getAddressUser, getUserById, updateUser } from './users/sagas';
 
@@ -28,6 +31,13 @@ export default function* rootSaga() {
     // takeLatest(EspecialtyTypes.LOAD_REQUEST, getEspecialty),
     // takeLatest(CouncilTypes.LOAD_REQUEST, getCouncil),
     // takeLatest(CustomerTypes.LOAD_REQUEST, get),
+
+    // Area
+    takeLatest(AreaTypes.LOAD_REQUEST, getAreas),
+    takeLatest(AreaTypes.LOAD_REQUEST_AREA_BY_ID, getAreaById),
+    takeLatest(AreaTypes.CREATE_AREA_REQUEST, createArea),
+    takeLatest(AreaTypes.UPDATE_AREA_REQUEST, updateArea),
+    takeLatest(AreaTypes.LOAD_GET_DISTRICTS, getDistricts),
 
     // Council
     takeLatest(CouncilTypes.LOAD_REQUEST, getCouncils),
@@ -54,6 +64,13 @@ export default function* rootSaga() {
     takeLatest(CustomerTypes.LOAD_REQUEST_ADDRESS, getAddressCustomer),
     takeLatest(CustomerTypes.CREATE_CUSTOMER_REQUEST, createCompanyCustomer),
     takeLatest(CustomerTypes.UPDATE_CUSTOMER_REQUEST, updateCompanyCustomer),
+
+    /** Patients */
+    takeLatest(PatientTypes.LOAD_REQUEST, getPatients),
+    takeLatest(PatientTypes.CREATE_PATIENT_REQUEST, createPatient),
+    takeLatest(PatientTypes.LOAD_REQUEST_ADDRESS, getAddressPatient),
+    takeLatest(PatientTypes.LOAD_REQUEST_PATIENT_BY_ID, getPatientById),
+    takeLatest(PatientTypes.UPDATE_PATIENT_REQUEST, updatePatient),
 
     /** Users */
     takeLatest(UserTypes.LOAD_REQUEST, getUsers),

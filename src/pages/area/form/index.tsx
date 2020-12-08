@@ -1,9 +1,10 @@
 import React, { useState, useEffect, useCallback, ChangeEvent, ReactNode } from 'react';
 
 import { useDispatch, useSelector } from 'react-redux';
-import { AreaInterface, UserAreaInterface, NeighborhoodAreaInterface } from '../../../store/ducks/areas/types';
-import { loadRequest } from '../../../store/ducks/areas/actions';
 import { ApplicationState } from '../../../store';
+import { AreaInterface, UserAreaInterface, NeighborhoodAreaInterface } from '../../../store/ducks/areas/types';
+import { loadRequest, loadAreaById, updateAreaRequest, createAreaRequest, loadGetDistricts as getDistrictsAction } from '../../../store/ducks/areas/actions';
+import { loadRequest as getUsersAction } from '../../../store/ducks/users/actions';
 
 import { useHistory, RouteComponentProps } from 'react-router-dom';
 import {
@@ -20,6 +21,7 @@ import {
 } from '@material-ui/core';
 import Autocomplete from '@material-ui/lab/Autocomplete';
 
+import Loading from '../../../components/Loading';
 import Sidebar from '../../../components/Sidebar';
 import { FormTitle } from '../../../styles/components/Form';
 import Button from '../../../styles/components/Button';
@@ -55,15 +57,14 @@ interface TabPanelProps {
 export default function AreaForm(props: RouteComponentProps<IPageParams>) {
   const history = useHistory();
   const dispatch = useDispatch();
-  const areaState = useSelector((state: ApplicationState) => state.areas).data;
+  const areaState = useSelector((state: ApplicationState) => state.areas);
+  const userState = useSelector((state: ApplicationState) => state.users);
+
+  const { params } = props.match;
 
   const neighborhoods = [
-    { id: '1', name: 'bairro 1' },
-    { id: '2', name: 'bairro 2' },
-  ];
-  const users = [
-    { id: '1', name: 'user 1' },
-    { id: '2', name: 'user 2' },
+    { _id: '1', name: 'bairro 1' },
+    { _id: '2', name: 'bairro 2' },
   ];
   const daysOfTheWeek = [
     { id: 0, name: 'Domingo' },
@@ -87,23 +88,19 @@ export default function AreaForm(props: RouteComponentProps<IPageParams>) {
     { value: 70, label: '70' },
   ];
 
-  const [value, setValue] = useState(0);
-
-  const handleChange = useCallback((event: ChangeEvent<{}>, newValue: number) => {
-    setValue(newValue);
-  }, [value]);
-
   const [state, setState] = useState<IFormFields>({
-    id: props.match.params.id || '',
-    description: '',
-    supplyDay: 0,
-    dayOfTheWeek: 0,
+    name: '',
+    describe: '',
+    supply_days: 0,
+    week_day: 0,
     users: [],
     neighborhoods: [],
+    created_by: { _id: '5fb81e21c7921937fdb79994' },
     active: true
   });
 
   const [currentTab, setCurrentTab] = useState(0);
+
   const selectTab = useCallback((index: number) => {
     setCurrentTab(index);
   }, [currentTab]);
@@ -111,11 +108,34 @@ export default function AreaForm(props: RouteComponentProps<IPageParams>) {
   const [openModalCancel, setOpenModalCancel] = useState(false);
 
   useEffect(() => {
-    dispatch(loadRequest());
-    setState({ ...state, ...areaState })
+    if (params.id) {
+      dispatch(loadAreaById(params.id));
+
+      const dayOfTheWeekSelected = daysOfTheWeek.find(day => day.id === areaState.data.week_day) || null;
+
+      setState(prevState => ({ ...prevState, ...areaState.data, form: { dayOfTheWeek: dayOfTheWeekSelected } }))
+    } else {
+      dispatch(loadRequest());
+    }
+
+    dispatch(getUsersAction());
+    dispatch(getDistrictsAction());
   }, [dispatch]);
 
-  function handleSaveFormCustomer() {
+  useEffect(() => {
+    setState(prevState => ({
+      ...prevState,
+      ...areaState.data
+    }));
+
+  }, [areaState]);
+
+  function handleSaveFormArea() {
+    if (state?._id) {
+      dispatch(updateAreaRequest(state));
+    } else {
+      dispatch(createAreaRequest(state));
+    }
   }
 
   function handleOpenModalCancel() {
@@ -128,39 +148,42 @@ export default function AreaForm(props: RouteComponentProps<IPageParams>) {
 
   function handleCancelForm() {
     setOpenModalCancel(false);
-    // history.back();
+    history.push(`/area`);
   }
 
   function handleChangeSupply(value: any) {
     setState(prevState => ({
       ...prevState,
-      supplyDay: value
+      supply_days: value
     }))
   }
 
   const handleDayOfTheWeek = useCallback((event: any, newValue: any) => {
     setState(prevState => ({
       ...prevState,
-      dayOfTheWeek: event.target.value,
+      week_day: newValue.id,
       form: {
         ...prevState.form,
         dayOfTheWeek: newValue,
       }
     }));
-  }, [state.dayOfTheWeek]);
+  }, [state.week_day]);
 
   // Bairros
-  function handleSelectNeighborhood(value: NeighborhoodAreaInterface) {
+  function handleSelectNeighborhood(value: any) {
+
+    console.log('value', value);
+
     setState(prevState => ({
       ...prevState,
-      neighborhoods: [...prevState.neighborhoods, value]
+      neighborhoods: [...prevState.neighborhoods, { _id: value.id, name: value.nome }]
     }));
   }
 
   function handleDeleteNeighborhood(neighborhood: NeighborhoodAreaInterface) {
     let neighborhoodsSelected = [...state.neighborhoods];
     const neighborhoodFounded = neighborhoodsSelected.findIndex((item: any) => {
-      return neighborhood.id === item.id
+      return neighborhood._id === item.id
     });
 
     if (neighborhoodFounded > -1) {
@@ -185,7 +208,7 @@ export default function AreaForm(props: RouteComponentProps<IPageParams>) {
   function handleDeleteUser(user: UserAreaInterface) {
     let usersSelected = [...state.users];
     const userFounded = usersSelected.findIndex((item: any) => {
-      return user.id === item.id
+      return user._id === item._id
     });
 
     if (userFounded > -1) {
@@ -200,6 +223,8 @@ export default function AreaForm(props: RouteComponentProps<IPageParams>) {
 
   return (
     <Sidebar>
+      {areaState.loading && <Loading />}
+      {console.log(areaState.districts)}
       <Container>
         <FormSection>
           <FormContent>
@@ -223,30 +248,15 @@ export default function AreaForm(props: RouteComponentProps<IPageParams>) {
               <TabBody>
                 <TabBodyItem className={currentTab === 0 ? 'show' : ''}>
                   <Grid container>
-                    {state?.id && (
-                      <Grid item md={12} xs={12}>
-                        <FormGroupSection>
-                          <TextField
-                            id="input-customer-id"
-                            label="ID"
-                            variant="outlined"
-                            size="small"
-                            value={state.id}
-                            fullWidth
-                            disabled
-                          />
-                        </FormGroupSection>
-                      </Grid>
-                    )}
                     <Grid item md={12} xs={12}>
                       <FormGroupSection>
                         <TextField
-                          id="input-social-name"
-                          label="Descrição"
+                          id="input-name"
+                          label="Nome"
                           variant="outlined"
                           size="small"
-                          value={state.description}
-                          onChange={(element) => setState(prevState => ({ ...prevState, description: element.target.value }))}
+                          value={state.name}
+                          onChange={(element) => setState(prevState => ({ ...prevState, name: element.target.value }))}
                           fullWidth
                         />
                       </FormGroupSection>
@@ -257,8 +267,9 @@ export default function AreaForm(props: RouteComponentProps<IPageParams>) {
                         <div style={{ paddingLeft: 10 }}>
                           <Slider
                             marks={supplyIntervals}
-                            defaultValue={state.supplyDay || 0}
-                            getAriaValueText={value => `${value}°C`}
+                            value={state.supply_days}
+                            defaultValue={0}
+                            getAriaValueText={value => `${value}`}
                             aria-labelledby="discrete-slider-restrict"
                             step={null}
                             min={7}
@@ -274,12 +285,12 @@ export default function AreaForm(props: RouteComponentProps<IPageParams>) {
                     <Grid item md={4} xs={12}>
                       <FormGroupSection>
                         <Autocomplete
-                          id="combo-box-demo"
+                          id="combo-box-day-of-week"
                           options={daysOfTheWeek}
                           getOptionLabel={(option) => option.name}
                           renderInput={(params) => <TextField {...params} label="Dia da semana" variant="outlined" />}
-                          value={state.form?.dayOfTheWeek}
-                          getOptionSelected={(option, value) => option.id === state.dayOfTheWeek}
+                          value={state.form?.dayOfTheWeek ?? null}
+                          getOptionSelected={(option, value) => option.id === state.week_day}
                           onChange={(event: any, newValue) => {
                             handleDayOfTheWeek(event, newValue);
                           }}
@@ -288,16 +299,16 @@ export default function AreaForm(props: RouteComponentProps<IPageParams>) {
                         />
                       </FormGroupSection>
                     </Grid>
-                    {/* {state?.id && ( */}
-                    <Grid item md={12} xs={12}>
-                      <FormControlLabel control={<Switch checked={state.active} onChange={(event) => {
-                        setState(prevState => ({
-                          ...prevState,
-                          active: event.target.checked
-                        }))
-                      }} />} label="Ativo?" />
-                    </Grid>
-                    {/* )} */}
+                    {state?._id && (
+                      <Grid item md={12} xs={12}>
+                        <FormControlLabel control={<Switch checked={state.active} onChange={(event) => {
+                          setState(prevState => ({
+                            ...prevState,
+                            active: event.target.checked
+                          }))
+                        }} />} label="Ativo?" />
+                      </Grid>
+                    )}
                   </Grid>
 
                 </TabBodyItem>
@@ -306,9 +317,9 @@ export default function AreaForm(props: RouteComponentProps<IPageParams>) {
                     <Grid item md={5} xs={12}>
                       <FormGroupSection>
                         <Autocomplete
-                          id="combo-box-demo"
-                          options={neighborhoods}
-                          getOptionLabel={(option) => option.name}
+                          id="combo-box-neigthborhoods"
+                          options={areaState.districts}
+                          getOptionLabel={(option) => `${option.municipio.microrregiao.mesorregiao.UF.sigla} - ${option.nome}`}
                           renderInput={(params) => <TextField {...params} label="Bairros" variant="outlined" />}
                           size="small"
                           onChange={(event, value) => {
@@ -336,14 +347,14 @@ export default function AreaForm(props: RouteComponentProps<IPageParams>) {
                     <Grid item md={5} xs={12}>
                       <FormGroupSection>
                         <Autocomplete
-                          id="combo-box-demo"
-                          options={users}
+                          id="combo-box-users"
+                          options={userState.list}
                           getOptionLabel={(option) => option.name}
                           renderInput={(params) => <TextField {...params} label="Prestador" variant="outlined" />}
                           size="small"
                           onChange={(event, value) => {
                             if (value) {
-                              handleSelectUser(value)
+                              handleSelectUser({ _id: value._id, name: value.name })
                             }
                           }}
                           fullWidth
@@ -371,7 +382,7 @@ export default function AreaForm(props: RouteComponentProps<IPageParams>) {
             <Button variant="outlined" background="default" onClick={() => handleOpenModalCancel()}>
               Cancelar
               </Button>
-            <Button variant="contained" background="success" onClick={() => handleSaveFormCustomer()}>
+            <Button variant="contained" background="success" onClick={() => handleSaveFormArea()}>
               Salvar
 					</Button>
           </ButtonsContent>
@@ -381,7 +392,7 @@ export default function AreaForm(props: RouteComponentProps<IPageParams>) {
         open={openModalCancel}
         onClose={handleCloseModalCancel}
         aria-labelledby="alert-dialog-title"
-        aria-describedby="alert-dialog-description"
+        aria-namedby="alert-dialog-description"
       >
         <DialogTitle id="alert-dialog-title">Cancelar</DialogTitle>
         <DialogContent>

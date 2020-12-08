@@ -1,7 +1,11 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useHistory } from 'react-router-dom';
 import { Container, FormControl, InputLabel, OutlinedInput, InputAdornment, IconButton, Button } from '@material-ui/core';
 import { SearchOutlined } from '@material-ui/icons';
+
+import { useDispatch, useSelector } from 'react-redux';
+import { ApplicationState } from '../../../store/';
+import { loadRequest } from '../../../store/ducks/patients/actions';
 
 import Sidebar from '../../../components/Sidebar';
 import SearchComponent from '../../../components/List/Search';
@@ -22,15 +26,15 @@ import {
 
 export default function PatientList() {
   const history = useHistory();
-
+  const dispatch = useDispatch();
+  const patientState = useSelector((state: ApplicationState) => state.patients);
   const [search, setSearch] = useState('');
 
-  const [patients, setPatients] = useState([
-    { id: 1, name: 'patient 1', fiscalNumber: '00.000.000/0000-00', active: true },
-    { id: 2, name: 'patient 2', fiscalNumber: '00.000.000/0000-00', active: false },
-  ]);
-
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
+
+  useEffect(() => {
+    dispatch(loadRequest());
+  }, []);
 
   const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
     setAnchorEl(event.currentTarget);
@@ -54,14 +58,15 @@ export default function PatientList() {
           />
 
           <List>
-            {patients.map((patient) => (
-              <ListLink to={`/patient/${patient.id}/edit`}>
+            {/* {console.log(patientState.list)} */}
+            {patientState.list.data.map((patient, index) => (
+              <ListLink key={index} to={`/patient/${patient._id}/edit`}>
                 <ListItem variant="outlined">
                   <ListItemContent>
                     <ListItemStatus active={patient.active}>{patient.active ? 'Ativo' : 'Inativo'}</ListItemStatus>
                     <div>
                       <ListItemTitle>{patient.name}</ListItemTitle>
-                      <ListItemSubTitle>{patient.fiscalNumber}</ListItemSubTitle>
+                      <ListItemSubTitle>{patient.fiscal_number}</ListItemSubTitle>
                     </div>
                   </ListItemContent>
                 </ListItem>

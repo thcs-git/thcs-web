@@ -26,6 +26,7 @@ export interface CouncilInterface {
 	name: string;
 	describe?: string;
 	initials?: string;
+	federative_unit?: string;
 	active?: boolean;
 }
 

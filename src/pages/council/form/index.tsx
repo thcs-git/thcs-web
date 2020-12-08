@@ -52,6 +52,7 @@ export default function EspecialtyForm(props: RouteComponentProps<IPageParams>) 
     name: '',
     describe: 'TESTE',
     initials: '',
+    federative_unit: '',
     active: true
   });
 
@@ -116,7 +117,7 @@ export default function EspecialtyForm(props: RouteComponentProps<IPageParams>) 
                     fullWidth
                   />
                 </Grid>
-                <Grid item md={12} xs={12}>
+                <Grid item md={6} xs={6}>
                   <TextField
                     id="input-initials"
                     label="Sigla"
@@ -124,6 +125,20 @@ export default function EspecialtyForm(props: RouteComponentProps<IPageParams>) 
                     size="small"
                     value={state.initials}
                     onChange={(element) => setState({ ...state, initials: element.target.value })}
+                    fullWidth
+                  />
+                </Grid>
+
+                <Grid item md={6} xs={6} />
+
+                <Grid item md={1} xs={6}>
+                  <TextField
+                    id="input-federative-unit"
+                    label="UF"
+                    variant="outlined"
+                    size="small"
+                    value={state.federative_unit}
+                    onChange={(element) => setState({ ...state, federative_unit: element.target.value })}
                     fullWidth
                   />
                 </Grid>
