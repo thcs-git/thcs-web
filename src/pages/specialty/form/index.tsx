@@ -105,7 +105,7 @@ export default function SpecialtyForm(props: RouteComponentProps<IPageParams>) {
   }
 
   const selectCouncil = useCallback(() => {
-    const selected = councilState.list.filter(item => item._id === state.council_id._id);
+    const selected = councilState.list.data.filter(item => item._id === state.council_id._id);
     return (selected[0]) ? selected[0] : null;
   }, [state.council_id]);
 
@@ -134,7 +134,7 @@ export default function SpecialtyForm(props: RouteComponentProps<IPageParams>) {
                 <Grid item md={12} xs={12}>
                   <Autocomplete
                     id="combo-box-council"
-                    options={councilState.list}
+                    options={councilState.list.data}
                     getOptionLabel={(option) => option.name}
                     renderInput={(params) => <TextField {...params} label="Conselho" variant="outlined" />}
                     value={selectCouncil()}
