@@ -8,8 +8,10 @@ import { useDispatch, useSelector } from 'react-redux';
 import { ApplicationState } from '../../../store/';
 import { loadRequest } from '../../../store/ducks/areas/actions';
 
+import PaginationComponent from '../../../components/Pagination';
 import Sidebar from '../../../components/Sidebar';
 import SearchComponent from '../../../components/List/Search';
+import Loading from '../../../components/Loading';
 
 import { FormTitle } from '../../../styles/components/Form';
 import Button from '../../../styles/components/Button';
@@ -49,6 +51,7 @@ export default function CouncilList() {
   return (
     <>
       <Sidebar>
+        {areaState.loading && <Loading />}
         <Container>
           <FormTitle>Lista de Áreas</FormTitle>
 
@@ -60,7 +63,7 @@ export default function CouncilList() {
           />
 
           <List>
-            {areaState.list.map((area, index) => (
+            {areaState.list.data.map((area, index) => (
               <ListLink key={index} to={`/area/${area._id}/edit`}>
                 <ListItem variant="outlined">
                   <ListItemContent>
@@ -74,6 +77,40 @@ export default function CouncilList() {
               </ListLink>
             ))}
           </List>
+          <PaginationComponent
+            page={areaState.list.page}
+            rowsPerPage={areaState.list.limit}
+            totalRows={areaState.list.total}
+
+            handleFirstPage={() => dispatch(loadRequest({
+              page: '1',
+              limit: areaState.list.limit,
+              total: areaState.list.total,
+            }))}
+
+            handleLastPage={() => dispatch(loadRequest({
+              page: (Math.ceil(+areaState.list.total / +areaState.list.limit)).toString(),
+              limit: areaState.list.limit,
+              total: areaState.list.total,
+            }))}
+
+            handleNextPage={() => dispatch(loadRequest({
+              page: (+areaState.list.page + 1).toString(),
+              limit: areaState.list.limit,
+              total: areaState.list.total,
+            }))}
+
+            handlePreviosPage={() => dispatch(loadRequest({
+              page: (+areaState.list.page - 1).toString(),
+              limit: areaState.list.limit,
+              total: areaState.list.total,
+            }))}
+
+            handleChangeRowsPerPage={event => dispatch(loadRequest({
+              limit: event.target.value,
+              page: '1'
+            }))}
+          />
         </Container>
       </Sidebar>
     </>
