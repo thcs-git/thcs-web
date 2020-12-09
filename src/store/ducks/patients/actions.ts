@@ -1,7 +1,7 @@
 import { action } from 'typesafe-actions';
-import { PatientTypes, PatientInterface, ViacepDataInterface } from './types';
+import { PatientTypes, PatientInterface, ViacepDataInterface, LoadRequestParams } from './types';
 
-export const loadRequest = () => action(PatientTypes.LOAD_REQUEST);
+export const loadRequest = (params: LoadRequestParams = {}) => action(PatientTypes.LOAD_REQUEST, { params });
 export const loadSuccess = (data: PatientInterface) => action(PatientTypes.LOAD_SUCCCES, { data });
 export const loadFailure = (data?: PatientInterface) => action(PatientTypes.LOAD_FAILURE, { data });
 

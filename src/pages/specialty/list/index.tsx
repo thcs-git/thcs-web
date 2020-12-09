@@ -2,10 +2,12 @@ import React, { useState, useEffect } from 'react';
 import { useHistory } from 'react-router-dom';
 import { Container, FormControl, InputLabel, OutlinedInput, InputAdornment, IconButton } from '@material-ui/core';
 import { SearchOutlined } from '@material-ui/icons';
-
 import { useDispatch, useSelector } from 'react-redux';
+
 import { ApplicationState } from '../../../store/';
 import { loadRequest } from '../../../store/ducks/specialties/actions';
+
+import PaginationComponent from '../../../components/Pagination';
 import SearchComponent from '../../../components/List/Search';
 import Loading from '../../../components/Loading';
 import Sidebar from '../../../components/Sidebar';
@@ -59,7 +61,7 @@ export default function SpecialtyList() {
           />
 
           <List>
-            {especialtyState.list.map((specialty, index) => (
+            {especialtyState.list.data.map((specialty, index) => (
               <ListLink key={index} to={`/specialty/${specialty._id}/edit`}>
                 <ListItem variant="outlined">
                   <ListItemContent>
@@ -72,6 +74,40 @@ export default function SpecialtyList() {
               </ListLink>
             ))}
           </List>
+          <PaginationComponent
+            page={especialtyState.list.page}
+            rowsPerPage={especialtyState.list.limit}
+            totalRows={especialtyState.list.total}
+
+            handleFirstPage={() => dispatch(loadRequest({
+              page: '1',
+              limit: especialtyState.list.limit,
+              total: especialtyState.list.total,
+            }))}
+
+            handleLastPage={() => dispatch(loadRequest({
+              page: (Math.ceil(+especialtyState.list.total / +especialtyState.list.limit)).toString(),
+              limit: especialtyState.list.limit,
+              total: especialtyState.list.total,
+            }))}
+
+            handleNextPage={() => dispatch(loadRequest({
+              page: (+especialtyState.list.page + 1).toString(),
+              limit: especialtyState.list.limit,
+              total: especialtyState.list.total,
+            }))}
+
+            handlePreviosPage={() => dispatch(loadRequest({
+              page: (+especialtyState.list.page - 1).toString(),
+              limit: especialtyState.list.limit,
+              total: especialtyState.list.total,
+            }))}
+
+            handleChangeRowsPerPage={event => dispatch(loadRequest({
+              limit: event.target.value,
+              page: '1'
+            }))}
+          />
         </Container>
       </Sidebar>
     </>

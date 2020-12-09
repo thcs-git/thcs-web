@@ -1,7 +1,7 @@
 import { action } from 'typesafe-actions';
-import { CouncilTypes, CouncilInterface } from './types';
+import { CouncilTypes, CouncilInterface, LoadRequestParams } from './types';
 
-export const loadRequest = () => action(CouncilTypes.LOAD_REQUEST);
+export const loadRequest = (params: LoadRequestParams = {}) => action(CouncilTypes.LOAD_REQUEST, { params });
 
 export const loadSuccess = (data: CouncilInterface) => action(CouncilTypes.LOAD_SUCCCES, { data });
 

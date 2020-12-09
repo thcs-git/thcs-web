@@ -9,8 +9,9 @@ import { ViacepDataInterface } from './types';
 
 const token = localStorage.getItem('token');
 
-export function* get() {
-  const response: AxiosResponse = yield call(apiSollar.get, `/companies`);
+export function* get({ payload }: any) {
+  const { params } = payload;
+  const response: AxiosResponse = yield call(apiSollar.get, `/companies?limit=${params.limit ?? 10}&page=${params.page || 1}`);
 
   try {
     yield put(loadSuccess(response.data))

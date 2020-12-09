@@ -512,7 +512,7 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
                       <FormGroupSection>
                         <Autocomplete
                           id="combo-box-council"
-                          options={councilState.list}
+                          options={councilState.list.data}
                           getOptionLabel={(option) => option.name}
                           renderInput={(params) => <TextField {...params} label="Conselho" variant="outlined" />}
                           value={userState.data?.council_id || null}
@@ -556,7 +556,7 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
                       <FormGroupSection>
                         <Autocomplete
                           id="combo-box-especialty"
-                          options={specialtyState.list}
+                          options={specialtyState.list.data}
                           getOptionLabel={(option) => option.name}
                           renderInput={(params) => <TextField {...params} label="Especialidade" variant="outlined" />}
                           size="small"

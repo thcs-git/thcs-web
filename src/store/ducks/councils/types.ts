@@ -31,13 +31,24 @@ export interface CouncilInterface {
 }
 
 
+export interface ConcilList {
+  data: CouncilInterface[];
+  limit: string;
+  page: string;
+  total: number;
+}
+
+
 /**
  * State type
  */
 export interface CouncilState {
   data: CouncilInterface;
-  list: CouncilInterface[];
+  list: ConcilList;
   loading: boolean;
   error: boolean;
   success: boolean;
 }
+
+
+export type LoadRequestParams = Partial<Omit<ConcilList, 'data'>>

@@ -32,7 +32,12 @@ export const INITIAL_STATE: PatientState = {
     organ_donor: false,
     active: true
     },
-    list: [],
+    list: {
+      data: [],
+      limit: '10',
+      page: '1',
+      total: 0
+    },
     error: false,
     loading: false,
     success: false,

@@ -5,12 +5,15 @@ import { AxiosResponse } from 'axios';
 import { apiSollar, viacep } from '../../../services/axios';
 
 import { loadSuccess, loadFailure, successGetAddress, createPatientSuccess, loadSuccessGetPatientById, updatePatientSuccess } from './actions';
-import { PatientInterface, ViacepDataInterface } from './types';
+import { PatientInterface, ViacepDataInterface, LoadRequestParams } from './types';
+import { PayloadAction } from 'typesafe-actions';
 
 const token = localStorage.getItem('token');
 
-export function* get() {
-  const response: AxiosResponse = yield call(apiSollar.get, `/patient`, { headers: { token } })
+export function* get({ payload }: any) {
+  const { params } = payload;
+
+  const response: AxiosResponse = yield call(apiSollar.get, `/patient?limit=${params.limit ?? 10}&page=${params.page || 1}`)
 
   try {
     yield put(loadSuccess(response.data))

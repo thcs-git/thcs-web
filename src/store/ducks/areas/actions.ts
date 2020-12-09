@@ -1,7 +1,7 @@
 import { action } from 'typesafe-actions';
-import { AreaTypes, AreaInterface } from './types';
+import { AreaTypes, AreaInterface, LoadRequestParams } from './types';
 
-export const loadRequest = () => action(AreaTypes.LOAD_REQUEST);
+export const loadRequest = (params: LoadRequestParams = {}) => action(AreaTypes.LOAD_REQUEST, { params });
 
 export const loadSuccess = (data: AreaInterface) => action(AreaTypes.LOAD_SUCCCES, { data });
 

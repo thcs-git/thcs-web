@@ -1,7 +1,7 @@
 import { action } from 'typesafe-actions';
-import { SpecialtyTypes, SpecialtyInterface } from './types';
+import { SpecialtyTypes, SpecialtyInterface, LoadRequestParams } from './types';
 
-export const loadRequest = () => action(SpecialtyTypes.LOAD_REQUEST);
+export const loadRequest = (params: LoadRequestParams = {}) => action(SpecialtyTypes.LOAD_REQUEST, { params });
 
 export const loadSuccess = (data: SpecialtyInterface) => action(SpecialtyTypes.LOAD_SUCCCES, { data });
 

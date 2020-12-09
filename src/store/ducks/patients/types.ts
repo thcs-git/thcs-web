@@ -65,6 +65,13 @@ export interface PatientInterface {
 }
 
 export interface PatientList {
+  data: PatientDataItems[];
+  limit: string;
+  page: string;
+  total: number;
+}
+
+interface PatientDataItems {
   _id: string;
   name: string;
   email: string;
@@ -87,8 +94,10 @@ export interface ViacepDataInterface {
  */
 export interface PatientState {
   data: PatientInterface;
-  list: PatientList[];
+  list: PatientList;
   loading: boolean;
   error: boolean;
   success: boolean;
 }
+
+export type LoadRequestParams = Partial<Omit<PatientList, 'data'>>

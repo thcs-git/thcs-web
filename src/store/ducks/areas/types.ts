@@ -45,13 +45,22 @@ export interface AreaInterface {
 	active: boolean;
 }
 
+export interface AreaList {
+  data: AreaInterface[];
+  limit: string;
+  page: string;
+  total: number;
+}
+
 /**
  * State type
  */
 export interface AreaState {
   data: AreaInterface;
-  list: AreaInterface[];
+  list: AreaList;
   districts: any[];
   loading: boolean;
   error: boolean;
 }
+
+export type LoadRequestParams = Partial<Omit<AreaList, 'data'>>

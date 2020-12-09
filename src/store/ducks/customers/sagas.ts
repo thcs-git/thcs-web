@@ -8,10 +8,11 @@ import { loadSuccess, loadFailure, loadSuccessCustomerById, successGetAddress, c
 import { ViacepDataInterface } from './types';
 import { AxiosResponse } from 'axios';
 
-export function* get() {
+export function* get({ payload }: any) {
+  const { params } = payload;
 
   try {
-    const { data } = yield call(apiSollar.get, '/client');
+    const { data } = yield call(apiSollar.get, `/client?limit=${params.limit ?? 10}&page=${params.page || 1}`);
 
     yield put(loadSuccess(data));
   } catch (error) {

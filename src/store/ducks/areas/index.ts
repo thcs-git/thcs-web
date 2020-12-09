@@ -10,7 +10,12 @@ export const INITIAL_STATE: AreaState = {
     neighborhoods: [],
     active: true,
   },
-  list: [],
+  list: {
+    data: [],
+    limit: '10',
+    page: '1',
+    total: 0
+  },
   districts: [],
   error: false,
   loading: false,

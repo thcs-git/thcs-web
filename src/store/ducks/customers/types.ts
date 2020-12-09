@@ -57,6 +57,13 @@ export interface ViacepDataInterface {
 }
 
 export interface CustomerList {
+  data: CustomerDataItems[];
+  limit: string;
+  page: string;
+  total: number;
+}
+
+export interface CustomerDataItems {
   _id: string;
   name: string;
   active: boolean;
@@ -69,7 +76,9 @@ export interface CustomerList {
  */
 export interface CustomerState {
   data: CustomerInterface;
-  list: CustomerList[];
+  list: CustomerList;
   loading: boolean;
   error: boolean;
 }
+
+export type LoadRequestParams = Partial<Omit<CustomerList, 'data'>>
