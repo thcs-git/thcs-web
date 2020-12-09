@@ -23,7 +23,12 @@ export const INITIAL_STATE: CompanyState = {
     active: true,
     created_by: { _id: '' }
   },
-  list: [],
+  list: {
+    data: [],
+    limit: '10',
+    page: '1',
+    total: 0
+  },
   error: false,
   loading: false,
   success: false,

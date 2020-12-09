@@ -55,14 +55,22 @@ export interface ViacepDataInterface {
   erro?: boolean,
 }
 
+export interface CompanyList {
+  data: CompanyInterface[];
+  limit: string;
+  page: string;
+  total: number;
+}
 
 /**
  * State type
  */
 export interface CompanyState {
   data: CompanyInterface;
-  list: CompanyInterface[];
+  list: CompanyList;
   loading: boolean;
   error: boolean;
   success: boolean;
 }
+
+export type LoadRequestParams = Partial<Omit<CompanyList, 'data'>>
