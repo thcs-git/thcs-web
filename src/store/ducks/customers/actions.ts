@@ -1,7 +1,7 @@
 import { action } from 'typesafe-actions';
-import { CustomerTypes, CustomerInterface, ViacepDataInterface } from './types';
+import { CustomerTypes, CustomerInterface, ViacepDataInterface, LoadRequestParams } from './types';
 
-export const loadRequest = () => action(CustomerTypes.LOAD_REQUEST);
+export const loadRequest = (params: LoadRequestParams = {}) => action(CustomerTypes.LOAD_REQUEST, { params });
 
 export const loadSuccess = (data: CustomerInterface) =>
   action(CustomerTypes.LOAD_SUCCCES, { data });

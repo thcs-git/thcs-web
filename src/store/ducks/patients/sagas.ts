@@ -13,7 +13,7 @@ const token = localStorage.getItem('token');
 export function* get({ payload }: any) {
   const { params } = payload;
 
-  const response: AxiosResponse = yield call(apiSollar.get, `/patient?limit=${params.limit ?? 10}&page=${params.page || 1}`, { headers: { token } })
+  const response: AxiosResponse = yield call(apiSollar.get, `/patient?limit=${params.limit ?? 10}&page=${params.page || 1}`)
 
   try {
     yield put(loadSuccess(response.data))

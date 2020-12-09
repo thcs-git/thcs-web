@@ -24,7 +24,12 @@ export const INITIAL_STATE: CustomerState = {
     },
     cellphone: ''
   },
-  list: [],
+  list: {
+    data: [],
+    limit: '10',
+    page: '1',
+    total: 0
+  },
   error: false,
   loading: false,
 };

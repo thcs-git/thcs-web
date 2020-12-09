@@ -1,5 +1,4 @@
 import React from 'react';
-import { makeStyles } from '@material-ui/core/styles';
 
 import { Pagination as TablePagination, Table } from './styles';
 import PaginationActions from './paginationActions';

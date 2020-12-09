@@ -8,6 +8,7 @@ import { ApplicationState } from '../../../store';
 import { loadRequest } from '../../../store/ducks/customers/actions';
 import Sidebar from '../../../components/Sidebar';
 
+import PaginationComponent from '../../../components/Pagination';
 import Loading from '../../../components/Loading';
 import SearchComponent from '../../../components/List/Search';
 import { FormTitle } from '../../../styles/components/Form';
@@ -64,7 +65,7 @@ export default function CustomerList() {
           />
 
           <List>
-            {customerState.list.map((customer) => (
+            {customerState.list.data.map((customer) => (
               <ListLink key={customer._id} to={`/customer/${customer._id}/edit`}>
                 <ListItem variant="outlined">
                   <ListItemContent>
@@ -78,6 +79,40 @@ export default function CustomerList() {
               </ListLink>
             ))}
           </List>
+          <PaginationComponent
+            page={customerState.list.page}
+            rowsPerPage={customerState.list.limit}
+            totalRows={customerState.list.total}
+
+            handleFirstPage={() => dispatch(loadRequest({
+              page: '1',
+              limit: customerState.list.limit,
+              total: customerState.list.total,
+            }))}
+
+            handleLastPage={() => dispatch(loadRequest({
+              page: (Math.ceil(+customerState.list.total / +customerState.list.limit)).toString(),
+              limit: customerState.list.limit,
+              total: customerState.list.total,
+            }))}
+
+            handleNextPage={() => dispatch(loadRequest({
+              page: (+customerState.list.page + 1).toString(),
+              limit: customerState.list.limit,
+              total: customerState.list.total,
+            }))}
+
+            handlePreviosPage={() => dispatch(loadRequest({
+              page: (+customerState.list.page - 1).toString(),
+              limit: customerState.list.limit,
+              total: customerState.list.total,
+            }))}
+
+            handleChangeRowsPerPage={event => dispatch(loadRequest({
+              limit: event.target.value,
+              page: '1'
+            }))}
+          />
         </Container>
       </Sidebar>
     </>
