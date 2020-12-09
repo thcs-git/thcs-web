@@ -7,8 +7,9 @@ import { apiSollar } from '../../../services/axios';
 import { loadSuccess, loadFailure, createSpecialtySuccess, loadSuccessGetSpecialtyById, updateSpecialtySuccess } from './actions';
 import { SpecialtyInterface } from './types';
 
-export function* get() {
-  const response: AxiosResponse = yield call(apiSollar.get, `/specialty`);
+export function* get({ payload }: any) {
+  const { params } = payload;
+  const response: AxiosResponse = yield call(apiSollar.get, `/specialty?limit=${params.limit ?? 10}&page=${params.page || 1}`);
 
   try {
     yield put(loadSuccess(response.data))

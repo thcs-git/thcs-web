@@ -29,13 +29,23 @@ export interface SpecialtyInterface {
 }
 
 
+export interface SpecialtyList {
+  data: SpecialtyInterface[];
+  limit: string;
+  page: string;
+  total: number;
+}
+
+
 /**
  * State type
  */
 export interface SpecialtyState {
   data: SpecialtyInterface;
-  list: SpecialtyInterface[];
+  list: SpecialtyList;
   loading: boolean;
   error: boolean;
   success: boolean;
 }
+
+export type LoadRequestParams = Partial<Omit<SpecialtyList, 'data'>>
