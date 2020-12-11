@@ -348,13 +348,13 @@ export default function AreaForm(props: RouteComponentProps<IPageParams>) {
                       <FormGroupSection>
                         <Autocomplete
                           id="combo-box-users"
-                          options={userState.list}
+                          options={userState.list.data}
                           getOptionLabel={(option) => option.name}
                           renderInput={(params) => <TextField {...params} label="Prestador" variant="outlined" />}
                           size="small"
                           onChange={(event, value) => {
                             if (value) {
-                              handleSelectUser({ _id: value._id, name: value.name })
+                              handleSelectUser({ _id: value._id || '', name: value.name })
                             }
                           }}
                           fullWidth

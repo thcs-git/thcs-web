@@ -6,6 +6,9 @@ import PrivateRoute from './private';
 
 import Dashboard from '../pages/dashboard';
 
+import CareList from '../pages/care/list';
+import CareForm from '../pages/care/form';
+
 import CompanyList from '../pages/company/list';
 import CompanyForm from '../pages/company/form';
 
@@ -71,6 +74,11 @@ const Routes = () => (
       <PrivateRoute path="/patient" component={PatientList} exact />
       <PrivateRoute path="/patient/:id/edit" component={PatientForm} />
       <PrivateRoute path="/patient/create" component={PatientForm} />
+
+      {/* Care */}
+      <PrivateRoute path="/care" component={CareList} exact />
+      <PrivateRoute path="/care/:id/edit" component={CareForm} />
+      <PrivateRoute path="/care/create" component={CareForm} />
     </Switch>
   </BrowserRouter>
 );

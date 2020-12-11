@@ -28,13 +28,6 @@ export interface SpecialtiesUserInterface {
   name: string;
 };
 
-export interface UserList {
-  _id: string;
-  name: string;
-  email: string;
-  active: boolean;
-}
-
 export interface UserInterface {
   _id?: string;
   companies: [string] | [];
@@ -84,14 +77,22 @@ export interface ViacepDataInterface {
   erro?: boolean,
 }
 
+export interface UserList {
+  data: UserInterface[];
+  limit: string;
+  page: string;
+  total: number;
+}
 
 /**
  * State type
  */
 export interface UserState {
   data: UserInterface;
-  list: UserList[];
+  list: UserList;
   loading: boolean;
   error: boolean;
   success: boolean;
 }
+
+export type LoadRequestParams = Partial<Omit<UserList, 'data'>>

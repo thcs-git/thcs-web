@@ -63,11 +63,11 @@ export default function UserList() {
             handleButton={() => history.push('/user/create/')}
             buttonTitle="Novo"
             value=""
-            onChangeInput={() => {}}
+            onChangeInput={() => { }}
           />
 
           <List>
-            {userState.list.map((user, index) => (
+            {userState.list.data.map((user, index) => (
               <ListLink key={index} to={`/user/${user._id}/edit`}>
                 <ListItem variant="outlined">
                   <ListItemContent>

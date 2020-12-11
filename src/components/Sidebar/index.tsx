@@ -36,6 +36,7 @@ import GavelIcon from '@material-ui/icons/Gavel';
 import ExtensionIcon from '@material-ui/icons/Extension';
 import PersonIcon from '@material-ui/icons/Person';
 import GroupAddIcon from '@material-ui/icons/GroupAdd';
+import LocalHospital from '@material-ui/icons/LocalHospital';
 
 import { Link } from 'react-router-dom';
 
@@ -58,6 +59,7 @@ const itemsMenu = [
   { title: 'Área', route: '/area', icon: <ExtensionIcon style={{ color: '#fff' }} /> },
   { title: 'Usuários', route: '/user', icon: <PersonIcon style={{ color: '#fff' }} /> },
   { title: 'Pacientes', route: '/patient', icon: <GroupAddIcon style={{ color: '#fff' }} /> },
+  { title: 'Atendimento', route: '/care', icon: <LocalHospital style={{ color: '#fff' }} /> },
 ]
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -130,8 +132,8 @@ const Sibebar = (props: Props<any>) => {
   const AccordionRef = useRef<HTMLDivElement>(null);
 
   // useEffect(() => {
-    // if (!open) AccordionRef.current?.removeAttribute('expanded')
-    // else AccordionRef.current?.setAttribute('expanded', 'true');
+  // if (!open) AccordionRef.current?.removeAttribute('expanded')
+  // else AccordionRef.current?.setAttribute('expanded', 'true');
   // }, [open]);
 
   const handleDrawerClose = useCallback(() => {
