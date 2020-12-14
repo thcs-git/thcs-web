@@ -18,3 +18,6 @@ export const loadSuccessGetAreaById = (data: AreaInterface) => action(AreaTypes.
 
 export const loadGetDistricts = () => action(AreaTypes.LOAD_GET_DISTRICTS);
 export const loadSuccessGetDistricts = (data: any) => action(AreaTypes.LOAD_SUCCCES_GET_DISTRICTS, { data });
+
+export const searchRequest = (value: string) => action(AreaTypes.SEARCH_REQUEST, { value });
+

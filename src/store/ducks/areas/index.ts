@@ -63,7 +63,16 @@ const reducer: Reducer<AreaState> = (state = INITIAL_STATE, action) => {
       }
     case AreaTypes.LOAD_FAILURE:
       return {
-        ...state, loading: false, error: true, success: false,
+        ...state,
+        loading: false,
+        error: true,
+        success: false,
+        list: {
+          data: [],
+          limit: '10',
+          page: '1',
+          total: 0
+        }
       };
     case AreaTypes.CREATE_AREA_REQUEST:
       return {
@@ -84,6 +93,8 @@ const reducer: Reducer<AreaState> = (state = INITIAL_STATE, action) => {
         error: false,
         success: false
       };
+    case AreaTypes.SEARCH_REQUEST:
+      return { ...state, loading: true, error: false };
     default:
       return state;
   }

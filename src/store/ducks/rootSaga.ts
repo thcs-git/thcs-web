@@ -1,7 +1,7 @@
 import { all, takeLatest } from "redux-saga/effects";
 
 import { AreaTypes } from "./areas/types";
-import { get as getAreas, createArea, updateArea, getAreaById, getDistricts } from "./areas/sagas";
+import { get as getAreas, createArea, updateArea, getAreaById, getDistricts, searchArea } from "./areas/sagas";
 
 import { LoginTypes } from "./login/types";
 import { doLogin } from "./login/sagas";
@@ -38,6 +38,7 @@ export default function* rootSaga() {
     takeLatest(AreaTypes.CREATE_AREA_REQUEST, createArea),
     takeLatest(AreaTypes.UPDATE_AREA_REQUEST, updateArea),
     takeLatest(AreaTypes.LOAD_GET_DISTRICTS, getDistricts),
+    takeLatest(AreaTypes.SEARCH_REQUEST, searchArea),
 
     // Council
     takeLatest(CouncilTypes.LOAD_REQUEST, getCouncils),
