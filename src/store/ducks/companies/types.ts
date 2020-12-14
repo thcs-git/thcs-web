@@ -17,6 +17,8 @@ export enum CompanyTypes {
 
   UPDATE_COMPANY_REQUEST = "@company/UPDATE_COMPANY_REQUEST",
   UPDATE_COMPANY_SUCCESS = "@company/UPDATE_COMPANY_SUCCESS",
+
+  SEARCH_REQUEST = "@company/SEARCH_REQUEST",
 }
 
 /**

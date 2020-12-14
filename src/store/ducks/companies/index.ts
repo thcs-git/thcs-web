@@ -46,7 +46,7 @@ const reducer: Reducer<CompanyState> = (state = INITIAL_STATE, action) => {
       };
     case CompanyTypes.LOAD_FAILURE:
       return {
-      ...state, loading: false, error: true, success: false,
+      ...state, loading: false, error: true, success: false, list: { data: [] }
       };
     case CompanyTypes.LOAD_RESPONSE_ADDRESS:
       return {
@@ -92,6 +92,8 @@ const reducer: Reducer<CompanyState> = (state = INITIAL_STATE, action) => {
           error: false,
           success: true
         }
+      case CompanyTypes.SEARCH_REQUEST:
+        return { ...state, loading: true, error: false };
     default:
       return state;
   }

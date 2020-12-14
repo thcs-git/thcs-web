@@ -10,7 +10,7 @@ import { CustomerTypes } from './customers/types';
 import { get, getCustomerById, getAddress as getAddressCustomer, createCompanyCustomer, updateCompanyCustomer } from './customers/sagas';
 
 import { CompanyTypes } from './companies/types';
-import { get as getCompanies, getAddress, createCompany, getById as getCompanyById, update as updateCompany } from './companies/sagas';
+import { get as getCompanies, getAddress, createCompany, getById as getCompanyById, update as updateCompany, searchCompany } from './companies/sagas';
 
 import { SpecialtyTypes } from './specialties/types';
 import { get as getSpecialties, store as storeSpecialty, getById as getSpecialtyById, update as updateSpecialty } from './specialties/sagas';
@@ -57,6 +57,7 @@ export default function* rootSaga() {
     takeLatest(CompanyTypes.LOAD_REQUEST_COMPANY_BY_ID, getCompanyById),
     takeLatest(CompanyTypes.CREATE_COMPANY_REQUEST, createCompany),
     takeLatest(CompanyTypes.UPDATE_COMPANY_REQUEST, updateCompany),
+    takeLatest(CompanyTypes.SEARCH_REQUEST, searchCompany),
 
     /** Customers */
     takeLatest(CustomerTypes.LOAD_REQUEST, get),

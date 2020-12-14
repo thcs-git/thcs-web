@@ -1,14 +1,14 @@
+import React, { ChangeEvent } from 'react';
 import { FormControl, IconButton, InputAdornment, InputLabel, OutlinedInput } from '@material-ui/core';
 import { SearchOutlined } from '@material-ui/icons';
-import React from 'react';
 
 import { FormSearch, ButtonStyle } from './styles';
 
 interface SearchProps {
-  onChangeInput: () => void;
-  value: string;
-  buttonTitle: string;
+  onChangeInput: (event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => void;
   handleButton: () => void;
+  value?: string;
+  buttonTitle?: string;
   inputPlaceholder?: string;
 }
 
@@ -22,6 +22,7 @@ const Search = ({ value, onChangeInput, buttonTitle, handleButton, inputPlacehol
             id="search-input"
             value={value}
             onChange={onChangeInput}
+            onKeyDown={(event: any) => event.keyCode === 13 && event.preventDefault()}
             endAdornment={
               <InputAdornment position="end">
                 <IconButton aria-label="toggle password visibility" edge="end">
