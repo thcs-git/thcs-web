@@ -29,7 +29,12 @@ export const INITIAL_STATE: UserState = {
     council_number: '',
     active: true,
   },
-  list: [],
+  list: {
+    data: [],
+    limit: '10',
+    page: '1',
+    total: 0
+  },
   success: false,
   error: false,
   loading: false,

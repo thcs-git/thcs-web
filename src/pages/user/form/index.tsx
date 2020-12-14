@@ -183,7 +183,7 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
 
   const getAddress = useCallback(() => {
     dispatch(getAddressAction(state.address.postal_code));
-  }, [state.address.postal_code]);
+  }, [state.address?.postal_code]);
 
   function handleOpenModalCancel() {
     setOpenModalCancel(true);
@@ -366,7 +366,7 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
                             id="input-postal-code"
                             label="CEP"
                             placeholder="00000-000"
-                            value={state.address.postal_code}
+                            value={state.address?.postal_code}
                             onChange={(element) => setState({ ...state, address: { ...state.address, postal_code: element.target.value } })}
                             onBlur={getAddress}
                             endAdornment={
@@ -386,7 +386,7 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
                           label="Endereço"
                           variant="outlined"
                           size="small"
-                          value={state.address.street}
+                          value={state.address?.street}
                           onChange={(element) => setState({ ...state, address: { ...state.address, street: element.target.value } })}
                           fullWidth
                         />
@@ -397,7 +397,7 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
                           label="Número"
                           variant="outlined"
                           size="small"
-                          value={state.address.number}
+                          value={state.address?.number}
                           onChange={(element) => setState({ ...state, address: { ...state.address, number: element.target.value } })}
                           fullWidth
                         />
@@ -409,7 +409,7 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
                           label="Bairro"
                           variant="outlined"
                           size="small"
-                          value={state.address.district}
+                          value={state.address?.district}
                           onChange={(element) => setState({ ...state, address: { ...state.address, district: element.target.value } })}
                           fullWidth
                         />
@@ -421,7 +421,7 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
                           label="Cidade"
                           variant="outlined"
                           size="small"
-                          value={state.address.city}
+                          value={state.address?.city}
                           onChange={(element) => setState({ ...state, address: { ...state.address, city: element.target.value } })}
                           fullWidth
                         />
@@ -433,7 +433,7 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
                           label="Complemento"
                           variant="outlined"
                           size="small"
-                          value={state.address.complement}
+                          value={state.address?.complement}
                           onChange={(element) => setState({ ...state, address: { ...state.address, complement: element.target.value } })}
                           fullWidth
                         />
@@ -445,7 +445,7 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
                           label="UF"
                           variant="outlined"
                           size="small"
-                          value={state.address.state}
+                          value={state.address?.state}
                           onChange={(element) => setState({ ...state, address: { ...state.address, state: element.target.value } })}
                           fullWidth
                         />
@@ -570,7 +570,7 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
                       </FormGroupSection>
                     </Grid>
                     <Grid item md={12} xs={12}>
-                      {state.specialties.map((item: any, index) => (
+                      {state.specialties?.map((item: any, index) => (
                         <div key={`especialty_selected_${index}`}>
                           <Chip
                             label={item.name}

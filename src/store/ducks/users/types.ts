@@ -28,7 +28,7 @@ export interface SpecialtiesUserInterface {
   name: string;
 };
 
-export interface UserList {
+export interface UserListItems {
   _id: string;
   name: string;
   email: string;
@@ -74,6 +74,14 @@ export interface UserInterface {
   active: boolean; // active
 }
 
+
+export interface UserList {
+  data: UserListItems[];
+  limit: string;
+  page: string;
+  total: number;
+}
+
 export interface ViacepDataInterface {
   cep: string,
   logradouro: string,
@@ -90,8 +98,10 @@ export interface ViacepDataInterface {
  */
 export interface UserState {
   data: UserInterface;
-  list: UserList[];
+  list: UserList;
   loading: boolean;
   error: boolean;
   success: boolean;
 }
+
+export type LoadRequestParams = Partial<Omit<UserList, 'data'>>

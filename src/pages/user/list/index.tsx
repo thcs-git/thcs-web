@@ -10,6 +10,7 @@ import Loading from '../../../components/Loading';
 import { ApplicationState } from '../../../store';
 import { loadRequest } from '../../../store/ducks/users/actions';
 
+import PaginationComponent from '../../../components/Pagination';
 import Sidebar from '../../../components/Sidebar';
 import SearchComponent from '../../../components/List/Search';
 import { FormTitle } from '../../../styles/components/Form';
@@ -67,7 +68,7 @@ export default function UserList() {
           />
 
           <List>
-            {userState.list.map((user, index) => (
+            {userState.list.data.map((user, index) => (
               <ListLink key={index} to={`/user/${user._id}/edit`}>
                 <ListItem variant="outlined">
                   <ListItemContent>
@@ -81,6 +82,40 @@ export default function UserList() {
               </ListLink>
             ))}
           </List>
+          <PaginationComponent
+            page={userState.list.page}
+            rowsPerPage={userState.list.limit}
+            totalRows={userState.list.total}
+
+            handleFirstPage={() => dispatch(loadRequest({
+              page: '1',
+              limit: userState.list.limit,
+              total: userState.list.total,
+            }))}
+
+            handleLastPage={() => dispatch(loadRequest({
+              page: (Math.ceil(+userState.list.total / +userState.list.limit)).toString(),
+              limit: userState.list.limit,
+              total: userState.list.total,
+            }))}
+
+            handleNextPage={() => dispatch(loadRequest({
+              page: (+userState.list.page + 1).toString(),
+              limit: userState.list.limit,
+              total: userState.list.total,
+            }))}
+
+            handlePreviosPage={() => dispatch(loadRequest({
+              page: (+userState.list.page - 1).toString(),
+              limit: userState.list.limit,
+              total: userState.list.total,
+            }))}
+
+            handleChangeRowsPerPage={event => dispatch(loadRequest({
+              limit: event.target.value,
+              page: '1'
+            }))}
+          />
         </Container>
       </Sidebar>
     </>

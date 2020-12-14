@@ -1,7 +1,7 @@
 import { action } from 'typesafe-actions';
-import { UserTypes, UserInterface, ViacepDataInterface } from './types';
+import { UserTypes, UserInterface, ViacepDataInterface, LoadRequestParams } from './types';
 
-export const loadRequest = () => action(UserTypes.LOAD_REQUEST);
+export const loadRequest = (params: LoadRequestParams = {}) => action(UserTypes.LOAD_REQUEST, { params });
 export const loadSuccess = (data: UserInterface) => action(UserTypes.LOAD_SUCCCES, { data });
 
 export const getAddress = (postalCode: string) => action(UserTypes.LOAD_REQUEST_ADDRESS, { postalCode });
