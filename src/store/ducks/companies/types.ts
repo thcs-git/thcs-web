@@ -62,6 +62,7 @@ export interface CompanyList {
   limit: string;
   page: string;
   total: number;
+  search?: string;
 }
 
 /**
