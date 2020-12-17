@@ -13,7 +13,7 @@ const token = localStorage.getItem('token');
 export function* get({ payload }: any) {
   const { params } = payload;
 
-  const response: AxiosResponse = yield call(apiSollar.get, `/patient?limit=${params.limit ?? 10}&page=${params.page || 1}`)
+  const response: AxiosResponse = yield call(apiSollar.get, `/patient?limit=${params.limit ?? 10}&page=${params.page || 1}${params.search ? '&search=' + params.search : ''}`)
 
   try {
     yield put(loadSuccess(response.data))
@@ -70,6 +70,16 @@ export function* getAddress({ payload }:any) {
     yield put(successGetAddress(data));
   } catch (error) {
     toast.error("Não foi possível obter os dados do endereço");
+    yield put(loadFailure());
+  }
+}
+
+export function* searchPatient({ payload: { value } }: any) {
+  try {
+    const response: AxiosResponse = yield call(apiSollar.get, `/patient/?limit=10&page=1${!!value ? '&search=' + value : ''}`)
+    yield put(loadSuccess(response.data))
+  } catch (error) {
+    toast.info("Não foi possível buscar os dados dao paciente");
     yield put(loadFailure());
   }
 }

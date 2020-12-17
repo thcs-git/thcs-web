@@ -9,6 +9,9 @@ import { apiSollar, ibge } from '../../../services/axios';
 const token = localStorage.getItem('token');
 
 export function* get({ payload }: any) {
+  const { params } = payload;
+  const response: AxiosResponse = yield call(apiSollar.get, `/patientarea?limit=${params.limit ?? 10}&page=${params.page || 1}${params.search ? '&search=' + params.search : ''}`,)
+
   try {
     const { params } = payload;
     const response: AxiosResponse = yield call(apiSollar.get, `/patientarea?limit=${params.limit ?? 10}&page=${params.page || 1}`,)
@@ -69,6 +72,16 @@ export function* getDistricts() {
     yield put(loadSuccessGetDistricts(data));
   } catch (error) {
     toast.error("Não foi possível obter os dados do endereço");
+    yield put(loadFailure());
+  }
+}
+
+export function* searchArea({ payload: { value } }: any) {
+  try {
+    const response: AxiosResponse = yield call(apiSollar.get, `/patientarea/?limit=10&page=1${!!value ? '&search=' + value : ''}`)
+    yield put(loadSuccess(response.data))
+  } catch (error) {
+    toast.info("Não foi possível buscar os dados da área");
     yield put(loadFailure());
   }
 }

@@ -1,4 +1,4 @@
-import React, { useCallback, useState, useEffect } from 'react';
+import React, { useCallback, useState, useEffect, useRef } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { loadRequest } from '../../store/ducks/login/actions';
 import { ApplicationState } from '../../store';
@@ -17,7 +17,6 @@ import FormControl from '@material-ui/core/FormControl';
 import OutlinedInput from '@material-ui/core/OutlinedInput';
 import InputAdornment from '@material-ui/core/InputAdornment';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
-import Snackbar from '@material-ui/core/Snackbar';
 
 import Visibility from '@material-ui/icons/Visibility';
 import VisibilityOff from '@material-ui/icons/VisibilityOff';
@@ -88,6 +87,7 @@ export default function SignIn() {
   const [inputEmail, setInputEmail] = useState({ value: '', error: false });
   const [inputPassword, setInputPassword] = useState({ value: '', error: false });
   const [showPassword, setShowPassword] = useState(false);
+  const [rememberMe, setRememberMe] = useState(false);
   const classes = useStyles();
 
   useEffect(() => {

@@ -17,6 +17,9 @@ export enum PatientTypes {
 
   LOAD_REQUEST_PATIENT_BY_ID = "@patient/LOAD_REQUEST_PATIENT_BY_ID",
   LOAD_SUCCCES_PATIENT_BY_ID = "@patient/LOAD_SUCCCES_PATIENT_BY_ID",
+
+  SEARCH_REQUEST = "@patient/SEARCH_REQUEST",
+
 }
 
 /**
@@ -69,6 +72,7 @@ export interface PatientList {
   limit: string;
   page: string;
   total: number;
+  search?: string;
 }
 
 interface PatientDataItems {

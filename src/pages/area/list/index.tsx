@@ -1,12 +1,14 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback, ChangeEvent } from 'react';
 import { useHistory } from 'react-router-dom';
 import { Container, FormControl, InputLabel, OutlinedInput, InputAdornment, IconButton } from '@material-ui/core';
 import { SearchOutlined } from '@material-ui/icons';
-import { getDayOfTheWeekName } from '../../../helpers/date';
+import debounce from 'lodash.debounce';
 
+
+import { getDayOfTheWeekName } from '../../../helpers/date';
 import { useDispatch, useSelector } from 'react-redux';
 import { ApplicationState } from '../../../store/';
-import { loadRequest } from '../../../store/ducks/areas/actions';
+import { loadRequest, searchRequest } from '../../../store/ducks/areas/actions';
 
 import PaginationComponent from '../../../components/Pagination';
 import Sidebar from '../../../components/Sidebar';
@@ -48,6 +50,13 @@ export default function CouncilList() {
     setAnchorEl(null);
   };
 
+  const handleChangeInput = useCallback((event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    setSearch(event.target.value)
+    dispatch(searchRequest(event.target.value));
+  }, []);
+
+  const debounceSearchRequest = debounce(handleChangeInput, 600)
+
   return (
     <>
       <Sidebar>
@@ -58,8 +67,7 @@ export default function CouncilList() {
           <SearchComponent
             handleButton={() => history.push('/area/create/')}
             buttonTitle="Novo"
-            value=""
-            onChangeInput={() => { }}
+            onChangeInput={debounceSearchRequest}
           />
 
           <List>
@@ -86,29 +94,34 @@ export default function CouncilList() {
               page: '1',
               limit: areaState.list.limit,
               total: areaState.list.total,
+              search,
             }))}
 
             handleLastPage={() => dispatch(loadRequest({
               page: (Math.ceil(+areaState.list.total / +areaState.list.limit)).toString(),
               limit: areaState.list.limit,
               total: areaState.list.total,
+              search,
             }))}
 
             handleNextPage={() => dispatch(loadRequest({
               page: (+areaState.list.page + 1).toString(),
               limit: areaState.list.limit,
               total: areaState.list.total,
+              search,
             }))}
 
             handlePreviosPage={() => dispatch(loadRequest({
               page: (+areaState.list.page - 1).toString(),
               limit: areaState.list.limit,
               total: areaState.list.total,
+              search,
             }))}
 
             handleChangeRowsPerPage={event => dispatch(loadRequest({
               limit: event.target.value,
-              page: '1'
+              page: '1',
+              search,
             }))}
           />
         </Container>

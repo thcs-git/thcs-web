@@ -32,7 +32,13 @@ const reducer: Reducer<SpecialtyState> = (state = INITIAL_STATE, action) => {
       };
     case SpecialtyTypes.LOAD_FAILURE:
       return {
-      ...state, loading: false, error: true, success: false
+      ...state, loading: false, error: true, success: false,
+        list: {
+          data: [],
+          limit: '10',
+          page: '1',
+          total: 0
+        }
       };
     case SpecialtyTypes.LOAD_SUCCESS_SPECIALTY_BY_ID:
       return {
@@ -59,6 +65,8 @@ const reducer: Reducer<SpecialtyState> = (state = INITIAL_STATE, action) => {
         error: false,
         success: true
       }
+    case SpecialtyTypes.SEARCH_REQUEST:
+      return { ...state, loading: true, error: false };
     default:
       return state;
   }

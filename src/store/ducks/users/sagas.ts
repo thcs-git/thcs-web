@@ -9,8 +9,9 @@ import { UserInterface, ViacepDataInterface } from './types';
 
 const token = localStorage.getItem('token');
 
-export function* get() {
-  const response: AxiosResponse = yield call(apiSollar.get, `/user`, { headers: { token } })
+export function* get({ payload }: any) {
+  const { params } = payload;
+  const response: AxiosResponse = yield call(apiSollar.get, `/user?limit=${params.limit ?? 10}&page=${params.page || 1}${params.search ? '&search=' + params.search : ''}`)
 
   try {
     yield put(loadSuccess(response.data))
@@ -123,6 +124,17 @@ export function* getAddress({payload}:any) {
     yield put(successGetAddress(data));
   } catch (error) {
 
+    yield put(loadFailure());
+  }
+}
+
+
+export function* searchUser({ payload: { value } }: any) {
+  try {
+    const response: AxiosResponse = yield call(apiSollar.get, `/user/?limit=10&page=1${!!value ? '&search=' + value : ''}`)
+    yield put(loadSuccess(response.data))
+  } catch (error) {
+    toast.info("Não foi possível buscar os dados do usuário");
     yield put(loadFailure());
   }
 }

@@ -1,11 +1,12 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback, ChangeEvent } from 'react';
 import { useHistory } from 'react-router-dom';
 import { Container, FormControl, InputLabel, OutlinedInput, InputAdornment, IconButton } from '@material-ui/core';
 import { SearchOutlined } from '@material-ui/icons';
 import { useDispatch, useSelector } from 'react-redux';
+import debounce from 'lodash.debounce';
 
 import { ApplicationState } from '../../../store/';
-import { loadRequest } from '../../../store/ducks/specialties/actions';
+import { loadRequest, searchRequest } from '../../../store/ducks/specialties/actions';
 
 import PaginationComponent from '../../../components/Pagination';
 import SearchComponent from '../../../components/List/Search';
@@ -47,6 +48,14 @@ export default function SpecialtyList() {
     setAnchorEl(null);
   };
 
+
+  const handleChangeInput = useCallback((event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    setSearch(event.target.value)
+    dispatch(searchRequest(event.target.value));
+  }, []);
+
+  const debounceSearchRequest = debounce(handleChangeInput, 600)
+
   return (
     <>
       <Sidebar>
@@ -56,8 +65,7 @@ export default function SpecialtyList() {
           <SearchComponent
             handleButton={() => history.push('/specialty/create/')}
             buttonTitle="Novo"
-            value=""
-            onChangeInput={() => {}}
+            onChangeInput={debounceSearchRequest}
           />
 
           <List>
@@ -83,29 +91,34 @@ export default function SpecialtyList() {
               page: '1',
               limit: especialtyState.list.limit,
               total: especialtyState.list.total,
+              search
             }))}
 
             handleLastPage={() => dispatch(loadRequest({
               page: (Math.ceil(+especialtyState.list.total / +especialtyState.list.limit)).toString(),
               limit: especialtyState.list.limit,
               total: especialtyState.list.total,
+              search
             }))}
 
             handleNextPage={() => dispatch(loadRequest({
               page: (+especialtyState.list.page + 1).toString(),
               limit: especialtyState.list.limit,
               total: especialtyState.list.total,
+              search
             }))}
 
             handlePreviosPage={() => dispatch(loadRequest({
               page: (+especialtyState.list.page - 1).toString(),
               limit: especialtyState.list.limit,
               total: especialtyState.list.total,
+              search
             }))}
 
             handleChangeRowsPerPage={event => dispatch(loadRequest({
               limit: event.target.value,
-              page: '1'
+              page: '1',
+              search
             }))}
           />
         </Container>

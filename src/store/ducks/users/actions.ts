@@ -1,7 +1,7 @@
 import { action } from 'typesafe-actions';
-import { UserTypes, UserInterface, ViacepDataInterface } from './types';
+import { UserTypes, UserInterface, ViacepDataInterface, LoadRequestParams } from './types';
 
-export const loadRequest = () => action(UserTypes.LOAD_REQUEST);
+export const loadRequest = (params: LoadRequestParams = {}) => action(UserTypes.LOAD_REQUEST, { params });
 export const loadSuccess = (data: UserInterface) => action(UserTypes.LOAD_SUCCCES, { data });
 
 export const getAddress = (postalCode: string) => action(UserTypes.LOAD_REQUEST_ADDRESS, { postalCode });
@@ -19,3 +19,5 @@ export const loadUserById = (id: string) => action(UserTypes.LOAD_REQUEST_USER_B
 export const loadSuccessGetUserById = (data: UserInterface) => action(UserTypes.LOAD_SUCCCES_USER_BY_ID, { data });
 
 export const loadFailure = () => action(UserTypes.LOAD_FAILURE);
+
+export const searchRequest = (value: string) => action(UserTypes.SEARCH_REQUEST, { value });

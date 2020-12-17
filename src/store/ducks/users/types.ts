@@ -17,6 +17,8 @@ export enum UserTypes {
 
   LOAD_REQUEST_USER_BY_ID = "@user/LOAD_REQUEST_USER_BY_ID",
   LOAD_SUCCCES_USER_BY_ID = "@user/LOAD_SUCCCES_USER_BY_ID",
+
+  SEARCH_REQUEST = "@user/SEARCH_REQUEST",
 }
 
 /**
@@ -27,6 +29,13 @@ export interface SpecialtiesUserInterface {
   id: string;
   name: string;
 };
+
+export interface UserListItems {
+  _id: string;
+  name: string;
+  email: string;
+  active: boolean;
+}
 
 export interface UserInterface {
   _id?: string;
@@ -67,6 +76,16 @@ export interface UserInterface {
   active: boolean; // active
 }
 
+
+export interface UserList {
+  data: UserListItems[];
+  limit: string;
+  page: string;
+  total: number;
+  search?: string;
+
+}
+
 export interface ViacepDataInterface {
   cep: string,
   logradouro: string,
@@ -75,13 +94,6 @@ export interface ViacepDataInterface {
   localidade: string,
   uf: string,
   erro?: boolean,
-}
-
-export interface UserList {
-  data: UserInterface[];
-  limit: string;
-  page: string;
-  total: number;
 }
 
 /**

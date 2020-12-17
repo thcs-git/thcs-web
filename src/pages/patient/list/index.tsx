@@ -1,11 +1,12 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback, ChangeEvent } from 'react';
 import { useHistory } from 'react-router-dom';
 import { Container, FormControl, InputLabel, OutlinedInput, InputAdornment, IconButton, Button } from '@material-ui/core';
 import { SearchOutlined } from '@material-ui/icons';
+import debounce from 'lodash.debounce';
 
 import { useDispatch, useSelector } from 'react-redux';
 import { ApplicationState } from '../../../store/';
-import { loadRequest } from '../../../store/ducks/patients/actions';
+import { loadRequest, searchRequest } from '../../../store/ducks/patients/actions';
 
 import Sidebar from '../../../components/Sidebar';
 import SearchComponent from '../../../components/List/Search';
@@ -43,6 +44,14 @@ export default function PatientList() {
     setAnchorEl(null);
   };
 
+
+  const handleChangeInput = useCallback((event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    setSearch(event.target.value)
+    dispatch(searchRequest(event.target.value));
+  }, []);
+
+  const debounceSearchRequest = debounce(handleChangeInput, 600)
+
   return (
     <>
       <Sidebar>
@@ -53,8 +62,7 @@ export default function PatientList() {
           <SearchComponent
             handleButton={() => history.push('/patient/create/')}
             buttonTitle="Novo"
-            value=""
-            onChangeInput={() => { }}
+            onChangeInput={debounceSearchRequest}
           />
 
           <List>
@@ -81,29 +89,34 @@ export default function PatientList() {
               page: '1',
               limit: patientState.list.limit,
               total: patientState.list.total,
+              search
             }))}
 
             handleLastPage={() => dispatch(loadRequest({
               page: (Math.ceil(+patientState.list.total / +patientState.list.limit)).toString(),
               limit: patientState.list.limit,
               total: patientState.list.total,
+              search
             }))}
 
             handleNextPage={() => dispatch(loadRequest({
               page: (+patientState.list.page + 1).toString(),
               limit: patientState.list.limit,
               total: patientState.list.total,
+              search
             }))}
 
             handlePreviosPage={() => dispatch(loadRequest({
               page: (+patientState.list.page - 1).toString(),
               limit: patientState.list.limit,
               total: patientState.list.total,
+              search
             }))}
 
             handleChangeRowsPerPage={event => dispatch(loadRequest({
               limit: event.target.value,
-              page: '1'
+              page: '1',
+              search
             }))}
           />
         </Container>

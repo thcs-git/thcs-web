@@ -1,9 +1,10 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef, useCallback, ChangeEvent } from 'react';
 import { useHistory } from 'react-router-dom';
 
+import debounce from 'lodash.debounce';
 import { useDispatch, useSelector } from 'react-redux';
 import { ApplicationState } from '../../../store/';
-import { loadRequest } from '../../../store/ducks/companies/actions';
+import { loadRequest, searchRequest } from '../../../store/ducks/companies/actions';
 import { CompanyInterface } from '../../../store/ducks/companies/types';
 
 import { Container, FormControl, InputLabel, OutlinedInput, InputAdornment, IconButton } from '@material-ui/core';
@@ -32,11 +33,10 @@ const token = window.localStorage.getItem('token');
 export default function CompanyList() {
   const history = useHistory();
   const dispatch = useDispatch();
+
   const companyState = useSelector((state: ApplicationState) => state.companies);
-
-  const [search, setSearch] = useState('');
-
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
+  const [search, setSearch] = useState('');
 
   useEffect(() => {
     dispatch(loadRequest());
@@ -50,6 +50,13 @@ export default function CompanyList() {
     setAnchorEl(null);
   };
 
+  const handleChangeInput = useCallback((event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    setSearch(event.target.value)
+    dispatch(searchRequest(event.target.value));
+  }, []);
+
+  const debounceSearchRequest = debounce(handleChangeInput, 600)
+
   return (
     <>
       <Sidebar>
@@ -60,8 +67,7 @@ export default function CompanyList() {
           <SearchComponent
             handleButton={() => history.push('/company/create/')}
             buttonTitle="Novo"
-            value=""
-            onChangeInput={() => {}}
+            onChangeInput={debounceSearchRequest}
           />
 
           <List>
@@ -89,29 +95,34 @@ export default function CompanyList() {
               page: '1',
               limit: companyState.list.limit,
               total: companyState.list.total,
+              search,
             }))}
 
             handleLastPage={() => dispatch(loadRequest({
               page: (Math.ceil(+companyState.list.total / +companyState.list.limit)).toString(),
               limit: companyState.list.limit,
               total: companyState.list.total,
+              search,
             }))}
 
             handleNextPage={() => dispatch(loadRequest({
               page: (+companyState.list.page + 1).toString(),
               limit: companyState.list.limit,
               total: companyState.list.total,
+              search,
             }))}
 
             handlePreviosPage={() => dispatch(loadRequest({
               page: (+companyState.list.page - 1).toString(),
               limit: companyState.list.limit,
               total: companyState.list.total,
+              search,
             }))}
 
             handleChangeRowsPerPage={event => dispatch(loadRequest({
               limit: event.target.value,
-              page: '1'
+              page: '1',
+              search
             }))}
           />
         </Container>

@@ -33,7 +33,13 @@ const reducer: Reducer<CouncilState> = (state = INITIAL_STATE, action) => {
       };
     case CouncilTypes.LOAD_FAILURE:
       return {
-      ...state, loading: false, error: true
+      ...state, loading: false, error: true,
+      list: {
+        data: [],
+        limit: '10',
+        page: '1',
+        total: 0
+      }
       };
     case CouncilTypes.LOAD_SUCCESS_COUNCIL_BY_ID:
       return {
@@ -60,6 +66,8 @@ const reducer: Reducer<CouncilState> = (state = INITIAL_STATE, action) => {
         error: false,
         success: true
       }
+    case CouncilTypes.SEARCH_REQUEST:
+      return { ...state, loading: true, error: false };
     default:
       return state;
   }

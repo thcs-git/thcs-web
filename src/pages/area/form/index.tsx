@@ -224,7 +224,6 @@ export default function AreaForm(props: RouteComponentProps<IPageParams>) {
   return (
     <Sidebar>
       {areaState.loading && <Loading />}
-      {console.log(areaState.districts)}
       <Container>
         <FormSection>
           <FormContent>

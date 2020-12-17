@@ -16,3 +16,5 @@ export const updatePatientSuccess = (data: PatientInterface) => action(PatientTy
 
 export const loadPatientById = (id: string) => action(PatientTypes.LOAD_REQUEST_PATIENT_BY_ID, { id });
 export const loadSuccessGetPatientById = (data: PatientInterface) => action(PatientTypes.LOAD_SUCCCES_PATIENT_BY_ID, { data });
+
+export const searchRequest = (value: string) => action(PatientTypes.SEARCH_REQUEST, { value });

@@ -15,3 +15,5 @@ export const updateCouncilSuccess = (data: CouncilInterface) => action(CouncilTy
 
 export const loadCouncilById = (id: string) => action(CouncilTypes.LOAD_REQUEST_COUNCIL_BY_ID, { id });
 export const loadSuccessGetCouncilById = (data: CouncilInterface) => action(CouncilTypes.LOAD_SUCCESS_COUNCIL_BY_ID, { data });
+
+export const searchRequest = (value: string) => action(CouncilTypes.SEARCH_REQUEST, { value });

@@ -52,7 +52,13 @@ const reducer: Reducer<CustomerState> = (state = INITIAL_STATE, action) => {
       };
     case CustomerTypes.LOAD_FAILURE:
       return {
-      ...state, loading: false, error: true
+      ...state, loading: false, error: true,
+        list: {
+          data: [],
+          limit: '10',
+          page: '1',
+          total: 0
+        }
       };
     case CustomerTypes.CREATE_CUSTOMER_SUCCESS:
       return {
@@ -81,6 +87,8 @@ const reducer: Reducer<CustomerState> = (state = INITIAL_STATE, action) => {
           }
         }
       };
+    case CustomerTypes.SEARCH_REQUEST:
+      return { ...state, loading: true, error: false };
     default:
       return state;
   }

@@ -124,6 +124,8 @@ const reducer: Reducer<UserState> = (state = INITIAL_STATE, action) => {
         error: false,
         success: false,
       };
+    case UserTypes.SEARCH_REQUEST:
+      return { ...state, loading: true, error: false };
     default:
       return state;
   }

@@ -11,7 +11,7 @@ const token = localStorage.getItem('token');
 
 export function* get({ payload }: any) {
   const { params } = payload;
-  const response: AxiosResponse = yield call(apiSollar.get, `/companies?limit=${params.limit ?? 10}&page=${params.page || 1}`);
+  const response: AxiosResponse = yield call(apiSollar.get, `/companies?limit=${params.limit ?? 10}&page=${params.page || 1}${params.search ? '&search=' + params.search : ''}`);
 
   try {
     yield put(loadSuccess(response.data))
@@ -80,6 +80,16 @@ export function* update({ payload: { data } }: any) {
     yield put(updateCompanySuccess(response.data[0]))
   } catch (error) {
     toast.error("Não foi possível atualizar os dados da empresa");
+    yield put(loadFailure());
+  }
+}
+
+export function* searchCompany({ payload: { value } }: any) {
+  try {
+    const response: AxiosResponse = yield call(apiSollar.get, `/companies/?limit=10${!!value ? '&search=' + value : ''}`)
+    yield put(loadSuccess(response.data))
+  } catch (error) {
+    toast.info("Não foi possível buscar os dados da empresa");
     yield put(loadFailure());
   }
 }

@@ -14,6 +14,8 @@ export enum CouncilTypes {
 
   UPDATE_COUNCIL_REQUEST = "@council/UPDATE_COUNCIL_REQUEST",
   UPDATE_COUNCIL_SUCCESS = "@council/UPDATE_COUNCIL_SUCCESS",
+
+  SEARCH_REQUEST = "@council/SEARCH_REQUEST",
 }
 
 /**
@@ -36,6 +38,7 @@ export interface ConcilList {
   limit: string;
   page: string;
   total: number;
+  search?: string;
 }
 
 
