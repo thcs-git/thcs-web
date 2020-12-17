@@ -1,14 +1,16 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, ChangeEvent } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import { Container, FormControl, InputLabel, OutlinedInput, InputAdornment, IconButton } from '@material-ui/core';
 import { SearchOutlined } from '@material-ui/icons';
+import debounce from 'lodash.debounce';
+
 import { UserInterface } from '../../../store/ducks/users/types';
 
 import Loading from '../../../components/Loading';
 
 import { ApplicationState } from '../../../store';
-import { loadRequest } from '../../../store/ducks/users/actions';
+import { loadRequest, searchRequest } from '../../../store/ducks/users/actions';
 
 import PaginationComponent from '../../../components/Pagination';
 import Sidebar from '../../../components/Sidebar';
@@ -52,6 +54,12 @@ export default function UserList() {
     setAnchorEl(null);
   };
 
+  const handleChangeInput = useCallback((event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    setSearch(event.target.value)
+    dispatch(searchRequest(event.target.value));
+  }, []);
+
+  const debounceSearchRequest = debounce(handleChangeInput, 600)
 
   return (
     <>
@@ -63,8 +71,7 @@ export default function UserList() {
           <SearchComponent
             handleButton={() => history.push('/user/create/')}
             buttonTitle="Novo"
-            value=""
-            onChangeInput={() => {}}
+            onChangeInput={debounceSearchRequest}
           />
 
           <List>
@@ -91,29 +98,34 @@ export default function UserList() {
               page: '1',
               limit: userState.list.limit,
               total: userState.list.total,
+              search
             }))}
 
             handleLastPage={() => dispatch(loadRequest({
               page: (Math.ceil(+userState.list.total / +userState.list.limit)).toString(),
               limit: userState.list.limit,
               total: userState.list.total,
+              search
             }))}
 
             handleNextPage={() => dispatch(loadRequest({
               page: (+userState.list.page + 1).toString(),
               limit: userState.list.limit,
               total: userState.list.total,
+              search
             }))}
 
             handlePreviosPage={() => dispatch(loadRequest({
               page: (+userState.list.page - 1).toString(),
               limit: userState.list.limit,
               total: userState.list.total,
+              search
             }))}
 
             handleChangeRowsPerPage={event => dispatch(loadRequest({
               limit: event.target.value,
-              page: '1'
+              page: '1',
+              search
             }))}
           />
         </Container>

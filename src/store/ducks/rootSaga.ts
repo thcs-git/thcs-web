@@ -22,7 +22,7 @@ import { PatientTypes } from './patients/types';
 import { get as getPatients, createPatient, getAddress as getAddressPatient, getPatientById, updatePatient, searchPatient } from './patients/sagas';
 
 import { UserTypes } from './users/types';
-import { get as getUsers, createUser, getAddress as getAddressUser, getUserById, updateUser } from './users/sagas';
+import { get as getUsers, createUser, getAddress as getAddressUser, getUserById, updateUser, searchUser } from './users/sagas';
 
 export default function* rootSaga() {
   return yield all([
@@ -84,5 +84,6 @@ export default function* rootSaga() {
     takeLatest(UserTypes.LOAD_REQUEST_ADDRESS, getAddressUser),
     takeLatest(UserTypes.LOAD_REQUEST_USER_BY_ID, getUserById),
     takeLatest(UserTypes.UPDATE_USER_REQUEST, updateUser),
+    takeLatest(UserTypes.SEARCH_REQUEST, searchUser),
   ]);
 }

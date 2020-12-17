@@ -17,6 +17,8 @@ export enum UserTypes {
 
   LOAD_REQUEST_USER_BY_ID = "@user/LOAD_REQUEST_USER_BY_ID",
   LOAD_SUCCCES_USER_BY_ID = "@user/LOAD_SUCCCES_USER_BY_ID",
+
+  SEARCH_REQUEST = "@user/SEARCH_REQUEST",
 }
 
 /**
@@ -80,6 +82,8 @@ export interface UserList {
   limit: string;
   page: string;
   total: number;
+  search?: string;
+
 }
 
 export interface ViacepDataInterface {
