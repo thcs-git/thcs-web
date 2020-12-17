@@ -19,7 +19,7 @@ import { CouncilTypes } from './councils/types';
 import { get as getCouncils, store as storeCouncil, getById as getCouncilById, update as updateCouncil, searchConcil } from './councils/sagas';
 
 import { PatientTypes } from './patients/types';
-import { get as getPatients, createPatient, getAddress as getAddressPatient, getPatientById, updatePatient } from './patients/sagas';
+import { get as getPatients, createPatient, getAddress as getAddressPatient, getPatientById, updatePatient, searchPatient } from './patients/sagas';
 
 import { UserTypes } from './users/types';
 import { get as getUsers, createUser, getAddress as getAddressUser, getUserById, updateUser } from './users/sagas';
@@ -75,6 +75,7 @@ export default function* rootSaga() {
     takeLatest(PatientTypes.LOAD_REQUEST_ADDRESS, getAddressPatient),
     takeLatest(PatientTypes.LOAD_REQUEST_PATIENT_BY_ID, getPatientById),
     takeLatest(PatientTypes.UPDATE_PATIENT_REQUEST, updatePatient),
+    takeLatest(PatientTypes.SEARCH_REQUEST, searchPatient),
 
     /** Users */
     takeLatest(UserTypes.LOAD_REQUEST, getUsers),
