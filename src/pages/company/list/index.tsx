@@ -36,6 +36,7 @@ export default function CompanyList() {
 
   const companyState = useSelector((state: ApplicationState) => state.companies);
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
+  const [search, setSearch] = useState('');
 
   useEffect(() => {
     dispatch(loadRequest());
@@ -50,6 +51,7 @@ export default function CompanyList() {
   };
 
   const handleChangeInput = useCallback((event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    setSearch(event.target.value)
     dispatch(searchRequest(event.target.value));
   }, []);
 
@@ -93,29 +95,34 @@ export default function CompanyList() {
               page: '1',
               limit: companyState.list.limit,
               total: companyState.list.total,
+              search,
             }))}
 
             handleLastPage={() => dispatch(loadRequest({
               page: (Math.ceil(+companyState.list.total / +companyState.list.limit)).toString(),
               limit: companyState.list.limit,
               total: companyState.list.total,
+              search,
             }))}
 
             handleNextPage={() => dispatch(loadRequest({
               page: (+companyState.list.page + 1).toString(),
               limit: companyState.list.limit,
               total: companyState.list.total,
+              search,
             }))}
 
             handlePreviosPage={() => dispatch(loadRequest({
               page: (+companyState.list.page - 1).toString(),
               limit: companyState.list.limit,
               total: companyState.list.total,
+              search,
             }))}
 
             handleChangeRowsPerPage={event => dispatch(loadRequest({
               limit: event.target.value,
-              page: '1'
+              page: '1',
+              search
             }))}
           />
         </Container>
