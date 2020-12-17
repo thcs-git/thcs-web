@@ -1,11 +1,12 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback, ChangeEvent } from 'react';
 import { useHistory } from 'react-router-dom';
 import { Container, FormControl, InputLabel, OutlinedInput, InputAdornment, IconButton } from '@material-ui/core';
 import { SearchOutlined } from '@material-ui/icons';
+import debounce from 'lodash.debounce';
 
 import { useDispatch, useSelector } from 'react-redux';
 import { ApplicationState } from '../../../store/';
-import { loadRequest } from '../../../store/ducks/councils/actions';
+import { loadRequest, searchRequest } from '../../../store/ducks/councils/actions';
 
 import PaginationComponent from '../../../components/Pagination';
 import Loading from '../../../components/Loading';
@@ -46,6 +47,13 @@ export default function CouncilList() {
     setAnchorEl(null);
   };
 
+  const handleChangeInput = useCallback((event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    setSearch(event.target.value)
+    dispatch(searchRequest(event.target.value));
+  }, []);
+
+  const debounceSearchRequest = debounce(handleChangeInput, 600)
+
   return (
     <>
       <Sidebar>
@@ -56,8 +64,7 @@ export default function CouncilList() {
           <SearchComponent
             handleButton={() => history.push('/concil/create/')}
             buttonTitle="Novo"
-            value=""
-            onChangeInput={() => {}}
+            onChangeInput={debounceSearchRequest}
           />
 
 
@@ -85,29 +92,34 @@ export default function CouncilList() {
               page: '1',
               limit: councilState.list.limit,
               total: councilState.list.total,
+              search
             }))}
 
             handleLastPage={() => dispatch(loadRequest({
               page: (Math.ceil(+councilState.list.total / +councilState.list.limit)).toString(),
               limit: councilState.list.limit,
               total: councilState.list.total,
+              search
             }))}
 
             handleNextPage={() => dispatch(loadRequest({
               page: (+councilState.list.page + 1).toString(),
               limit: councilState.list.limit,
               total: councilState.list.total,
+              search
             }))}
 
             handlePreviosPage={() => dispatch(loadRequest({
               page: (+councilState.list.page - 1).toString(),
               limit: councilState.list.limit,
               total: councilState.list.total,
+              search
             }))}
 
             handleChangeRowsPerPage={event => dispatch(loadRequest({
               limit: event.target.value,
-              page: '1'
+              page: '1',
+              search
             }))}
           />
         </Container>
