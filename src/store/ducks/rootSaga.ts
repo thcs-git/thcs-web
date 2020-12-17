@@ -13,7 +13,7 @@ import { CompanyTypes } from './companies/types';
 import { get as getCompanies, getAddress, createCompany, getById as getCompanyById, update as updateCompany, searchCompany } from './companies/sagas';
 
 import { SpecialtyTypes } from './specialties/types';
-import { get as getSpecialties, store as storeSpecialty, getById as getSpecialtyById, update as updateSpecialty } from './specialties/sagas';
+import { get as getSpecialties, store as storeSpecialty, getById as getSpecialtyById, update as updateSpecialty, searchSpecialty } from './specialties/sagas';
 
 import { CouncilTypes } from './councils/types';
 import { get as getCouncils, store as storeCouncil, getById as getCouncilById, update as updateCouncil, searchConcil } from './councils/sagas';
@@ -52,6 +52,7 @@ export default function* rootSaga() {
     takeLatest(SpecialtyTypes.LOAD_REQUEST_SPECIALTY_BY_ID, getSpecialtyById),
     takeLatest(SpecialtyTypes.CREATE_SPECIALTY_REQUEST, storeSpecialty),
     takeLatest(SpecialtyTypes.UPDATE_SPECIALTY_REQUEST, updateSpecialty),
+    takeLatest(SpecialtyTypes.SEARCH_REQUEST, searchSpecialty),
 
     // Company
     takeLatest(CompanyTypes.LOAD_REQUEST, getCompanies),

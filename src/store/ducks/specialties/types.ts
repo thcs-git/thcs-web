@@ -14,6 +14,9 @@ export enum SpecialtyTypes {
 
   UPDATE_SPECIALTY_REQUEST = "@specialty/UPDATE_SPECIALTY_REQUEST",
   UPDATE_SPECIALTY_SUCCESS = "@specialty/UPDATE_SPECIALTY_SUCCESS",
+
+  SEARCH_REQUEST = "@specialty/SEARCH_REQUEST",
+
 }
 
 /**
@@ -34,6 +37,7 @@ export interface SpecialtyList {
   limit: string;
   page: string;
   total: number;
+  search?: string;
 }
 
 

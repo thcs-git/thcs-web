@@ -15,3 +15,5 @@ export const loadSpecialtyById = (id: string) => action(SpecialtyTypes.LOAD_REQU
 export const loadSuccessGetSpecialtyById = (data: SpecialtyInterface) => action(SpecialtyTypes.LOAD_SUCCESS_SPECIALTY_BY_ID, { data });
 
 export const loadFailure = () => action(SpecialtyTypes.LOAD_FAILURE);
+
+export const searchRequest = (value: string) => action(SpecialtyTypes.SEARCH_REQUEST, { value });
