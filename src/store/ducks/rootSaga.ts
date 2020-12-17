@@ -7,7 +7,7 @@ import { LoginTypes } from "./login/types";
 import { doLogin } from "./login/sagas";
 
 import { CustomerTypes } from './customers/types';
-import { get, getCustomerById, getAddress as getAddressCustomer, createCompanyCustomer, updateCompanyCustomer } from './customers/sagas';
+import { get, getCustomerById, getAddress as getAddressCustomer, createCompanyCustomer, updateCompanyCustomer, searchCustomer } from './customers/sagas';
 
 import { CompanyTypes } from './companies/types';
 import { get as getCompanies, getAddress, createCompany, getById as getCompanyById, update as updateCompany, searchCompany } from './companies/sagas';
@@ -67,6 +67,7 @@ export default function* rootSaga() {
     takeLatest(CustomerTypes.LOAD_REQUEST_ADDRESS, getAddressCustomer),
     takeLatest(CustomerTypes.CREATE_CUSTOMER_REQUEST, createCompanyCustomer),
     takeLatest(CustomerTypes.UPDATE_CUSTOMER_REQUEST, updateCompanyCustomer),
+    takeLatest(CustomerTypes.SEARCH_REQUEST, searchCustomer),
 
     /** Patients */
     takeLatest(PatientTypes.LOAD_REQUEST, getPatients),

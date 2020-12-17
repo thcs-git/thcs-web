@@ -12,7 +12,7 @@ export function* get({ payload }: any) {
   const { params } = payload;
 
   try {
-    const { data } = yield call(apiSollar.get, `/client?limit=${params.limit ?? 10}&page=${params.page || 1}`);
+    const { data } = yield call(apiSollar.get, `/client?limit=${params.limit ?? 10}&page=${params.page || 1}${params.search ? '&search=' + params.search : ''}`);
 
     yield put(loadSuccess(data));
   } catch (error) {
@@ -71,6 +71,17 @@ export function* getAddress({payload}:any) {
     yield put(successGetAddress(data));
   } catch (error) {
 
+    yield put(loadFailure());
+  }
+}
+
+
+export function* searchCustomer({ payload: { value } }: any) {
+  try {
+    const response: AxiosResponse = yield call(apiSollar.get, `/client/?limit=10&page=1${!!value ? '&search=' + value : ''}`)
+    yield put(loadSuccess(response.data))
+  } catch (error) {
+    toast.info("Não foi possível buscar os dados do cliente");
     yield put(loadFailure());
   }
 }

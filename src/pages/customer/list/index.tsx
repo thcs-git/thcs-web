@@ -1,11 +1,12 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback, ChangeEvent } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import { Container, FormControl, InputLabel, OutlinedInput, InputAdornment, IconButton } from '@material-ui/core';
 import { SearchOutlined } from '@material-ui/icons';
+import debounce from 'lodash.debounce';
 
 import { ApplicationState } from '../../../store';
-import { loadRequest } from '../../../store/ducks/customers/actions';
+import { loadRequest, searchRequest } from '../../../store/ducks/customers/actions';
 import Sidebar from '../../../components/Sidebar';
 
 import PaginationComponent from '../../../components/Pagination';
@@ -50,6 +51,13 @@ export default function CustomerList() {
     setAnchorEl(null);
   };
 
+  const handleChangeInput = useCallback((event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    setSearch(event.target.value)
+    dispatch(searchRequest(event.target.value));
+  }, []);
+
+  const debounceSearchRequest = debounce(handleChangeInput, 600)
+
   return (
     <>
       {customerState.loading && <Loading />}
@@ -60,8 +68,7 @@ export default function CustomerList() {
           <SearchComponent
             handleButton={() => history.push('/customer/create/')}
             buttonTitle="Novo"
-            value=""
-            onChangeInput={() => {}}
+            onChangeInput={debounceSearchRequest}
           />
 
           <List>
@@ -88,29 +95,34 @@ export default function CustomerList() {
               page: '1',
               limit: customerState.list.limit,
               total: customerState.list.total,
+              search
             }))}
 
             handleLastPage={() => dispatch(loadRequest({
               page: (Math.ceil(+customerState.list.total / +customerState.list.limit)).toString(),
               limit: customerState.list.limit,
               total: customerState.list.total,
+              search
             }))}
 
             handleNextPage={() => dispatch(loadRequest({
               page: (+customerState.list.page + 1).toString(),
               limit: customerState.list.limit,
               total: customerState.list.total,
+              search
             }))}
 
             handlePreviosPage={() => dispatch(loadRequest({
               page: (+customerState.list.page - 1).toString(),
               limit: customerState.list.limit,
               total: customerState.list.total,
+              search
             }))}
 
             handleChangeRowsPerPage={event => dispatch(loadRequest({
               limit: event.target.value,
-              page: '1'
+              page: '1',
+              search
             }))}
           />
         </Container>

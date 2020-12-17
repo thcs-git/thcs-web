@@ -19,3 +19,5 @@ export const loadCustomerById = (id: string) => action(CustomerTypes.LOAD_REQUES
 export const loadSuccessCustomerById = (data: CustomerInterface) => action(CustomerTypes.LOAD_SUCCESS_BY_ID, { data });
 
 export const loadFailure = () => action(CustomerTypes.LOAD_FAILURE);
+
+export const searchRequest = (value: string) => action(CustomerTypes.SEARCH_REQUEST, { value });

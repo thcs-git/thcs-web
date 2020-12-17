@@ -17,6 +17,9 @@ export enum CustomerTypes {
 
   LOAD_REQUEST_ADDRESS = "@customer/LOAD_REQUEST_ADDRESS",
   LOAD_RESPONSE_ADDRESS = "@customer/LOAD_RESPONSE_ADDRESS",
+
+  SEARCH_REQUEST = "@customer/SEARCH_REQUEST",
+
 }
 
 /**
@@ -61,6 +64,7 @@ export interface CustomerList {
   limit: string;
   page: string;
   total: number;
+  search?: string;
 }
 
 export interface CustomerDataItems {
