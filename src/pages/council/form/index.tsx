@@ -39,13 +39,12 @@ interface IPageParams {
   id?: string;
 }
 
-export default function EspecialtyForm(props: RouteComponentProps<IPageParams>) {
+const EspecialtyForm = (props: RouteComponentProps<IPageParams>) => {
   const history = useHistory();
   const dispatch = useDispatch();
   const councilState = useSelector((state: ApplicationState) => state.councils);
 
   const { params } = props.match;
-
   const [state, setState] = useState<IFormFields>({
     _id: params.id || '',
     company_id: { _id: '5fbc1eed871112075d3f9f7e' },
@@ -189,3 +188,5 @@ export default function EspecialtyForm(props: RouteComponentProps<IPageParams>) 
     </Sidebar>
   );
 }
+
+export default EspecialtyForm;

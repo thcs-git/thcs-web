@@ -121,7 +121,9 @@ export default function PatientForm(props: RouteComponentProps<IPageParams>) {
     setState(prevState => {
       return {
         ...prevState,
-        ...patientState.data
+        address_id: {
+          ...patientState.data.address_id
+        }
       }
     });
 

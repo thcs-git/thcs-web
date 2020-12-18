@@ -62,7 +62,7 @@ export default function CouncilList() {
           <FormTitle>Lista de Conselhos</FormTitle>
 
           <SearchComponent
-            handleButton={() => history.push('/concil/create/')}
+            handleButton={() => history.push('/council/create/')}
             buttonTitle="Novo"
             onChangeInput={debounceSearchRequest}
           />

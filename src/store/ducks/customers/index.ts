@@ -77,7 +77,7 @@ const reducer: Reducer<CustomerState> = (state = INITIAL_STATE, action) => {
           ...state.data,
           address: {
             ...state.data.address,
-            postalCode: action.payload.data.cep,
+            postal_code: action.payload.data.cep,
             street: action.payload.data.logradouro,
             number: '',
             district: action.payload.data.bairro,
