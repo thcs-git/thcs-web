@@ -1,10 +1,9 @@
-import React, { useState, Props, useRef, useEffect, useCallback } from 'react';
+import React, { useState, Props, useRef, useCallback } from 'react';
 import clsx from 'clsx';
 import { createStyles, makeStyles, useTheme, Theme } from '@material-ui/core/styles';
 import Drawer from '@material-ui/core/Drawer';
 import List from '@material-ui/core/List';
 import CssBaseline from '@material-ui/core/CssBaseline';
-import Typography from '@material-ui/core/Typography';
 import Divider from '@material-ui/core/Divider';
 import IconButton from '@material-ui/core/IconButton';
 import MenuIcon from '@material-ui/icons/Menu';
@@ -38,13 +37,7 @@ import PersonIcon from '@material-ui/icons/Person';
 import GroupAddIcon from '@material-ui/icons/GroupAdd';
 import LocalHospital from '@material-ui/icons/LocalHospital';
 
-import { Link } from 'react-router-dom';
-
-import SupervisorAccountIcon from '@material-ui/icons/SupervisorAccount';
-import { AccordionSummary, AccordionDetails } from '@material-ui/core';
-import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
-
-import { AccordionMenu } from './styles';
+import { AccordionMenu, Logo } from './styles';
 import LOCALSTORAGE from '../../helpers/constants/localStorage';
 
 
@@ -176,6 +169,7 @@ const Sibebar = (props: Props<any>) => {
         }}
       >
         <div className={classes.toolbar}>
+          <Logo />
           <IconButton onClick={handleDrawerClose}>
             {open ? <ChevronLeftIcon style={{ color: '#fff' }} /> : <MenuIcon style={{ color: '#fff' }} />}
           </IconButton>

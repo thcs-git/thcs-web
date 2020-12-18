@@ -27,7 +27,7 @@ export function* getAreaById({ payload: { id: _id } }: any) {
   try {
     const response: AxiosResponse = yield call(apiSollar.get, `/patientarea`, { headers: { token }, params: { _id } })
 
-    yield put(loadSuccessGetAreaById(response.data[0]))
+    yield put(loadSuccessGetAreaById(response.data))
   } catch (error) {
     yield put(loadFailure());
   }

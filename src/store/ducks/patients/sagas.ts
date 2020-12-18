@@ -26,7 +26,7 @@ export function* getPatientById({ payload: { id: _id } }: any) {
   try {
 
     const response: AxiosResponse = yield call(apiSollar.get, `/patient`, { headers: { token }, params: { _id } })
-    yield put(loadSuccessGetPatientById(response.data[0]))
+    yield put(loadSuccessGetPatientById(response.data))
 
   } catch (error) {
     yield put(loadFailure());
