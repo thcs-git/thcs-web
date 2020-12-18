@@ -91,7 +91,9 @@ export default function CustomerForm(props: RouteComponentProps<IPageParams>) {
     setState(prevState => {
       return {
         ...prevState,
-        ...customerState.data
+        address: {
+          ...customerState.data.address
+        }
       }
     })
   }, [customerState]);
@@ -173,7 +175,7 @@ export default function CustomerForm(props: RouteComponentProps<IPageParams>) {
                 />
               </Grid>
 
-              <Grid item md={2} xs={12}>
+              <Grid item md={3} xs={12}>
                 <TextField
                   id="input-fiscal-number"
                   label="CNPJ"
@@ -193,7 +195,7 @@ export default function CustomerForm(props: RouteComponentProps<IPageParams>) {
           {/*  */}
           <FormGroupSection>
             <Grid container>
-              <Grid item md={2} xs={12}>
+              <Grid item md={3} xs={12} style={{  marginRight: 10}}>
                 <FormControl variant="outlined" size="small" fullWidth>
                   <InputLabel htmlFor="search-input">CEP</InputLabel>
                   <OutlinedInputFiled
@@ -218,12 +220,11 @@ export default function CustomerForm(props: RouteComponentProps<IPageParams>) {
                         <SearchOutlined style={{ color: 'var(--primary)' }} />
                       </InputAdornment>
                     }
-                    labelWidth={155}
+                    // labelWidth={155}
+
                   />
                 </FormControl>
               </Grid>
-
-              <Grid item md={3} xs={6} />
 
               <Grid item md={3} xs={12}>
                 <TextField
@@ -237,7 +238,7 @@ export default function CustomerForm(props: RouteComponentProps<IPageParams>) {
                 />
               </Grid>
 
-              <Grid item md={3} xs={12}>
+              <Grid item md={4} xs={12}>
                 <TextField
                   id="input-neighborhood"
                   label="Bairro"

@@ -107,7 +107,9 @@ export default function CompanyForm(props: RouteComponentProps<IPageParams>) {
     setState(prevState => {
       return {
         ...prevState,
-        ...companyState.data,
+        address: {
+          ...companyState.data.address,
+        },
         created_by: { _id: '5e8cfe7de9b6b8501c8033ac' }
       }
     })

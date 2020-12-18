@@ -128,7 +128,10 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
 
   useEffect(() => {
     setState(prevState => ({
-      ...userState.data
+      ...prevState,
+      address: {
+        ...userState.data.address
+      }
     }));
   }, [userState]);
 
