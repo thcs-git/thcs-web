@@ -20,8 +20,6 @@ import {
   DialogContentText,
   DialogTitle,
   Grid,
-  Stepper,
-  Step,
   StepLabel,
 } from '@material-ui/core';
 
@@ -48,7 +46,8 @@ import {
   SearchContent,
   StepperComponent,
   StepComponent,
-  NoDataIcon
+  NoDataIcon,
+  PatientNotFound
 } from './styles';
 
 interface IFormFields extends CareInterface {
@@ -97,6 +96,7 @@ export default function AreaForm(props: RouteComponentProps<IPageParams>) {
     updated_at: '',
   });
 
+  const [patientSearch, setPatientSearch] = useState<string>('');
   const [patient, setPatient] = useState<any>({});
 
   const [currentTab, setCurrentTab] = useState(0);
@@ -141,8 +141,10 @@ export default function AreaForm(props: RouteComponentProps<IPageParams>) {
   }, [currentStep]);
 
   const searchPatient = useCallback((value: string) => {
-    setPatient({});
-    dispatch(searchPatientAction(value));
+    if (value.length > 0) {
+      setPatient({});
+      dispatch(searchPatientAction(value));
+    }
   }, []);
 
 
@@ -161,11 +163,13 @@ export default function AreaForm(props: RouteComponentProps<IPageParams>) {
   }
 
   function handleSaveFormCare() {
-    if (state?._id) {
-      dispatch(updateCareRequest(state));
-    } else {
-      dispatch(createCareRequest(state));
-    }
+    // if (state?._id) {
+    //   dispatch(updateCareRequest(state));
+    // } else {
+    //   dispatch(createCareRequest(state));
+    // }
+
+    console.log('state', state);
   }
 
   function handleOpenModalCancel() {
@@ -211,17 +215,24 @@ export default function AreaForm(props: RouteComponentProps<IPageParams>) {
             {/* Step 1 */}
             {currentStep === 0 && (
               <>
-                <SearchContent>
-                  <TextField
-                    id="input-search-fiscal-number"
-                    label="Paciente"
-                    variant="outlined"
-                    size="small"
-                    // value={state.name}
-                    placeholder="Buscar por CPF"
-                    onBlur={(element) => searchPatient(element.target.value)}
-                  />
-                </SearchContent>
+                <Grid container>
+                  <Grid item md={3} xs={12}></Grid>
+                  <Grid item md={6} xs={12}>
+                    <SearchContent>
+                      <TextField
+                        id="input-search-fiscal-number"
+                        label="Paciente"
+                        variant="outlined"
+                        size="small"
+                        value={patientSearch}
+                        placeholder="Buscar por CPF"
+                        onChange={element => setPatientSearch(element.target.value)}
+                        onBlur={(element) => searchPatient(element.target.value)}
+                        fullWidth
+                      />
+                    </SearchContent>
+                  </Grid>
+                </Grid>
 
                 {patient?._id && (
                   <Grid container>
@@ -254,10 +265,16 @@ export default function AreaForm(props: RouteComponentProps<IPageParams>) {
                 )}
 
                 {patientState.error && (
-                  <>
+                  <PatientNotFound>
                     <NoDataIcon />
                     <p>Paciente não encontrado</p>
-                  </>
+                  </PatientNotFound>
+                )}
+
+                {patientState.loading && (
+                  <PatientNotFound>
+                    <p>Buscando...</p>
+                  </PatientNotFound>
                 )}
               </>
             )}
@@ -430,6 +447,13 @@ export default function AreaForm(props: RouteComponentProps<IPageParams>) {
               </Grid>
             )}
 
+
+            {/* Step 3 */}
+            {currentStep === 2 && (
+              <>
+                <p>Resumo do atendimento</p>
+              </>
+            )}
           </FormContent>
 
           <ButtonsContent>
@@ -444,7 +468,7 @@ export default function AreaForm(props: RouteComponentProps<IPageParams>) {
             {currentStep === (steps.length - 1) ? (
               <Button
                 background="primary"
-                onClick={handleNextStep}
+                onClick={handleSaveFormCare}
               >
                 Finalizar
               </Button>

@@ -29,6 +29,8 @@ export const FormGroupSection = styled.div`
 export const FormContent = styled.div`
   background: var(--white);
   padding: 15px;
+  border: 1px solid var(--gray);
+  border-radius: 8px;
 
   height: 100%;
   overflow-x: hidden;
@@ -90,6 +92,8 @@ export const SearchContent = styled.div`
   display: flex;
   flex-direction: row;
   justify-content: center;
+
+  margin-bottom: 20px;
 `;
 
 export const StepperComponent = styled(Stepper)`
@@ -109,7 +113,18 @@ export const StepComponent = styled(Step)`
 
 `;
 
+export const PatientNotFound = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+
+  margin: 20px auto;
+`
+
 export const NoDataIcon = styled(NoData)`
   width: 100px;
   height: 100px;
+
+  margin-bottom: 15px;
 `
