@@ -4,15 +4,15 @@ import { toast } from 'react-toastify';
 import LOCALSTORAGE from '../helpers/constants/localStorage';
 
 export const viacep = axios.create({
-  baseURL: 'http://viacep.com.br/ws/',
+  baseURL: process.env.REACT_APP_CORREIOS_API,
 });
 
 export const apiSollar = axios.create({
-  baseURL: 'https://sollar-backend.herokuapp.com/api',
+  baseURL: process.env.REACT_APP_BASE_API,
 });
 
 export const ibge = axios.create({
-  baseURL: 'https://servicodados.ibge.gov.br/api/v1',
+  baseURL: process.env.REACT_APP_IBGE_API,
 });
 
 apiSollar.interceptors.request.use(
