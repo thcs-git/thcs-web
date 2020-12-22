@@ -2,8 +2,8 @@
   "name": "sollar-web",
   "version": "0.1.0",
   "engines": {
-    "node": "12.x",
-    "yarn": "1.x"
+    "node": "15.2.1",
+    "npm": "7.0.10"
   },
   "private": true,
   "dependencies": {
