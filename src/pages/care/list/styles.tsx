@@ -65,3 +65,17 @@ export const ButtonsContent = styled.div`
   flex-direction: row;
   justify-content: flex-end;
 `;
+
+export const CheckListContent = styled.div`
+  display: flex;
+  flex-direction: row;
+
+  .checklist-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+
+    margin: auto 20px;
+  }
+`;

@@ -1,8 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useHistory } from 'react-router-dom';
 import { Container, FormControl, InputLabel, OutlinedInput, InputAdornment, IconButton } from '@material-ui/core';
-import { SearchOutlined } from '@material-ui/icons';
-import { getDayOfTheWeekName } from '../../../helpers/date';
+import { Add as AddIcon, CheckCircle } from '@material-ui/icons';
 
 import { useDispatch, useSelector } from 'react-redux';
 import { ApplicationState } from '../../../store/';
@@ -12,9 +11,11 @@ import PaginationComponent from '../../../components/Pagination';
 import Sidebar from '../../../components/Sidebar';
 import SearchComponent from '../../../components/List/Search';
 import Loading from '../../../components/Loading';
-
 import { FormTitle } from '../../../styles/components/Form';
 import Button from '../../../styles/components/Button';
+
+import { getDayOfTheWeekName } from '../../../helpers/date';
+
 import {
   List,
   ListLink,
@@ -23,8 +24,7 @@ import {
   ListItemStatus,
   ListItemTitle,
   ListItemSubTitle,
-  FormSearch,
-  ButtonsContent,
+  CheckListContent
 } from './styles';
 
 export default function CouncilList() {
@@ -70,9 +70,33 @@ export default function CouncilList() {
                   <ListItemContent>
                     <ListItemStatus active={area.active}>{area.active ? 'Ativo' : 'Inativo'}</ListItemStatus>
                     <div>
-                      <ListItemTitle>NOME DO PACIENTE</ListItemTitle>
+                      <ListItemTitle>NOME DO PACIENTE DA SILVA BARBOSA LEMOS CAVALCANTI</ListItemTitle>
                       <ListItemSubTitle>: {area.supply_days} dia(s), {getDayOfTheWeekName(area.week_day)}</ListItemSubTitle>
                     </div>
+
+                    {/* Se o paciente estiver no status pre-atendimento */}
+                    <CheckListContent>
+                      <div className="checklist-item">
+                        <ListItemTitle>NEAD</ListItemTitle>
+                        <CheckCircle />
+                      </div>
+
+                      <div className="checklist-item">
+                        <ListItemTitle>ABEMID</ListItemTitle>
+                        <AddIcon />
+                      </div>
+
+                      <div className="checklist-item">
+                        <ListItemTitle>Socioambiental</ListItemTitle>
+                        <AddIcon />
+                      </div>
+
+                      <div className="checklist-item">
+                        <ListItemTitle>Manutenção</ListItemTitle>
+                        <AddIcon />
+                      </div>
+                    </CheckListContent>
+
                   </ListItemContent>
                 </ListItem>
               </ListLink>
