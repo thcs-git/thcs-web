@@ -26,7 +26,7 @@ export function* getUserById({ payload: { id: _id } }: any) {
 
     const response: AxiosResponse = yield call(apiSollar.get, `/user`, { headers: { token }, params: { _id } })
 
-    yield put(loadSuccessGetUserById(response.data[0]))
+    yield put(loadSuccessGetUserById(response.data))
 
   } catch (error) {
     yield put(loadFailure());

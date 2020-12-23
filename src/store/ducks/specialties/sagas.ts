@@ -32,7 +32,7 @@ export function* getById({ payload: { id: _id } }: any) {
 
   try {
     const response: AxiosResponse = yield call(apiSollar.get, `/specialty`, { params: { _id } })
-    yield put(loadSuccessGetSpecialtyById(response.data[0]))
+    yield put(loadSuccessGetSpecialtyById(response.data))
 
   } catch (error) {
     yield put(loadFailure());

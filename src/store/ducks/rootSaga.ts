@@ -24,6 +24,9 @@ import { get as getPatients, createPatient, getAddress as getAddressPatient, get
 import { UserTypes } from './users/types';
 import { get as getUsers, createUser, getAddress as getAddressUser, getUserById, updateUser, searchUser } from './users/sagas';
 
+import { CareTypes } from './cares/types';
+import { get as getCares, createCare, getCareById, updateCare } from './cares/sagas';
+
 export default function* rootSaga() {
   return yield all([
     takeLatest(LoginTypes.LOAD_REQUEST, doLogin),
@@ -39,6 +42,12 @@ export default function* rootSaga() {
     takeLatest(AreaTypes.UPDATE_AREA_REQUEST, updateArea),
     takeLatest(AreaTypes.LOAD_GET_DISTRICTS, getDistricts),
     takeLatest(AreaTypes.SEARCH_REQUEST, searchArea),
+
+    // Care
+    takeLatest(CareTypes.LOAD_REQUEST, getCares),
+    takeLatest(CareTypes.LOAD_REQUEST_CARE_BY_ID, getCareById),
+    takeLatest(CareTypes.CREATE_CARE_REQUEST, createCare),
+    takeLatest(CareTypes.UPDATE_CARE_REQUEST, updateCare),
 
     // Council
     takeLatest(CouncilTypes.LOAD_REQUEST, getCouncils),

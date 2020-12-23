@@ -270,7 +270,7 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
                         <DatePicker
                           id="input-fiscal-birthdate"
                           label="Data de Nascimento"
-                          value={state.birthdate?.length > 10 ? formatDate(state.birthdate, 'YYYY-MM-DD') : state.birthdate}
+                          value={state?.birthdate?.length > 10 ? formatDate(state.birthdate, 'YYYY-MM-DD') : state.birthdate}
                           onChange={(element) => setState({ ...state, birthdate: element.target.value })}
                           fullWidth
                         />

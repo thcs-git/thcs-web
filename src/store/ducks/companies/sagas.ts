@@ -62,7 +62,7 @@ export function* store({ payload }: any) {
 export function* getById({ payload: { id: _id } }: any) {
   try {
     const response: AxiosResponse = yield call(apiSollar.get, `/companies`, { params: { _id } })
-    yield put(loadSuccessGetCompanyById(response.data[0]))
+    yield put(loadSuccessGetCompanyById(response.data))
 
   } catch (error) {
     yield put(loadFailure());

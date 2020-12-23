@@ -1,6 +1,9 @@
 import { INITIAL_STATE } from './login'
 import { LoginState } from './login/types'
 
+import { INITIAL_STATE as INITIAL_STATE_CARE } from './cares';
+import { CareState } from './cares/types';
+
 import { INITIAL_STATE as INITIAL_STATE_CUSTOMER } from './customers';
 import { CustomerState } from './customers/types';
 
@@ -28,8 +31,9 @@ import { UserState } from './users/types';
 export interface IInitialState {
   areas: Readonly<AreaState>;
   login: Readonly<LoginState>;
-  customers: Readonly<CustomerState>;
+  cares: Readonly<CareState>;
   companies: Readonly<CompanyState>;
+  customers: Readonly<CustomerState>;
   specialties: Readonly<SpecialtyState>;
   councils: Readonly<CouncilState>;
   patients: Readonly<PatientState>;
@@ -42,8 +46,9 @@ export interface IInitialState {
 export const InitialState: IInitialState = {
   areas: INITIAL_STATE_AREA,
   login: INITIAL_STATE,
-  customers: INITIAL_STATE_CUSTOMER,
+  cares: INITIAL_STATE_CARE,
   companies: INITIAL_STATE_COMPANY,
+  customers: INITIAL_STATE_CUSTOMER,
   specialties: INITIAL_STATE_SPECIALTY,
   councils: INITIAL_STATE_COUNCIL,
   patients: INITIAL_STATE_PATIENT,

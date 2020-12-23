@@ -353,7 +353,7 @@ export default function AreaForm(props: RouteComponentProps<IPageParams>) {
                           size="small"
                           onChange={(event, value) => {
                             if (value) {
-                              handleSelectUser({ _id: value._id, name: value.name })
+                              handleSelectUser({ _id: value._id || '', name: value.name })
                             }
                           }}
                           fullWidth

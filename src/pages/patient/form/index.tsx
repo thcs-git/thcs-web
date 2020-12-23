@@ -36,6 +36,7 @@ import { FormTitle, SelectComponent as Select } from '../../../styles/components
 import { SwitchComponent as Switch } from '../../../styles/components/Switch';
 
 import { formatDate } from '../../../helpers/date';
+import { bloodTypes } from '../../../helpers/patient';
 
 import DatePicker from '../../../styles/components/DatePicker';
 import ButtonComponent from '../../../styles/components/Button';
@@ -107,7 +108,6 @@ export default function PatientForm(props: RouteComponentProps<IPageParams>) {
   const [type, setType] = useState('registry');
 
   const genders = ['Masculino', 'Feminino', 'Indefinido'];
-  const bloodTypes = ['A-', 'A+', 'AB+', 'AB-', 'B-', 'B+', 'O-', 'O+'];
 
   const [openModalCancel, setOpenModalCancel] = useState(false);
 

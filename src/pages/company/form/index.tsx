@@ -138,6 +138,7 @@ export default function CompanyForm(props: RouteComponentProps<IPageParams>) {
 
   return (
     <Sidebar>
+      {console.log('companyState', companyState)}
       <Container>
         <FormSection>
           <FormContent>
