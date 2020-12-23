@@ -30,6 +30,7 @@ import UserForm from '../pages/user/form';
 import PatientList from '../pages/patient/list';
 import PatientForm from '../pages/patient/form';
 import PatientOverview from '../pages/patient/overview';
+import PatientCapture from '../pages/patient/capture';
 
 import Login from '../pages/login';
 
@@ -76,6 +77,7 @@ const Routes = () => (
       <PrivateRoute path="/patient/:id/edit" component={PatientForm} />
       <PrivateRoute path="/patient/create" component={PatientForm} />
       <PrivateRoute path="/patient/:id/overview" component={PatientOverview} />
+      <PrivateRoute path="/patient/capture" component={PatientCapture} />
 
       {/* Care */}
       <PrivateRoute path="/care" component={CareList} exact />
