@@ -4,7 +4,7 @@ import { toast } from 'react-toastify';
 import LOCALSTORAGE from '../helpers/constants/localStorage';
 
 export const viacep = axios.create({
-  baseURL: process.env.REACT_APP_CORREIOS_API,
+  baseURL: process.env.REACT_APP_VIACEP_API,
 });
 
 export const apiSollar = axios.create({

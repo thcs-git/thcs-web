@@ -3,6 +3,7 @@ import createSagaMiddleware from 'redux-saga';
 
 import { AreaState } from './ducks/areas/types';
 import { CompanyState } from './ducks/companies/types';
+import { CareState } from './ducks/cares/types';
 import { CouncilState } from './ducks/councils/types';
 import { CustomerState } from './ducks/customers/types';
 import { SpecialtyState } from './ducks/specialties/types';
@@ -17,8 +18,9 @@ import rootSaga from './ducks/rootSaga';
 export interface ApplicationState {
   areas: AreaState;
   login: LoginState;
-  customers: CustomerState;
+  cares: CareState;
   companies: CompanyState;
+  customers: CustomerState;
   specialties: SpecialtyState;
   councils: CouncilState;
   users: UserState;

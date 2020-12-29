@@ -25,7 +25,7 @@ export function* get({ payload }: any) {
 export function* getCustomerById({ payload: { id: _id } }: any) {
   try {
     const response = yield call(apiSollar.get, `/client`, { params: { _id } })
-    yield put(loadSuccessCustomerById(response.data[0]))
+    yield put(loadSuccessCustomerById(response.data))
 
   } catch (error) {
     toast.error("Não foi possível carregar o cliente");

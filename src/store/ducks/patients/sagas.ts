@@ -26,7 +26,7 @@ export function* getPatientById({ payload: { id: _id } }: any) {
   try {
 
     const response: AxiosResponse = yield call(apiSollar.get, `/patient`, { headers: { token }, params: { _id } })
-    yield put(loadSuccessGetPatientById(response.data[0]))
+    yield put(loadSuccessGetPatientById(response.data))
 
   } catch (error) {
     yield put(loadFailure());
@@ -79,7 +79,7 @@ export function* searchPatient({ payload: { value } }: any) {
     const response: AxiosResponse = yield call(apiSollar.get, `/patient/?limit=10&page=1${!!value ? '&search=' + value : ''}`)
     yield put(loadSuccess(response.data))
   } catch (error) {
-    toast.info("Não foi possível buscar os dados dao paciente");
+    toast.info("Não foi possível buscar os dados do paciente");
     yield put(loadFailure());
   }
 }

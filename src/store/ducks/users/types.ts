@@ -96,7 +96,6 @@ export interface ViacepDataInterface {
   erro?: boolean,
 }
 
-
 /**
  * State type
  */
