@@ -25,7 +25,7 @@ import { UserTypes } from './users/types';
 import { get as getUsers, createUser, getAddress as getAddressUser, getUserById, updateUser, searchUser } from './users/sagas';
 
 import { CareTypes } from './cares/types';
-import { get as getCares, createCare, getCareById, updateCare } from './cares/sagas';
+import { get as getCares, createCare, getCareById, updateCare, search as searchCare } from './cares/sagas';
 
 export default function* rootSaga() {
   return yield all([
@@ -48,6 +48,7 @@ export default function* rootSaga() {
     takeLatest(CareTypes.LOAD_REQUEST_CARE_BY_ID, getCareById),
     takeLatest(CareTypes.CREATE_CARE_REQUEST, createCare),
     takeLatest(CareTypes.UPDATE_CARE_REQUEST, updateCare),
+    takeLatest(CareTypes.SEARCH_CARE_REQUEST, searchCare),
 
     // Council
     takeLatest(CouncilTypes.LOAD_REQUEST, getCouncils),

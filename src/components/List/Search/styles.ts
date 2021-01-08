@@ -7,7 +7,7 @@ export const FormSearch = styled.form`
   justify-content: space-between;
   align-items: center;
 
-  margin-bottom: 10px;
+  margin-bottom: 20px;
   font-style: italic;
   background: #FAFAFA;
 
