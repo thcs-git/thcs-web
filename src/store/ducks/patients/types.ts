@@ -75,7 +75,7 @@ export interface PatientList {
   search?: string;
 }
 
-interface PatientDataItems {
+export interface PatientDataItems {
   _id: string;
   name: string;
   email: string;

@@ -76,6 +76,7 @@ export default function AreaForm(props: RouteComponentProps<IPageParams>) {
     { id: 6, name: 'Sábado' },
   ];
   const supplyIntervals = [
+    { value: 1, label: '1' },
     { value: 7, label: '7' },
     { value: 14, label: '14' },
     { value: 21, label: '21' },

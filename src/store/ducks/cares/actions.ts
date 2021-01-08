@@ -15,3 +15,6 @@ export const updateCareSuccess = (data: CareInterface) => action(CareTypes.UPDAT
 
 export const loadCareById = (id: string) => action(CareTypes.LOAD_REQUEST_CARE_BY_ID, { id });
 export const loadSuccessGetCareById = (data: CareInterface) => action(CareTypes.LOAD_SUCCCES_CARE_BY_ID, { data });
+
+export const searchCareRequest = (params: any) => action(CareTypes.SEARCH_CARE_REQUEST, { params });
+export const searchCareSuccess = (data: CareInterface) => action(CareTypes.SEARCH_CARE_SUCCESS, { data });
