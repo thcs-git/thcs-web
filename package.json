@@ -1,6 +1,10 @@
 {
   "name": "sollar-web",
   "version": "0.1.0",
+  "engines": {
+    "node": "14.1.0",
+    "npm": "7.0.10"
+  },
   "private": true,
   "dependencies": {
     "@date-io/dayjs": "1.x",
@@ -22,6 +26,7 @@
     "history": "^5.0.0",
     "lodash.debounce": "^4.0.8",
     "moment": "^2.29.1",
+    "node": "^15.4.0",
     "react": "^17.0.1",
     "react-dom": "^17.0.1",
     "react-input-mask": "^2.0.4",
