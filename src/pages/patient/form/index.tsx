@@ -655,7 +655,7 @@ export default function PatientForm(props: RouteComponentProps<IPageParams>) {
           </FormContent>
           <ButtonsContent>
             <ButtonComponent background="default" onClick={() => patientState.success ? history.push('/patient') : handleOpenModalCancel()}>
-              Cancelar
+              Voltar
             </ButtonComponent>
             <ButtonComponent background="primary" onClick={handleSaveFormPatient}>
               Salvar

@@ -52,7 +52,7 @@ export default function CouncilList() {
     dispatch(searchRequest(event.target.value));
   }, []);
 
-  const debounceSearchRequest = debounce(handleChangeInput, 600)
+  const debounceSearchRequest = debounce(handleChangeInput, 900)
 
   return (
     <>
@@ -75,8 +75,8 @@ export default function CouncilList() {
                   <ListItemContent>
                     <ListItemStatus active={council?.active || false}>{council.active ? 'Ativo' : 'Inativo'}</ListItemStatus>
                     <div>
-                      <ListItemTitle>{council.name}</ListItemTitle>
-                      <ListItemSubTitle>{council.initials} • {council.federative_unit}</ListItemSubTitle>
+                      <ListItemTitle>{council.initials} • {council.federative_unit}</ListItemTitle>
+                      <ListItemSubTitle>{council.name}</ListItemSubTitle>
                     </div>
                   </ListItemContent>
                 </ListItem>

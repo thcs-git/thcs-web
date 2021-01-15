@@ -588,7 +588,7 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
           </FormContent>
           <ButtonsContent>
             <ButtonComponent background="default" onClick={() => userState.success ? history.push('/user') : handleOpenModalCancel()}>
-              Cancelar
+              Voltar
             </ButtonComponent>
             <ButtonComponent background="primary" onClick={handleSaveFormUser}>
               Salvar

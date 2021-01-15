@@ -21,6 +21,7 @@ const Search = ({ value, onChangeInput, buttonTitle, handleButton, inputPlacehol
           <OutlinedInput
             id="search-input"
             value={value}
+            type="search"
             onChange={onChangeInput}
             onKeyDown={(event: any) => event.keyCode === 13 && event.preventDefault()}
             endAdornment={

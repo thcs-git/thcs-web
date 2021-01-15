@@ -54,7 +54,7 @@ export default function SpecialtyList() {
     dispatch(searchRequest(event.target.value));
   }, []);
 
-  const debounceSearchRequest = debounce(handleChangeInput, 600)
+  const debounceSearchRequest = debounce(handleChangeInput, 900)
 
   return (
     <>

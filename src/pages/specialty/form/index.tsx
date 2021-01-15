@@ -162,7 +162,7 @@ export default function SpecialtyForm(props: RouteComponentProps<IPageParams>) {
           </FormContent>
           <ButtonsContent>
             <ButtonComponent background="default" onClick={() => specialtyState.success ? history.push('/specialty') : handleOpenModalCancel()}>
-              Cancelar
+              Voltar
             </ButtonComponent>
             <ButtonComponent variant="contained" background="success" onClick={() => handleSaveFormCustomer()}>
               Salvar

@@ -19,9 +19,13 @@ apiSollar.interceptors.request.use(
   function(config) {
     // Do something before request is sent
     const token = localStorage.getItem(LOCALSTORAGE.TOKEN);
+    const username = localStorage.getItem(LOCALSTORAGE.USERNAME) || '';
+    const user_id = localStorage.getItem(LOCALSTORAGE.USER_ID) || '';
 
     if (token) {
       config.headers.token = `${token}`;
+      config.headers.username = username;
+      config.headers.user_id = user_id;
     }
 
     return config;
