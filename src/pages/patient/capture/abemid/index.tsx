@@ -8,7 +8,7 @@ import { ApplicationState } from '../../../../store';
 import { loadRequest as getDocumentGroup } from '../../../../store/ducks/documentGroups/actions';
 import { DocumentGroupInterface } from '../../../../store/ducks/documentGroups/types';
 
-import { createDocumentRequest } from '../../../../store/ducks/documents/actions';
+import { createDocumentRequest, loadRequest as getDocumentAction } from '../../../../store/ducks/documents/actions';
 
 import { loadCareById } from '../../../../store/ducks/cares/actions';
 import { CareInterface } from '../../../../store/ducks/cares/types';
@@ -51,12 +51,16 @@ export default function Abemid(props: RouteComponentProps<IPageParams>) {
     updated_at: '',
     updated_by: { _id: '' },
   });
-  const [currentStep, setCurrentStep] = useState(0);
+  const [document, setDocument] = useState<any>();
   const [selected, setSelected] = useState<String[]>([]);
 
   useEffect(() => {
     dispatch(getDocumentGroup({ _id: id }))
     dispatch(loadCareById(params.id));
+
+    if (params?.documentId) {
+      dispatch(getDocumentAction({ _id: params.documentId }));
+    }
   }, []);
 
   useEffect(() => {
@@ -66,7 +70,6 @@ export default function Abemid(props: RouteComponentProps<IPageParams>) {
   }, [careState.data]);
 
   useEffect(() => {
-    console.log('documentGroupState', documentGroupState);
     if (documentGroupState.data?._id) {
       setDocumentGroup(documentGroupState.data);
     }
@@ -82,6 +85,10 @@ export default function Abemid(props: RouteComponentProps<IPageParams>) {
         history.push(`/patient/capture/${care._id}/overview/`, { success: true })
       }
     }
+  }, [documentState])
+
+  useEffect(() => {
+    setDocument(documentState);
   }, [documentState])
 
   const selectOption = useCallback((field_id: string, option_id: string, multiple: boolean = false) => {
@@ -137,8 +144,20 @@ export default function Abemid(props: RouteComponentProps<IPageParams>) {
       dispatch(createDocumentRequest(createDocumentParams));
     }
 
-
   }, [documentGroup, care]);
+
+  const handleFieldAnswer = useCallback((option: any) => {
+    let findField: any = false;
+
+    if (document?.list?.fields) {
+      findField = document.list.fields.find((f: any) => (
+        option._id === f.option_id
+      ));
+    }
+
+    return findField || option?.selected || false;
+
+  }, [document])
 
   return (
     <Sidebar>
@@ -170,7 +189,7 @@ export default function Abemid(props: RouteComponentProps<IPageParams>) {
                       value={option._id}
                       control={<Radio color="primary" />}
                       label={option.text}
-                      checked={option?.selected}
+                      checked={handleFieldAnswer(option)}
                     />
                   ))}
                 </RadioGroup>
@@ -183,7 +202,7 @@ export default function Abemid(props: RouteComponentProps<IPageParams>) {
                       key={`option_${field._id}_${index}`}
                       value={option._id}
                       onChange={e => selectOption(field._id, option._id, true)}
-                      checked={option?.selected ?? false}
+                      checked={handleFieldAnswer(option)}
                       control={(
                         <Checkbox color="primary"
                         />

@@ -36,3 +36,18 @@ export function* getByIds({ payload }: any) {
     yield put(loadFailure());
   }
 }
+
+export function* getCaptureList({ payload }: any) {
+  try {
+    const { care_id } = payload;
+
+    const response: AxiosResponse = yield call(apiSollar.get, `/documentsgroup/getDocumentsGroupByArrayIds`, { params: { ids: '5ffd7acd2f5d2b1d8ff6bea4,5ffd79012f5d2b1d8ff6bea3,5ff65469b4d4ac07d186e99f' } });
+
+
+
+    yield put(loadSuccessByIds(response.data))
+  } catch (error) {
+    toast.error('Erro ao buscar os atendimentos');
+    yield put(loadFailure());
+  }
+}

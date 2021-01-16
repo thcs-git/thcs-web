@@ -71,6 +71,9 @@ export default function PatientCaptureForm() {
     user_id: '5e8cfe7de9b6b8501c8033ac',
     created_by: { _id: '5e8cfe7de9b6b8501c8033ac' },
     status: 'Pre-Atendimento',
+    capture: {
+      status: 'Em Andamento',
+    }
   });
 
   const [openModalConfirm, setOpenModalConfirm] = useState<boolean>(false);

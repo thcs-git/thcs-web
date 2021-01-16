@@ -1,7 +1,7 @@
 import React, { useState, useCallback, useEffect } from 'react';
 import { useHistory, RouteComponentProps } from 'react-router-dom';
-import { Container, Grid, Menu, MenuItem, Dialog, DialogTitle, DialogContent, DialogContentText, DialogActions } from '@material-ui/core';
-import { AccountCircle, Add, CheckCircle, MoreVert, Schedule, ArrowBackIos } from '@material-ui/icons';
+import { Container, Grid, Menu, MenuItem, Dialog, DialogTitle, DialogContent, DialogContentText, DialogActions, Radio, RadioGroup, FormControlLabel } from '@material-ui/core';
+import { AccountCircle, Add, CheckCircle, MoreVert, Schedule, Check as CheckIcon } from '@material-ui/icons';
 
 import { useDispatch, useSelector } from 'react-redux';
 import { ApplicationState } from '../../../../store';
@@ -9,7 +9,6 @@ import { loadCareById } from '../../../../store/ducks/cares/actions';
 import { CareInterface } from '../../../../store/ducks/cares/types';
 
 import { loadRequestByIds as getDocumentGroupsByIds } from '../../../../store/ducks/documentGroups/actions';
-import { loadRequestGetByCareId as getDocumentByCareId } from '../../../../store/ducks/documents/actions';
 
 import Loading from '../../../../components/Loading';
 import Sidebar from '../../../../components/Sidebar';
@@ -40,7 +39,6 @@ export default function PatientCaptureForm(props: RouteComponentProps<IPageParam
   const history = useHistory();
   const careState = useSelector((state: ApplicationState) => state.cares);
   const documentGroupsState = useSelector((state: ApplicationState) => state.documentGroups);
-  const documentsState = useSelector((state: ApplicationState) => state.documents);
 
   const { params } = props.match;
   const { state } = props.location;
@@ -49,31 +47,18 @@ export default function PatientCaptureForm(props: RouteComponentProps<IPageParam
   const [documentGroups, setDocumentGroups] = useState<DocumentGroupList>();
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const [historyModalOpen, setHistoryModalOpen] = useState(false);
-  const [scores, setScore] = useState<any[]>([]);
+  const [captureOptionsModalOpen, setCaptureModalModalOpen] = useState(false);
 
   useEffect(() => {
     getCare(params.id);
   }, []);
 
   useEffect(() => {
-    getDocuments();
-    handleScoreList();
-  }, [care]);
-
-  useEffect(() => {
-    handleScoreList();
-  }, [documentsState]);
-
-  useEffect(() => {
     if (careState.data?._id) {
       setCare(careState.data);
+      setDocumentGroups(documentGroupsState.list);
     }
   }, [careState.data]);
-
-  useEffect(() => {
-    setDocumentGroups(documentGroupsState.list)
-  }, [documentGroupsState]);
-
 
   const getCare = useCallback((id: string) => {
     if (id.length > 0) {
@@ -81,12 +66,6 @@ export default function PatientCaptureForm(props: RouteComponentProps<IPageParam
       dispatch(getDocumentGroupsByIds('5ffd7acd2f5d2b1d8ff6bea4,5ffd79012f5d2b1d8ff6bea3,5ff65469b4d4ac07d186e99f'));
     }
   }, []);
-
-  const getDocuments = useCallback(() => {
-    if (care?._id && documentsState.list.total === 0) {
-      dispatch(getDocumentByCareId(care._id));
-    }
-  }, [care])
 
   const handleOpenRowMenu = useCallback((event: React.MouseEvent<HTMLButtonElement>) => {
     setAnchorEl(event.currentTarget);
@@ -128,38 +107,14 @@ export default function PatientCaptureForm(props: RouteComponentProps<IPageParam
     }
   };
 
-  const handleScoreRoute = (id: string, care_id: string) => {
+  const handleScoreRoute = (id: string, care_id: string, document_id?: string) => {
     const routes: any = {
       "5ff65469b4d4ac07d186e99f": `/patient/capture/${care_id}/nead`,
       "5ffd7acd2f5d2b1d8ff6bea4": `/patient/capture/${care_id}/abemid`,
       "5ffd79012f5d2b1d8ff6bea3": `/patient/capture/${care_id}/socioambiental`,
     };
 
-    return routes[id];
-  };
-
-  const handleScoreList = () => {
-
-    let scoresList: any = [];
-
-    documentGroupsState.list.data.map(doc => {
-      const entries = documentsState.list.data.find(entry => (
-        entry?.document_group_id?._id === doc._id &&
-        entry.finished &&
-        !entry.canceled
-      ));
-
-      let route = handleScoreRoute(doc?._id || '', care?._id || '');
-      let status = scoreStatusIcon((entries?.finished && !entries.canceled) ? 'Aprovado' : '');
-
-      if (entries?._id) {
-        route = `${route}/${entries?._id}`;
-      }
-
-      scoresList.push({ _id: doc._id, name: doc.name, route, document: { _id: entries?._id, status, created_at: entries?.created_at } })
-    });
-
-    setScore(scoresList);
+    return (document_id) ? `${routes[id]}/${document_id}` : routes[id];
   };
 
   const handleNewScore = (route: string) => {
@@ -170,6 +125,26 @@ export default function PatientCaptureForm(props: RouteComponentProps<IPageParam
   const toggleHistoryModal = () => {
     handleCloseRowMenu();
     setHistoryModalOpen(!historyModalOpen);
+  };
+
+  const handleCheckDocument = (documentId: string, documents: Array<any>) => {
+    const found = documents.find(doc => (
+      doc.document_group_id === documentId &&
+      !doc.canceled &&
+      doc.finished
+    ));
+
+    return (found) ? <CheckCircle style={{ color: '#4FC66A' }} /> : <CheckCircle style={{ color: '#EBEBEB' }} />;
+  };
+
+  const handleDocument = (documentId: string, documents: Array<any>) => {
+    const found = documents.find(doc => (
+      doc.document_group_id === documentId &&
+      !doc.canceled &&
+      doc.finished
+    ));
+
+    return found;
   };
 
   return (
@@ -218,6 +193,9 @@ export default function PatientCaptureForm(props: RouteComponentProps<IPageParam
                           <p>{care.status}</p>
                         </div>
                       </div>
+                      <div>
+                        <Button onClick={() => setCaptureModalModalOpen(true)}>Dados da Captação</Button>
+                      </div>
 
 
                     </PatientResumeContent>
@@ -235,38 +213,46 @@ export default function PatientCaptureForm(props: RouteComponentProps<IPageParam
                   </tr>
                 </thead>
                 <tbody>
-                  {scores.map((score: any, index: number) => (
-                    <tr key={`documentGroup_${index}`}>
-                      <Td center>{score.document.status}</Td>
-                      <Td>{score.name}</Td>
-                      <Td></Td>
-                      <Td>{formatDate(score.document.created_at, 'DD/MM/YYYY HH:mm:ss')}</Td>
-                      <Td></Td>
-                      <Td center>
-                        <Button aria-controls={`simple-menu${index}`} id={`btn_simple-menu${index}`} aria-haspopup="true" onClick={handleOpenRowMenu}>
-                          <MoreVert />
-                        </Button>
-                        <Menu
-                          id={`simple-menu${index}`}
-                          anchorEl={anchorEl}
-                          keepMounted
-                          open={anchorEl?.id === `btn_simple-menu${index}`}
-                          onClose={handleCloseRowMenu}
-                        >
+                  {documentGroups?.data.map((documentGroup: any, index: number) => {
 
-                          <MenuItem onClick={() => handleNewScore(score.route)}>Adicionar novo</MenuItem>
-                          <MenuItem onClick={() => toggleHistoryModal()}>Ver histórico</MenuItem>
-                        </Menu>
-                      </Td>
-                    </tr>
-                  ))}
+                    const document = handleDocument(documentGroup._id, care?.documents_id || []);
+
+                    return (
+                      <tr key={`documentGroup_${index}`}>
+                        <Td center>{handleCheckDocument(documentGroup._id, care?.documents_id || [])}</Td>
+                        <Td>{documentGroup.name}</Td>
+                        <Td>{document?.complexity ? document.complexity : '-'}</Td>
+                        <Td>{document?.created_at ? formatDate(document.created_at, 'DD/MM/YYYY HH:mm:ss') : '-'}</Td>
+                        <Td>{document?.status ? document.status : '-'}</Td>
+                        <Td center>
+                          <Button aria-controls={`simple-menu${index}`} id={`btn_simple-menu${index}`} aria-haspopup="true" onClick={handleOpenRowMenu}>
+                            <MoreVert />
+                          </Button>
+                          <Menu
+                            id={`simple-menu${index}`}
+                            anchorEl={anchorEl}
+                            keepMounted
+                            open={anchorEl?.id === `btn_simple-menu${index}`}
+                            onClose={handleCloseRowMenu}
+                          >
+                            {document?._id ? (
+                              <MenuItem onClick={() => history.push(handleScoreRoute(documentGroup?._id || '', care?._id || '', document?._id))}>Editar</MenuItem>
+                            ) : (
+                                <MenuItem onClick={() => history.push(handleScoreRoute(documentGroup?._id || '', care?._id || ''))}>Adicionar novo</MenuItem>
+                              )}
+                            <MenuItem onClick={() => toggleHistoryModal()}>Ver histórico</MenuItem>
+                          </Menu>
+                        </Td>
+                      </tr>
+                    );
+                  })}
                 </tbody>
               </Table>
             </>
           )}
 
           <BackButtonContent>
-            <Button background="primary" onClick={() => history.push('/patient/capture')}>Voltar</Button>
+            <Button background="primary" onClick={() => history.push('/avaliation')}>Voltar</Button>
           </BackButtonContent>
         </Container>
 
@@ -308,6 +294,46 @@ export default function PatientCaptureForm(props: RouteComponentProps<IPageParam
           </DialogContent>
           <DialogActions>
             <Button onClick={() => setHistoryModalOpen(false)} color="primary">
+              Fechar
+            </Button>
+          </DialogActions>
+        </Dialog>
+
+        <Dialog
+          open={captureOptionsModalOpen}
+          onClose={() => setCaptureModalModalOpen(false)}
+          aria-labelledby="scroll-dialog-title"
+          aria-describedby="scroll-dialog-description"
+        >
+          <DialogTitle id="scroll-dialog-title">Selecione o tipo de cobertura</DialogTitle>
+          <DialogContent dividers>
+            <DialogContentText
+              id="scroll-dialog-description"
+              tabIndex={-1}
+            >
+
+              <p>Para iniciar a captação, é obrigatório definir a cobertura. Em caso de convênio, preencher o número da guia.</p>
+
+              <div>
+                <RadioGroup onChange={e => console.log(e.target.value)}>
+
+                  <FormControlLabel
+                    value="Particular"
+                    control={<Radio color="primary" />}
+                    label="Particular"
+                  />
+                  <FormControlLabel
+                    value="Convênio"
+                    control={<Radio color="primary" />}
+                    label="Convênio"
+                  />
+                </RadioGroup>
+              </div>
+
+            </DialogContentText>
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={() => setCaptureModalModalOpen(false)} color="primary">
               Fechar
             </Button>
           </DialogActions>

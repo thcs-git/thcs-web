@@ -20,6 +20,8 @@ export function* get({ payload }: any) {
 
     const response: AxiosResponse = yield call(apiSollar.get, `/care?limit=${params.limit ?? 10}&page=${params.page || 1}`, { params: searchParams })
 
+    console.log(response);
+
     yield put(searchCareSuccess(response.data))
   } catch (error) {
     toast.error('Erro ao buscar os atendimentos');
@@ -39,6 +41,8 @@ export function* search({ payload }: any) {
 
     const response: AxiosResponse = yield call(apiSollar.get, `/care?limit=${params.limit ?? 10}&page=${params.page || 1}`, { params: searchParams })
 
+    console.log(response.data);
+
     yield put(loadSuccess(response.data))
   } catch (error) {
     toast.error('Erro ao buscar os atendimentos');
@@ -48,7 +52,9 @@ export function* search({ payload }: any) {
 
 export function* getCareById({ payload: { id: _id } }: any) {
   try {
-    const response: AxiosResponse = yield call(apiSollar.get, `/care`, { headers: { token }, params: { _id } })
+    const response: AxiosResponse = yield call(apiSollar.get, `/care`, { headers: { token }, params: { _id } });
+
+    console.log(response.data);
 
     yield put(loadSuccessGetCareById(response.data))
   } catch (error) {

@@ -8,7 +8,7 @@ import { ApplicationState } from '../../../../store';
 import { loadRequest as getDocumentGroup } from '../../../../store/ducks/documentGroups/actions';
 import { DocumentGroupInterface } from '../../../../store/ducks/documentGroups/types';
 
-import { createDocumentRequest } from '../../../../store/ducks/documents/actions';
+import { createDocumentRequest, loadRequest as getDocumentAction } from '../../../../store/ducks/documents/actions';
 
 import { loadCareById } from '../../../../store/ducks/cares/actions';
 import { CareInterface } from '../../../../store/ducks/cares/types';
@@ -52,12 +52,17 @@ export default function Nead(props: RouteComponentProps<IPageParams>) {
     updated_at: '',
     updated_by: { _id: '' },
   });
+  const [document, setDocument] = useState<any>();
   const [currentStep, setCurrentStep] = useState(0);
   const [selected, setSelected] = useState<String[]>([]);
 
   useEffect(() => {
     dispatch(getDocumentGroup({ _id: id }))
     dispatch(loadCareById(params.id));
+
+    if (params?.documentId) {
+      dispatch(getDocumentAction({ _id: params.documentId }));
+    }
   }, []);
 
   useEffect(() => {
@@ -83,6 +88,10 @@ export default function Nead(props: RouteComponentProps<IPageParams>) {
       }
     }
   }, [documentState])
+
+  useEffect(() => {
+    setDocument(documentState);
+  }, [documentState]);
 
   const handleNextStep = useCallback(() => {
     setCurrentStep(prevState => (prevState + 1))
@@ -146,6 +155,19 @@ export default function Nead(props: RouteComponentProps<IPageParams>) {
 
   }, [documentGroup, care]);
 
+  const handleFieldAnswer = useCallback((option: any) => {
+    let findField: any = false;
+
+    if (document?.list?.fields) {
+      findField = document.list.fields.find((f: any) => (
+        option._id === f.option_id
+      ));
+    }
+
+    return findField || option?.selected || false;
+
+  }, [document])
+
   return (
     <Sidebar>
       {(documentGroupState.loading || careState.loading || documentState.loading) && (
@@ -187,7 +209,7 @@ export default function Nead(props: RouteComponentProps<IPageParams>) {
                             value={option._id}
                             control={<Radio color="primary" />}
                             label={option.text}
-                            checked={option?.selected}
+                            checked={handleFieldAnswer(option)}
                           />
                         ))}
                       </RadioGroup>
@@ -217,7 +239,7 @@ export default function Nead(props: RouteComponentProps<IPageParams>) {
                             value={option._id}
                             control={<Radio color="primary" />}
                             label={option.text}
-                            checked={option?.selected}
+                            checked={handleFieldAnswer(option)}
                           />
                         ))}
                       </RadioGroup>
@@ -247,7 +269,7 @@ export default function Nead(props: RouteComponentProps<IPageParams>) {
                             value={option._id}
                             control={<Radio color="primary" />}
                             label={option.text}
-                            checked={option?.selected}
+                            checked={handleFieldAnswer(option)}
                           />
                         ))}
                       </RadioGroup>
@@ -280,7 +302,7 @@ export default function Nead(props: RouteComponentProps<IPageParams>) {
                             value={option._id}
                             control={<Radio color="primary" />}
                             label={option.text}
-                            checked={option?.selected}
+                            checked={handleFieldAnswer(option)}
                           />
                         ))}
                       </RadioGroup>

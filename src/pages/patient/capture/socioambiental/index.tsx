@@ -7,8 +7,9 @@ import { ApplicationState } from '../../../../store';
 
 import { loadRequest as getDocumentGroup } from '../../../../store/ducks/documentGroups/actions';
 import { DocumentGroupInterface } from '../../../../store/ducks/documentGroups/types';
+import { DocumentInterface, DocumentState } from '../../../../store/ducks/documents/types';
 
-import { createDocumentRequest } from '../../../../store/ducks/documents/actions';
+import { createDocumentRequest, loadRequest as getDocumentAction } from '../../../../store/ducks/documents/actions';
 
 import { loadCareById } from '../../../../store/ducks/cares/actions';
 import { CareInterface } from '../../../../store/ducks/cares/types';
@@ -51,12 +52,16 @@ export default function SocioAmbiental(props: RouteComponentProps<IPageParams>) 
     updated_at: '',
     updated_by: { _id: '' },
   });
-  const [currentStep, setCurrentStep] = useState(0);
+  const [document, setDocument] = useState<any>();
   const [selected, setSelected] = useState<String[]>([]);
 
   useEffect(() => {
     dispatch(getDocumentGroup({ _id: id }))
     dispatch(loadCareById(params.id));
+
+    if (params?.documentId) {
+      dispatch(getDocumentAction({ _id: params.documentId }));
+    }
   }, []);
 
   useEffect(() => {
@@ -72,6 +77,10 @@ export default function SocioAmbiental(props: RouteComponentProps<IPageParams>) 
   }, [documentGroupState])
 
   useEffect(() => {
+    setDocument(documentState);
+  }, [documentState]);
+
+  useEffect(() => {
     if (
       documentState.success &&
       !documentState.loading &&
@@ -85,8 +94,6 @@ export default function SocioAmbiental(props: RouteComponentProps<IPageParams>) 
 
   const selectOption = useCallback((field_id: string, option_id: string) => {
     let documentGroupCopy = { ...documentGroup };
-
-    console.log(field_id, option_id);
 
     documentGroupCopy.fields.map((field: any) => {
       if (field._id === field_id) {
@@ -135,6 +142,19 @@ export default function SocioAmbiental(props: RouteComponentProps<IPageParams>) 
 
   }, [documentGroup, care]);
 
+  const handleFieldAnswer = useCallback((option: any) => {
+    let findField: any = false;
+
+    if (document?.list?.fields) {
+      findField = document.list.fields.find((f: any) => (
+        option._id === f.option_id
+      ));
+    }
+
+    return findField || option?.selected || false;
+
+  }, [document])
+
   return (
     <Sidebar>
       {(documentGroupState.loading || careState.loading || documentState.loading) && (
@@ -152,7 +172,6 @@ export default function SocioAmbiental(props: RouteComponentProps<IPageParams>) 
         <FormTitle>{documentGroup.name}</FormTitle>
 
         <FormContent>
-
           {documentGroup.fields.map((field: any, index: number) => (
             <QuestionSection key={`question_${field._id}_${index}`}>
               <QuestionTitle>{field.description}</QuestionTitle>
@@ -164,7 +183,7 @@ export default function SocioAmbiental(props: RouteComponentProps<IPageParams>) 
                     value={option._id}
                     control={<Radio color="primary" />}
                     label={option.text}
-                    checked={option?.selected ?? false}
+                    checked={handleFieldAnswer(option)}
                   />
                 ))}
               </RadioGroup>
