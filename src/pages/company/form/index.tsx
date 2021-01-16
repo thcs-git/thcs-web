@@ -336,7 +336,7 @@ export default function CompanyForm(props: RouteComponentProps<IPageParams>) {
           </FormContent>
           <ButtonsContent>
             <ButtonComponent background="default" onClick={handleOpenModalCancel}>
-              Cancelar
+              Voltar
 					  </ButtonComponent>
             <ButtonComponent background="success" onClick={handleSaveFormCustomer}>
               Salvar

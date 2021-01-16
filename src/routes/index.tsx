@@ -37,6 +37,10 @@ import PatientCaptureNead from '../pages/patient/capture/nead';
 import PatientCaptureSocioAmbiental from '../pages/patient/capture/socioambiental';
 import PatientCaptureAbemid from '../pages/patient/capture/abemid';
 
+import AvaliationList from '../pages/avaliation/list';
+// import PatientForm from '../pages/patient/form';
+// import PatientOverview from '../pages/patient/overview';
+
 import Login from '../pages/login';
 
 const Routes = () => (
@@ -99,6 +103,11 @@ const Routes = () => (
       <PrivateRoute path="/care" component={CareList} exact />
       <PrivateRoute path="/care/:id/edit" component={CareForm} />
       <PrivateRoute path="/care/create" component={CareForm} />
+
+      {/* avaliation */}
+      <PrivateRoute path="/avaliation" component={AvaliationList} exact />
+      {/* <PrivateRoute path="/avaliation/:id/edit" component={CareForm} />
+      <PrivateRoute path="/avaliation/create" component={CareForm} /> */}
     </Switch>
   </BrowserRouter>
 );

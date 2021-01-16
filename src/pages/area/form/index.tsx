@@ -380,7 +380,7 @@ export default function AreaForm(props: RouteComponentProps<IPageParams>) {
 
           <ButtonsContent>
             <Button variant="outlined" background="default" onClick={() => handleOpenModalCancel()}>
-              Cancelar
+              Voltar
               </Button>
             <Button variant="contained" background="success" onClick={() => handleSaveFormArea()}>
               Salvar
