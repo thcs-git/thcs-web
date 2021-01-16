@@ -62,7 +62,7 @@ export default function AvaliationList() {
           <FormTitle>Lista de Avaliações</FormTitle>
 
           <SearchComponent
-            handleButton={() => history.push('/care/create/')}
+            handleButton={() => history.push('/patient/capture/create')}
             buttonTitle="Nova avaliação"
             inputPlaceholder="Busque nome do paciente, ID ou tipo de score"
             onChangeInput={() => { }}
@@ -77,28 +77,28 @@ export default function AvaliationList() {
               { name: 'ABEMID', align: 'center' },
               { name: 'Manutenção', align: 'center' },
               { name: 'Última captação', align: 'center' }
-          ]}
-          hasFilter
-          fieldsFilter={[
-            'Nome',
-            'Manutenção',
-            'Pedido'
-          ]}
+            ]}
+            hasFilter
+            fieldsFilter={[
+              'Nome',
+              'Manutenção',
+              'Pedido'
+            ]}
           >
-          {/* {careState.list.data.map((row) => ( */}
+            {/* {careState.list.data.map((row) => ( */}
             <TableRow key={'1'}>
               <TableCell component="th" scope="row">John Doe</TableCell> {/* Paciente */}
               <TableCell align="right">012345</TableCell> {/* Pedido */}
-              <TableCell align="center"><CheckIcon style={{ color:'#4FC66A' }} /></TableCell> {/* Socioambiental */}
-              <TableCell align="center"><CheckIcon style={{ color:'#4FC66A' }} /></TableCell> {/* NEAD */}
-              <TableCell align="center"><CheckIcon style={{ color:'#4FC66A' }} /></TableCell> {/* ABEMID */}
-              <TableCell align="center"><CheckIcon style={{ color:'#4FC66A' }} /></TableCell> {/* Manutenção */}
+              <TableCell align="center"><CheckIcon style={{ color: '#4FC66A' }} /></TableCell> {/* Socioambiental */}
+              <TableCell align="center"><CheckIcon style={{ color: '#4FC66A' }} /></TableCell> {/* NEAD */}
+              <TableCell align="center"><CheckIcon style={{ color: '#4FC66A' }} /></TableCell> {/* ABEMID */}
+              <TableCell align="center"><CheckIcon style={{ color: '#4FC66A' }} /></TableCell> {/* Manutenção */}
               <TableCell align="center">25/10/2020</TableCell> {/* Última captação */}
               <TableCell align="center">
                 <MoreVertIcon style={{ color: '#0899BA' }} />
               </TableCell>
             </TableRow>
-          {/* ))} */}
+            {/* ))} */}
           </Table>
           <PaginationComponent
             page={careState.list.page}
