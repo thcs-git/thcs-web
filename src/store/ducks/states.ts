@@ -16,6 +16,12 @@ import { SpecialtyState } from './specialties/types'
 import { INITIAL_STATE as INITIAL_STATE_COUNCIL } from './councils';
 import { CouncilState } from './councils/types';
 
+import { INITIAL_STATE as INITIAL_STATE_DOCUMENT } from './documents';
+import { DocumentState } from './documents/types';
+
+import { INITIAL_STATE as INITIAL_STATE_DOCUMENT_GROUP } from './documentGroups';
+import { DocumentGroupState } from './documentGroups/types';
+
 import { INITIAL_STATE as INITIAL_STATE_AREA } from './areas';
 import { AreaState } from './areas/types';
 
@@ -36,6 +42,8 @@ export interface IInitialState {
   customers: Readonly<CustomerState>;
   specialties: Readonly<SpecialtyState>;
   councils: Readonly<CouncilState>;
+  documents: Readonly<DocumentState>;
+  documentGroups: Readonly<DocumentGroupState>;
   patients: Readonly<PatientState>;
   users: Readonly<UserState>;
 }
@@ -51,6 +59,8 @@ export const InitialState: IInitialState = {
   customers: INITIAL_STATE_CUSTOMER,
   specialties: INITIAL_STATE_SPECIALTY,
   councils: INITIAL_STATE_COUNCIL,
+  documents: INITIAL_STATE_DOCUMENT,
+  documentGroups: INITIAL_STATE_DOCUMENT_GROUP,
   patients: INITIAL_STATE_PATIENT,
   users: INITIAL_STATE_USER,
 }

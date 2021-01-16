@@ -26,8 +26,13 @@ export default createGlobalStyle`
     /* background: var(--primary); */
   }
 
-  a, a:hover {
+  a, a:hover, a:visited, a:active {
     text-decoration: none;
+    color: var(--black);
+  }
+
+  h1, h2, h3, h4, h5 {
+    color: var(--primary);
   }
 
   :root {
@@ -44,6 +49,7 @@ export default createGlobalStyle`
     --white: #FFFFFF;
     --background: #FAFAFA;
     --switch-hover: rgba(8, 153, 186, 0.04)
+    --black: #333333;
   }
 
   .blur {

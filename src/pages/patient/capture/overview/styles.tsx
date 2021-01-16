@@ -1,6 +1,7 @@
 import styled from 'styled-components';
 import { TextField, OutlinedInput, Button, Stepper, Step } from '@material-ui/core';
 import { ReactComponent as NoData } from '../../../../assets/img/no-data.svg';
+import { ReactComponent as SuccessImage } from '../../../../assets/img/ilustracao-avaliaca-concluida.svg';
 
 
 export const PatientResume = styled.div`
@@ -17,7 +18,7 @@ export const PatientResumeContent = styled.div`
   display: flex;
   flex-direction: row;
   align-items: center;
-  justify-content: space-between;
+  justify-content: flex-start;
 
   width: 100%;
 
@@ -43,5 +44,29 @@ export const PatientResumeContent = styled.div`
 export const PatientData = styled.div`
   display: flex;
   flex-direction: row;
+
+  margin-right: 30px;
 `;
 
+export const SuccessContent = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+
+  & > svg {
+    margin-bottom: 30px;
+  }
+
+  & > h1 {
+    margin-bottom: 15px;
+  }
+`;
+
+export const BackButtonContent = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  margin-top: 50px
+`;

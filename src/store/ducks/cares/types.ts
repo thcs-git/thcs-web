@@ -44,7 +44,14 @@ export interface CareInterface {
 	created_at?: string;
 	created_by?: { _id: string };
 	updated_at?: string;
-	updated_by?: { _id: string };
+  updated_by?: { _id: string };
+  documents_id?: Array<any>;
+  capture?: {
+    type?: string,
+    order_number?: string,
+    status?: string,
+    estimate?: string,
+  }
 }
 
 export interface CareList {

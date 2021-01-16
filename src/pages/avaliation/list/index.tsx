@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useHistory } from 'react-router-dom';
+import { useHistory, Link } from 'react-router-dom';
 import { Container, FormControl, InputLabel, OutlinedInput, InputAdornment, IconButton } from '@material-ui/core';
 import { Add as AddIcon, CheckCircle } from '@material-ui/icons';
 import MoreVertIcon from '@material-ui/icons/MoreVert';
@@ -11,6 +11,8 @@ import { useDispatch, useSelector } from 'react-redux';
 import { ApplicationState } from '../../../store/';
 import { loadRequest } from '../../../store/ducks/cares/actions';
 
+import { searchCareRequest as getCares } from '../../../store/ducks/cares/actions';
+
 import PaginationComponent from '../../../components/Pagination';
 import Sidebar from '../../../components/Sidebar';
 import Table from '../../../components/Table';
@@ -19,26 +21,15 @@ import Loading from '../../../components/Loading';
 import { FormTitle } from '../../../styles/components/Form';
 import Button from '../../../styles/components/Button';
 
-import { getDayOfTheWeekName } from '../../../helpers/date';
-
-import {
-  List,
-  ListLink,
-  ListItem,
-  ListItemContent,
-  ListItemStatus,
-  ListItemTitle,
-  ListItemSubTitle,
-  CheckListContent
-} from './styles';
+import { formatDate } from '../../../helpers/date';
 
 export default function AvaliationList() {
   const history = useHistory();
   const dispatch = useDispatch();
-  const careState = useSelector((state: ApplicationState) => state.areas);
+  const careState = useSelector((state: ApplicationState) => state.cares);
 
   useEffect(() => {
-    dispatch(loadRequest());
+    dispatch(getCares({ status: 'Pre-Atendimento' }))
   }, []);
 
   const [search, setSearch] = useState('');
@@ -53,6 +44,16 @@ export default function AvaliationList() {
     setAnchorEl(null);
   };
 
+  const handleCheckDocument = (documentId: string, documents: Array<any>) => {
+    const found = documents.find(doc => (
+      doc.document_group_id === documentId &&
+      !doc.canceled &&
+      doc.finished
+    ));
+
+    return (found) ? <CheckIcon style={{ color: '#4FC66A' }} /> : <CheckIcon style={{ color: '#EBEBEB' }} />;
+  };
+
   return (
     <>
       <Sidebar>
@@ -62,7 +63,7 @@ export default function AvaliationList() {
           <FormTitle>Lista de Avaliações</FormTitle>
 
           <SearchComponent
-            handleButton={() => history.push('/care/create/')}
+            handleButton={() => history.push('/patient/capture/create')}
             buttonTitle="Nova avaliação"
             inputPlaceholder="Busque nome do paciente, ID ou tipo de score"
             onChangeInput={() => { }}
@@ -75,30 +76,34 @@ export default function AvaliationList() {
               { name: 'Socioambiental', align: 'center' },
               { name: 'NEAD', align: 'center' },
               { name: 'ABEMID', align: 'center' },
-              { name: 'Manutenção', align: 'center' },
-              { name: 'Última captação', align: 'center' }
-          ]}
-          hasFilter
-          fieldsFilter={[
-            'Nome',
-            'Manutenção',
-            'Pedido'
-          ]}
+              { name: 'Última captação', align: 'center' },
+              { name: 'Status da captação', align: 'center' }
+            ]}
+            hasFilter
+            fieldsFilter={[
+              'Nome',
+              'Manutenção',
+              'Pedido'
+            ]}
           >
-          {/* {careState.list.data.map((row) => ( */}
-            <TableRow key={'1'}>
-              <TableCell component="th" scope="row">John Doe</TableCell> {/* Paciente */}
-              <TableCell align="right">012345</TableCell> {/* Pedido */}
-              <TableCell align="center"><CheckIcon style={{ color:'#4FC66A' }} /></TableCell> {/* Socioambiental */}
-              <TableCell align="center"><CheckIcon style={{ color:'#4FC66A' }} /></TableCell> {/* NEAD */}
-              <TableCell align="center"><CheckIcon style={{ color:'#4FC66A' }} /></TableCell> {/* ABEMID */}
-              <TableCell align="center"><CheckIcon style={{ color:'#4FC66A' }} /></TableCell> {/* Manutenção */}
-              <TableCell align="center">25/10/2020</TableCell> {/* Última captação */}
-              <TableCell align="center">
-                <MoreVertIcon style={{ color: '#0899BA' }} />
-              </TableCell>
-            </TableRow>
-          {/* ))} */}
+            {careState.list.data.map((care, index) => (
+              <TableRow key={`care_${index}`}>
+                <TableCell component="th" scope="row">
+                  <Link to={`/patient/capture/${care._id}/overview`}>
+                    {care?.patient_id?.name}
+                  </Link>
+                </TableCell> {/* Paciente */}
+                <TableCell align="right">-</TableCell> {/* Pedido */}
+                <TableCell align="center">{handleCheckDocument('5ffd79012f5d2b1d8ff6bea3', care?.documents_id || [])}</TableCell> {/* Socioambiental */}
+                <TableCell align="center">{handleCheckDocument('5ff65469b4d4ac07d186e99f', care?.documents_id || [])}</TableCell> {/* NEAD */}
+                <TableCell align="center">{handleCheckDocument('5ffd7acd2f5d2b1d8ff6bea4', care?.documents_id || [])}</TableCell> {/* ABEMID */}
+                <TableCell align="center">{care?.created_at ? formatDate(care.created_at, 'DD/MM/YYYY HH:mm:ss') : '-'}</TableCell> {/* Última captação */}
+                <TableCell align="center">{care?.status}</TableCell>
+                <TableCell align="center">
+                  <MoreVertIcon style={{ color: '#0899BA' }} />
+                </TableCell>
+              </TableRow>
+            ))}
           </Table>
           <PaginationComponent
             page={careState.list.page}

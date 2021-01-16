@@ -7,9 +7,16 @@ import {
   DialogContent,
   DialogContentText,
   DialogTitle,
-  Grid
+  Grid,
+  TableContainer,
+  Paper,
+  Table,
+  TableHead,
+  TableRow,
+  TableCell,
+  TableBody
 } from '@material-ui/core';
-import { Create as CreateIcon, Search as SearchIcon, AccountCircle } from '@material-ui/icons';
+import { Create as CreateIcon, Search as SearchIcon, AccountCircle, Visibility } from '@material-ui/icons';
 import { Alert, AlertTitle } from '@material-ui/lab';
 
 import { useDispatch, useSelector } from 'react-redux';
@@ -23,7 +30,7 @@ import { CareInterface } from '../../../../store/ducks/cares/types';
 import Loading from '../../../../components/Loading';
 import Sidebar from '../../../../components/Sidebar';
 
-import { age } from '../../../../helpers/date';
+import { age, formatDate } from '../../../../helpers/date';
 
 import Button from '../../../../styles/components/Button';
 import { FormTitle } from '../../../../styles/components/Form';
@@ -64,6 +71,9 @@ export default function PatientCaptureForm() {
     user_id: '5e8cfe7de9b6b8501c8033ac',
     created_by: { _id: '5e8cfe7de9b6b8501c8033ac' },
     status: 'Pre-Atendimento',
+    capture: {
+      status: 'Em Andamento',
+    }
   });
 
   const [openModalConfirm, setOpenModalConfirm] = useState<boolean>(false);
@@ -252,11 +262,32 @@ export default function PatientCaptureForm() {
           >
             <DialogTitle id="alert-dialog-title">Atendimentos do Paciente</DialogTitle>
             <DialogContent>
-              {careState.list.data.map((care, index) => (
-                <div key={`care_list_${index}`}>
-                  <p>{care?.patient_id?.name}</p>
-                </div>
-              ))}
+              <TableContainer>
+                <Table size="small">
+                  <TableHead>
+                    <TableRow>
+                      <TableCell>Nome</TableCell>
+                      <TableCell>Data do Atendimento</TableCell>
+                      <TableCell>Status</TableCell>
+                      <TableCell></TableCell>
+                    </TableRow>
+                  </TableHead>
+                  <TableBody>
+                    {careState.list.data.map((care, index) => (
+                      <TableRow key={`care_table_row_${index}`}>
+                        <TableCell component="th" scope="row">{care?.patient_id?.name} </TableCell>
+                        <TableCell>{care?.created_at ? formatDate(care.created_at, 'DD/MM/YYYY HH:mm:ss') : '-'}</TableCell>
+                        <TableCell>{care?.status}</TableCell>
+                        <TableCell>
+                          <Button onClick={() => { history.push(`/patient/capture/${care._id}/overview`); }} color="primary">
+                            <Visibility />
+                          </Button>
+                        </TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+              </TableContainer>
             </DialogContent>
             <DialogActions>
               <Button onClick={() => toggleModalCares()} color="primary">

@@ -6,6 +6,8 @@ import { CompanyState } from './ducks/companies/types';
 import { CareState } from './ducks/cares/types';
 import { CouncilState } from './ducks/councils/types';
 import { CustomerState } from './ducks/customers/types';
+import { DocumentState } from './ducks/documents/types';
+import { DocumentGroupState } from './ducks/documentGroups/types';
 import { SpecialtyState } from './ducks/specialties/types';
 import { LoginState } from './ducks/login/types';
 import { PatientState } from './ducks/patients/types';
@@ -21,10 +23,12 @@ export interface ApplicationState {
   cares: CareState;
   companies: CompanyState;
   customers: CustomerState;
-  specialties: SpecialtyState;
   councils: CouncilState;
-  users: UserState;
+  documents: DocumentState;
+  documentGroups: DocumentGroupState;
   patients: PatientState;
+  specialties: SpecialtyState;
+  users: UserState;
 }
 
 const sagaMiddleware = createSagaMiddleware();

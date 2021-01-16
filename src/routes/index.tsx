@@ -34,6 +34,8 @@ import PatientCapture from '../pages/patient/capture/list';
 import PatientCaptureCreate from '../pages/patient/capture/form';
 import PatientCaptureOverview from '../pages/patient/capture/overview';
 import PatientCaptureNead from '../pages/patient/capture/nead';
+import PatientCaptureSocioAmbiental from '../pages/patient/capture/socioambiental';
+import PatientCaptureAbemid from '../pages/patient/capture/abemid';
 
 import AvaliationList from '../pages/avaliation/list';
 // import PatientForm from '../pages/patient/form';
@@ -87,7 +89,15 @@ const Routes = () => (
       <PrivateRoute path="/patient/capture" component={PatientCapture} exact />
       <PrivateRoute path="/patient/capture/create" component={PatientCaptureCreate} />
       <PrivateRoute path="/patient/capture/:id/overview" component={PatientCaptureOverview} />
-      <PrivateRoute path="/patient/capture/:id/nead" component={PatientCaptureNead} />
+
+      <PrivateRoute path="/patient/capture/:id/nead" component={PatientCaptureNead} exact />
+      <PrivateRoute path="/patient/capture/:id/nead/:documentId" component={PatientCaptureNead} />
+
+      <PrivateRoute path="/patient/capture/:id/abemid" component={PatientCaptureAbemid} exact />
+      <PrivateRoute path="/patient/capture/:id/abemid/:documentId" component={PatientCaptureAbemid} />
+
+      <PrivateRoute path="/patient/capture/:id/socioambiental" component={PatientCaptureSocioAmbiental} exact />
+      <PrivateRoute path="/patient/capture/:id/socioambiental/:documentId" component={PatientCaptureSocioAmbiental} />
 
       {/* Care */}
       <PrivateRoute path="/care" component={CareList} exact />
