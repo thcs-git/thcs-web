@@ -18,6 +18,12 @@ import { get as getSpecialties, store as storeSpecialty, getById as getSpecialty
 import { CouncilTypes } from './councils/types';
 import { get as getCouncils, store as storeCouncil, getById as getCouncilById, update as updateCouncil, searchConcil } from './councils/sagas';
 
+import { DocumentTypes } from './documents/types';
+import { store as storeDocuments, getByCareId as getDocumentsByCareId, get as getDocuments } from './documents/sagas';
+
+import { DocumentGroupTypes } from './documentGroups/types';
+import { get as getDocumentGroups, getByIds as getDocumentGroupsByIds } from './documentGroups/sagas';
+
 import { PatientTypes } from './patients/types';
 import { get as getPatients, createPatient, getAddress as getAddressPatient, getPatientById, updatePatient, searchPatient } from './patients/sagas';
 
@@ -79,6 +85,15 @@ export default function* rootSaga() {
     takeLatest(CustomerTypes.CREATE_CUSTOMER_REQUEST, createCompanyCustomer),
     takeLatest(CustomerTypes.UPDATE_CUSTOMER_REQUEST, updateCompanyCustomer),
     takeLatest(CustomerTypes.SEARCH_REQUEST, searchCustomer),
+
+    // Documents
+    takeLatest(DocumentTypes.LOAD_REQUEST, getDocuments),
+    takeLatest(DocumentTypes.CREATE_DOCUMENT_REQUEST, storeDocuments),
+    takeLatest(DocumentTypes.LOAD_REQUEST_BY_CARE_ID, getDocumentsByCareId),
+
+    // Document Groups
+    takeLatest(DocumentGroupTypes.LOAD_REQUEST, getDocumentGroups),
+    takeLatest(DocumentGroupTypes.LOAD_REQUEST_DOCUMENTS_BY_ID, getDocumentGroupsByIds),
 
     /** Patients */
     takeLatest(PatientTypes.LOAD_REQUEST, getPatients),

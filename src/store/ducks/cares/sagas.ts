@@ -50,7 +50,7 @@ export function* getCareById({ payload: { id: _id } }: any) {
   try {
     const response: AxiosResponse = yield call(apiSollar.get, `/care`, { headers: { token }, params: { _id } })
 
-    yield put(loadSuccessGetCareById(response.data[0]))
+    yield put(loadSuccessGetCareById(response.data))
   } catch (error) {
     yield put(loadFailure());
   }

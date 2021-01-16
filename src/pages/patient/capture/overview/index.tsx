@@ -5,90 +5,91 @@ import { AccountCircle, Add, CheckCircle, MoreVert, Schedule, ArrowBackIos } fro
 
 import { useDispatch, useSelector } from 'react-redux';
 import { ApplicationState } from '../../../../store';
-import { searchRequest as searchPatientAction } from '../../../../store/ducks/patients/actions';
+import { loadCareById } from '../../../../store/ducks/cares/actions';
+import { CareInterface } from '../../../../store/ducks/cares/types';
 
+import { loadRequestByIds as getDocumentGroupsByIds } from '../../../../store/ducks/documentGroups/actions';
+import { loadRequestGetByCareId as getDocumentByCareId } from '../../../../store/ducks/documents/actions';
+
+import Loading from '../../../../components/Loading';
 import Sidebar from '../../../../components/Sidebar';
 
-import { age } from '../../../../helpers/date';
+import { age, formatDate } from '../../../../helpers/date';
 
 import Button from '../../../../styles/components/Button';
 import { FormTitle } from '../../../../styles/components/Form';
 import { Table, Th, Td } from '../../../../styles/components/Table';
 
-interface IPageParams {
-  id: string;
-}
-
 import {
   PatientResume,
   PatientResumeContent,
   PatientData,
+  SuccessContent,
+  BackButtonContent,
 } from './styles';
+
+import { ReactComponent as SuccessImage } from '../../../../assets/img/ilustracao-avaliacao-concluida.svg';
+import { DocumentGroupInterface, DocumentGroupList } from '../../../../store/ducks/documentGroups/types';
+
+interface IPageParams {
+  id: string;
+}
 
 export default function PatientCaptureForm(props: RouteComponentProps<IPageParams>) {
   const dispatch = useDispatch();
   const history = useHistory();
-  const patientState = useSelector((state: ApplicationState) => state.patients);
+  const careState = useSelector((state: ApplicationState) => state.cares);
+  const documentGroupsState = useSelector((state: ApplicationState) => state.documentGroups);
+  const documentsState = useSelector((state: ApplicationState) => state.documents);
 
   const { params } = props.match;
+  const { state } = props.location;
 
-  const [scores, setScores] = useState([
-    {
-      title: 'Tabela Socioambiental',
-      complexity: 'Baixa',
-      created_at: '00/00/0000 00:00:00',
-      status: 'Aprovado',
-      route: '/patient/capture/08686353401/nead'
-    },
-    {
-      title: 'Tabela NEAD',
-      complexity: 'Média',
-      created_at: '',
-      status: 'Reprovado',
-      route: '/patient/capture/08686353401/nead'
-    },
-    {
-      title: 'Tabela ABEMID',
-      complexity: '-',
-      created_at: '',
-      status: 'Em Andamento',
-      route: '/patient/capture/08686353401/nead'
-    },
-    {
-      title: 'Score de Manutenção',
-      complexity: '-',
-      created_at: '-',
-      status: '-',
-      route: '/patient/capture/08686353401/nead'
-    },
-  ]);
-
-  const [patientSearch, setPatientSearch] = useState<string>('');
-  const [patient, setPatient] = useState<any>({});
+  const [care, setCare] = useState<CareInterface>();
+  const [documentGroups, setDocumentGroups] = useState<DocumentGroupList>();
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const [historyModalOpen, setHistoryModalOpen] = useState(false);
+  const [scores, setScore] = useState<any[]>([]);
 
   useEffect(() => {
-    searchPatient(params.id);
+    getCare(params.id);
   }, []);
 
   useEffect(() => {
-    if (patientState.list.total === 1) {
-      setPatient(patientState.list.data[0]);
+    getDocuments();
+    handleScoreList();
+  }, [care]);
+
+  useEffect(() => {
+    handleScoreList();
+  }, [documentsState]);
+
+  useEffect(() => {
+    if (careState.data?._id) {
+      setCare(careState.data);
     }
-  }, [patientState.list]);
+  }, [careState.data]);
 
-  const searchPatient = useCallback((value: string) => {
-    setPatient({});
+  useEffect(() => {
+    setDocumentGroups(documentGroupsState.list)
+  }, [documentGroupsState]);
 
-    if (value.length > 0) {
-      dispatch(searchPatientAction(value));
+
+  const getCare = useCallback((id: string) => {
+    if (id.length > 0) {
+      dispatch(loadCareById(id));
+      dispatch(getDocumentGroupsByIds('5ffd7acd2f5d2b1d8ff6bea4,5ffd79012f5d2b1d8ff6bea3,5ff65469b4d4ac07d186e99f'));
     }
   }, []);
+
+  const getDocuments = useCallback(() => {
+    if (care?._id && documentsState.list.total === 0) {
+      dispatch(getDocumentByCareId(care._id));
+    }
+  }, [care])
 
   const handleOpenRowMenu = useCallback((event: React.MouseEvent<HTMLButtonElement>) => {
     setAnchorEl(event.currentTarget);
-    console.log('anchorEl?.id', event.currentTarget)
   }, [anchorEl])
 
   const handleCloseRowMenu = useCallback(() => {
@@ -127,6 +128,40 @@ export default function PatientCaptureForm(props: RouteComponentProps<IPageParam
     }
   };
 
+  const handleScoreRoute = (id: string, care_id: string) => {
+    const routes: any = {
+      "5ff65469b4d4ac07d186e99f": `/patient/capture/${care_id}/nead`,
+      "5ffd7acd2f5d2b1d8ff6bea4": `/patient/capture/${care_id}/abemid`,
+      "5ffd79012f5d2b1d8ff6bea3": `/patient/capture/${care_id}/socioambiental`,
+    };
+
+    return routes[id];
+  };
+
+  const handleScoreList = () => {
+
+    let scoresList: any = [];
+
+    documentGroupsState.list.data.map(doc => {
+      const entries = documentsState.list.data.find(entry => (
+        entry?.document_group_id?._id === doc._id &&
+        entry.finished &&
+        !entry.canceled
+      ));
+
+      let route = handleScoreRoute(doc?._id || '', care?._id || '');
+      let status = scoreStatusIcon((entries?.finished && !entries.canceled) ? 'Aprovado' : '');
+
+      if (entries?._id) {
+        route = `${route}/${entries?._id}`;
+      }
+
+      scoresList.push({ _id: doc._id, name: doc.name, route, document: { _id: entries?._id, status, created_at: entries?.created_at } })
+    });
+
+    setScore(scoresList);
+  };
+
   const handleNewScore = (route: string) => {
     handleCloseRowMenu();
     history.push(route);
@@ -140,12 +175,22 @@ export default function PatientCaptureForm(props: RouteComponentProps<IPageParam
   return (
     <>
       <Sidebar>
+        {careState.loading && (
+          <Loading />
+        )}
         <Container>
           <FormTitle>Overview da Captação</FormTitle>
 
-          <Button background="default" onClick={() => history.push('/patient/capture')}><ArrowBackIos /> Voltar</Button>
+          {state?.success && (
+            <SuccessContent>
+              <SuccessImage />
+              <h1>Avaliação concluída</h1>
 
-          {patient?._id && (
+              <p><strong>Os dados da avaliação foram salvos no sistema. Para adicionar ou visualizar avaliações, use o menu <MoreVert /></strong></p>
+            </SuccessContent>
+          )}
+
+          {care?._id && (
             <>
               <Grid container>
                 <Grid item md={12} xs={12}>
@@ -156,14 +201,24 @@ export default function PatientCaptureForm(props: RouteComponentProps<IPageParam
                           <AccountCircle />
                         </div>
                         <div>
-                          <p className="title">{patient?.name}</p>
+                          <p className="title">{care?.patient_id?.name}</p>
                           <div className="subTitle">
-                            <p>{patient?.birthdate ? age(patient?.birthdate) : ''}</p>
-                            <p>Sexo: {patient?.gender}</p>
-                            <p>Nome da Mãe: {patient?.mother_name}</p>
+                            <p>{care?.patient_id?.birthdate}</p>
+                            <p>Sexo: {care?.patient_id?.gender}</p>
+                            <p>Nome da Mãe: {care?.patient_id?.mother_name}</p>
                           </div>
                         </div>
                       </PatientData>
+                      <div>
+                        <strong>Data do Atendimento:</strong>
+                        <p>{care?.created_at ? formatDate(care.created_at, 'DD/MM/YYYY HH:mm:ss') : '-'}</p>
+                        <br />
+                        <div>
+                          <strong>Status:</strong>
+                          <p>{care.status}</p>
+                        </div>
+                      </div>
+
 
                     </PatientResumeContent>
                   </PatientResume>
@@ -180,13 +235,13 @@ export default function PatientCaptureForm(props: RouteComponentProps<IPageParam
                   </tr>
                 </thead>
                 <tbody>
-                  {scores.map((score, index) => (
-                    <tr>
-                      <Td center>{scoreStatusIcon(score.status)}</Td>
-                      <Td>{score.title}</Td>
-                      <Td>{score.complexity}</Td>
-                      <Td>{score.created_at}</Td>
-                      <Td>{scoreStatusLabel(score.status)}</Td>
+                  {scores.map((score: any, index: number) => (
+                    <tr key={`documentGroup_${index}`}>
+                      <Td center>{score.document.status}</Td>
+                      <Td>{score.name}</Td>
+                      <Td></Td>
+                      <Td>{formatDate(score.document.created_at, 'DD/MM/YYYY HH:mm:ss')}</Td>
+                      <Td></Td>
                       <Td center>
                         <Button aria-controls={`simple-menu${index}`} id={`btn_simple-menu${index}`} aria-haspopup="true" onClick={handleOpenRowMenu}>
                           <MoreVert />
@@ -198,6 +253,7 @@ export default function PatientCaptureForm(props: RouteComponentProps<IPageParam
                           open={anchorEl?.id === `btn_simple-menu${index}`}
                           onClose={handleCloseRowMenu}
                         >
+
                           <MenuItem onClick={() => handleNewScore(score.route)}>Adicionar novo</MenuItem>
                           <MenuItem onClick={() => toggleHistoryModal()}>Ver histórico</MenuItem>
                         </Menu>
@@ -208,6 +264,10 @@ export default function PatientCaptureForm(props: RouteComponentProps<IPageParam
               </Table>
             </>
           )}
+
+          <BackButtonContent>
+            <Button background="primary" onClick={() => history.push('/patient/capture')}>Voltar</Button>
+          </BackButtonContent>
         </Container>
 
 

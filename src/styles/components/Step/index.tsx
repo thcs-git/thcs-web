@@ -7,17 +7,21 @@ export const StepTitle = styled.h3`
 
 export const StepperComponent = styled(Stepper)`
   margin-bottom: 20px;
+  background: none;
 `;
 
 export const StepComponent = styled(Step)`
   margin-bottom: 20px;
+  cursor: pointer;
 
   .MuiStepIcon-root.MuiStepIcon-active {
     color: var(--secondary);
+    cursor: pointer;
   }
 
   .MuiStepIcon-root.MuiStepIcon-completed {
     color: var(--success);
+    cursor: pointer;
   }
 
 `;

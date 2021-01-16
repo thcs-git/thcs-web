@@ -30,6 +30,10 @@ export default createGlobalStyle`
     text-decoration: none;
   }
 
+  h1, h2, h3, h4, h5 {
+    color: var(--primary);
+  }
+
   :root {
     --primary: #16679A;
     --primary-hover: #16679A99;
