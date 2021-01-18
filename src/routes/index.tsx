@@ -37,6 +37,7 @@ import PatientCaptureSocioAmbiental from '../pages/patient/capture/socioambienta
 import PatientCaptureAbemid from '../pages/patient/capture/abemid';
 import PrintDocument from '../pages/care/medical-records/documents/print';
 
+import RegisterForm from '../pages/register/form';
 import AvaliationList from '../pages/avaliation/list';
 // import PatientForm from '../pages/patient/form';
 // import CareOverview from '../pages/patient/overview';
@@ -106,6 +107,8 @@ const Routes = () => (
       <PrivateRoute path="/care/:id/overview" component={CareOverview} />
       <PrivateRoute path="/care/:id/medical-records/document/:documentId/print" component={PrintDocument} />
 
+      {/* Register */ }
+      <GuestRoute path="/register" component={RegisterForm}/>
       {/* avaliation */}
       <PrivateRoute path="/avaliation" component={AvaliationList} exact />
       {/* <PrivateRoute path="/avaliation/:id/edit" component={CareForm} />

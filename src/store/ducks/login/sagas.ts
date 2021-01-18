@@ -10,6 +10,7 @@ import { loadSuccess, loadFailure } from './actions';
 
 export function* doLogin({ payload }: any) {
   try {
+    console.log(payload);
     const response = yield call(apiSollar.post, `/user/login`, payload.credentials)
 
     const { data } = response;

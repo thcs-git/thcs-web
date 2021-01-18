@@ -76,11 +76,14 @@ const useStyles = makeStyles((theme) => ({
       backgroundColor: 'var(--success-hover)'
     }
   },
-  cadatrar:{
+  register:{
     margin: theme.spacing(1, 0, 2),
     padding: '10px',
     textTransform: 'capitalize',
     fontSize: '18px',
+    '&:hover': {
+      backgroundColor: 'var(--success-hover)'
+    },
     borderColor:'var(--success)'
   }
 }));
