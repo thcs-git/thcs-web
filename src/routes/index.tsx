@@ -35,6 +35,8 @@ import PatientCaptureCreate from '../pages/patient/capture/form';
 import PatientCaptureOverview from '../pages/patient/capture/overview';
 import PatientCaptureNead from '../pages/patient/capture/nead';
 
+import ProfessionForm from '../pages/profession/form/index';
+
 import Login from '../pages/login';
 
 const Routes = () => (

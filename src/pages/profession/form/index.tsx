@@ -1,7 +1,7 @@
 import React, { useCallback, useState, useEffect, useRef } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { loadRequest } from '../../store/ducks/login/actions';
-import { ApplicationState } from '../../store';
+import { loadRequest } from '../../../store/ducks/login/actions';
+import { ApplicationState } from '../../../store';
 
 import Container from '@material-ui/core/Container';
 import Box from '@material-ui/core/Box';
@@ -25,12 +25,12 @@ import { makeStyles } from '@material-ui/core/styles';
 
 import { ContainerLogin, WelcomeTextWrapper, HomeIconLogo, LogoText, TextGray } from './styles';
 
-import Button from '../../components/Button';
-import Alert from '../../components/Alert';
-import Loading from '../../components/Loading';
+import Button from '../../../components/Button';
+import Alert from '../../../components/Alert';
+import Loading from '../../../components/Loading';
 
-import validateEmail from '../../utils/validateEmail';
-import LOCALSTORAGE from '../../helpers/constants/localStorage';
+import validateEmail from '../../../utils/validateEmail';
+import LOCALSTORAGE from '../../../helpers/constants/localStorage';
 import { toast } from 'react-toastify';
 
 function Copyright() {
@@ -87,7 +87,7 @@ const useStyles = makeStyles((theme) => ({
 
 const SIZE_INPUT_PASSWORD = 3;
 
-export default function SignIn() {
+export default function ProfessionForm() {
   const dispatch = useDispatch();
   const loginState = useSelector((state: ApplicationState) => state.login);
 
