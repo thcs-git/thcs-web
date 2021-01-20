@@ -1,6 +1,6 @@
 import React, { useState, useCallback, useEffect } from 'react';
 import { useHistory, RouteComponentProps } from 'react-router-dom';
-import { Container, Grid, Menu, MenuItem, Dialog, DialogTitle, DialogContent, DialogContentText, DialogActions, Radio, RadioGroup, FormControlLabel } from '@material-ui/core';
+import { Container, Grid, Menu, MenuItem, Dialog, DialogTitle, DialogContent, DialogContentText, DialogActions, Radio, RadioGroup, FormControlLabel, TextField, FormControl, Card, CardContent } from '@material-ui/core';
 import { AccountCircle, Add, CheckCircle, MoreVert, Schedule, Check as CheckIcon } from '@material-ui/icons';
 
 import { useDispatch, useSelector } from 'react-redux';
@@ -34,6 +34,12 @@ interface IPageParams {
   id: string;
 }
 
+interface ICaptureData {
+  type: string;
+  orderNumber: string;
+  estimate: string;
+}
+
 export default function PatientCaptureForm(props: RouteComponentProps<IPageParams>) {
   const dispatch = useDispatch();
   const history = useHistory();
@@ -48,6 +54,12 @@ export default function PatientCaptureForm(props: RouteComponentProps<IPageParam
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const [historyModalOpen, setHistoryModalOpen] = useState(false);
   const [captureOptionsModalOpen, setCaptureModalModalOpen] = useState(false);
+
+  const [captureData, setCaptureData] = useState<ICaptureData>({
+    type: '',
+    orderNumber: '',
+    estimate: '',
+  });
 
   useEffect(() => {
     getCare(params.id);
@@ -248,6 +260,27 @@ export default function PatientCaptureForm(props: RouteComponentProps<IPageParam
                   })}
                 </tbody>
               </Table>
+
+              <Card>
+                <CardContent>
+                  <h4>Orçamento</h4>
+                  <br />
+                  <TextField
+                    id="input-estimate"
+                    label="Orçamento"
+                    variant="outlined"
+                    size="small"
+                    placeholder="Adicione detalhes de orçamento"
+                    value={captureData.estimate}
+                    onChange={(element) => setCaptureData({ ...captureData, estimate: element.target.value })}
+                    fullWidth
+                    multiline
+                  />
+                  <br />
+                  <br />
+                  <p>Para concluir a captação, os itens com asterisco são obrigatórios: Orçamento + Tabela NEAD ou Tabela Abemid.</p>
+                </CardContent>
+              </Card>
             </>
           )}
 
@@ -310,31 +343,45 @@ export default function PatientCaptureForm(props: RouteComponentProps<IPageParam
             <DialogContentText
               id="scroll-dialog-description"
               tabIndex={-1}
-            >
+            >Para iniciar a captação, é obrigatório definir a cobertura. Em caso de convênio, preencher o número da guia.</DialogContentText>
 
-              <p>Para iniciar a captação, é obrigatório definir a cobertura. Em caso de convênio, preencher o número da guia.</p>
+            <div>
+              <RadioGroup onChange={e => setCaptureData({ ...captureData, type: e.target.value })} style={{ marginBottom: 20 }}>
+                <FormControlLabel
+                  value="Particular"
+                  control={<Radio color="primary" />}
+                  label="Particular"
+                  checked={(captureData?.type === 'Particular')}
+                />
+                <FormControlLabel
+                  value="Convênio"
+                  control={<Radio color="primary" />}
+                  label="Convênio"
+                  checked={(captureData?.type === 'Convênio')}
+                />
+              </RadioGroup>
 
-              <div>
-                <RadioGroup onChange={e => console.log(e.target.value)}>
-
-                  <FormControlLabel
-                    value="Particular"
-                    control={<Radio color="primary" />}
-                    label="Particular"
+              {captureData?.type === 'Convênio' && (
+                <FormControl>
+                  <TextField
+                    id="input-order-number"
+                    label="Número de Guia"
+                    variant="outlined"
+                    size="small"
+                    value={captureData.orderNumber}
+                    onChange={(element) => setCaptureData({ ...captureData, orderNumber: element.target.value })}
+                    fullWidth
                   />
-                  <FormControlLabel
-                    value="Convênio"
-                    control={<Radio color="primary" />}
-                    label="Convênio"
-                  />
-                </RadioGroup>
-              </div>
-
-            </DialogContentText>
+                </FormControl>
+              )}
+            </div>
           </DialogContent>
           <DialogActions>
             <Button onClick={() => setCaptureModalModalOpen(false)} color="primary">
               Fechar
+            </Button>
+            <Button onClick={() => setCaptureModalModalOpen(false)} color="primary">
+              Salvar
             </Button>
           </DialogActions>
         </Dialog>
