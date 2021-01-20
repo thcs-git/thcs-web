@@ -27,6 +27,8 @@ export function* get({ payload }: any) {
 
 export function* store({ payload }: any) {
 
+  console.log('saga document payload', payload)
+
   const response: AxiosResponse = yield call(apiSollar.post, `/documents/store`, { ...payload });
 
   try {

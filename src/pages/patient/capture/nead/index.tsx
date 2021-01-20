@@ -28,8 +28,12 @@ interface IPageParams {
   documentId?: string;
 }
 
+interface IScore {
+  complexity: string;
+  status: string;
+}
+
 export default function Nead(props: RouteComponentProps<IPageParams>) {
-  const steps = [{ title: 'Grupo 1', score: 0 }, { title: 'Grupo 2', score: 0 }, { title: 'Grupo 3', score: 0 }, { title: 'Escore de Katz', score: 0 }];
   const id = '5ff65469b4d4ac07d186e99f';
 
   const { params } = props.match;
@@ -41,6 +45,12 @@ export default function Nead(props: RouteComponentProps<IPageParams>) {
   const documentState = useSelector((state: ApplicationState) => state.documents);
   const careState = useSelector((state: ApplicationState) => state.cares);
 
+  const [steps, setSteps] = useState([
+    { title: 'Grupo 1', score: { total: 0, complexity: '', status: '' } },
+    { title: 'Grupo 2', score: { total: 0, complexity: '', status: '' } },
+    { title: 'Grupo 3', score: { total: 0, complexity: '', status: '' } },
+    { title: 'Escore de Katz', score: { total: 0, complexity: '', status: '' } }
+  ]);
   const [care, setCare] = useState<CareInterface>();
   const [documentGroup, setDocumentGroup] = useState<any>({
     _id: '',
@@ -55,6 +65,7 @@ export default function Nead(props: RouteComponentProps<IPageParams>) {
   const [document, setDocument] = useState<any>();
   const [currentStep, setCurrentStep] = useState(0);
   const [selected, setSelected] = useState<String[]>([]);
+  const [status, setStatus] = useState<IScore>({ complexity: '', status: '' });
 
   useEffect(() => {
     dispatch(getDocumentGroup({ _id: id }))
@@ -93,6 +104,10 @@ export default function Nead(props: RouteComponentProps<IPageParams>) {
     setDocument(documentState);
   }, [documentState]);
 
+  useEffect(() => {
+    calculateScore();
+  }, [documentGroup]);
+
   const handleNextStep = useCallback(() => {
     setCurrentStep(prevState => (prevState + 1))
   }, [currentStep]);
@@ -111,6 +126,7 @@ export default function Nead(props: RouteComponentProps<IPageParams>) {
     documentGroupCopy.fields.map((field: any) => {
       if (field._id === field_id) {
         field.options.map((option: any) => {
+
           if (option._id === option_id) {
             option.selected = true;
           } else {
@@ -124,11 +140,75 @@ export default function Nead(props: RouteComponentProps<IPageParams>) {
   }, [selected, documentGroup]);
 
   const calculateScore = useCallback(() => {
+    let partialScore = 0, countNoAnswers = 0, count24hours = 0, count12hours = 0;
 
-  }, []);
+    documentGroup.fields.map((field: any) => {
+      if (field.step === currentStep) {
+        field.options.map((option: any) => {
+          if (option?.selected) {
+            if (option.value === 'Não') {
+              countNoAnswers++;
+            } else if (parseInt(option.value) === 24) {
+              count24hours++;
+            } else if (parseInt(option.value) === 12) {
+              count12hours++;
+            } else {
+              partialScore += parseInt(option.value);
+            }
+          }
+        });
+      }
+    });
+
+    const getComplexity = (score: number) => {
+      if (currentStep === 1) {
+        if (count24hours > 0) {
+          return 'Alta Complexidade';
+        } else if (count12hours > 0) {
+          return 'Média Complexidade';
+        } else {
+          return 'Sem Complexidade';
+        }
+      } else if (currentStep === 2) {
+        if (partialScore >= 6 && partialScore <= 11) {
+          return 'Baixa Complexidade';
+        } else if (partialScore >= 12 && partialScore <= 17) {
+          return 'Média Complexidade';
+        } else if (partialScore >= 18) {
+          return 'Alta Complexidade';
+        } else {
+          return 'Sem Complexidade';
+        }
+      } else if (currentStep === 3) {
+        if (score < 2) {
+          return 'Alta Complexidade';
+        } else if (score >= 3 && score <= 4) {
+          return 'Média Complexidade';
+        } else {
+          return 'Baixa Complexidade';
+        }
+      } else {
+        return 'Não Identificado';
+      }
+    };
+
+    const getStatus = (score: number) => {
+      if (currentStep === 0) {
+        return (countNoAnswers > 0) ? 'Não Elegível' : 'Elegível';
+      } else {
+        return 'Não Identificado';
+      }
+    };
+
+    let stepsCopy = steps;
+    stepsCopy[currentStep].score = { total: partialScore, complexity: getComplexity(partialScore), status: getStatus(partialScore) };
+
+    setSteps(stepsCopy);
+  }, [documentGroup, status]);
 
   const handleSubmit = useCallback(() => {
-    let selecteds: any = [];
+    let selecteds: any = [], complexitiesArray: any = [], statusArray: any = [];
+    let complexity: string = '', status: string = '';
 
     documentGroup.fields.map((field: any) => {
       field.options.map((option: any) => {
@@ -138,6 +218,27 @@ export default function Nead(props: RouteComponentProps<IPageParams>) {
       })
     });
 
+    steps.forEach(step => {
+      complexitiesArray.push(step.score.complexity);
+      statusArray.push(step.score.status);
+    });
+
+    if (complexitiesArray.findIndex((item: string) => (item === 'Alta Complexidade')) > -1) {
+      complexity = 'Alta Complexidade';
+    } else if (complexitiesArray.findIndex((item: string) => (item === 'Média Complexidade')) > -1) {
+      complexity = 'Média Complexidade';
+    } else if (complexitiesArray.findIndex((item: string) => (item === 'Baixa Complexidade')) > -1) {
+      complexity = 'Baixa Complexidade';
+    } else {
+      complexity = 'Sem Complexidade';
+    }
+
+    if (statusArray.find((item: string) => (item === 'Não Elegível'))) {
+      status = 'Não Elegível';
+    } else {
+      status = 'Elegível';
+    }
+
     if (care?.patient_id?._id && care?._id) {
       const createDocumentParams = {
         pacient_id: care.patient_id?._id,
@@ -146,6 +247,8 @@ export default function Nead(props: RouteComponentProps<IPageParams>) {
         finished: true,
         canceled: false,
         fields: selecteds,
+        complexity,
+        status,
         created_by: { _id: '5e8cfe7de9b6b8501c8033ac' },
       };
 
@@ -156,15 +259,15 @@ export default function Nead(props: RouteComponentProps<IPageParams>) {
   }, [documentGroup, care]);
 
   const handleFieldAnswer = useCallback((option: any) => {
-    let findField: any = false;
+    let fieldIndex: number = -1;
 
     if (document?.list?.fields) {
-      findField = document.list.fields.find((f: any) => (
+      fieldIndex = document.list.fields.findIndex((f: any) => (
         option._id === f.option_id
       ));
     }
 
-    return findField || option?.selected || false;
+    return option?.selected || (fieldIndex > -1) || false;
 
   }, [document])
 
@@ -280,7 +383,7 @@ export default function Nead(props: RouteComponentProps<IPageParams>) {
 
               <ScoreTotalContent>
                 <ScoreLabel>PONTUAÇÃO FINAL:</ScoreLabel>
-                <ScoreTotal>0</ScoreTotal>
+                <ScoreTotal>{steps[currentStep].score.total}</ScoreTotal>
               </ScoreTotalContent>
             </>
           )}
@@ -295,7 +398,7 @@ export default function Nead(props: RouteComponentProps<IPageParams>) {
                   return (
                     <QuestionSection key={`question_${field._id}_${index}`}>
                       <QuestionTitle>{field.description}</QuestionTitle>
-                      <RadioGroup onChange={e => selectOption(field._id, e.target.value)}>
+                      <RadioGroup onChange={e => { selectOption(field._id, e.target.value) }}>
                         {field.options.map((option: any, index: number) => (
                           <FormControlLabel
                             key={`option_${field._id}_${index}`}
@@ -303,6 +406,7 @@ export default function Nead(props: RouteComponentProps<IPageParams>) {
                             control={<Radio color="primary" />}
                             label={option.text}
                             checked={handleFieldAnswer(option)}
+                          // onChange={e => calculateScore(option)}
                           />
                         ))}
                       </RadioGroup>
@@ -313,7 +417,7 @@ export default function Nead(props: RouteComponentProps<IPageParams>) {
 
               <ScoreTotalContent>
                 <ScoreLabel>PONTUAÇÃO KATZ:</ScoreLabel>
-                <ScoreTotal>0</ScoreTotal>
+                <ScoreTotal>{steps[currentStep].score.total}</ScoreTotal>
               </ScoreTotalContent>
             </>
           )}

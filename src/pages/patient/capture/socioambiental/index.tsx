@@ -54,6 +54,7 @@ export default function SocioAmbiental(props: RouteComponentProps<IPageParams>) 
   });
   const [document, setDocument] = useState<any>();
   const [selected, setSelected] = useState<String[]>([]);
+  const [score, setScore] = useState<number>(0);
 
   useEffect(() => {
     dispatch(getDocumentGroup({ _id: id }))
@@ -108,11 +109,25 @@ export default function SocioAmbiental(props: RouteComponentProps<IPageParams>) 
     });
 
     setDocumentGroup(documentGroupCopy);
+
+    calculateScore();
+
   }, [selected, documentGroup]);
 
   const calculateScore = useCallback(() => {
+    let partialScore = 0;
 
-  }, []);
+    documentGroup.fields.map((field: any) => {
+      field.options.map((option: any) => {
+        if (option?.selected) {
+          partialScore += parseInt(option.value);
+        }
+      });
+    });
+
+    setScore(partialScore);
+
+  }, [documentGroup]);
 
   const handleSubmit = useCallback(() => {
     let selecteds: any = [];
@@ -138,7 +153,6 @@ export default function SocioAmbiental(props: RouteComponentProps<IPageParams>) 
 
       dispatch(createDocumentRequest(createDocumentParams));
     }
-
 
   }, [documentGroup, care]);
 
@@ -192,7 +206,7 @@ export default function SocioAmbiental(props: RouteComponentProps<IPageParams>) 
 
           <ScoreTotalContent>
             <ScoreLabel>SCORE:</ScoreLabel>
-            <ScoreTotal>0</ScoreTotal>
+            <ScoreTotal>{score}</ScoreTotal>
           </ScoreTotalContent>
 
           <ButtonsContent>

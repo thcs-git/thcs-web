@@ -27,10 +27,9 @@ export interface DocumentInterface {
 	finished?: boolean;
 	canceled?: boolean;
   fields?: DocumentFields[];
-  score?: {
-    total: number;
-    description: string;
-  };
+  score?: number;
+  complexity?: string;
+  status?: string;
 	created_at?: string;
 	created_by?: { _id: string };
 	updated_at?: string;

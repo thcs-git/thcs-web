@@ -28,6 +28,12 @@ interface IPageParams {
   documentId?: string;
 }
 
+interface IScore {
+  total: number;
+  complexity: string;
+  status: string;
+}
+
 export default function Abemid(props: RouteComponentProps<IPageParams>) {
   const id = '5ffd7acd2f5d2b1d8ff6bea4';
 
@@ -53,6 +59,7 @@ export default function Abemid(props: RouteComponentProps<IPageParams>) {
   });
   const [document, setDocument] = useState<any>();
   const [selected, setSelected] = useState<String[]>([]);
+  const [score, setScore] = useState<IScore>({ total: 0, complexity: '', status: '' });
 
   useEffect(() => {
     dispatch(getDocumentGroup({ _id: id }))
@@ -89,7 +96,11 @@ export default function Abemid(props: RouteComponentProps<IPageParams>) {
 
   useEffect(() => {
     setDocument(documentState);
-  }, [documentState])
+  }, [documentState]);
+
+  useEffect(() => {
+    calculateScore();
+  }, [documentGroup]);
 
   const selectOption = useCallback((field_id: string, option_id: string, multiple: boolean = false) => {
     let documentGroupCopy = { ...documentGroup };
@@ -116,8 +127,47 @@ export default function Abemid(props: RouteComponentProps<IPageParams>) {
   }, [selected, documentGroup]);
 
   const calculateScore = useCallback(() => {
+    let partialScore = 0, countQuestionFive = 0;
 
-  }, []);
+    documentGroup.fields.map((field: any) => {
+      field.options.map((option: any) => {
+        if (option?.selected) {
+          if (option.value === 5) {
+            countQuestionFive++;
+          }
+
+          partialScore += parseInt(option.value);
+        }
+      });
+    });
+
+    const getComplexity = (score: number) => {
+      if (countQuestionFive === 1) {
+        return 'Média Complexidade';
+      } else if (countQuestionFive > 1) {
+        return 'Alta Complexidade';
+      } else if (score >= 8 && score <= 12) {
+        return 'Baixa Complexidade';
+      } else if (score >= 13 && score <= 18) {
+        return 'Média Complexidade';
+      } else if (score >= 19) {
+        return 'Alta Complexidade';
+      } else {
+        return 'Complexidade Não Detectada';
+      }
+    };
+
+    const getStatus = (score: number) => {
+      if (score < 7) {
+        return 'Não Elegível';
+      } else {
+        return 'Elegível';
+      }
+    };
+
+    setScore({ total: partialScore, complexity: getComplexity(partialScore), status: getStatus(partialScore) });
+
+  }, [documentGroup]);
 
   const handleSubmit = useCallback(() => {
     let selecteds: any = [];
@@ -132,13 +182,14 @@ export default function Abemid(props: RouteComponentProps<IPageParams>) {
 
     if (care?.patient_id?._id && care?._id) {
       const createDocumentParams = {
+        ...score,
         pacient_id: care.patient_id?._id,
         care_id: care._id,
         document_group_id: documentGroup._id,
         finished: true,
         canceled: false,
         fields: selecteds,
-        created_by: { _id: '5e8cfe7de9b6b8501c8033ac' },
+        created_by: { _id: '5e8cfe7de9b6b8501c8033ac' }
       };
 
       dispatch(createDocumentRequest(createDocumentParams));
@@ -217,7 +268,7 @@ export default function Abemid(props: RouteComponentProps<IPageParams>) {
 
           <ScoreTotalContent>
             <ScoreLabel>PONTUAÇÃO KATZ:</ScoreLabel>
-            <ScoreTotal>0</ScoreTotal>
+            <ScoreTotal>{score.total}</ScoreTotal>
           </ScoreTotalContent>
 
           <ButtonsContent>

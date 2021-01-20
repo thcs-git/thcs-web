@@ -9,6 +9,7 @@ export const Table = styled.table`
   background: #fff;
   border: 1px solid #ccc;
   border-spacing: 0;
+  margin-bottom: 40px;
 
   & td, & th {
     padding: 10px;
