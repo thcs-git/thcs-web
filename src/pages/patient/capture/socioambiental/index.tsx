@@ -29,6 +29,12 @@ interface IPageParams {
   documentId?: string;
 }
 
+interface IScore {
+  total: number;
+  complexity: string;
+  status: string;
+}
+
 export default function SocioAmbiental(props: RouteComponentProps<IPageParams>) {
   const id = '5ffd79012f5d2b1d8ff6bea3';
 
@@ -54,7 +60,7 @@ export default function SocioAmbiental(props: RouteComponentProps<IPageParams>) 
   });
   const [document, setDocument] = useState<any>();
   const [selected, setSelected] = useState<String[]>([]);
-  const [score, setScore] = useState<number>(0);
+  const [score, setScore] = useState<IScore>({ total: 0, complexity: 'Sem Complexidade', status: '' });
 
   useEffect(() => {
     dispatch(getDocumentGroup({ _id: id }))
@@ -115,17 +121,29 @@ export default function SocioAmbiental(props: RouteComponentProps<IPageParams>) 
   }, [selected, documentGroup]);
 
   const calculateScore = useCallback(() => {
-    let partialScore = 0;
+    let partialScore = 0, countQuestionReject = 0;
 
     documentGroup.fields.map((field: any) => {
       field.options.map((option: any) => {
         if (option?.selected) {
+          if (option.value < 0) {
+            countQuestionReject++;
+          }
+
           partialScore += parseInt(option.value);
         }
       });
     });
 
-    setScore(partialScore);
+    const getStatus = (score: number) => {
+      if (score < 7 || countQuestionReject > 0) {
+        return 'Não Elegível';
+      } else {
+        return 'Elegível';
+      }
+    };
+
+    setScore({ total: partialScore, complexity: 'Sem Complexidade', status: getStatus(partialScore) });
 
   }, [documentGroup]);
 
@@ -142,6 +160,7 @@ export default function SocioAmbiental(props: RouteComponentProps<IPageParams>) 
 
     if (care?.patient_id?._id && care?._id) {
       const createDocumentParams = {
+        ...score,
         pacient_id: care.patient_id?._id,
         care_id: care._id,
         document_group_id: documentGroup._id,
@@ -206,7 +225,7 @@ export default function SocioAmbiental(props: RouteComponentProps<IPageParams>) 
 
           <ScoreTotalContent>
             <ScoreLabel>SCORE:</ScoreLabel>
-            <ScoreTotal>{score}</ScoreTotal>
+            <ScoreTotal>{score.total}</ScoreTotal>
           </ScoreTotalContent>
 
           <ButtonsContent>

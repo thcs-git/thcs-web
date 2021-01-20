@@ -46,6 +46,7 @@ export default createGlobalStyle`
     --success: #4FC66A;
     --success-hover: #4FC66A99;
     --danger: #FF6565;
+    --warning: #f9ca24;
     --white: #FFFFFF;
     --background: #FAFAFA;
     --switch-hover: rgba(8, 153, 186, 0.04)
