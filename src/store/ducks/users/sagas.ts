@@ -30,7 +30,41 @@ export function* getUserById({ payload: { id: _id } }: any) {
     yield put(loadFailure());
   }
 }
+export function* registerUser({payload:{ data }}:any){
+  const phones = [];
 
+  if (data.phone.length > 0) {
+    phones.push({
+      whatsapp: false,
+      telegram: false,
+      number: data.phone
+    });
+  }
+
+  if (data.cellphone.length > 0) {
+    phones.push({
+      whatsapp: false,
+      telegram: false,
+      number: data.cellphone
+    });
+  }
+
+  data.username = data.email;
+  data.password = data.fiscal_number;
+
+  data.phones = phones;
+
+  data.user_type_id = { _id: '5fc05d1803058800244bc41b' }
+
+  try {
+    const response:AxiosResponse = yield call(apiSollar.post, `/user/register`, data, { headers: { token } })
+    yield put(createUserSuccess(response.data))
+    toast.success('Usuário cadastrado com sucesso!');
+  } catch(e) {
+    toast.error('Não foi possível cadastrar o usuário');
+    yield put(loadFailure());
+  }
+}
 export function* createUser({payload: { data }}: any) {
   const phones = [];
 

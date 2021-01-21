@@ -48,6 +48,7 @@ import LOCALSTORAGE from '../../../helpers/constants/localStorage';
 import { toast } from 'react-toastify';
 import { UserInterface } from '../../../store/ducks/users/types';
 import { name } from 'dayjs/locale/*';
+import { createUserRequest, registerUserRequest } from '../../../store/ducks/users/actions';
 
 function Copyright() {
   return (
@@ -126,7 +127,7 @@ export default function RegisterForm() {
   const [search, setSearch] = useState('');
   const userState = useSelector((state: ApplicationState) => state.users);
   const specialtyState = useSelector((state: ApplicationState) => state.specialties);
-  const [state, setState] = useState<UserInterface>({
+  let [state, setState] = useState<UserInterface>({
     companies: ['5ee65a9b1a550217e4a8c0f4'], //empresa que vai vir do login
     name: '',
     birthdate: '',
@@ -158,21 +159,26 @@ export default function RegisterForm() {
 
   useEffect(() => {
 
-    const expired = localStorage.getItem(LOCALSTORAGE.EXPIRED_SESSION);
+    // const expired = localStorage.getItem(LOCALSTORAGE.EXPIRED_SESSION);
 
-    if (expired) {
-      localStorage.removeItem(LOCALSTORAGE.EXPIRED_SESSION);
-      toast.error('Sessão expirada');
-    }
+    // if (expired) {
+    //   localStorage.removeItem(LOCALSTORAGE.EXPIRED_SESSION);
+    //   toast.error('Sessão expirada');
+    // }
     dispatch(loadRequest());
   }, []);
-  const councils = [];
-  const handleFormUser = useCallback(()=>{
+
+  const handleFormUser = useCallback(async (event)=>{
+
+ event.preventDefault();
+
+    if (inputEmail.error || inputPassword.error || inputCpf.error || inputName.error || inputPhone.error ) return;
         state.name = inputName.value;
         state.fiscal_number = inputCpf.value;
         state.email = inputEmail.value;
         state.phone = inputPhone.value;
-        console.log(state);
+        state.password = inputPassword.value;
+        dispatch(registerUserRequest(state));
   },[state]);
 
   const handleClickShowPassword = useCallback(() => {
@@ -192,8 +198,7 @@ export default function RegisterForm() {
         ...prev,
         error:true
       }));
-      setState((state)=>({...state,name:inputName.value}));
-      console.log(state);
+
 
     }else{
       setInputName(prev=>({
@@ -306,7 +311,6 @@ export default function RegisterForm() {
                   (inputName)=>setInputName(prev=>({
                     ...prev,
                     value:inputName.target.value
-
                   }))
                 }
                 onBlur={handleNameValidator}
@@ -452,6 +456,7 @@ export default function RegisterForm() {
                 label="Senha"
                 variant="outlined"
                 size="small"
+                required
                  // value={state.name}
                 //  onChange={(element) => setState({ ...state, name: element.target.value })}
                 fullWidth
@@ -470,6 +475,7 @@ export default function RegisterForm() {
                 label="Confirmar Senha"
                 variant="outlined"
                 size="small"
+                required
                 onChange={
                   inputPasswordConfirm=>setInputPasswordConfirm(prev=>({
                     ...prev,

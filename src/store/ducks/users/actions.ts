@@ -11,6 +11,7 @@ export const loadProfessionsRequest = () => action(UserTypes.LOAD_REQUEST_PROFES
 export const loadProfessionsSuccess = (data: any) => action(UserTypes.LOAD_RESPONSE_PROFESSION, { data });
 
 export const createUserRequest = (data: UserInterface) => action(UserTypes.CREATE_USER_REQUEST, { data });
+export const registerUserRequest = (data: UserInterface) => action(UserTypes.REGISTER_USER_REQUEST, { data });
 export const createUserSuccess = (data: UserInterface) => action(UserTypes.CREATE_USER_SUCCESS, { data });
 
 export const updateUserRequest = (data: UserInterface) => action(UserTypes.UPDATE_USER_REQUEST, { data });

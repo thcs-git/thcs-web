@@ -82,9 +82,13 @@ const useStyles = makeStyles((theme) => ({
     textTransform: 'capitalize',
     fontSize: '18px',
     '&:hover': {
-      backgroundColor: 'var(--success-hover)'
+      backgroundColor: 'var(--success-hover)',
+      borderColor:'var(--success-hover)',
+      color: 'white',
     },
-    borderColor:'var(--success)'
+    borderColor:'var(--success-hover)',
+    contrastText: "#fff"
+
   }
 }));
 
@@ -216,11 +220,11 @@ export default function SignIn() {
               type="submit"
               fullWidth
               variant="outlined"
-              color="primary"
-              className={classes.cadatrar}
-              onClick={handleLogin}
-            >
-              Cadastre-se
+
+              className={classes.register}
+              href="/register"
+            ><a>Cadastre-se</a>
+
           </Button>
             <Grid container>
               <Box textAlign="center" width="100%">

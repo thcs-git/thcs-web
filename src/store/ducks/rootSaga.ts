@@ -226,6 +226,7 @@ export default function* rootSaga() {
     /** Users */
     takeLatest(UserTypes.LOAD_REQUEST, getUsers),
     takeLatest(UserTypes.CREATE_USER_REQUEST, createUser),
+    // takeLatest(UserTypes.REGISTER_USER_REQUEST, registerUser),
     takeLatest(UserTypes.LOAD_REQUEST_ADDRESS, getAddressUser),
     takeLatest(UserTypes.LOAD_REQUEST_USER_BY_ID, getUserById),
     takeLatest(UserTypes.UPDATE_USER_REQUEST, updateUser),

@@ -108,6 +108,10 @@ const reducer: Reducer<UserState> = (state = INITIAL_STATE, action) => {
         error: false,
         success: true
       };
+    case UserTypes.REGISTER_USER_REQUEST:
+      return {
+        ...state, loading: true, error: false, success: false,
+      };
     case UserTypes.LOAD_RESPONSE_ADDRESS:
       return {
         ...state,
