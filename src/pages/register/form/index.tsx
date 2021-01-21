@@ -1,6 +1,6 @@
 import React, { useCallback, useState, useEffect, useRef } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { loadRequest } from '../../../store/ducks/login/actions';
+
 import { ApplicationState } from '../../../store';
 import { FormTitle, SelectComponent as Select } from '../../../styles/components/Form';
 import Container from '@material-ui/core/Container';
@@ -31,7 +31,7 @@ import {
 } from '@material-ui/core';
 import Visibility from '@material-ui/icons/Visibility';
 import VisibilityOff from '@material-ui/icons/VisibilityOff';
-
+import { loadRequest, searchRequest } from '../../../store/ducks/councils/actions';
 import { makeStyles } from '@material-ui/core/styles';
 
 import { ContainerLogin, WelcomeTextWrapper, HomeIconLogo, LogoText, TextGray } from './styles';
@@ -41,8 +41,13 @@ import Alert from '../../../components/Alert';
 import Loading from '../../../components/Loading';
 
 import validateEmail from '../../../utils/validateEmail';
+import validateName from '../../../utils/validateName';
+import validateCpf from '../../../utils/validateCpf';
+import validatePhone from '../../../utils/validatePhone';
 import LOCALSTORAGE from '../../../helpers/constants/localStorage';
 import { toast } from 'react-toastify';
+import { UserInterface } from '../../../store/ducks/users/types';
+import { name } from 'dayjs/locale/*';
 
 function Copyright() {
   return (
@@ -104,24 +109,71 @@ const useStyles = makeStyles((theme) => ({
 
 const SIZE_INPUT_PASSWORD = 3;
 
-export default function SignIn() {
+export default function RegisterForm() {
   const dispatch = useDispatch();
-  const loginState = useSelector((state: ApplicationState) => state.login);
+  //const loginState = useSelector((state: ApplicationState) => state.login);
 
   const [inputEmail, setInputEmail] = useState({ value: '', error: false });
+  const [inputName, setInputName] = useState({value:'',error: false});
+  const [inputCpf, setInputCpf] = useState({value:'',error: false});
+  const [inputPhone, setInputPhone] = useState({value:'',error: false})
   const [inputPassword, setInputPassword] = useState({ value: '', error: false });
+  const [inputPasswordConfirm, setInputPasswordConfirm] = useState({value:'', error:false});
   const [showPassword, setShowPassword] = useState(false);
   const [rememberMe, setRememberMe] = useState(false);
   const classes = useStyles();
+  const councilState = useSelector((state: ApplicationState) => state.councils);
+  const [search, setSearch] = useState('');
+  const userState = useSelector((state: ApplicationState) => state.users);
+  const specialtyState = useSelector((state: ApplicationState) => state.specialties);
+  const [state, setState] = useState<UserInterface>({
+    companies: ['5ee65a9b1a550217e4a8c0f4'], //empresa que vai vir do login
+    name: '',
+    birthdate: '',
+    gender: '',
+    national_id: '',
+    issuing_organ: '',
+    fiscal_number: '',
+    mother_name: '',
+    nationality: '',
+    address: {
+      postal_code: '',
+      street: '',
+      number: '',
+      district: '',
+      city: '',
+      state: '',
+      complement: '',
+    },
+    email: '',
+    phone: '',
+    cellphone: '',
+    user_type_id: '',
+    specialties: [],
+    council_number: '',
+    active: true,
+  });
+
+
 
   useEffect(() => {
+
     const expired = localStorage.getItem(LOCALSTORAGE.EXPIRED_SESSION);
 
     if (expired) {
       localStorage.removeItem(LOCALSTORAGE.EXPIRED_SESSION);
       toast.error('Sessão expirada');
     }
+    dispatch(loadRequest());
   }, []);
+  const councils = [];
+  const handleFormUser = useCallback(()=>{
+        state.name = inputName.value;
+        state.fiscal_number = inputCpf.value;
+        state.email = inputEmail.value;
+        state.phone = inputPhone.value;
+        console.log(state);
+  },[state]);
 
   const handleClickShowPassword = useCallback(() => {
     setShowPassword(prev => !prev);
@@ -132,9 +184,52 @@ export default function SignIn() {
 
     if (inputEmail.error || inputPassword.error) return;
 
-    dispatch(loadRequest({ email: inputEmail.value, password: inputPassword.value }));
+   // dispatch(loadRequest({ email: inputEmail.value, password: inputPassword.value }));
   }, [inputPassword, inputEmail]);
+  const handleNameValidator = useCallback(()=>{
+    if(!validateName(inputName.value)){
+      setInputName(prev=>({
+        ...prev,
+        error:true
+      }));
+      setState((state)=>({...state,name:inputName.value}));
+      console.log(state);
 
+    }else{
+      setInputName(prev=>({
+        ...prev,
+        error:false
+      }))
+    }
+  },[inputName,state]);
+  const handleCpfValidator = useCallback(()=>{
+    if(!validateCpf(inputCpf.value)){
+      setInputCpf(prev=>({
+        ...prev,
+        error:true
+      }))
+
+    }else{
+      setInputCpf(prev=>({
+        ...prev,
+        error:false
+      }))
+    }
+  },[inputCpf]);
+  const handlePhoneValidator = useCallback(()=>{
+    if(!validatePhone(inputPhone.value)){
+      setInputPhone(prev=>({
+        ...prev,
+        error:true
+      }))
+
+    }else{
+      setInputPhone(prev=>({
+        ...prev,
+        error:false
+      }))
+    }
+  },[inputPhone]);
   const handleEmailValidator = useCallback(() => {
     if (!validateEmail(inputEmail.value)) {
       setInputEmail(prev => ({
@@ -148,14 +243,26 @@ export default function SignIn() {
       }))
     }
   }, [inputEmail]);
-
+  const handlePasswordConfirm = useCallback(()=>{
+    if(inputPasswordConfirm.value){
+      setInputPasswordConfirm(prev=>({
+        ...prev,
+        error:true
+      }))
+    }else{
+      setInputPasswordConfirm(prev=>({
+        ...prev,
+        error:false
+      }))
+    }
+  },[inputPasswordConfirm]);
   const handlePasswordValitor = useCallback(() => {
-    setInputPassword(prev => ({ ...prev, error: !(inputPassword.value.length >= SIZE_INPUT_PASSWORD) }));
-  }, [inputPassword]);
+    setInputPassword(prev => ({ ...prev, error: !((inputPassword.value.length >= SIZE_INPUT_PASSWORD) && (inputPasswordConfirm.value && inputPassword.value === inputPasswordConfirm.value))}));
+  }, [inputPassword,inputPasswordConfirm]);
 
   return (
     <>
-      {loginState.loading && <Loading />}
+{/* {loginState.loading && <Loading />} */}
       <Container className={classes.container} maxWidth="sm">
         <CssBaseline />
         <div className={classes.paper}>
@@ -173,11 +280,9 @@ export default function SignIn() {
             <FormControl variant="outlined" size="small" fullWidth>
               <InputLabel id="select-patient-gender">Eu sou</InputLabel>
                 <Select
-                  labelId="select-patient-gender"
-                  id="demo-simple-select-filled"
-                  //value={state.gender}
-                  //  onChange={(element) => setState({ ...state, gender: `${element.target.value}` || '' })}
-                  labelWidth={40}
+                  labelId="select-user-type"
+                  onChange={(element)=>setState({...state,user_type_id:`${element.target.value}`})}
+                  labelWidth={60}
                     >
                 <MenuItem value="">
                 <em>&nbsp;</em>
@@ -187,71 +292,98 @@ export default function SignIn() {
             </FormControl>
           </Grid>
             <Grid container item md={12} xs={12} className={classes.form}>
-            <FormControl variant="outlined" size="small" fullWidth>
+            <FormControl variant="outlined" size="small" margin="normal" fullWidth>
               <TextField
+              error={inputName.error}
                 id="input-social-name"
                 label="Nome do usuário"
                 variant="outlined"
                 size="small"
-                 // value={state.name}
-                //  onChange={(element) => setState({ ...state, name: element.target.value })}
+                value={inputName.value}
+                required
                 fullWidth
+                onChange={
+                  (inputName)=>setInputName(prev=>({
+                    ...prev,
+                    value:inputName.target.value
+
+                  }))
+                }
+                onBlur={handleNameValidator}
                 />
             </FormControl>
             </Grid>
             <Grid container >
 
               <Grid item md={6} xs={12} className={classes.form}>
-                <FormControl variant="outlined" size="small" fullWidth>
+                <FormControl variant="outlined" size="small">
                 <TextField
+                error={inputCpf.error}
                   id="input-fiscal-number"
                   label="CPF"
                   variant="outlined"
                   size="small"
-                  //value={state.fiscal_number}
-                  // onChange={(element) => setState({ ...state, fiscal_number: element.target.value })}
+                  required
                   placeholder="000.000.000-00"
                   fullWidth
+                  onChange={
+                    inputCpf=>setInputCpf(prev=>({
+                      ...prev,
+                      value:inputCpf.target.value
+                    }))
+                  }
+                  onBlur={handleCpfValidator}
 
                 />
                 </FormControl>
               </Grid>
               <Grid item md={6} xs={12} className={classes.form}>
-              <FormControl variant="outlined" size="small" fullWidth>
+              <FormControl variant="outlined" size="small">
                 <TextField
-                  id="input-phone"
+                error={inputPhone.error}
+                  id="input-phone-number"
                   label="Telefone"
                   variant="outlined"
                   size="small"
-                  //value={state.phone}
-                  //onChange={(element) => setState({ ...state, phone: element.target.value })}
-                  placeholder="0000-0000"
+                  required
+                  placeholder="(00) 0000-0000"
                   fullWidth
+                  onChange={
+                    inputPhone=>setInputPhone(prev=>({
+                      ...prev,
+                      value:inputPhone.target.value
+                    }))
+                  }
+                  onBlur={handlePhoneValidator}
                 />
                 </FormControl>
               </Grid>
-
           </Grid>
 
             <Grid container item md={12} xs={12} className={classes.form}>
               <TextField
-                id="input-social-name"
+              error={inputEmail.error}
+                id="input-email"
                 label="Email"
                 variant="outlined"
                 size="small"
-                 // value={state.name}
-                //  onChange={(element) => setState({ ...state, name: element.target.value })}
+                required
                 fullWidth
+                onChange={
+                  inputEmail=>setInputEmail(prev=>({
+                    ...prev,
+                    value:inputEmail.target.value
+                  }))
+                }
+                onBlur={handleEmailValidator}
                 />
             </Grid>
             <Grid container item md={12} xs={12} className={classes.form}>
               <TextField
-                id="input-social-name"
+                id="input-function"
                 label="Função"
                 variant="outlined"
                 size="small"
-                 // value={state.name}
-                //  onChange={(element) => setState({ ...state, name: element.target.value })}
                 fullWidth
                 />
             </Grid>
@@ -261,8 +393,6 @@ export default function SignIn() {
                 label="Especialidade"
                 variant="outlined"
                 size="small"
-                 // value={state.name}
-                //  onChange={(element) => setState({ ...state, name: element.target.value })}
                 fullWidth
                 />
             </Grid>
@@ -271,8 +401,9 @@ export default function SignIn() {
             <FormControl variant="outlined" size="small" fullWidth>
               <InputLabel id="select-patient-gender">Conselho</InputLabel>
                 <Select
-                  labelId="select-patient-gender"
-                  id="demo-simple-select-filled"
+                label="Conselho"
+                  labelId="select-council-user"
+                  id="select-council-user"
                   //value={state.gender}
                   //  onChange={(element) => setState({ ...state, gender: `${element.target.value}` || '' })}
 
@@ -280,31 +411,26 @@ export default function SignIn() {
                 <MenuItem value="">
                 <em>&nbsp;</em>
                 </MenuItem>
-                {userTypes.map(usertype => <MenuItem key={`usertype_${usertype}`} value={usertype}>{usertype}</MenuItem>)}
+                {councilState.list.data.map(council => <MenuItem key={`council_${council._id}`} value={council._id}>{council.initials}</MenuItem>)}
                 </Select>
           </FormControl>
           </Grid >
           <Grid item md={5} xs={12} className={classes.form}>
             <FormControl variant="outlined" size="small" fullWidth>
-              <InputLabel id="select-patient-gender">Nº do Conselho</InputLabel>
-                <Select
-                  labelId="select-patient-gender"
-                  id="demo-simple-select-filled"
-                  //value={state.gender}
-                  //  onChange={(element) => setState({ ...state, gender: `${element.target.value}` || '' })}
-
-                    >
-                <MenuItem value="">
-                <em>&nbsp;</em>
-                </MenuItem>
-                {userTypes.map(usertype => <MenuItem key={`usertype_${usertype}`} value={usertype}>{usertype}</MenuItem>)}
-                </Select>
+              <TextField
+                id="input-social-name"
+                label="Especialidade"
+                variant="outlined"
+                size="small"
+                fullWidth
+                />
           </FormControl>
           </Grid >
           <Grid item md={2} xs={12} className={classes.form}>
             <FormControl variant="outlined" size="small" fullWidth>
               <InputLabel id="select-patient-gender">UF</InputLabel>
                 <Select
+                label="UF"
                   labelId="select-patient-gender"
                   id="demo-simple-select-filled"
                   //value={state.gender}
@@ -321,24 +447,39 @@ export default function SignIn() {
         </Grid>
         <Grid container item md={12} xs={12} className={classes.form}>
               <TextField
-                id="input-social-name"
+              error={inputPassword.error}
+                id="input-password"
                 label="Senha"
                 variant="outlined"
                 size="small"
                  // value={state.name}
                 //  onChange={(element) => setState({ ...state, name: element.target.value })}
                 fullWidth
+                onChange={
+                  inputPassword=>setInputPassword(prev=>({
+                    ...prev,
+                    value:inputPassword.target.value
+                  }))
+                }
+                onBlur={handlePasswordValitor}
                 />
             </Grid>
             <Grid container item md={12} xs={12} className={classes.form}>
               <TextField
-                id="input-social-name"
+                id="input-password-confirm"
                 label="Confirmar Senha"
                 variant="outlined"
                 size="small"
+                onChange={
+                  inputPasswordConfirm=>setInputPasswordConfirm(prev=>({
+                    ...prev,
+                    value:inputPasswordConfirm.target.value
+                  }))
+                }
                  // value={state.name}
                 //  onChange={(element) => setState({ ...state, name: element.target.value })}
                 fullWidth
+                onBlur={handlePasswordValitor}
                 />
             </Grid>
 
@@ -405,7 +546,7 @@ export default function SignIn() {
 <TextGray>Já tem um cadastro? </TextGray>
                 </Grid>
 <Grid>
-<Button value="remember"   color="primary"fullWidth >clique aqui</Button>
+<Button value="remember"   color="primary" fullWidth href="/login">clique aqui</Button>
 </Grid>
 
               </Grid>
@@ -413,12 +554,12 @@ export default function SignIn() {
 
             </FormControl>
             <Button
-              type="submit"
+
               fullWidth
               variant="contained"
               color="primary"
               className={classes.submit}
-              onClick={handleLogin}
+              onClick={handleFormUser}
             >
               Cadastrar
           </Button>
