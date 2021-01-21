@@ -41,10 +41,13 @@ export const INITIAL_STATE: PatientState = {
     error: false,
     loading: false,
     success: false,
+    isRegistrationCompleted: false,
 };
 
 const reducer: Reducer<PatientState> = (state = INITIAL_STATE, action) => {
   switch (action.type) {
+    case PatientTypes.REGISTRAION_COMPLETED:
+      return { ...state, isRegistrationCompleted: action.payload.value };
     case PatientTypes.LOAD_REQUEST:
       return { ...state, loading: true, success: false, };
     case PatientTypes.LOAD_SUCCCES:

@@ -18,3 +18,5 @@ export const loadPatientById = (id: string) => action(PatientTypes.LOAD_REQUEST_
 export const loadSuccessGetPatientById = (data: PatientInterface) => action(PatientTypes.LOAD_SUCCCES_PATIENT_BY_ID, { data });
 
 export const searchRequest = (value: string) => action(PatientTypes.SEARCH_REQUEST, { value });
+
+export const setIfRegistrationCompleted = (value: boolean) => action(PatientTypes.REGISTRAION_COMPLETED, { value });

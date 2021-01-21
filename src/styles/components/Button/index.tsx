@@ -41,6 +41,11 @@ const background: any = {
       background: var(--success-hover);
     }
   `,
+  success_rounded: css`
+    background: var(--white);
+    color: var(--success);
+    border: 1px solid var(--success);
+  `,
   primary: css`
     background: var(--primary);
     color: var(--white);
