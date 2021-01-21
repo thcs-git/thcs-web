@@ -129,9 +129,7 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
   useEffect(() => {
     setState(prevState => ({
       ...prevState,
-      address: {
-        ...userState.data.address
-      }
+      ...userState.data,
     }));
   }, [userState]);
 
@@ -236,6 +234,7 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
   return (
     <Sidebar>
       {userState.loading && <Loading />}
+      {console.log('userState', userState)}
       <Container>
         <FormSection>
           <FormContent>
@@ -589,7 +588,7 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
           </FormContent>
           <ButtonsContent>
             <ButtonComponent background="default" onClick={() => userState.success ? history.push('/user') : handleOpenModalCancel()}>
-              Cancelar
+              Voltar
             </ButtonComponent>
             <ButtonComponent background="primary" onClick={handleSaveFormUser}>
               Salvar

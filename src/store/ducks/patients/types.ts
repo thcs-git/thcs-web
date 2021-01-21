@@ -20,6 +20,8 @@ export enum PatientTypes {
 
   SEARCH_REQUEST = "@patient/SEARCH_REQUEST",
 
+  REGISTRAION_COMPLETED = "@patient/REGISTRAION_COMPLETED",
+
 }
 
 /**
@@ -75,7 +77,7 @@ export interface PatientList {
   search?: string;
 }
 
-interface PatientDataItems {
+export interface PatientDataItems {
   _id: string;
   name: string;
   email: string;
@@ -102,6 +104,7 @@ export interface PatientState {
   loading: boolean;
   error: boolean;
   success: boolean;
+  isRegistrationCompleted?: boolean;
 }
 
 export type LoadRequestParams = Partial<Omit<PatientList, 'data'>>

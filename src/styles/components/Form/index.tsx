@@ -14,3 +14,33 @@ export const SelectComponent = styled(Select)`
     background: var(--white);
   }
 `;
+
+export const QuestionSection = styled.div`
+  margin-top: 15px;
+  margin-bottom: 30px;
+`;
+
+export const QuestionTitle = styled.p`
+  margin-top: 15px;
+  margin-bottom: 10px;
+`;
+
+export const ScoreTotalContent = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+`;
+
+export const ScoreLabel = styled.div``;
+
+export const ScoreTotal = styled.div`
+  padding: 10px 20px;
+  background: var(--white);
+
+  border-radius: 4px;
+
+  margin-left: 15px;
+
+  font-weight: bold;
+  color: var(--primary);
+`;

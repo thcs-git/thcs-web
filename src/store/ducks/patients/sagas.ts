@@ -6,7 +6,6 @@ import { apiSollar, viacep } from '../../../services/axios';
 
 import { loadSuccess, loadFailure, successGetAddress, createPatientSuccess, loadSuccessGetPatientById, updatePatientSuccess } from './actions';
 import { PatientInterface, ViacepDataInterface, LoadRequestParams } from './types';
-import { PayloadAction } from 'typesafe-actions';
 
 const token = localStorage.getItem('token');
 

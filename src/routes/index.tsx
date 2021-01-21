@@ -30,6 +30,16 @@ import UserForm from '../pages/user/form';
 import PatientList from '../pages/patient/list';
 import PatientForm from '../pages/patient/form';
 import PatientOverview from '../pages/patient/overview';
+import PatientCapture from '../pages/patient/capture/list';
+import PatientCaptureCreate from '../pages/patient/capture/form';
+import PatientCaptureOverview from '../pages/patient/capture/overview';
+import PatientCaptureNead from '../pages/patient/capture/nead';
+import PatientCaptureSocioAmbiental from '../pages/patient/capture/socioambiental';
+import PatientCaptureAbemid from '../pages/patient/capture/abemid';
+
+import AvaliationList from '../pages/avaliation/list';
+// import PatientForm from '../pages/patient/form';
+// import PatientOverview from '../pages/patient/overview';
 
 import Login from '../pages/login';
 
@@ -76,11 +86,28 @@ const Routes = () => (
       <PrivateRoute path="/patient/:id/edit" component={PatientForm} />
       <PrivateRoute path="/patient/create" component={PatientForm} />
       <PrivateRoute path="/patient/:id/overview" component={PatientOverview} />
+      <PrivateRoute path="/patient/capture" component={PatientCapture} exact />
+      <PrivateRoute path="/patient/capture/create" component={PatientCaptureCreate} />
+      <PrivateRoute path="/patient/capture/:id/overview" component={PatientCaptureOverview} />
+
+      <PrivateRoute path="/patient/capture/:id/nead" component={PatientCaptureNead} exact />
+      <PrivateRoute path="/patient/capture/:id/nead/:documentId" component={PatientCaptureNead} />
+
+      <PrivateRoute path="/patient/capture/:id/abemid" component={PatientCaptureAbemid} exact />
+      <PrivateRoute path="/patient/capture/:id/abemid/:documentId" component={PatientCaptureAbemid} />
+
+      <PrivateRoute path="/patient/capture/:id/socioambiental" component={PatientCaptureSocioAmbiental} exact />
+      <PrivateRoute path="/patient/capture/:id/socioambiental/:documentId" component={PatientCaptureSocioAmbiental} />
 
       {/* Care */}
       <PrivateRoute path="/care" component={CareList} exact />
       <PrivateRoute path="/care/:id/edit" component={CareForm} />
       <PrivateRoute path="/care/create" component={CareForm} />
+
+      {/* avaliation */}
+      <PrivateRoute path="/avaliation" component={AvaliationList} exact />
+      {/* <PrivateRoute path="/avaliation/:id/edit" component={CareForm} />
+      <PrivateRoute path="/avaliation/create" component={CareForm} /> */}
     </Switch>
   </BrowserRouter>
 );

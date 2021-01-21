@@ -41,6 +41,11 @@ const background: any = {
       background: var(--success-hover);
     }
   `,
+  success_rounded: css`
+    background: var(--white);
+    color: var(--success);
+    border: 1px solid var(--success);
+  `,
   primary: css`
     background: var(--primary);
     color: var(--white);
@@ -50,10 +55,23 @@ const background: any = {
   `,
 };
 
+const size: any = {
+  sm: css`
+  padding: 3px;
+`,
+  md: css`
+  padding: 5px;
+`,
+  lg: css`
+  padding: 10px;
+`,
+};
+
 const ButtonComponent = styled(Button)`
   ${(props: IButtonProps) => background[props.background || 'var(--primary)']}
 
-  padding: 10px;
+  min-width: 40px;
+  max-height: 40px;
   text-transform: capitalize;
 `;
 

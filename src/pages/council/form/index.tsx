@@ -105,6 +105,17 @@ const EspecialtyForm = (props: RouteComponentProps<IPageParams>) => {
 
             <FormGroupSection>
               <Grid container>
+              <Grid item md={6} xs={6}>
+                  <TextField
+                    id="input-initials"
+                    label="Sigla"
+                    variant="outlined"
+                    size="small"
+                    value={state.initials}
+                    onChange={(element) => setState({ ...state, initials: element.target.value })}
+                    fullWidth
+                  />
+                </Grid>
                 <Grid item md={12} xs={12}>
                   <TextField
                     id="input-description"
@@ -116,21 +127,11 @@ const EspecialtyForm = (props: RouteComponentProps<IPageParams>) => {
                     fullWidth
                   />
                 </Grid>
-                <Grid item md={6} xs={6}>
-                  <TextField
-                    id="input-initials"
-                    label="Sigla"
-                    variant="outlined"
-                    size="small"
-                    value={state.initials}
-                    onChange={(element) => setState({ ...state, initials: element.target.value })}
-                    fullWidth
-                  />
-                </Grid>
+
 
                 <Grid item md={6} xs={6} />
 
-                <Grid item md={1} xs={6}>
+                {/* <Grid item md={1} xs={6}>
                   <TextField
                     id="input-federative-unit"
                     label="UF"
@@ -140,7 +141,7 @@ const EspecialtyForm = (props: RouteComponentProps<IPageParams>) => {
                     onChange={(element) => setState({ ...state, federative_unit: element.target.value })}
                     fullWidth
                   />
-                </Grid>
+                </Grid> */}
                 {state?._id && (
                   <Grid item xs={12} md={12}>
                     <FormControlLabel control={<Switch checked={state.active} onChange={(event) => {
@@ -156,7 +157,7 @@ const EspecialtyForm = (props: RouteComponentProps<IPageParams>) => {
           </FormContent>
           <ButtonsContent>
             <ButtonComponent background="default" onClick={() => councilState.success ? history.push('/council') : handleOpenModalCancel()}>
-              Cancelar
+              Voltar
             </ButtonComponent>
             <ButtonComponent variant="contained" background="success" onClick={() => handleSaveFormCouncil()}>
               Salvar

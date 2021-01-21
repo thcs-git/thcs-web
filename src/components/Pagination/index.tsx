@@ -9,7 +9,7 @@ const Pagination = (props: PaginationProps) => {
   const { totalRows, rowsPerPage, page, handleChangeRowsPerPage } = props;
 
   const handleChangePage = (event: React.MouseEvent<HTMLButtonElement> | null, newPage: number) => {
-    console.log('change page');
+    // console.log('change page');
   };
 
   return (
@@ -22,6 +22,7 @@ const Pagination = (props: PaginationProps) => {
             rowsPerPage={parseInt(rowsPerPage)}
             page={parseInt(page)}
             labelRowsPerPage="Resultados por página:"
+            labelDisplayedRows={({ from, to, count, page }) => `${page} de ${Math.ceil(count / parseInt(rowsPerPage))}`}
             SelectProps={{
               inputProps: { 'aria-label': 'rows per page' },
               native: true,

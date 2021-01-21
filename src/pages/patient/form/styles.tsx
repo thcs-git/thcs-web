@@ -1,23 +1,39 @@
 import styled from 'styled-components';
+import Tabs from '@material-ui/core/Tabs';
+import Box from '@material-ui/core/Box';
+import {
+  FormControl
+} from '@material-ui/core';
+
 import { TextField, OutlinedInput, Button } from '@material-ui/core';
 
 export const ButtonsContent = styled.div`
   display: flex;
   justify-content: flex-end;
 
-  margin-bottom: 20px;
+  padding-bottom: 70px;
+
+  button {
+    width: 95px;
+  }
 
   & > button:first-child {
     margin-right: 10px;
   }
 `;
 
+export const BoxCustom = styled(Box)`
+  height: calc(100vh - 117px);
+  margin-bottom: 40px;
+`;
+
+
 export const FormSection = styled.div`
   display: flex;
   flex-direction: column;
   justify-content: space-between;
 
-  height: calc(100vh - 96px);
+
 `;
 
 export const FormGroupSection = styled.div`
@@ -63,5 +79,27 @@ export const ButtonPrimary = styled(Button)`
 
   &:hover {
     background: var(--secondary);
+  }
+`;
+
+export const FormControlCustom = styled(FormControl)`
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-around;
+
+`;
+
+export const TabCustom = styled(Tabs)`
+  background: #F2F2F2 !important;
+  box-shadow: 1px 1px 3px #00000029;
+
+  button.Mui-selected {
+    color: var(--secondary) !important;
+  }
+
+  span.PrivateTabIndicator-colorPrimary-10 {
+    background-color: var(--secondary) !important;
   }
 `;

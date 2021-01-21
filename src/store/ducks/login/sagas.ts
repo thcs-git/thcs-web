@@ -15,6 +15,8 @@ export function* doLogin({ payload }: any) {
     const { data } = response;
 
     localStorage.setItem(LOCALSTORAGE.TOKEN, data.token)
+    localStorage.setItem(LOCALSTORAGE.USERNAME, data.username)
+    localStorage.setItem(LOCALSTORAGE.USER_ID, data._id)
 
     yield put(loadSuccess(data));
 

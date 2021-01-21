@@ -18,6 +18,12 @@ import { get as getSpecialties, store as storeSpecialty, getById as getSpecialty
 import { CouncilTypes } from './councils/types';
 import { get as getCouncils, store as storeCouncil, getById as getCouncilById, update as updateCouncil, searchConcil } from './councils/sagas';
 
+import { DocumentTypes } from './documents/types';
+import { store as storeDocuments, getByCareId as getDocumentsByCareId, get as getDocuments } from './documents/sagas';
+
+import { DocumentGroupTypes } from './documentGroups/types';
+import { get as getDocumentGroups, getByIds as getDocumentGroupsByIds } from './documentGroups/sagas';
+
 import { PatientTypes } from './patients/types';
 import { get as getPatients, createPatient, getAddress as getAddressPatient, getPatientById, updatePatient, searchPatient } from './patients/sagas';
 
@@ -25,7 +31,7 @@ import { UserTypes } from './users/types';
 import { get as getUsers, createUser, getAddress as getAddressUser, getUserById, updateUser, searchUser } from './users/sagas';
 
 import { CareTypes } from './cares/types';
-import { get as getCares, createCare, getCareById, updateCare } from './cares/sagas';
+import { get as getCares, createCare, getCareById, updateCare, search as searchCare } from './cares/sagas';
 
 export default function* rootSaga() {
   return yield all([
@@ -48,6 +54,7 @@ export default function* rootSaga() {
     takeLatest(CareTypes.LOAD_REQUEST_CARE_BY_ID, getCareById),
     takeLatest(CareTypes.CREATE_CARE_REQUEST, createCare),
     takeLatest(CareTypes.UPDATE_CARE_REQUEST, updateCare),
+    takeLatest(CareTypes.SEARCH_CARE_REQUEST, searchCare),
 
     // Council
     takeLatest(CouncilTypes.LOAD_REQUEST, getCouncils),
@@ -78,6 +85,15 @@ export default function* rootSaga() {
     takeLatest(CustomerTypes.CREATE_CUSTOMER_REQUEST, createCompanyCustomer),
     takeLatest(CustomerTypes.UPDATE_CUSTOMER_REQUEST, updateCompanyCustomer),
     takeLatest(CustomerTypes.SEARCH_REQUEST, searchCustomer),
+
+    // Documents
+    takeLatest(DocumentTypes.LOAD_REQUEST, getDocuments),
+    takeLatest(DocumentTypes.CREATE_DOCUMENT_REQUEST, storeDocuments),
+    takeLatest(DocumentTypes.LOAD_REQUEST_BY_CARE_ID, getDocumentsByCareId),
+
+    // Document Groups
+    takeLatest(DocumentGroupTypes.LOAD_REQUEST, getDocumentGroups),
+    takeLatest(DocumentGroupTypes.LOAD_REQUEST_DOCUMENTS_BY_ID, getDocumentGroupsByIds),
 
     /** Patients */
     takeLatest(PatientTypes.LOAD_REQUEST, getPatients),

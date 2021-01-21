@@ -328,7 +328,7 @@ export default function CustomerForm(props: RouteComponentProps<IPageParams>) {
         </FormContent>
         <ButtonsContent>
           <ButtonDefeault variant="outlined" color="default" onClick={() => handleOpenModalCancel()}>
-            Cancelar
+            Voltar
 					</ButtonDefeault>
           <ButtonPrimary variant="contained" color="primary" onClick={() => handleSaveFormCustomer()}>
             Salvar

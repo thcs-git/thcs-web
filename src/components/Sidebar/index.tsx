@@ -36,6 +36,7 @@ import ExtensionIcon from '@material-ui/icons/Extension';
 import PersonIcon from '@material-ui/icons/Person';
 import GroupAddIcon from '@material-ui/icons/GroupAdd';
 import LocalHospital from '@material-ui/icons/LocalHospital';
+import StarRateIcon from '@material-ui/icons/StarRate';
 
 import { AccordionMenu, Logo } from './styles';
 import LOCALSTORAGE from '../../helpers/constants/localStorage';
@@ -53,6 +54,7 @@ const itemsMenu = [
   { title: 'Usuários', route: '/user', icon: <PersonIcon style={{ color: '#fff' }} /> },
   { title: 'Pacientes', route: '/patient', icon: <GroupAddIcon style={{ color: '#fff' }} /> },
   { title: 'Atendimento', route: '/care', icon: <LocalHospital style={{ color: '#fff' }} /> },
+  { title: 'Avaliação', route: '/avaliation', icon: <StarRateIcon style={{ color: '#fff' }} /> },
 ]
 
 const useStyles = makeStyles((theme: Theme) =>
