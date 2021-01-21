@@ -19,6 +19,8 @@ import Button from '../../../../styles/components/Button';
 import { FormTitle } from '../../../../styles/components/Form';
 import { Table, Th, Td } from '../../../../styles/components/Table';
 
+import { LowerComplexityLabel, MediumComplexityLabel, HighComplexityLabel, NoComplexityLabel, ElegibleLabel, NotElegibleLabel } from '../../../../styles/components/Text';
+
 import {
   PatientResume,
   PatientResumeContent,
@@ -87,19 +89,48 @@ export default function PatientCaptureForm(props: RouteComponentProps<IPageParam
     setAnchorEl(null);
   }, [anchorEl]);
 
-  const scoreStatusIcon = (status: string) => {
-    switch (status) {
-      case 'Aprovado':
-        return <CheckCircle style={{ fill: '#4FC66A' }} />;
+  const handleComplexityLabel = (complexity: string = '') => {
+    switch (complexity.toLocaleLowerCase()) {
+      case 'sem complexidade':
+        return <NoComplexityLabel>{complexity}</NoComplexityLabel>;
 
-      case 'Reprovado':
-        return <CheckCircle style={{ fill: '#FF6565' }} />;
+      case 'baixa complexidade':
+        return <LowerComplexityLabel>{complexity}</LowerComplexityLabel>;
 
-      case 'Em Andamento':
-        return <Schedule style={{ fill: '#0899BA' }} />;
+      case 'média complexidade':
+        return <MediumComplexityLabel>{complexity}</MediumComplexityLabel>;
+
+      case 'alta complexidade':
+        return <HighComplexityLabel>{complexity}</HighComplexityLabel>;
 
       default:
-        return <Add style={{ fill: '#0899BA' }} />;
+        return complexity;
+    }
+  };
+
+  const handleElegibilityLabel = (elegibile: string = '') => {
+    switch (elegibile.toLocaleLowerCase()) {
+      case 'elegível':
+        return <ElegibleLabel>{elegibile}</ElegibleLabel>;
+
+      case 'não elegível':
+        return <NotElegibleLabel>{elegibile}</NotElegibleLabel>;
+
+      default:
+        return elegibile;
+    }
+  };
+
+  const handleCareTypeLabel = (elegibile: string = '') => {
+    switch (elegibile.toLocaleLowerCase()) {
+      case 'elegível':
+        return 'Internação Domiciliar';
+
+      case 'não elegível':
+        return 'Assistência Domiciliar';
+
+      default:
+        return elegibile;
     }
   };
 
@@ -129,11 +160,6 @@ export default function PatientCaptureForm(props: RouteComponentProps<IPageParam
     return (document_id) ? `${routes[id]}/${document_id}` : routes[id];
   };
 
-  const handleNewScore = (route: string) => {
-    handleCloseRowMenu();
-    history.push(route);
-  };
-
   const toggleHistoryModal = () => {
     handleCloseRowMenu();
     setHistoryModalOpen(!historyModalOpen);
@@ -146,7 +172,7 @@ export default function PatientCaptureForm(props: RouteComponentProps<IPageParam
       doc.finished
     ));
 
-    return (found) ? <CheckCircle style={{ color: '#4FC66A' }} /> : <CheckCircle style={{ color: '#EBEBEB' }} />;
+    return (found) ? <CheckCircle style={{ color: '#4FC66A', cursor: 'pointer' }} /> : <CheckCircle style={{ color: '#EBEBEB' }} />;
   };
 
   const handleDocument = (documentId: string, documents: Array<any>) => {
@@ -207,6 +233,7 @@ export default function PatientCaptureForm(props: RouteComponentProps<IPageParam
                       </div>
                       <div>
                         <Button onClick={() => setCaptureModalModalOpen(true)}>Dados da Captação</Button>
+                        <Button onClick={() => setCaptureModalModalOpen(true)}>Concluir Captação</Button>
                       </div>
 
 
@@ -219,6 +246,7 @@ export default function PatientCaptureForm(props: RouteComponentProps<IPageParam
                 <thead>
                   <tr>
                     <Th colSpan={2}>Tipo do Score</Th>
+                    <Th>Tipo</Th>
                     <Th>Complexidade</Th>
                     <Th>Adicionado em</Th>
                     <Th>Status</Th>
@@ -231,11 +259,18 @@ export default function PatientCaptureForm(props: RouteComponentProps<IPageParam
 
                     return (
                       <tr key={`documentGroup_${index}`}>
-                        <Td center>{handleCheckDocument(documentGroup._id, care?.documents_id || [])}</Td>
+                        <Td center onClick={() => {
+                          if (document?._id) {
+                            history.push(handleScoreRoute(documentGroup?._id || '', care?._id || '', document?._id))
+                          } else {
+                            history.push(handleScoreRoute(documentGroup?._id || '', care?._id || ''))
+                          }
+                        }}>{handleCheckDocument(documentGroup._id, care?.documents_id || [])}</Td>
                         <Td>{documentGroup.name}</Td>
-                        <Td>{document?.complexity ? document.complexity : '-'}</Td>
+                        <Td>{handleCareTypeLabel(document.status)}</Td>
+                        <Td>{handleComplexityLabel(document?.complexity)}</Td>
                         <Td>{document?.created_at ? formatDate(document.created_at, 'DD/MM/YYYY HH:mm:ss') : '-'}</Td>
-                        <Td>{document?.status ? document.status : '-'}</Td>
+                        <Td>{handleElegibilityLabel(document.status)}</Td>
                         <Td center>
                           <Button aria-controls={`simple-menu${index}`} id={`btn_simple-menu${index}`} aria-haspopup="true" onClick={handleOpenRowMenu}>
                             <MoreVert />
