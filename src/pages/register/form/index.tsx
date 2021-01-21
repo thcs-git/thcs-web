@@ -32,7 +32,7 @@ import {
 import Visibility from '@material-ui/icons/Visibility';
 import VisibilityOff from '@material-ui/icons/VisibilityOff';
 import { loadRequest, searchRequest } from '../../../store/ducks/councils/actions';
-import { makeStyles } from '@material-ui/core/styles';
+import { makeStyles, withStyles } from '@material-ui/core/styles';
 
 import { ContainerLogin, WelcomeTextWrapper, HomeIconLogo, LogoText, TextGray } from './styles';
 import {FormGroupSection} from './styles';
@@ -49,7 +49,7 @@ import { toast } from 'react-toastify';
 import { UserInterface } from '../../../store/ducks/users/types';
 import { name } from 'dayjs/locale/*';
 import { createUserRequest, registerUserRequest } from '../../../store/ducks/users/actions';
-
+import InputBase from "@material-ui/core/InputBase";
 function Copyright() {
   return (
     <Typography variant="body2" color="textSecondary" align="center">
@@ -113,7 +113,40 @@ const SIZE_INPUT_PASSWORD = 3;
 export default function RegisterForm() {
   const dispatch = useDispatch();
   //const loginState = useSelector((state: ApplicationState) => state.login);
-
+  const BootstrapInput = withStyles((theme) => ({
+    root: {
+      "label + &": {
+        marginTop: theme.spacing(3)
+      }
+    },
+    input: {
+      borderRadius: 4,
+      position: "relative",
+      backgroundColor: theme.palette.background.paper,
+      border: "1px solid #ced4da",
+      fontSize: 16,
+      padding: "10px 26px 10px 12px",
+      transition: theme.transitions.create(["border-color", "box-shadow"]),
+      // Use the system font instead of the default Roboto font.
+      fontFamily: [
+        "-apple-system",
+        "BlinkMacSystemFont",
+        '"Segoe UI"',
+        "Roboto",
+        '"Helvetica Neue"',
+        "Arial",
+        "sans-serif",
+        '"Apple Color Emoji"',
+        '"Segoe UI Emoji"',
+        '"Segoe UI Symbol"'
+      ].join(","),
+      "&:focus": {
+        borderRadius: 4,
+        borderColor: "#80bdff",
+        boxShadow: "0 0 0 0.2rem rgba(0,123,255,.25)"
+      }
+    }
+  }))(InputBase);
   const [inputEmail, setInputEmail] = useState({ value: '', error: false });
   const [inputName, setInputName] = useState({value:'',error: false});
   const [inputCpf, setInputCpf] = useState({value:'',error: false});
@@ -402,6 +435,7 @@ export default function RegisterForm() {
             </Grid>
             <Grid container>
             <Grid item md={5} xs={12} className={classes.form}>
+
             <FormControl variant="outlined" size="small" fullWidth>
               <InputLabel id="select-patient-gender">Conselho</InputLabel>
                 <Select
@@ -411,9 +445,9 @@ export default function RegisterForm() {
                   //value={state.gender}
                   //  onChange={(element) => setState({ ...state, gender: `${element.target.value}` || '' })}
 
-                    >
+                  input={<BootstrapInput />}>
                 <MenuItem value="">
-                <em>&nbsp;</em>
+                <em>Conselho</em>
                 </MenuItem>
                 {councilState.list.data.map(council => <MenuItem key={`council_${council._id}`} value={council._id}>{council.initials}</MenuItem>)}
                 </Select>
@@ -442,7 +476,7 @@ export default function RegisterForm() {
 
                     >
                 <MenuItem value="">
-                <em>&nbsp;</em>
+                <em>UF</em>
                 </MenuItem>
                 {userTypes.map(usertype => <MenuItem key={`usertype_${usertype}`} value={usertype}>{usertype}</MenuItem>)}
                 </Select>
