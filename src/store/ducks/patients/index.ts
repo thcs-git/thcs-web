@@ -9,9 +9,9 @@ export const INITIAL_STATE: PatientState = {
     birthdate: '',
     gender: '',
     mother_name: '',
-    profession: '',
+    profession: 'FIELD_NOT_EXISTS_IN_PATIENT_REGISTRATION',
     nationality: '',
-    naturalness: '',
+    naturalness: 'FIELD_NOT_EXISTS_IN_PATIENT_REGISTRATION',
     marital_status: '',
     fiscal_number: '',
     national_id: '',
@@ -27,7 +27,7 @@ export const INITIAL_STATE: PatientState = {
     },
     phones: [],
     email: '',
-    sus_card: '',
+    sus_card: 'FIELD_NOT_EXISTS_IN_PATIENT_REGISTRATION',
     blood_type: '',
     organ_donor: false,
     active: true
@@ -47,7 +47,13 @@ export const INITIAL_STATE: PatientState = {
 const reducer: Reducer<PatientState> = (state = INITIAL_STATE, action) => {
   switch (action.type) {
     case PatientTypes.REGISTRAION_COMPLETED:
-      return { ...state, isRegistrationCompleted: action.payload.value };
+      return { ...state,
+        data: {
+          ...state.data,
+          _id: action.payload.id
+        },
+        isRegistrationCompleted: action.payload.value
+      };
     case PatientTypes.LOAD_REQUEST:
       return { ...state, loading: true, success: false, };
     case PatientTypes.LOAD_SUCCCES:
@@ -88,13 +94,17 @@ const reducer: Reducer<PatientState> = (state = INITIAL_STATE, action) => {
       }
     case PatientTypes.LOAD_FAILURE:
       return {
-        ...state, loading: false, error: true, success: false,
+        ...INITIAL_STATE, loading: false, error: true, success: false,
           list: {
             data: [],
             limit: '10',
             page: '1',
             total: 0
           }
+      };
+    case PatientTypes.LOAD_FAILURE_CREATE_PATIENT:
+      return {
+        ...state, loading: false, error: true, success: false,
       };
     case PatientTypes.CREATE_PATIENT_REQUEST:
       return {

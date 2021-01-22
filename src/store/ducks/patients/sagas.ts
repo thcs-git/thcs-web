@@ -4,7 +4,7 @@ import { AxiosResponse } from 'axios';
 
 import { apiSollar, viacep } from '../../../services/axios';
 
-import { loadSuccess, loadFailure, successGetAddress, createPatientSuccess, loadSuccessGetPatientById, updatePatientSuccess } from './actions';
+import { loadSuccess, loadFailure, loadFailureCreatePatient, successGetAddress, createPatientSuccess, loadSuccessGetPatientById, updatePatientSuccess, setIfRegistrationCompleted } from './actions';
 import { PatientInterface, ViacepDataInterface, LoadRequestParams } from './types';
 
 const token = localStorage.getItem('token');
@@ -34,12 +34,15 @@ export function* getPatientById({ payload: { id: _id } }: any) {
 
 export function* createPatient({ payload: { data } }: any) {
   try {
-    const response:AxiosResponse = yield call(apiSollar.post, `/patient/store`, data, { headers: { token } })
+    const response: AxiosResponse = yield call(apiSollar.post, `/patient/store`, data, { headers: { token } })
     yield put(createPatientSuccess(response.data))
+    yield put(setIfRegistrationCompleted(true, response.data._id));
+
     toast.success('Paciente cadastrado com sucesso!');
   } catch(e) {
     toast.error('Erro ao cadastrar o paciente');
-    yield put(loadFailure(data));
+    yield put(setIfRegistrationCompleted(false));
+    yield put(loadFailureCreatePatient());
   }
 }
 
@@ -51,8 +54,10 @@ export function* updatePatient({ payload: { data } }: any) {
 
     toast.success('Paciente atualizado com sucesso!');
     yield put(updatePatientSuccess(response.data))
+    yield put(setIfRegistrationCompleted(true));
   } catch (error) {
     toast.error("Não foi possível atualizar os dados do paciente");
+    yield put(setIfRegistrationCompleted(false));
     yield put(loadFailure());
   }
 }

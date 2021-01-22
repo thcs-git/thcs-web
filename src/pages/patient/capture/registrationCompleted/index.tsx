@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
+import { useHistory } from 'react-router-dom';
 import { Container, Grid, Menu, MenuItem, Dialog, DialogTitle, DialogContent, DialogContentText, DialogActions, Radio, RadioGroup, FormControlLabel, TextField, FormControl, Card, CardContent } from '@material-ui/core';
 
 
@@ -10,6 +11,7 @@ import { ReactComponent as SuccessImage } from '../../../../assets/img/ilustraca
 import { ReactComponent as IconProfile } from '../../../../assets/img/icon-profile.svg';
 
 import { BoxCustom as Box, Profile, SuccessContent, ButtonsContainer, PatientWrapper } from './styles';
+import { ApplicationState } from '../../../../store';
 
 interface ICaptureData {
   type: string;
@@ -17,14 +19,18 @@ interface ICaptureData {
   estimate: string;
 }
 
-const registrationCompleted: React.FC<any> = () => {
+const registrationCompleted: React.FC<any> = ({ id }) => {
+  const history = useHistory();
   const dispatch = useDispatch();
+  const patientState = useSelector((state: ApplicationState) => state.patients);
+
   const [captureOptionsModalOpen, setCaptureModalModalOpen] = useState(false);
   const [captureData, setCaptureData] = useState<ICaptureData>({
     type: '',
     orderNumber: '',
     estimate: '',
   });
+
 
   return (
     <Container>
@@ -48,7 +54,10 @@ const registrationCompleted: React.FC<any> = () => {
         </Profile>
 
         <ButtonsContainer>
-            <Button variant="outlined" background="success_rounded" onClick={() => dispatch(setIfRegistrationCompleted(false))}>
+            <Button variant="outlined" background="success_rounded" onClick={() => {
+              dispatch(setIfRegistrationCompleted(false));
+              history.push(`/patient/${patientState.data._id}/edit`)
+            }}>
               Editar
             </Button>
             <Button variant="contained"  background="success" onClick={() => setCaptureModalModalOpen(true)}>
@@ -58,7 +67,7 @@ const registrationCompleted: React.FC<any> = () => {
       </Box>
 
       <PatientWrapper>
-        <Button variant="contained"  background="success_rounded">
+        <Button variant="contained"  background="success_rounded" onClick={() => history.push('/patient')}>
           Listar pacientes
         </Button>
       </PatientWrapper>

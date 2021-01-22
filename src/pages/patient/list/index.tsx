@@ -23,6 +23,7 @@ import {
   ListItemSubTitle,
 } from './styles';
 import Loading from '../../../components/Loading';
+import { loadFailure } from '../../../store/ducks/areas/actions';
 
 export default function PatientList() {
   const history = useHistory();
@@ -52,6 +53,10 @@ export default function PatientList() {
 
   const debounceSearchRequest = debounce(handleChangeInput, 900)
 
+  const handleClickButton = useCallback(() => {
+    history.push('/patient/create/')
+  }, [])
+
   return (
     <>
       <Sidebar>
@@ -60,7 +65,7 @@ export default function PatientList() {
           <FormTitle>Lista de Pacientes</FormTitle>
 
           <SearchComponent
-            handleButton={() => history.push('/patient/create/')}
+            handleButton={handleClickButton}
             buttonTitle="Novo"
             onChangeInput={debounceSearchRequest}
           />
