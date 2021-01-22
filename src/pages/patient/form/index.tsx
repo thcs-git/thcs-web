@@ -264,6 +264,7 @@ export default function PatientForm(props: RouteComponentProps<IPageParams>) {
     setType(element.target.value);
   }, [type]);
 
+
   const handleSaveFormPatient = useCallback(() => {
     const patientData = {
       ...state,
