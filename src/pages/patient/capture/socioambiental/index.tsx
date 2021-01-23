@@ -1,18 +1,12 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { useHistory, RouteComponentProps } from 'react-router-dom';
-import { Container, StepLabel, Radio, RadioGroup, FormControlLabel } from '@material-ui/core';
+import { Container, StepLabel, Radio, RadioGroup, FormControlLabel, FormGroup, Checkbox } from '@material-ui/core';
 
 import { useDispatch, useSelector } from 'react-redux';
 import { ApplicationState } from '../../../../store';
 
-import { loadRequest as getDocumentGroup } from '../../../../store/ducks/documentGroups/actions';
-import { DocumentGroupInterface } from '../../../../store/ducks/documentGroups/types';
-import { DocumentInterface, DocumentState } from '../../../../store/ducks/documents/types';
-
-import { createDocumentRequest, loadRequest as getDocumentAction } from '../../../../store/ducks/documents/actions';
-
-import { loadCareById } from '../../../../store/ducks/cares/actions';
-import { CareInterface } from '../../../../store/ducks/cares/types';
+import { loadCareById, actionDocumentGroupSocioAmbientalRequest, actionDocumentSocioAmbientalRequest, actionDocumentSocioAmbientalStoreRequest, actionDocumentSocioAmbientalUpdateRequest, cleanAction } from '../../../../store/ducks/cares/actions';
+import { CareInterface, DocumentGroupInterface } from '../../../../store/ducks/cares/types';
 
 import PatientCard from '../../../../components/Card/Patient';
 import Loading from '../../../../components/Loading';
@@ -20,7 +14,6 @@ import Sidebar from '../../../../components/Sidebar';
 
 import Button from '../../../../styles/components/Button';
 import { FormTitle, QuestionSection, QuestionTitle, ScoreTotalContent, ScoreLabel, ScoreTotal } from '../../../../styles/components/Form';
-import { StepperComponent, StepComponent, StepTitle } from '../../../../styles/components/Step';
 
 import { ButtonsContent, FormContent } from './styles';
 
@@ -36,19 +29,16 @@ interface IScore {
 }
 
 export default function SocioAmbiental(props: RouteComponentProps<IPageParams>) {
-  const id = '5ffd79012f5d2b1d8ff6bea3';
-
   const { params } = props.match;
 
   const history = useHistory();
   const dispatch = useDispatch();
 
-  const documentGroupState = useSelector((state: ApplicationState) => state.documentGroups);
-  const documentState = useSelector((state: ApplicationState) => state.documents);
   const careState = useSelector((state: ApplicationState) => state.cares);
+  const { documentGroup: documentGroupState, document: documentState } = careState;
 
   const [care, setCare] = useState<CareInterface>();
-  const [documentGroup, setDocumentGroup] = useState<any>({
+  const [documentGroup, setDocumentGroup] = useState<DocumentGroupInterface>({
     _id: '',
     name: '',
     description: '',
@@ -59,71 +49,82 @@ export default function SocioAmbiental(props: RouteComponentProps<IPageParams>) 
     updated_by: { _id: '' },
   });
   const [document, setDocument] = useState<any>();
-  const [selected, setSelected] = useState<String[]>([]);
   const [score, setScore] = useState<IScore>({ total: 0, complexity: 'Sem Complexidade', status: '' });
 
   useEffect(() => {
-    dispatch(getDocumentGroup({ _id: id }))
+    dispatch(actionDocumentGroupSocioAmbientalRequest());
     dispatch(loadCareById(params.id));
 
     if (params?.documentId) {
-      dispatch(getDocumentAction({ _id: params.documentId }));
+      dispatch(actionDocumentSocioAmbientalRequest({ _id: params.documentId, care_id: params.id }));
     }
+
   }, []);
 
   useEffect(() => {
     if (careState.data?._id) {
       setCare(careState.data);
     }
-  }, [careState.data]);
+  }, [careState]);
 
   useEffect(() => {
-    if (documentGroupState.data?._id) {
-      setDocumentGroup(documentGroupState.data);
+    if (!documentGroup._id) {
+      setDocumentGroup(documentGroupState);
     }
-  }, [documentGroupState])
+  }, [documentGroupState]);
 
   useEffect(() => {
-    setDocument(documentState);
-  }, [documentState]);
+    if (documentState) {
+      setDocument(documentState);
 
-  useEffect(() => {
-    if (
-      documentState.success &&
-      !documentState.loading &&
-      !documentState.error
-    ) {
-      if (care?._id) {
-        history.push(`/patient/capture/${care._id}/overview/`, { success: true })
+      if (
+        documentState?.success &&
+        !documentState?.loading &&
+        !documentState?.error
+      ) {
+        if (care?._id) {
+          history.push(`/patient/capture/${care._id}/overview/`, { success: true });
+        }
       }
     }
-  }, [documentState])
+  }, [careState.document]);
 
-  const selectOption = useCallback((field_id: string, option_id: string) => {
+  useEffect(() => {
+    if (document?._id) {
+      handleFieldAnswer();
+    }
+  }, [document]);
+
+  const selectOption = useCallback((field_id: string, option_id: string, multiple: boolean = false) => {
     let documentGroupCopy = { ...documentGroup };
 
-    documentGroupCopy.fields.map((field: any) => {
+    documentGroupCopy?.fields?.map((field: any) => {
       if (field._id === field_id) {
         field.options.map((option: any) => {
           if (option._id === option_id) {
-            option.selected = true;
+            if (option?.selected) {
+              option.selected = !option.selected;
+            } else {
+              option.selected = true;
+            }
           } else {
-            option.selected = false;
+            if (!multiple) {
+              option.selected = false;
+            }
           }
         })
       }
     });
 
     setDocumentGroup(documentGroupCopy);
-
     calculateScore();
 
-  }, [selected, documentGroup]);
+  }, [documentGroup]);
 
   const calculateScore = useCallback(() => {
     let partialScore = 0, countQuestionReject = 0;
 
-    documentGroup.fields.map((field: any) => {
+    documentGroup?.fields?.map((field: any) => {
       field.options.map((option: any) => {
         if (option?.selected) {
           if (option.value < 0) {
@@ -147,10 +148,29 @@ export default function SocioAmbiental(props: RouteComponentProps<IPageParams>) 
 
   }, [documentGroup]);
 
+  const handleFieldAnswer = useCallback(() => {
+    let documentGroupCopy = { ...documentGroup };
+
+    documentGroupCopy?.fields?.map((field: any) => {
+      field.options.map((option: any) => {
+        const optionFounded = document.fields?.find((opt: any) => {
+          return opt.option_id === option._id
+        });
+
+        option.selected = (optionFounded) ? true : false;
+
+        return option;
+      });
+    });
+
+    setDocumentGroup(documentGroupCopy);
+    calculateScore();
+  }, [documentGroup, document]);
+
   const handleSubmit = useCallback(() => {
     let selecteds: any = [];
 
-    documentGroup.fields.map((field: any) => {
+    documentGroup?.fields?.map((field: any) => {
       field.options.map((option: any) => {
         if (option?.selected) {
           selecteds.push({ _id: field._id, description: field.description, option_id: option._id, value: option.value })
@@ -162,37 +182,26 @@ export default function SocioAmbiental(props: RouteComponentProps<IPageParams>) 
       const createDocumentParams = {
         ...score,
         pacient_id: care.patient_id?._id,
-        care_id: care._id,
-        document_group_id: documentGroup._id,
+        care_id: care?._id,
+        document_group_id: documentGroup?._id || '',
         finished: true,
         canceled: false,
         fields: selecteds,
         created_by: { _id: '5e8cfe7de9b6b8501c8033ac' },
       };
 
-      dispatch(createDocumentRequest(createDocumentParams));
+      if (document?._id) {
+        dispatch(actionDocumentSocioAmbientalUpdateRequest({ ...createDocumentParams, _id: document._id }));
+      } else {
+        dispatch(actionDocumentSocioAmbientalStoreRequest(createDocumentParams));
+      }
     }
 
   }, [documentGroup, care]);
 
-  const handleFieldAnswer = useCallback((option: any) => {
-    let findField: any = false;
-
-    if (document?.list?.fields) {
-      findField = document.list.fields.find((f: any) => (
-        option._id === f.option_id
-      ));
-    }
-
-    return findField || option?.selected || false;
-
-  }, [document])
-
   return (
     <Sidebar>
-      {(documentGroupState.loading || careState.loading || documentState.loading) && (
-        <Loading />
-      )}
+      {careState.loading && <Loading />}
       <Container>
 
         {care?.patient_id && (
@@ -205,21 +214,41 @@ export default function SocioAmbiental(props: RouteComponentProps<IPageParams>) 
         <FormTitle>{documentGroup.name}</FormTitle>
 
         <FormContent>
-          {documentGroup.fields.map((field: any, index: number) => (
+          {documentGroup?.fields?.map((field: any, index: number) => (
             <QuestionSection key={`question_${field._id}_${index}`}>
               <QuestionTitle>{field.description}</QuestionTitle>
 
-              <RadioGroup onChange={e => selectOption(field._id, e.target.value)}>
-                {field.options.map((option: any, index: number) => (
-                  <FormControlLabel
-                    key={`option_${field._id}_${index}`}
-                    value={option._id}
-                    control={<Radio color="primary" />}
-                    label={option.text}
-                    checked={handleFieldAnswer(option)}
-                  />
-                ))}
-              </RadioGroup>
+              {field.type === 'radio' && (
+                <RadioGroup onChange={e => selectOption(field._id, e.target.value)}>
+                  {field.options.map((option: any, index: number) => (
+                    <FormControlLabel
+                      key={`option_${field._id}_${index}`}
+                      value={option._id}
+                      control={<Radio color="primary" />}
+                      label={option.text}
+                      checked={option?.selected}
+                    />
+                  ))}
+                </RadioGroup>
+              )}
+
+              {field.type === 'check' && (
+                <FormGroup>
+                  {field.options.map((option: any, index: number) => (
+                    <FormControlLabel
+                      key={`option_${field._id}_${index}`}
+                      value={option._id}
+                      onChange={e => selectOption(field._id, option._id, true)}
+                      control={(
+                        <Checkbox color="primary"
+                          checked={option?.selected ?? false}
+                        />
+                      )}
+                      label={option.text}
+                    />
+                  ))}
+                </FormGroup>
+              )}
             </QuestionSection>
           ))}
 

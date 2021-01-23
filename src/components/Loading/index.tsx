@@ -3,6 +3,8 @@ import { createPortal } from 'react-dom';
 import { makeStyles, createStyles, Theme } from '@material-ui/core/styles';
 import CircularProgress, { CircularProgressProps } from '@material-ui/core/CircularProgress';
 
+import { ReactComponent as LoadingSollar } from '../../assets/img/loading-sollar.svg';
+
 const useStylesFacebook = makeStyles((theme: Theme) =>
   createStyles({
     bottom: {
@@ -40,7 +42,7 @@ const FacebookCircularProgress = (props: CircularProgressProps) => {
 
   const spinner = (
     <>
-      <CircularProgress
+      {/* <CircularProgress
         variant="determinate"
         className={classes.bottom}
         size={40}
@@ -58,7 +60,8 @@ const FacebookCircularProgress = (props: CircularProgressProps) => {
         size={40}
         thickness={4}
         {...props}
-      />
+      /> */}
+      <LoadingSollar />
     </>
   )
 

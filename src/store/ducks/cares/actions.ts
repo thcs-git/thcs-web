@@ -1,5 +1,5 @@
 import { action } from 'typesafe-actions';
-import { CareTypes, CareInterface, LoadRequestParams } from './types';
+import { CareTypes, CareInterface, LoadRequestParams, DocumentGroupInterface, DocumentInterface } from './types';
 
 export const loadRequest = (params: LoadRequestParams = {}) => action(CareTypes.LOAD_REQUEST, { params });
 
@@ -18,3 +18,65 @@ export const loadSuccessGetCareById = (data: CareInterface) => action(CareTypes.
 
 export const searchCareRequest = (params: any) => action(CareTypes.SEARCH_CARE_REQUEST, { params });
 export const searchCareSuccess = (data: CareInterface) => action(CareTypes.SEARCH_CARE_SUCCESS, { data });
+
+/**
+ * Documento Socioambiental
+ */
+
+export const actionDocumentGroupSocioAmbientalRequest = () => action(CareTypes.DOCUMENT_GROUP_SOCIOAMBIENTAL_REQUEST);
+export const actionDocumentGroupSocioAmbiental = (data: DocumentGroupInterface) => action(CareTypes.DOCUMENT_GROUP_SOCIOAMBIENTAL, { data });
+
+export const actionDocumentSocioAmbientalRequest = (data: DocumentInterface) => action(CareTypes.DOCUMENT_SOCIOAMBIENTAL_REQUEST, { data });
+export const actionDocumentSocioAmbiental = (data: DocumentInterface) => action(CareTypes.DOCUMENT_SOCIOAMBIENTAL, { data });
+
+export const actionDocumentSocioAmbientalStoreRequest = (data: DocumentInterface) => action(CareTypes.DOCUMENT_SOCIOAMBIENTAL_STORE_REQUEST, {
+  ...data
+});
+export const actionDocumentSocioAmbientalStore = (data: DocumentInterface) => action(CareTypes.DOCUMENT_SOCIOAMBIENTAL_STORE, { data });
+
+export const actionDocumentSocioAmbientalUpdateRequest = (data: DocumentInterface) => action(CareTypes.DOCUMENT_SOCIOAMBIENTAL_UPDATE_REQUEST, {
+  ...data
+});
+export const actionDocumentSocioAmbientalUpdate = (data: DocumentInterface) => action(CareTypes.DOCUMENT_SOCIOAMBIENTAL_UPDATE, { data });
+
+/**
+ * Documento ABEMID
+ */
+
+export const actionDocumentGroupAbemidRequest = () => action(CareTypes.DOCUMENT_GROUP_ABEMID_REQUEST);
+export const actionDocumentGroupAbemid = (data: DocumentGroupInterface) => action(CareTypes.DOCUMENT_GROUP_ABEMID, { data });
+
+export const actionDocumentAbemidRequest = (data: DocumentInterface) => action(CareTypes.DOCUMENT_ABEMID_REQUEST, { data });
+export const actionDocumentAbemid = (data: DocumentInterface) => action(CareTypes.DOCUMENT_ABEMID, { data });
+
+export const actionDocumentAbemidStoreRequest = (data: DocumentInterface) => action(CareTypes.DOCUMENT_ABEMID_STORE_REQUEST, {
+  ...data
+});
+export const actionDocumentAbemidStore = (data: DocumentInterface) => action(CareTypes.DOCUMENT_ABEMID_STORE, { data });
+
+export const actionDocumentAbemidUpdateRequest = (data: DocumentInterface) => action(CareTypes.DOCUMENT_ABEMID_UPDATE_REQUEST, {
+  ...data
+});
+export const actionDocumentAbemidUpdate = (data: DocumentInterface) => action(CareTypes.DOCUMENT_ABEMID_UPDATE, { data });
+
+/**
+ * Documento NEAD
+ */
+
+export const actionDocumentGroupNeadRequest = () => action(CareTypes.DOCUMENT_GROUP_NEAD_REQUEST);
+export const actionDocumentGroupNead = (data: DocumentGroupInterface) => action(CareTypes.DOCUMENT_GROUP_NEAD, { data });
+
+export const actionDocumentNeadRequest = (data: DocumentInterface) => action(CareTypes.DOCUMENT_NEAD_REQUEST, { data });
+export const actionDocumentNead = (data: DocumentInterface) => action(CareTypes.DOCUMENT_NEAD, { data });
+
+export const actionDocumentNeadStoreRequest = (data: DocumentInterface) => action(CareTypes.DOCUMENT_NEAD_STORE_REQUEST, {
+  ...data
+});
+export const actionDocumentNeadStore = (data: DocumentInterface) => action(CareTypes.DOCUMENT_NEAD_STORE, { data });
+
+export const actionDocumentNeadUpdateRequest = (data: DocumentInterface) => action(CareTypes.DOCUMENT_NEAD_UPDATE_REQUEST, {
+  ...data
+});
+export const actionDocumentNeadUpdate = (data: DocumentInterface) => action(CareTypes.DOCUMENT_NEAD_UPDATE, { data });
+
+export const cleanAction = () => action(CareTypes.CLEAN);

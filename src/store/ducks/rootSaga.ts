@@ -31,7 +31,25 @@ import { UserTypes } from './users/types';
 import { get as getUsers, createUser, getAddress as getAddressUser, getUserById, updateUser, searchUser } from './users/sagas';
 
 import { CareTypes } from './cares/types';
-import { get as getCares, createCare, getCareById, updateCare, search as searchCare } from './cares/sagas';
+import {
+    get as getCares,
+    createCare,
+    getCareById,
+    updateCare,
+    search as searchCare,
+    getDocumentGroupSocioAmbiental,
+    getDocumentSocioAmbiental,
+    storeDocumentSocioAmbiental,
+    updateDocumentSocioAmbiental,
+    getDocumentGroupAbemid,
+    getDocumentAbemid,
+    storeDocumentAbemid,
+    updateDocumentAbemid,
+    getDocumentGroupNead,
+    getDocumentNead,
+    storeDocumentNead,
+    updateDocumentNead,
+} from './cares/sagas';
 
 export default function* rootSaga() {
   return yield all([
@@ -55,6 +73,21 @@ export default function* rootSaga() {
     takeLatest(CareTypes.CREATE_CARE_REQUEST, createCare),
     takeLatest(CareTypes.UPDATE_CARE_REQUEST, updateCare),
     takeLatest(CareTypes.SEARCH_CARE_REQUEST, searchCare),
+
+    takeLatest(CareTypes.DOCUMENT_GROUP_SOCIOAMBIENTAL_REQUEST, getDocumentGroupSocioAmbiental),
+    takeLatest(CareTypes.DOCUMENT_SOCIOAMBIENTAL_REQUEST, getDocumentSocioAmbiental),
+    takeLatest(CareTypes.DOCUMENT_SOCIOAMBIENTAL_STORE_REQUEST, storeDocumentSocioAmbiental),
+    takeLatest(CareTypes.DOCUMENT_SOCIOAMBIENTAL_UPDATE_REQUEST, updateDocumentSocioAmbiental),
+
+    takeLatest(CareTypes.DOCUMENT_GROUP_ABEMID_REQUEST, getDocumentGroupAbemid),
+    takeLatest(CareTypes.DOCUMENT_ABEMID_REQUEST, getDocumentAbemid),
+    takeLatest(CareTypes.DOCUMENT_ABEMID_STORE_REQUEST, storeDocumentAbemid),
+    takeLatest(CareTypes.DOCUMENT_ABEMID_UPDATE_REQUEST, updateDocumentAbemid),
+
+    takeLatest(CareTypes.DOCUMENT_GROUP_NEAD_REQUEST, getDocumentGroupNead),
+    takeLatest(CareTypes.DOCUMENT_NEAD_REQUEST, getDocumentNead),
+    takeLatest(CareTypes.DOCUMENT_NEAD_STORE_REQUEST, storeDocumentNead),
+    takeLatest(CareTypes.DOCUMENT_NEAD_UPDATE_REQUEST, updateDocumentNead),
 
     // Council
     takeLatest(CouncilTypes.LOAD_REQUEST, getCouncils),
