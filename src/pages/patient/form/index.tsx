@@ -2,7 +2,7 @@ import React, { useState, useEffect, useCallback } from 'react';
 import Tab from '@material-ui/core/Tab';
 
 import { useDispatch, useSelector } from 'react-redux';
-import { createPatientRequest, updatePatientRequest, getAddress as getAddressAction, loadPatientById, setIfRegistrationCompleted } from '../../../store/ducks/patients/actions';
+import { createPatientRequest, updatePatientRequest, getAddress as getAddressAction, loadPatientById, setIfRegistrationCompleted, loadFailure } from '../../../store/ducks/patients/actions';
 import { PatientInterface } from '../../../store/ducks/patients/types';
 
 import { ApplicationState } from '../../../store';
@@ -58,6 +58,7 @@ import {
 } from './styles';
 import Box from '@material-ui/core/Box';
 import Typography from '@material-ui/core/Typography';
+import { loadSuccess } from '../../../store/ducks/areas/actions';
 
 interface IFormFields {
   bloodType: string | null,
@@ -117,13 +118,13 @@ export default function PatientForm(props: RouteComponentProps<IPageParams>) {
     birthdate: '',
     gender: '',
     mother_name: '',
-    profession: '',
     nationality: '',
-    naturalness: '',
-    marital_status: '',
+    profession: 'FIELD_NOT_EXISTS_IN_PATIENT_REGISTRATION',
+    naturalness: 'FIELD_NOT_EXISTS_IN_PATIENT_REGISTRATION',
     fiscal_number: '',
     national_id: '',
     issuing_organ: '',
+    marital_status: '',
     address_id: {
       postal_code: '',
       street: '',
@@ -132,13 +133,29 @@ export default function PatientForm(props: RouteComponentProps<IPageParams>) {
       city: '',
       state: '',
       complement: '',
+      area: ''
     },
     email: '',
-    phones: [],
-    sus_card: '',
+    phones: [{
+      cellnumber: '',
+      number: ''
+    }],
+    responsible_name: '',
+    responsible_phone: '',
+    relatives: '',
+    active: false,
+    sus_card: 'FIELD_NOT_EXISTS_IN_PATIENT_REGISTRATION',
     blood_type: '',
     organ_donor: false,
-    active: true,
+
+    assistent_doctor: '',
+    convenio: '',
+    health_insurance: '',
+    hospital: '',
+    hospital_bed: '',
+    sector: '',
+    sub_health_insurance: '',
+    unit_health: ''
   });
 
   const [form, setForm] = useState<IFormFields>({
@@ -156,26 +173,28 @@ export default function PatientForm(props: RouteComponentProps<IPageParams>) {
   useEffect(() => {
     if (params.id) {
       dispatch(loadPatientById(params.id));
+    } else {
+      dispatch(loadFailure());
     }
   }, [dispatch, params]);
 
   useEffect(() => {
     setState(prevState => {
       return {
-        ...prevState,
+        ...patientState.data,
         address_id: {
           ...patientState.data.address_id
         }
       }
     });
 
-    setForm(prevState => ({
-      ...prevState,
-      phone: patientState.data.phones.find(phone => phone.cellnumber)?.cellnumber || '',
-      cellphone: patientState.data.phones.find(phone => phone.number)?.number || '',
-    }));
+    // setForm(prevState => ({
+    //   ...prevState,
+    //   phone: patientState.data.phones.find(phone => phone.cellnumber)?.cellnumber || '',
+    //   cellphone: patientState.data.phones.find(phone => phone.number)?.number || '',
+    // }));
 
-  }, [patientState]);
+  }, [patientState.data.address_id]);
 
   useEffect(() => {
     // if (patientState.error) {
@@ -245,12 +264,13 @@ export default function PatientForm(props: RouteComponentProps<IPageParams>) {
     setType(element.target.value);
   }, [type]);
 
+
   const handleSaveFormPatient = useCallback(() => {
     const patientData = {
       ...state,
       phones: [
-        { whatsapp: false, telegram: false, number: form.phone },
-        { whatsapp: false, telegram: false, cellnumber: form.cellphone },
+        { whatsapp: false, telegram: false, number: state.phones[0]?.number },
+        { whatsapp: false, telegram: false, cellnumber: state.phones[0]?.cellnumber },
       ]
     };
 
@@ -266,7 +286,7 @@ export default function PatientForm(props: RouteComponentProps<IPageParams>) {
     <Sidebar>
       {patientState.loading && <Loading />}
       {patientState.isRegistrationCompleted ? (
-        <RegistrationCompleted />
+        <RegistrationCompleted id={state?._id} />
       ): (
         <Container>
         <FormTitle>Cadastro de Paciente</FormTitle>
@@ -300,7 +320,7 @@ export default function PatientForm(props: RouteComponentProps<IPageParams>) {
                     <DatePicker
                       id="input-fiscal-birthdate"
                       label="Data de Nascimento"
-                      value={state.birthdate.length > 10 ? formatDate(state.birthdate, 'YYYY-MM-DD') : state.birthdate}
+                      value={state.birthdate?.length > 10 ? formatDate(state?.birthdate, 'YYYY-MM-DD') : state?.birthdate}
                       onChange={(element) => setState({ ...state, birthdate: element.target.value })}
                       fullWidth
                     />
@@ -403,7 +423,7 @@ export default function PatientForm(props: RouteComponentProps<IPageParams>) {
                       <Select
                         labelId="select-patient-civil"
                         // value={state.gender}
-                        onChange={(element) => setState({ ...state, gender: `${element.target.value}` || '' })}
+                        onChange={(element) => setState({ ...state, marital_status: `${element.target.value}` || '' })}
                         labelWidth={90}
                       >
                         <MenuItem value="">
@@ -416,32 +436,40 @@ export default function PatientForm(props: RouteComponentProps<IPageParams>) {
                   </Grid>
 
                   <Grid item md={3} xs={12}>
-                    <FormControl variant="outlined" size="small" fullWidth>
-                      <InputLabel id="select-patient-blood">Tipo sanguíneo</InputLabel>
-                      <Select
-                        labelId="select-patient-blood"
-                        // value={state.gender}
-                        onChange={(element) => setState({ ...state, gender: `${element.target.value}` || '' })}
-                        labelWidth={90}
-                      >
-                        <MenuItem value="">
-                          <em>&nbsp;</em>
-                        </MenuItem>
-                        <MenuItem value={10}>Solteiro</MenuItem>
-                        <MenuItem value={10}>Casado</MenuItem>
-                      </Select>
-                    </FormControl>
+                  <FormGroupSection>
+                    <Autocomplete
+                      id="combo-box-blood-type"
+                      options={bloodTypes}
+                      getOptionLabel={(option) => option}
+                      renderInput={(params) => <TextField {...params} label="Tipo sanguíneo" variant="outlined" />}
+                      value={state?.blood_type}
+                      getOptionSelected={(option, value) => option === state?.blood_type}
+                      onChange={(event: any, newValue) => {
+                        handleBloodType(event, newValue);
+                      }}
+                      size="small"
+                      fullWidth
+                    />
+                    </FormGroupSection>
                   </Grid>
 
                   <Grid item md={6} xs={6}>
+
                     <FormControlCustom>
                       <FormLabel component="legend">Doador de Órgãos?</FormLabel>
-                      <RadioGroup row aria-label="registry-type" name="registry-type" value={type} onChange={handleChangeRegistryType}>
-                        <FormControlLabel value="register" control={<Radio color="primary" />} label="Sim" />
-                        <FormControlLabel value="capture" control={<Radio color="primary" />} label="Não" />
-                      </RadioGroup>
-                    </FormControlCustom>
+                        <RadioGroup
+                          row
+                          aria-label="registry-type"
+                          name="registry-type"
+                          value={state.organ_donor}
+                          onChange={(element) => setState({ ...state, organ_donor: JSON.parse(element.target.value) })}
+                        >
+                          <FormControlLabel value={true} control={<Radio color="primary" />} label="Sim" />
+                          <FormControlLabel value={false} control={<Radio color="primary" />} label="Não" />
+                        </RadioGroup>
+                      </FormControlCustom>
                     </Grid>
+
                   <Grid item md={10} />
                 </Grid>
               </FormGroupSection>
@@ -548,7 +576,7 @@ export default function PatientForm(props: RouteComponentProps<IPageParams>) {
                       variant="outlined"
                       size="small"
                       value={state.address_id.state}
-                      onChange={(element) => setState({ ...state, address_id: { ...state.address_id, state: element.target.value } })}
+                      onChange={(element) => setState({ ...state, address_id: { ...state.address_id, area: element.target.value } })}
                       fullWidth
                     />
                   </Grid>
@@ -572,11 +600,14 @@ export default function PatientForm(props: RouteComponentProps<IPageParams>) {
                       label="Telefone Residencial"
                       variant="outlined"
                       size="small"
-                      value={form.phone}
+                      value={state.phones[0]?.number}
                       onChange={(element) => {
-                        setForm(prevState => ({
+                        setState(prevState => ({
                           ...prevState,
-                          phone: element.target.value
+                          phones: [{
+                            ...prevState.phones[0],
+                            number: element.target.value
+                          }]
                         }));
                       }}
                       placeholder="0000-0000"
@@ -589,14 +620,15 @@ export default function PatientForm(props: RouteComponentProps<IPageParams>) {
                       label="Celular"
                       variant="outlined"
                       size="small"
-                      value={form.cellphone}
+                      value={state.phones[0]?.cellnumber}
                       onChange={(element) => {
-                        setForm(prevState => ({
+                        setState(prevState => ({
                           ...prevState,
-                          cellphone: element.target.value
+                          phones: [{
+                            ...prevState.phones[0],
+                            cellnumber: element.target.value
+                          }]
                         }));
-
-                        console.log('form', form);
                       }}
                       placeholder="00000-0000"
                       fullWidth
@@ -612,8 +644,8 @@ export default function PatientForm(props: RouteComponentProps<IPageParams>) {
                       label="Nome do responsável"
                       variant="outlined"
                       size="small"
-                      value={state.sus_card}
-                      onChange={(element) => setState({ ...state, sus_card: element.target.value })}
+                      value={state.responsible_name}
+                      onChange={(element) => setState({ ...state, responsible_name: element.target.value })}
                       placeholder=""
                       fullWidth
                     />
@@ -624,8 +656,8 @@ export default function PatientForm(props: RouteComponentProps<IPageParams>) {
                         label="Telefone do responsável"
                         variant="outlined"
                         size="small"
-                        value={state.sus_card}
-                        onChange={(element) => setState({ ...state, sus_card: element.target.value })}
+                        value={state.responsible_phone}
+                        onChange={(element) => setState({ ...state, responsible_phone: element.target.value })}
                         placeholder=""
                         fullWidth
                       />
@@ -636,8 +668,8 @@ export default function PatientForm(props: RouteComponentProps<IPageParams>) {
                       label="Parentesco"
                       variant="outlined"
                       size="small"
-                      value={state.sus_card}
-                      onChange={(element) => setState({ ...state, sus_card: element.target.value })}
+                      value={state.relatives}
+                      onChange={(element) => setState({ ...state, relatives: element.target.value })}
                       placeholder=""
                       fullWidth
                       />
@@ -646,10 +678,10 @@ export default function PatientForm(props: RouteComponentProps<IPageParams>) {
               </FormGroupSection>
               <FormGroupSection>
                 <Grid item md={3} xs={6}>
-                    <FormControlLabel control={<Switch checked={state.organ_donor} onChange={(event) => {
+                    <FormControlLabel control={<Switch checked={state.active} onChange={(event) => {
                     setState(prevState => ({
                       ...prevState,
-                      organ_donor: event.target.checked
+                      active: event.target.checked
                     }))
                   }} />} label="Ativo?" />
                 </Grid>
@@ -677,8 +709,8 @@ export default function PatientForm(props: RouteComponentProps<IPageParams>) {
                     label="Hospital"
                     variant="outlined"
                     size="small"
-                    value={state.name}
-                    onChange={(element) => setState({ ...state, name: element.target.value })}
+                    value={state.hospital}
+                    onChange={(element) => setState({ ...state, hospital: element.target.value })}
                     fullWidth
                   />
                 </Grid>
@@ -688,8 +720,8 @@ export default function PatientForm(props: RouteComponentProps<IPageParams>) {
                     label="Unidade"
                     variant="outlined"
                     size="small"
-                    value={state.name}
-                    onChange={(element) => setState({ ...state, name: element.target.value })}
+                    value={state.unit_health}
+                    onChange={(element) => setState({ ...state, unit_health: element.target.value })}
                     fullWidth
                   />
                 </Grid>
@@ -700,8 +732,8 @@ export default function PatientForm(props: RouteComponentProps<IPageParams>) {
                     label="Médico assistente"
                     variant="outlined"
                     size="small"
-                    value={state.name}
-                    onChange={(element) => setState({ ...state, name: element.target.value })}
+                    value={state.assistent_doctor}
+                    onChange={(element) => setState({ ...state, assistent_doctor: element.target.value })}
                     fullWidth
                   />
                 </Grid>
@@ -712,8 +744,8 @@ export default function PatientForm(props: RouteComponentProps<IPageParams>) {
                     label="Setor"
                     variant="outlined"
                     size="small"
-                    value={state.name}
-                    onChange={(element) => setState({ ...state, name: element.target.value })}
+                    value={state.sector}
+                    onChange={(element) => setState({ ...state, sector: element.target.value })}
                     fullWidth
                   />
                 </Grid>
@@ -723,8 +755,8 @@ export default function PatientForm(props: RouteComponentProps<IPageParams>) {
                     label="Leito"
                     variant="outlined"
                     size="small"
-                    value={state.name}
-                    onChange={(element) => setState({ ...state, name: element.target.value })}
+                    value={state.hospital_bed}
+                    onChange={(element) => setState({ ...state, hospital_bed: element.target.value })}
                     fullWidth
                   />
                 </Grid>
@@ -735,8 +767,8 @@ export default function PatientForm(props: RouteComponentProps<IPageParams>) {
                     label="Convenio"
                     variant="outlined"
                     size="small"
-                    value={state.name}
-                    onChange={(element) => setState({ ...state, name: element.target.value })}
+                    value={state.convenio}
+                    onChange={(element) => setState({ ...state, convenio: element.target.value })}
                     fullWidth
                   />
                 </Grid>
@@ -747,8 +779,8 @@ export default function PatientForm(props: RouteComponentProps<IPageParams>) {
                     label="Plano"
                     variant="outlined"
                     size="small"
-                    value={state.name}
-                    onChange={(element) => setState({ ...state, name: element.target.value })}
+                    value={state.health_insurance}
+                    onChange={(element) => setState({ ...state, health_insurance: element.target.value })}
                     fullWidth
                   />
                 </Grid>
@@ -758,8 +790,8 @@ export default function PatientForm(props: RouteComponentProps<IPageParams>) {
                     label="Sub-plano"
                     variant="outlined"
                     size="small"
-                    value={state.name}
-                    onChange={(element) => setState({ ...state, name: element.target.value })}
+                    value={state.sub_health_insurance}
+                    onChange={(element) => setState({ ...state, sub_health_insurance: element.target.value })}
                     fullWidth
                   />
                 </Grid>
@@ -771,8 +803,10 @@ export default function PatientForm(props: RouteComponentProps<IPageParams>) {
             <ButtonComponent background="secondary" variant="outlined" onClick={() => setCurrentTab(0)}>
               Voltar
             </ButtonComponent>
-            {/* <ButtonComponent background="success" onClick={() => setRegistrationCompleted(true)}> */}
-            <ButtonComponent background="success" onClick={() => dispatch(setIfRegistrationCompleted(true))}>
+            <ButtonComponent background="success"
+              // onClick={() => dispatch(setIfRegistrationCompleted(true))}
+              onClick={handleSaveFormPatient}
+            >
               Salvar
             </ButtonComponent>
           </ButtonsContent>
