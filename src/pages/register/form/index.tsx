@@ -67,24 +67,32 @@ const useStyles = makeStyles((theme) => ({
     display: 'flex',
     flexDirection: 'column',
     justifyContent: 'center',
-    height: '100%'
+
   },
   marginTop:{
     marginTop:theme.spacing(1),
   },
+  containerFlex:{
+      display:'flex',
+      flexDirection:'row',
+      justifyContent:"space-between",
+  },
   paper: {
-    marginTop: theme.spacing(2),
+    marginTop: theme.spacing(1),
     display: 'flex',
     flexDirection: 'column',
     alignItems: 'center',
+
   },
-  avatar: {
-    margin: theme.spacing(1),
-    backgroundColor: theme.palette.secondary.main,
-  },
+
   form: {
     width: '100%', // Fix IE 11 issue.
-    padding: theme.spacing(2,2,0,0),
+    padding: theme.spacing(2,1,0,1)
+  },
+  formFlex: {
+    width: '100%', // Fix IE 11 issue.
+    padding: theme.spacing(2,1,0,1),
+    margin: theme.spacing(0,0,0,0)
   },
   submit: {
     margin: theme.spacing(3, 0, 2),
@@ -113,40 +121,7 @@ const SIZE_INPUT_PASSWORD = 3;
 export default function RegisterForm() {
   const dispatch = useDispatch();
   //const loginState = useSelector((state: ApplicationState) => state.login);
-  const BootstrapInput = withStyles((theme) => ({
-    root: {
-      "label + &": {
-        marginTop: theme.spacing(3)
-      }
-    },
-    input: {
-      borderRadius: 4,
-      position: "relative",
-      backgroundColor: theme.palette.background.paper,
-      border: "1px solid #ced4da",
-      fontSize: 16,
-      padding: "10px 26px 10px 12px",
-      transition: theme.transitions.create(["border-color", "box-shadow"]),
-      // Use the system font instead of the default Roboto font.
-      fontFamily: [
-        "-apple-system",
-        "BlinkMacSystemFont",
-        '"Segoe UI"',
-        "Roboto",
-        '"Helvetica Neue"',
-        "Arial",
-        "sans-serif",
-        '"Apple Color Emoji"',
-        '"Segoe UI Emoji"',
-        '"Segoe UI Symbol"'
-      ].join(","),
-      "&:focus": {
-        borderRadius: 4,
-        borderColor: "#80bdff",
-        boxShadow: "0 0 0 0.2rem rgba(0,123,255,.25)"
-      }
-    }
-  }))(InputBase);
+
   const [inputEmail, setInputEmail] = useState({ value: '', error: false });
   const [inputName, setInputName] = useState({value:'',error: false});
   const [inputCpf, setInputCpf] = useState({value:'',error: false});
@@ -301,20 +276,19 @@ export default function RegisterForm() {
   return (
     <>
 {/* {loginState.loading && <Loading />} */}
-      <Container className={classes.container} maxWidth="sm">
-        <CssBaseline />
-        <div className={classes.paper}>
+      <Container className={classes.container} maxWidth="xs">
+        <FormGroupSection>
+          <div className={classes.paper}>
           <Box display="flex" width={150} height={165} justifyContent="center" alignItems="center">
             <HomeIconLogo />
           </Box>
-
           <WelcomeTextWrapper>
             <TextGray>
               Cadastre seus dados no portal:
             </TextGray>
           </WelcomeTextWrapper>
           <form className={classes.form} noValidate>
-          <Grid item md={5} xs={12}>
+          <Grid  md={5} xs={12} className={classes.form}>
             <FormControl variant="outlined" size="small" fullWidth>
               <InputLabel id="select-patient-gender">Eu sou</InputLabel>
                 <Select
@@ -330,7 +304,7 @@ export default function RegisterForm() {
             </FormControl>
           </Grid>
             <Grid container item md={12} xs={12} className={classes.form}>
-            <FormControl variant="outlined" size="small" margin="normal" fullWidth>
+            <FormControl variant="outlined" size="small" fullWidth>
               <TextField
               error={inputName.error}
                 id="input-social-name"
@@ -350,10 +324,10 @@ export default function RegisterForm() {
                 />
             </FormControl>
             </Grid>
-            <Grid container >
+            <Grid className={classes.containerFlex}  >
 
               <Grid item md={6} xs={12} className={classes.form}>
-                <FormControl variant="outlined" size="small">
+                <FormControl variant="outlined" fullWidth>
                 <TextField
                 error={inputCpf.error}
                   id="input-fiscal-number"
@@ -374,8 +348,8 @@ export default function RegisterForm() {
                 />
                 </FormControl>
               </Grid>
-              <Grid item md={6} xs={12} className={classes.form}>
-              <FormControl variant="outlined" size="small">
+              <Grid item md={6} xs={12}  className={classes.form}>
+              <FormControl variant="outlined" fullWidth>
                 <TextField
                 error={inputPhone.error}
                   id="input-phone-number"
@@ -424,7 +398,7 @@ export default function RegisterForm() {
                 fullWidth
                 />
             </Grid>
-            <Grid container item md={12} xs={12} className={classes.form}>
+            <Grid  item md={12} xs={12} className={classes.form}>
               <TextField
                 id="input-social-name"
                 label="Especialidade"
@@ -433,38 +407,37 @@ export default function RegisterForm() {
                 fullWidth
                 />
             </Grid>
-            <Grid container>
-            <Grid item md={5} xs={12} className={classes.form}>
+            <Grid  className={classes.containerFlex}>
+              <Grid item md={5} xs={12} className={classes.form} >
 
-            <FormControl variant="outlined" size="small" fullWidth>
-              <InputLabel id="select-patient-gender">Conselho</InputLabel>
-                <Select
-                label="Conselho"
-                  labelId="select-council-user"
-                  id="select-council-user"
-                  //value={state.gender}
-                  //  onChange={(element) => setState({ ...state, gender: `${element.target.value}` || '' })}
-
-                  input={<BootstrapInput />}>
-                <MenuItem value="">
-                <em>Conselho</em>
-                </MenuItem>
-                {councilState.list.data.map(council => <MenuItem key={`council_${council._id}`} value={council._id}>{council.initials}</MenuItem>)}
-                </Select>
-          </FormControl>
-          </Grid >
-          <Grid item md={5} xs={12} className={classes.form}>
+                <FormControl variant="outlined" size="small" fullWidth >
+                  <InputLabel id="select-patient-gender">Conselho</InputLabel>
+                    <Select
+                      label="Conselho"
+                      labelId="select-council-user"
+                      id="select-council-user"
+                      //value={state.gender}
+                      //  onChange={(element) => setState({ ...state, gender: `${element.target.value}` || '' })}
+                      >
+                      <MenuItem value="">
+                        <em>Conselho</em>
+                      </MenuItem>
+                      {councilState.list.data.map(council => <MenuItem key={`council_${council._id}`} value={council._id}>{council.initials}</MenuItem>)}
+                    </Select>
+                </FormControl>
+              </Grid >
+          <Grid item md={5} xs={12} className={classes.form} >
             <FormControl variant="outlined" size="small" fullWidth>
               <TextField
                 id="input-social-name"
-                label="Especialidade"
+                label="Nº do Conselho"
                 variant="outlined"
                 size="small"
                 fullWidth
                 />
           </FormControl>
           </Grid >
-          <Grid item md={2} xs={12} className={classes.form}>
+          <Grid item md={4} xs={12} className={classes.formFlex} >
             <FormControl variant="outlined" size="small" fullWidth>
               <InputLabel id="select-patient-gender">UF</InputLabel>
                 <Select
@@ -616,6 +589,8 @@ export default function RegisterForm() {
             </Grid> */}
           </form>
         </div>
+        </FormGroupSection>
+
         <Box mt={8}>
           <Copyright />
         </Box>

@@ -35,4 +35,12 @@ export const TextGray = styled.p`
 export const FormGroupSection = styled.div`
   margin-bottom: 40px;
 `;
+export const FormSection = styled.div`
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  overflow-y:"scroll";
+
+  height: calc(100vh - 96px);
+`;
 

@@ -5,7 +5,7 @@ export default createGlobalStyle`
     margin: 0;
     padding: 0;
     box-sizing: border-box;
-
+    font-size:12px;
     font-family: 'Open Sans', sans-serif !important;
   }
 
@@ -15,6 +15,7 @@ export default createGlobalStyle`
     width: 100%;
     height: 100%;
     background-color: var(--background);
+
   }
 
   *, button, input {
