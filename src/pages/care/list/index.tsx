@@ -1,7 +1,7 @@
-import React, { useState, useEffect } from 'react';
-import { useHistory } from 'react-router-dom';
-import { Container, FormControl, InputLabel, OutlinedInput, InputAdornment, IconButton } from '@material-ui/core';
-import { Add as AddIcon, CheckCircle } from '@material-ui/icons';
+import React, { useState, useEffect, useCallback } from 'react';
+import { useHistory, Link } from 'react-router-dom';
+import { Container, Menu, MenuItem } from '@material-ui/core';
+import { MoreVert } from '@material-ui/icons';
 
 import { useDispatch, useSelector } from 'react-redux';
 import { ApplicationState } from '../../../store/';
@@ -12,9 +12,10 @@ import Sidebar from '../../../components/Sidebar';
 import SearchComponent from '../../../components/List/Search';
 import Loading from '../../../components/Loading';
 import { FormTitle } from '../../../styles/components/Form';
+import { Table, Th, Td } from '../../../styles/components/Table';
 import Button from '../../../styles/components/Button';
 
-import { getDayOfTheWeekName } from '../../../helpers/date';
+import { formatDate } from '../../../helpers/date';
 
 import {
   List,
@@ -30,7 +31,7 @@ import {
 export default function CouncilList() {
   const history = useHistory();
   const dispatch = useDispatch();
-  const careState = useSelector((state: ApplicationState) => state.areas);
+  const careState = useSelector((state: ApplicationState) => state.cares);
 
   useEffect(() => {
     dispatch(loadRequest());
@@ -39,6 +40,14 @@ export default function CouncilList() {
   const [search, setSearch] = useState('');
 
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
+
+  const handleOpenRowMenu = useCallback((event: React.MouseEvent<HTMLButtonElement>) => {
+    setAnchorEl(event.currentTarget);
+  }, [anchorEl]);
+
+  const handleCloseRowMenu = useCallback(() => {
+    setAnchorEl(null);
+  }, [anchorEl]);
 
   const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
     setAnchorEl(event.currentTarget);
@@ -52,56 +61,62 @@ export default function CouncilList() {
     <>
       <Sidebar>
         {careState.loading && <Loading />}
-        {console.log(careState)}
         <Container>
           <FormTitle>Lista de Atendimentos</FormTitle>
 
           <SearchComponent
             handleButton={() => history.push('/care/create/')}
             buttonTitle="Novo Atendimento"
-            value=""
-            onChangeInput={() => { }}
+            value={search}
+            onChangeInput={(e) => setSearch(e.target.value)}
           />
 
-          <List>
-            {careState.list.data.map((area, index) => (
-              <ListLink key={index} to={`/care/${area._id}/edit`}>
-                <ListItem variant="outlined">
-                  <ListItemContent>
-                    <ListItemStatus active={area.active}>{area.active ? 'Ativo' : 'Inativo'}</ListItemStatus>
-                    <div>
-                      <ListItemTitle>NOME DO PACIENTE DA SILVA BARBOSA LEMOS CAVALCANTI</ListItemTitle>
-                      <ListItemSubTitle>: {area.supply_days} dia(s), {getDayOfTheWeekName(area.week_day)}</ListItemSubTitle>
-                    </div>
+          <Table>
+            <thead>
+              <tr>
+                <Th>Paciente</Th>
+                <Th>Atendimento</Th>
+                <Th>CPF</Th>
+                <Th>Tipo</Th>
+                <Th>Complexidade</Th>
+                <Th>Último Atendimento</Th>
+                <Th></Th>
+              </tr>
+            </thead>
+            <tbody>
+              {careState.list.data.map((care, index) => (
+                <tr key={index}>
+                  <Td>
+                    <Link to={`/care/${care._id}/edit`}>
+                      {care.patient_id?.name}
+                    </Link>
+                  </Td>
+                  <Td>{care?._id}</Td>
+                  <Td>{care.patient_id?.fiscal_number}</Td>
+                  <Td>{care.status}</Td>
+                  <Td>{care.status}</Td>
+                  <Td>{formatDate(care?.created_at ?? '', 'DD/MM/YYYY HH:mm:ss')}</Td>
+                  <Td center>
+                    <Button aria-controls={`simple-menu${index}`} id={`btn_simple-menu${index}`} aria-haspopup="true" onClick={handleOpenRowMenu}>
+                      <MoreVert />
+                    </Button>
+                    <Menu
+                      id={`simple-menu${index}`}
+                      anchorEl={anchorEl}
+                      keepMounted
+                      open={anchorEl?.id === `btn_simple-menu${index}`}
+                      onClose={handleCloseRowMenu}
+                    >
+                      <MenuItem onClick={handleCloseRowMenu}>Profile1</MenuItem>
+                      <MenuItem onClick={handleCloseRowMenu}>My account</MenuItem>
+                      <MenuItem onClick={handleCloseRowMenu}>Logout</MenuItem>
+                    </Menu>
 
-                    {/* Se o paciente estiver no status pre-atendimento */}
-                    <CheckListContent>
-                      <div className="checklist-item">
-                        <ListItemTitle>NEAD</ListItemTitle>
-                        <CheckCircle />
-                      </div>
-
-                      <div className="checklist-item">
-                        <ListItemTitle>ABEMID</ListItemTitle>
-                        <AddIcon />
-                      </div>
-
-                      <div className="checklist-item">
-                        <ListItemTitle>Socioambiental</ListItemTitle>
-                        <AddIcon />
-                      </div>
-
-                      <div className="checklist-item">
-                        <ListItemTitle>Manutenção</ListItemTitle>
-                        <AddIcon />
-                      </div>
-                    </CheckListContent>
-
-                  </ListItemContent>
-                </ListItem>
-              </ListLink>
-            ))}
-          </List>
+                  </Td>
+                </tr>
+              ))}
+            </tbody>
+          </Table>
           <PaginationComponent
             page={careState.list.page}
             rowsPerPage={careState.list.limit}

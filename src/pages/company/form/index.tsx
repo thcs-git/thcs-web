@@ -1,8 +1,13 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { loadRequest, getAddress as getAddressAction, createCompanyRequest, loadCompanyById } from '../../../store/ducks/companies/actions';
-import { CompanyInterface } from '../../../store/ducks/companies/types';
+
 import { ApplicationState } from '../../../store';
+
+import { loadRequest as getCustomersAction } from '../../../store/ducks/customers/actions';
+import { CustomerDataItems } from '../../../store/ducks/customers/types';
+
+import { getAddress as getAddressAction, createCompanyRequest, loadCompanyById } from '../../../store/ducks/companies/actions';
+import { CompanyInterface } from '../../../store/ducks/companies/types';
 
 import { useHistory, RouteComponentProps } from 'react-router-dom';
 import {
@@ -46,11 +51,8 @@ interface IPageParams {
 export default function CompanyForm(props: RouteComponentProps<IPageParams>) {
   const history = useHistory();
   const dispatch = useDispatch();
+  const customerState = useSelector((state: ApplicationState) => state.customers);
   const companyState = useSelector((state: ApplicationState) => state.companies);
-  const customers = [
-    { id: 1, name: 'customer 1' },
-    { id: 2, name: 'customer 2' },
-  ];
 
   const { params } = props.match;
 
@@ -75,45 +77,55 @@ export default function CompanyForm(props: RouteComponentProps<IPageParams>) {
     active: true,
     created_by: { _id: '5e8cfe7de9b6b8501c8033ac' }
   });
+  const [customers, setCustomers] = useState<CustomerDataItems[]>([]);
 
   const [openModalCancel, setOpenModalCancel] = useState(false);
 
   useEffect(() => {
+    dispatch(getCustomersAction());
+
     if (params.id) {
       dispatch(loadCompanyById(params.id))
     }
   }, [dispatch]);
 
+  // useEffect(() => {
+  //   setState(prevState => {
+  //     return {
+  //       ...prevState,
+  //       ...companyState.data
+  //     }
+  //   })
+  // }, [companyState]);
+
   useEffect(() => {
-    if (companyState.error) {
-      setState(prevState => {
-        return {
-          ...prevState,
-          address: {
-            ...prevState.address,
-            street: '',
-            number: '',
-            district: '',
-            city: '',
-            state: '',
-            complement: '',
-          },
-        }
-      })
-
-      return;
-    }
-
     setState(prevState => {
       return {
         ...prevState,
         address: {
-          ...companyState.data.address,
-        },
-        created_by: { _id: '5e8cfe7de9b6b8501c8033ac' }
+          ...companyState.data.address
+        }
       }
-    })
-  }, [companyState]);
+    });
+
+    // setForm(prevState => ({
+    //   ...prevState,
+    //   phone: companyState.data.phones.find(phone => phone.cellnumber)?.cellnumber || '',
+    //   cellphone: companyState.data.phones.find(phone => phone.number)?.number || '',
+    // }));
+
+  }, [companyState.data.address]);
+
+  useEffect(() => {
+    setCustomers(customerState.list.data);
+  }, [customerState]);
+
+  const setCustomer = useCallback(({ _id: customerId }: any) => {
+    setState(prevState => ({
+      ...prevState,
+      customerId
+    }));
+  }, [customers]);
 
   function handleOpenModalCancel() {
     setOpenModalCancel(true);
@@ -152,6 +164,7 @@ export default function CompanyForm(props: RouteComponentProps<IPageParams>) {
                     options={customers}
                     getOptionLabel={(option) => option.name}
                     renderInput={(params) => <TextField {...params} label="Cliente" variant="outlined" />}
+                    onChange={(event, value) => setCustomer(value)}
                     size="small"
                     fullWidth
                   />

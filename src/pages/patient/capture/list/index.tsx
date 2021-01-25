@@ -31,12 +31,11 @@ export default function PatientCapture() {
 
   const handleOpenRowMenu = useCallback((event: React.MouseEvent<HTMLButtonElement>) => {
     setAnchorEl(event.currentTarget);
-    console.log('anchorEl?.id', event.currentTarget)
-  }, [anchorEl])
+  }, [anchorEl]);
 
   const handleCloseRowMenu = useCallback(() => {
     setAnchorEl(null);
-  }, [anchorEl])
+  }, [anchorEl]);
 
   const handleChangeFilter = useCallback((index: number) => {
     let newFilter = [...filterState];
