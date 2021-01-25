@@ -6,6 +6,7 @@ import 'react-toastify/dist/ReactToastify.css';
 
 import store from './store';
 import GlobalStyles from './styles/globalStyles';
+import QRCode from "react-qr-code";
 
 import Routes from './routes';
 

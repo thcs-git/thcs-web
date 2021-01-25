@@ -56,6 +56,7 @@ const itemsMenu = [
   { title: 'Pacientes', route: '/patient', icon: <GroupAddIcon style={{ color: '#fff' }} /> },
   { title: 'Atendimento', route: '/care', icon: <LocalHospital style={{ color: '#fff' }} /> },
   { title: 'Avaliação', route: '/avaliation', icon: <StarRateIcon style={{ color: '#fff' }} /> },
+  { title: 'QrCode', route: '/qrcode',icon: <StarRateIcon style={{ color: '#fff' }} /> }
 ]
 
 const useStyles = makeStyles((theme: Theme) =>

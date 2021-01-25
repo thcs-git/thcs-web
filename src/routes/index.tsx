@@ -39,6 +39,7 @@ import PrintDocument from '../pages/care/medical-records/documents/print';
 
 import RegisterForm from '../pages/register/form';
 import AvaliationList from '../pages/avaliation/list';
+import QrCode from '../pages/qrcode/';
 // import PatientForm from '../pages/patient/form';
 // import CareOverview from '../pages/patient/overview';
 
@@ -111,6 +112,8 @@ const Routes = () => (
       <GuestRoute path="/register" component={RegisterForm}/>
       {/* avaliation */}
       <PrivateRoute path="/avaliation" component={AvaliationList} exact />
+      {/* qrcode */}
+      <PrivateRoute path='/qrcode' component ={QrCode} exact></PrivateRoute>
       {/* <PrivateRoute path="/avaliation/:id/edit" component={CareForm} />
       <PrivateRoute path="/avaliation/create" component={CareForm} /> */}
     </Switch>
