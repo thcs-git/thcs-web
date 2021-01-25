@@ -33,6 +33,8 @@ export const INITIAL_STATE: CareState = {
   documentSocioAmbiental: {},
   documentGroupAbemid: {},
   documentAbemid: {},
+  documentGroupNead: {},
+  documentNead: {},
 };
 
 const reducer: Reducer<CareState> = (state = INITIAL_STATE, action) => {
@@ -252,7 +254,7 @@ const reducer: Reducer<CareState> = (state = INITIAL_STATE, action) => {
     case CareTypes.DOCUMENT_GROUP_NEAD:
       return {
         ...state,
-        documentGroup: action.payload.data,
+        documentGroupNead: action.payload.data,
         loading: false,
         error: false,
         success: true
@@ -267,7 +269,7 @@ const reducer: Reducer<CareState> = (state = INITIAL_STATE, action) => {
     case CareTypes.DOCUMENT_NEAD:
       return {
         ...state,
-        document: action.payload.data,
+        documentNead: action.payload.data,
         loading: false,
         error: false,
         success: true
@@ -275,7 +277,7 @@ const reducer: Reducer<CareState> = (state = INITIAL_STATE, action) => {
     case CareTypes.DOCUMENT_NEAD_STORE_REQUEST:
       return {
         ...state,
-        document: action.payload.data,
+        documentNead: action.payload.data,
         loading: true,
         error: false,
         success: false
@@ -283,7 +285,7 @@ const reducer: Reducer<CareState> = (state = INITIAL_STATE, action) => {
     case CareTypes.DOCUMENT_NEAD_STORE:
       return {
         ...state,
-        document: action.payload.data,
+        documentNead: action.payload.data,
         loading: false,
         error: false,
         success: true
@@ -291,7 +293,7 @@ const reducer: Reducer<CareState> = (state = INITIAL_STATE, action) => {
     case CareTypes.DOCUMENT_NEAD_UPDATE_REQUEST:
       return {
         ...state,
-        document: action.payload.data,
+        documentNead: action.payload.data,
         loading: true,
         error: false,
         success: false
@@ -299,7 +301,12 @@ const reducer: Reducer<CareState> = (state = INITIAL_STATE, action) => {
     case CareTypes.DOCUMENT_NEAD_UPDATE:
       return {
         ...state,
-        document: action.payload.data,
+        documentNead: {
+          ...action.payload.data,
+          loading: false,
+          error: false,
+          success: true
+        },
         loading: false,
         error: false,
         success: true

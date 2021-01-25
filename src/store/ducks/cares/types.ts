@@ -118,6 +118,8 @@ export interface CareState {
   documentGroupAbemid: DocumentGroupInterface;
   documentSocioAmbiental: DocumentState;
   documentAbemid: DocumentState;
+  documentGroupNead: DocumentGroupInterface;
+  documentNead: DocumentState;
 }
 
 //========

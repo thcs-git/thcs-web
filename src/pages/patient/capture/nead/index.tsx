@@ -36,7 +36,7 @@ export default function Nead(props: RouteComponentProps<IPageParams>) {
   const dispatch = useDispatch();
 
   const careState = useSelector((state: ApplicationState) => state.cares);
-  const { documentGroupSocioAmbiental: documentGroupState, documentSocioAmbiental: documentState } = careState;
+  const { documentGroupNead: documentGroupState, documentNead: documentState } = careState;
 
   const [steps, setSteps] = useState([
     { title: 'Grupo 1', score: { total: 0, complexity: '', status: '' } },
@@ -86,22 +86,26 @@ export default function Nead(props: RouteComponentProps<IPageParams>) {
       setDocument(documentState);
     }
 
-    // if (
-    //   documentState.success &&
-    //   !documentState.loading &&
-    //   !documentState.error
-    // ) {
-    //   if (care?._id) {
-    //     history.push(`/patient/capture/${care._id}/overview/`, { success: true });
-    //   }
-    // }
+    if (
+      documentState?.success &&
+      !documentState?.loading &&
+      !documentState?.error
+    ) {
+      if (care?._id) {
+        history.push(`/patient/capture/${care._id}/overview/`, { success: true });
+      }
+    }
   }, [documentState]);
 
   useEffect(() => {
     if (document?._id) {
       handleFieldAnswer();
     }
-  }, [document]);
+  }, [document, currentStep]);
+
+  useEffect(() => {
+    calculateScore();
+  }, [documentGroup]);
 
   const selectOption = useCallback((field_id: string, option_id: string, multiple: boolean = false) => {
     let documentGroupCopy = { ...documentGroup };
@@ -194,7 +198,7 @@ export default function Nead(props: RouteComponentProps<IPageParams>) {
     stepsCopy[currentStep].score = { total: partialScore, complexity: getComplexity(partialScore), status: getStatus(partialScore) };
 
     setSteps(stepsCopy);
-  }, [documentGroup]);
+  }, [documentGroup, steps]);
 
   const handleFieldAnswer = useCallback(() => {
     let documentGroupCopy = { ...documentGroup };
@@ -212,7 +216,6 @@ export default function Nead(props: RouteComponentProps<IPageParams>) {
     });
 
     setDocumentGroup(documentGroupCopy);
-    calculateScore();
   }, [documentGroup, document]);
 
   const handleSubmit = useCallback(() => {
@@ -286,7 +289,6 @@ export default function Nead(props: RouteComponentProps<IPageParams>) {
   return (
     <Sidebar>
       {careState.loading && <Loading />}
-      {console.log('documentGroup', documentGroup)}
       <Container>
 
         {care?.patient_id && (
