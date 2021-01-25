@@ -18,7 +18,7 @@ export const PatientResumeContent = styled.div`
   display: flex;
   flex-direction: row;
   align-items: center;
-  justify-content: flex-start;
+  justify-content: space-between;
 
   width: 100%;
 
@@ -44,6 +44,7 @@ export const PatientResumeContent = styled.div`
 export const PatientData = styled.div`
   display: flex;
   flex-direction: row;
+  width: 50%;
 
   margin-right: 30px;
 `;
@@ -68,5 +69,9 @@ export const BackButtonContent = styled.div`
   align-items: center;
   justify-content: center;
 
-  margin-top: 50px
+  margin-top: 50px;
+
+  button:first-child {
+    margin-right: 10px;
+  }
 `;

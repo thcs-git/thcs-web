@@ -73,6 +73,10 @@ const ButtonComponent = styled(Button)`
   min-width: 40px;
   max-height: 40px;
   text-transform: capitalize;
+
+  & svg {
+    margin-right: 10px;
+  }
 `;
 
 export default ButtonComponent;

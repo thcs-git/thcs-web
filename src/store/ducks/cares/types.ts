@@ -84,7 +84,7 @@ export interface CareInterface {
   cid_id?: string;
   area_id?: string;
   user_id: string; // *
-  status: string, // * Pre-Atendimento, Em atendimento, Cancelado, Finalizado
+  status?: string, // * Pre-Atendimento, Em atendimento, Cancelado, Finalizado
 	created_at?: string;
 	created_by?: { _id: string };
 	updated_at?: string;
