@@ -59,7 +59,7 @@ export default function PrescriptionList(){
       <Sidebar>
         {prescriptionState.loading && <Loading />}
         <Container>
-          <FormTitle>Lista de Empresas</FormTitle>
+          <FormTitle>Lista de Prescrições</FormTitle>
 
           <SearchComponent
             handleButton={() => history.push('/prescription/create/')}
@@ -68,7 +68,7 @@ export default function PrescriptionList(){
           />
 
           <List>
-            {prescriptionState.list.data.map((prescription: PrescriptionInterface, index: number) => (
+            {/* {prescriptionState.list.data.map((prescription: PrescriptionInterface, index: number) => (
               <ListLink key={index} to={`/prescription/${prescription._id}/edit`}>
                 <ListItem variant="outlined">
                   <ListItemContent>
@@ -80,7 +80,7 @@ export default function PrescriptionList(){
                   </ListItemContent>
                 </ListItem>
               </ListLink>
-            ))}
+            ))} */}
           </List>
           <PaginationComponent
             page={prescriptionState.list.page}

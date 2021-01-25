@@ -29,7 +29,7 @@ export interface ApplicationState {
   documentGroups: DocumentGroupState;
   patients: PatientState;
   specialties: SpecialtyState;
-  prescription:PrescriptionState
+  prescription:PrescriptionState;
   users: UserState;
 }
 
