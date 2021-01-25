@@ -267,10 +267,10 @@ export default function PatientCaptureForm(props: RouteComponentProps<IPageParam
                           }
                         }}>{handleCheckDocument(documentGroup._id, care?.documents_id || [])}</Td>
                         <Td>{documentGroup.name}</Td>
-                        <Td>{handleCareTypeLabel(document.status)}</Td>
+                        <Td>{handleCareTypeLabel(document?.status)}</Td>
                         <Td>{handleComplexityLabel(document?.complexity)}</Td>
                         <Td>{document?.created_at ? formatDate(document.created_at, 'DD/MM/YYYY HH:mm:ss') : '-'}</Td>
-                        <Td>{handleElegibilityLabel(document.status)}</Td>
+                        <Td>{handleElegibilityLabel(document?.status)}</Td>
                         <Td center>
                           <Button aria-controls={`simple-menu${index}`} id={`btn_simple-menu${index}`} aria-haspopup="true" onClick={handleOpenRowMenu}>
                             <MoreVert />

@@ -36,7 +36,7 @@ export default function Nead(props: RouteComponentProps<IPageParams>) {
   const dispatch = useDispatch();
 
   const careState = useSelector((state: ApplicationState) => state.cares);
-  const { documentGroup: documentGroupState, document: documentState } = careState;
+  const { documentGroupSocioAmbiental: documentGroupState, documentSocioAmbiental: documentState } = careState;
 
   const [steps, setSteps] = useState([
     { title: 'Grupo 1', score: { total: 0, complexity: '', status: '' } },

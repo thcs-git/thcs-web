@@ -114,8 +114,10 @@ export interface CareState {
   loading: boolean;
   error: boolean;
   success: boolean;
-  documentGroup: DocumentGroupInterface;
-  document: DocumentState;
+  documentGroupSocioAmbiental: DocumentGroupInterface;
+  documentGroupAbemid: DocumentGroupInterface;
+  documentSocioAmbiental: DocumentState;
+  documentAbemid: DocumentState;
 }
 
 //========

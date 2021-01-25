@@ -29,8 +29,10 @@ export const INITIAL_STATE: CareState = {
   error: false,
   loading: false,
   success: false,
-  documentGroup: {},
-  document: {},
+  documentGroupSocioAmbiental: {},
+  documentSocioAmbiental: {},
+  documentGroupAbemid: {},
+  documentAbemid: {},
 };
 
 const reducer: Reducer<CareState> = (state = INITIAL_STATE, action) => {
@@ -102,7 +104,7 @@ const reducer: Reducer<CareState> = (state = INITIAL_STATE, action) => {
     case CareTypes.DOCUMENT_GROUP_SOCIOAMBIENTAL:
       return {
         ...state,
-        documentGroup: action.payload.data,
+        documentGroupSocioAmbiental: action.payload.data,
         loading: false,
         error: false,
         success: true
@@ -117,7 +119,7 @@ const reducer: Reducer<CareState> = (state = INITIAL_STATE, action) => {
     case CareTypes.DOCUMENT_SOCIOAMBIENTAL:
       return {
         ...state,
-        document: action.payload.data,
+        documentSocioAmbiental: action.payload.data,
         loading: false,
         error: false,
         success: true
@@ -125,7 +127,7 @@ const reducer: Reducer<CareState> = (state = INITIAL_STATE, action) => {
     case CareTypes.DOCUMENT_SOCIOAMBIENTAL_STORE_REQUEST:
       return {
         ...state,
-        document: action.payload.data,
+        documentSocioAmbiental: action.payload.data,
         loading: true,
         error: false,
         success: false
@@ -133,7 +135,7 @@ const reducer: Reducer<CareState> = (state = INITIAL_STATE, action) => {
     case CareTypes.DOCUMENT_SOCIOAMBIENTAL_STORE:
       return {
         ...state,
-        document: {
+        documentSocioAmbiental: {
           ...action.payload.data,
           loading: false,
           error: false,
@@ -146,7 +148,7 @@ const reducer: Reducer<CareState> = (state = INITIAL_STATE, action) => {
     case CareTypes.DOCUMENT_SOCIOAMBIENTAL_UPDATE_REQUEST:
       return {
         ...state,
-        document: action.payload.data,
+        documentSocioAmbiental: action.payload.data,
         loading: true,
         error: false,
         success: false
@@ -154,7 +156,7 @@ const reducer: Reducer<CareState> = (state = INITIAL_STATE, action) => {
     case CareTypes.DOCUMENT_SOCIOAMBIENTAL_UPDATE:
       return {
         ...state,
-        document: {
+        documentSocioAmbiental: {
           ...action.payload.data,
           loading: false,
           error: false,
@@ -176,7 +178,7 @@ const reducer: Reducer<CareState> = (state = INITIAL_STATE, action) => {
     case CareTypes.DOCUMENT_GROUP_ABEMID:
       return {
         ...state,
-        documentGroup: action.payload.data,
+        documentGroupAbemid: action.payload.data,
         loading: false,
         error: false,
         success: true
@@ -191,7 +193,7 @@ const reducer: Reducer<CareState> = (state = INITIAL_STATE, action) => {
     case CareTypes.DOCUMENT_ABEMID:
       return {
         ...state,
-        document: action.payload.data,
+        documentAbemid: action.payload.data,
         loading: false,
         error: false,
         success: true
@@ -199,7 +201,7 @@ const reducer: Reducer<CareState> = (state = INITIAL_STATE, action) => {
     case CareTypes.DOCUMENT_ABEMID_STORE_REQUEST:
       return {
         ...state,
-        document: action.payload.data,
+        documentAbemid: action.payload.data,
         loading: true,
         error: false,
         success: false
@@ -207,7 +209,7 @@ const reducer: Reducer<CareState> = (state = INITIAL_STATE, action) => {
     case CareTypes.DOCUMENT_ABEMID_STORE:
       return {
         ...state,
-        document: {
+        documentAbemid: {
           ...action.payload.data,
           loading: false,
           error: false,
@@ -220,7 +222,7 @@ const reducer: Reducer<CareState> = (state = INITIAL_STATE, action) => {
     case CareTypes.DOCUMENT_ABEMID_UPDATE_REQUEST:
       return {
         ...state,
-        document: action.payload.data,
+        documentAbemid: action.payload.data,
         loading: true,
         error: false,
         success: false
@@ -228,7 +230,7 @@ const reducer: Reducer<CareState> = (state = INITIAL_STATE, action) => {
     case CareTypes.DOCUMENT_ABEMID_UPDATE:
       return {
         ...state,
-        document: {
+        documentAbemid: {
           ...action.payload.data,
           loading: false,
           error: false,

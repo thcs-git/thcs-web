@@ -42,7 +42,7 @@ export default function Abemid(props: RouteComponentProps<IPageParams>) {
   const dispatch = useDispatch();
 
   const careState = useSelector((state: ApplicationState) => state.cares);
-  const { documentGroup: documentGroupState, document: documentState } = careState;
+  const { documentGroupAbemid: documentGroupState, documentAbemid: documentState } = careState;
 
   const [care, setCare] = useState<CareInterface>();
   const [documentGroup, setDocumentGroup] = useState<DocumentGroupInterface>({
@@ -94,7 +94,7 @@ export default function Abemid(props: RouteComponentProps<IPageParams>) {
         }
       }
     }
-  }, [careState.document]);
+  }, [careState.documentAbemid]);
 
   useEffect(() => {
     if (document?._id) {
