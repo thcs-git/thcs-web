@@ -1,3 +1,4 @@
+import { PrescriptionState } from './ducks/prescripition/types';
 import { createStore, applyMiddleware, compose } from 'redux';
 import createSagaMiddleware from 'redux-saga';
 
@@ -28,6 +29,7 @@ export interface ApplicationState {
   documentGroups: DocumentGroupState;
   patients: PatientState;
   specialties: SpecialtyState;
+  prescription:PrescriptionState
   users: UserState;
 }
 
