@@ -1,5 +1,5 @@
 import React, { useState, useCallback, useEffect } from 'react';
-import { useHistory, RouteComponentProps } from 'react-router-dom';
+import { useHistory } from 'react-router-dom';
 import {
   Container,
   Dialog,
@@ -9,7 +9,6 @@ import {
   DialogTitle,
   Grid,
   TableContainer,
-  Paper,
   Table,
   TableHead,
   TableRow,
@@ -125,7 +124,6 @@ export default function PatientCaptureForm() {
         {(patientState.loading || careState.loading) && (
           <Loading />
         )}
-        {console.log('careState', careState)}
         <Container>
           <FormTitle>Captação de Pacientes</FormTitle>
           <h4>Primeiro, encontre o paciente que deseja realizar a captação:</h4>

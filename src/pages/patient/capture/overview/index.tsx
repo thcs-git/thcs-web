@@ -1,19 +1,20 @@
 import React, { useState, useCallback, useEffect } from 'react';
 import { useHistory, RouteComponentProps } from 'react-router-dom';
 import { Container, Grid, Menu, MenuItem, Dialog, DialogTitle, DialogContent, DialogContentText, DialogActions, Radio, RadioGroup, FormControlLabel, TextField, FormControl, Card, CardContent } from '@material-ui/core';
-import { AccountCircle, Add, CheckCircle, MoreVert, Schedule, Check as CheckIcon } from '@material-ui/icons';
+import { AccountCircle, CheckCircle, MoreVert, CheckCircleOutline } from '@material-ui/icons';
 
 import { useDispatch, useSelector } from 'react-redux';
 import { ApplicationState } from '../../../../store';
-import { loadCareById } from '../../../../store/ducks/cares/actions';
+import { loadCareById, updateCareRequest } from '../../../../store/ducks/cares/actions';
 import { CareInterface } from '../../../../store/ducks/cares/types';
 
 import { loadRequestByIds as getDocumentGroupsByIds } from '../../../../store/ducks/documentGroups/actions';
+import { DocumentGroupList } from '../../../../store/ducks/documentGroups/types';
 
 import Loading from '../../../../components/Loading';
 import Sidebar from '../../../../components/Sidebar';
 
-import { age, formatDate } from '../../../../helpers/date';
+import { formatDate } from '../../../../helpers/date';
 
 import Button from '../../../../styles/components/Button';
 import { FormTitle } from '../../../../styles/components/Form';
@@ -30,7 +31,6 @@ import {
 } from './styles';
 
 import { ReactComponent as SuccessImage } from '../../../../assets/img/ilustracao-avaliacao-concluida.svg';
-import { DocumentGroupInterface, DocumentGroupList } from '../../../../store/ducks/documentGroups/types';
 
 interface IPageParams {
   id: string;
@@ -38,8 +38,9 @@ interface IPageParams {
 
 interface ICaptureData {
   type: string;
-  orderNumber: string;
   estimate: string;
+  order_number: string;
+  status: string;
 }
 
 export default function PatientCaptureForm(props: RouteComponentProps<IPageParams>) {
@@ -56,11 +57,13 @@ export default function PatientCaptureForm(props: RouteComponentProps<IPageParam
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const [historyModalOpen, setHistoryModalOpen] = useState(false);
   const [captureOptionsModalOpen, setCaptureModalModalOpen] = useState(false);
+  const [captureFinishModalOpen, setCaptureFinishModalOpen] = useState(false);
 
-  const [captureData, setCaptureData] = useState<ICaptureData>({
+  const [captureData, setCaptureData] = useState<ICaptureData | any>({
     type: '',
-    orderNumber: '',
     estimate: '',
+    order_number: '',
+    status: '',
   });
 
   useEffect(() => {
@@ -71,6 +74,10 @@ export default function PatientCaptureForm(props: RouteComponentProps<IPageParam
     if (careState.data?._id) {
       setCare(careState.data);
       setDocumentGroups(documentGroupsState.list);
+
+      if (careState?.data?.capture) {
+        setCaptureData(careState.data.capture);
+      }
     }
   }, [careState.data]);
 
@@ -185,12 +192,27 @@ export default function PatientCaptureForm(props: RouteComponentProps<IPageParam
     return found;
   };
 
+  const handleSubmitCaptureData = () => {
+    const updateParams = {
+      ...care,
+      capture: {
+        ...care?.capture,
+        ...captureData
+      },
+      care_type_id: '5fd66ca189a402ec48110cc1',
+      user_id: '600f0d615ba0702f45864035',
+    };
+
+    dispatch(updateCareRequest(updateParams));
+  };
+
+  const handleSubmitFinishCapture = () => {
+  };
+
   return (
     <>
       <Sidebar>
-        {careState.loading && (
-          <Loading />
-        )}
+        {careState.loading && <Loading />}
         <Container>
           <FormTitle>Overview da Captação</FormTitle>
 
@@ -216,24 +238,18 @@ export default function PatientCaptureForm(props: RouteComponentProps<IPageParam
                         <div>
                           <p className="title">{care?.patient_id?.name}</p>
                           <div className="subTitle">
-                            <p>{care?.patient_id?.birthdate}</p>
-                            <p>Sexo: {care?.patient_id?.gender}</p>
-                            <p>Nome da Mãe: {care?.patient_id?.mother_name}</p>
+                            <p>Pedido: {care?.capture?.order_number}</p>
+                            <p>Data do Atendimento: {care?.created_at ? formatDate(care.created_at, 'DD/MM/YYYY HH:mm:ss') : '-'}</p>
+                            <p>Status: {care.status}</p>
                           </div>
                         </div>
                       </PatientData>
                       <div>
-                        <strong>Data do Atendimento:</strong>
-                        <p>{care?.created_at ? formatDate(care.created_at, 'DD/MM/YYYY HH:mm:ss') : '-'}</p>
-                        <br />
-                        <div>
-                          <strong>Status:</strong>
-                          <p>{care.status}</p>
-                        </div>
-                      </div>
-                      <div>
                         <Button onClick={() => setCaptureModalModalOpen(true)}>Dados da Captação</Button>
-                        <Button onClick={() => setCaptureModalModalOpen(true)}>Concluir Captação</Button>
+                        <Button onClick={() => setCaptureFinishModalOpen(true)}>
+                          <CheckCircleOutline />
+                          Concluir Captação
+                        </Button>
                       </div>
 
 
@@ -321,10 +337,9 @@ export default function PatientCaptureForm(props: RouteComponentProps<IPageParam
 
           <BackButtonContent>
             <Button background="primary" onClick={() => history.push('/avaliation')}>Voltar</Button>
+            <Button background="success" onClick={handleSubmitCaptureData}>Salvar</Button>
           </BackButtonContent>
         </Container>
-
-
 
         <Dialog
           scroll="paper"
@@ -403,8 +418,8 @@ export default function PatientCaptureForm(props: RouteComponentProps<IPageParam
                     label="Número de Guia"
                     variant="outlined"
                     size="small"
-                    value={captureData.orderNumber}
-                    onChange={(element) => setCaptureData({ ...captureData, orderNumber: element.target.value })}
+                    value={captureData.order_number}
+                    onChange={(element) => setCaptureData({ ...captureData, order_number: element.target.value })}
                     fullWidth
                   />
                 </FormControl>
@@ -417,6 +432,28 @@ export default function PatientCaptureForm(props: RouteComponentProps<IPageParam
             </Button>
             <Button onClick={() => setCaptureModalModalOpen(false)} color="primary">
               Salvar
+            </Button>
+          </DialogActions>
+        </Dialog>
+
+        <Dialog
+          open={captureFinishModalOpen}
+          onClose={() => setCaptureFinishModalOpen(false)}
+          aria-labelledby="scroll-dialog-title"
+          aria-describedby="scroll-dialog-description"
+        >
+          <DialogTitle id="scroll-dialog-title">Concluir a Captação</DialogTitle>
+          <DialogContent dividers>
+            <DialogContentText id="scroll-dialog-description" tabIndex={-1}>
+              Tem certeza que deseja concluir a captação do paciente e iniciar o atendimento?
+            </DialogContentText>
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={() => setCaptureFinishModalOpen(false)} color="primary">
+              Não
+            </Button>
+            <Button onClick={() => setCaptureFinishModalOpen(false)} color="primary">
+              Sim
             </Button>
           </DialogActions>
         </Dialog>
