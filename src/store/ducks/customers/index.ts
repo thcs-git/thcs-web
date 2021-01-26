@@ -32,6 +32,7 @@ export const INITIAL_STATE: CustomerState = {
   },
   error: false,
   loading: false,
+  success: false,
 };
 
 const reducer: Reducer<CustomerState> = (state = INITIAL_STATE, action) => {
@@ -43,16 +44,18 @@ const reducer: Reducer<CustomerState> = (state = INITIAL_STATE, action) => {
         ...state,
         list: action.payload.data,
         loading: false,
+        success: false,
       };
     case CustomerTypes.LOAD_SUCCESS_BY_ID:
       return {
         ...state,
         data: action.payload.data,
         loading: false,
+        success: false
       };
     case CustomerTypes.LOAD_FAILURE:
       return {
-      ...state, loading: false, error: true,
+      ...state, loading: false, error: true, success: false,
         list: {
           data: [],
           limit: '10',
