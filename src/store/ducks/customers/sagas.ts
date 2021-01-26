@@ -1,6 +1,7 @@
 import { put, call } from 'redux-saga/effects';
 import { toast } from 'react-toastify';
 
+import history from '../../../routes/history';
 import { apiSollar, viacep } from '../../../services/axios';
 
 import { loadSuccess, loadFailure, loadSuccessCustomerById, successGetAddress, createCustomerSuccess } from './actions';
@@ -35,10 +36,15 @@ export function* getCustomerById({ payload: { id: _id } }: any) {
 
 export function* createCompanyCustomer({ payload: { data } }: any) {
   try {
-    const response: AxiosResponse = yield call(apiSollar.post, `/client/store`, data)
+    const response: AxiosResponse = yield call(apiSollar.post, `/client/store`, { ...data, created_by: { _id: '5e8cfe7de9b6b8501c8033ac' }, })
 
     yield put(loadSuccess(response.data))
+    toast.success("Cliente cadastrado com sucesso!");
+
+    history.push('/customer');
+    location.reload();
   } catch(e) {
+    toast.error("Não foi possível cadastrar um novo cliente");
     yield put(loadFailure());
   }
 

@@ -807,7 +807,6 @@ export default function PatientForm(props: RouteComponentProps<IPageParams>) {
                   Voltar
             </ButtonComponent>
                 <ButtonComponent background="success"
-                  // onClick={() => dispatch(setIfRegistrationCompleted(true))}
                   onClick={handleSaveFormPatient}
                 >
                   Salvar

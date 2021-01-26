@@ -89,14 +89,14 @@ export default function CompanyForm(props: RouteComponentProps<IPageParams>) {
     }
   }, [dispatch]);
 
-  // useEffect(() => {
-  //   setState(prevState => {
-  //     return {
-  //       ...prevState,
-  //       ...companyState.data
-  //     }
-  //   })
-  // }, [companyState]);
+  useEffect(() => {
+    setState(prevState => {
+      return {
+        ...prevState,
+        ...companyState.data
+      }
+    })
+  }, [companyState]);
 
   useEffect(() => {
     setState(prevState => {
@@ -115,6 +115,10 @@ export default function CompanyForm(props: RouteComponentProps<IPageParams>) {
     // }));
 
   }, [companyState.data.address]);
+
+  useEffect(() => {
+    if (companyState.success) history.push('/company');
+  }, [companyState.success])
 
   useEffect(() => {
     setCustomers(customerState.list.data);
@@ -150,7 +154,6 @@ export default function CompanyForm(props: RouteComponentProps<IPageParams>) {
 
   return (
     <Sidebar>
-      {console.log('companyState', companyState)}
       <Container>
         <FormSection>
           <FormContent>
@@ -357,7 +360,7 @@ export default function CompanyForm(props: RouteComponentProps<IPageParams>) {
           </ButtonsContent>
         </FormSection>
       </Container>
-      <Snackbar
+      {/* <Snackbar
         autoHideDuration={10}
         anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
         open={companyState.error}
@@ -367,7 +370,7 @@ export default function CompanyForm(props: RouteComponentProps<IPageParams>) {
         <Alert severity="error" onClose={() => console.log('2 fechar toast')}>
           Não foi possível cadastrar a empresa
           </Alert>
-      </Snackbar>
+      </Snackbar> */}
 
       <Dialog
         open={openModalCancel}

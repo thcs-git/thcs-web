@@ -6,7 +6,7 @@ import debounce from 'lodash.debounce';
 
 import { useDispatch, useSelector } from 'react-redux';
 import { ApplicationState } from '../../../store/';
-import { loadRequest, searchRequest } from '../../../store/ducks/patients/actions';
+import { loadRequest, searchRequest, setIfRegistrationCompleted } from '../../../store/ducks/patients/actions';
 
 import Sidebar from '../../../components/Sidebar';
 import SearchComponent from '../../../components/List/Search';
@@ -54,6 +54,7 @@ export default function PatientList() {
   const debounceSearchRequest = debounce(handleChangeInput, 900)
 
   const handleClickButton = useCallback(() => {
+    dispatch(setIfRegistrationCompleted(false))
     history.push('/patient/create/')
   }, [])
 
