@@ -1,7 +1,7 @@
 import React, { useState, useCallback, useEffect } from 'react';
 import { useHistory, RouteComponentProps } from 'react-router-dom';
 import { Container, Grid, Menu, MenuItem, Dialog, DialogTitle, DialogContent, DialogContentText, DialogActions, Radio, RadioGroup, FormControlLabel, TextField, FormControl, Card, CardContent } from '@material-ui/core';
-import { AccountCircle, CheckCircle, MoreVert, CheckCircleOutline } from '@material-ui/icons';
+import { AccountCircle, CheckCircle, MoreVert, CheckCircleOutline, Edit } from '@material-ui/icons';
 
 import { useDispatch, useSelector } from 'react-redux';
 import { ApplicationState } from '../../../../store';
@@ -58,6 +58,7 @@ export default function PatientCaptureForm(props: RouteComponentProps<IPageParam
   const [historyModalOpen, setHistoryModalOpen] = useState(false);
   const [captureOptionsModalOpen, setCaptureModalModalOpen] = useState(false);
   const [captureFinishModalOpen, setCaptureFinishModalOpen] = useState(false);
+  const [finishEnable, setFinishEnable] = useState(false);
 
   const [captureData, setCaptureData] = useState<ICaptureData | any>({
     type: '',
@@ -241,12 +242,12 @@ export default function PatientCaptureForm(props: RouteComponentProps<IPageParam
                             <p>Pedido: {care?.capture?.order_number}</p>
                             <p>Data do Atendimento: {care?.created_at ? formatDate(care.created_at, 'DD/MM/YYYY HH:mm:ss') : '-'}</p>
                             <p>Status: {care.status}</p>
+                            <Button onClick={() => setCaptureModalModalOpen(true)}><Edit style={{ width: 15, marginRight: 5 }} /> Editar</Button>
                           </div>
                         </div>
                       </PatientData>
                       <div>
-                        <Button onClick={() => setCaptureModalModalOpen(true)}>Dados da Captação</Button>
-                        <Button onClick={() => setCaptureFinishModalOpen(true)}>
+                        <Button background={!finishEnable ? "success" : "disable"} disabled={finishEnable} onClick={() => setCaptureFinishModalOpen(true)}>
                           <CheckCircleOutline />
                           Concluir Captação
                         </Button>

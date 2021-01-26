@@ -6,6 +6,10 @@ interface IListItemStatus {
   active: boolean;
 }
 
+interface IListItemCaptureStatus {
+  status: string;
+}
+
 export const FormSearch = styled.form`
   margin-bottom: 10px;
   font-style: italic;
@@ -48,6 +52,29 @@ export const ListItemStatus = styled.div<IListItemStatus>`
   width: 80px;
 `;
 
+export const ListItemCaptureStatus = styled.div<IListItemCaptureStatus>`
+  color: ${(props) => {
+    switch (props.status) {
+      case 'Recusado':
+        return `var(--danger)`;
+      case 'Aguardando':
+        return `var(--yellow)`;
+      case 'Em Andamento':
+        return `var(--purple)`;
+      default:
+        return `var(--black)`;
+    }
+  }};
+  display: flex;
+  align-items: center;
+  justify-items: center;
+
+  & > svg {
+    width: 18px;
+    margin-right: 7.5px;
+  }
+`;
+
 export const ListItemTitle = styled.p`
   font-weight: bold;
   font-size: 14px;
@@ -77,5 +104,34 @@ export const CheckListContent = styled.div`
     justify-content: center;
 
     margin: auto 20px;
+  }
+`;
+
+export const CaptionList = styled.div`
+  & > div.captionItem {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+  }
+
+  & > div.captionItem svg {
+    width: 15px;
+    margin-right: 5px;
+  }
+
+  & > div.captionItem.recusado > span, & > div.captionItem.recusado > svg {
+    color: var(--danger);
+  }
+
+  & > div.captionItem.aprovado > span, & > div.captionItem.aprovado > svg {
+    color: var(--success);
+  }
+
+  & > div.captionItem.aguardando > span, & > div.captionItem.aguardando > svg {
+    color: var(--yellow);
+  }
+
+  & > div.captionItem.andamento > span, & > div.captionItem.andamento > svg {
+    color: var(--purple);
   }
 `;

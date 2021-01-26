@@ -39,10 +39,10 @@ export default function Nead(props: RouteComponentProps<IPageParams>) {
   const { documentGroupNead: documentGroupState, documentNead: documentState } = careState;
 
   const [steps, setSteps] = useState([
+    { title: 'Escore de Katz', score: { total: 0, complexity: '', status: '' } },
     { title: 'Grupo 1', score: { total: 0, complexity: '', status: '' } },
     { title: 'Grupo 2', score: { total: 0, complexity: '', status: '' } },
     { title: 'Grupo 3', score: { total: 0, complexity: '', status: '' } },
-    { title: 'Escore de Katz', score: { total: 0, complexity: '', status: '' } }
   ]);
   const [currentStep, setCurrentStep] = useState(0);
 
@@ -197,6 +197,20 @@ export default function Nead(props: RouteComponentProps<IPageParams>) {
     let stepsCopy = steps;
     stepsCopy[currentStep].score = { total: partialScore, complexity: getComplexity(partialScore), status: getStatus(partialScore) };
 
+    /*
+    KATZ
+
+    Classificação:
+    5 ou 6 - Independente
+    3 ou 4 - Dependente Parcial
+    < 2    - Dependente Total
+
+    Exibir junto a numeracao do score
+
+    Dependendo do valor, marcar o equivalente na pergunta: '3. KATZ (se pediatria, considerar dependência total)' do grupo 3
+    */
+
+
     setSteps(stepsCopy);
   }, [documentGroup, steps]);
 
@@ -338,7 +352,10 @@ export default function Nead(props: RouteComponentProps<IPageParams>) {
                 }
               })}
 
-              <p><i>*Se responder "NÃO" a qualquer uma das questões acima, considerar contraindicar Atenção Domiciliar</i></p>
+              <ScoreTotalContent>
+                <ScoreLabel>PONTUAÇÃO KATZ:</ScoreLabel>
+                <ScoreTotal>{steps[currentStep].score.total}</ScoreTotal>
+              </ScoreTotalContent>
             </>
           )}
 
@@ -372,7 +389,7 @@ export default function Nead(props: RouteComponentProps<IPageParams>) {
                 }
               })}
 
-              <p><i>*Para indicação de Planejamento de Atenção (P.A.D.), considerar a maior complexidade assinalada, ainda que a única vez.</i></p>
+              <p><i>*Se responder "NÃO" a qualquer uma das questões acima, considerar contraindicar Atenção Domiciliar</i></p>
             </>
           )}
 
@@ -406,10 +423,7 @@ export default function Nead(props: RouteComponentProps<IPageParams>) {
                 }
               })}
 
-              <ScoreTotalContent>
-                <ScoreLabel>PONTUAÇÃO FINAL:</ScoreLabel>
-                <ScoreTotal>{steps[currentStep].score.total}</ScoreTotal>
-              </ScoreTotalContent>
+              <p><i>*Para indicação de Planejamento de Atenção (P.A.D.), considerar a maior complexidade assinalada, ainda que a única vez.</i></p>
             </>
           )}
 
@@ -445,7 +459,7 @@ export default function Nead(props: RouteComponentProps<IPageParams>) {
               })}
 
               <ScoreTotalContent>
-                <ScoreLabel>PONTUAÇÃO KATZ:</ScoreLabel>
+                <ScoreLabel>PONTUAÇÃO FINAL:</ScoreLabel>
                 <ScoreTotal>{steps[currentStep].score.total}</ScoreTotal>
               </ScoreTotalContent>
             </>

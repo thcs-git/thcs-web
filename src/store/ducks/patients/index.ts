@@ -41,7 +41,7 @@ export const INITIAL_STATE: PatientState = {
     error: false,
     loading: false,
     success: false,
-    isRegistrationCompleted: true,
+    isRegistrationCompleted: false,
 };
 
 const reducer: Reducer<PatientState> = (state = INITIAL_STATE, action) => {

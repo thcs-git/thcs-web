@@ -1,8 +1,7 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback, ChangeEvent } from 'react';
 import { useHistory, Link } from 'react-router-dom';
-import { Container, FormControl, InputLabel, OutlinedInput, InputAdornment, IconButton } from '@material-ui/core';
-import { Add as AddIcon, CheckCircle } from '@material-ui/icons';
-import MoreVertIcon from '@material-ui/icons/MoreVert';
+import { Container, Button, Menu, MenuItem, Dialog, DialogTitle, DialogContent, DialogContentText, DialogActions, RadioGroup, FormControlLabel, Radio, FormControl, InputLabel, Select } from '@material-ui/core';
+import { FiberManualRecord, Error, MoreVert } from '@material-ui/icons';
 import TableRow from '@material-ui/core/TableRow';
 import TableCell from '@material-ui/core/TableCell';
 import CheckIcon from '@material-ui/icons/Check';
@@ -19,9 +18,17 @@ import Table from '../../../components/Table';
 import SearchComponent from '../../../components/List/Search';
 import Loading from '../../../components/Loading';
 import { FormTitle } from '../../../styles/components/Form';
-import Button from '../../../styles/components/Button';
 
-import { formatDate } from '../../../helpers/date';
+import { formatDate, age } from '../../../helpers/date';
+
+import { ListItemCaptureStatus, CaptionList } from './styles';
+
+interface ICaptureStatus {
+  id: string;
+  approved: string;
+  attachment: string;
+  complexity: string;
+}
 
 export default function AvaliationList() {
   const history = useHistory();
@@ -33,16 +40,23 @@ export default function AvaliationList() {
   }, []);
 
   const [search, setSearch] = useState('');
+  const [captureStatus, setCaptureStatus] = useState<ICaptureStatus>({
+    id: '',
+    approved: '',
+    attachment: '',
+    complexity: '',
+  });
+  const [modalUpdateStatus, setModalUpdateStatus] = useState(false);
 
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
 
-  const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
+  const handleOpenRowMenu = useCallback((event: React.MouseEvent<HTMLButtonElement>) => {
     setAnchorEl(event.currentTarget);
-  };
+  }, [anchorEl]);
 
-  const handleClose = () => {
+  const handleCloseRowMenu = useCallback(() => {
     setAnchorEl(null);
-  };
+  }, [anchorEl]);
 
   const handleCheckDocument = (documentId: string, documents: Array<any>) => {
     const found = documents.find(doc => (
@@ -51,14 +65,48 @@ export default function AvaliationList() {
       doc.finished
     ));
 
-    return (found) ? <CheckIcon style={{ color: '#4FC66A' }} /> : <CheckIcon style={{ color: '#EBEBEB' }} />;
+    const documentRoute = () => {
+      switch (documentId) {
+        case '5ffd79012f5d2b1d8ff6bea3':
+          return 'socioambiental';
+        case '5ff65469b4d4ac07d186e99f':
+          return 'nead';
+        case '5ffd7acd2f5d2b1d8ff6bea4':
+          return 'abemid';
+        default:
+          return '';
+      }
+    };
+
+    if (found) {
+      return found.status === 'Não Elegível' ? <Error style={{ color: '#FF6565', cursor: 'pointer' }} onClick={() => history.push(`/patient/capture/${found.care_id}/${documentRoute()}/${found._id}`)} /> : <CheckIcon style={{ color: '#4FC66A', cursor: 'pointer' }} onClick={() => history.push(`/patient/capture/${found.care_id}/${documentRoute()}/${found._id}`)} />
+    } else {
+      return <CheckIcon style={{ color: '#EBEBEB' }} />;
+    }
   };
+
+  const handleStartUpdateCaptureStatus = useCallback((careId: any) => {
+    handleCloseRowMenu();
+    setModalUpdateStatus(true);
+
+    setCaptureStatus(prevState => ({
+      ...prevState,
+      id: careId
+    }));
+
+  }, [captureStatus]);
+
+  const handleChangeComplexity = useCallback((event: any) => {
+    setCaptureStatus(prevState => ({
+      ...prevState,
+      complexity: event.target.value,
+    }));
+  }, [captureStatus]);
 
   return (
     <>
       <Sidebar>
         {careState.loading && <Loading />}
-        {console.log(careState)}
         <Container>
           <FormTitle>Lista de Avaliações</FormTitle>
 
@@ -72,18 +120,13 @@ export default function AvaliationList() {
           <Table
             tableCells={[
               { name: 'Paciente', align: 'left' },
-              { name: 'Pedido', align: 'right' },
+              { name: 'Pedido', align: 'left' },
               { name: 'Socioambiental', align: 'center' },
               { name: 'NEAD', align: 'center' },
               { name: 'ABEMID', align: 'center' },
-              { name: 'Última captação', align: 'center' },
-              { name: 'Status da captação', align: 'center' }
-            ]}
-            hasFilter
-            fieldsFilter={[
-              'Nome',
-              'Manutenção',
-              'Pedido'
+              { name: 'Última captação', align: 'left' },
+              { name: 'Status da captação', align: 'left' },
+              { name: '', align: 'left' }
             ]}
           >
             {careState.list.data.map((care, index) => (
@@ -93,14 +136,29 @@ export default function AvaliationList() {
                     {care?.patient_id?.name}
                   </Link>
                 </TableCell> {/* Paciente */}
-                <TableCell align="right">-</TableCell> {/* Pedido */}
+                <TableCell align="left">{care.capture?.order_number || '-'}</TableCell> {/* Pedido */}
                 <TableCell align="center">{handleCheckDocument('5ffd79012f5d2b1d8ff6bea3', care?.documents_id || [])}</TableCell> {/* Socioambiental */}
                 <TableCell align="center">{handleCheckDocument('5ff65469b4d4ac07d186e99f', care?.documents_id || [])}</TableCell> {/* NEAD */}
                 <TableCell align="center">{handleCheckDocument('5ffd7acd2f5d2b1d8ff6bea4', care?.documents_id || [])}</TableCell> {/* ABEMID */}
-                <TableCell align="center">{care?.created_at ? formatDate(care.created_at, 'DD/MM/YYYY HH:mm:ss') : '-'}</TableCell> {/* Última captação */}
-                <TableCell align="center">{care?.status}</TableCell>
+                <TableCell align="left">{care?.created_at ? formatDate(care.created_at, 'DD/MM/YYYY HH:mm:ss') : '-'}</TableCell> {/* Última captação */}
+                <TableCell>
+                  <ListItemCaptureStatus status={care?.capture?.status || ''}>
+                    <FiberManualRecord /> {care?.capture?.status}
+                  </ListItemCaptureStatus>
+                </TableCell>
                 <TableCell align="center">
-                  <MoreVertIcon style={{ color: '#0899BA' }} />
+                  <Button aria-controls={`patient-capture-menu${index}`} id={`btn_patient-capture-menu${index}`} aria-haspopup="true" onClick={handleOpenRowMenu}>
+                    <MoreVert style={{ color: '#0899BA' }} />
+                  </Button>
+                  <Menu
+                    id={`patient-capture-menu${index}`}
+                    anchorEl={anchorEl}
+                    keepMounted
+                    open={anchorEl?.id === `btn_patient-capture-menu${index}`}
+                    onClose={handleCloseRowMenu}
+                  >
+                    <MenuItem onClick={() => handleStartUpdateCaptureStatus(care?._id)}>Atualizar Status</MenuItem>
+                  </Menu>
                 </TableCell>
               </TableRow>
             ))}
@@ -139,6 +197,86 @@ export default function AvaliationList() {
               page: '1'
             }))}
           />
+
+          <div>
+            <h3>Legendas para status de captação:</h3>
+            <br />
+            <CaptionList>
+              <div className="captionItem aprovado"><FiberManualRecord /> <span>Aprovado</span> &nbsp;- o pedido foi aprovado pelo plano de saúde</div>
+              <div className="captionItem recusado"><FiberManualRecord /> <span>Recusado</span> &nbsp;- o pedido foi recusado pelo plano</div>
+              <div className="captionItem aguardando"><FiberManualRecord /> <span>Aguardando</span> &nbsp;- o pedido está aguardando análise do plano de saúde</div>
+              <div className="captionItem andamento"><FiberManualRecord /> <span>Em andamento</span> &nbsp;- as captações estão em andamento</div>
+            </CaptionList>
+          </div>
+
+
+          <Dialog
+            open={modalUpdateStatus}
+            onClose={() => setModalUpdateStatus(false)}
+            aria-labelledby="scroll-dialog-title"
+            aria-describedby="scroll-dialog-description"
+          >
+            <DialogTitle id="scroll-dialog-title">Atualização de status</DialogTitle>
+            <DialogContent dividers>
+              <DialogContentText
+                id="scroll-dialog-description"
+                tabIndex={-1}
+              >
+                Para dar continuidade ao atendimento, é necessário atualizar o status do pedido do paciente, anexar a guia de autorização do plano (formato PDF) e definir complexidade:
+              </DialogContentText>
+
+              <RadioGroup onChange={e =>
+                setCaptureStatus(prevState => ({
+                  ...prevState,
+                  approved: e.target.value,
+                }))}>
+                <FormControlLabel
+                  value="Aprovado"
+                  control={(
+                    <Radio
+                      color="primary"
+                      checked={captureStatus.approved === 'Aprovado'}
+                    />
+                  )}
+                  label="Aprovado"
+                />
+                <FormControlLabel
+                  value="Reprovado"
+                  control={(
+                    <Radio
+                      color="primary"
+                      checked={captureStatus.approved === 'Reprovado'}
+                    />
+                  )}
+                  label="Reprovado"
+                />
+              </RadioGroup>
+
+              <FormControl>
+                <DialogContentText tabIndex={-1}>Anexar Guia de Autorização</DialogContentText>
+                <input type="file" />
+              </FormControl>
+
+              <FormControl>
+                <InputLabel id="capture-status-complexity-label">Age</InputLabel>
+                <Select
+                  labelId="capture-status-complexity-label"
+                  id="capture-status-complexity"
+                  value={captureStatus.complexity}
+                  onChange={handleChangeComplexity}
+                >
+                  <MenuItem value="Baixa Complexidade">Baixa Complexidade</MenuItem>
+                  <MenuItem value="Média Complexidade">Média Complexidade</MenuItem>
+                  <MenuItem value="Alta Complexidade">Alta Complexidade</MenuItem>
+                </Select>
+              </FormControl>
+            </DialogContent>
+            <DialogActions>
+              <Button onClick={() => setModalUpdateStatus(false)} color="primary">
+                Fechar
+              </Button>
+            </DialogActions>
+          </Dialog>
         </Container>
       </Sidebar>
     </>

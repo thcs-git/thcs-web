@@ -53,6 +53,13 @@ const background: any = {
       background: var(--primary-hover);
     }
   `,
+  disable: css`
+    background: var(--disable) !important;
+    color: #ADADAD67  !important;
+    &:hover {
+      background: var(--disable) !important;
+    }
+  `,
 };
 
 const size: any = {
