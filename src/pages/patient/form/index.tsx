@@ -110,7 +110,6 @@ export default function PatientForm(props: RouteComponentProps<IPageParams>) {
 
   const { params } = props.match;
 
-  const [currentTab, setCurrentTab] = useState(0);
   const [state, setState] = useState<PatientInterface>({
     companies: ['5ee65a9b1a550217e4a8c0f4'], //empresa que vai vir do login
     name: '',
@@ -227,10 +226,6 @@ export default function PatientForm(props: RouteComponentProps<IPageParams>) {
     });
   }, [patientState.data.address_id]);
 
-  useEffect(() => {
-    setCurrentTab(0)
-  }, [patientState.isRegistrationCompleted]);
-
   const getAddress = useCallback(() => {
     dispatch(getAddressAction(state.address_id.postal_code));
   }, [state.address_id.postal_code]);
@@ -285,22 +280,20 @@ export default function PatientForm(props: RouteComponentProps<IPageParams>) {
   return (
     <Sidebar>
       {patientState.loading && <Loading />}
-      {console.log('patientState', patientState)}
       {patientState.isRegistrationCompleted ? (
-        <RegistrationCompleted id={state?._id} />
+        <RegistrationCompleted {...props} />
       ) : (
           <Container>
             <FormTitle>Cadastro de Paciente</FormTitle>
             <Tabs
-              value={currentTab}
+              value={0}
               onChange={() => { }}
               indicatorColor="primary"
               textColor="primary"
             >
               <Tab label="DADOS PESSOAS" disabled />
-              <Tab label="DADOS DE PRÉ-ATENDIMENTO" disabled />
             </Tabs>
-            <TabPanel value={currentTab} index={0}>
+            <TabPanel value={0} index={0}>
               <BoxCustom style={{ background: '#fff', marginTop: 0 }} mt={5} padding={4}>
                 <FormSection>
                   <FormContent>
@@ -696,119 +689,7 @@ export default function PatientForm(props: RouteComponentProps<IPageParams>) {
                 <ButtonComponent background="secondary" variant="outlined" onClick={() => patientState.success ? history.push('/patient') : handleOpenModalCancel()}>
                   Voltar
             </ButtonComponent>
-                <ButtonComponent background="success" onClick={() => setCurrentTab(1)}>
-                  Avançar
-            </ButtonComponent>
-              </ButtonsContent>
-            </TabPanel>
-
-            <TabPanel value={currentTab} index={1}>
-              <BoxCustom style={{ background: '#fff', marginTop: 0 }} mt={5} padding={4}>
-                <FormGroupSection>
-                  <Grid container>
-                    <Grid item md={8} xs={12}>
-                      <TextField
-                        id="input-hospital"
-                        label="Hospital"
-                        variant="outlined"
-                        size="small"
-                        value={state.hospital}
-                        onChange={(element) => setState({ ...state, hospital: element.target.value })}
-                        fullWidth
-                      />
-                    </Grid>
-                    <Grid item md={4} xs={12}>
-                      <TextField
-                        id="input-unid"
-                        label="Unidade"
-                        variant="outlined"
-                        size="small"
-                        value={state.unit_health}
-                        onChange={(element) => setState({ ...state, unit_health: element.target.value })}
-                        fullWidth
-                      />
-                    </Grid>
-
-                    <Grid item md={6} xs={12}>
-                      <TextField
-                        id="input-assistent-doctor"
-                        label="Médico assistente"
-                        variant="outlined"
-                        size="small"
-                        value={state.assistent_doctor}
-                        onChange={(element) => setState({ ...state, assistent_doctor: element.target.value })}
-                        fullWidth
-                      />
-                    </Grid>
-
-                    <Grid item md={3} xs={12}>
-                      <TextField
-                        id="input-sector"
-                        label="Setor"
-                        variant="outlined"
-                        size="small"
-                        value={state.sector}
-                        onChange={(element) => setState({ ...state, sector: element.target.value })}
-                        fullWidth
-                      />
-                    </Grid>
-                    <Grid item md={3} xs={12}>
-                      <TextField
-                        id="input-leito"
-                        label="Leito"
-                        variant="outlined"
-                        size="small"
-                        value={state.hospital_bed}
-                        onChange={(element) => setState({ ...state, hospital_bed: element.target.value })}
-                        fullWidth
-                      />
-                    </Grid>
-
-                    <Grid item md={4} xs={12}>
-                      <TextField
-                        id="input-convenio"
-                        label="Convenio"
-                        variant="outlined"
-                        size="small"
-                        value={state.convenio}
-                        onChange={(element) => setState({ ...state, convenio: element.target.value })}
-                        fullWidth
-                      />
-                    </Grid>
-
-                    <Grid item md={4} xs={12}>
-                      <TextField
-                        id="input-plan"
-                        label="Plano"
-                        variant="outlined"
-                        size="small"
-                        value={state.health_insurance}
-                        onChange={(element) => setState({ ...state, health_insurance: element.target.value })}
-                        fullWidth
-                      />
-                    </Grid>
-                    <Grid item md={4} xs={12}>
-                      <TextField
-                        id="input-sb-plan"
-                        label="Sub-plano"
-                        variant="outlined"
-                        size="small"
-                        value={state.sub_health_insurance}
-                        onChange={(element) => setState({ ...state, sub_health_insurance: element.target.value })}
-                        fullWidth
-                      />
-                    </Grid>
-                  </Grid>
-                </FormGroupSection>
-              </BoxCustom>
-
-              <ButtonsContent>
-                <ButtonComponent background="secondary" variant="outlined" onClick={() => setCurrentTab(0)}>
-                  Voltar
-            </ButtonComponent>
-                <ButtonComponent background="success"
-                  onClick={handleSaveFormPatient}
-                >
+                <ButtonComponent background="success" onClick={handleSaveFormPatient}>
                   Salvar
             </ButtonComponent>
               </ButtonsContent>
