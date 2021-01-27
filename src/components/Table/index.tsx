@@ -41,39 +41,39 @@ const TableComponent = (props: ITableProps) => {
       <Table aria-label="simple table">
         <TableHead>
           <TableRow>
-            {props.tableCells.map(cell => (
-              <TableCell align={cell.align}>{cell.name}</TableCell>
+            {props.tableCells.map((cell, index) => (
+              <TableCell key={`cell_${index}`} align={cell.align}>{cell.name}</TableCell>
             ))}
 
             {props.hasFilter && (
-                <Th>
-                  <Button aria-controls="simple-menu" aria-haspopup="true" onClick={handleClick} size="small">
-                    <FilterListIcon />
-                  </Button>
-                  <Menu
-                    id="simple-menu"
-                    anchorEl={anchorEl}
-                    anchorOrigin={{
-                      vertical: 'bottom',
-                      horizontal: 'center',
-                    }}
-                    transformOrigin={{
-                      vertical: 'top',
-                      horizontal: 'center',
-                    }}
-                    keepMounted
-                    open={Boolean(anchorEl)}
-                    onClose={handleClose}
-                  >
-                    <p>Filtrar resultados por</p>
-                    {props.fieldsFilter?.map(field => (
-                      <li>
-                        <Checkbox name={field} onChange={props.onChangeFilter}  />
-                        {field}
-                      </li>
-                    ))}
-                  </Menu>
-                </Th>
+              <Th>
+                <Button aria-controls="simple-menu" aria-haspopup="true" onClick={handleClick} size="small">
+                  <FilterListIcon />
+                </Button>
+                <Menu
+                  id="simple-menu"
+                  anchorEl={anchorEl}
+                  anchorOrigin={{
+                    vertical: 'bottom',
+                    horizontal: 'center',
+                  }}
+                  transformOrigin={{
+                    vertical: 'top',
+                    horizontal: 'center',
+                  }}
+                  keepMounted
+                  open={Boolean(anchorEl)}
+                  onClose={handleClose}
+                >
+                  <p>Filtrar resultados por</p>
+                  {props.fieldsFilter?.map((field, fieldIndex) => (
+                    <li key={`fields_filter_${fieldIndex}`}>
+                      <Checkbox name={field} onChange={props.onChangeFilter} />
+                      {field}
+                    </li>
+                  ))}
+                </Menu>
+              </Th>
             )}
           </TableRow>
         </TableHead>

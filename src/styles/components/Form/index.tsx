@@ -44,3 +44,7 @@ export const ScoreTotal = styled.div`
   font-weight: bold;
   color: var(--primary);
 `;
+
+export const FieldContent = styled.div`
+  margin-bottom: 25px;
+`;

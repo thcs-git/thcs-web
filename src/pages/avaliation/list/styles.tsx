@@ -55,6 +55,8 @@ export const ListItemStatus = styled.div<IListItemStatus>`
 export const ListItemCaptureStatus = styled.div<IListItemCaptureStatus>`
   color: ${(props) => {
     switch (props.status) {
+      case 'Aprovado':
+        return `var(--success)`;
       case 'Recusado':
         return `var(--danger)`;
       case 'Aguardando':
