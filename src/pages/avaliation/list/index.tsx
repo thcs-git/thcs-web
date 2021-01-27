@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useCallback, ChangeEvent } from 'react';
 import { useHistory, Link } from 'react-router-dom';
-import { Container, Button, Menu, MenuItem, Dialog, DialogTitle, DialogContent, DialogContentText, DialogActions, RadioGroup, FormControlLabel, Radio, FormControl, InputLabel, Select } from '@material-ui/core';
+import { Container, Button, Menu, MenuItem, Dialog, DialogTitle, DialogContent, DialogContentText, DialogActions, RadioGroup, FormControlLabel, Radio, InputLabel } from '@material-ui/core';
 import { FiberManualRecord, Error, MoreVert } from '@material-ui/icons';
 import TableRow from '@material-ui/core/TableRow';
 import TableCell from '@material-ui/core/TableCell';
@@ -10,21 +10,21 @@ import { useDispatch, useSelector } from 'react-redux';
 import { ApplicationState } from '../../../store/';
 import { loadRequest } from '../../../store/ducks/cares/actions';
 
-import { searchCareRequest as getCares } from '../../../store/ducks/cares/actions';
+import { searchCareRequest as getCares, updateCareRequest as updateCareAction } from '../../../store/ducks/cares/actions';
 
 import PaginationComponent from '../../../components/Pagination';
 import Sidebar from '../../../components/Sidebar';
 import Table from '../../../components/Table';
 import SearchComponent from '../../../components/List/Search';
 import Loading from '../../../components/Loading';
-import { FormTitle } from '../../../styles/components/Form';
+import { FormTitle, SelectComponent as Select, FieldContent } from '../../../styles/components/Form';
 
 import { formatDate, age } from '../../../helpers/date';
 
 import { ListItemCaptureStatus, CaptionList } from './styles';
 
 interface ICaptureStatus {
-  id: string;
+  care: any;
   approved: string;
   attachment: string;
   complexity: string;
@@ -35,20 +35,21 @@ export default function AvaliationList() {
   const dispatch = useDispatch();
   const careState = useSelector((state: ApplicationState) => state.cares);
 
-  useEffect(() => {
-    dispatch(getCares({ status: 'Pre-Atendimento' }))
-  }, []);
-
   const [search, setSearch] = useState('');
   const [captureStatus, setCaptureStatus] = useState<ICaptureStatus>({
-    id: '',
+    care: {},
     approved: '',
     attachment: '',
     complexity: '',
   });
   const [modalUpdateStatus, setModalUpdateStatus] = useState(false);
+  const [modalConfirmUpdateStatus, setModalConfirmUpdateStatus] = useState(false);
 
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
+
+  useEffect(() => {
+    dispatch(getCares({ status: 'Pre-Atendimento' }))
+  }, []);
 
   const handleOpenRowMenu = useCallback((event: React.MouseEvent<HTMLButtonElement>) => {
     setAnchorEl(event.currentTarget);
@@ -85,13 +86,13 @@ export default function AvaliationList() {
     }
   };
 
-  const handleStartUpdateCaptureStatus = useCallback((careId: any) => {
+  const handleStartUpdateCaptureStatus = useCallback((care: any) => {
     handleCloseRowMenu();
     setModalUpdateStatus(true);
 
     setCaptureStatus(prevState => ({
       ...prevState,
-      id: careId
+      care
     }));
 
   }, [captureStatus]);
@@ -101,6 +102,55 @@ export default function AvaliationList() {
       ...prevState,
       complexity: event.target.value,
     }));
+  }, [captureStatus]);
+
+  const readFile = (file: any) => {
+    return new Promise((resolve, reject) => {
+      const fileReader = new FileReader();
+      fileReader.onload = () => {
+        resolve(fileReader.result);
+      };
+      fileReader.onerror = () => {
+        reject(fileReader.error);
+      };
+      fileReader.readAsDataURL(file);
+    });
+  };
+
+  const handleChangeFiles = async (element: React.ChangeEvent<HTMLInputElement>) => {
+    if (!element) {
+      return;
+    }
+
+    const files = element.target.files;
+
+    if (files && files?.length > 0) {
+      const fileData: any = await readFile(files[0]);
+
+      setCaptureStatus(prevState => ({
+        ...prevState,
+        attachment: fileData
+      }));
+    }
+  };
+
+  const handleUpdateCaptureStatus = useCallback(() => {
+    setModalUpdateStatus(false);
+    setModalConfirmUpdateStatus(false);
+
+    const { care } = captureStatus;
+
+    const updateParams = {
+      ...care,
+      capture: {
+        ...care.capture,
+        status: captureStatus.approved,
+        complexity: captureStatus.complexity,
+      }
+    };
+
+    dispatch(updateCareAction(updateParams));
+
   }, [captureStatus]);
 
   return (
@@ -157,7 +207,10 @@ export default function AvaliationList() {
                     open={anchorEl?.id === `btn_patient-capture-menu${index}`}
                     onClose={handleCloseRowMenu}
                   >
-                    <MenuItem onClick={() => handleStartUpdateCaptureStatus(care?._id)}>Atualizar Status</MenuItem>
+                    {care.capture?.status === 'Aguardando' && (
+                      <MenuItem onClick={() => handleStartUpdateCaptureStatus(care)}>Atualizar Status</MenuItem>
+                    )}
+                    <MenuItem onClick={() => history.push(`/patient/capture/${care._id}/overview`)}>Visualizar</MenuItem>
                   </Menu>
                 </TableCell>
               </TableRow>
@@ -217,7 +270,7 @@ export default function AvaliationList() {
             aria-describedby="scroll-dialog-description"
           >
             <DialogTitle id="scroll-dialog-title">Atualização de status</DialogTitle>
-            <DialogContent dividers>
+            <DialogContent>
               <DialogContentText
                 id="scroll-dialog-description"
                 tabIndex={-1}
@@ -225,58 +278,87 @@ export default function AvaliationList() {
                 Para dar continuidade ao atendimento, é necessário atualizar o status do pedido do paciente, anexar a guia de autorização do plano (formato PDF) e definir complexidade:
               </DialogContentText>
 
-              <RadioGroup onChange={e =>
-                setCaptureStatus(prevState => ({
-                  ...prevState,
-                  approved: e.target.value,
-                }))}>
-                <FormControlLabel
-                  value="Aprovado"
-                  control={(
-                    <Radio
-                      color="primary"
-                      checked={captureStatus.approved === 'Aprovado'}
-                    />
-                  )}
-                  label="Aprovado"
-                />
-                <FormControlLabel
-                  value="Reprovado"
-                  control={(
-                    <Radio
-                      color="primary"
-                      checked={captureStatus.approved === 'Reprovado'}
-                    />
-                  )}
-                  label="Reprovado"
-                />
-              </RadioGroup>
+              <FieldContent>
+                <RadioGroup onChange={e =>
+                  setCaptureStatus(prevState => ({
+                    ...prevState,
+                    approved: e.target.value,
+                  }))}>
+                  <FormControlLabel
+                    value="Aprovado"
+                    control={(
+                      <Radio
+                        color="primary"
+                        checked={captureStatus.approved === 'Aprovado'}
+                      />
+                    )}
+                    label="Aprovado"
+                  />
+                  <FormControlLabel
+                    value="Reprovado"
+                    control={(
+                      <Radio
+                        color="primary"
+                        checked={captureStatus.approved === 'Reprovado'}
+                      />
+                    )}
+                    label="Reprovado"
+                  />
+                </RadioGroup>
+              </FieldContent>
 
-              <FormControl>
+              <FieldContent>
                 <DialogContentText tabIndex={-1}>Anexar Guia de Autorização</DialogContentText>
-                <input type="file" />
-              </FormControl>
+                <input type="file" accept="application/pdf" onChange={handleChangeFiles} />
+              </FieldContent>
 
-              <FormControl>
-                <InputLabel id="capture-status-complexity-label">Age</InputLabel>
+              <FieldContent>
+                <InputLabel id="capture-status-complexity-label">Complexidade</InputLabel>
                 <Select
                   labelId="capture-status-complexity-label"
                   id="capture-status-complexity"
                   value={captureStatus.complexity}
                   onChange={handleChangeComplexity}
+                  fullWidth
                 >
-                  <MenuItem value="Baixa Complexidade">Baixa Complexidade</MenuItem>
-                  <MenuItem value="Média Complexidade">Média Complexidade</MenuItem>
-                  <MenuItem value="Alta Complexidade">Alta Complexidade</MenuItem>
+                  <MenuItem key="complexity-low" value="Baixa Complexidade">Baixa Complexidade</MenuItem>
+                  <MenuItem key="complexity-medium" value="Média Complexidade">Média Complexidade</MenuItem>
+                  <MenuItem key="complexity-high" value="Alta Complexidade">Alta Complexidade</MenuItem>
                 </Select>
-              </FormControl>
+              </FieldContent>
             </DialogContent>
             <DialogActions>
               <Button onClick={() => setModalUpdateStatus(false)} color="primary">
                 Fechar
               </Button>
+              <Button onClick={() => setModalConfirmUpdateStatus(true)} color="primary">
+                Atualizar
+              </Button>
             </DialogActions>
           </Dialog>
+
+          <Dialog
+            open={modalConfirmUpdateStatus}
+            onClose={() => setModalConfirmUpdateStatus(false)}
+            aria-labelledby="alert-dialog-title"
+            aria-describedby="alert-dialog-description"
+          >
+            <DialogTitle id="alert-dialog-title">Finalizar Captação</DialogTitle>
+            <DialogContent>
+              <DialogContentText id="alert-dialog-description">
+                Ao alterar o status dessa captação você iniciará o atendimento do paciente. Tem certeza que deseja prosseguir?
+                </DialogContentText>
+            </DialogContent>
+            <DialogActions>
+              <Button onClick={() => setModalConfirmUpdateStatus(false)} color="primary">
+                Não
+          </Button>
+              <Button onClick={handleUpdateCaptureStatus} color="primary" autoFocus>
+                Sim
+          </Button>
+            </DialogActions>
+          </Dialog>
+
         </Container>
       </Sidebar>
     </>
