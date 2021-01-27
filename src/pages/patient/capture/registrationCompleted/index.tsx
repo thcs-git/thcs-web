@@ -21,7 +21,7 @@ interface ICaptureData {
   estimate: string;
 }
 
-const registrationCompleted: React.FC<any> = ({ id }) => {
+const registrationCompleted: React.FC<any> = (props) => {
   // ----------------------------------------------
   const [care, setCare] = useState<CareInterface>({
     health_insurance_id: '5f903db15104287582ba58af',
@@ -42,6 +42,8 @@ const registrationCompleted: React.FC<any> = ({ id }) => {
 
   const history = useHistory();
   const dispatch = useDispatch();
+
+  const { params } = props.match;
 
   const [openModalConfirm, setOpenModalConfirm] = useState<boolean>(false);
   const { patients: patientState, cares: careState } = useSelector((state: ApplicationState) => state);
@@ -94,9 +96,10 @@ const registrationCompleted: React.FC<any> = ({ id }) => {
         </Profile>
 
         <ButtonsContainer>
+          {console.log(params)}
             <Button variant="outlined" background="success_rounded" onClick={() => {
               dispatch(setIfRegistrationCompleted(false));
-              history.push(`/patient/${patientState.data._id}/edit`)
+              history.push(`/patient/${params.id}/edit`)
             }}>
               Editar
             </Button>
