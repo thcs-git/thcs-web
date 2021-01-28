@@ -1,3 +1,4 @@
+import { UnconfirmedUserInterface } from './unconfirmeduser/types';
 import { INITIAL_STATE } from './login'
 import { LoginState } from './login/types'
 
@@ -31,6 +32,9 @@ import { PatientState } from './patients/types';
 import { INITIAL_STATE as INITIAL_STATE_USER } from './users';
 import { UserState } from './users/types';
 
+import { INITIAL_STATE as INITIAL_STATE_UNCONFIRMEDUSER } from './unconfirmeduser';
+import { UnconfirmedUserState } from './unconfirmeduser/types';
+
 /**
  * Initial state tree interface
  */
@@ -46,6 +50,7 @@ export interface IInitialState {
   documentGroups: Readonly<DocumentGroupState>;
   patients: Readonly<PatientState>;
   users: Readonly<UserState>;
+  unconfirmedusers: Readonly<UnconfirmedUserState>;
 }
 
 /**
@@ -63,4 +68,5 @@ export const InitialState: IInitialState = {
   documentGroups: INITIAL_STATE_DOCUMENT_GROUP,
   patients: INITIAL_STATE_PATIENT,
   users: INITIAL_STATE_USER,
+  unconfirmedusers: INITIAL_STATE_UNCONFIRMEDUSER,
 }

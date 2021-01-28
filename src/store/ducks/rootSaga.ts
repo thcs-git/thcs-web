@@ -1,4 +1,13 @@
 //import { loadDocumentRequest } from './cares/actions';
+import { UnconfirmedUserTypes } from "./unconfirmeduser/types";
+import {
+  get as getUnconfirmedUsers,
+  createUnconfirmedUser,
+  getUnconfirmedUserById,
+  updateUnconfirmedUser,
+  searchUnconfirmedUser,
+} from "./unconfirmeduser/sagas";
+
 import { all, takeLatest } from "redux-saga/effects";
 
 import { AreaTypes } from "./areas/types";
@@ -76,6 +85,8 @@ import {
 } from "./patients/sagas";
 
 import { UserTypes } from "./users/types";
+
+//import { CareTypes } from './cares/types';
 import {
   get as getUsers,
   createUser,
@@ -233,5 +244,15 @@ export default function* rootSaga() {
     takeLatest(UserTypes.SEARCH_REQUEST, searchUser),
     takeLatest(UserTypes.LOAD_REQUEST_PROFESSION, getProfessions),
     takeLatest(UserTypes.LOAD_REQUEST_USER_TYPES, getUserTypes),
+
+    /** UnconfirmedUsers */
+    takeLatest(UnconfirmedUserTypes.LOAD_REQUEST, getUnconfirmedUsers),
+    takeLatest(UnconfirmedUserTypes.CREATE_USER_REQUEST, createUnconfirmedUser),
+    takeLatest(
+      UnconfirmedUserTypes.LOAD_REQUEST_USER_BY_ID,
+      getUnconfirmedUserById
+    ),
+    takeLatest(UnconfirmedUserTypes.UPDATE_USER_REQUEST, updateUnconfirmedUser),
+    takeLatest(UnconfirmedUserTypes.SEARCH_REQUEST, searchUnconfirmedUser),
   ]);
 }

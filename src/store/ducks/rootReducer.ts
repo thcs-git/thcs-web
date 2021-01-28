@@ -15,6 +15,7 @@ import documentGroups from './documentGroups';
 import specialties from './specialties';
 import patients from './patients';
 import users from './users';
+import unconfirmedusers from './unconfirmeduser'
 
 export default combineReducers<IInitialState>({
   areas,
@@ -28,4 +29,5 @@ export default combineReducers<IInitialState>({
   documentGroups,
   patients,
   users,
+  unconfirmedusers,
 });

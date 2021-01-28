@@ -1,23 +1,16 @@
-import React, { useCallback, useState, useEffect, useRef } from 'react';
+import React, { useCallback, useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-
 import { ApplicationState } from '../../../store';
-import { FormTitle, SelectComponent as Select } from '../../../styles/components/Form';
+import { SelectComponent as Select } from '../../../styles/components/Form';
 import Container from '@material-ui/core/Container';
 import Box from '@material-ui/core/Box';
 import Grid from '@material-ui/core/Grid';
 import Link from '@material-ui/core/Link';
-import Checkbox from '@material-ui/core/Checkbox';
 import TextField from '@material-ui/core/TextField';
 import Typography from '@material-ui/core/Typography';
 import InputLabel from '@material-ui/core/InputLabel';
-import IconButton from '@material-ui/core/IconButton';
-import CssBaseline from '@material-ui/core/CssBaseline';
 import FormControl from '@material-ui/core/FormControl';
-import OutlinedInput from '@material-ui/core/OutlinedInput';
-import InputAdornment from '@material-ui/core/InputAdornment';
-import FormControlLabel from '@material-ui/core/FormControlLabel';
-import Autocomplete from '@material-ui/lab/Autocomplete';
+
 import {
 
   Dialog,
@@ -49,9 +42,10 @@ import validatePhone from '../../../utils/validatePhone';
 import LOCALSTORAGE from '../../../helpers/constants/localStorage';
 import { toast } from 'react-toastify';
 import { UserInterface } from '../../../store/ducks/users/types';
-import { name } from 'dayjs/locale/*';
-import { createUserRequest, registerUserRequest } from '../../../store/ducks/users/actions';
+
+import { createUnconfirmedUserRequest, registerUnconfirmedUserRequest } from '../../../store/ducks/unconfirmeduser/actions';
 import InputBase from "@material-ui/core/InputBase";
+import { UnconfirmedUserInterface } from '../../../store/ducks/unconfirmeduser/types';
 function Copyright() {
   return (
     <Typography variant="body2" color="textSecondary" align="center">
@@ -102,6 +96,7 @@ const useStyles = makeStyles((theme) => ({
   formFlexEnd:{
     width: '100%', // Fix IE 11 issue.
     padding: theme.spacing(2,0,0,1),
+    margin: theme.spacing(0,1,0,0)
   },
   submit: {
     margin: theme.spacing(3, 0, 0),
@@ -144,31 +139,14 @@ export default function RegisterForm() {
   const [search, setSearch] = useState('');
   const userState = useSelector((state: ApplicationState) => state.users);
   const specialtyState = useSelector((state: ApplicationState) => state.specialties);
-  let [state, setState] = useState<UserInterface>({
-    companies: ['5ee65a9b1a550217e4a8c0f4'], //empresa que vai vir do login
+  let [state, setState] = useState<UnconfirmedUserInterface>({
     name: '',
-    birthdate: '',
-    gender: '',
-    national_id: '',
-    issuing_organ: '',
-    fiscal_number: '',
-    mother_name: '',
-    nationality: '',
-    address: {
-      postal_code: '',
-      street: '',
-      number: '',
-      district: '',
-      city: '',
-      state: '',
-      complement: '',
-    },
     email: '',
     phone: '',
-    cellphone: '',
-    user_type_id: '',
+    user_type: '',
     specialties: [],
     council_number: '',
+    unit_federative:'',
     active: true,
   });
 
@@ -192,11 +170,10 @@ export default function RegisterForm() {
 
     if (inputEmail.error || inputPassword.error || inputCpf.error || inputName.error || inputPhone.error ) return;
         state.name = inputName.value;
-        state.fiscal_number = inputCpf.value;
         state.email = inputEmail.value;
         state.phone = inputPhone.value;
         state.password = inputPassword.value;
-        dispatch(registerUserRequest(state));
+        dispatch(registerUnconfirmedUserRequest(state));
   },[state]);
 
   const handleClickShowPassword = useCallback(() => {
@@ -282,7 +259,7 @@ export default function RegisterForm() {
 
   return (
     <>
-{/* {loginState.loading && <Loading />} */}
+      {userState.loading && <Loading />}
       <Container className={classes.container} maxWidth="xs">
         <FormGroupSection>
           <div className={classes.paper}>
@@ -302,7 +279,7 @@ export default function RegisterForm() {
               <InputLabel id="select-patient-gender">Eu sou</InputLabel>
                 <Select
                   labelId="select-user-type"
-                  onChange={(element)=>setState({...state,user_type_id:`${element.target.value}`})}
+                  onChange={(element)=>setState({...state,user_type:`${element.target.value}`})}
                   labelWidth={60}
                     >
                 <MenuItem value="">
@@ -328,13 +305,14 @@ export default function RegisterForm() {
                     ...prev,
                     value:inputName.target.value
                   }))
+
                 }
+
                 onBlur={handleNameValidator}
                 />
             </FormControl>
             </Grid>
             <Grid className={classes.containerFlex}>
-
               <Grid item md={6} xs={12} className={classes.form}>
                 <FormControl variant="outlined" fullWidth>
                 <TextField
@@ -398,72 +376,60 @@ export default function RegisterForm() {
                 onBlur={handleEmailValidator}
                 />
             </Grid>
-            <Grid container item md={12} xs={12} className={classes.form}>
-              <TextField
-                id="input-function"
-                label="Função"
-                variant="outlined"
-                size="small"
-                fullWidth
-                />
-            </Grid>
-            <Grid  item md={12} xs={12} className={classes.form}>
-              <TextField
-                id="input-social-name"
-                label="Especialidade"
-                variant="outlined"
-                size="small"
-                fullWidth
-                />
-            </Grid>
-            <Grid  className={classes.containerFlex}>
-              <Grid item md={6} xs={12} className={classes.formFlexStart} >
-
-                <FormControl variant="outlined" size="small" fullWidth >
-                  <InputLabel id="select-patient-gender">Conselho</InputLabel>
-                    <Select
-                      label="Conselho"
-                      labelId="select-council-user"
-                      id="select-council-user"
-                      //value={state.gender}
-                      //  onChange={(element) => setState({ ...state, gender: `${element.target.value}` || '' })}
-                      >
-                      <MenuItem value="">
-                        <em>Conselho</em>
-                      </MenuItem>
-                      {councilState.list.data.map(council => <MenuItem key={`council_${council._id}`} value={council._id}>{council.initials}</MenuItem>)}
-                    </Select>
-                </FormControl>
-              </Grid >
-              <Grid item md={7} xs={12} className={classes.formFlex} >
-                <FormControl variant="outlined" size="small" fullWidth>
+            {state.user_type == 'Prestador' &&  <><Grid container item md={12} xs={12} className={classes.form}>
+                <TextField
+                  id="input-function"
+                  label="Função"
+                  variant="outlined"
+                  size="small"
+                  fullWidth />
+              </Grid><Grid item md={12} xs={12} className={classes.form}>
                   <TextField
                     id="input-social-name"
-                    label="Nº do Conselho"
+                    label="Especialidade"
                     variant="outlined"
                     size="small"
-                    fullWidth
-                    />
-                </FormControl>
-              </Grid >
-              <Grid item md={4} xs={12} className={classes.formFlexEnd} >
-              <FormGroupSection>
-                <Autocomplete
-                  id="combo-box-neigthborhoods"
-                  options={areaState.districts}
-                  getOptionLabel={(option) => `${option.municipio.microrregiao.mesorregiao.UF.sigla}`}
-                  renderInput={(params) => <TextField {...params} label="UF" variant="outlined" />}
-                  size="small"
-                  onChange={(event, value) => {
-                    if (value) {
-                      // handleSelectNeighborhood(value)
-                            }
-                          }}
-                          fullWidth
-                  />
-              </FormGroupSection>
-              </Grid >
-            </Grid>
+                    fullWidth />
+                </Grid>
+                <Grid className={classes.containerFlex}>
+                  <Grid item md={5} xs={12} className={classes.formFlexStart}>
+
+                    <FormControl variant="outlined" size="small" fullWidth>
+                      <InputLabel id="select-patient-gender">Conselho</InputLabel>
+                      <Select
+                        label="Conselho"
+                        labelId="select-council-user"
+                        id="select-council-user"
+                      >
+                        <MenuItem value="">
+                          <em>Conselho</em>
+                        </MenuItem>
+                        {councilState.list.data.map(council => <MenuItem key={`council_${council._id}`} value={council._id}>{council.initials}</MenuItem>)}
+                      </Select>
+                    </FormControl>
+                  </Grid>
+                  <Grid item md={5} xs={12} className={classes.formFlex}>
+                    <FormControl variant="outlined" size="small" fullWidth>
+                      <TextField
+                        id="input-social-name"
+                        label="Nº do Conselho"
+                        variant="outlined"
+                        size="small"
+                        fullWidth />
+                    </FormControl>
+                  </Grid>
+                  <Grid item md={2} xs={12} className={classes.formFlexEnd}>
+                    <FormControl variant="outlined" size="small" fullWidth>
+                      <TextField
+                        id="input-social-name"
+                        label="UF"
+                        variant="outlined"
+                        size="small"
+                        fullWidth />
+                    </FormControl>
+                  </Grid>
+                </Grid></>}
+
             <Grid container item md={12} xs={12} className={classes.form}>
               <TextField
                 error={inputPassword.error}
