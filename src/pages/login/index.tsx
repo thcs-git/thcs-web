@@ -23,7 +23,7 @@ import VisibilityOff from '@material-ui/icons/VisibilityOff';
 
 import { makeStyles } from '@material-ui/core/styles';
 
-import { ContainerLogin, WelcomeTextWrapper, HomeIconLogo, LogoText, TextGray } from './styles';
+import { ContainerLogin, WelcomeTextWrapper, HomeIconLogo, LogoText, TextGray, TextBlue } from './styles';
 
 import Button from '../../components/Button';
 import Alert from '../../components/Alert';
@@ -223,18 +223,20 @@ export default function SignIn() {
 
               className={classes.register}
               href="/register"
-            ><a>Cadastre-se</a>
+            ><a>Crie uma conta</a>
 
           </Button>
             <Grid container>
               <Box textAlign="center" width="100%">
-                <TextGray >
+                <TextGray>
                   Esqueceu a senha? {' '}
                   <Link href="#">
-                    Clique aqui{' '}
+                    <TextBlue>
+                        Clique aqui{' '}
+                    </TextBlue>
                   </Link>
-                parar recuperar
-            </TextGray>
+                  parar recuperar
+                </TextGray>
               </Box>
             </Grid>
           </form>

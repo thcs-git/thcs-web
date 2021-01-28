@@ -31,3 +31,7 @@ export const TextGray = styled.p`
   font-size: 12px;
   color: #666;
 `;
+export const TextBlue = styled.a`
+  font-size: 12px;
+  color: #0899BA;
+`;

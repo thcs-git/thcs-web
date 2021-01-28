@@ -29,7 +29,7 @@ export const LogoText = styled(Typography)`
 export const FormControl = styled.div`
 margin-bottom:40px;`;
 export const TextGray = styled.p`
-  font-size: 12px;
+  font-size: 14px;
   color: #666;
 `;
 export const FormGroupSection = styled.div`
@@ -42,5 +42,9 @@ export const FormSection = styled.div`
   overflow-y:"scroll";
 
   height: calc(100vh - 96px);
+`;
+export const TextBlue = styled.a`
+  font-size: 14px;
+  color: #0899BA;
 `;
 

@@ -17,6 +17,7 @@ import FormControl from '@material-ui/core/FormControl';
 import OutlinedInput from '@material-ui/core/OutlinedInput';
 import InputAdornment from '@material-ui/core/InputAdornment';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
+import Autocomplete from '@material-ui/lab/Autocomplete';
 import {
 
   Dialog,
@@ -34,12 +35,13 @@ import VisibilityOff from '@material-ui/icons/VisibilityOff';
 import { loadRequest, searchRequest } from '../../../store/ducks/councils/actions';
 import { makeStyles, withStyles } from '@material-ui/core/styles';
 
-import { ContainerLogin, WelcomeTextWrapper, HomeIconLogo, LogoText, TextGray } from './styles';
+import { ContainerLogin, WelcomeTextWrapper, HomeIconLogo, LogoText, TextGray, TextBlue } from './styles';
 import {FormGroupSection} from './styles';
 import Button from '../../../components/Button';
 import Alert from '../../../components/Alert';
 import Loading from '../../../components/Loading';
 
+import { loadGetDistricts as getDistrictsAction } from '../../../store/ducks/areas/actions';
 import validateEmail from '../../../utils/validateEmail';
 import validateName from '../../../utils/validateName';
 import validateCpf from '../../../utils/validateCpf';
@@ -82,9 +84,7 @@ const useStyles = makeStyles((theme) => ({
     display: 'flex',
     flexDirection: 'column',
     alignItems: 'center',
-
   },
-
   form: {
     width: '100%', // Fix IE 11 issue.
     padding: theme.spacing(2,1,0,1)
@@ -94,8 +94,17 @@ const useStyles = makeStyles((theme) => ({
     padding: theme.spacing(2,1,0,1),
     margin: theme.spacing(0,0,0,0)
   },
+  formFlexStart:{
+    width: '100%', // Fix IE 11 issue.
+    padding: theme.spacing(2,0,0,1),
+    margin: theme.spacing(0,0,0,0)
+  },
+  formFlexEnd:{
+    width: '100%', // Fix IE 11 issue.
+    padding: theme.spacing(2,0,0,1),
+  },
   submit: {
-    margin: theme.spacing(3, 0, 2),
+    margin: theme.spacing(3, 0, 0),
     padding: '10px',
     textTransform: 'capitalize',
     fontSize: '18px',
@@ -121,7 +130,7 @@ const SIZE_INPUT_PASSWORD = 3;
 export default function RegisterForm() {
   const dispatch = useDispatch();
   //const loginState = useSelector((state: ApplicationState) => state.login);
-
+  const areaState = useSelector((state: ApplicationState) => state.areas);
   const [inputEmail, setInputEmail] = useState({ value: '', error: false });
   const [inputName, setInputName] = useState({value:'',error: false});
   const [inputCpf, setInputCpf] = useState({value:'',error: false});
@@ -174,6 +183,7 @@ export default function RegisterForm() {
     //   toast.error('Sessão expirada');
     // }
     dispatch(loadRequest());
+    dispatch(getDistrictsAction());
   }, []);
 
   const handleFormUser = useCallback(async (event)=>{
@@ -206,8 +216,6 @@ export default function RegisterForm() {
         ...prev,
         error:true
       }));
-
-
     }else{
       setInputName(prev=>({
         ...prev,
@@ -235,7 +243,6 @@ export default function RegisterForm() {
         ...prev,
         error:true
       }))
-
     }else{
       setInputPhone(prev=>({
         ...prev,
@@ -282,13 +289,15 @@ export default function RegisterForm() {
           <Box display="flex" width={150} height={165} justifyContent="center" alignItems="center">
             <HomeIconLogo />
           </Box>
-          <WelcomeTextWrapper>
+
+
+          <form className={classes.form} noValidate>
+            <WelcomeTextWrapper className={classes.formFlexEnd}>
             <TextGray>
               Cadastre seus dados no portal:
             </TextGray>
           </WelcomeTextWrapper>
-          <form className={classes.form} noValidate>
-          <Grid  md={5} xs={12} className={classes.form}>
+          <Grid  md={6} xs={12} className={classes.formFlexEnd}>
             <FormControl variant="outlined" size="small" fullWidth>
               <InputLabel id="select-patient-gender">Eu sou</InputLabel>
                 <Select
@@ -324,7 +333,7 @@ export default function RegisterForm() {
                 />
             </FormControl>
             </Grid>
-            <Grid className={classes.containerFlex}  >
+            <Grid className={classes.containerFlex}>
 
               <Grid item md={6} xs={12} className={classes.form}>
                 <FormControl variant="outlined" fullWidth>
@@ -408,7 +417,7 @@ export default function RegisterForm() {
                 />
             </Grid>
             <Grid  className={classes.containerFlex}>
-              <Grid item md={5} xs={12} className={classes.form} >
+              <Grid item md={6} xs={12} className={classes.formFlexStart} >
 
                 <FormControl variant="outlined" size="small" fullWidth >
                   <InputLabel id="select-patient-gender">Conselho</InputLabel>
@@ -426,39 +435,38 @@ export default function RegisterForm() {
                     </Select>
                 </FormControl>
               </Grid >
-          <Grid item md={5} xs={12} className={classes.form} >
-            <FormControl variant="outlined" size="small" fullWidth>
+              <Grid item md={7} xs={12} className={classes.formFlex} >
+                <FormControl variant="outlined" size="small" fullWidth>
+                  <TextField
+                    id="input-social-name"
+                    label="Nº do Conselho"
+                    variant="outlined"
+                    size="small"
+                    fullWidth
+                    />
+                </FormControl>
+              </Grid >
+              <Grid item md={4} xs={12} className={classes.formFlexEnd} >
+              <FormGroupSection>
+                <Autocomplete
+                  id="combo-box-neigthborhoods"
+                  options={areaState.districts}
+                  getOptionLabel={(option) => `${option.municipio.microrregiao.mesorregiao.UF.sigla}`}
+                  renderInput={(params) => <TextField {...params} label="UF" variant="outlined" />}
+                  size="small"
+                  onChange={(event, value) => {
+                    if (value) {
+                      // handleSelectNeighborhood(value)
+                            }
+                          }}
+                          fullWidth
+                  />
+              </FormGroupSection>
+              </Grid >
+            </Grid>
+            <Grid container item md={12} xs={12} className={classes.form}>
               <TextField
-                id="input-social-name"
-                label="Nº do Conselho"
-                variant="outlined"
-                size="small"
-                fullWidth
-                />
-          </FormControl>
-          </Grid >
-          <Grid item md={4} xs={12} className={classes.formFlex} >
-            <FormControl variant="outlined" size="small" fullWidth>
-              <InputLabel id="select-patient-gender">UF</InputLabel>
-                <Select
-                label="UF"
-                  labelId="select-patient-gender"
-                  id="demo-simple-select-filled"
-                  //value={state.gender}
-                  //  onChange={(element) => setState({ ...state, gender: `${element.target.value}` || '' })}
-
-                    >
-                <MenuItem value="">
-                <em>UF</em>
-                </MenuItem>
-                {userTypes.map(usertype => <MenuItem key={`usertype_${usertype}`} value={usertype}>{usertype}</MenuItem>)}
-                </Select>
-          </FormControl>
-          </Grid >
-        </Grid>
-        <Grid container item md={12} xs={12} className={classes.form}>
-              <TextField
-              error={inputPassword.error}
+                error={inputPassword.error}
                 id="input-password"
                 label="Senha"
                 variant="outlined"
@@ -496,78 +504,8 @@ export default function RegisterForm() {
                 />
             </Grid>
 
-            {/* <FormControl fullWidth margin='normal' variant="outlined">
-              <InputLabel htmlFor="outlined-adornment-password">Senha</InputLabel>
-              <OutlinedInput
-                id="outlined-adornment-password"
-                type={showPassword ? 'text' : 'password'}
-                value={inputPassword.value}
-                onChange={inputValue => setInputPassword(prev => ({
-                  ...prev,
-                  value: inputValue.target.value
-                }))}
-                onBlur={handlePasswordValitor}
-                error={inputPassword.error}
-                endAdornment={
-                  <InputAdornment position="end">
-                    <IconButton
-                      aria-label="toggle password visibility"
-                      onClick={handleClickShowPassword}
-                      // onMouseDown={handleMouseDownPassword}
-                      edge="end"
-                    >
-                      {showPassword ? <Visibility /> : <VisibilityOff />}
-                    </IconButton>
-                  </InputAdornment>
-                }
-                labelWidth={70}
-              />
-            </FormControl> */}
-            {/* <FormControl fullWidth margin='normal' variant="outlined">
-              <InputLabel htmlFor="outlined-adornment-password">Confirme senha</InputLabel>
-              <OutlinedInput
-
-                id="outlined-adornment-password"
-                type={showPassword ? 'text' : 'password'}
-                value={inputPassword.value}
-                onChange={inputValue => setInputPassword(prev => ({
-                  ...prev,
-                  value: inputValue.target.value
-                }))}
-                onBlur={handlePasswordValitor}
-                error={inputPassword.error}
-                endAdornment={
-                  <InputAdornment position="end">
-                    <IconButton
-                      aria-label="toggle password visibility"
-                      onClick={handleClickShowPassword}
-                      // onMouseDown={handleMouseDownPassword}
-                      edge="end"
-                    >
-                      {showPassword ? <Visibility /> : <VisibilityOff />}
-                    </IconButton>
-                  </InputAdornment>
-                }
-                labelWidth={40}
-              />
-            </FormControl> */}
-
-
-            <FormControl>
-              <Grid container>
-                <Grid className={classes.marginTop}>
-<TextGray>Já tem um cadastro? </TextGray>
-                </Grid>
-<Grid>
-<Button value="remember"   color="primary" fullWidth href="/login">clique aqui</Button>
-</Grid>
-
-              </Grid>
-
-
-            </FormControl>
+          <Grid container className={classes.form}>
             <Button
-
               fullWidth
               variant="contained"
               color="primary"
@@ -576,6 +514,17 @@ export default function RegisterForm() {
             >
               Cadastrar
           </Button>
+              <Box textAlign="center" width="100%" className={classes.form}>
+                <TextGray >
+                  Já tem um cadastro? {' '}
+                  <Link href="/login">
+                    <TextBlue>
+                      Clique aqui{' '}
+                    </TextBlue>
+                  </Link>
+            </TextGray>
+              </Box>
+            </Grid>
             {/* <Grid container>
               <Box textAlign="center" width="100%">
                 <TextGray >
