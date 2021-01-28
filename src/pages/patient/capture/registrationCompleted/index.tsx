@@ -1,15 +1,19 @@
-import React, { useState } from 'react';
-import { useDispatch } from 'react-redux';
+import React, { useState, useCallback, useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { useHistory } from 'react-router-dom';
 import { Container, Grid, Menu, MenuItem, Dialog, DialogTitle, DialogContent, DialogContentText, DialogActions, Radio, RadioGroup, FormControlLabel, TextField, FormControl, Card, CardContent } from '@material-ui/core';
 
 
 import { setIfRegistrationCompleted } from '../../../../store/ducks/patients/actions';
+import { CareInterface } from '../../../../store/ducks/cares/types';
+import { createCareRequest as createCareAction } from '../../../../store/ducks/cares/actions';
 
 import Button from '../../../../styles/components/Button';
 import { ReactComponent as SuccessImage } from '../../../../assets/img/ilustracao-avaliacao-concluida.svg';
 import { ReactComponent as IconProfile } from '../../../../assets/img/icon-profile.svg';
 
 import { BoxCustom as Box, Profile, SuccessContent, ButtonsContainer, PatientWrapper } from './styles';
+import { ApplicationState } from '../../../../store';
 
 interface ICaptureData {
   type: string;
@@ -17,14 +21,58 @@ interface ICaptureData {
   estimate: string;
 }
 
-const registrationCompleted: React.FC<any> = () => {
+const registrationCompleted: React.FC<any> = (props) => {
+  // ----------------------------------------------
+  const [care, setCare] = useState<CareInterface>({
+    health_insurance_id: '5f903db15104287582ba58af',
+    health_plan_id: '5fd666cd48392d0621196551',
+    health_sub_plan_id: '5fd6671f48392d0621196552',
+    health_plan_card_validate: '2021-01-30T12:00:00',
+    health_plan_card_number: '123456789',
+    contract: '123123',
+    care_type_id: '5fd66ca189a402ec48110cc1',
+    user_id: '5e8cfe7de9b6b8501c8033ac',
+    created_by: { _id: '5e8cfe7de9b6b8501c8033ac' },
+    status: 'Pre-Atendimento',
+    capture: {
+      status: 'Em Andamento',
+    }
+  });
+  // ----------------------------------------------
+
+  const history = useHistory();
   const dispatch = useDispatch();
+
+  const { params } = props.match;
+
+  const [openModalConfirm, setOpenModalConfirm] = useState<boolean>(false);
+  const { patients: patientState, cares: careState } = useSelector((state: ApplicationState) => state);
+
   const [captureOptionsModalOpen, setCaptureModalModalOpen] = useState(false);
   const [captureData, setCaptureData] = useState<ICaptureData>({
     type: '',
     orderNumber: '',
     estimate: '',
   });
+
+  useEffect(() => {
+    if (careState.success && !careState.error && careState.data._id) {
+      history.push(`/patient/capture/${careState.data._id}/overview`);
+    }
+  }, [careState])
+
+  const toggleModalConfirm = useCallback((open?: boolean) => {
+    open ? setOpenModalConfirm(open) : setOpenModalConfirm(!openModalConfirm);
+  }, [openModalConfirm]);
+
+  const handleSubmitPatientCapture = useCallback(() => {
+    setOpenModalConfirm(false);
+
+    const params: any = { ...care, patient_id: patientState.data._id };
+
+    dispatch(createCareAction(params))
+
+  }, [dispatch]);
 
   return (
     <Container>
@@ -48,17 +96,22 @@ const registrationCompleted: React.FC<any> = () => {
         </Profile>
 
         <ButtonsContainer>
-            <Button variant="outlined" background="success_rounded" onClick={() => dispatch(setIfRegistrationCompleted(false))}>
+          {console.log(params)}
+            <Button variant="outlined" background="success_rounded" onClick={() => {
+              dispatch(setIfRegistrationCompleted(false));
+              history.push(`/patient/${params.id}/edit`)
+            }}>
               Editar
             </Button>
-            <Button variant="contained"  background="success" onClick={() => setCaptureModalModalOpen(true)}>
+            {/* <Button variant="contained"  background="success" onClick={() => setCaptureModalModalOpen(true)}> */}
+            <Button variant="contained"  background="success" onClick={() => toggleModalConfirm(true)}>
               Iniciar Captação
             </Button>
         </ButtonsContainer>
       </Box>
 
       <PatientWrapper>
-        <Button variant="contained"  background="success_rounded">
+        <Button variant="contained"  background="success_rounded" onClick={() => history.push('/patient')}>
           Listar pacientes
         </Button>
       </PatientWrapper>
@@ -117,6 +170,28 @@ const registrationCompleted: React.FC<any> = () => {
             </Button>
           </DialogActions>
         </Dialog>
+
+        <Dialog
+            open={openModalConfirm}
+            onClose={() => toggleModalConfirm(false)}
+            aria-labelledby="alert-dialog-title"
+            aria-describedby="alert-dialog-description"
+          >
+            <DialogTitle id="alert-dialog-title">Atenção</DialogTitle>
+            <DialogContent>
+              <DialogContentText id="alert-dialog-description">
+                Tem certeza que deseja iniciar a captação deste paciente?
+              </DialogContentText>
+            </DialogContent>
+            <DialogActions>
+              <Button onClick={() => toggleModalConfirm()} color="primary">
+                Não
+                </Button>
+              <Button onClick={handleSubmitPatientCapture} color="primary" autoFocus>
+                Sim
+                </Button>
+            </DialogActions>
+          </Dialog>
     </Container>
   );
 }

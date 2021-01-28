@@ -5,13 +5,15 @@ import { Container, StepLabel, Radio, RadioGroup, FormControlLabel, FormGroup, C
 import { useDispatch, useSelector } from 'react-redux';
 import { ApplicationState } from '../../../../store';
 
-import { loadRequest as getDocumentGroup } from '../../../../store/ducks/documentGroups/actions';
-import { DocumentGroupInterface } from '../../../../store/ducks/documentGroups/types';
-
-import { createDocumentRequest, loadRequest as getDocumentAction } from '../../../../store/ducks/documents/actions';
-
-import { loadCareById } from '../../../../store/ducks/cares/actions';
-import { CareInterface } from '../../../../store/ducks/cares/types';
+import {
+  loadCareById,
+  actionDocumentGroupAbemidRequest,
+  actionDocumentAbemidRequest,
+  actionDocumentAbemidStoreRequest,
+  actionDocumentAbemidUpdateRequest,
+  cleanAction
+} from '../../../../store/ducks/cares/actions';
+import { CareInterface, DocumentGroupInterface } from '../../../../store/ducks/cares/types';
 
 import PatientCard from '../../../../components/Card/Patient';
 import Loading from '../../../../components/Loading';
@@ -19,7 +21,6 @@ import Sidebar from '../../../../components/Sidebar';
 
 import Button from '../../../../styles/components/Button';
 import { FormTitle, QuestionSection, QuestionTitle, ScoreTotalContent, ScoreLabel, ScoreTotal } from '../../../../styles/components/Form';
-import { StepperComponent, StepComponent, StepTitle } from '../../../../styles/components/Step';
 
 import { ButtonsContent, FormContent } from './styles';
 
@@ -35,19 +36,16 @@ interface IScore {
 }
 
 export default function Abemid(props: RouteComponentProps<IPageParams>) {
-  const id = '5ffd7acd2f5d2b1d8ff6bea4';
-
   const { params } = props.match;
 
   const history = useHistory();
   const dispatch = useDispatch();
 
-  const documentGroupState = useSelector((state: ApplicationState) => state.documentGroups);
-  const documentState = useSelector((state: ApplicationState) => state.documents);
   const careState = useSelector((state: ApplicationState) => state.cares);
+  const { documentGroupAbemid: documentGroupState, documentAbemid: documentState } = careState;
 
   const [care, setCare] = useState<CareInterface>();
-  const [documentGroup, setDocumentGroup] = useState<any>({
+  const [documentGroup, setDocumentGroup] = useState<DocumentGroupInterface>({
     _id: '',
     name: '',
     description: '',
@@ -58,54 +56,56 @@ export default function Abemid(props: RouteComponentProps<IPageParams>) {
     updated_by: { _id: '' },
   });
   const [document, setDocument] = useState<any>();
-  const [selected, setSelected] = useState<String[]>([]);
-  const [score, setScore] = useState<IScore>({ total: 0, complexity: '', status: '' });
+  const [score, setScore] = useState<IScore>({ total: 0, complexity: 'Sem Complexidade', status: '' });
 
   useEffect(() => {
-    dispatch(getDocumentGroup({ _id: id }))
+    dispatch(actionDocumentGroupAbemidRequest());
     dispatch(loadCareById(params.id));
 
     if (params?.documentId) {
-      dispatch(getDocumentAction({ _id: params.documentId }));
+      dispatch(actionDocumentAbemidRequest({ _id: params.documentId, care_id: params.id }));
     }
+
   }, []);
 
   useEffect(() => {
     if (careState.data?._id) {
       setCare(careState.data);
     }
-  }, [careState.data]);
+  }, [careState]);
 
   useEffect(() => {
-    if (documentGroupState.data?._id) {
-      setDocumentGroup(documentGroupState.data);
+    if (!documentGroup._id) {
+      setDocumentGroup(documentGroupState);
     }
-  }, [documentGroupState])
+  }, [documentGroupState]);
 
   useEffect(() => {
-    if (
-      documentState.success &&
-      !documentState.loading &&
-      !documentState.error
-    ) {
-      if (care?._id) {
-        history.push(`/patient/capture/${care._id}/overview/`, { success: true })
+    if (documentState) {
+      setDocument(documentState);
+
+      if (
+        documentState?.success &&
+        !documentState?.loading &&
+        !documentState?.error
+      ) {
+        if (care?._id) {
+          history.push(`/patient/capture/${care._id}/overview/`, { success: true });
+        }
       }
     }
-  }, [documentState])
+  }, [careState.documentAbemid]);
 
   useEffect(() => {
-    setDocument(documentState);
-  }, [documentState]);
-
-  useEffect(() => {
-    calculateScore();
-  }, [documentGroup]);
+    if (document?._id) {
+      handleFieldAnswer();
+    }
+  }, [document]);
 
   const selectOption = useCallback((field_id: string, option_id: string, multiple: boolean = false) => {
     let documentGroupCopy = { ...documentGroup };
 
-    documentGroupCopy.fields.map((field: any) => {
+    documentGroupCopy?.fields?.map((field: any) => {
       if (field._id === field_id) {
         field.options.map((option: any) => {
           if (option._id === option_id) {
@@ -124,12 +124,16 @@ export default function Abemid(props: RouteComponentProps<IPageParams>) {
     });
 
     setDocumentGroup(documentGroupCopy);
-  }, [selected, documentGroup]);
+    calculateScore();
+
+  }, [documentGroup]);
+
+
 
   const calculateScore = useCallback(() => {
     let partialScore = 0, countQuestionFive = 0;
 
-    documentGroup.fields.map((field: any) => {
+    documentGroup?.fields?.map((field: any) => {
       field.options.map((option: any) => {
         if (option?.selected) {
           if (option.value === 5) {
@@ -169,13 +173,32 @@ export default function Abemid(props: RouteComponentProps<IPageParams>) {
 
   }, [documentGroup]);
 
+  const handleFieldAnswer = useCallback(() => {
+    let documentGroupCopy = { ...documentGroup };
+
+    documentGroupCopy?.fields?.map((field: any) => {
+      field.options.map((option: any) => {
+        const optionFounded = document.fields?.find((opt: any) => {
+          return opt.option_id === option._id
+        });
+
+        option.selected = (optionFounded) ? true : false;
+
+        return option;
+      });
+    });
+
+    setDocumentGroup(documentGroupCopy);
+    calculateScore();
+  }, [documentGroup, document]);
+
   const handleSubmit = useCallback(() => {
     let selecteds: any = [];
 
-    documentGroup.fields.map((field: any) => {
+    documentGroup?.fields?.map((field: any) => {
       field.options.map((option: any) => {
         if (option?.selected) {
-          selecteds.push({ _id: field._id, description: field.description, option_id: option._id, option_text: option.text, value: option.value })
+          selecteds.push({ _id: field._id, description: field.description, option_id: option._id, value: option.value })
         }
       })
     });
@@ -184,37 +207,26 @@ export default function Abemid(props: RouteComponentProps<IPageParams>) {
       const createDocumentParams = {
         ...score,
         pacient_id: care.patient_id?._id,
-        care_id: care._id,
-        document_group_id: documentGroup._id,
+        care_id: care?._id,
+        document_group_id: documentGroup?._id || '',
         finished: true,
         canceled: false,
         fields: selecteds,
-        created_by: { _id: '5e8cfe7de9b6b8501c8033ac' }
+        created_by: { _id: '5e8cfe7de9b6b8501c8033ac' },
       };
 
-      dispatch(createDocumentRequest(createDocumentParams));
+      if (document?._id) {
+        dispatch(actionDocumentAbemidUpdateRequest({ ...createDocumentParams, _id: document._id }));
+      } else {
+        dispatch(actionDocumentAbemidStoreRequest(createDocumentParams));
+      }
     }
 
   }, [documentGroup, care]);
 
-  const handleFieldAnswer = useCallback((option: any) => {
-    let findField: any = false;
-
-    if (document?.list?.fields) {
-      findField = document.list.fields.find((f: any) => (
-        option._id === f.option_id
-      ));
-    }
-
-    return findField || option?.selected || false;
-
-  }, [document])
-
   return (
     <Sidebar>
-      {(documentGroupState.loading || careState.loading || documentState.loading) && (
-        <Loading />
-      )}
+      {careState.loading && <Loading />}
       <Container>
 
         {care?.patient_id && (
@@ -227,8 +239,7 @@ export default function Abemid(props: RouteComponentProps<IPageParams>) {
         <FormTitle>{documentGroup.name}</FormTitle>
 
         <FormContent>
-
-          {documentGroup.fields.map((field: any, index: number) => (
+          {documentGroup?.fields?.map((field: any, index: number) => (
             <QuestionSection key={`question_${field._id}_${index}`}>
               <QuestionTitle>{field.description}</QuestionTitle>
 
@@ -240,7 +251,7 @@ export default function Abemid(props: RouteComponentProps<IPageParams>) {
                       value={option._id}
                       control={<Radio color="primary" />}
                       label={option.text}
-                      checked={handleFieldAnswer(option)}
+                      checked={option?.selected}
                     />
                   ))}
                 </RadioGroup>
@@ -253,9 +264,9 @@ export default function Abemid(props: RouteComponentProps<IPageParams>) {
                       key={`option_${field._id}_${index}`}
                       value={option._id}
                       onChange={e => selectOption(field._id, option._id, true)}
-                      checked={handleFieldAnswer(option)}
                       control={(
                         <Checkbox color="primary"
+                          checked={option?.selected ?? false}
                         />
                       )}
                       label={option.text}

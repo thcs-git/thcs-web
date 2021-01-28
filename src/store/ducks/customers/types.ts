@@ -83,6 +83,7 @@ export interface CustomerState {
   list: CustomerList;
   loading: boolean;
   error: boolean;
+  success: boolean;
 }
 
 export type LoadRequestParams = Partial<Omit<CustomerList, 'data'>>

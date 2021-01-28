@@ -29,6 +29,12 @@ export const INITIAL_STATE: CareState = {
   error: false,
   loading: false,
   success: false,
+  documentGroupSocioAmbiental: {},
+  documentSocioAmbiental: {},
+  documentGroupAbemid: {},
+  documentAbemid: {},
+  documentGroupNead: {},
+  documentNead: {},
 };
 
 const reducer: Reducer<CareState> = (state = INITIAL_STATE, action) => {
@@ -36,6 +42,20 @@ const reducer: Reducer<CareState> = (state = INITIAL_STATE, action) => {
     case CareTypes.LOAD_REQUEST:
       return { ...state, loading: true, success: false, };
     case CareTypes.LOAD_SUCCCES:
+      return {
+        ...state,
+        list: action.payload.data,
+        loading: false,
+        success: false,
+        error: false
+      };
+    case CareTypes.SEARCH_CARE_REQUEST:
+      return {
+        ...state,
+        loading: true,
+        success: false,
+        error: false
+      };
     case CareTypes.SEARCH_CARE_SUCCESS:
       return {
         ...state,
@@ -76,6 +96,10 @@ const reducer: Reducer<CareState> = (state = INITIAL_STATE, action) => {
       return {
         ...state, loading: false, error: true, success: false,
       };
+    case CareTypes.SEARCH_CARE_REQUEST:
+      return {
+        ...state, loading: true, error: false, success: false,
+      };
     case CareTypes.CREATE_CARE_REQUEST:
       return {
         ...state, loading: true, error: false, success: false,
@@ -87,6 +111,227 @@ const reducer: Reducer<CareState> = (state = INITIAL_STATE, action) => {
         loading: false,
         error: false,
         success: true
+      };
+
+    //SOCIOAMBIENTAL
+    case CareTypes.DOCUMENT_GROUP_SOCIOAMBIENTAL_REQUEST:
+      return {
+        ...state,
+        loading: true,
+        error: false,
+        success: false
+      };
+    case CareTypes.DOCUMENT_GROUP_SOCIOAMBIENTAL:
+      return {
+        ...state,
+        documentGroupSocioAmbiental: action.payload.data,
+        loading: false,
+        error: false,
+        success: true
+      };
+    case CareTypes.DOCUMENT_SOCIOAMBIENTAL_REQUEST:
+      return {
+        ...state,
+        loading: true,
+        error: false,
+        success: false
+      };
+    case CareTypes.DOCUMENT_SOCIOAMBIENTAL:
+      return {
+        ...state,
+        documentSocioAmbiental: action.payload.data,
+        loading: false,
+        error: false,
+        success: true
+      };
+    case CareTypes.DOCUMENT_SOCIOAMBIENTAL_STORE_REQUEST:
+      return {
+        ...state,
+        documentSocioAmbiental: action.payload.data,
+        loading: true,
+        error: false,
+        success: false
+      };
+    case CareTypes.DOCUMENT_SOCIOAMBIENTAL_STORE:
+      return {
+        ...state,
+        documentSocioAmbiental: {
+          ...action.payload.data,
+          loading: false,
+          error: false,
+          success: true
+        },
+        loading: false,
+        error: false,
+        success: true
+      };
+    case CareTypes.DOCUMENT_SOCIOAMBIENTAL_UPDATE_REQUEST:
+      return {
+        ...state,
+        documentSocioAmbiental: action.payload.data,
+        loading: true,
+        error: false,
+        success: false
+      };
+    case CareTypes.DOCUMENT_SOCIOAMBIENTAL_UPDATE:
+      return {
+        ...state,
+        documentSocioAmbiental: {
+          ...action.payload.data,
+          loading: false,
+          error: false,
+          success: true
+        },
+        loading: false,
+        error: false,
+        success: true
+      };
+
+    // ABEMID
+    case CareTypes.DOCUMENT_GROUP_ABEMID_REQUEST:
+      return {
+        ...state,
+        loading: true,
+        error: false,
+        success: false
+      };
+    case CareTypes.DOCUMENT_GROUP_ABEMID:
+      return {
+        ...state,
+        documentGroupAbemid: action.payload.data,
+        loading: false,
+        error: false,
+        success: true
+      };
+    case CareTypes.DOCUMENT_ABEMID_REQUEST:
+      return {
+        ...state,
+        loading: true,
+        error: false,
+        success: false
+      };
+    case CareTypes.DOCUMENT_ABEMID:
+      return {
+        ...state,
+        documentAbemid: action.payload.data,
+        loading: false,
+        error: false,
+        success: true
+      };
+    case CareTypes.DOCUMENT_ABEMID_STORE_REQUEST:
+      return {
+        ...state,
+        documentAbemid: action.payload.data,
+        loading: true,
+        error: false,
+        success: false
+      };
+    case CareTypes.DOCUMENT_ABEMID_STORE:
+      return {
+        ...state,
+        documentAbemid: {
+          ...action.payload.data,
+          loading: false,
+          error: false,
+          success: true
+        },
+        loading: false,
+        error: false,
+        success: true
+      };
+    case CareTypes.DOCUMENT_ABEMID_UPDATE_REQUEST:
+      return {
+        ...state,
+        documentAbemid: action.payload.data,
+        loading: true,
+        error: false,
+        success: false
+      };
+    case CareTypes.DOCUMENT_ABEMID_UPDATE:
+      return {
+        ...state,
+        documentAbemid: {
+          ...action.payload.data,
+          loading: false,
+          error: false,
+          success: true
+        },
+        loading: false,
+        error: false,
+        success: true
+      };
+
+    // NEAD
+    case CareTypes.DOCUMENT_GROUP_NEAD_REQUEST:
+      return {
+        ...state,
+        loading: true,
+        error: false,
+        success: false
+      };
+    case CareTypes.DOCUMENT_GROUP_NEAD:
+      return {
+        ...state,
+        documentGroupNead: action.payload.data,
+        loading: false,
+        error: false,
+        success: true
+      };
+    case CareTypes.DOCUMENT_NEAD_REQUEST:
+      return {
+        ...state,
+        loading: true,
+        error: false,
+        success: false
+      };
+    case CareTypes.DOCUMENT_NEAD:
+      return {
+        ...state,
+        documentNead: action.payload.data,
+        loading: false,
+        error: false,
+        success: true
+      };
+    case CareTypes.DOCUMENT_NEAD_STORE_REQUEST:
+      return {
+        ...state,
+        documentNead: action.payload.data,
+        loading: true,
+        error: false,
+        success: false
+      };
+    case CareTypes.DOCUMENT_NEAD_STORE:
+      return {
+        ...state,
+        documentNead: action.payload.data,
+        loading: false,
+        error: false,
+        success: true
+      };
+    case CareTypes.DOCUMENT_NEAD_UPDATE_REQUEST:
+      return {
+        ...state,
+        documentNead: action.payload.data,
+        loading: true,
+        error: false,
+        success: false
+      };
+    case CareTypes.DOCUMENT_NEAD_UPDATE:
+      return {
+        ...state,
+        documentNead: {
+          ...action.payload.data,
+          loading: false,
+          error: false,
+          success: true
+        },
+        loading: false,
+        error: false,
+        success: true
+      };
+    case CareTypes.CLEAN:
+      return {
+        ...INITIAL_STATE,
       };
     default:
       return state;

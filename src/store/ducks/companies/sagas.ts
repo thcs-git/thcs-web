@@ -43,7 +43,9 @@ export function* createCompany({ payload: { data } }: any) {
     const response:AxiosResponse = yield call(apiSollar.post, `/companies/store`, data, { headers: { token } })
 
     yield put(loadSuccess(response.data))
+    toast.success('Usuário atualizado com sucesso!');
   } catch(e) {
+    toast.error('Ocorreu um erro ao cadastrar uma nova empresa');
     yield put(loadFailure());
   }
 

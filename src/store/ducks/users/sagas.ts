@@ -100,7 +100,7 @@ export function* updateUser({ payload: { data } }: any) {
   data.user_type_id = { _id: '5fc05d1803058800244bc41b' }
 
   try {
-    const response: AxiosResponse = yield call(apiSollar.put, `/user/${_id}/update`, { ...data }, { headers: { token } })
+    const response: AxiosResponse = yield call(apiSollar.put, `/user/${_id}/update`, { ...data }, { headers: { token } });
 
     console.log(response.data);
 

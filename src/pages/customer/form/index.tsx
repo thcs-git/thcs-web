@@ -90,7 +90,7 @@ export default function CustomerForm(props: RouteComponentProps<IPageParams>) {
 
     setState(prevState => {
       return {
-        ...prevState,
+        ...customerState.data,
         address: {
           ...customerState.data.address
         }
@@ -106,8 +106,6 @@ export default function CustomerForm(props: RouteComponentProps<IPageParams>) {
   }, [dispatch, params]);
 
   const handleSaveFormCustomer = useCallback(() => {
-    // console.log(params);
-
     if (params.id) {
       dispatch(updateCompanyRequest(state));
     } else {
@@ -141,17 +139,6 @@ export default function CustomerForm(props: RouteComponentProps<IPageParams>) {
           <FormGroupSection>
 
             <Grid container>
-              <Grid item md={2} xs={4}>
-                <TextField
-                  id="input-customer-id"
-                  label="ID"
-                  variant="outlined"
-                  size="small"
-                  value={state.id}
-                  fullWidth
-                  disabled
-                />
-              </Grid>
               <Grid item md={5} xs={12}>
                 <TextField
                   id="input-social-name"
@@ -238,6 +225,18 @@ export default function CustomerForm(props: RouteComponentProps<IPageParams>) {
                 />
               </Grid>
 
+              <Grid item md={1} xs={12}>
+                  <TextField
+                    id="input-address-uf"
+                    label="UF"
+                    variant="outlined"
+                    size="small"
+                    value={state.address.state}
+                    onChange={(element) => setState({ ...state, address: { ...state.address, state: element.target.value } })}
+                    fullWidth
+                  />
+                </Grid>
+
               <Grid item md={4} xs={12}>
                 <TextField
                   id="input-neighborhood"
@@ -306,7 +305,7 @@ export default function CustomerForm(props: RouteComponentProps<IPageParams>) {
                 label="Telefone"
                 variant="outlined"
                 size="small"
-                value={state.phones.number}
+                value={state.phones?.number}
                 onChange={(element) => setState({ ...state, phones: { ...state.phones, number: element.target.value }  })}
                 placeholder="0000-0000"
                 fullWidth

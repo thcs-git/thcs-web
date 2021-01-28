@@ -5,13 +5,14 @@ import { Container, StepLabel, Radio, RadioGroup, FormControlLabel } from '@mate
 import { useDispatch, useSelector } from 'react-redux';
 import { ApplicationState } from '../../../../store';
 
-import { loadRequest as getDocumentGroup } from '../../../../store/ducks/documentGroups/actions';
-import { DocumentGroupInterface } from '../../../../store/ducks/documentGroups/types';
-
-import { createDocumentRequest, loadRequest as getDocumentAction } from '../../../../store/ducks/documents/actions';
-
-import { loadCareById } from '../../../../store/ducks/cares/actions';
-import { CareInterface } from '../../../../store/ducks/cares/types';
+import {
+  loadCareById,
+  actionDocumentGroupNeadRequest,
+  actionDocumentNeadRequest,
+  actionDocumentNeadStoreRequest,
+  actionDocumentNeadUpdateRequest
+} from '../../../../store/ducks/cares/actions';
+import { CareInterface, DocumentGroupInterface } from '../../../../store/ducks/cares/types';
 
 import PatientCard from '../../../../components/Card/Patient';
 import Loading from '../../../../components/Loading';
@@ -28,31 +29,25 @@ interface IPageParams {
   documentId?: string;
 }
 
-interface IScore {
-  complexity: string;
-  status: string;
-}
-
 export default function Nead(props: RouteComponentProps<IPageParams>) {
-  const id = '5ff65469b4d4ac07d186e99f';
-
   const { params } = props.match;
 
   const history = useHistory();
   const dispatch = useDispatch();
 
-  const documentGroupState = useSelector((state: ApplicationState) => state.documentGroups);
-  const documentState = useSelector((state: ApplicationState) => state.documents);
   const careState = useSelector((state: ApplicationState) => state.cares);
+  const { documentGroupNead: documentGroupState, documentNead: documentState } = careState;
 
   const [steps, setSteps] = useState([
+    { title: 'Escore de Katz', score: { total: 0, complexity: '', status: '' } },
     { title: 'Grupo 1', score: { total: 0, complexity: '', status: '' } },
     { title: 'Grupo 2', score: { total: 0, complexity: '', status: '' } },
     { title: 'Grupo 3', score: { total: 0, complexity: '', status: '' } },
-    { title: 'Escore de Katz', score: { total: 0, complexity: '', status: '' } }
   ]);
+  const [currentStep, setCurrentStep] = useState(0);
+
   const [care, setCare] = useState<CareInterface>();
-  const [documentGroup, setDocumentGroup] = useState<any>({
+  const [documentGroup, setDocumentGroup] = useState<DocumentGroupInterface>({
     _id: '',
     name: '',
     description: '',
@@ -63,86 +58,85 @@ export default function Nead(props: RouteComponentProps<IPageParams>) {
     updated_by: { _id: '' },
   });
   const [document, setDocument] = useState<any>();
-  const [currentStep, setCurrentStep] = useState(0);
-  const [selected, setSelected] = useState<String[]>([]);
-  const [status, setStatus] = useState<IScore>({ complexity: '', status: '' });
 
   useEffect(() => {
-    dispatch(getDocumentGroup({ _id: id }))
+    dispatch(actionDocumentGroupNeadRequest());
     dispatch(loadCareById(params.id));
 
     if (params?.documentId) {
-      dispatch(getDocumentAction({ _id: params.documentId }));
+      dispatch(actionDocumentNeadRequest({ _id: params.documentId, care_id: params.id }));
     }
+
   }, []);
 
   useEffect(() => {
     if (careState.data?._id) {
       setCare(careState.data);
     }
-  }, [careState.data]);
+  }, [careState]);
 
   useEffect(() => {
-    if (documentGroupState.data?._id) {
-      setDocumentGroup(documentGroupState.data);
+    if (!documentGroup._id) {
+      setDocumentGroup(documentGroupState);
     }
-  }, [documentGroupState])
+  }, [documentGroupState]);
 
   useEffect(() => {
+    if (documentState) {
+      setDocument(documentState);
+    }
+
     if (
-      documentState.success &&
-      !documentState.loading &&
-      !documentState.error
+      documentState?.success &&
+      !documentState?.loading &&
+      !documentState?.error
     ) {
       if (care?._id) {
-        history.push(`/patient/capture/${care._id}/overview/`, { success: true })
+        history.push(`/patient/capture/${care._id}/overview/`, { success: true });
       }
     }
-  }, [documentState])
+  }, [documentState]);
 
   useEffect(() => {
-    setDocument(documentState);
-  }, [documentState]);
+    if (document?._id) {
+      handleFieldAnswer();
+    }
+  }, [document, currentStep]);
 
   useEffect(() => {
     calculateScore();
   }, [documentGroup]);
 
-  const handleNextStep = useCallback(() => {
-    setCurrentStep(prevState => (prevState + 1))
-  }, [currentStep]);
-
-  const handleBackStep = useCallback(() => {
-    setCurrentStep(prevState => (prevState - 1))
-  }, [currentStep]);
-
-  const handleNavigateStep = useCallback((step: number) => {
-    setCurrentStep(step)
-  }, [currentStep]);
-
-  const selectOption = useCallback((field_id: string, option_id: string) => {
+  const selectOption = useCallback((field_id: string, option_id: string, multiple: boolean = false) => {
     let documentGroupCopy = { ...documentGroup };
 
-    documentGroupCopy.fields.map((field: any) => {
+    documentGroupCopy?.fields?.map((field: any) => {
       if (field._id === field_id) {
         field.options.map((option: any) => {
-
           if (option._id === option_id) {
-            option.selected = true;
+            if (option?.selected) {
+              option.selected = !option.selected;
+            } else {
+              option.selected = true;
+            }
           } else {
-            option.selected = false;
+            if (!multiple) {
+              option.selected = false;
+            }
           }
         })
       }
     });
 
     setDocumentGroup(documentGroupCopy);
-  }, [selected, documentGroup]);
+    calculateScore();
+
+  }, [documentGroup]);
 
   const calculateScore = useCallback(() => {
     let partialScore = 0, countNoAnswers = 0, count24hours = 0, count12hours = 0;
 
-    documentGroup.fields.map((field: any) => {
+    documentGroup?.fields?.map((field: any) => {
       if (field.step === currentStep) {
         field.options.map((option: any) => {
           if (option?.selected) {
@@ -203,14 +197,46 @@ export default function Nead(props: RouteComponentProps<IPageParams>) {
     let stepsCopy = steps;
     stepsCopy[currentStep].score = { total: partialScore, complexity: getComplexity(partialScore), status: getStatus(partialScore) };
 
+    /*
+    KATZ
+
+    Classificação:
+    5 ou 6 - Independente
+    3 ou 4 - Dependente Parcial
+    < 2    - Dependente Total
+
+    Exibir junto a numeracao do score
+
+    Dependendo do valor, marcar o equivalente na pergunta: '3. KATZ (se pediatria, considerar dependência total)' do grupo 3
+    */
+
+
     setSteps(stepsCopy);
-  }, [documentGroup, status]);
+  }, [documentGroup, steps]);
+
+  const handleFieldAnswer = useCallback(() => {
+    let documentGroupCopy = { ...documentGroup };
+
+    documentGroupCopy?.fields?.map((field: any) => {
+      field.options.map((option: any) => {
+        const optionFounded = document.fields?.find((opt: any) => {
+          return opt.option_id === option._id
+        });
+
+        option.selected = (optionFounded) ? true : false;
+
+        return option;
+      });
+    });
+
+    setDocumentGroup(documentGroupCopy);
+  }, [documentGroup, document]);
 
   const handleSubmit = useCallback(() => {
     let selecteds: any = [], complexitiesArray: any = [], statusArray: any = [];
     let complexity: string = '', status: string = '';
 
-    documentGroup.fields.map((field: any) => {
+    documentGroup?.fields?.map((field: any) => {
       field.options.map((option: any) => {
         if (option?.selected) {
           selecteds.push({ _id: field._id, description: field.description, option_id: option._id, value: option.value })
@@ -252,30 +278,31 @@ export default function Nead(props: RouteComponentProps<IPageParams>) {
         created_by: { _id: '5e8cfe7de9b6b8501c8033ac' },
       };
 
-      dispatch(createDocumentRequest(createDocumentParams));
+      if (document?._id) {
+        dispatch(actionDocumentNeadUpdateRequest({ ...createDocumentParams, _id: document._id }));
+      } else {
+        dispatch(actionDocumentNeadStoreRequest(createDocumentParams));
+      }
     }
-
 
   }, [documentGroup, care]);
 
-  const handleFieldAnswer = useCallback((option: any) => {
-    let fieldIndex: number = -1;
 
-    if (document?.list?.fields) {
-      fieldIndex = document.list.fields.findIndex((f: any) => (
-        option._id === f.option_id
-      ));
-    }
+  const handleNextStep = useCallback(() => {
+    setCurrentStep(prevState => (prevState + 1))
+  }, [currentStep]);
 
-    return option?.selected || (fieldIndex > -1) || false;
+  const handleBackStep = useCallback(() => {
+    setCurrentStep(prevState => (prevState - 1))
+  }, [currentStep]);
 
-  }, [document])
+  const handleNavigateStep = useCallback((step: number) => {
+    setCurrentStep(step)
+  }, [currentStep]);
 
   return (
     <Sidebar>
-      {(documentGroupState.loading || careState.loading || documentState.loading) && (
-        <Loading />
-      )}
+      {careState.loading && <Loading />}
       <Container>
 
         {care?.patient_id && (
@@ -300,7 +327,7 @@ export default function Nead(props: RouteComponentProps<IPageParams>) {
             <>
               <StepTitle>Elegibilidade</StepTitle>
 
-              {documentGroup.fields.map((field: any, index: number) => {
+              {documentGroup?.fields?.map((field: any, index: number) => {
                 if (field.step === 0) {
                   return (
                     <QuestionSection key={`question_${field._id}_${index}`}>
@@ -310,9 +337,50 @@ export default function Nead(props: RouteComponentProps<IPageParams>) {
                           <FormControlLabel
                             key={`option_${field._id}_${index}`}
                             value={option._id}
-                            control={<Radio color="primary" />}
+                            control={(
+                              <Radio
+                                color="primary"
+                                checked={option?.selected}
+                              />
+                            )}
                             label={option.text}
-                            checked={handleFieldAnswer(option)}
+                          />
+                        ))}
+                      </RadioGroup>
+                    </QuestionSection>
+                  );
+                }
+              })}
+
+              <ScoreTotalContent>
+                <ScoreLabel>PONTUAÇÃO KATZ:</ScoreLabel>
+                <ScoreTotal>{steps[currentStep].score.total}</ScoreTotal>
+              </ScoreTotalContent>
+            </>
+          )}
+
+          {/* Grupo 2 */}
+          {currentStep === 1 && (
+            <>
+              <StepTitle>Critérios para indicação imediata de internação domiciliar*</StepTitle>
+
+              {documentGroup?.fields?.map((field: any, index: number) => {
+                if (field.step === 1) {
+                  return (
+                    <QuestionSection key={`question_${field._id}_${index}`}>
+                      <QuestionTitle>{field.description}</QuestionTitle>
+                      <RadioGroup onChange={e => selectOption(field._id, e.target.value)}>
+                        {field.options.map((option: any, index: number) => (
+                          <FormControlLabel
+                            key={`option_${field._id}_${index}`}
+                            value={option._id}
+                            control={(
+                              <Radio
+                                color="primary"
+                                checked={option?.selected}
+                              />
+                            )}
+                            label={option.text}
                           />
                         ))}
                       </RadioGroup>
@@ -325,13 +393,13 @@ export default function Nead(props: RouteComponentProps<IPageParams>) {
             </>
           )}
 
-          {/* Grupo 2 */}
-          {currentStep === 1 && (
+          {/* Grupo 3 */}
+          {currentStep === 2 && (
             <>
-              <StepTitle>Critérios para indicação imediata de internação domiciliar*</StepTitle>
+              <StepTitle>Critérios para indicação imediata de internação domiciliar</StepTitle>
 
-              {documentGroup.fields.map((field: any, index: number) => {
-                if (field.step === 1) {
+              {documentGroup?.fields?.map((field: any, index: number) => {
+                if (field.step === 2) {
                   return (
                     <QuestionSection key={`question_${field._id}_${index}`}>
                       <QuestionTitle>{field.description}</QuestionTitle>
@@ -340,9 +408,13 @@ export default function Nead(props: RouteComponentProps<IPageParams>) {
                           <FormControlLabel
                             key={`option_${field._id}_${index}`}
                             value={option._id}
-                            control={<Radio color="primary" />}
+                            control={(
+                              <Radio
+                                color="primary"
+                                checked={option?.selected}
+                              />
+                            )}
                             label={option.text}
-                            checked={handleFieldAnswer(option)}
                           />
                         ))}
                       </RadioGroup>
@@ -355,24 +427,29 @@ export default function Nead(props: RouteComponentProps<IPageParams>) {
             </>
           )}
 
-          {/* Grupo 3 */}
-          {currentStep === 2 && (
+          {/* Score de Katz */}
+          {currentStep === 3 && (
             <>
-              <StepTitle>Critérios para indicação imediata de internação domiciliar</StepTitle>
+              <StepTitle>Atividades</StepTitle>
 
-              {documentGroup.fields.map((field: any, index: number) => {
-                if (field.step === 2) {
+              {documentGroup?.fields?.map((field: any, index: number) => {
+                if (field.step === 3) {
                   return (
                     <QuestionSection key={`question_${field._id}_${index}`}>
                       <QuestionTitle>{field.description}</QuestionTitle>
-                      <RadioGroup onChange={e => selectOption(field._id, e.target.value)}>
+                      <RadioGroup onChange={e => { selectOption(field._id, e.target.value) }}>
                         {field.options.map((option: any, index: number) => (
                           <FormControlLabel
                             key={`option_${field._id}_${index}`}
                             value={option._id}
-                            control={<Radio color="primary" />}
+                            control={(
+                              <Radio
+                                color="primary"
+                                checked={option?.selected}
+                              />
+                            )}
                             label={option.text}
-                            checked={handleFieldAnswer(option)}
+                            checked={option?.selected}
                           />
                         ))}
                       </RadioGroup>
@@ -383,40 +460,6 @@ export default function Nead(props: RouteComponentProps<IPageParams>) {
 
               <ScoreTotalContent>
                 <ScoreLabel>PONTUAÇÃO FINAL:</ScoreLabel>
-                <ScoreTotal>{steps[currentStep].score.total}</ScoreTotal>
-              </ScoreTotalContent>
-            </>
-          )}
-
-          {/* Score de Katz */}
-          {currentStep === 3 && (
-            <>
-              <StepTitle>Atividades</StepTitle>
-
-              {documentGroup.fields.map((field: any, index: number) => {
-                if (field.step === 3) {
-                  return (
-                    <QuestionSection key={`question_${field._id}_${index}`}>
-                      <QuestionTitle>{field.description}</QuestionTitle>
-                      <RadioGroup onChange={e => { selectOption(field._id, e.target.value) }}>
-                        {field.options.map((option: any, index: number) => (
-                          <FormControlLabel
-                            key={`option_${field._id}_${index}`}
-                            value={option._id}
-                            control={<Radio color="primary" />}
-                            label={option.text}
-                            checked={handleFieldAnswer(option)}
-                          // onChange={e => calculateScore(option)}
-                          />
-                        ))}
-                      </RadioGroup>
-                    </QuestionSection>
-                  );
-                }
-              })}
-
-              <ScoreTotalContent>
-                <ScoreLabel>PONTUAÇÃO KATZ:</ScoreLabel>
                 <ScoreTotal>{steps[currentStep].score.total}</ScoreTotal>
               </ScoreTotalContent>
             </>

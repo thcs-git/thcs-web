@@ -77,8 +77,8 @@ const reducer: Reducer<UserState> = (state = INITIAL_STATE, action) => {
         ...state,
         data: {
           ...action.payload.data,
-          phone: action.payload.data.phones[0].number,
-          cellphone: action.payload.data.phones[1].number,
+          phone: action.payload.data.phones[0]?.number,
+          cellphone: action.payload.data.phones[1]?.number,
         },
         loading: false,
         error: false,

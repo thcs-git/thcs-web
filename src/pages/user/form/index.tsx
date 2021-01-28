@@ -134,6 +134,24 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
   }, [userState]);
 
   useEffect(() => {
+    setState(prevState => {
+      return {
+        ...prevState,
+        address: {
+          ...userState.data.address
+        }
+      }
+    });
+
+    // setForm(prevState => ({
+    //   ...prevState,
+    //   phone: companyState.data.phones.find(phone => phone.cellnumber)?.cellnumber || '',
+    //   cellphone: companyState.data.phones.find(phone => phone.number)?.number || '',
+    // }));
+
+  }, [userState.data.address]);
+
+  useEffect(() => {
     console.log(state);
   }, [state]);
 

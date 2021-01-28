@@ -272,7 +272,7 @@ export default function AreaForm(props: RouteComponentProps<IPageParams>) {
                             getAriaValueText={value => `${value}`}
                             aria-labelledby="discrete-slider-restrict"
                             step={null}
-                            min={7}
+                            min={1}
                             max={70}
                             valueLabelDisplay="auto"
                             onChange={(event, value) => handleChangeSupply(value)}

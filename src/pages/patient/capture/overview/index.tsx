@@ -1,19 +1,20 @@
 import React, { useState, useCallback, useEffect } from 'react';
 import { useHistory, RouteComponentProps } from 'react-router-dom';
-import { Container, Grid, Menu, MenuItem, Dialog, DialogTitle, DialogContent, DialogContentText, DialogActions, Radio, RadioGroup, FormControlLabel, TextField, FormControl, Card, CardContent } from '@material-ui/core';
-import { AccountCircle, Add, CheckCircle, MoreVert, Schedule, Check as CheckIcon } from '@material-ui/icons';
+import { Container, Grid, Menu, MenuItem, Dialog, DialogTitle, DialogContent, DialogContentText, DialogActions, Radio, RadioGroup, FormControlLabel, TextField, FormControl, Card, CardContent, FormGroup, Checkbox } from '@material-ui/core';
+import { AccountCircle, CheckCircle, MoreVert, CheckCircleOutline, Edit, Print, Visibility } from '@material-ui/icons';
 
 import { useDispatch, useSelector } from 'react-redux';
 import { ApplicationState } from '../../../../store';
-import { loadCareById } from '../../../../store/ducks/cares/actions';
+import { loadCareById, updateCareRequest } from '../../../../store/ducks/cares/actions';
 import { CareInterface } from '../../../../store/ducks/cares/types';
 
 import { loadRequestByIds as getDocumentGroupsByIds } from '../../../../store/ducks/documentGroups/actions';
+import { DocumentGroupList } from '../../../../store/ducks/documentGroups/types';
 
 import Loading from '../../../../components/Loading';
 import Sidebar from '../../../../components/Sidebar';
 
-import { age, formatDate } from '../../../../helpers/date';
+import { formatDate } from '../../../../helpers/date';
 
 import Button from '../../../../styles/components/Button';
 import { FormTitle } from '../../../../styles/components/Form';
@@ -30,16 +31,17 @@ import {
 } from './styles';
 
 import { ReactComponent as SuccessImage } from '../../../../assets/img/ilustracao-avaliacao-concluida.svg';
-import { DocumentGroupInterface, DocumentGroupList } from '../../../../store/ducks/documentGroups/types';
 
 interface IPageParams {
   id: string;
 }
 
 interface ICaptureData {
-  type: string;
-  orderNumber: string;
+  inpatient: boolean;
+  health_insurance: string;
   estimate: string;
+  order_number: string;
+  status: string;
 }
 
 export default function PatientCaptureForm(props: RouteComponentProps<IPageParams>) {
@@ -56,11 +58,16 @@ export default function PatientCaptureForm(props: RouteComponentProps<IPageParam
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const [historyModalOpen, setHistoryModalOpen] = useState(false);
   const [captureOptionsModalOpen, setCaptureModalModalOpen] = useState(false);
+  const [captureFinishModalOpen, setCaptureFinishModalOpen] = useState(false);
+  const [finishEnable, setFinishEnable] = useState(false);
+  const [modalPrint, setModalPrint] = useState(false);
 
-  const [captureData, setCaptureData] = useState<ICaptureData>({
-    type: '',
-    orderNumber: '',
+  const [captureData, setCaptureData] = useState<ICaptureData | any>({
+    inpatient: false,
+    health_insurance: '',
     estimate: '',
+    order_number: '',
+    status: '',
   });
 
   useEffect(() => {
@@ -71,6 +78,10 @@ export default function PatientCaptureForm(props: RouteComponentProps<IPageParam
     if (careState.data?._id) {
       setCare(careState.data);
       setDocumentGroups(documentGroupsState.list);
+
+      if (careState?.data?.capture) {
+        setCaptureData(careState.data.capture);
+      }
     }
   }, [careState.data]);
 
@@ -185,12 +196,31 @@ export default function PatientCaptureForm(props: RouteComponentProps<IPageParam
     return found;
   };
 
+  const handleSubmitCaptureData = () => {
+    const updateParams = {
+      ...care,
+      capture: {
+        ...care?.capture,
+        ...captureData
+      },
+      care_type_id: '5fd66ca189a402ec48110cc1',
+      user_id: '600f0d615ba0702f45864035',
+    };
+
+    dispatch(updateCareRequest(updateParams));
+  };
+
+  const handleSubmitFinishCapture = () => {
+  };
+
+  const handlePrint = () => {
+    alert('print');
+  };
+
   return (
     <>
       <Sidebar>
-        {careState.loading && (
-          <Loading />
-        )}
+        {careState.loading && <Loading />}
         <Container>
           <FormTitle>Overview da Captação</FormTitle>
 
@@ -216,25 +246,31 @@ export default function PatientCaptureForm(props: RouteComponentProps<IPageParam
                         <div>
                           <p className="title">{care?.patient_id?.name}</p>
                           <div className="subTitle">
-                            <p>{care?.patient_id?.birthdate}</p>
-                            <p>Sexo: {care?.patient_id?.gender}</p>
-                            <p>Nome da Mãe: {care?.patient_id?.mother_name}</p>
+                            <p>Pedido: {care?.capture?.order_number}</p>
+                            <p>Data do Atendimento: {care?.created_at ? formatDate(care.created_at, 'DD/MM/YYYY HH:mm:ss') : '-'}</p>
+                            <p>Status: {care.status}</p>
+                            <Button onClick={() => setCaptureModalModalOpen(true)}><Edit style={{ width: 15, marginRight: 5 }} /> Editar</Button>
                           </div>
                         </div>
                       </PatientData>
-                      <div>
-                        <strong>Data do Atendimento:</strong>
-                        <p>{care?.created_at ? formatDate(care.created_at, 'DD/MM/YYYY HH:mm:ss') : '-'}</p>
-                        <br />
+
+                      {care.capture?.status === 'Em Andamento' && (
                         <div>
-                          <strong>Status:</strong>
-                          <p>{care.status}</p>
+                          <Button background={!finishEnable ? "success" : "disable"} disabled={finishEnable} onClick={() => setCaptureFinishModalOpen(true)}>
+                            <CheckCircleOutline />
+                            Concluir Captação
+                          </Button>
                         </div>
-                      </div>
-                      <div>
-                        <Button onClick={() => setCaptureModalModalOpen(true)}>Dados da Captação</Button>
-                        <Button onClick={() => setCaptureModalModalOpen(true)}>Concluir Captação</Button>
-                      </div>
+                      )}
+
+
+                      {care.capture?.status === 'Aprovado' && (
+                        <div>
+                          <Button center onClick={() => setModalPrint(true)}>
+                            <Print className="primary" style={{ width: 30, height: 30 }} />
+                          </Button>
+                        </div>
+                      )}
 
 
                     </PatientResumeContent>
@@ -267,28 +303,38 @@ export default function PatientCaptureForm(props: RouteComponentProps<IPageParam
                           }
                         }}>{handleCheckDocument(documentGroup._id, care?.documents_id || [])}</Td>
                         <Td>{documentGroup.name}</Td>
-                        <Td>{handleCareTypeLabel(document.status)}</Td>
+                        <Td>{handleCareTypeLabel(document?.status)}</Td>
                         <Td>{handleComplexityLabel(document?.complexity)}</Td>
                         <Td>{document?.created_at ? formatDate(document.created_at, 'DD/MM/YYYY HH:mm:ss') : '-'}</Td>
-                        <Td>{handleElegibilityLabel(document.status)}</Td>
+                        <Td>{handleElegibilityLabel(document?.status)}</Td>
                         <Td center>
-                          <Button aria-controls={`simple-menu${index}`} id={`btn_simple-menu${index}`} aria-haspopup="true" onClick={handleOpenRowMenu}>
-                            <MoreVert />
-                          </Button>
-                          <Menu
-                            id={`simple-menu${index}`}
-                            anchorEl={anchorEl}
-                            keepMounted
-                            open={anchorEl?.id === `btn_simple-menu${index}`}
-                            onClose={handleCloseRowMenu}
-                          >
-                            {document?._id ? (
-                              <MenuItem onClick={() => history.push(handleScoreRoute(documentGroup?._id || '', care?._id || '', document?._id))}>Editar</MenuItem>
-                            ) : (
-                                <MenuItem onClick={() => history.push(handleScoreRoute(documentGroup?._id || '', care?._id || ''))}>Adicionar novo</MenuItem>
-                              )}
-                            <MenuItem onClick={() => toggleHistoryModal()}>Ver histórico</MenuItem>
-                          </Menu>
+                          {care.capture?.status === 'Aprovado' && document?._id && (
+                            <Button onClick={() => history.push(handleScoreRoute(documentGroup?._id || '', care?._id || '', document?._id))}>
+                              <Visibility className="primary" />
+                            </Button>
+                          )}
+
+                          {care.capture?.status === 'Em Andamento' && (
+                            <>
+                              <Button aria-controls={`simple-menu${index}`} id={`btn_simple-menu${index}`} aria-haspopup="true" onClick={handleOpenRowMenu}>
+                                <MoreVert className="primary" />
+                              </Button>
+                              <Menu
+                                id={`simple-menu${index}`}
+                                anchorEl={anchorEl}
+                                keepMounted
+                                open={anchorEl?.id === `btn_simple-menu${index}`}
+                                onClose={handleCloseRowMenu}
+                              >
+                                {document?._id ? (
+                                  <MenuItem onClick={() => history.push(handleScoreRoute(documentGroup?._id || '', care?._id || '', document?._id))}>Editar</MenuItem>
+                                ) : (
+                                    <MenuItem onClick={() => history.push(handleScoreRoute(documentGroup?._id || '', care?._id || ''))}>Adicionar novo</MenuItem>
+                                  )}
+                                <MenuItem onClick={() => toggleHistoryModal()}>Ver histórico</MenuItem>
+                              </Menu>
+                            </>
+                          )}
                         </Td>
                       </tr>
                     );
@@ -321,10 +367,11 @@ export default function PatientCaptureForm(props: RouteComponentProps<IPageParam
 
           <BackButtonContent>
             <Button background="primary" onClick={() => history.push('/avaliation')}>Voltar</Button>
+            {care?.capture?.status === 'Em Andamento' && (
+              <Button background="success" onClick={handleSubmitCaptureData}>Salvar</Button>
+            )}
           </BackButtonContent>
         </Container>
-
-
 
         <Dialog
           scroll="paper"
@@ -334,7 +381,7 @@ export default function PatientCaptureForm(props: RouteComponentProps<IPageParam
           aria-describedby="scroll-dialog-description"
         >
           <DialogTitle id="scroll-dialog-title">Histórico do Score</DialogTitle>
-          <DialogContent dividers>
+          <DialogContent>
             <DialogContentText
               id="scroll-dialog-description"
               tabIndex={-1}
@@ -373,26 +420,27 @@ export default function PatientCaptureForm(props: RouteComponentProps<IPageParam
           aria-labelledby="scroll-dialog-title"
           aria-describedby="scroll-dialog-description"
         >
-          <DialogTitle id="scroll-dialog-title">Selecione o tipo de cobertura</DialogTitle>
-          <DialogContent dividers>
+          <DialogTitle id="scroll-dialog-title">Preencha os dados da captação</DialogTitle>
+          <DialogContent>
             <DialogContentText
               id="scroll-dialog-description"
               tabIndex={-1}
-            >Para iniciar a captação, é obrigatório definir a cobertura. Em caso de convênio, preencher o número da guia.</DialogContentText>
+            >Para iniciar a captação, é obrigatório preencher as informações abaixo.</DialogContentText>
 
             <div>
-              <RadioGroup onChange={e => setCaptureData({ ...captureData, type: e.target.value })} style={{ marginBottom: 20 }}>
+              <p>O paciente encontra-se internado?</p>
+              <RadioGroup onChange={e => setCaptureData({ ...captureData, inpatient: e.target.value === 'Sim' })} style={{ marginBottom: 20 }}>
                 <FormControlLabel
-                  value="Particular"
+                  value="Não"
                   control={<Radio color="primary" />}
-                  label="Particular"
-                  checked={(captureData?.type === 'Particular')}
+                  label="Não"
+                  checked={!captureData.inpatient}
                 />
                 <FormControlLabel
-                  value="Convênio"
+                  value="Sim"
                   control={<Radio color="primary" />}
-                  label="Convênio"
-                  checked={(captureData?.type === 'Convênio')}
+                  label="Sim"
+                  checked={captureData.inpatient}
                 />
               </RadioGroup>
 
@@ -403,12 +451,108 @@ export default function PatientCaptureForm(props: RouteComponentProps<IPageParam
                     label="Número de Guia"
                     variant="outlined"
                     size="small"
-                    value={captureData.orderNumber}
-                    onChange={(element) => setCaptureData({ ...captureData, orderNumber: element.target.value })}
+                    value={captureData.order_number}
+                    onChange={(element) => setCaptureData({ ...captureData, order_number: element.target.value })}
                     fullWidth
                   />
                 </FormControl>
               )}
+
+              <FormControl>
+                <TextField
+                  id="input-health-insurance"
+                  label="Convênio"
+                  variant="outlined"
+                  size="small"
+                  value={captureData.health_insurance}
+                  onChange={(element) => setCaptureData({ ...captureData, health_insurance: element.target.value })}
+                  fullWidth
+                />
+              </FormControl>
+
+              <FormControl>
+                <TextField
+                  id="input-health-plan"
+                  label="Plano"
+                  variant="outlined"
+                  size="small"
+                  value={captureData.health_plan}
+                  onChange={(element) => setCaptureData({ ...captureData, health_plan: element.target.value })}
+                  fullWidth
+                />
+              </FormControl>
+
+              <FormControl>
+                <TextField
+                  id="input-health-sub-plan"
+                  label="Sub-plano"
+                  variant="outlined"
+                  size="small"
+                  value={captureData.health_sub_plan}
+                  onChange={(element) => setCaptureData({ ...captureData, health_sub_plan: element.target.value })}
+                  fullWidth
+                />
+              </FormControl>
+
+              <FormControl>
+                <TextField
+                  id="input-hospital"
+                  label="Hospital"
+                  variant="outlined"
+                  size="small"
+                  value={captureData.hospital}
+                  onChange={(element) => setCaptureData({ ...captureData, hospital: element.target.value })}
+                  fullWidth
+                />
+              </FormControl>
+
+              <FormControl>
+                <TextField
+                  id="input-hospital-unity"
+                  label="Sub-plano"
+                  variant="outlined"
+                  size="small"
+                  value={captureData.hospital_unity}
+                  onChange={(element) => setCaptureData({ ...captureData, hospital_unity: element.target.value })}
+                  fullWidth
+                />
+              </FormControl>
+
+              <FormControl>
+                <TextField
+                  id="input-assistance-doctor"
+                  label="Médico Assistente"
+                  variant="outlined"
+                  size="small"
+                  value={captureData.assitence_doctor}
+                  onChange={(element) => setCaptureData({ ...captureData, assitence_doctor: element.target.value })}
+                  fullWidth
+                />
+              </FormControl>
+
+              <FormControl>
+                <TextField
+                  id="input-hospital-sector"
+                  label="Setor"
+                  variant="outlined"
+                  size="small"
+                  value={captureData.hospital_sector}
+                  onChange={(element) => setCaptureData({ ...captureData, hospital_sector: element.target.value })}
+                  fullWidth
+                />
+              </FormControl>
+
+              <FormControl>
+                <TextField
+                  id="input-hospital-room"
+                  label="Leito"
+                  variant="outlined"
+                  size="small"
+                  value={captureData.hospital_room}
+                  onChange={(element) => setCaptureData({ ...captureData, hospital_room: element.target.value })}
+                  fullWidth
+                />
+              </FormControl>
             </div>
           </DialogContent>
           <DialogActions>
@@ -418,6 +562,60 @@ export default function PatientCaptureForm(props: RouteComponentProps<IPageParam
             <Button onClick={() => setCaptureModalModalOpen(false)} color="primary">
               Salvar
             </Button>
+          </DialogActions>
+        </Dialog>
+
+        <Dialog
+          open={captureFinishModalOpen}
+          onClose={() => setCaptureFinishModalOpen(false)}
+          aria-labelledby="scroll-dialog-title"
+          aria-describedby="scroll-dialog-description"
+        >
+          <DialogTitle id="scroll-dialog-title">Concluir a Captação</DialogTitle>
+          <DialogContent>
+            <DialogContentText id="scroll-dialog-description" tabIndex={-1}>
+              Tem certeza que deseja concluir a captação do paciente e iniciar o atendimento?
+            </DialogContentText>
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={() => setCaptureFinishModalOpen(false)} color="primary">
+              Não
+            </Button>
+            <Button onClick={() => setCaptureFinishModalOpen(false)} color="primary">
+              Sim
+            </Button>
+          </DialogActions>
+        </Dialog>
+
+        <Dialog
+          open={modalPrint}
+          onClose={() => setModalPrint(false)}
+          aria-labelledby="alert-dialog-title"
+          aria-describedby="alert-dialog-description"
+        >
+          <DialogTitle id="alert-dialog-title">Deseja imprimir a captação?</DialogTitle>
+          <DialogContent>
+            <DialogContentText id="alert-dialog-description">
+              Selecione abaixo quais scores você deseja imprimir:
+            </DialogContentText>
+            <FormGroup>
+              {documentGroups?.data.map((documentGroup: any, index: number) => (
+                <FormControlLabel
+                  key={`document_print_${index}`}
+                  control={<Checkbox name="documentPrint[]" />}
+                  label={documentGroup.name}
+                />
+              ))}
+            </FormGroup>
+
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={() => setModalPrint(false)} color="primary">
+              Cancelar
+              </Button>
+            <Button onClick={handlePrint} color="primary" autoFocus>
+              Imprimir
+              </Button>
           </DialogActions>
         </Dialog>
       </Sidebar>

@@ -51,6 +51,11 @@ export default createGlobalStyle`
     --background: #FAFAFA;
     --switch-hover: rgba(8, 153, 186, 0.04)
     --black: #333333;
+    --disable: #CCCCCC38;
+    --purple: #6447C6;
+    --orange: #E57B00;
+    --yellow: #EBB500;
+    --cyan: #0899BA;
   }
 
   .blur {

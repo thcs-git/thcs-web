@@ -5,6 +5,7 @@ import { ButtonTypes } from './types';
 
 interface IButtonProps {
   background?: string;
+  center?: boolean
 }
 
 const background: any = {
@@ -53,6 +54,13 @@ const background: any = {
       background: var(--primary-hover);
     }
   `,
+  disable: css`
+    background: var(--disable) !important;
+    color: #ADADAD67  !important;
+    &:hover {
+      background: var(--disable) !important;
+    }
+  `,
 };
 
 const size: any = {
@@ -69,10 +77,19 @@ const size: any = {
 
 const ButtonComponent = styled(Button)`
   ${(props: IButtonProps) => background[props.background || 'var(--primary)']}
+  ${(props: IButtonProps) => props.center ? 'text-align: center;' : null}
 
   min-width: 40px;
   max-height: 40px;
   text-transform: capitalize;
+
+  & svg {
+    margin-right: 10px;
+
+    &.primary {
+      color: var(--primary);
+    }
+  }
 `;
 
 export default ButtonComponent;
