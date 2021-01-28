@@ -1,18 +1,25 @@
 import React, { useState, useEffect, useCallback, ChangeEvent, ReactNode } from 'react';
+import CheckIcon from '@material-ui/icons/Check';
+import Checkbox from '@material-ui/core/Checkbox';
+import Divider from '@material-ui/core/Divider';
+import { Error } from '@material-ui/icons';
+import EventIcon from '@material-ui/icons/Event';
 
 import { useDispatch, useSelector } from 'react-redux';
 import { ApplicationState } from '../../../store';
 import { CareInterface } from '../../../store/ducks/cares/types';
-import { loadCareById, updateCareRequest, createCareRequest } from '../../../store/ducks/cares/actions';
+import { loadCareById, updateCareRequest, createCareRequest, searchCareRequest as getCares } from '../../../store/ducks/cares/actions';
 import { loadRequest as getAreasAction } from '../../../store/ducks/areas/actions';
 import { loadRequest as getUsersAction } from '../../../store/ducks/users/actions';
 
+import { Table, Th, Td } from '../../../styles/components/Table';
 import { PatientInterface } from '../../../store/ducks/patients/types';
 import { searchRequest as searchPatientAction } from '../../../store/ducks/patients/actions';
 
 import { useHistory, RouteComponentProps } from 'react-router-dom';
 import {
   Badge,
+  Box,
   Container,
   Dialog,
   DialogActions,
@@ -21,6 +28,7 @@ import {
   DialogTitle,
   Grid,
   StepLabel,
+  Typography,
 } from '@material-ui/core';
 
 import { Autocomplete } from '@material-ui/lab';
@@ -33,8 +41,9 @@ import { FormTitle } from '../../../styles/components/Form';
 import Button from '../../../styles/components/Button';
 
 import { bloodTypes } from '../../../helpers/patient';
-import { age } from '../../../helpers/date';
+import { age, formatDate } from '../../../helpers/date';
 
+import { ReactComponent as IconProfile } from '../../../assets/img/icon-profile.svg';
 import {
   ButtonsContent,
   FormSection,
@@ -47,7 +56,8 @@ import {
   StepperComponent,
   StepComponent,
   NoDataIcon,
-  PatientNotFound
+  PatientNotFound,
+  Profile,
 } from './styles';
 
 interface IFormFields extends CareInterface {
@@ -95,6 +105,8 @@ export default function AreaForm(props: RouteComponentProps<IPageParams>) {
     updated_at: '',
   });
 
+  const [selectCheckbox, setSelectCheckbox] = useState<any>();
+
   const [patientSearch, setPatientSearch] = useState<string>('');
   const [patient, setPatient] = useState<any>({});
 
@@ -111,6 +123,7 @@ export default function AreaForm(props: RouteComponentProps<IPageParams>) {
 
     dispatch(getAreasAction());
     dispatch(getUsersAction());
+    dispatch(getCares({ status: 'Pre-Atendimento' }))
   }, [dispatch]);
 
   useEffect(() => {
@@ -193,6 +206,33 @@ export default function AreaForm(props: RouteComponentProps<IPageParams>) {
     }));
   }, []);
 
+  const handleCheckDocument = (documentId: string, documents: Array<any>) => {
+    const found = documents.find(doc => (
+      doc.document_group_id === documentId &&
+      !doc.canceled &&
+      doc.finished
+    ));
+
+    const documentRoute = () => {
+      switch (documentId) {
+        case '5ffd79012f5d2b1d8ff6bea3':
+          return 'socioambiental';
+        case '5ff65469b4d4ac07d186e99f':
+          return 'nead';
+        case '5ffd7acd2f5d2b1d8ff6bea4':
+          return 'abemid';
+        default:
+          return '';
+      }
+    };
+
+    if (found) {
+      return found.status === 'Não Elegível' ? <Error style={{ color: '#FF6565', cursor: 'pointer' }} onClick={() => history.push(`/patient/capture/${found.care_id}/${documentRoute()}/${found._id}`)} /> : <CheckIcon style={{ color: '#4FC66A', cursor: 'pointer' }} onClick={() => history.push(`/patient/capture/${found.care_id}/${documentRoute()}/${found._id}`)} />
+    } else {
+      return <CheckIcon style={{ color: '#EBEBEB' }} />;
+    }
+  };
+
   return (
     <Sidebar>
       {careState.loading && <Loading />}
@@ -214,25 +254,43 @@ export default function AreaForm(props: RouteComponentProps<IPageParams>) {
             {/* Step 1 */}
             {currentStep === 0 && (
               <>
-                <Grid container>
-                  <Grid item md={3} xs={12}></Grid>
-                  <Grid item md={6} xs={12}>
-                    <SearchContent>
-                      <TextField
-                        id="input-search-fiscal-number"
-                        label="Paciente"
-                        variant="outlined"
-                        size="small"
-                        value={patientSearch}
-                        placeholder="Buscar por CPF"
-                        onChange={element => setPatientSearch(element.target.value)}
-                        onBlur={(element) => searchPatient(element.target.value)}
-                        fullWidth
-                      />
-                    </SearchContent>
-                  </Grid>
-                </Grid>
-
+                <Table>
+                  <thead>
+                    <tr>
+                      <Th></Th>
+                      <Th>Paciente</Th>
+                      <Th>Pedido</Th>
+                      <Th>Socioambiental</Th>
+                      <Th>NEAD</Th>
+                      <Th>ABEMID</Th>
+                      <Th>Última captação</Th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                  {careState.list.data.map((care, index) => (
+                    <tr key={index}>
+                      <Td>
+                      <Checkbox
+                          checked={selectCheckbox?._id === care?._id}
+                          onChange={(element) => {
+                            if (care._id && care._id === element.target.value) setSelectCheckbox({})
+                            else setSelectCheckbox(care)
+                          }}
+                          inputProps={{ 'aria-label': 'primary checkbox' }}
+                        />
+                      </Td>
+                      <Td>
+                        {care?.patient_id?.name}
+                      </Td>
+                      <Td>{care.patient_id?.fiscal_number}</Td>
+                      <Td>{handleCheckDocument('5ffd79012f5d2b1d8ff6bea3', care?.documents_id || [])}</Td>
+                      <Td>{handleCheckDocument('5ff65469b4d4ac07d186e99f', care?.documents_id || [])}</Td>
+                      <Td>{handleCheckDocument('5ffd7acd2f5d2b1d8ff6bea4', care?.documents_id || [])}</Td>
+                      <Td>{formatDate(care?.created_at ?? '', 'DD/MM/YYYY HH:mm:ss')}</Td>
+                    </tr>
+                  ))}
+                  </tbody>
+                </Table>
                 {patient?._id && (
                   <Grid container>
                     <Grid item md={12} xs={12}>
@@ -280,17 +338,46 @@ export default function AreaForm(props: RouteComponentProps<IPageParams>) {
 
             {/* Step 2 */}
             {currentStep === 1 && (
-              <Grid container>
-                <Grid item md={4} xs={12}>
+              <Grid container style={{ marginBottom: '40px' }}>
+                <Grid item md={6} xs={12}>
                   <TextField
+                    id="input-health-plan-card-validity"
+                    label="Data e hora do atendimento"
+                    variant="outlined"
+                    // defaultValue={new Date().toISOString()}
+                    InputLabelProps={{
+                      shrink: true,
+                    }}
+                    type="datetime-local"
+                    size="small"
+                    value={state.health_plan_card_validate}
+                    onChange={(element) => setState(prevState => ({ ...prevState, health_plan_card_validate: element.target.value }))}
+                    fullWidth
+                  />
+                </Grid>
+                <Grid item md={6} xs={12}>
+                  {/* <TextField
                     id="input-health-insurance"
                     label="Convênio"
                     variant="outlined"
                     size="small"
                     fullWidth
+                  /> */}
+                  <Autocomplete
+                    id="combo-box-health-insurance"
+                    options={userState.list.data}
+                    getOptionLabel={(option) => option.name}
+                    renderInput={(params) => <TextField {...params} label="Convênio" variant="outlined" />}
+                    size="small"
+                    onChange={(event, value) => {
+                      if (value) {
+                        handleSelectUser({ _id: value._id || '', name: value.name })
+                      }
+                    }}
+                    fullWidth
                   />
                 </Grid>
-                <Grid item md={4} xs={12}>
+                <Grid item md={6} xs={12}>
                   <TextField
                     id="input-health-plan"
                     label="Plano"
@@ -299,7 +386,7 @@ export default function AreaForm(props: RouteComponentProps<IPageParams>) {
                     fullWidth
                   />
                 </Grid>
-                <Grid item md={4} xs={12}>
+                <Grid item md={6} xs={12}>
                   <TextField
                     id="input-health-sub-plan"
                     label="Sub-plano"
@@ -321,7 +408,7 @@ export default function AreaForm(props: RouteComponentProps<IPageParams>) {
                   />
                 </Grid>
 
-                <Grid item md={3} xs={12}>
+                <Grid item md={4} xs={12}>
                   <TextField
                     id="input-health-plan-card-number"
                     label="Número da carteira"
@@ -332,19 +419,22 @@ export default function AreaForm(props: RouteComponentProps<IPageParams>) {
                     fullWidth
                   />
                 </Grid>
-                <Grid item md={2} xs={12}>
+                <Grid item md={4} xs={12}>
                   <TextField
                     id="input-health-plan-card-validity"
                     label="Validade"
                     variant="outlined"
                     size="small"
                     type="date"
+                    InputLabelProps={{
+                      shrink: true,
+                    }}
                     value={state.health_plan_card_validate}
                     onChange={(element) => setState(prevState => ({ ...prevState, health_plan_card_validate: element.target.value }))}
                     fullWidth
                   />
                 </Grid>
-                <Grid item md={4} xs={12}>
+                <Grid item md={12} xs={12}>
                   <TextField
                     id="input-origin"
                     label="Procedência"
@@ -355,7 +445,7 @@ export default function AreaForm(props: RouteComponentProps<IPageParams>) {
                     fullWidth
                   />
                 </Grid>
-                <Grid item md={4} xs={12}>
+                <Grid item md={6} xs={12}>
                   <TextField
                     id="input-type-accommodation"
                     label="Tipo de acomodação"
@@ -366,10 +456,10 @@ export default function AreaForm(props: RouteComponentProps<IPageParams>) {
                     fullWidth
                   />
                 </Grid>
-                <Grid item md={4} xs={12}>
+                <Grid item md={6} xs={12}>
                   <TextField
                     id="input-care-type"
-                    label="Tipo do Homecare"
+                    label="Tipo do programa Home Care" // atençao || internação
                     variant="outlined"
                     size="small"
                     value={state.care_type_id}
@@ -395,10 +485,10 @@ export default function AreaForm(props: RouteComponentProps<IPageParams>) {
                     fullWidth
                   />
                 </Grid>
-                <Grid item md={6} xs={12}>
+                <Grid item md={4} xs={12}>
                   <TextField
                     id="input-diagnostic"
-                    label="Diaginóstico"
+                    label="Diaginóstico (CID)" // CID - Name
                     variant="outlined"
                     size="small"
                     // value={form.cellphone}
@@ -413,12 +503,12 @@ export default function AreaForm(props: RouteComponentProps<IPageParams>) {
                     fullWidth
                   />
                 </Grid>
-                <Grid item md={6} xs={12}>
+                <Grid item md={8} xs={12}>
                   <Autocomplete
                     id="combo-box-users"
                     options={userState.list.data}
                     getOptionLabel={(option) => option.name}
-                    renderInput={(params) => <TextField {...params} label="Prestador" variant="outlined" />}
+                    renderInput={(params) => <TextField {...params} label="Médico responsável" variant="outlined" />}
                     size="small"
                     onChange={(event, value) => {
                       if (value) {
@@ -449,9 +539,26 @@ export default function AreaForm(props: RouteComponentProps<IPageParams>) {
 
             {/* Step 3 */}
             {currentStep === 2 && (
-              <>
-                <p>Resumo do atendimento</p>
-              </>
+              <Grid container>
+                <Box>
+                  <Profile>
+                    <IconProfile />
+                    <div>
+                      <h5>Giulia Gonçalves de Barros</h5>
+                      <p>30 anos, 2 meses e 3 dias</p>
+                      <p>052.996.364-74</p>
+                    </div>
+                  </Profile>
+                </Box>
+                <Divider />
+
+                <Box>
+                  <EventIcon color="primary" />
+                  <Typography variant="h6" component="h6">
+                    Dados do atendimento
+                  </Typography>
+                </Box>
+              </Grid>
             )}
           </FormContent>
 

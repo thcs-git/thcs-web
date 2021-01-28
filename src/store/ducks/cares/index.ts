@@ -42,6 +42,20 @@ const reducer: Reducer<CareState> = (state = INITIAL_STATE, action) => {
     case CareTypes.LOAD_REQUEST:
       return { ...state, loading: true, success: false, };
     case CareTypes.LOAD_SUCCCES:
+      return {
+        ...state,
+        list: action.payload.data,
+        loading: false,
+        success: false,
+        error: false
+      };
+    case CareTypes.SEARCH_CARE_REQUEST:
+      return {
+        ...state,
+        loading: true,
+        success: false,
+        error: false
+      };
     case CareTypes.SEARCH_CARE_SUCCESS:
       return {
         ...state,

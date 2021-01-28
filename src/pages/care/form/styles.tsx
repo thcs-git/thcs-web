@@ -19,7 +19,22 @@ export const FormSection = styled.div`
   flex-direction: column;
   justify-content: space-between;
 
-  height: calc(100vh - 150px);
+`;
+
+export const Profile = styled.div`
+  display: flex;
+
+  > div {
+    margin-left: 20px;
+  }
+
+  h5 {
+    color: #333333;
+  }
+  p {
+    color: #666666;
+    font-size: 12px;
+  }
 `;
 
 export const FormGroupSection = styled.div`
@@ -33,7 +48,7 @@ export const FormContent = styled.div`
   border-radius: 8px;
 
   height: 100%;
-  overflow-x: hidden;
+  padding: 0 6%;
 `;
 
 export const InputFiled = styled(TextField)`
