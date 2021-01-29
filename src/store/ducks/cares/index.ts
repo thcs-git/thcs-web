@@ -330,9 +330,7 @@ const reducer: Reducer<CareState> = (state = INITIAL_STATE, action) => {
         success: true
       };
     case CareTypes.CLEAN:
-      return {
-        ...INITIAL_STATE,
-      };
+      return INITIAL_STATE;
     default:
       return state;
   }

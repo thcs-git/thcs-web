@@ -82,10 +82,14 @@ export default function PatientCaptureForm() {
     if (patientState.list.total === 1) {
       setPatient(patientState.list.data[0]);
       setPatientSearch(patientState.list.data[0].fiscal_number);
-
-      dispatch(getCares({ patient_id: patientState.list.data[0]._id, status: 'Pre-Atendimento' }))
     }
-  }, [patientState.list]);
+  }, [patientState]);
+
+  useEffect(() => {
+    if (patient?._id) {
+      dispatch(getCares({ patient_id: patient._id, status: 'Pre-Atendimento' }))
+    }
+  }, [patient]);
 
   useEffect(() => {
     if (careState.success && !careState.error && careState.data._id) {
