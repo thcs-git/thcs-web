@@ -155,7 +155,8 @@ export default function AreaForm(props: RouteComponentProps<IPageParams>) {
   function handleChangeSupply(value: any) {
     setState(prevState => ({
       ...prevState,
-      supply_days: value
+      supply_days: value,
+      week_day: (value === 1) ? -1 : prevState.week_day
     }))
   }
 
@@ -282,23 +283,25 @@ export default function AreaForm(props: RouteComponentProps<IPageParams>) {
                     </Grid>
                     <Grid item md={5}>
                     </Grid>
-                    <Grid item md={4} xs={12}>
-                      <FormGroupSection>
-                        <Autocomplete
-                          id="combo-box-day-of-week"
-                          options={daysOfTheWeek}
-                          getOptionLabel={(option) => option.name}
-                          renderInput={(params) => <TextField {...params} label="Dia da semana" variant="outlined" />}
-                          value={state.form?.dayOfTheWeek ?? null}
-                          getOptionSelected={(option, value) => option.id === state.week_day}
-                          onChange={(event: any, newValue) => {
-                            handleDayOfTheWeek(event, newValue);
-                          }}
-                          size="small"
-                          fullWidth
-                        />
-                      </FormGroupSection>
-                    </Grid>
+                    {state.supply_days > 1 && (
+                      <Grid item md={4} xs={12}>
+                        <FormGroupSection>
+                          <Autocomplete
+                            id="combo-box-day-of-week"
+                            options={daysOfTheWeek}
+                            getOptionLabel={(option) => option.name}
+                            renderInput={(params) => <TextField {...params} label="Dia da semana" variant="outlined" />}
+                            value={state.form?.dayOfTheWeek ?? null}
+                            getOptionSelected={(option, value) => option.id === state.week_day}
+                            onChange={(event: any, newValue) => {
+                              handleDayOfTheWeek(event, newValue);
+                            }}
+                            size="small"
+                            fullWidth
+                          />
+                        </FormGroupSection>
+                      </Grid>
+                    )}
                     {state?._id && (
                       <Grid item md={12} xs={12}>
                         <FormControlLabel control={<Switch checked={state.active} onChange={(event) => {
