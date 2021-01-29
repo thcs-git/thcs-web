@@ -35,6 +35,10 @@ export default createGlobalStyle`
     color: var(--primary);
   }
 
+  .text-danger {
+    color: var(--danger);
+  }
+
   :root {
     --primary: #16679A;
     --primary-hover: #16679A99;

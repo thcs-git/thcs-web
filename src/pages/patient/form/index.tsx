@@ -178,14 +178,7 @@ export default function PatientForm(props: RouteComponentProps<IPageParams>) {
   }, [dispatch, params]);
 
   useEffect(() => {
-    setState(prevState => {
-      return {
-        ...patientState.data,
-        address_id: {
-          ...patientState.data.address_id
-        }
-      }
-    });
+    setState(patientState.data);
 
     // setForm(prevState => ({
     //   ...prevState,
@@ -193,7 +186,7 @@ export default function PatientForm(props: RouteComponentProps<IPageParams>) {
     //   cellphone: patientState.data.phones.find(phone => phone.number)?.number || '',
     // }));
 
-  }, [patientState.data.address_id]);
+  }, [patientState.data]);
 
   useEffect(() => {
     // if (patientState.error) {
@@ -413,9 +406,9 @@ export default function PatientForm(props: RouteComponentProps<IPageParams>) {
                         </Grid>
                         <Grid item md={3} xs={12}>
                           <FormControl variant="outlined" size="small" fullWidth>
-                            <InputLabel id="select-patient-civil">Estado Civil</InputLabel>
+                            <InputLabel id="select-marital_status">Estado Civil</InputLabel>
                             <Select
-                              labelId="select-patient-civil"
+                              labelId="select-marital_status"
                               // value={state.gender}
                               onChange={(element) => setState({ ...state, marital_status: `${element.target.value}` || '' })}
                               labelWidth={90}
@@ -423,8 +416,8 @@ export default function PatientForm(props: RouteComponentProps<IPageParams>) {
                               <MenuItem value="">
                                 <em>&nbsp;</em>
                               </MenuItem>
-                              <MenuItem value={10}>Solteiro</MenuItem>
-                              <MenuItem value={10}>Casado</MenuItem>
+                              <MenuItem value={`Solteiro`}>Solteiro</MenuItem>
+                              <MenuItem value={`Casado`}>Casado</MenuItem>
                             </Select>
                           </FormControl>
                         </Grid>
