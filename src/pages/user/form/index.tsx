@@ -264,7 +264,7 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
                   Dados Pessoais
                 </TabNavItem>
                 <TabNavItem className={currentTab === 1 ? 'active' : ''} onClick={() => selectTab(1)}>
-                  Especialidades
+                  Dados Profissionais
                 </TabNavItem>
               </TabNav>
               <TabBody>
@@ -528,6 +528,21 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
                         />
                       </FormGroupSection>
                     </Grid>
+
+                    {state?._id && (
+                      <Grid item xs={12} md={12}>
+                        <FormControlLabel control={<Switch checked={state.active} onChange={(event) => {
+                          setState(prevState => ({
+                            ...prevState,
+                            active: event.target.checked
+                          }))
+                        }} />} label="Ativo?" />
+                      </Grid>
+                    )}
+                  </Grid>
+                </TabBodyItem>
+                <TabBodyItem className={currentTab === 1 ? 'show' : ''}>
+                  <Grid container>
                     <Grid item md={2} xs={12}>
                       <FormGroupSection>
                         <Autocomplete
@@ -557,21 +572,6 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
                         fullWidth
                       />
                     </Grid>
-
-                    {state?._id && (
-                      <Grid item xs={12} md={12}>
-                        <FormControlLabel control={<Switch checked={state.active} onChange={(event) => {
-                          setState(prevState => ({
-                            ...prevState,
-                            active: event.target.checked
-                          }))
-                        }} />} label="Ativo?" />
-                      </Grid>
-                    )}
-                  </Grid>
-                </TabBodyItem>
-                <TabBodyItem className={currentTab === 1 ? 'show' : ''}>
-                  <Grid container>
                     <Grid item md={5} xs={12}>
                       <FormGroupSection>
                         <Autocomplete

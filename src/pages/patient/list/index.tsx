@@ -79,6 +79,7 @@ export default function PatientList() {
                     <ListItemStatus active={patient.active}>{patient.active ? 'Ativo' : 'Inativo'}</ListItemStatus>
                     <div>
                       <ListItemTitle>{patient.name}</ListItemTitle>
+                      <ListItemSubTitle>{patient.social_name}</ListItemSubTitle>
                       <ListItemSubTitle>{patient.fiscal_number}</ListItemSubTitle>
                     </div>
                   </ListItemContent>
