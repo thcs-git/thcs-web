@@ -25,11 +25,18 @@ export const INITIAL_STATE: PatientState = {
       state: '',
       complement: '',
     },
+    area_id: '',
     phones: [],
     email: '',
     sus_card: 'FIELD_NOT_EXISTS_IN_PATIENT_REGISTRATION',
     blood_type: '',
     organ_donor: false,
+    responsable: {
+      name: '',
+      phone: '',
+      cellphone: '',
+      relationship: ''
+    },
     active: true
     },
     list: {

@@ -37,7 +37,6 @@ export interface PatientAddressInterface {
   city: string;
   state: string;
   complement: string;
-  area?: string;
 }
 
 export interface PatientPhonesInterface {
@@ -63,16 +62,19 @@ export interface PatientInterface {
   national_id: string;
   issuing_organ: string;
 	address_id: PatientAddressInterface;
+  area_id?: string;
 	email: string;
   phones: PatientPhonesInterface[] | [];
 	sus_card: string;
 	blood_type: string;
 	organ_donor: boolean;
-  responsible_name?: string,
-  responsible_phone?: string,
-  relatives?: string,
+  responsable: {
+    name: String,
+    phone: String,
+    cellphone: String,
+    relationship: String
+  };
   active: boolean;
-
   hospital?: string;
   unit_health?: string;
   assistent_doctor?: string;
@@ -95,6 +97,7 @@ export interface PatientList {
 export interface PatientDataItems {
   _id: string;
   name: string;
+  social_name: string;
   email: string;
   fiscal_number: string;
   active: boolean;

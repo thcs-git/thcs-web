@@ -88,7 +88,7 @@ export default function CouncilList() {
                 <tr key={index}>
                   <Td>
                     <Link to={`/care/${care._id}/edit`}>
-                      {care.patient_id?.name}
+                      {care.patient_id?.social_name || care.patient_id?.name}
                     </Link>
                   </Td>
                   <Td>{care?._id}</Td>
