@@ -303,7 +303,12 @@ const reducer: Reducer<CareState> = (state = INITIAL_STATE, action) => {
     case CareTypes.DOCUMENT_NEAD_STORE:
       return {
         ...state,
-        documentNead: action.payload.data,
+        documentNead: {
+          ...action.payload.data,
+          loading: false,
+          error: false,
+          success: true
+        },
         loading: false,
         error: false,
         success: true

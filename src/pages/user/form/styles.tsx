@@ -21,7 +21,7 @@ export const FormSection = styled.div`
 `;
 
 export const FormGroupSection = styled.div`
-  margin-bottom: 40px;
+  margin-bottom: 20px;
 `;
 
 export const FormContent = styled.div``;
@@ -64,4 +64,12 @@ export const ButtonPrimary = styled(Button)`
   &:hover {
     background: var(--secondary);
   }
+`;
+
+export const ChipList = styled.div`
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+
+  margin-bottom: 20px;
 `;
