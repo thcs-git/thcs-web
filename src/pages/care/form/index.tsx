@@ -12,7 +12,7 @@ import LocalHospitalSharpIcon from '@material-ui/icons/LocalHospitalSharp';
 import { useDispatch, useSelector } from 'react-redux';
 import { ApplicationState } from '../../../store';
 import { CareInterface } from '../../../store/ducks/cares/types';
-import { loadCareById, updateCareRequest, createCareRequest, searchCareRequest as getCares, healthInsuranceRequest, healthPlanRequest } from '../../../store/ducks/cares/actions';
+import { loadCareById, updateCareRequest, createCareRequest, searchCareRequest as getCares, healthInsuranceRequest, healthPlanRequest, healthSubPlanRequest } from '../../../store/ducks/cares/actions';
 import { loadRequest as getAreasAction } from '../../../store/ducks/areas/actions';
 import { loadRequest as getUsersAction } from '../../../store/ducks/users/actions';
 
@@ -128,16 +128,8 @@ export default function AreaForm(props: RouteComponentProps<IPageParams>) {
     dispatch(getAreasAction());
     dispatch(getUsersAction());
     dispatch(healthInsuranceRequest());
-    dispatch(getCares({ status: 'Pre-Atendimento' }))
+    dispatch(getCares({ status: 'Pre-Atendimento', 'capture.status': 'Aprovado' }))
   }, [dispatch]);
-
-  useEffect(() => {
-    setState(prevState => ({
-      ...prevState,
-      ...careState.data
-    }));
-
-  }, [careState]);
 
   useEffect(() => {
     if (patientState.list.total === 1) {
@@ -248,6 +240,31 @@ export default function AreaForm(props: RouteComponentProps<IPageParams>) {
     }
   };
 
+  const selectHealhInsurance = useCallback(() => {
+    const selected = careState.healthInsurance.filter(item => item._id === state.health_insurance_id);
+    return (selected[0]) ? selected[0] : null;
+  }, [state.health_insurance_id]);
+
+  const selectHealhPlan = useCallback(() => {
+    const selected = careState.healthPlan.filter(item => item._id === state.health_plan_id);
+    return (selected[0]) ? selected[0] : null;
+  }, [state.health_plan_id]);
+
+  const selectHealhSubPlan = useCallback(() => {
+    const selected = careState.healthSubPlan.filter(item => item._id === state.health_sub_plan_id);
+    return (selected[0]) ? selected[0] : null;
+  }, [state.health_sub_plan_id]);
+
+  const selectUser = useCallback(() => {
+    const selected = userState.list.data.filter(item => item._id === state.user_id);
+    return (selected[0]) ? selected[0] : null;
+  }, [state.user_id]);
+
+  const selectArea = useCallback(() => {
+    const selected = areaState.list.data.filter(item => item._id === state.area_id);
+    return (selected[0]) ? selected[0] : null;
+  }, [state.area_id]);
+
   return (
     <Sidebar>
       {careState.loading && <Loading />}
@@ -356,7 +373,7 @@ export default function AreaForm(props: RouteComponentProps<IPageParams>) {
               <Grid container style={{ marginBottom: '40px' }}>
                 <Grid item md={6} xs={12}>
                   <TextField
-                    id="input-health-plan-card-validity"
+                    id="input-care-date"
                     label="Data e hora do atendimento"
                     variant="outlined"
                     // defaultValue={new Date().toISOString()}
@@ -365,49 +382,64 @@ export default function AreaForm(props: RouteComponentProps<IPageParams>) {
                     }}
                     type="datetime-local"
                     size="small"
-                    value={state.health_plan_card_validate}
-                    onChange={(element) => setState(prevState => ({ ...prevState, health_plan_card_validate: element.target.value }))}
+                    value={state.started_at}
+                    onChange={(element) => setState(prevState => ({ ...prevState, started_at: element.target.value }))}
                     fullWidth
                   />
                 </Grid>
                 <Grid item md={6} xs={12}>
-                  {/* <TextField
-                    id="input-health-insurance"
-                    label="Convênio"
-                    variant="outlined"
-                    size="small"
-                    fullWidth
-                  /> */}
                   <Autocomplete
                     id="combo-box-health-insurance"
                     options={careState.healthInsurance}
                     getOptionLabel={(option) => option.name}
+                    value={selectHealhInsurance()}
+                    getOptionSelected={(option, value) => option._id === state.health_insurance_id}
                     renderInput={(params) => <TextField {...params} label="Convênio" variant="outlined" />}
-                    size="small"
                     onChange={(event, value) => {
-                      // if (value) {
-                      //   handleSelectUser({ _id: value._id || '', name: value.name })
-                      // }\
+                      if (value) {
+                        setState(prevState => ({ ...prevState, health_insurance_id: value._id }));
+                      }
                       dispatch(healthPlanRequest(value && value._id));
                     }}
+                    size="small"
+                    noOptionsText="Nenhum convênio encontrado"
                     fullWidth
                   />
                 </Grid>
                 <Grid item md={6} xs={12}>
-                  <TextField
-                    id="input-health-plan"
-                    label="Plano"
-                    variant="outlined"
+                  <Autocomplete
+                    id="combo-box-health-plan"
+                    options={careState.healthPlan}
+                    getOptionLabel={(option) => option.name}
+                    value={selectHealhPlan()}
+                    getOptionSelected={(option, value) => option._id === state.health_plan_id}
+                    renderInput={(params) => <TextField {...params} label="Plano" variant="outlined" />}
                     size="small"
+                    onChange={(event, value) => {
+                      if (value) {
+                        setState(prevState => ({ ...prevState, health_plan_id: value._id }));
+                      }
+                      dispatch(healthSubPlanRequest(value && value._id));
+                    }}
+                    noOptionsText="Nenhum plano encontrado"
                     fullWidth
                   />
                 </Grid>
                 <Grid item md={6} xs={12}>
-                  <TextField
-                    id="input-health-sub-plan"
-                    label="Sub-plano"
-                    variant="outlined"
+                  <Autocomplete
+                    id="combo-box-health-sub-plan"
+                    options={careState.healthSubPlan}
+                    getOptionLabel={(option) => option.name}
+                    value={selectHealhSubPlan()}
+                    getOptionSelected={(option, value) => option._id === state.health_sub_plan_id}
+                    renderInput={(params) => <TextField {...params} label="Sub-Plano" variant="outlined" />}
                     size="small"
+                    onChange={(event, value) => {
+                      if (value) {
+                        setState(prevState => ({ ...prevState, health_sub_plan_id: value._id }));
+                      }
+                    }}
+                    noOptionsText="Nenhum sub-plano encontrado"
                     fullWidth
                   />
                 </Grid>
@@ -489,15 +521,8 @@ export default function AreaForm(props: RouteComponentProps<IPageParams>) {
                     label="Procedimento"
                     variant="outlined"
                     size="small"
-                    // value={form.cellphone}
-                    // onChange={(element) => {
-                    //   setForm(prevState => ({
-                    //     ...prevState,
-                    //     cellphone: element.target.value
-                    //   }));
-
-                    //   console.log('form', form);
-                    // }}
+                    value={state?.procedure_id}
+                    onChange={(element) => setState(prevState => ({ ...prevState, procedure_id: element.target.value }))}
                     fullWidth
                   />
                 </Grid>
@@ -507,15 +532,8 @@ export default function AreaForm(props: RouteComponentProps<IPageParams>) {
                     label="Diaginóstico (CID)" // CID - Name
                     variant="outlined"
                     size="small"
-                    // value={form.cellphone}
-                    // onChange={(element) => {
-                    //   setForm(prevState => ({
-                    //     ...prevState,
-                    //     cellphone: element.target.value
-                    //   }));
-
-                    //   console.log('form', form);
-                    // }}
+                    value={state?.cid_id}
+                    onChange={(element) => setState(prevState => ({ ...prevState, cid_id: element.target.value }))}
                     fullWidth
                   />
                 </Grid>
@@ -524,6 +542,7 @@ export default function AreaForm(props: RouteComponentProps<IPageParams>) {
                     id="combo-box-users"
                     options={userState.list.data}
                     getOptionLabel={(option) => option.name}
+                    value={selectUser()}
                     renderInput={(params) => <TextField {...params} label="Médico responsável" variant="outlined" />}
                     size="small"
                     onChange={(event, value) => {
@@ -539,6 +558,7 @@ export default function AreaForm(props: RouteComponentProps<IPageParams>) {
                     id="combo-box-areas"
                     options={areaState.list.data}
                     getOptionLabel={(option) => option.name}
+                    value={selectArea()}
                     renderInput={(params) => <TextField {...params} label="Área" variant="outlined" />}
                     size="small"
                     onChange={(event, value) => {
@@ -578,10 +598,10 @@ export default function AreaForm(props: RouteComponentProps<IPageParams>) {
                       Dados do atendimento
                     </Typography>
                     <Typography variant="caption" color="textSecondary">
-                      21/02/2021 17:21:20
+                      {state?.started_at}
                     </Typography>
                     <Typography variant="caption" color="textSecondary">
-                    0701030348 - TROCA DO PROCESSADOR DE FALA P/ IMPLANTE COCLEAR MULTICANAL
+                      {state?.procedure_id}
                     </Typography>
                   </Box>
 
@@ -591,10 +611,10 @@ export default function AreaForm(props: RouteComponentProps<IPageParams>) {
                       Dados do Home Care
                     </Typography>
                     <Typography variant="caption" color="textSecondary">
-                      21/02/2021 17:21:20
+                      {state?.care_type_id}
                     </Typography>
                     <Typography variant="caption" color="textSecondary">
-                    0701030348 - TROCA DO PROCESSADOR DE FALA P/ IMPLANTE COCLEAR MULTICANAL
+                      {state?.area_id}
                     </Typography>
                   </Box>
 
@@ -604,10 +624,25 @@ export default function AreaForm(props: RouteComponentProps<IPageParams>) {
                       Dados do plano de saúde
                     </Typography>
                     <Typography variant="caption" color="textSecondary">
-                      21/02/2021 17:21:20
+                      {selectHealhInsurance()?.name}
                     </Typography>
                     <Typography variant="caption" color="textSecondary">
-                    0701030348 - TROCA DO PROCESSADOR DE FALA P/ IMPLANTE COCLEAR MULTICANAL
+                      {state?.health_plan_card_number}
+                    </Typography>
+                    <Typography variant="caption" color="textSecondary">
+                      {state?.health_plan_card_validate}
+                    </Typography>
+                    <Typography variant="caption" color="textSecondary">
+                      {selectHealhPlan()?.name}
+                    </Typography>
+                    <Typography variant="caption" color="textSecondary">
+                      {selectHealhSubPlan()?.name}
+                    </Typography>
+                    <Typography variant="caption" color="textSecondary">
+                      {state?.contract}
+                    </Typography>
+                    <Typography variant="caption" color="textSecondary">
+                      {state?.accommodation_type_id}
                     </Typography>
                   </Box>
 
@@ -617,10 +652,10 @@ export default function AreaForm(props: RouteComponentProps<IPageParams>) {
                       Dados do hospital
                     </Typography>
                     <Typography variant="caption" color="textSecondary">
-                      21/02/2021 17:21:20
+                      {selectUser()?.name}
                     </Typography>
                     <Typography variant="caption" color="textSecondary">
-                    0701030348 - TROCA DO PROCESSADOR DE FALA P/ IMPLANTE COCLEAR MULTICANAL
+                      {selectArea()?.name}
                     </Typography>
                   </Box>
                 </Box>

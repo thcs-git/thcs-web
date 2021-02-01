@@ -94,3 +94,9 @@ export const healthInsuranceSuccess = (data: HealthInsuranceInterface) => action
 export const healthPlanRequest = (id: string | null) => action(CareTypes.HEALTH_PLAN_REQUEST, { id });
 export const healthPlanSuccess = (data: HealthPlanInterface) => action(CareTypes.HEALTH_PLAN_SUCCESS, { data });
 
+/**
+ * Health Sub Plan
+ */
+export const healthSubPlanRequest = (id: string | null) => action(CareTypes.HEALTH_SUBPLAN_REQUEST, { id });
+export const healthSubPlanSuccess = (data: HealthPlanInterface) => action(CareTypes.HEALTH_SUBPLAN_SUCCESS, { data });
+

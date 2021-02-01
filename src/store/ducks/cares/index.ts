@@ -31,6 +31,7 @@ export const INITIAL_STATE: CareState = {
   success: false,
   healthInsurance: [],
   healthPlan: [],
+  healthSubPlan: [],
   documentGroupSocioAmbiental: {},
   documentSocioAmbiental: {},
   documentGroupAbemid: {},
@@ -78,6 +79,21 @@ const reducer: Reducer<CareState> = (state = INITIAL_STATE, action) => {
       return {
         ...state,
         healthPlan: action.payload.data,
+        loading: false,
+        success: false,
+        error: false
+      };
+    case CareTypes.HEALTH_SUBPLAN_REQUEST:
+      return {
+        ...state,
+        loading: true,
+        success: false,
+        error: false
+      };
+    case CareTypes.HEALTH_SUBPLAN_SUCCESS:
+      return {
+        ...state,
+        healthSubPlan: action.payload.data,
         loading: false,
         success: false,
         error: false
