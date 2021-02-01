@@ -163,18 +163,24 @@ export default function RegisterForm() {
     dispatch(loadRequest());
     dispatch(getDistrictsAction());
   }, []);
+  function  handleFormUser(){
+    state.name = inputName.value;
+    state.email = inputEmail.value;
+    state.phone = inputPhone.value;
+    state.password = inputPassword.value;
+    dispatch(createUnconfirmedUserRequest(state));
+  }
+  // const handleFormUser = useCallback(()=>{
 
-  const handleFormUser = useCallback(async (event)=>{
+   // event.preventDefault();
 
- event.preventDefault();
-
-    if (inputEmail.error || inputPassword.error || inputCpf.error || inputName.error || inputPhone.error ) return;
-        state.name = inputName.value;
-        state.email = inputEmail.value;
-        state.phone = inputPhone.value;
-        state.password = inputPassword.value;
-        dispatch(registerUnconfirmedUserRequest(state));
-  },[state]);
+    // if (inputEmail.error || inputPassword.error || inputCpf.error || inputName.error || inputPhone.error ) return;
+        // state.name = inputName.value;
+        // state.email = inputEmail.value;
+        // state.phone = inputPhone.value;
+        // state.password = inputPassword.value;
+        // dispatch(createUnconfirmedUserRequest(state));
+  // },[state]);
 
   const handleClickShowPassword = useCallback(() => {
     setShowPassword(prev => !prev);
@@ -476,7 +482,7 @@ export default function RegisterForm() {
               variant="contained"
               color="primary"
               className={classes.submit}
-              onClick={handleFormUser}
+              onClick={() => handleFormUser()}
             >
               Cadastrar
           </Button>

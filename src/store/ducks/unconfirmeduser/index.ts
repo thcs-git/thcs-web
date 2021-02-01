@@ -8,6 +8,16 @@ export const INITIAL_STATE: UnconfirmedUserState = {
     phone: '',
     user_type: '',
     specialties: '',
+    council_id:{
+      _id: '',
+      company_id: {
+        _id:''
+      },
+      name: '',
+      describe: '',
+      initials: '',
+      active: true,
+    },
     council_number: '',
     unit_federative:'',
     active: true,
@@ -47,7 +57,7 @@ const reducer: Reducer<UnconfirmedUserState> = (state = INITIAL_STATE, action) =
         error: false,
         success: false,
       }
-    case UnconfirmedUserTypes.UPDATE_USER_REQUEST:
+    case UnconfirmedUserTypes.UPDATE_UNCONFIRMEDUSER_REQUEST:
       return {
         ...state,
         data: action.payload.data,
@@ -55,7 +65,7 @@ const reducer: Reducer<UnconfirmedUserState> = (state = INITIAL_STATE, action) =
         error: false,
         success: true
       }
-    case UnconfirmedUserTypes.UPDATE_USER_SUCCESS:
+    case UnconfirmedUserTypes.UPDATE_UNCONFIRMEDUSER_SUCCESS:
       return {
         ...state,
         data: {
@@ -71,11 +81,11 @@ const reducer: Reducer<UnconfirmedUserState> = (state = INITIAL_STATE, action) =
       return {
         ...state, loading: false, error: true, success: false,
       };
-    case UnconfirmedUserTypes.CREATE_USER_REQUEST:
+    case UnconfirmedUserTypes.CREATE_UNCONFIRMEDUSER_REQUEST:
       return {
         ...state, loading: true, error: false, success: false,
       };
-    case UnconfirmedUserTypes.CREATE_USER_SUCCESS:
+    case UnconfirmedUserTypes.CREATE_UNCONFIRMEDUSER_SUCCESS:
       return {
         ...state,
         data: {
@@ -87,7 +97,7 @@ const reducer: Reducer<UnconfirmedUserState> = (state = INITIAL_STATE, action) =
         error: false,
         success: true
       };
-    case UnconfirmedUserTypes.REGISTER_USER_REQUEST:
+    case UnconfirmedUserTypes.REGISTER_UNCONFIRMEDUSER_REQUEST:
       return {
         ...state, loading: true, error: false, success: false,
       };

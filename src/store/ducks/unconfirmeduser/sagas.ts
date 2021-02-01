@@ -70,35 +70,34 @@ export function* getUnconfirmedUserById({ payload: { id: _id } }: any) {
 //   }
 // }
 export function* createUnconfirmedUser({payload: { data }}: any) {
-  const phones = [];
+   const phones = [];
 
-  if (data.phone.length > 0) {
+  // if (data.phone.length > 0) {
     phones.push({
       whatsapp: false,
       telegram: false,
       number: data.phone
     });
-  }
+  // }
 
-  if (data.cellphone.length > 0) {
-    phones.push({
-      whatsapp: false,
-      telegram: false,
-      number: data.cellphone
-    });
-  }
+  // if (data.cellphone.length > 0) {
+  //   phones.push({
+  //     whatsapp: false,
+  //     telegram: false,
+  //     number: data.cellphone
+  //   });
+  // }
 
   data.username = data.email;
-  data.password = data.fiscal_number;
+  //data.password = data.fiscal_number;
 
   data.phones = phones;
 
-  data.user_type_id = { _id: '5fc05d1803058800244bc41b' }
-
+  //data.user_type_id = { _id: '5fc05d1803058800244bc41b' }
+  const response:AxiosResponse = yield call(apiSollar.post, `/unconfirmeduser/store`, data)
   try {
-    const response:AxiosResponse = yield call(apiSollar.post, `/unconfirmeduser/store`, data, { headers: { token } })
     yield put(createUnconfirmedUserSuccess(response.data))
-    toast.success('Usuário atualizado com sucesso!');
+    toast.success('Usuário criado com sucesso!');
   } catch(e) {
     toast.error('Não foi possível cadastrar o usuário');
     yield put(loadFailure());

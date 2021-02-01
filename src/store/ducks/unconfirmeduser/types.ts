@@ -6,12 +6,12 @@ export enum UnconfirmedUserTypes {
   LOAD_SUCCCES = "@user/LOAD_SUCCCES",
   LOAD_FAILURE = "@user/LOAD_FAILURE",
 
-  CREATE_USER_REQUEST = "@user/CREATE_UNCONFIRMEDUSER_REQUEST",
-  REGISTER_USER_REQUEST = "@user/REGISTER_UNCONFIRMEDUSER_REQUEST",
-  CREATE_USER_SUCCESS = "@user/CREATE_UNCONFIRMEDUSER_SUCCESS",
+  CREATE_UNCONFIRMEDUSER_REQUEST = "@user/CREATE_UNCONFIRMEDUSER_REQUEST",
+  REGISTER_UNCONFIRMEDUSER_REQUEST = "@user/REGISTER_UNCONFIRMEDUSER_REQUEST",
+  CREATE_UNCONFIRMEDUSER_SUCCESS = "@user/CREATE_UNCONFIRMEDUSER_SUCCESS",
 
-  UPDATE_USER_REQUEST = "@user/UPDATE_UNCONFIRMEDUSER_REQUEST",
-  UPDATE_USER_SUCCESS = "@user/UPDATE_UNCONFIRMEDUSER_SUCCESS",
+  UPDATE_UNCONFIRMEDUSER_REQUEST = "@user/UPDATE_UNCONFIRMEDUSER_REQUEST",
+  UPDATE_UNCONFIRMEDUSER_SUCCESS = "@user/UPDATE_UNCONFIRMEDUSER_SUCCESS",
 
   LOAD_REQUEST_ADDRESS = "@user/LOAD_REQUEST_ADDRESS",
   LOAD_RESPONSE_ADDRESS = "@user/LOAD_RESPONSE_ADDRESS",
@@ -44,7 +44,7 @@ export interface UnconfirmedUserInterface {
 	email: string; // email
 	phone: string;
   user_type: string;
-  specialties: SpecialtiesUnconfirmedUserInterface | {};
+  specialties?: SpecialtiesUnconfirmedUserInterface | {};
   council_id?: {
     _id: string;
     company_id: { _id: string; };
@@ -53,10 +53,10 @@ export interface UnconfirmedUserInterface {
     initials?: string;
     active?: boolean;
   };
-  council_number: string;
+  council_number?: string;
   username?: string;
   password?: string;
-  unit_federative:string;
+  unit_federative?:string;
   active: boolean; // active
 }
 
