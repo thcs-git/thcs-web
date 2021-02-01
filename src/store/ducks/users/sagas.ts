@@ -4,7 +4,7 @@ import { AxiosResponse } from 'axios';
 
 import { apiSollar, viacep } from '../../../services/axios';
 
-import { loadSuccess, loadFailure, successGetAddress, createUserSuccess, loadSuccessGetUserById, updateUserSuccess } from './actions';
+import { loadSuccess, loadFailure, successGetAddress, createUserSuccess, loadSuccessGetUserById, updateUserSuccess, loadProfessionsSuccess } from './actions';
 import { UserInterface, ViacepDataInterface } from './types';
 
 const token = localStorage.getItem('token');
@@ -21,9 +21,7 @@ export function* get({ payload }: any) {
 }
 
 export function* getUserById({ payload: { id: _id } }: any) {
-
   try {
-
     const response: AxiosResponse = yield call(apiSollar.get, `/user`, { headers: { token }, params: { _id } })
 
     yield put(loadSuccessGetUserById(response.data))
@@ -31,8 +29,6 @@ export function* getUserById({ payload: { id: _id } }: any) {
   } catch (error) {
     yield put(loadFailure());
   }
-
-
 }
 
 export function* createUser({payload: { data }}: any) {
@@ -124,6 +120,21 @@ export function* getAddress({payload}:any) {
     yield put(successGetAddress(data));
   } catch (error) {
 
+    yield put(loadFailure());
+  }
+}
+
+export function* getProfessions({payload}:any) {
+  try {
+    const { data }: AxiosResponse = yield call(apiSollar.get, `/profession`, { params: payload });
+
+    if (data.erro) {
+      yield put(loadFailure());
+      return;
+    }
+
+    yield put(loadProfessionsSuccess(data));
+  } catch (error) {
     yield put(loadFailure());
   }
 }

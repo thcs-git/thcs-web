@@ -1,7 +1,13 @@
 import React, { useState, useEffect, useCallback } from 'react';
 
 import { useDispatch, useSelector } from 'react-redux';
-import { createUserRequest, updateUserRequest, getAddress as getAddressAction, loadUserById } from '../../../store/ducks/users/actions';
+import {
+  createUserRequest,
+  updateUserRequest,
+  getAddress as getAddressAction,
+  loadUserById,
+  loadProfessionsRequest as getProfessionsAction
+} from '../../../store/ducks/users/actions';
 import { UserInterface } from '../../../store/ducks/users/types';
 
 import { loadRequest as getSpecialtiesAction } from '../../../store/ducks/specialties/actions';
@@ -9,6 +15,9 @@ import { SpecialtyInterface } from '../../../store/ducks/specialties/types';
 
 import { loadRequest as getCouncilsAction } from '../../../store/ducks/councils/actions';
 import { CouncilInterface } from '../../../store/ducks/councils/types';
+
+import { loadRequest as getCompaniesAction } from '../../../store/ducks/companies/actions';
+import { CompanyInterface } from '../../../store/ducks/companies/types';
 
 import { ApplicationState } from '../../../store';
 
@@ -54,7 +63,8 @@ import {
   FormContent,
   InputFiled as TextField,
   OutlinedInputFiled,
-  FormGroupSection
+  FormGroupSection,
+  ChipList
 } from './styles';
 
 interface IFormFields {
@@ -72,6 +82,7 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
   const userState = useSelector((state: ApplicationState) => state.users);
   const specialtyState = useSelector((state: ApplicationState) => state.specialties);
   const councilState = useSelector((state: ApplicationState) => state.councils);
+  const companyState = useSelector((state: ApplicationState) => state.companies);
 
   const { params } = props.match;
 
@@ -116,8 +127,10 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
   const [openModalCancel, setOpenModalCancel] = useState(false);
 
   useEffect(() => {
-    dispatch(getSpecialtiesAction())
-    dispatch(getCouncilsAction())
+    dispatch(getSpecialtiesAction());
+    dispatch(getCouncilsAction());
+    dispatch(getProfessionsAction());
+    dispatch(getCompaniesAction());
   }, []);
 
   useEffect(() => {
@@ -218,6 +231,13 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
   }
 
   // Especialides
+  function handleSelectMainEspecialty(value: SpecialtyInterface) {
+    setState(prevState => ({
+      ...prevState,
+      main_specialty_id: value._id
+    }));
+  }
+
   function handleSelectEspecialty(value: SpecialtyInterface) {
     setState(prevState => ({
       ...prevState,
@@ -238,6 +258,30 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
     setState(prevState => ({
       ...prevState,
       specialties: specialtiesSelected
+    }))
+  }
+
+  //Empresas
+  function handleSelectCompany(value: CompanyInterface) {
+    setState(prevState => ({
+      ...prevState,
+      companies: [...prevState.companies, value]
+    }));
+  }
+
+  function handleDeleteCompany(company: CompanyInterface) {
+    let companiesSelected = [...state.companies];
+    const companyFounded = companiesSelected.findIndex((item: any) => {
+      return company._id === item._id
+    });
+
+    if (companyFounded > -1) {
+      companiesSelected.splice(companyFounded, 1);
+    };
+
+    setState(prevState => ({
+      ...prevState,
+      companies: companiesSelected
     }))
   }
 
@@ -264,7 +308,7 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
                   Dados Pessoais
                 </TabNavItem>
                 <TabNavItem className={currentTab === 1 ? 'active' : ''} onClick={() => selectTab(1)}>
-                  Especialidades
+                  Dados Profissionais
                 </TabNavItem>
               </TabNav>
               <TabBody>
@@ -290,6 +334,9 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
                           value={state?.birthdate?.length > 10 ? formatDate(state.birthdate, 'YYYY-MM-DD') : state.birthdate}
                           onChange={(element) => setState({ ...state, birthdate: element.target.value })}
                           fullWidth
+                          InputLabelProps={{
+                            shrink: true,
+                          }}
                         />
                       </Grid>
 
@@ -528,35 +575,6 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
                         />
                       </FormGroupSection>
                     </Grid>
-                    <Grid item md={2} xs={12}>
-                      <FormGroupSection>
-                        <Autocomplete
-                          id="combo-box-council"
-                          options={councilState.list.data}
-                          getOptionLabel={(option) => option.name}
-                          renderInput={(params) => <TextField {...params} label="Conselho" variant="outlined" />}
-                          value={userState.data?.council_id || null}
-                          getOptionSelected={(option, value) => option._id === state?.council_id?._id}
-                          onChange={(event: any, newValue) => {
-                            handleCouncil(event, newValue);
-                          }}
-                          size="small"
-                          fullWidth
-                        />
-                      </FormGroupSection>
-                    </Grid>
-                    <Grid item md={2} xs={12}>
-                      <TextField
-                        id="input-council"
-                        label="Número do Conselho"
-                        variant="outlined"
-                        size="small"
-                        value={state.council_number}
-                        onChange={(element) => setState({ ...state, council_number: element.target.value })}
-                        placeholder="00000-0000"
-                        fullWidth
-                      />
-                    </Grid>
 
                     {state?._id && (
                       <Grid item xs={12} md={12}>
@@ -575,6 +593,71 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
                     <Grid item md={5} xs={12}>
                       <FormGroupSection>
                         <Autocomplete
+                          id="combo-box-profession"
+                          options={specialtyState.list.data}
+                          getOptionLabel={(option) => option.name}
+                          renderInput={(params) => <TextField {...params} label="Função" variant="outlined" />}
+                          size="small"
+                          onChange={(event, value) => {
+                            if (value) {
+                              handleSelectMainEspecialty(value)
+                            }
+                          }}
+                          fullWidth
+                        />
+                      </FormGroupSection>
+                    </Grid>
+                    <Grid item md={2} xs={12}>
+                      <FormGroupSection>
+                        <Autocomplete
+                          id="combo-box-council"
+                          options={councilState.list.data}
+                          getOptionLabel={(option) => option.name}
+                          renderInput={(params) => <TextField {...params} label="Conselho" variant="outlined" />}
+                          value={userState.data?.council_id || null}
+                          getOptionSelected={(option, value) => option._id === state?.council_id?._id}
+                          onChange={(event: any, newValue) => {
+                            handleCouncil(event, newValue);
+                          }}
+                          size="small"
+                          fullWidth
+                        />
+                      </FormGroupSection>
+                    </Grid>
+                    <Grid item md={3} xs={12}>
+                      <TextField
+                        id="input-council"
+                        label="Número do Conselho"
+                        variant="outlined"
+                        size="small"
+                        value={state.council_number}
+                        onChange={(element) => setState({ ...state, council_number: element.target.value })}
+                        placeholder="00000-0000"
+                        fullWidth
+                      />
+                    </Grid>
+                    <Grid item md={5} xs={12}>
+                      <FormGroupSection>
+                        <Autocomplete
+                          id="combo-box-main-especialty"
+                          options={specialtyState.list.data}
+                          getOptionLabel={(option) => option.name}
+                          renderInput={(params) => <TextField {...params} label="Especialidade Principal" variant="outlined" />}
+                          size="small"
+                          onChange={(event, value) => {
+                            if (value) {
+                              handleSelectMainEspecialty(value)
+                            }
+                          }}
+                          fullWidth
+                        />
+                      </FormGroupSection>
+                    </Grid>
+                    <Grid item md={6} xs={12}>
+                    </Grid>
+                    <Grid item md={6} xs={12}>
+                      <FormGroupSection>
+                        <Autocomplete
                           id="combo-box-especialty"
                           options={specialtyState.list.data}
                           getOptionLabel={(option) => option.name}
@@ -590,14 +673,43 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
                       </FormGroupSection>
                     </Grid>
                     <Grid item md={12} xs={12}>
-                      {state.specialties?.map((item: any, index) => (
-                        <div key={`especialty_selected_${index}`}>
+                      <ChipList>
+                        {state.specialties?.map((item: any, index) => (
                           <Chip
+                            key={`especialty_selected_${index}`}
                             label={item.name}
                             onDelete={event => handleDeleteEspecialty(item)}
                           />
-                        </div>
-                      ))}
+                        ))}
+                      </ChipList>
+                    </Grid>
+                    <Grid item md={6} xs={12}>
+                      <FormGroupSection>
+                        <Autocomplete
+                          id="combo-box-company"
+                          options={companyState.list.data}
+                          getOptionLabel={(option) => option.name}
+                          renderInput={(params) => <TextField {...params} label="Empresa" variant="outlined" />}
+                          size="small"
+                          onChange={(event, value) => {
+                            if (value) {
+                              handleSelectCompany(value)
+                            }
+                          }}
+                          fullWidth
+                        />
+                      </FormGroupSection>
+                    </Grid>
+                    <Grid item md={12} xs={12}>
+                      <ChipList>
+                        {state.companies?.map((item: any, index) => (
+                          <Chip
+                            key={`company_selected_${index}`}
+                            label={item.name}
+                            onDelete={event => handleDeleteEspecialty(item)}
+                          />
+                        ))}
+                      </ChipList>
                     </Grid>
                   </Grid>
                 </TabBodyItem>

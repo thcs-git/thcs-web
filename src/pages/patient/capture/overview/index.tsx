@@ -5,7 +5,7 @@ import { AccountCircle, CheckCircle, MoreVert, CheckCircleOutline, Edit, Print, 
 
 import { useDispatch, useSelector } from 'react-redux';
 import { ApplicationState } from '../../../../store';
-import { loadCareById, updateCareRequest } from '../../../../store/ducks/cares/actions';
+import { loadCareById, updateCareRequest, cleanAction } from '../../../../store/ducks/cares/actions';
 import { CareInterface } from '../../../../store/ducks/cares/types';
 
 import { loadRequestByIds as getDocumentGroupsByIds } from '../../../../store/ducks/documentGroups/actions';
@@ -17,7 +17,7 @@ import Sidebar from '../../../../components/Sidebar';
 import { formatDate } from '../../../../helpers/date';
 
 import Button from '../../../../styles/components/Button';
-import { FormTitle } from '../../../../styles/components/Form';
+import { FormTitle, FieldContent } from '../../../../styles/components/Form';
 import { Table, Th, Td } from '../../../../styles/components/Table';
 
 import { LowerComplexityLabel, MediumComplexityLabel, HighComplexityLabel, NoComplexityLabel, ElegibleLabel, NotElegibleLabel } from '../../../../styles/components/Text';
@@ -38,9 +38,16 @@ interface IPageParams {
 
 interface ICaptureData {
   inpatient: boolean;
-  health_insurance: string;
   estimate: string;
   order_number: string;
+  health_insurance: string;
+  health_plan: string;
+  health_sub_plan: string;
+  hospital: string;
+  unity: string;
+  assistant_doctor: string;
+  sector: string;
+  bed: string;
   status: string;
 }
 
@@ -63,11 +70,6 @@ export default function PatientCaptureForm(props: RouteComponentProps<IPageParam
   const [modalPrint, setModalPrint] = useState(false);
 
   const [captureData, setCaptureData] = useState<ICaptureData | any>({
-    inpatient: false,
-    health_insurance: '',
-    estimate: '',
-    order_number: '',
-    status: '',
   });
 
   useEffect(() => {
@@ -84,6 +86,10 @@ export default function PatientCaptureForm(props: RouteComponentProps<IPageParam
       }
     }
   }, [careState.data]);
+
+  useEffect(() => {
+    handleValidadeFinishEnable();
+  }, [captureData]);
 
   const getCare = useCallback((id: string) => {
     if (id.length > 0) {
@@ -183,7 +189,7 @@ export default function PatientCaptureForm(props: RouteComponentProps<IPageParam
       doc.finished
     ));
 
-    return (found) ? <CheckCircle style={{ color: '#4FC66A', cursor: 'pointer' }} /> : <CheckCircle style={{ color: '#EBEBEB' }} />;
+    return (found) ? <CheckCircle style={{ color: '#4FC66A', cursor: 'pointer' }} /> : <CheckCircle style={{ color: '#EBEBEB', cursor: 'pointer' }} />;
   };
 
   const handleDocument = (documentId: string, documents: Array<any>) => {
@@ -210,8 +216,33 @@ export default function PatientCaptureForm(props: RouteComponentProps<IPageParam
     dispatch(updateCareRequest(updateParams));
   };
 
-  const handleSubmitFinishCapture = () => {
-  };
+  const handleSubmitFinishCapture = useCallback(() => {
+    setCaptureFinishModalOpen(false);
+
+    const updateParams = {
+      ...care,
+      capture: {
+        ...care?.capture,
+        ...captureData,
+        status: 'Aguardando'
+      },
+      care_type_id: '5fd66ca189a402ec48110cc1',
+      user_id: '600f0d615ba0702f45864035',
+    };
+
+    dispatch(updateCareRequest(updateParams));
+  }, [care, captureData]);
+
+  const handleValidadeFinishEnable = useCallback(() => {
+    const abemidDocument = handleDocument('5ffd7acd2f5d2b1d8ff6bea4', care?.documents_id || []);
+    const neadDocument = handleDocument('5ff65469b4d4ac07d186e99f', care?.documents_id || []);
+
+    if (captureData.estimate && (abemidDocument || neadDocument)) {
+      setFinishEnable(true);
+    } else {
+      setFinishEnable(false);
+    }
+  }, [captureData]);
 
   const handlePrint = () => {
     alert('print');
@@ -249,28 +280,27 @@ export default function PatientCaptureForm(props: RouteComponentProps<IPageParam
                             <p>Pedido: {care?.capture?.order_number}</p>
                             <p>Data do Atendimento: {care?.created_at ? formatDate(care.created_at, 'DD/MM/YYYY HH:mm:ss') : '-'}</p>
                             <p>Status: {care.status}</p>
-                            <Button onClick={() => setCaptureModalModalOpen(true)}><Edit style={{ width: 15, marginRight: 5 }} /> Editar</Button>
+                            {care.capture?.status === 'Em Andamento' && (
+                              <Button onClick={() => setCaptureModalModalOpen(true)}><Edit style={{ width: 15, marginRight: 5 }} /> Editar</Button>
+                            )}
                           </div>
                         </div>
                       </PatientData>
 
-                      {care.capture?.status === 'Em Andamento' && (
+                      {care.capture?.status === 'Em Andamento' ? (
                         <div>
-                          <Button background={!finishEnable ? "success" : "disable"} disabled={finishEnable} onClick={() => setCaptureFinishModalOpen(true)}>
+                          <Button background={finishEnable ? "success" : "disable"} disabled={!finishEnable} onClick={() => setCaptureFinishModalOpen(true)}>
                             <CheckCircleOutline />
                             Concluir Captação
                           </Button>
                         </div>
-                      )}
-
-
-                      {care.capture?.status === 'Aprovado' && (
-                        <div>
-                          <Button center onClick={() => setModalPrint(true)}>
-                            <Print className="primary" style={{ width: 30, height: 30 }} />
-                          </Button>
-                        </div>
-                      )}
+                      ) : (
+                          <div>
+                            <Button center onClick={() => setModalPrint(true)}>
+                              <Print className="primary" style={{ width: 30, height: 30 }} />
+                            </Button>
+                          </div>
+                        )}
 
 
                     </PatientResumeContent>
@@ -308,13 +338,7 @@ export default function PatientCaptureForm(props: RouteComponentProps<IPageParam
                         <Td>{document?.created_at ? formatDate(document.created_at, 'DD/MM/YYYY HH:mm:ss') : '-'}</Td>
                         <Td>{handleElegibilityLabel(document?.status)}</Td>
                         <Td center>
-                          {care.capture?.status === 'Aprovado' && document?._id && (
-                            <Button onClick={() => history.push(handleScoreRoute(documentGroup?._id || '', care?._id || '', document?._id))}>
-                              <Visibility className="primary" />
-                            </Button>
-                          )}
-
-                          {care.capture?.status === 'Em Andamento' && (
+                          {care.capture?.status === 'Em Andamento' ? (
                             <>
                               <Button aria-controls={`simple-menu${index}`} id={`btn_simple-menu${index}`} aria-haspopup="true" onClick={handleOpenRowMenu}>
                                 <MoreVert className="primary" />
@@ -327,14 +351,25 @@ export default function PatientCaptureForm(props: RouteComponentProps<IPageParam
                                 onClose={handleCloseRowMenu}
                               >
                                 {document?._id ? (
-                                  <MenuItem onClick={() => history.push(handleScoreRoute(documentGroup?._id || '', care?._id || '', document?._id))}>Editar</MenuItem>
+                                  <div>
+                                    <MenuItem onClick={() => history.push(handleScoreRoute(documentGroup?._id || '', care?._id || '', document?._id))}>Editar</MenuItem>
+                                    <MenuItem onClick={() => console.log(document?._id)}>Excluir</MenuItem>
+                                  </div>
                                 ) : (
                                     <MenuItem onClick={() => history.push(handleScoreRoute(documentGroup?._id || '', care?._id || ''))}>Adicionar novo</MenuItem>
                                   )}
                                 <MenuItem onClick={() => toggleHistoryModal()}>Ver histórico</MenuItem>
                               </Menu>
                             </>
-                          )}
+                          ) : (
+                              <>
+                                {(document?._id) && (
+                                  <Button onClick={() => history.push(handleScoreRoute(documentGroup?._id || '', care?._id || '', document?._id))}>
+                                    <Visibility className="primary" />
+                                  </Button>
+                                )}
+                              </>
+                            )}
                         </Td>
                       </tr>
                     );
@@ -346,20 +381,26 @@ export default function PatientCaptureForm(props: RouteComponentProps<IPageParam
                 <CardContent>
                   <h4>Orçamento</h4>
                   <br />
-                  <TextField
-                    id="input-estimate"
-                    label="Orçamento"
-                    variant="outlined"
-                    size="small"
-                    placeholder="Adicione detalhes de orçamento"
-                    value={captureData.estimate}
-                    onChange={(element) => setCaptureData({ ...captureData, estimate: element.target.value })}
-                    fullWidth
-                    multiline
-                  />
-                  <br />
-                  <br />
-                  <p>Para concluir a captação, os itens com asterisco são obrigatórios: Orçamento + Tabela NEAD ou Tabela Abemid.</p>
+                  {care.capture?.status === 'Em Andamento' ? (
+                    <>
+                      <FieldContent>
+                        <TextField
+                          id="input-estimate"
+                          label="Orçamento"
+                          variant="outlined"
+                          size="small"
+                          placeholder="Adicione detalhes de orçamento"
+                          value={captureData.estimate}
+                          onChange={(element) => setCaptureData({ ...captureData, estimate: element.target.value })}
+                          fullWidth
+                          multiline
+                        />
+                      </FieldContent>
+                      <p className="text-danger">Para concluir a captação, os itens com asterisco são obrigatórios: Orçamento + Tabela NEAD ou Tabela Abemid.</p>
+                    </>
+                  ) : (
+                      <p>{captureData.estimate}</p>
+                    )}
                 </CardContent>
               </Card>
             </>
@@ -419,6 +460,7 @@ export default function PatientCaptureForm(props: RouteComponentProps<IPageParam
           onClose={() => setCaptureModalModalOpen(false)}
           aria-labelledby="scroll-dialog-title"
           aria-describedby="scroll-dialog-description"
+          maxWidth="md"
         >
           <DialogTitle id="scroll-dialog-title">Preencha os dados da captação</DialogTitle>
           <DialogContent>
@@ -444,122 +486,146 @@ export default function PatientCaptureForm(props: RouteComponentProps<IPageParam
                 />
               </RadioGroup>
 
-              {captureData?.type === 'Convênio' && (
-                <FormControl>
-                  <TextField
-                    id="input-order-number"
-                    label="Número de Guia"
-                    variant="outlined"
-                    size="small"
-                    value={captureData.order_number}
-                    onChange={(element) => setCaptureData({ ...captureData, order_number: element.target.value })}
-                    fullWidth
-                  />
-                </FormControl>
-              )}
+              <Grid container>
 
-              <FormControl>
-                <TextField
-                  id="input-health-insurance"
-                  label="Convênio"
-                  variant="outlined"
-                  size="small"
-                  value={captureData.health_insurance}
-                  onChange={(element) => setCaptureData({ ...captureData, health_insurance: element.target.value })}
-                  fullWidth
-                />
-              </FormControl>
+                <Grid item md={5}>
+                  <FieldContent style={{ paddingRight: 15 }}>
+                    <TextField
+                      id="input-health-insurance"
+                      label="Convênio"
+                      variant="outlined"
+                      size="small"
+                      value={captureData.health_insurance}
+                      onChange={(element) => setCaptureData({ ...captureData, health_insurance: element.target.value })}
+                      fullWidth
+                    />
+                  </FieldContent>
+                </Grid>
 
-              <FormControl>
-                <TextField
-                  id="input-health-plan"
-                  label="Plano"
-                  variant="outlined"
-                  size="small"
-                  value={captureData.health_plan}
-                  onChange={(element) => setCaptureData({ ...captureData, health_plan: element.target.value })}
-                  fullWidth
-                />
-              </FormControl>
+                <Grid item md={6}></Grid>
 
-              <FormControl>
-                <TextField
-                  id="input-health-sub-plan"
-                  label="Sub-plano"
-                  variant="outlined"
-                  size="small"
-                  value={captureData.health_sub_plan}
-                  onChange={(element) => setCaptureData({ ...captureData, health_sub_plan: element.target.value })}
-                  fullWidth
-                />
-              </FormControl>
+                <Grid item md={4}>
+                  <FieldContent style={{ paddingRight: 15 }}>
+                    <TextField
+                      id="input-order-number"
+                      label="Número de Guia"
+                      variant="outlined"
+                      size="small"
+                      value={captureData.order_number}
+                      onChange={(element) => setCaptureData({ ...captureData, order_number: element.target.value })}
+                      fullWidth
+                    />
+                  </FieldContent>
+                </Grid>
 
-              <FormControl>
-                <TextField
-                  id="input-hospital"
-                  label="Hospital"
-                  variant="outlined"
-                  size="small"
-                  value={captureData.hospital}
-                  onChange={(element) => setCaptureData({ ...captureData, hospital: element.target.value })}
-                  fullWidth
-                />
-              </FormControl>
+                <Grid item md={4}>
+                  <FieldContent style={{ paddingRight: 15 }}>
+                    <TextField
+                      id="input-health-plan"
+                      label="Plano"
+                      variant="outlined"
+                      size="small"
+                      value={captureData.health_plan}
+                      onChange={(element) => setCaptureData({ ...captureData, health_plan: element.target.value })}
+                      fullWidth
+                    />
+                  </FieldContent>
+                </Grid>
 
-              <FormControl>
-                <TextField
-                  id="input-hospital-unity"
-                  label="Sub-plano"
-                  variant="outlined"
-                  size="small"
-                  value={captureData.hospital_unity}
-                  onChange={(element) => setCaptureData({ ...captureData, hospital_unity: element.target.value })}
-                  fullWidth
-                />
-              </FormControl>
+                <Grid item md={4}>
+                  <FieldContent>
+                    <TextField
+                      id="input-health-sub-plan"
+                      label="Sub-plano"
+                      variant="outlined"
+                      size="small"
+                      value={captureData.health_sub_plan}
+                      onChange={(element) => setCaptureData({ ...captureData, health_sub_plan: element.target.value })}
+                      fullWidth
+                    />
+                  </FieldContent>
+                </Grid>
 
-              <FormControl>
-                <TextField
-                  id="input-assistance-doctor"
-                  label="Médico Assistente"
-                  variant="outlined"
-                  size="small"
-                  value={captureData.assitence_doctor}
-                  onChange={(element) => setCaptureData({ ...captureData, assitence_doctor: element.target.value })}
-                  fullWidth
-                />
-              </FormControl>
+                <Grid item md={8}>
+                  <FieldContent style={{ paddingRight: 15 }}>
+                    <TextField
+                      id="input-hospital"
+                      label="Hospital"
+                      variant="outlined"
+                      size="small"
+                      value={captureData.hospital}
+                      onChange={(element) => setCaptureData({ ...captureData, hospital: element.target.value })}
+                      fullWidth
+                    />
+                  </FieldContent>
+                </Grid>
 
-              <FormControl>
-                <TextField
-                  id="input-hospital-sector"
-                  label="Setor"
-                  variant="outlined"
-                  size="small"
-                  value={captureData.hospital_sector}
-                  onChange={(element) => setCaptureData({ ...captureData, hospital_sector: element.target.value })}
-                  fullWidth
-                />
-              </FormControl>
+                <Grid item md={4}>
+                  <FieldContent>
+                    <TextField
+                      id="input-hospital-unity"
+                      label="Unidade"
+                      variant="outlined"
+                      size="small"
+                      value={captureData.unity}
+                      onChange={(element) => setCaptureData({ ...captureData, unity: element.target.value })}
+                      fullWidth
+                    />
+                  </FieldContent>
+                </Grid>
 
-              <FormControl>
-                <TextField
-                  id="input-hospital-room"
-                  label="Leito"
-                  variant="outlined"
-                  size="small"
-                  value={captureData.hospital_room}
-                  onChange={(element) => setCaptureData({ ...captureData, hospital_room: element.target.value })}
-                  fullWidth
-                />
-              </FormControl>
+                <Grid item md={6}>
+                  <FieldContent style={{ paddingRight: 15 }}>
+                    <TextField
+                      id="input-assistance-doctor"
+                      label="Médico Assistente"
+                      variant="outlined"
+                      size="small"
+                      value={captureData.assistant_doctor}
+                      onChange={(element) => setCaptureData({ ...captureData, assistant_doctor: element.target.value })}
+                      fullWidth
+                    />
+                  </FieldContent>
+                </Grid>
+
+                <Grid item md={3}>
+                  <FieldContent style={{ paddingRight: 15 }}>
+                    <TextField
+                      id="input-hospital-sector"
+                      label="Setor"
+                      variant="outlined"
+                      size="small"
+                      value={captureData.sector}
+                      onChange={(element) => setCaptureData({ ...captureData, sector: element.target.value })}
+                      fullWidth
+                    />
+                  </FieldContent>
+                </Grid>
+
+                <Grid item md={3}>
+                  <FieldContent>
+                    <TextField
+                      id="input-hospital-room"
+                      label="Leito"
+                      variant="outlined"
+                      size="small"
+                      value={captureData.bed}
+                      onChange={(element) => setCaptureData({ ...captureData, bed: element.target.value })}
+                      fullWidth
+                    />
+                  </FieldContent>
+                </Grid>
+              </Grid>
             </div>
           </DialogContent>
           <DialogActions>
             <Button onClick={() => setCaptureModalModalOpen(false)} color="primary">
               Fechar
             </Button>
-            <Button onClick={() => setCaptureModalModalOpen(false)} color="primary">
+            <Button onClick={() => {
+              setCaptureModalModalOpen(false);
+              handleSubmitCaptureData();
+            }} color="primary">
               Salvar
             </Button>
           </DialogActions>
@@ -581,7 +647,7 @@ export default function PatientCaptureForm(props: RouteComponentProps<IPageParam
             <Button onClick={() => setCaptureFinishModalOpen(false)} color="primary">
               Não
             </Button>
-            <Button onClick={() => setCaptureFinishModalOpen(false)} color="primary">
+            <Button onClick={handleSubmitFinishCapture} color="primary">
               Sim
             </Button>
           </DialogActions>

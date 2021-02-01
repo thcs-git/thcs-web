@@ -5,9 +5,10 @@ export const loadRequest = (params: LoadRequestParams = {}) => action(UserTypes.
 export const loadSuccess = (data: UserInterface) => action(UserTypes.LOAD_SUCCCES, { data });
 
 export const getAddress = (postalCode: string) => action(UserTypes.LOAD_REQUEST_ADDRESS, { postalCode });
-
 export const successGetAddress = (data: ViacepDataInterface) => action(UserTypes.LOAD_RESPONSE_ADDRESS, { data });
 
+export const loadProfessionsRequest = () => action(UserTypes.LOAD_REQUEST_PROFESSION);
+export const loadProfessionsSuccess = (data: any) => action(UserTypes.LOAD_RESPONSE_PROFESSION, { data });
 
 export const createUserRequest = (data: UserInterface) => action(UserTypes.CREATE_USER_REQUEST, { data });
 export const createUserSuccess = (data: UserInterface) => action(UserTypes.CREATE_USER_SUCCESS, { data });

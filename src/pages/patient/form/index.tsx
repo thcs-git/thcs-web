@@ -4,6 +4,7 @@ import Tab from '@material-ui/core/Tab';
 import { useDispatch, useSelector } from 'react-redux';
 import { createPatientRequest, updatePatientRequest, getAddress as getAddressAction, loadPatientById, setIfRegistrationCompleted, loadFailure } from '../../../store/ducks/patients/actions';
 import { PatientInterface } from '../../../store/ducks/patients/types';
+import { loadRequest as getAreasAction } from '../../../store/ducks/areas/actions';
 
 import { ApplicationState } from '../../../store';
 
@@ -39,7 +40,7 @@ import { FormTitle, SelectComponent as Select } from '../../../styles/components
 import { SwitchComponent as Switch } from '../../../styles/components/Switch';
 
 import { formatDate } from '../../../helpers/date';
-import { bloodTypes } from '../../../helpers/patient';
+import { bloodTypes, maritalStatus } from '../../../helpers/patient';
 
 import DatePicker from '../../../styles/components/DatePicker';
 import ButtonComponent from '../../../styles/components/Button';
@@ -107,6 +108,7 @@ export default function PatientForm(props: RouteComponentProps<IPageParams>) {
   const history = useHistory();
   const dispatch = useDispatch();
   const patientState = useSelector((state: ApplicationState) => state.patients);
+  const areaState = useSelector((state: ApplicationState) => state.areas);
 
   const { params } = props.match;
 
@@ -132,16 +134,19 @@ export default function PatientForm(props: RouteComponentProps<IPageParams>) {
       city: '',
       state: '',
       complement: '',
-      area: ''
     },
+    area_id: '',
     email: '',
     phones: [{
       cellnumber: '',
       number: ''
     }],
-    responsible_name: '',
-    responsible_phone: '',
-    relatives: '',
+    responsable: {
+      name: '',
+      phone: '',
+      cellphone: '',
+      relationship: ''
+    },
     active: false,
     sus_card: 'FIELD_NOT_EXISTS_IN_PATIENT_REGISTRATION',
     blood_type: '',
@@ -170,6 +175,8 @@ export default function PatientForm(props: RouteComponentProps<IPageParams>) {
   const [openModalCancel, setOpenModalCancel] = useState(false);
 
   useEffect(() => {
+    dispatch(getAreasAction());
+
     if (params.id) {
       dispatch(loadPatientById(params.id));
     } else {
@@ -178,14 +185,7 @@ export default function PatientForm(props: RouteComponentProps<IPageParams>) {
   }, [dispatch, params]);
 
   useEffect(() => {
-    setState(prevState => {
-      return {
-        ...patientState.data,
-        address_id: {
-          ...patientState.data.address_id
-        }
-      }
-    });
+    setState(patientState.data);
 
     // setForm(prevState => ({
     //   ...prevState,
@@ -193,7 +193,7 @@ export default function PatientForm(props: RouteComponentProps<IPageParams>) {
     //   cellphone: patientState.data.phones.find(phone => phone.number)?.number || '',
     // }));
 
-  }, [patientState.data.address_id]);
+  }, [patientState.data]);
 
   useEffect(() => {
     // if (patientState.error) {
@@ -333,21 +333,17 @@ export default function PatientForm(props: RouteComponentProps<IPageParams>) {
                         </Grid>
 
                         <Grid item md={3} xs={12}>
-                          <FormControl variant="outlined" size="small" fullWidth>
-                            <InputLabel id="select-patient-gender">Sexo</InputLabel>
-                            <Select
-                              labelId="select-patient-gender"
-                              id="demo-simple-select-filled"
-                              value={state.gender}
-                              onChange={(element) => setState({ ...state, gender: `${element.target.value}` || '' })}
-                              labelWidth={40}
-                            >
-                              <MenuItem value="">
-                                <em>&nbsp;</em>
-                              </MenuItem>
-                              {genders.map(gender => <MenuItem key={`gender_${gender}`} value={gender}>{gender}</MenuItem>)}
-                            </Select>
-                          </FormControl>
+                          <Autocomplete
+                            id="combo-box-gender"
+                            options={['Masculino', 'Feminino', 'Indefinido']}
+                            getOptionLabel={(option) => option}
+                            renderInput={(params) => <TextField {...params} label="Sexo" variant="outlined" />}
+                            size="small"
+                            onChange={(element, value) => setState({ ...state, gender: value || '' })}
+                            value={state?.gender}
+                            noOptionsText="Nenhum resultado encontrado"
+                            fullWidth
+                          />
                         </Grid>
                         <Grid item md={8} xs={12}>
                           <TextField
@@ -412,21 +408,25 @@ export default function PatientForm(props: RouteComponentProps<IPageParams>) {
                           />
                         </Grid>
                         <Grid item md={3} xs={12}>
-                          <FormControl variant="outlined" size="small" fullWidth>
-                            <InputLabel id="select-patient-civil">Estado Civil</InputLabel>
-                            <Select
-                              labelId="select-patient-civil"
-                              // value={state.gender}
-                              onChange={(element) => setState({ ...state, marital_status: `${element.target.value}` || '' })}
-                              labelWidth={90}
-                            >
-                              <MenuItem value="">
-                                <em>&nbsp;</em>
-                              </MenuItem>
-                              <MenuItem value={10}>Solteiro</MenuItem>
-                              <MenuItem value={10}>Casado</MenuItem>
-                            </Select>
-                          </FormControl>
+                          <FormGroupSection>
+                            <Autocomplete
+                              id="combo-box-marital-status"
+                              options={maritalStatus}
+                              getOptionLabel={(option) => option}
+                              renderInput={(params) => <TextField {...params} label="Estado Civil" variant="outlined" />}
+                              value={state?.marital_status}
+                              getOptionSelected={(option, value) => option === state?.marital_status}
+                              onChange={(event: any, newValue) => {
+                                setState(prevState => ({
+                                  ...prevState,
+                                  marital_status: newValue || '',
+                                }));
+                              }}
+                              size="small"
+                              noOptionsText="Nenhum resultado encontrado"
+                              fullWidth
+                            />
+                          </FormGroupSection>
                         </Grid>
 
                         <Grid item md={3} xs={12}>
@@ -442,6 +442,7 @@ export default function PatientForm(props: RouteComponentProps<IPageParams>) {
                                 handleBloodType(event, newValue);
                               }}
                               size="small"
+                              noOptionsText="Nenhum resultado encontrado"
                               fullWidth
                             />
                           </FormGroupSection>
@@ -564,13 +565,16 @@ export default function PatientForm(props: RouteComponentProps<IPageParams>) {
                         </Grid>
 
                         <Grid item md={7} xs={12}>
-                          <TextField
-                            id="input-address-area"
-                            label="Área"
-                            variant="outlined"
+                          <Autocomplete
+                            id="combo-box-areas"
+                            options={areaState.list.data}
+                            getOptionLabel={(option) => option.name}
+                            renderInput={(params) => <TextField {...params} label="Área" variant="outlined" />}
                             size="small"
-                            value={state.address_id.state}
-                            onChange={(element) => setState({ ...state, address_id: { ...state.address_id, area: element.target.value } })}
+                            onChange={(element, value) => setState({ ...state, area_id: value?._id })}
+                            getOptionSelected={(option, value) => option._id === state?.area_id}
+                            // value={state?.area_id}
+                            noOptionsText="Nenhum resultado encontrado"
                             fullWidth
                           />
                         </Grid>
@@ -638,8 +642,8 @@ export default function PatientForm(props: RouteComponentProps<IPageParams>) {
                             label="Nome do responsável"
                             variant="outlined"
                             size="small"
-                            value={state.responsible_name}
-                            onChange={(element) => setState({ ...state, responsible_name: element.target.value })}
+                            value={state.responsable?.name}
+                            onChange={(element) => setState({ ...state, responsable: { ...state.responsable, name: element.target.value } })}
                             placeholder=""
                             fullWidth
                           />
@@ -650,8 +654,8 @@ export default function PatientForm(props: RouteComponentProps<IPageParams>) {
                             label="Telefone do responsável"
                             variant="outlined"
                             size="small"
-                            value={state.responsible_phone}
-                            onChange={(element) => setState({ ...state, responsible_phone: element.target.value })}
+                            value={state.responsable?.phone}
+                            onChange={(element) => setState({ ...state, responsable: { ...state.responsable, phone: element.target.value } })}
                             placeholder=""
                             fullWidth
                           />
@@ -662,8 +666,8 @@ export default function PatientForm(props: RouteComponentProps<IPageParams>) {
                             label="Parentesco"
                             variant="outlined"
                             size="small"
-                            value={state.relatives}
-                            onChange={(element) => setState({ ...state, relatives: element.target.value })}
+                            value={state.responsable?.relationship}
+                            onChange={(element) => setState({ ...state, responsable: { ...state.responsable, relationship: element.target.value } })}
                             placeholder=""
                             fullWidth
                           />

@@ -33,6 +33,7 @@ import {
   Grid,
   StepLabel,
   Typography,
+  Tooltip,
 } from '@material-ui/core';
 
 import { Autocomplete } from '@material-ui/lab';
@@ -44,7 +45,6 @@ import Sidebar from '../../../components/Sidebar';
 import { FormTitle } from '../../../styles/components/Form';
 import Button from '../../../styles/components/Button';
 
-import { bloodTypes } from '../../../helpers/patient';
 import { age, formatDate } from '../../../helpers/date';
 
 import { ReactComponent as IconProfile } from '../../../assets/img/icon-profile.svg';
@@ -232,9 +232,19 @@ export default function AreaForm(props: RouteComponentProps<IPageParams>) {
     };
 
     if (found) {
-      return found.status === 'Não Elegível' ? <Error style={{ color: '#FF6565', cursor: 'pointer' }} onClick={() => history.push(`/patient/capture/${found.care_id}/${documentRoute()}/${found._id}`)} /> : <CheckIcon style={{ color: '#4FC66A', cursor: 'pointer' }} onClick={() => history.push(`/patient/capture/${found.care_id}/${documentRoute()}/${found._id}`)} />
+      return found.status === 'Não Elegível' ? (
+        <Tooltip title="Não Elegível">
+          <Error style={{ color: '#FF6565', cursor: 'pointer' }} onClick={() => history.push(`/patient/capture/${found.care_id}/${documentRoute()}/${found._id}`)} />
+        </Tooltip>
+      )
+        :
+        (
+          <Tooltip title="Elegível">
+            <CheckIcon style={{ color: '#4FC66A', cursor: 'pointer' }} onClick={() => history.push(`/patient/capture/${found.care_id}/${documentRoute()}/${found._id}`)} />
+          </Tooltip>
+        );
     } else {
-      return <CheckIcon style={{ color: '#EBEBEB' }} />;
+      return <Tooltip title="Não Realizado"><CheckIcon style={{ color: '#EBEBEB' }} /></Tooltip>;
     }
   };
 
@@ -272,28 +282,28 @@ export default function AreaForm(props: RouteComponentProps<IPageParams>) {
                     </tr>
                   </thead>
                   <tbody>
-                  {careState.list.data.map((care, index) => (
-                    <tr key={index}>
-                      <Td>
-                      <Checkbox
-                          checked={selectCheckbox?._id === care?._id}
-                          onChange={(element) => {
-                            if (care._id && care._id === element.target.value) setSelectCheckbox({})
-                            else setSelectCheckbox(care)
-                          }}
-                          inputProps={{ 'aria-label': 'primary checkbox' }}
-                        />
-                      </Td>
-                      <Td>
-                        {care?.patient_id?.name}
-                      </Td>
-                      <Td>{care.patient_id?.fiscal_number}</Td>
-                      <Td>{handleCheckDocument('5ffd79012f5d2b1d8ff6bea3', care?.documents_id || [])}</Td>
-                      <Td>{handleCheckDocument('5ff65469b4d4ac07d186e99f', care?.documents_id || [])}</Td>
-                      <Td>{handleCheckDocument('5ffd7acd2f5d2b1d8ff6bea4', care?.documents_id || [])}</Td>
-                      <Td>{formatDate(care?.created_at ?? '', 'DD/MM/YYYY HH:mm:ss')}</Td>
-                    </tr>
-                  ))}
+                    {careState.list.data.map((care, index) => (
+                      <tr key={index}>
+                        <Td>
+                          <Checkbox
+                            checked={selectCheckbox?._id === care?._id}
+                            onChange={(element) => {
+                              if (care._id && care._id === element.target.value) setSelectCheckbox({})
+                              else setSelectCheckbox(care)
+                            }}
+                            inputProps={{ 'aria-label': 'primary checkbox' }}
+                          />
+                        </Td>
+                        <Td>
+                          {care?.patient_id?.name}
+                        </Td>
+                        <Td>{care.patient_id?.fiscal_number}</Td>
+                        <Td>{handleCheckDocument('5ffd79012f5d2b1d8ff6bea3', care?.documents_id || [])}</Td>
+                        <Td>{handleCheckDocument('5ff65469b4d4ac07d186e99f', care?.documents_id || [])}</Td>
+                        <Td>{handleCheckDocument('5ffd7acd2f5d2b1d8ff6bea4', care?.documents_id || [])}</Td>
+                        <Td>{formatDate(care?.created_at ?? '', 'DD/MM/YYYY HH:mm:ss')}</Td>
+                      </tr>
+                    ))}
                   </tbody>
                 </Table>
                 {patient?._id && (

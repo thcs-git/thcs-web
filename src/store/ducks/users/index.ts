@@ -126,6 +126,17 @@ const reducer: Reducer<UserState> = (state = INITIAL_STATE, action) => {
       };
     case UserTypes.SEARCH_REQUEST:
       return { ...state, loading: true, error: false };
+    case UserTypes.LOAD_RESPONSE_PROFESSION:
+      return {
+        ...state,
+        data: {
+          ...state.data,
+          professions: action.payload.data,
+        },
+        loading: false,
+        error: false,
+        success: false,
+      };
     default:
       return state;
   }

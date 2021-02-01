@@ -24,7 +24,7 @@ apiSollar.interceptors.request.use(
 
     if (token) {
       config.headers.token = `${token}`;
-      config.headers.user = { id: user_id, username };
+      config.headers.user = JSON.stringify({ id: user_id, username });
     }
 
     return config;

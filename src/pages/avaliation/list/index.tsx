@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useCallback, ChangeEvent } from 'react';
 import { useHistory, Link } from 'react-router-dom';
-import { Container, Button, Menu, MenuItem, Dialog, DialogTitle, DialogContent, DialogContentText, DialogActions, RadioGroup, FormControlLabel, Radio, InputLabel } from '@material-ui/core';
-import { FiberManualRecord, Error, MoreVert } from '@material-ui/icons';
+import { Container, Button, Menu, MenuItem, Dialog, DialogTitle, DialogContent, DialogContentText, DialogActions, RadioGroup, FormControlLabel, Radio, InputLabel, Tooltip } from '@material-ui/core';
+import { FiberManualRecord, ErrorOutline, MoreVert } from '@material-ui/icons';
 import TableRow from '@material-ui/core/TableRow';
 import TableCell from '@material-ui/core/TableCell';
 import CheckIcon from '@material-ui/icons/Check';
@@ -80,9 +80,19 @@ export default function AvaliationList() {
     };
 
     if (found) {
-      return found.status === 'Não Elegível' ? <Error style={{ color: '#FF6565', cursor: 'pointer' }} onClick={() => history.push(`/patient/capture/${found.care_id}/${documentRoute()}/${found._id}`)} /> : <CheckIcon style={{ color: '#4FC66A', cursor: 'pointer' }} onClick={() => history.push(`/patient/capture/${found.care_id}/${documentRoute()}/${found._id}`)} />
+      return found.status === 'Não Elegível' ? (
+        <Tooltip title="Não Elegível">
+          <ErrorOutline style={{ color: '#FF6565', cursor: 'pointer' }} onClick={() => history.push(`/patient/capture/${found.care_id}/${documentRoute()}/${found._id}`)} />
+        </Tooltip>
+      )
+        :
+        (
+          <Tooltip title="Elegível">
+            <CheckIcon style={{ color: '#4FC66A', cursor: 'pointer' }} onClick={() => history.push(`/patient/capture/${found.care_id}/${documentRoute()}/${found._id}`)} />
+          </Tooltip>
+        );
     } else {
-      return <CheckIcon style={{ color: '#EBEBEB' }} />;
+      return <Tooltip title="Não Realizado"><CheckIcon style={{ color: '#EBEBEB' }} /></Tooltip>;
     }
   };
 
@@ -176,7 +186,7 @@ export default function AvaliationList() {
               { name: 'ABEMID', align: 'center' },
               { name: 'Última captação', align: 'left' },
               { name: 'Status da captação', align: 'left' },
-              { name: '', align: 'left' }
+              { name: ' ', align: 'left' }
             ]}
           >
             {careState.list.data.map((care, index) => (
@@ -208,9 +218,9 @@ export default function AvaliationList() {
                     onClose={handleCloseRowMenu}
                   >
                     {care.capture?.status === 'Aguardando' && (
-                      <MenuItem onClick={() => handleStartUpdateCaptureStatus(care)}>Atualizar Status</MenuItem>
+                      <MenuItem onClick={() => handleStartUpdateCaptureStatus(care)}>Atualizar status</MenuItem>
                     )}
-                    <MenuItem onClick={() => history.push(`/patient/capture/${care._id}/overview`)}>Visualizar</MenuItem>
+                    <MenuItem onClick={() => history.push(`/patient/capture/${care._id}/overview`)}>Visualizar perfil</MenuItem>
                   </Menu>
                 </TableCell>
               </TableRow>
