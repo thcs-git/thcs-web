@@ -2,8 +2,12 @@ import React, { useState, useEffect, useCallback, ChangeEvent, ReactNode } from 
 import CheckIcon from '@material-ui/icons/Check';
 import Checkbox from '@material-ui/core/Checkbox';
 import Divider from '@material-ui/core/Divider';
+
 import { Error } from '@material-ui/icons';
 import EventIcon from '@material-ui/icons/Event';
+import HomeIcon from '@material-ui/icons/Home';
+import RecentActorsSharpIcon from '@material-ui/icons/RecentActorsSharp';
+import LocalHospitalSharpIcon from '@material-ui/icons/LocalHospitalSharp';
 
 import { useDispatch, useSelector } from 'react-redux';
 import { ApplicationState } from '../../../store';
@@ -539,8 +543,8 @@ export default function AreaForm(props: RouteComponentProps<IPageParams>) {
 
             {/* Step 3 */}
             {currentStep === 2 && (
-              <Grid container>
-                <Box>
+              <Grid container direction="column">
+                <Box mb={2} paddingLeft={5}>
                   <Profile>
                     <IconProfile />
                     <div>
@@ -550,13 +554,63 @@ export default function AreaForm(props: RouteComponentProps<IPageParams>) {
                     </div>
                   </Profile>
                 </Box>
-                <Divider />
 
                 <Box>
-                  <EventIcon color="primary" />
-                  <Typography variant="h6" component="h6">
-                    Dados do atendimento
-                  </Typography>
+                  <Divider />
+                </Box>
+
+                <Box display="flex" flexDirection="column" justifyContent="center" mt={4} paddingLeft={9}>
+                  <Box display="flex" flexDirection="column" className="box-position-icon">
+                    <EventIcon color="primary" />
+                    <Typography variant="subtitle2" component="p" style={{ fontWeight: 'bold' }}>
+                      Dados do atendimento
+                    </Typography>
+                    <Typography variant="caption" color="textSecondary">
+                      21/02/2021 17:21:20
+                    </Typography>
+                    <Typography variant="caption" color="textSecondary">
+                    0701030348 - TROCA DO PROCESSADOR DE FALA P/ IMPLANTE COCLEAR MULTICANAL
+                    </Typography>
+                  </Box>
+
+                  <Box display="flex" flexDirection="column" mt={4} className="box-position-icon">
+                    <HomeIcon color="primary" />
+                    <Typography variant="subtitle2" component="p" style={{ fontWeight: 'bold' }}>
+                      Dados do Home Care
+                    </Typography>
+                    <Typography variant="caption" color="textSecondary">
+                      21/02/2021 17:21:20
+                    </Typography>
+                    <Typography variant="caption" color="textSecondary">
+                    0701030348 - TROCA DO PROCESSADOR DE FALA P/ IMPLANTE COCLEAR MULTICANAL
+                    </Typography>
+                  </Box>
+
+                  <Box display="flex" flexDirection="column" mt={4} className="box-position-icon">
+                    <RecentActorsSharpIcon color="primary" />
+                    <Typography variant="subtitle2" component="p" style={{ fontWeight: 'bold' }}>
+                      Dados do plano de saúde
+                    </Typography>
+                    <Typography variant="caption" color="textSecondary">
+                      21/02/2021 17:21:20
+                    </Typography>
+                    <Typography variant="caption" color="textSecondary">
+                    0701030348 - TROCA DO PROCESSADOR DE FALA P/ IMPLANTE COCLEAR MULTICANAL
+                    </Typography>
+                  </Box>
+
+                  <Box display="flex" flexDirection="column" mt={4} mb={5} className="box-position-icon">
+                    <LocalHospitalSharpIcon color="primary" />
+                    <Typography variant="subtitle2" component="p" style={{ fontWeight: 'bold' }}>
+                      Dados do hospital
+                    </Typography>
+                    <Typography variant="caption" color="textSecondary">
+                      21/02/2021 17:21:20
+                    </Typography>
+                    <Typography variant="caption" color="textSecondary">
+                    0701030348 - TROCA DO PROCESSADOR DE FALA P/ IMPLANTE COCLEAR MULTICANAL
+                    </Typography>
+                  </Box>
                 </Box>
               </Grid>
             )}
