@@ -71,6 +71,10 @@ export enum CareTypes {
   // Health Plan
   HEALTH_PLAN_REQUEST = "@care/HEALTH_PLAN_REQUEST",
   HEALTH_PLAN_SUCCESS = "@care/HEALTH_PLAN_SUCCESS",
+
+  // Health Plan
+  HEALTH_SUBPLAN_REQUEST = "@care/HEALTH_SUBPLAN_REQUEST",
+  HEALTH_SUBPLAN_SUCCESS = "@care/HEALTH_SUBPLAN_SUCCESS",
 }
 
 /**
@@ -94,6 +98,7 @@ export interface CareInterface {
   area_id?: string;
   user_id: string; // *
   status?: string, // * Pre-Atendimento, Em atendimento, Cancelado, Finalizado
+	started_at?: string;
 	created_at?: string;
 	created_by?: { _id: string };
 	updated_at?: string;
@@ -125,6 +130,7 @@ export interface CareState {
   success: boolean;
   healthInsurance: HealthInsuranceInterface[];
   healthPlan: HealthPlanInterface[];
+  healthSubPlan: HealthPlanInterface[];
   documentGroupSocioAmbiental: DocumentGroupInterface;
   documentGroupAbemid: DocumentGroupInterface;
   documentSocioAmbiental: DocumentState;
@@ -138,13 +144,11 @@ export interface CareState {
 export interface HealthInsuranceInterface {
   _id: string;
   name: string;
-  describe: string;
 }
 
 export interface HealthPlanInterface {
   _id: string;
   name: string;
-  describe: string;
 }
 
 export interface DocumentGroupInterface {
