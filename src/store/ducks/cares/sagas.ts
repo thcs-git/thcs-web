@@ -19,7 +19,8 @@ import {
   actionDocumentGroupNead,
   actionDocumentNead,
   actionDocumentNeadStore,
-  actionDocumentNeadUpdate
+  actionDocumentNeadUpdate,
+  healthInsuranceSuccess
 } from './actions';
 
 import { apiSollar } from '../../../services/axios';
@@ -286,6 +287,34 @@ export function* updateDocumentNead({ payload }: any) {
     yield put(actionDocumentNeadUpdate(response.data))
   } catch (error) {
     toast.error('Erro ao buscar os grupos de documentos');
+    yield put(loadFailure());
+  }
+}
+
+export function* getHealthInsurance() {
+  try {
+    const { data }: AxiosResponse = yield call(apiSollar.get, '/healthinsurance');
+
+    yield put(healthInsuranceSuccess(data.data))
+  } catch (error) {
+    console.log(error)
+    toast.error('Erro ao buscar os Convenios');
+    yield put(loadFailure());
+  }
+}
+
+export function* getHealthPlan({ payload }: any) {
+
+  const { id } = payload;
+
+  try {
+    const { data }: AxiosResponse = yield call(apiSollar.get, `/healthplan?_id=${id}`);
+
+    console.log(data)
+    // yield put(healthInsuranceSuccess(data.data))
+  } catch (error) {
+    console.log(error)
+    toast.error('Erro ao buscar os Convenios');
     yield put(loadFailure());
   }
 }

@@ -49,6 +49,8 @@ import {
     getDocumentNead,
     storeDocumentNead,
     updateDocumentNead,
+    getHealthInsurance,
+    getHealthPlan
 } from './cares/sagas';
 
 export default function* rootSaga() {
@@ -88,6 +90,9 @@ export default function* rootSaga() {
     takeLatest(CareTypes.DOCUMENT_NEAD_REQUEST, getDocumentNead),
     takeLatest(CareTypes.DOCUMENT_NEAD_STORE_REQUEST, storeDocumentNead),
     takeLatest(CareTypes.DOCUMENT_NEAD_UPDATE_REQUEST, updateDocumentNead),
+
+    takeLatest(CareTypes.HEALTH_INSURANCE_REQUEST, getHealthInsurance),
+    takeLatest(CareTypes.HEALTH_PLAN_REQUEST, getHealthPlan),
 
     // Council
     takeLatest(CouncilTypes.LOAD_REQUEST, getCouncils),

@@ -12,7 +12,7 @@ import LocalHospitalSharpIcon from '@material-ui/icons/LocalHospitalSharp';
 import { useDispatch, useSelector } from 'react-redux';
 import { ApplicationState } from '../../../store';
 import { CareInterface } from '../../../store/ducks/cares/types';
-import { loadCareById, updateCareRequest, createCareRequest, searchCareRequest as getCares } from '../../../store/ducks/cares/actions';
+import { loadCareById, updateCareRequest, createCareRequest, searchCareRequest as getCares, healthInsuranceRequest, healthPlanRequest } from '../../../store/ducks/cares/actions';
 import { loadRequest as getAreasAction } from '../../../store/ducks/areas/actions';
 import { loadRequest as getUsersAction } from '../../../store/ducks/users/actions';
 
@@ -127,6 +127,7 @@ export default function AreaForm(props: RouteComponentProps<IPageParams>) {
 
     dispatch(getAreasAction());
     dispatch(getUsersAction());
+    dispatch(healthInsuranceRequest());
     dispatch(getCares({ status: 'Pre-Atendimento' }))
   }, [dispatch]);
 
@@ -369,14 +370,15 @@ export default function AreaForm(props: RouteComponentProps<IPageParams>) {
                   /> */}
                   <Autocomplete
                     id="combo-box-health-insurance"
-                    options={userState.list.data}
+                    options={careState.healthInsurance}
                     getOptionLabel={(option) => option.name}
                     renderInput={(params) => <TextField {...params} label="Convênio" variant="outlined" />}
                     size="small"
                     onChange={(event, value) => {
-                      if (value) {
-                        handleSelectUser({ _id: value._id || '', name: value.name })
-                      }
+                      // if (value) {
+                      //   handleSelectUser({ _id: value._id || '', name: value.name })
+                      // }\
+                      dispatch(healthPlanRequest(value && value._id));
                     }}
                     fullWidth
                   />
