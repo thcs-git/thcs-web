@@ -4,7 +4,7 @@ import { CompanyState, CompanyTypes } from './types';
 export const INITIAL_STATE: CompanyState = {
   data: {
     _id: '',
-    customerId: '',
+    customer_id: '',
     name: '',
     fantasy_name: '',
     fiscal_number: '',

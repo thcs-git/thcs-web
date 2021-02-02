@@ -23,7 +23,7 @@ export const ButtonsContent = styled.div`
 `;
 
 export const BoxCustom = styled(Box)`
-  height: calc(100vh - 250px);
+  min-height: calc(100vh - 250px);
   margin-bottom: 40px;
 `;
 

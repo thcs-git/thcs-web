@@ -32,6 +32,10 @@ export interface SpecialtiesUserInterface {
   id: string;
   name: string;
 };
+export interface ProfessionUserInterface {
+  _id: string;
+  name: string;
+};
 
 export interface CompanyUserInterface {
   id: string;
@@ -84,7 +88,7 @@ export interface UserInterface {
   username?: string;
   password?: string;
   active: boolean; // active
-  professions?: any;
+  professions?: ProfessionUserInterface[];
 }
 
 

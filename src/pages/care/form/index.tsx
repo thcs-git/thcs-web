@@ -532,7 +532,7 @@ export default function AreaForm(props: RouteComponentProps<IPageParams>) {
                   />
                 </Grid>
                 <Grid item md={6} xs={12}>
-                   <Autocomplete
+                  <Autocomplete
                     id="input-type-accommodation"
                     options={careState.accommondation_type}
                     getOptionLabel={(option) => option.name}
@@ -581,14 +581,14 @@ export default function AreaForm(props: RouteComponentProps<IPageParams>) {
                 <Grid item md={4} xs={12}>
                   {/* <TextField
                     id="input-diagnostic"
-                    label="Diaginóstico (CID)" // CID - Name
+                    label="Diagnóstico (CID)" // CID - Name
                     variant="outlined"
                     size="small"
                     value={state?.cid_id}
                     onChange={(element) => setState(prevState => ({ ...prevState, cid_id: element.target.value }))}
                     fullWidth
                   /> */}
-                   <Autocomplete
+                  <Autocomplete
                     id="input-diagnostic"
                     options={careState.cid}
                     getOptionLabel={(option) => `${option.cid} - ${option.name}`}
@@ -661,7 +661,7 @@ export default function AreaForm(props: RouteComponentProps<IPageParams>) {
 
                 <Box display="flex" flexDirection="column" justifyContent="center" mt={4} paddingLeft={9}>
                   <Box display="flex" flexDirection="column" className="box-position-icon">
-                    <EventIcon color="primary" />
+                    <EventIcon style={{ color: '#0899BA' }} />
                     <Typography variant="subtitle2" component="p" style={{ fontWeight: 'bold' }}>
                       Dados do atendimento
                     </Typography>
@@ -669,58 +669,58 @@ export default function AreaForm(props: RouteComponentProps<IPageParams>) {
                       {formatDate(state?.started_at ?? '', 'DD/MM/YYYY HH:mm:ss')}
                     </Typography>
                     <Typography variant="caption" color="textSecondary">
-                      {state?.procedure_id}
+                      Procedimento: {state?.procedure_id}
                     </Typography>
                   </Box>
 
                   <Box display="flex" flexDirection="column" mt={4} className="box-position-icon">
-                    <HomeIcon color="primary" />
+                    <HomeIcon style={{ color: '#0899BA' }} />
                     <Typography variant="subtitle2" component="p" style={{ fontWeight: 'bold' }}>
                       Dados do Home Care
                     </Typography>
                     <Typography variant="caption" color="textSecondary">
-                      {selectCareType()?.name}
+                      Tipo do programa: {selectCareType()?.name}
                     </Typography>
                     <Typography variant="caption" color="textSecondary">
-                      {selectArea()?.name}
+                      Área: {selectArea()?.name}
                     </Typography>
                   </Box>
 
                   <Box display="flex" flexDirection="column" mt={4} className="box-position-icon">
-                    <RecentActorsSharpIcon color="primary" />
+                    <RecentActorsSharpIcon style={{ color: '#0899BA' }} />
                     <Typography variant="subtitle2" component="p" style={{ fontWeight: 'bold' }}>
                       Dados do plano de saúde
                     </Typography>
                     <Typography variant="caption" color="textSecondary">
-                      {selectHealhInsurance()?.name}
+                      Convênio: {selectHealhInsurance()?.name}
                     </Typography>
                     <Typography variant="caption" color="textSecondary">
-                      {state?.health_plan_card_number}
+                      Número da carteira: {state?.health_plan_card_number}
                     </Typography>
                     <Typography variant="caption" color="textSecondary">
-                      {state?.health_plan_card_validate}
+                      Validade da carteira: {state?.health_plan_card_validate}
                     </Typography>
                     <Typography variant="caption" color="textSecondary">
-                      {selectHealhPlan()?.name}
+                      Plano: {selectHealhPlan()?.name}
                     </Typography>
                     <Typography variant="caption" color="textSecondary">
-                      {selectHealhSubPlan()?.name}
+                      Sub-plano: {selectHealhSubPlan()?.name}
                     </Typography>
                     <Typography variant="caption" color="textSecondary">
-                      {state?.contract}
+                      Contrato: {state?.contract}
                     </Typography>
                     <Typography variant="caption" color="textSecondary">
-                      {selectAccommodationType()?.name}
+                      Tipo de acomodação: {selectAccommodationType()?.name}
                     </Typography>
                   </Box>
 
                   <Box display="flex" flexDirection="column" mt={4} mb={5} className="box-position-icon">
-                    <LocalHospitalSharpIcon color="primary" />
+                    <LocalHospitalSharpIcon style={{ color: '#0899BA' }} />
                     <Typography variant="subtitle2" component="p" style={{ fontWeight: 'bold' }}>
                       Dados do hospital
                     </Typography>
                     <Typography variant="caption" color="textSecondary">
-                      {selectUser()?.name}
+                      Médico responsável: {selectUser()?.name}
                     </Typography>
                     <Typography variant="caption" color="textSecondary">
                       {`${selectCid()?.cid ?? ''} - ${selectCid()?.name ?? ''}`}

@@ -59,7 +59,10 @@ const reducer: Reducer<UserState> = (state = INITIAL_STATE, action) => {
     case UserTypes.LOAD_SUCCCES_USER_BY_ID:
       return {
         ...state,
-        data: {...action.payload.data},
+        data: {
+          ...state.data,
+          ...action.payload.data
+        },
         loading: false,
         error: false,
         success: false,
@@ -131,7 +134,7 @@ const reducer: Reducer<UserState> = (state = INITIAL_STATE, action) => {
         ...state,
         data: {
           ...state.data,
-          professions: action.payload.data,
+          professions: action.payload.data.data,
         },
         loading: false,
         error: false,
