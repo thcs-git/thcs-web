@@ -1,11 +1,12 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, ChangeEvent } from 'react';
 import { useHistory, Link } from 'react-router-dom';
 import { Container, Menu, MenuItem } from '@material-ui/core';
 import { MoreVert } from '@material-ui/icons';
+import debounce from 'lodash.debounce';
 
 import { useDispatch, useSelector } from 'react-redux';
 import { ApplicationState } from '../../../store/';
-import { loadRequest } from '../../../store/ducks/cares/actions';
+import { loadRequest, searchCareRequest } from '../../../store/ducks/cares/actions';
 
 import PaginationComponent from '../../../components/Pagination';
 import Sidebar from '../../../components/Sidebar';
@@ -49,6 +50,13 @@ export default function CouncilList() {
     setAnchorEl(null);
   }, [anchorEl]);
 
+  const handleChangeInput = useCallback((event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    setSearch(event.target.value)
+    dispatch(searchCareRequest({ search: event.target.value }));
+  }, [search]);
+
+  const debounceSearchRequest = debounce(handleChangeInput, 900);
+
   const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
     setAnchorEl(event.currentTarget);
   };
@@ -67,8 +75,7 @@ export default function CouncilList() {
           <SearchComponent
             handleButton={() => history.push('/care/create/')}
             buttonTitle="Novo Atendimento"
-            value={search}
-            onChangeInput={(e) => setSearch(e.target.value)}
+            onChangeInput={debounceSearchRequest}
           />
 
           <Table>

@@ -1,5 +1,5 @@
 import { action } from 'typesafe-actions';
-import { CareTypes, CareInterface, LoadRequestParams, DocumentGroupInterface, DocumentInterface } from './types';
+import { CareTypes, CareInterface, LoadRequestParams, DocumentGroupInterface, DocumentInterface, HealthInsuranceInterface, HealthPlanInterface } from './types';
 
 export const loadRequest = (params: LoadRequestParams = {}) => action(CareTypes.LOAD_REQUEST, { params });
 
@@ -80,3 +80,23 @@ export const actionDocumentNeadUpdateRequest = (data: DocumentInterface) => acti
 export const actionDocumentNeadUpdate = (data: DocumentInterface) => action(CareTypes.DOCUMENT_NEAD_UPDATE, { data });
 
 export const cleanAction = () => action(CareTypes.CLEAN);
+
+
+/**
+ * Health Care
+ */
+export const healthInsuranceRequest = () => action(CareTypes.HEALTH_INSURANCE_REQUEST);
+export const healthInsuranceSuccess = (data: HealthInsuranceInterface) => action(CareTypes.HEALTH_INSURANCE_SUCCESS, { data });
+
+/**
+ * Health Plan
+ */
+export const healthPlanRequest = (id: string | null) => action(CareTypes.HEALTH_PLAN_REQUEST, { id });
+export const healthPlanSuccess = (data: HealthPlanInterface) => action(CareTypes.HEALTH_PLAN_SUCCESS, { data });
+
+/**
+ * Health Sub Plan
+ */
+export const healthSubPlanRequest = (id: string | null) => action(CareTypes.HEALTH_SUBPLAN_REQUEST, { id });
+export const healthSubPlanSuccess = (data: HealthPlanInterface) => action(CareTypes.HEALTH_SUBPLAN_SUCCESS, { data });
+

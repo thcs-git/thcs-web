@@ -29,6 +29,9 @@ export const INITIAL_STATE: CareState = {
   error: false,
   loading: false,
   success: false,
+  healthInsurance: [],
+  healthPlan: [],
+  healthSubPlan: [],
   documentGroupSocioAmbiental: {},
   documentSocioAmbiental: {},
   documentGroupAbemid: {},
@@ -45,6 +48,52 @@ const reducer: Reducer<CareState> = (state = INITIAL_STATE, action) => {
       return {
         ...state,
         list: action.payload.data,
+        loading: false,
+        success: false,
+        error: false
+      };
+    // Health Insurance
+    case CareTypes.HEALTH_INSURANCE_REQUEST:
+      return {
+        ...state,
+        loading: true,
+        success: false,
+        error: false
+      };
+    case CareTypes.HEALTH_INSURANCE_SUCCESS:
+      return {
+        ...state,
+        healthInsurance: action.payload.data,
+        loading: false,
+        success: false,
+        error: false
+      };
+    case CareTypes.HEALTH_PLAN_REQUEST:
+      return {
+        ...state,
+        loading: true,
+        success: false,
+        error: false
+      };
+    case CareTypes.HEALTH_PLAN_SUCCESS:
+      return {
+        ...state,
+        healthPlan: action.payload.data,
+        loading: false,
+        success: false,
+        error: false
+      };
+    case CareTypes.HEALTH_SUBPLAN_REQUEST:
+      return {
+        ...state,
+        loading: true,
+        success: false,
+        error: false
+      };
+    case CareTypes.HEALTH_SUBPLAN_SUCCESS:
+      return {
+        ...state,
+        healthSubPlan: action.payload.data,
         loading: false,
         success: false,
         error: false
@@ -303,7 +352,12 @@ const reducer: Reducer<CareState> = (state = INITIAL_STATE, action) => {
     case CareTypes.DOCUMENT_NEAD_STORE:
       return {
         ...state,
-        documentNead: action.payload.data,
+        documentNead: {
+          ...action.payload.data,
+          loading: false,
+          error: false,
+          success: true
+        },
         loading: false,
         error: false,
         success: true

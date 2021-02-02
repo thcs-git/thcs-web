@@ -12,6 +12,7 @@ import ListItem from '@material-ui/core/ListItem';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
 import ExitToApp from '@material-ui/icons/ExitToApp';
+import AccountCircle from '@material-ui/icons/AccountCircle';
 
 import {
   Button,
@@ -38,7 +39,7 @@ import GroupAddIcon from '@material-ui/icons/GroupAdd';
 import LocalHospital from '@material-ui/icons/LocalHospital';
 import StarRateIcon from '@material-ui/icons/StarRate';
 
-import { AccordionMenu, Logo } from './styles';
+import { AccordionMenu, Logo, UserContent } from './styles';
 import LOCALSTORAGE from '../../helpers/constants/localStorage';
 
 
@@ -121,6 +122,7 @@ const Sibebar = (props: Props<any>) => {
     let toggleSidebar = localStorage.getItem(LOCALSTORAGE.TOGGLE_SIDEBAR) || 'false';
     return JSON.parse(toggleSidebar)
   });
+  const [username, setUsername] = useState(localStorage.getItem(LOCALSTORAGE.USERNAME) || '');
 
   const [openModalLogout, setOpenModalLogout] = useState(false);
 
@@ -177,6 +179,10 @@ const Sibebar = (props: Props<any>) => {
           </IconButton>
         </div>
         {/* <Divider /> */}
+        <UserContent>
+          <AccountCircle />
+          <h3>{username}</h3>
+        </UserContent>
         <List disablePadding={true}>
           {itemsMenu.map((item, index) => (
             <ListItem key={index} component="button" button onClick={() => history.push(item.route)}>

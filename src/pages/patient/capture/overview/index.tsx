@@ -189,7 +189,7 @@ export default function PatientCaptureForm(props: RouteComponentProps<IPageParam
       doc.finished
     ));
 
-    return (found) ? <CheckCircle style={{ color: '#4FC66A', cursor: 'pointer' }} /> : <CheckCircle style={{ color: '#EBEBEB' }} />;
+    return (found) ? <CheckCircle style={{ color: '#4FC66A', cursor: 'pointer' }} /> : <CheckCircle style={{ color: '#EBEBEB', cursor: 'pointer' }} />;
   };
 
   const handleDocument = (documentId: string, documents: Array<any>) => {
@@ -237,7 +237,7 @@ export default function PatientCaptureForm(props: RouteComponentProps<IPageParam
     const abemidDocument = handleDocument('5ffd7acd2f5d2b1d8ff6bea4', care?.documents_id || []);
     const neadDocument = handleDocument('5ff65469b4d4ac07d186e99f', care?.documents_id || []);
 
-    if (captureData.estimate !== '' && (abemidDocument || neadDocument)) {
+    if (captureData.estimate && (abemidDocument || neadDocument)) {
       setFinishEnable(true);
     } else {
       setFinishEnable(false);
@@ -280,12 +280,14 @@ export default function PatientCaptureForm(props: RouteComponentProps<IPageParam
                             <p>Pedido: {care?.capture?.order_number}</p>
                             <p>Data do Atendimento: {care?.created_at ? formatDate(care.created_at, 'DD/MM/YYYY HH:mm:ss') : '-'}</p>
                             <p>Status: {care.status}</p>
-                            <Button onClick={() => setCaptureModalModalOpen(true)}><Edit style={{ width: 15, marginRight: 5 }} /> Editar</Button>
+                            {care.capture?.status === 'Em Andamento' && (
+                              <Button onClick={() => setCaptureModalModalOpen(true)}><Edit style={{ width: 15, marginRight: 5 }} /> Editar</Button>
+                            )}
                           </div>
                         </div>
                       </PatientData>
 
-                      {care.capture?.status !== 'Aprovado' && care.capture?.status !== 'Reprovado' ? (
+                      {care.capture?.status === 'Em Andamento' ? (
                         <div>
                           <Button background={finishEnable ? "success" : "disable"} disabled={!finishEnable} onClick={() => setCaptureFinishModalOpen(true)}>
                             <CheckCircleOutline />
@@ -336,7 +338,7 @@ export default function PatientCaptureForm(props: RouteComponentProps<IPageParam
                         <Td>{document?.created_at ? formatDate(document.created_at, 'DD/MM/YYYY HH:mm:ss') : '-'}</Td>
                         <Td>{handleElegibilityLabel(document?.status)}</Td>
                         <Td center>
-                          {care.capture?.status !== 'Aprovado' && care.capture?.status !== 'Reprovado' ? (
+                          {care.capture?.status === 'Em Andamento' ? (
                             <>
                               <Button aria-controls={`simple-menu${index}`} id={`btn_simple-menu${index}`} aria-haspopup="true" onClick={handleOpenRowMenu}>
                                 <MoreVert className="primary" />
@@ -349,10 +351,10 @@ export default function PatientCaptureForm(props: RouteComponentProps<IPageParam
                                 onClose={handleCloseRowMenu}
                               >
                                 {document?._id ? (
-                                  <>
+                                  <div>
                                     <MenuItem onClick={() => history.push(handleScoreRoute(documentGroup?._id || '', care?._id || '', document?._id))}>Editar</MenuItem>
                                     <MenuItem onClick={() => console.log(document?._id)}>Excluir</MenuItem>
-                                  </>
+                                  </div>
                                 ) : (
                                     <MenuItem onClick={() => history.push(handleScoreRoute(documentGroup?._id || '', care?._id || ''))}>Adicionar novo</MenuItem>
                                   )}
@@ -379,7 +381,7 @@ export default function PatientCaptureForm(props: RouteComponentProps<IPageParam
                 <CardContent>
                   <h4>Orçamento</h4>
                   <br />
-                  {care.capture?.status !== 'Aprovado' && care.capture?.status !== 'Reprovado' ? (
+                  {care.capture?.status === 'Em Andamento' ? (
                     <>
                       <FieldContent>
                         <TextField
@@ -406,7 +408,7 @@ export default function PatientCaptureForm(props: RouteComponentProps<IPageParam
 
           <BackButtonContent>
             <Button background="primary" onClick={() => history.push('/avaliation')}>Voltar</Button>
-            {care?.capture?.status !== 'Aprovado' && care?.capture?.status !== 'Reprovado' && (
+            {care?.capture?.status === 'Em Andamento' && (
               <Button background="success" onClick={handleSubmitCaptureData}>Salvar</Button>
             )}
           </BackButtonContent>

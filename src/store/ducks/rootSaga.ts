@@ -28,7 +28,7 @@ import { PatientTypes } from './patients/types';
 import { get as getPatients, createPatient, getAddress as getAddressPatient, getPatientById, updatePatient, searchPatient } from './patients/sagas';
 
 import { UserTypes } from './users/types';
-import { get as getUsers, createUser, getAddress as getAddressUser, getUserById, updateUser, searchUser } from './users/sagas';
+import { get as getUsers, createUser, getAddress as getAddressUser, getUserById, updateUser, searchUser, getProfessions } from './users/sagas';
 
 import { CareTypes } from './cares/types';
 import {
@@ -49,6 +49,9 @@ import {
     getDocumentNead,
     storeDocumentNead,
     updateDocumentNead,
+    getHealthInsurance,
+    getHealthPlan,
+    getHealthSubPlan
 } from './cares/sagas';
 
 export default function* rootSaga() {
@@ -88,6 +91,10 @@ export default function* rootSaga() {
     takeLatest(CareTypes.DOCUMENT_NEAD_REQUEST, getDocumentNead),
     takeLatest(CareTypes.DOCUMENT_NEAD_STORE_REQUEST, storeDocumentNead),
     takeLatest(CareTypes.DOCUMENT_NEAD_UPDATE_REQUEST, updateDocumentNead),
+
+    takeLatest(CareTypes.HEALTH_INSURANCE_REQUEST, getHealthInsurance),
+    takeLatest(CareTypes.HEALTH_PLAN_REQUEST, getHealthPlan),
+    takeLatest(CareTypes.HEALTH_SUBPLAN_REQUEST, getHealthSubPlan),
 
     // Council
     takeLatest(CouncilTypes.LOAD_REQUEST, getCouncils),
@@ -143,5 +150,6 @@ export default function* rootSaga() {
     takeLatest(UserTypes.LOAD_REQUEST_USER_BY_ID, getUserById),
     takeLatest(UserTypes.UPDATE_USER_REQUEST, updateUser),
     takeLatest(UserTypes.SEARCH_REQUEST, searchUser),
+    takeLatest(UserTypes.LOAD_REQUEST_PROFESSION, getProfessions),
   ]);
 }

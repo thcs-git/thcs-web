@@ -19,6 +19,20 @@ export const FormSection = styled.div`
   flex-direction: column;
   justify-content: space-between;
 
+  .box-position-icon {
+    position: relative;
+
+    > svg {
+      position: absolute;
+      left: -5%;
+      top: -2px;
+    }
+
+    > p {
+      margin-bottom: 8px;
+    }
+  }
+
 `;
 
 export const Profile = styled.div`
