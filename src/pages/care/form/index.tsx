@@ -293,7 +293,6 @@ export default function AreaForm(props: RouteComponentProps<IPageParams>) {
 
   const selectCid = useCallback(() => {
     const selected = careState.cid.filter(item => item._id === state.cid_id);
-    console.log(selected)
     return (selected[0]) ? selected[0] : null;
   }, [state.cid_id]);
 
