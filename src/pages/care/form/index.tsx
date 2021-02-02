@@ -2,6 +2,7 @@ import React, { useState, useEffect, useCallback, ChangeEvent, ReactNode } from 
 import CheckIcon from '@material-ui/icons/Check';
 import Checkbox from '@material-ui/core/Checkbox';
 import Divider from '@material-ui/core/Divider';
+import debounce from 'lodash.debounce';
 
 import { Error } from '@material-ui/icons';
 import EventIcon from '@material-ui/icons/Event';
@@ -12,7 +13,7 @@ import LocalHospitalSharpIcon from '@material-ui/icons/LocalHospitalSharp';
 import { useDispatch, useSelector } from 'react-redux';
 import { ApplicationState } from '../../../store';
 import { CareInterface } from '../../../store/ducks/cares/types';
-import { loadCareById, updateCareRequest, createCareRequest, searchCareRequest as getCares, healthInsuranceRequest, healthPlanRequest, healthSubPlanRequest } from '../../../store/ducks/cares/actions';
+import { loadCareById, updateCareRequest, createCareRequest, searchCareRequest as getCares, healthInsuranceRequest, healthPlanRequest, healthSubPlanRequest, AccommodationTypeRequest, careTypeRequest, cidRequest } from '../../../store/ducks/cares/actions';
 import { loadRequest as getAreasAction } from '../../../store/ducks/areas/actions';
 import { loadRequest as getUsersAction } from '../../../store/ducks/users/actions';
 
@@ -109,10 +110,10 @@ export default function AreaForm(props: RouteComponentProps<IPageParams>) {
     updated_at: '',
   });
 
-  const [selectCheckbox, setSelectCheckbox] = useState<any>();
+  const [selectCheckbox, setSelectCheckbox] = useState<Partial<CareInterface>>();
 
   const [patientSearch, setPatientSearch] = useState<string>('');
-  const [patient, setPatient] = useState<any>({});
+  const [patient, setPatient] = useState<any>();
 
   const [currentTab, setCurrentTab] = useState(0);
   const [currentStep, setCurrentStep] = useState(0);
@@ -128,6 +129,8 @@ export default function AreaForm(props: RouteComponentProps<IPageParams>) {
     dispatch(getAreasAction());
     dispatch(getUsersAction());
     dispatch(healthInsuranceRequest());
+    dispatch(AccommodationTypeRequest());
+    dispatch(careTypeRequest());
     dispatch(getCares({ status: 'Pre-Atendimento', 'capture.status': 'Aprovado' }))
   }, [dispatch]);
 
@@ -136,6 +139,12 @@ export default function AreaForm(props: RouteComponentProps<IPageParams>) {
       setPatient(patientState.list.data[0]);
     }
   }, [patientState.list]);
+
+  useEffect(() => {
+    if (careState.success && !careState.error && !careState.loading) {
+      history.push('/care')
+    }
+  }, [careState.success])
 
   const selectTab = useCallback((index: number) => {
     setCurrentTab(index);
@@ -156,11 +165,24 @@ export default function AreaForm(props: RouteComponentProps<IPageParams>) {
     }
   }, []);
 
+  const searchCidData = useCallback((event) => {
+    dispatch(cidRequest(event.target.value))
+  }, [dispatch])
+
+  const debounceSearchCidData = debounce(searchCidData, 900)
+
 
   function handleSelectUser(value: any) {
     setState(prevState => ({
       ...prevState,
       user_id: value._id
+    }));
+  }
+
+  function handleSelectCid(value: any) {
+    setState(prevState => ({
+      ...prevState,
+      cid_id: value._id
     }));
   }
 
@@ -172,13 +194,14 @@ export default function AreaForm(props: RouteComponentProps<IPageParams>) {
   }
 
   function handleSaveFormCare() {
-    // if (state?._id) {
-    //   dispatch(updateCareRequest(state));
-    // } else {
-    //   dispatch(createCareRequest(state));
-    // }
+    const assignSelectCheckbox = {
+      ...selectCheckbox,
+      ...state,
+      status: 'Atendimento',
+      created_at: selectCheckbox?.created_at
+    }
 
-    console.log('state', state);
+    dispatch(updateCareRequest(assignSelectCheckbox));
   }
 
   function handleOpenModalCancel() {
@@ -255,6 +278,16 @@ export default function AreaForm(props: RouteComponentProps<IPageParams>) {
     return (selected[0]) ? selected[0] : null;
   }, [state.health_sub_plan_id]);
 
+  const selectAccommodationType = useCallback(() => {
+    const selected = careState.accommondation_type.filter(item => item._id === state.accommodation_type_id);
+    return (selected[0]) ? selected[0] : null;
+  }, [state.accommodation_type_id]);
+
+  const selectCareType = useCallback(() => {
+    const selected = careState.care_type.filter(item => item._id === state.care_type_id);
+    return (selected[0]) ? selected[0] : null;
+  }, [state.care_type_id]);
+
   const selectUser = useCallback(() => {
     const selected = userState.list.data.filter(item => item._id === state.user_id);
     return (selected[0]) ? selected[0] : null;
@@ -264,6 +297,11 @@ export default function AreaForm(props: RouteComponentProps<IPageParams>) {
     const selected = areaState.list.data.filter(item => item._id === state.area_id);
     return (selected[0]) ? selected[0] : null;
   }, [state.area_id]);
+
+  const selectCid = useCallback(() => {
+    const selected = careState.cid.filter(item => item._id === state.cid_id);
+    return (selected[0]) ? selected[0] : null;
+  }, [state.cid_id]);
 
   return (
     <Sidebar>
@@ -494,24 +532,38 @@ export default function AreaForm(props: RouteComponentProps<IPageParams>) {
                   />
                 </Grid>
                 <Grid item md={6} xs={12}>
-                  <TextField
+                  <Autocomplete
                     id="input-type-accommodation"
-                    label="Tipo de acomodação"
-                    variant="outlined"
+                    options={careState.accommondation_type}
+                    getOptionLabel={(option) => option.name}
+                    value={selectAccommodationType()}
+                    getOptionSelected={(option, value) => option._id === state.accommodation_type_id}
+                    renderInput={(params) => <TextField {...params} label="Tipo de acomodação" variant="outlined" />}
                     size="small"
-                    value={state.accommodation_type_id}
-                    onChange={(element) => setState(prevState => ({ ...prevState, accommodation_type_id: element.target.value }))}
+                    onChange={(event, value) => {
+                      if (value) {
+                        setState(prevState => ({ ...prevState, accommodation_type_id: value._id }));
+                      }
+                    }}
+                    noOptionsText="Nenhum Tipo de acomodação encontrada"
                     fullWidth
                   />
                 </Grid>
                 <Grid item md={6} xs={12}>
-                  <TextField
+                  <Autocomplete
                     id="input-care-type"
-                    label="Tipo do programa Home Care" // atençao || internação
-                    variant="outlined"
+                    options={careState.care_type}
+                    getOptionLabel={(option) => option.name}
+                    value={selectCareType()}
+                    getOptionSelected={(option, value) => option._id === state.care_type_id}
+                    renderInput={(params) => <TextField {...params} label="Tipo do programa Home Care" variant="outlined" />}
                     size="small"
-                    value={state.care_type_id}
-                    onChange={(element) => setState(prevState => ({ ...prevState, care_type_id: element.target.value }))}
+                    onChange={(event, value) => {
+                      if (value) {
+                        setState(prevState => ({ ...prevState, care_type_id: value._id }));
+                      }
+                    }}
+                    noOptionsText="Nenhum Tipo do programa Home Care foi encontrado"
                     fullWidth
                   />
                 </Grid>
@@ -527,13 +579,29 @@ export default function AreaForm(props: RouteComponentProps<IPageParams>) {
                   />
                 </Grid>
                 <Grid item md={4} xs={12}>
-                  <TextField
+                  {/* <TextField
                     id="input-diagnostic"
                     label="Diagnóstico (CID)" // CID - Name
                     variant="outlined"
                     size="small"
                     value={state?.cid_id}
                     onChange={(element) => setState(prevState => ({ ...prevState, cid_id: element.target.value }))}
+                    fullWidth
+                  /> */}
+                  <Autocomplete
+                    id="input-diagnostic"
+                    options={careState.cid}
+                    getOptionLabel={(option) => `${option.cid} - ${option.name}`}
+                    value={selectCid()}
+                    renderInput={(params) => <TextField {...params} label="Diaginóstico (CID)" variant="outlined" />}
+                    size="small"
+                    onKeyUp={debounceSearchCidData}
+                    onChange={(event, value) => {
+                      // console.log('asdasd')
+                      if (value) {
+                        handleSelectCid({ _id: value._id || '', name: value.name })
+                      }
+                    }}
                     fullWidth
                   />
                 </Grid>
@@ -580,9 +648,9 @@ export default function AreaForm(props: RouteComponentProps<IPageParams>) {
                   <Profile>
                     <IconProfile />
                     <div>
-                      <h5>{selectCheckbox.patient_id.name}</h5>
-                      <p>{age(selectCheckbox.patient_id.birthdate)}</p>
-                      <p>{selectCheckbox.patient_id.fiscal_number}</p>
+                      <h5>{selectCheckbox?.patient_id && selectCheckbox.patient_id?.name}</h5>
+                      <p>{selectCheckbox?.patient_id && age(selectCheckbox.patient_id?.birthdate)}</p>
+                      <p>{selectCheckbox?.patient_id && selectCheckbox.patient_id?.fiscal_number}</p>
                     </div>
                   </Profile>
                 </Box>
@@ -598,7 +666,7 @@ export default function AreaForm(props: RouteComponentProps<IPageParams>) {
                       Dados do atendimento
                     </Typography>
                     <Typography variant="caption" color="textSecondary">
-                      {state?.started_at}
+                      {formatDate(state?.started_at ?? '', 'DD/MM/YYYY HH:mm:ss')}
                     </Typography>
                     <Typography variant="caption" color="textSecondary">
                       Procedimento: {state?.procedure_id}
@@ -611,10 +679,10 @@ export default function AreaForm(props: RouteComponentProps<IPageParams>) {
                       Dados do Home Care
                     </Typography>
                     <Typography variant="caption" color="textSecondary">
-                      Tipo do programa: {state?.care_type_id}
+                      Tipo do programa: {selectCareType()?.name}
                     </Typography>
                     <Typography variant="caption" color="textSecondary">
-                      Área: {state?.area_id}
+                      Área: {selectArea()?.name}
                     </Typography>
                   </Box>
 
@@ -642,7 +710,7 @@ export default function AreaForm(props: RouteComponentProps<IPageParams>) {
                       Contrato: {state?.contract}
                     </Typography>
                     <Typography variant="caption" color="textSecondary">
-                      Tipo de acomodação: {state?.accommodation_type_id}
+                      Tipo de acomodação: {selectAccommodationType()?.name}
                     </Typography>
                   </Box>
 
@@ -655,7 +723,7 @@ export default function AreaForm(props: RouteComponentProps<IPageParams>) {
                       Médico responsável: {selectUser()?.name}
                     </Typography>
                     <Typography variant="caption" color="textSecondary">
-                      Procedência: {selectArea()?.name}
+                      {`${selectCid()?.cid ?? ''} - ${selectCid()?.name ?? ''}`}
                     </Typography>
                   </Box>
                 </Box>

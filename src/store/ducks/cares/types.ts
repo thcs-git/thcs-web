@@ -75,6 +75,18 @@ export enum CareTypes {
   // Health Plan
   HEALTH_SUBPLAN_REQUEST = "@care/HEALTH_SUBPLAN_REQUEST",
   HEALTH_SUBPLAN_SUCCESS = "@care/HEALTH_SUBPLAN_SUCCESS",
+
+  // Type Accommodation
+  TYPE_ACCOMMODATION_REQUEST = "@care/TYPE_ACCOMMODATION_REQUEST",
+  TYPE_ACCOMMODATION_SUCCESS = "@care/TYPE_ACCOMMODATION_SUCCESS",
+
+  // Care Type
+  CARE_TYPE_REQUEST = "@care/CARE_TYPE_REQUEST",
+  CARE_TYPE_SUCCESS = "@care/CARE_TYPE_SUCCESS",
+
+  // CID
+  SEARCH_CID_REQUEST = "@care/SEARCH_CID_REQUEST",
+  SEARCH_CID_SUCCESS = "@care/SEARCH_CID_SUCCESS",
 }
 
 /**
@@ -133,6 +145,9 @@ export interface CareState {
   healthInsurance: HealthInsuranceInterface[];
   healthPlan: HealthPlanInterface[];
   healthSubPlan: HealthPlanInterface[];
+  accommondation_type: HealthPlanInterface[];
+  care_type: HealthPlanInterface[];
+  cid: CidInterface[];
   documentGroupSocioAmbiental: DocumentGroupInterface;
   documentGroupAbemid: DocumentGroupInterface;
   documentSocioAmbiental: DocumentState;
@@ -157,6 +172,13 @@ export interface CareTypeInterface {
   _id: string;
   name: string;
   description: string;
+}
+export interface CidInterface {
+  _id: string;
+  name: string;
+  cid: string;
+  gender: string;
+  active: boolean;
 }
 
 export interface DocumentGroupInterface {

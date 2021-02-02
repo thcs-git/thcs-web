@@ -100,3 +100,21 @@ export const healthPlanSuccess = (data: HealthPlanInterface) => action(CareTypes
 export const healthSubPlanRequest = (id: string | null) => action(CareTypes.HEALTH_SUBPLAN_REQUEST, { id });
 export const healthSubPlanSuccess = (data: HealthPlanInterface) => action(CareTypes.HEALTH_SUBPLAN_SUCCESS, { data });
 
+/**
+ * Accommondation type
+ */
+export const AccommodationTypeRequest = () => action(CareTypes.TYPE_ACCOMMODATION_REQUEST);
+export const AccommodationTypeSuccess = (data: HealthPlanInterface) => action(CareTypes.TYPE_ACCOMMODATION_SUCCESS, { data });
+
+/**
+ * Care type
+ */
+export const careTypeRequest = () => action(CareTypes.CARE_TYPE_REQUEST);
+export const careTypeSuccess = (data: HealthPlanInterface) => action(CareTypes.CARE_TYPE_SUCCESS, { data });
+
+/**
+ * CID
+ */
+export const cidRequest = (cid: string) => action(CareTypes.SEARCH_CID_REQUEST, { cid });
+export const cidSuccess = (data: HealthPlanInterface) => action(CareTypes.SEARCH_CID_SUCCESS, { data });
+
