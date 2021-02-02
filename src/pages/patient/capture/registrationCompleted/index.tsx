@@ -15,6 +15,8 @@ import { ReactComponent as IconProfile } from '../../../../assets/img/icon-profi
 import { BoxCustom as Box, Profile, SuccessContent, ButtonsContainer, PatientWrapper } from './styles';
 import { ApplicationState } from '../../../../store';
 
+import { age } from '../../../../helpers/date';
+
 interface ICaptureData {
   type: string;
   orderNumber: string;
@@ -68,9 +70,9 @@ const registrationCompleted: React.FC<any> = (props) => {
   const handleSubmitPatientCapture = useCallback(() => {
     setOpenModalConfirm(false);
 
-    const params: any = { ...care, patient_id: patientState.data._id };
+    const careParams: any = { ...care, patient_id: patientState.data._id };
 
-    dispatch(createCareAction(params))
+    dispatch(createCareAction(careParams))
 
   }, [dispatch]);
 
@@ -81,7 +83,7 @@ const registrationCompleted: React.FC<any> = (props) => {
         <h1>Avaliação concluída</h1>
 
         <p>
-        Os dados do paciente foram salvos no sistema. Para iniciar a captação, clique em “iniciar captação”. Se deseja selecionar outro paciente, clique em “Lista de pacientes”. Você pode editar dados deste paciente clicando em”Editar”.
+          Os dados do paciente foram salvos no sistema. Para iniciar a captação, clique em "iniciar captação". Se deseja selecionar outro paciente, clique em "Lista de pacientes". Você pode editar dados deste paciente clicando em "Editar".
         </p>
       </SuccessContent>
 
@@ -89,109 +91,104 @@ const registrationCompleted: React.FC<any> = (props) => {
         <Profile>
           <IconProfile />
           <div>
-            <h5>Giulia Gonçalves de Barros</h5>
-            <p>30 anos, 2 meses e 3 dias</p>
-            <p>052.996.364-74</p>
+            <h5>{patientState.data.name}</h5>
+            <p>{age(patientState.data.birthdate)}</p>
+            <p>{patientState.data.fiscal_number}</p>
           </div>
         </Profile>
 
         <ButtonsContainer>
-          {console.log(params)}
-            <Button variant="outlined" background="success_rounded" onClick={() => {
-              dispatch(setIfRegistrationCompleted(false));
-              history.push(`/patient/${params.id}/edit`)
-            }}>
-              Editar
+          <Button variant="outlined" background="success_rounded" onClick={() => {
+            dispatch(setIfRegistrationCompleted(false));
+            history.push(`/patient/${params.id}/edit`);
+          }}>
+            Editar
             </Button>
-            {/* <Button variant="contained"  background="success" onClick={() => setCaptureModalModalOpen(true)}> */}
-            <Button variant="contained"  background="success" onClick={() => toggleModalConfirm(true)}>
-              Iniciar Captação
+          {/* <Button variant="contained"  background="success" onClick={() => setCaptureModalModalOpen(true)}> */}
+          <Button variant="contained" background="success" onClick={() => toggleModalConfirm(true)}>
+            Iniciar Captação
             </Button>
         </ButtonsContainer>
       </Box>
 
       <PatientWrapper>
-        <Button variant="contained"  background="success_rounded" onClick={() => history.push('/patient')}>
+        <Button variant="contained" background="success_rounded" onClick={() => history.push('/patient')}>
           Listar pacientes
         </Button>
       </PatientWrapper>
 
 
-        <Dialog
-          open={captureOptionsModalOpen}
-          onClose={() => setCaptureModalModalOpen(false)}
-          aria-labelledby="scroll-dialog-title"
-          aria-describedby="scroll-dialog-description"
-        >
-          <DialogTitle id="scroll-dialog-title">Selecione o tipo de cobertura</DialogTitle>
-          <DialogContent dividers>
-            <DialogContentText
-              id="scroll-dialog-description"
-              tabIndex={-1}
-            >Para iniciar a captação, é obrigatório definir a cobertura. Em caso de convênio, preencher o número da guia.</DialogContentText>
+      <Dialog
+        open={captureOptionsModalOpen}
+        onClose={() => setCaptureModalModalOpen(false)}
+        aria-labelledby="scroll-dialog-title"
+        aria-describedby="scroll-dialog-description"
+      >
+        <DialogTitle id="scroll-dialog-title">Selecione o tipo de cobertura</DialogTitle>
+        <DialogContent dividers>
+          <DialogContentText
+            id="scroll-dialog-description"
+            tabIndex={-1}
+          >Para iniciar a captação, é obrigatório definir a cobertura. Em caso de convênio, preencher o número da guia.</DialogContentText>
 
-            <div>
-              <RadioGroup onChange={e => setCaptureData({ ...captureData, type: e.target.value })} style={{ marginBottom: 20 }}>
-                <FormControlLabel
-                  value="Particular"
-                  control={<Radio color="primary" />}
-                  label="Particular"
-                  checked={(captureData?.type === 'Particular')}
+          <div>
+            <RadioGroup onChange={e => setCaptureData({ ...captureData, type: e.target.value })} style={{ marginBottom: 20 }}>
+              <FormControlLabel
+                value="Particular"
+                control={<Radio color="primary" />}
+                label="Particular"
+                checked={(captureData?.type === 'Particular')}
+              />
+              <FormControlLabel
+                value="Convênio"
+                control={<Radio color="primary" />}
+                label="Convênio"
+                checked={(captureData?.type === 'Convênio')}
+              />
+            </RadioGroup>
+
+            {captureData?.type === 'Convênio' && (
+              <FormControl>
+                <TextField
+                  id="input-order-number"
+                  label="Número de Guia"
+                  variant="outlined"
+                  size="small"
+                  value={captureData.orderNumber}
+                  onChange={(element) => setCaptureData({ ...captureData, orderNumber: element.target.value })}
+                  fullWidth
                 />
-                <FormControlLabel
-                  value="Convênio"
-                  control={<Radio color="primary" />}
-                  label="Convênio"
-                  checked={(captureData?.type === 'Convênio')}
-                />
-              </RadioGroup>
-
-              {captureData?.type === 'Convênio' && (
-                <FormControl>
-                  <TextField
-                    id="input-order-number"
-                    label="Número de Guia"
-                    variant="outlined"
-                    size="small"
-                    value={captureData.orderNumber}
-                    onChange={(element) => setCaptureData({ ...captureData, orderNumber: element.target.value })}
-                    fullWidth
-                  />
-                </FormControl>
-              )}
-            </div>
-          </DialogContent>
-          <DialogActions>
-            <Button onClick={() => setCaptureModalModalOpen(false)} color="primary">
-              Voltar
+              </FormControl>
+            )}
+          </div>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => setCaptureModalModalOpen(false)} color="primary">
+            Voltar
             </Button>
-            <Button onClick={() => setCaptureModalModalOpen(false)} color="primary">
-              Salvar
+          <Button onClick={() => setCaptureModalModalOpen(false)} color="primary">
+            Salvar
             </Button>
-          </DialogActions>
-        </Dialog>
+        </DialogActions>
+      </Dialog>
 
-        <Dialog
-            open={openModalConfirm}
-            onClose={() => toggleModalConfirm(false)}
-            aria-labelledby="alert-dialog-title"
-            aria-describedby="alert-dialog-description"
-          >
-            <DialogTitle id="alert-dialog-title">Atenção</DialogTitle>
-            <DialogContent>
-              <DialogContentText id="alert-dialog-description">
-                Tem certeza que deseja iniciar a captação deste paciente?
-              </DialogContentText>
-            </DialogContent>
-            <DialogActions>
-              <Button onClick={() => toggleModalConfirm()} color="primary">
-                Não
-                </Button>
-              <Button onClick={handleSubmitPatientCapture} color="primary" autoFocus>
-                Sim
-                </Button>
-            </DialogActions>
-          </Dialog>
+      <Dialog
+        open={openModalConfirm}
+        onClose={() => toggleModalConfirm(false)}
+        aria-labelledby="alert-dialog-title"
+        aria-describedby="alert-dialog-description"
+      >
+        <DialogTitle id="alert-dialog-title">Atenção</DialogTitle>
+        <DialogContent>
+          <DialogContentText id="alert-dialog-description">
+            Tem certeza que deseja iniciar a captação deste paciente?
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => toggleModalConfirm()} color="primary">Não</Button>
+          <Button onClick={handleSubmitPatientCapture} color="primary" autoFocus>Sim</Button>
+        </DialogActions>
+      </Dialog>
     </Container>
   );
 }

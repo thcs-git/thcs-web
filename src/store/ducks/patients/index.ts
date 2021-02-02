@@ -120,6 +120,7 @@ const reducer: Reducer<PatientState> = (state = INITIAL_STATE, action) => {
     case PatientTypes.CREATE_PATIENT_SUCCESS:
       return {
         ...state,
+        data: action.payload.data,
         loading: false,
         error: false,
         success: true

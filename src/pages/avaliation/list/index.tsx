@@ -1,14 +1,12 @@
 import React, { useState, useEffect, useCallback, ChangeEvent } from 'react';
 import { useHistory, Link } from 'react-router-dom';
-import { Container, Button, Menu, MenuItem, Dialog, DialogTitle, DialogContent, DialogContentText, DialogActions, RadioGroup, FormControlLabel, Radio, InputLabel, Tooltip } from '@material-ui/core';
-import { FiberManualRecord, ErrorOutline, MoreVert } from '@material-ui/icons';
-import TableRow from '@material-ui/core/TableRow';
-import TableCell from '@material-ui/core/TableCell';
-import CheckIcon from '@material-ui/icons/Check';
+import { Container, Button, Menu, MenuItem, Dialog, DialogTitle, DialogContent, DialogContentText, DialogActions, RadioGroup, FormControlLabel, Radio, InputLabel, Tooltip, TableRow, TableCell } from '@material-ui/core';
+import { FiberManualRecord, ErrorOutline, MoreVert, Check as CheckIcon } from '@material-ui/icons';
+import debounce from 'lodash.debounce';
 
 import { useDispatch, useSelector } from 'react-redux';
 import { ApplicationState } from '../../../store/';
-import { loadRequest } from '../../../store/ducks/cares/actions';
+import { loadRequest, searchCareRequest } from '../../../store/ducks/cares/actions';
 
 import { searchCareRequest as getCares, updateCareRequest as updateCareAction } from '../../../store/ducks/cares/actions';
 
@@ -50,6 +48,13 @@ export default function AvaliationList() {
   useEffect(() => {
     dispatch(getCares({ status: 'Pre-Atendimento' }))
   }, []);
+
+  const handleChangeInput = useCallback((event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    setSearch(event.target.value)
+    dispatch(searchCareRequest({ search: event.target.value }));
+  }, [search]);
+
+  const debounceSearchRequest = debounce(handleChangeInput, 900);
 
   const handleOpenRowMenu = useCallback((event: React.MouseEvent<HTMLButtonElement>) => {
     setAnchorEl(event.currentTarget);
@@ -174,7 +179,7 @@ export default function AvaliationList() {
             handleButton={() => history.push('/patient/capture/create')}
             buttonTitle="Nova avaliação"
             inputPlaceholder="Busque nome do paciente, ID ou tipo de score"
-            onChangeInput={() => { }}
+            onChangeInput={debounceSearchRequest}
           />
 
           <Table

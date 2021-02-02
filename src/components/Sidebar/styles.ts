@@ -20,3 +20,23 @@ export const Logo = styled(SollarLogo)`
   margin: 10px 15px;
 `;
 
+export const UserContent = styled.div`
+  padding: 10px;
+  margin: 20px auto;
+
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+
+  & > svg {
+    margin-bottom: 10px;
+    width: 60px;
+    height: 60px;
+  }
+
+  & > h3 {
+    color: #fff !important;
+  }
+`;
+
