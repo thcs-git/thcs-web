@@ -25,7 +25,7 @@ export const stringToDate = (value: string) => {
   return dayjs(value).toDate();
 }
 
-export const age = (date: string) => {
+export const age = (date: any) => {
   const years = dayjs().diff(date, 'year');
 
   /**
