@@ -70,7 +70,7 @@ const registrationCompleted: React.FC<any> = (props) => {
   const handleSubmitPatientCapture = useCallback(() => {
     setOpenModalConfirm(false);
 
-    const careParams: any = { ...care, patient_id: params.id };
+    const careParams: any = { ...care, patient_id: patientState.data._id };
 
     dispatch(createCareAction(careParams))
 

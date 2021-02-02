@@ -1,7 +1,6 @@
 import React, { useState, useEffect, useCallback, ChangeEvent } from 'react';
 import { useHistory } from 'react-router-dom';
-import { Container, FormControl, InputLabel, OutlinedInput, InputAdornment, IconButton, Button } from '@material-ui/core';
-import { SearchOutlined } from '@material-ui/icons';
+import { Container } from '@material-ui/core';
 import debounce from 'lodash.debounce';
 
 import { useDispatch, useSelector } from 'react-redux';
