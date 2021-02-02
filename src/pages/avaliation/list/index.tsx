@@ -51,7 +51,7 @@ export default function AvaliationList() {
 
   const handleChangeInput = useCallback((event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     setSearch(event.target.value)
-    dispatch(searchCareRequest({ search: event.target.value }));
+    dispatch(searchCareRequest({ search: event.target.value, status: 'Pre-Atendimento' }));
   }, [search]);
 
   const debounceSearchRequest = debounce(handleChangeInput, 900);
@@ -310,14 +310,14 @@ export default function AvaliationList() {
                     label="Aprovado"
                   />
                   <FormControlLabel
-                    value="Reprovado"
+                    value="Recusado"
                     control={(
                       <Radio
                         color="primary"
-                        checked={captureStatus.approved === 'Reprovado'}
+                        checked={captureStatus.approved === 'Recusado'}
                       />
                     )}
-                    label="Reprovado"
+                    label="Recusado"
                   />
                 </RadioGroup>
               </FieldContent>

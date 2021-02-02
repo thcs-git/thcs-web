@@ -5,7 +5,7 @@ import { AccountCircle, CheckCircle, MoreVert, CheckCircleOutline, Edit, Print, 
 
 import { useDispatch, useSelector } from 'react-redux';
 import { ApplicationState } from '../../../../store';
-import { loadCareById, updateCareRequest, cleanAction } from '../../../../store/ducks/cares/actions';
+import { loadCareById, updateCareRequest, healthInsuranceRequest, healthPlanRequest, healthSubPlanRequest } from '../../../../store/ducks/cares/actions';
 import { CareInterface } from '../../../../store/ducks/cares/types';
 
 import { loadRequestByIds as getDocumentGroupsByIds } from '../../../../store/ducks/documentGroups/actions';
@@ -31,6 +31,7 @@ import {
 } from './styles';
 
 import { ReactComponent as SuccessImage } from '../../../../assets/img/ilustracao-avaliacao-concluida.svg';
+import { Autocomplete } from '@material-ui/lab';
 
 interface IPageParams {
   id: string;
@@ -74,6 +75,7 @@ export default function PatientCaptureForm(props: RouteComponentProps<IPageParam
 
   useEffect(() => {
     getCare(params.id);
+    dispatch(healthInsuranceRequest());
   }, []);
 
   useEffect(() => {
@@ -247,6 +249,21 @@ export default function PatientCaptureForm(props: RouteComponentProps<IPageParam
   const handlePrint = () => {
     alert('print');
   };
+
+  const selectHealhInsurance = useCallback(() => {
+    const selected = careState.healthInsurance.filter(item => item._id === captureData.health_insurance_id);
+    return (selected[0]) ? selected[0] : null;
+  }, [captureData.health_insurance_id]);
+
+  const selectHealhPlan = useCallback(() => {
+    const selected = careState.healthPlan.filter(item => item._id === captureData.health_plan_id);
+    return (selected[0]) ? selected[0] : null;
+  }, [captureData.health_plan_id]);
+
+  const selectHealhSubPlan = useCallback(() => {
+    const selected = careState.healthSubPlan.filter(item => item._id === captureData.health_sub_plan_id);
+    return (selected[0]) ? selected[0] : null;
+  }, [captureData.health_sub_plan_id]);
 
   return (
     <>
@@ -490,13 +507,21 @@ export default function PatientCaptureForm(props: RouteComponentProps<IPageParam
 
                 <Grid item md={5}>
                   <FieldContent style={{ paddingRight: 15 }}>
-                    <TextField
-                      id="input-health-insurance"
-                      label="Convênio"
-                      variant="outlined"
+                    <Autocomplete
+                      id="combo-box-health-insurance"
+                      options={careState.healthInsurance}
+                      getOptionLabel={(option) => option.name}
+                      value={selectHealhInsurance()}
+                      getOptionSelected={(option, value) => option._id === captureData.health_insurance_id}
+                      renderInput={(params) => <TextField {...params} label="Convênio" variant="outlined" />}
+                      onChange={(event, value) => {
+                        if (value) {
+                          setCaptureData({ ...captureData, health_insurance_id: value._id })
+                        }
+                        dispatch(healthPlanRequest(value && value._id));
+                      }}
                       size="small"
-                      value={captureData.health_insurance}
-                      onChange={(element) => setCaptureData({ ...captureData, health_insurance: element.target.value })}
+                      noOptionsText="Nenhum convênio encontrado"
                       fullWidth
                     />
                   </FieldContent>
@@ -520,13 +545,21 @@ export default function PatientCaptureForm(props: RouteComponentProps<IPageParam
 
                 <Grid item md={4}>
                   <FieldContent style={{ paddingRight: 15 }}>
-                    <TextField
-                      id="input-health-plan"
-                      label="Plano"
-                      variant="outlined"
+                    <Autocomplete
+                      id="combo-box-health-plan"
+                      options={careState.healthPlan}
+                      getOptionLabel={(option) => option.name}
+                      value={selectHealhPlan()}
+                      getOptionSelected={(option, value) => option._id === captureData.health_plan_id}
+                      renderInput={(params) => <TextField {...params} label="Plano" variant="outlined" />}
                       size="small"
-                      value={captureData.health_plan}
-                      onChange={(element) => setCaptureData({ ...captureData, health_plan: element.target.value })}
+                      onChange={(event, value) => {
+                        if (value) {
+                          setCaptureData({ ...captureData, health_plan_id: value._id })
+                        }
+                        dispatch(healthSubPlanRequest(value && value._id));
+                      }}
+                      noOptionsText="Nenhum plano encontrado"
                       fullWidth
                     />
                   </FieldContent>
@@ -534,13 +567,20 @@ export default function PatientCaptureForm(props: RouteComponentProps<IPageParam
 
                 <Grid item md={4}>
                   <FieldContent>
-                    <TextField
-                      id="input-health-sub-plan"
-                      label="Sub-plano"
-                      variant="outlined"
+                    <Autocomplete
+                      id="combo-box-health-sub-plan"
+                      options={careState.healthSubPlan}
+                      getOptionLabel={(option) => option.name}
+                      value={selectHealhSubPlan()}
+                      getOptionSelected={(option, value) => option._id === captureData.health_sub_plan_id}
+                      renderInput={(params) => <TextField {...params} label="Sub-Plano" variant="outlined" />}
                       size="small"
-                      value={captureData.health_sub_plan}
-                      onChange={(element) => setCaptureData({ ...captureData, health_sub_plan: element.target.value })}
+                      onChange={(event, value) => {
+                        if (value) {
+                          setCaptureData({ ...captureData, health_sub_plan_id: value._id })
+                        }
+                      }}
+                      noOptionsText="Nenhum sub-plano encontrado"
                       fullWidth
                     />
                   </FieldContent>

@@ -92,12 +92,13 @@ export interface CareInterface {
   health_plan_card_validate?: string;
   origin_id?: string;
   accommodation_type_id?: string;
-  care_type_id: string;
+  care_type_id?: string | CareTypeInterface;
   procedure_id?: string;
   cid_id?: string;
   area_id?: string;
-  user_id: string; // *
+  user_id?: string; // *
   status?: string, // * Pre-Atendimento, Em atendimento, Cancelado, Finalizado
+  complexity?: string,
 	started_at?: string;
 	created_at?: string;
 	created_by?: { _id: string };
@@ -109,6 +110,7 @@ export interface CareInterface {
     order_number?: string,
     status?: string,
     estimate?: string,
+    complexity?: string,
   }
 }
 
@@ -149,6 +151,12 @@ export interface HealthInsuranceInterface {
 export interface HealthPlanInterface {
   _id: string;
   name: string;
+}
+
+export interface CareTypeInterface {
+  _id: string;
+  name: string;
+  description: string;
 }
 
 export interface DocumentGroupInterface {

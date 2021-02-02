@@ -13,7 +13,7 @@ import Sidebar from '../../../components/Sidebar';
 import SearchComponent from '../../../components/List/Search';
 import Loading from '../../../components/Loading';
 import { FormTitle } from '../../../styles/components/Form';
-import { Table, Th, Td } from '../../../styles/components/Table';
+import { Table, Th, Td, ComplexityStatus } from '../../../styles/components/Table';
 import Button from '../../../styles/components/Button';
 
 import { formatDate } from '../../../helpers/date';
@@ -94,14 +94,18 @@ export default function CouncilList() {
               {careState.list.data.map((care, index) => (
                 <tr key={index}>
                   <Td>
-                    <Link to={`/care/${care._id}/edit`}>
+                    <Link to={`/care/${care._id}/overview`}>
                       {care.patient_id?.social_name || care.patient_id?.name}
                     </Link>
                   </Td>
                   <Td>{care?._id}</Td>
                   <Td>{care.patient_id?.fiscal_number}</Td>
-                  <Td>{care.status}</Td>
-                  <Td>{care.status}</Td>
+                  <Td>{(typeof care?.care_type_id === 'object') ? care?.care_type_id.name : care?.care_type_id}</Td>
+                  <Td>
+                    <ComplexityStatus status={care?.complexity || care?.capture?.complexity}>
+                      {care?.complexity || care?.capture?.complexity}
+                    </ComplexityStatus>
+                  </Td>
                   <Td>{formatDate(care?.created_at ?? '', 'DD/MM/YYYY HH:mm:ss')}</Td>
                   <Td center>
                     <Button aria-controls={`simple-menu${index}`} id={`btn_simple-menu${index}`} aria-haspopup="true" onClick={handleOpenRowMenu}>

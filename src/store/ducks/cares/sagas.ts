@@ -37,7 +37,7 @@ export function* get({ payload }: any) {
     delete searchParams.limit;
     delete searchParams.page;
 
-    const response: AxiosResponse = yield call(apiSollar.get, `/care?limit=${params.limit ?? 10}&page=${params.page || 1}`, { params: searchParams })
+    const response: AxiosResponse = yield call(apiSollar.get, `/attendance/getAttendance?limit=${params.limit ?? 10}&page=${params.page || 1}`, { params: searchParams })
 
     yield put(searchCareSuccess(response.data))
   } catch (error) {
@@ -54,7 +54,7 @@ export function* search({ payload }: any) {
     delete searchParams.limit;
     delete searchParams.page;
 
-    const response: AxiosResponse = yield call(apiSollar.get, `/care?limit=${params.limit ?? 10}&page=${params.page || 1}`, { params: searchParams })
+    const response: AxiosResponse = yield call(apiSollar.get, `/attendance/getAttendance?limit=${params.limit ?? 10}&page=${params.page || 1}`, { params: searchParams })
 
     yield put(loadSuccess(response.data))
   } catch (error) {

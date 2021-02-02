@@ -325,7 +325,7 @@ export default function Nead(props: RouteComponentProps<IPageParams>) {
           {/* Grupo 1 */}
           {currentStep === 0 && (
             <>
-              <StepTitle>Elegibilidade</StepTitle>
+              <StepTitle>Atividades</StepTitle>
 
               {documentGroup?.fields?.map((field: any, index: number) => {
                 if (field.step === 0) {
@@ -362,7 +362,7 @@ export default function Nead(props: RouteComponentProps<IPageParams>) {
           {/* Grupo 2 */}
           {currentStep === 1 && (
             <>
-              <StepTitle>Critérios para indicação imediata de internação domiciliar*</StepTitle>
+              <StepTitle>Elegibilidade</StepTitle>
 
               {documentGroup?.fields?.map((field: any, index: number) => {
                 if (field.step === 1) {
