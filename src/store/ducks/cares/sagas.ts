@@ -22,7 +22,10 @@ import {
   actionDocumentNeadUpdate,
   healthInsuranceSuccess,
   healthPlanSuccess,
-  healthSubPlanSuccess
+  healthSubPlanSuccess,
+  AccommodationTypeSuccess,
+  careTypeSuccess,
+  cidSuccess
 } from './actions';
 
 import { apiSollar } from '../../../services/axios';
@@ -331,6 +334,46 @@ export function* getHealthSubPlan({ payload }: any) {
   } catch (error) {
     console.log(error)
     toast.error('Erro ao buscar os Convenios');
+    yield put(loadFailure());
+  }
+}
+
+export function* getAccommodationType() {
+  try {
+    const { data }: AxiosResponse = yield call(apiSollar.get, `/accomodationtype`);
+
+    yield put(AccommodationTypeSuccess(data.data))
+  } catch (error) {
+    console.log(error)
+    toast.error('Erro ao buscar tipos de acomodações');
+    yield put(loadFailure());
+  }
+}
+
+export function* getCareType() {
+  try {
+    const { data }: AxiosResponse = yield call(apiSollar.get, `/caretype`);
+
+    console.log(data);
+    yield put(careTypeSuccess(data.data))
+  } catch (error) {
+    console.log(error)
+    toast.error('Erro ao buscar tipos de acomodações');
+    yield put(loadFailure());
+  }
+}
+
+export function* searchCid({ payload }: any) {
+
+  const { cid } = payload;
+
+  try {
+    const { data }: AxiosResponse = yield call(apiSollar.get, `/cid?search=${cid}`);
+
+    yield put(cidSuccess(data.data))
+  } catch (error) {
+    console.log(error)
+    toast.error('Erro ao buscar CID');
     yield put(loadFailure());
   }
 }

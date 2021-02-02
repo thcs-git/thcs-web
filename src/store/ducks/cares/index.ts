@@ -32,6 +32,9 @@ export const INITIAL_STATE: CareState = {
   healthInsurance: [],
   healthPlan: [],
   healthSubPlan: [],
+  accommondation_type: [],
+  care_type: [],
+  cid: [],
   documentGroupSocioAmbiental: {},
   documentSocioAmbiental: {},
   documentGroupAbemid: {},
@@ -64,6 +67,54 @@ const reducer: Reducer<CareState> = (state = INITIAL_STATE, action) => {
       return {
         ...state,
         healthInsurance: action.payload.data,
+        loading: false,
+        success: false,
+        error: false
+      };
+    // Accommodation type
+    case CareTypes.TYPE_ACCOMMODATION_REQUEST:
+      return {
+        ...state,
+        loading: true,
+        success: false,
+        error: false
+      };
+    case CareTypes.TYPE_ACCOMMODATION_SUCCESS:
+      return {
+        ...state,
+        accommondation_type: action.payload.data,
+        loading: false,
+        success: false,
+        error: false
+      };
+    // Care type
+    case CareTypes.CARE_TYPE_REQUEST:
+      return {
+        ...state,
+        loading: true,
+        success: false,
+        error: false
+      };
+    case CareTypes.CARE_TYPE_SUCCESS:
+      return {
+        ...state,
+        care_type: action.payload.data,
+        loading: false,
+        success: false,
+        error: false
+      };
+    // CID
+    case CareTypes.SEARCH_CID_REQUEST:
+      return {
+        ...state,
+        loading: true,
+        success: false,
+        error: false
+      };
+    case CareTypes.SEARCH_CID_SUCCESS:
+      return {
+        ...state,
+        cid: action.payload.data,
         loading: false,
         success: false,
         error: false
@@ -131,7 +182,7 @@ const reducer: Reducer<CareState> = (state = INITIAL_STATE, action) => {
         data: action.payload.data,
         loading: true,
         error: false,
-        success: true
+        success: false
       }
     case CareTypes.UPDATE_CARE_SUCCESS:
       return {
