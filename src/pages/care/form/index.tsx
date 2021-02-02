@@ -140,6 +140,12 @@ export default function AreaForm(props: RouteComponentProps<IPageParams>) {
     }
   }, [patientState.list]);
 
+  useEffect(() => {
+    if (careState.success && !careState.error && !careState.loading) {
+      history.push('/care')
+    }
+  }, [careState.success])
+
   const selectTab = useCallback((index: number) => {
     setCurrentTab(index);
   }, [currentTab]);
@@ -188,13 +194,14 @@ export default function AreaForm(props: RouteComponentProps<IPageParams>) {
   }
 
   function handleSaveFormCare() {
-    // if (state?._id) {
-    //   dispatch(updateCareRequest(state));
-    // } else {
-    //   dispatch(createCareRequest(state));
-    // }
+    const assignSelectCheckbox = {
+      ...selectCheckbox,
+      ...state,
+      status: 'Atendimento',
+      created_at: selectCheckbox?.created_at
+    }
 
-    console.log('state', state);
+    dispatch(updateCareRequest(assignSelectCheckbox));
   }
 
   function handleOpenModalCancel() {
@@ -659,7 +666,7 @@ export default function AreaForm(props: RouteComponentProps<IPageParams>) {
                       Dados do atendimento
                     </Typography>
                     <Typography variant="caption" color="textSecondary">
-                      {state?.started_at}
+                      {formatDate(state?.started_at ?? '', 'DD/MM/YYYY HH:mm:ss')}
                     </Typography>
                     <Typography variant="caption" color="textSecondary">
                       {state?.procedure_id}
@@ -716,7 +723,7 @@ export default function AreaForm(props: RouteComponentProps<IPageParams>) {
                       {selectUser()?.name}
                     </Typography>
                     <Typography variant="caption" color="textSecondary">
-                      {`${selectCid()?.cid} - ${selectCid()?.name}`}
+                      {`${selectCid()?.cid ?? ''} - ${selectCid()?.name ?? ''}`}
                     </Typography>
                   </Box>
                 </Box>

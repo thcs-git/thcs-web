@@ -182,7 +182,7 @@ const reducer: Reducer<CareState> = (state = INITIAL_STATE, action) => {
         data: action.payload.data,
         loading: true,
         error: false,
-        success: true
+        success: false
       }
     case CareTypes.UPDATE_CARE_SUCCESS:
       return {
