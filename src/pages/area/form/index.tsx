@@ -25,7 +25,7 @@ import Loading from '../../../components/Loading';
 import Sidebar from '../../../components/Sidebar';
 import { FormTitle } from '../../../styles/components/Form';
 import Button from '../../../styles/components/Button';
-import { ChipComponent as Chip } from '../../../styles/components/Chip';
+import { ChipComponent as Chip, ChipList } from '../../../styles/components/Chip';
 import { SliderComponent as Slider } from '../../../styles/components/Slider';
 import { SwitchComponent as Switch } from '../../../styles/components/Switch';
 import { TabContent, TabNav, TabNavItem, TabBody, TabBodyItem } from '../../../styles/components/Tabs';
@@ -335,13 +335,15 @@ export default function AreaForm(props: RouteComponentProps<IPageParams>) {
                       </FormGroupSection>
                     </Grid>
                     <Grid item md={12} xs={12}>
-                      {state.neighborhoods.map((item: any, index) => (
-                        <Chip
-                          key={`neighborhook_selected_${index}`}
-                          label={item.name}
-                          onDelete={event => handleDeleteNeighborhood(item)}
-                        />
-                      ))}
+                      <ChipList>
+                        {state.neighborhoods.map((item: any, index) => (
+                          <Chip
+                            key={`neighborhook_selected_${index}`}
+                            label={item.name}
+                            onDelete={event => handleDeleteNeighborhood(item)}
+                          />
+                        ))}
+                      </ChipList>
                     </Grid>
                   </Grid>
                 </TabBodyItem>
@@ -365,14 +367,16 @@ export default function AreaForm(props: RouteComponentProps<IPageParams>) {
                       </FormGroupSection>
                     </Grid>
                     <Grid item md={12} xs={12}>
-                      {state.users.map((item: any, index) => (
-                        <div key={`user_selected_${index}`}>
-                          <Chip
-                            label={item.name}
-                            onDelete={event => handleDeleteUser(item)}
-                          />
-                        </div>
-                      ))}
+                      <ChipList>
+                        {state.users.map((item: any, index) => (
+                          <div key={`user_selected_${index}`}>
+                            <Chip
+                              label={item.name}
+                              onDelete={event => handleDeleteUser(item)}
+                            />
+                          </div>
+                        ))}
+                      </ChipList>
                     </Grid>
                   </Grid>
 

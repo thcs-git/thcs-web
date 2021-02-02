@@ -6,7 +6,7 @@ import { ApplicationState } from '../../../store';
 import { loadRequest as getCustomersAction } from '../../../store/ducks/customers/actions';
 import { CustomerDataItems } from '../../../store/ducks/customers/types';
 
-import { getAddress as getAddressAction, createCompanyRequest, loadCompanyById } from '../../../store/ducks/companies/actions';
+import { getAddress as getAddressAction, createCompanyRequest, updateCompanyRequest, loadCompanyById } from '../../../store/ducks/companies/actions';
 import { CompanyInterface } from '../../../store/ducks/companies/types';
 
 import { useHistory, RouteComponentProps } from 'react-router-dom';
@@ -58,7 +58,7 @@ export default function CompanyForm(props: RouteComponentProps<IPageParams>) {
 
   const [state, setState] = useState<CompanyInterface>({
     _id: params.id || '',
-    customerId: '',
+    customer_id: '',
     name: '',
     fantasy_name: '',
     fiscal_number: '',
@@ -114,7 +114,7 @@ export default function CompanyForm(props: RouteComponentProps<IPageParams>) {
     //   cellphone: companyState.data.phones.find(phone => phone.number)?.number || '',
     // }));
 
-  }, [companyState.data.address]);
+  }, [companyState.data?.address]);
 
   useEffect(() => {
     if (companyState.success) history.push('/company');
@@ -124,10 +124,10 @@ export default function CompanyForm(props: RouteComponentProps<IPageParams>) {
     setCustomers(customerState.list.data);
   }, [customerState]);
 
-  const setCustomer = useCallback(({ _id: customerId }: any) => {
+  const setCustomer = useCallback(({ _id: customer_id }: any) => {
     setState(prevState => ({
       ...prevState,
-      customerId
+      customer_id
     }));
   }, [customers]);
 
@@ -148,8 +148,17 @@ export default function CompanyForm(props: RouteComponentProps<IPageParams>) {
     dispatch(getAddressAction(state.address.postal_code));
   }, [state.address.postal_code]);
 
+  const selectCustomer = useCallback(() => {
+    const selected = customerState.list.data.filter(item => item._id === state.customer_id);
+    return (selected[0]) ? selected[0] : null;
+  }, [state.customer_id]);
+
   const handleSaveFormCustomer = useCallback(() => {
-    dispatch(createCompanyRequest(state));
+    if (params.id) {
+      dispatch(updateCompanyRequest(state));
+    } else {
+      dispatch(createCompanyRequest(state));
+    }
   }, [state]);
 
   return (
@@ -168,6 +177,7 @@ export default function CompanyForm(props: RouteComponentProps<IPageParams>) {
                     getOptionLabel={(option) => option.name}
                     renderInput={(params) => <TextField {...params} label="Cliente" variant="outlined" />}
                     onChange={(event, value) => setCustomer(value)}
+                    value={selectCustomer()}
                     size="small"
                     fullWidth
                   />

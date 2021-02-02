@@ -8,7 +8,7 @@ import {
   loadUserById,
   loadProfessionsRequest as getProfessionsAction
 } from '../../../store/ducks/users/actions';
-import { UserInterface } from '../../../store/ducks/users/types';
+import { UserInterface, ProfessionUserInterface } from '../../../store/ducks/users/types';
 
 import { loadRequest as getSpecialtiesAction } from '../../../store/ducks/specialties/actions';
 import { SpecialtyInterface } from '../../../store/ducks/specialties/types';
@@ -42,7 +42,6 @@ import {
 } from '@material-ui/core';
 import { SearchOutlined } from '@material-ui/icons';
 import Autocomplete from '@material-ui/lab/Autocomplete';
-import DayJsUtils from '@date-io/dayjs';
 
 import Alert from '../../../components/Alert';
 import Sidebar from '../../../components/Sidebar';
@@ -230,8 +229,25 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
     history.push(`/user`);
   }
 
+  function handleSelectProfession(value: ProfessionUserInterface) {
+    setState(prevState => ({
+      ...prevState,
+      profession_id: value._id
+    }));
+  }
+
+  const selectProfession = useCallback(() => {
+    if (!userState.data.professions) {
+      return null;
+    }
+
+    const selected = userState.data.professions.filter(item => item._id === state.profession_id);
+
+    return (selected[0]) ? selected[0] : null;
+  }, [state.profession_id]);
+
   // Especialides
-  function handleSelectMainEspecialty(value: SpecialtyInterface) {
+  function handleSelectMainSpecialty(value: SpecialtyInterface) {
     setState(prevState => ({
       ...prevState,
       main_specialty_id: value._id
@@ -260,6 +276,12 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
       specialties: specialtiesSelected
     }))
   }
+
+  const selectMainSpecialty = useCallback(() => {
+    const selected = specialtyState.list.data.filter(item => item._id === state.main_specialty_id);
+
+    return (selected[0]) ? selected[0] : null;
+  }, [state.main_specialty_id]);
 
   //Empresas
   function handleSelectCompany(value: CompanyInterface) {
@@ -296,7 +318,6 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
   return (
     <Sidebar>
       {userState.loading && <Loading />}
-      {console.log('userState', userState)}
       <Container>
         <FormSection>
           <FormContent>
@@ -594,20 +615,22 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
                       <FormGroupSection>
                         <Autocomplete
                           id="combo-box-profession"
-                          options={specialtyState.list.data}
+                          options={state.professions || []}
                           getOptionLabel={(option) => option.name}
                           renderInput={(params) => <TextField {...params} label="Função" variant="outlined" />}
-                          size="small"
+                          getOptionSelected={(option, value) => option._id === state?.profession_id}
+                          value={selectProfession()}
                           onChange={(event, value) => {
                             if (value) {
-                              handleSelectMainEspecialty(value)
+                              handleSelectProfession(value)
                             }
                           }}
+                          size="small"
                           fullWidth
                         />
                       </FormGroupSection>
                     </Grid>
-                    <Grid item md={2} xs={12}>
+                    <Grid item md={3} xs={12}>
                       <FormGroupSection>
                         <Autocomplete
                           id="combo-box-council"
@@ -643,12 +666,14 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
                           options={specialtyState.list.data}
                           getOptionLabel={(option) => option.name}
                           renderInput={(params) => <TextField {...params} label="Especialidade Principal" variant="outlined" />}
-                          size="small"
+                          getOptionSelected={(option, value) => option._id === state?.main_specialty_id}
+                          value={selectMainSpecialty()}
                           onChange={(event, value) => {
                             if (value) {
-                              handleSelectMainEspecialty(value)
+                              handleSelectMainSpecialty(value)
                             }
                           }}
+                          size="small"
                           fullWidth
                         />
                       </FormGroupSection>

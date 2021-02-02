@@ -62,7 +62,7 @@ const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     root: {
       display: 'flex',
-      height: '100%',
+      flex: 1,
     },
     hide: {
       display: 'none',
@@ -104,8 +104,9 @@ const useStyles = makeStyles((theme: Theme) =>
       ...theme.mixins.toolbar,
     },
     content: {
-      flexGrow: 1,
+      flex: 1,
       padding: theme.spacing(3),
+      paddingBottom: 20
     },
     logOutButton: {
       cursor: 'pointer',

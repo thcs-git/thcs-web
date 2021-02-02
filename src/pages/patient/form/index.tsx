@@ -185,7 +185,9 @@ export default function PatientForm(props: RouteComponentProps<IPageParams>) {
   }, [dispatch, params]);
 
   useEffect(() => {
-    setState(patientState.data);
+    if (params.id) {
+      setState(patientState.data);
+    }
 
     // setForm(prevState => ({
     //   ...prevState,
@@ -291,7 +293,7 @@ export default function PatientForm(props: RouteComponentProps<IPageParams>) {
               indicatorColor="primary"
               textColor="primary"
             >
-              <Tab label="DADOS PESSOAS" disabled />
+              <Tab label="DADOS PESSOAIS" disabled />
             </Tabs>
             <TabPanel value={0} index={0}>
               <BoxCustom style={{ background: '#fff', marginTop: 0 }} mt={5} padding={4}>
@@ -316,6 +318,9 @@ export default function PatientForm(props: RouteComponentProps<IPageParams>) {
                             label="Data de Nascimento"
                             value={state.birthdate?.length > 10 ? formatDate(state?.birthdate, 'YYYY-MM-DD') : state?.birthdate}
                             onChange={(element) => setState({ ...state, birthdate: element.target.value })}
+                            InputLabelProps={{
+                              shrink: true,
+                            }}
                             fullWidth
                           />
                         </Grid>

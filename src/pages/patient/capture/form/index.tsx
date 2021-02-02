@@ -20,8 +20,8 @@ import { Alert, AlertTitle } from '@material-ui/lab';
 
 import { useDispatch, useSelector } from 'react-redux';
 import { ApplicationState } from '../../../../store';
+
 import { searchRequest as searchPatientAction } from '../../../../store/ducks/patients/actions';
-import { PatientDataItems } from '../../../../store/ducks/patients/types';
 
 import { createCareRequest as createCareAction, searchCareRequest as getCares } from '../../../../store/ducks/cares/actions';
 import { CareInterface } from '../../../../store/ducks/cares/types';
@@ -60,15 +60,6 @@ export default function PatientCaptureForm() {
   const [patient, setPatient] = useState<any>({});
 
   const [care, setCare] = useState<CareInterface>({
-    health_insurance_id: '5f903db15104287582ba58af',
-    health_plan_id: '5fd666cd48392d0621196551',
-    health_sub_plan_id: '5fd6671f48392d0621196552',
-    health_plan_card_validate: '2021-01-30T12:00:00',
-    health_plan_card_number: '123456789',
-    contract: '123123',
-    care_type_id: '5fd66ca189a402ec48110cc1',
-    user_id: '5e8cfe7de9b6b8501c8033ac',
-    created_by: { _id: '5e8cfe7de9b6b8501c8033ac' },
     status: 'Pre-Atendimento',
     capture: {
       status: 'Em Andamento',
@@ -87,7 +78,7 @@ export default function PatientCaptureForm() {
 
   useEffect(() => {
     if (patient?._id) {
-      dispatch(getCares({ patient_id: patient._id, status: 'Pre-Atendimento' }))
+      dispatch(getCares({ status: 'Pre-Atendimento', 'capture.status': 'Em Andamento', 'patient_id.fiscal_number': patient.fiscal_number }));
     }
   }, [patient]);
 
@@ -128,6 +119,7 @@ export default function PatientCaptureForm() {
         {(patientState.loading || careState.loading) && (
           <Loading />
         )}
+        {console.log('careState', careState)}
         <Container>
           <FormTitle>Captação de Pacientes</FormTitle>
           <h4>Primeiro, encontre o paciente que deseja realizar a captação:</h4>
@@ -192,7 +184,7 @@ export default function PatientCaptureForm() {
                 </PatientResume>
               </Grid>
 
-              {careState.list.total > 0 && (
+              {careState.list.data.length > 0 && (
                 <Grid item md={12} xs={12}>
                   <Alert severity="error">
                     <AlertTitle>Atenção!</AlertTitle>
@@ -215,7 +207,7 @@ export default function PatientCaptureForm() {
                   <Button
                     background="success"
                     onClick={() => toggleModalConfirm(true)}
-                    disabled={careState.list.total > 0}
+                    disabled={careState.list.data.length > 0}
                   >
                     Selecionar Paciente
                   </Button>
