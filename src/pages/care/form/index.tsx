@@ -1,27 +1,40 @@
-import React, { useState, useEffect, useCallback, ChangeEvent, ReactNode } from 'react';
-import CheckIcon from '@material-ui/icons/Check';
-import Checkbox from '@material-ui/core/Checkbox';
-import Divider from '@material-ui/core/Divider';
-import debounce from 'lodash.debounce';
+import React, { useState, useEffect, useCallback, ReactNode } from "react";
+import Checkbox from "@material-ui/core/Checkbox";
+import Divider from "@material-ui/core/Divider";
+import debounce from "lodash.debounce";
 
-import { Error } from '@material-ui/icons';
-import EventIcon from '@material-ui/icons/Event';
-import HomeIcon from '@material-ui/icons/Home';
-import RecentActorsSharpIcon from '@material-ui/icons/RecentActorsSharp';
-import LocalHospitalSharpIcon from '@material-ui/icons/LocalHospitalSharp';
+import {
+  Create as CreateIcon,
+  Check as CheckIcon,
+  AccountCircle,
+  Error,
+  Event as EventIcon,
+  Home as HomeIcon,
+  RecentActorsSharp as RecentActorsSharpIcon,
+  LocalHospitalSharp as LocalHospitalSharpIcon,
+} from "@material-ui/icons";
 
-import { useDispatch, useSelector } from 'react-redux';
-import { ApplicationState } from '../../../store';
-import { CareInterface } from '../../../store/ducks/cares/types';
-import { loadCareById, updateCareRequest, createCareRequest, searchCareRequest as getCares, healthInsuranceRequest, healthPlanRequest, healthSubPlanRequest, AccommodationTypeRequest, careTypeRequest, cidRequest } from '../../../store/ducks/cares/actions';
-import { loadRequest as getAreasAction } from '../../../store/ducks/areas/actions';
-import { loadRequest as getUsersAction } from '../../../store/ducks/users/actions';
+import { useDispatch, useSelector } from "react-redux";
+import { ApplicationState } from "../../../store";
+import { CareInterface } from "../../../store/ducks/cares/types";
+import {
+  loadCareById,
+  updateCareRequest,
+  searchCareRequest as getCares,
+  healthInsuranceRequest,
+  healthPlanRequest,
+  healthSubPlanRequest,
+  AccommodationTypeRequest,
+  careTypeRequest,
+  cidRequest,
+} from "../../../store/ducks/cares/actions";
+import { loadRequest as getAreasAction } from "../../../store/ducks/areas/actions";
+import { loadRequest as getUsersAction } from "../../../store/ducks/users/actions";
 
-import { Table, Th, Td } from '../../../styles/components/Table';
-import { PatientInterface } from '../../../store/ducks/patients/types';
-import { searchRequest as searchPatientAction } from '../../../store/ducks/patients/actions';
+import { Table, Th, Td } from "../../../styles/components/Table";
+import { searchRequest as searchPatientAction } from "../../../store/ducks/patients/actions";
 
-import { useHistory, RouteComponentProps } from 'react-router-dom';
+import { useHistory, RouteComponentProps } from "react-router-dom";
 import {
   Badge,
   Box,
@@ -35,20 +48,18 @@ import {
   StepLabel,
   Typography,
   Tooltip,
-} from '@material-ui/core';
+} from "@material-ui/core";
 
-import { Autocomplete } from '@material-ui/lab';
+import { Autocomplete } from "@material-ui/lab";
 
-import { Create as CreateIcon, AccountCircle } from '@material-ui/icons';
+import Loading from "../../../components/Loading";
+import Sidebar from "../../../components/Sidebar";
+import { FormTitle } from "../../../styles/components/Form";
+import Button from "../../../styles/components/Button";
 
-import Loading from '../../../components/Loading';
-import Sidebar from '../../../components/Sidebar';
-import { FormTitle } from '../../../styles/components/Form';
-import Button from '../../../styles/components/Button';
+import { age, formatDate } from "../../../helpers/date";
 
-import { age, formatDate } from '../../../helpers/date';
-
-import { ReactComponent as IconProfile } from '../../../assets/img/icon-profile.svg';
+import { ReactComponent as IconProfile } from "../../../assets/img/icon-profile.svg";
 import {
   ButtonsContent,
   FormSection,
@@ -57,18 +68,17 @@ import {
   PatientResume,
   PatientResumeContent,
   PatientData,
-  SearchContent,
   StepperComponent,
   StepComponent,
   NoDataIcon,
   PatientNotFound,
   Profile,
-} from './styles';
+} from "./styles";
 
 interface IFormFields extends CareInterface {
   form?: {
-    bloodType: string | null,
-  }
+    bloodType: string | null;
+  };
 }
 
 interface IPageParams {
@@ -92,34 +102,36 @@ export default function AreaForm(props: RouteComponentProps<IPageParams>) {
   const { params } = props.match;
 
   const [state, setState] = useState<IFormFields>({
-    health_insurance_id: '',
-    health_plan_id: '',
-    health_sub_plan_id: '',
-    contract: '',
-    health_plan_card_number: '',
-    health_plan_card_validate: '',
-    origin_id: '',
-    accommodation_type_id: '',
-    care_type_id: '',
-    procedure_id: '',
-    cid_id: '',
-    user_id: '',
-    area_id: '',
-    status: '', // Pre-Atendimento, Em atendimento, Cancelado, Finalizad,
-    created_at: '',
-    updated_at: '',
+    health_insurance_id: "",
+    health_plan_id: "",
+    health_sub_plan_id: "",
+    contract: "",
+    health_plan_card_number: "",
+    health_plan_card_validate: "",
+    origin_id: "",
+    accommodation_type_id: "",
+    care_type_id: "",
+    procedure_id: "",
+    cid_id: "",
+    user_id: "",
+    area_id: "",
+    status: "", // Pre-Atendimento, Em atendimento, Cancelado, Finalizad,
+    created_at: "",
+    updated_at: "",
   });
 
-  const [selectCheckbox, setSelectCheckbox] = useState<Partial<CareInterface>>();
+  const [selectCheckbox, setSelectCheckbox] = useState<
+    Partial<CareInterface>
+  >();
 
-  const [patientSearch, setPatientSearch] = useState<string>('');
+  const [patientSearch, setPatientSearch] = useState<string>("");
   const [patient, setPatient] = useState<any>();
 
   const [currentTab, setCurrentTab] = useState(0);
   const [currentStep, setCurrentStep] = useState(0);
   const [openModalCancel, setOpenModalCancel] = useState(false);
 
-  const steps = ['Paciente', 'Atendimento', 'Confirmação'];
+  const steps = ["Paciente", "Atendimento", "Confirmação"];
 
   useEffect(() => {
     if (params.id) {
@@ -131,7 +143,7 @@ export default function AreaForm(props: RouteComponentProps<IPageParams>) {
     dispatch(healthInsuranceRequest());
     dispatch(AccommodationTypeRequest());
     dispatch(careTypeRequest());
-    dispatch(getCares({ status: 'Pre-Atendimento', 'capture.status': 'Aprovado' }))
+    dispatch(getCares({ status: "Pre-Atendimento", "capture.status": "Aprovado" }));
   }, [dispatch]);
 
   useEffect(() => {
@@ -142,20 +154,23 @@ export default function AreaForm(props: RouteComponentProps<IPageParams>) {
 
   useEffect(() => {
     if (careState.success && !careState.error && !careState.loading) {
-      history.push('/care')
+      history.push("/care");
     }
-  }, [careState.success])
+  }, [careState.success]);
 
-  const selectTab = useCallback((index: number) => {
-    setCurrentTab(index);
-  }, [currentTab]);
+  const selectTab = useCallback(
+    (index: number) => {
+      setCurrentTab(index);
+    },
+    [currentTab]
+  );
 
   const handleNextStep = useCallback(() => {
-    setCurrentStep(prevState => (prevState + 1))
+    setCurrentStep((prevState) => prevState + 1);
   }, [currentStep]);
 
   const handleBackStep = useCallback(() => {
-    setCurrentStep(prevState => (prevState - 1))
+    setCurrentStep((prevState) => prevState - 1);
   }, [currentStep]);
 
   const searchPatient = useCallback((value: string) => {
@@ -165,31 +180,33 @@ export default function AreaForm(props: RouteComponentProps<IPageParams>) {
     }
   }, []);
 
-  const searchCidData = useCallback((event) => {
-    dispatch(cidRequest(event.target.value))
-  }, [dispatch])
+  const searchCidData = useCallback(
+    (event) => {
+      dispatch(cidRequest(event.target.value));
+    },
+    [dispatch]
+  );
 
-  const debounceSearchCidData = debounce(searchCidData, 900)
-
+  const debounceSearchCidData = debounce(searchCidData, 900);
 
   function handleSelectUser(value: any) {
-    setState(prevState => ({
+    setState((prevState) => ({
       ...prevState,
-      user_id: value._id
+      user_id: value._id,
     }));
   }
 
   function handleSelectCid(value: any) {
-    setState(prevState => ({
+    setState((prevState) => ({
       ...prevState,
-      cid_id: value._id
+      cid_id: value._id,
     }));
   }
 
   function handleSelectArea(value: any) {
-    setState(prevState => ({
+    setState((prevState) => ({
       ...prevState,
-      area_id: value._id
+      area_id: value._id,
     }));
   }
 
@@ -197,9 +214,10 @@ export default function AreaForm(props: RouteComponentProps<IPageParams>) {
     const assignSelectCheckbox = {
       ...selectCheckbox,
       ...state,
-      status: 'Atendimento',
-      created_at: selectCheckbox?.created_at
-    }
+      status: "Atendimento",
+      created_at: selectCheckbox?.created_at,
+      start_at: new Date()
+    };
 
     dispatch(updateCareRequest(assignSelectCheckbox));
   }
@@ -217,90 +235,112 @@ export default function AreaForm(props: RouteComponentProps<IPageParams>) {
     history.push(`/care`);
   }
 
-  const handleBloodType = useCallback((event: any, newValue: any) => {
-    setState(prevState => ({
-      ...prevState,
-      form: {
-        bloodType: newValue,
-      }
-    }));
-  }, []);
-
   const handleCheckDocument = (documentId: string, documents: Array<any>) => {
-    const found = documents.find(doc => (
-      doc.document_group_id === documentId &&
-      !doc.canceled &&
-      doc.finished
-    ));
+    const found = documents.find(
+      (doc) =>
+        doc.document_group_id === documentId && !doc.canceled && doc.finished
+    );
 
     const documentRoute = () => {
       switch (documentId) {
-        case '5ffd79012f5d2b1d8ff6bea3':
-          return 'socioambiental';
-        case '5ff65469b4d4ac07d186e99f':
-          return 'nead';
-        case '5ffd7acd2f5d2b1d8ff6bea4':
-          return 'abemid';
+        case "5ffd79012f5d2b1d8ff6bea3":
+          return "socioambiental";
+        case "5ff65469b4d4ac07d186e99f":
+          return "nead";
+        case "5ffd7acd2f5d2b1d8ff6bea4":
+          return "abemid";
         default:
-          return '';
+          return "";
       }
     };
 
     if (found) {
-      return found.status === 'Não Elegível' ? (
+      return found.status === "Não Elegível" ? (
         <Tooltip title="Não Elegível">
-          <Error style={{ color: '#FF6565', cursor: 'pointer' }} onClick={() => history.push(`/patient/capture/${found.care_id}/${documentRoute()}/${found._id}`)} />
+          <Error
+            style={{ color: "#FF6565", cursor: "pointer" }}
+            onClick={() =>
+              history.push(
+                `/patient/capture/${found.care_id}/${documentRoute()}/${found._id
+                }`
+              )
+            }
+          />
         </Tooltip>
-      )
-        :
-        (
+      ) : (
           <Tooltip title="Elegível">
-            <CheckIcon style={{ color: '#4FC66A', cursor: 'pointer' }} onClick={() => history.push(`/patient/capture/${found.care_id}/${documentRoute()}/${found._id}`)} />
+            <CheckIcon
+              style={{ color: "#4FC66A", cursor: "pointer" }}
+              onClick={() =>
+                history.push(
+                  `/patient/capture/${found.care_id}/${documentRoute()}/${found._id
+                  }`
+                )
+              }
+            />
           </Tooltip>
         );
     } else {
-      return <Tooltip title="Não Realizado"><CheckIcon style={{ color: '#EBEBEB' }} /></Tooltip>;
+      return (
+        <Tooltip title="Não Realizado">
+          <CheckIcon style={{ color: "#EBEBEB" }} />
+        </Tooltip>
+      );
     }
   };
 
   const selectHealhInsurance = useCallback(() => {
-    const selected = careState.healthInsurance.filter(item => item._id === state.health_insurance_id);
-    return (selected[0]) ? selected[0] : null;
+    const selected = careState.healthInsurance.filter(
+      (item) => item._id === state.health_insurance_id
+    );
+    return selected[0] ? selected[0] : null;
   }, [state.health_insurance_id]);
 
   const selectHealhPlan = useCallback(() => {
-    const selected = careState.healthPlan.filter(item => item._id === state.health_plan_id);
-    return (selected[0]) ? selected[0] : null;
+    const selected = careState.healthPlan.filter(
+      (item) => item._id === state.health_plan_id
+    );
+    return selected[0] ? selected[0] : null;
   }, [state.health_plan_id]);
 
   const selectHealhSubPlan = useCallback(() => {
-    const selected = careState.healthSubPlan.filter(item => item._id === state.health_sub_plan_id);
-    return (selected[0]) ? selected[0] : null;
+    const selected = careState.healthSubPlan.filter(
+      (item) => item._id === state.health_sub_plan_id
+    );
+    return selected[0] ? selected[0] : null;
   }, [state.health_sub_plan_id]);
 
   const selectAccommodationType = useCallback(() => {
-    const selected = careState.accommondation_type.filter(item => item._id === state.accommodation_type_id);
-    return (selected[0]) ? selected[0] : null;
+    const selected = careState.accommondation_type.filter(
+      (item) => item._id === state.accommodation_type_id
+    );
+    return selected[0] ? selected[0] : null;
   }, [state.accommodation_type_id]);
 
   const selectCareType = useCallback(() => {
-    const selected = careState.care_type.filter(item => item._id === state.care_type_id);
-    return (selected[0]) ? selected[0] : null;
+    const selected = careState.care_type.filter(
+      (item) => item._id === state.care_type_id
+    );
+    return selected[0] ? selected[0] : null;
   }, [state.care_type_id]);
 
   const selectUser = useCallback(() => {
-    const selected = userState.list.data.filter(item => item._id === state.user_id);
-    return (selected[0]) ? selected[0] : null;
+    const selected = userState.list.data.filter(
+      (item) => item._id === state.user_id
+    );
+    return selected[0] ? selected[0] : null;
   }, [state.user_id]);
 
   const selectArea = useCallback(() => {
-    const selected = areaState.list.data.filter(item => item._id === state.area_id);
-    return (selected[0]) ? selected[0] : null;
+    const selected = areaState.list.data.filter(
+      (item) => item._id === state.area_id
+    );
+    return selected[0] ? selected[0] : null;
   }, [state.area_id]);
 
   const selectCid = useCallback(() => {
-    const selected = careState.cid.filter(item => item._id === state.cid_id);
-    return (selected[0]) ? selected[0] : null;
+    const selected = careState.cid.filter((item) => item._id === state.cid_id);
+    return selected[0] ? selected[0] : null;
   }, [state.cid_id]);
 
   return (
@@ -312,7 +352,6 @@ export default function AreaForm(props: RouteComponentProps<IPageParams>) {
 
         <FormSection>
           <FormContent>
-
             <StepperComponent activeStep={currentStep} alternativeLabel>
               {steps.map((label) => (
                 <StepComponent key={label}>
@@ -339,24 +378,43 @@ export default function AreaForm(props: RouteComponentProps<IPageParams>) {
                   <tbody>
                     {careState.list.data.map((care, index) => (
                       <tr key={index}>
-                        <Td>
+                        <Td center>
                           <Checkbox
                             checked={selectCheckbox?._id === care?._id}
                             onChange={(element) => {
-                              if (care._id && care._id === element.target.value) setSelectCheckbox({})
-                              else setSelectCheckbox(care)
+                              if (care._id && care._id === element.target.value)
+                                setSelectCheckbox({});
+                              else setSelectCheckbox(care);
                             }}
-                            inputProps={{ 'aria-label': 'primary checkbox' }}
+                            inputProps={{ "aria-label": "primary checkbox" }}
                           />
                         </Td>
-                        <Td>
-                          {care?.patient_id?.name}
-                        </Td>
+                        <Td>{care?.patient_id?.name}</Td>
                         <Td>{care.patient_id?.fiscal_number}</Td>
-                        <Td>{handleCheckDocument('5ffd79012f5d2b1d8ff6bea3', care?.documents_id || [])}</Td>
-                        <Td>{handleCheckDocument('5ff65469b4d4ac07d186e99f', care?.documents_id || [])}</Td>
-                        <Td>{handleCheckDocument('5ffd7acd2f5d2b1d8ff6bea4', care?.documents_id || [])}</Td>
-                        <Td>{formatDate(care?.created_at ?? '', 'DD/MM/YYYY HH:mm:ss')}</Td>
+                        <Td>
+                          {handleCheckDocument(
+                            "5ffd79012f5d2b1d8ff6bea3",
+                            care?.documents_id || []
+                          )}
+                        </Td>
+                        <Td>
+                          {handleCheckDocument(
+                            "5ff65469b4d4ac07d186e99f",
+                            care?.documents_id || []
+                          )}
+                        </Td>
+                        <Td>
+                          {handleCheckDocument(
+                            "5ffd7acd2f5d2b1d8ff6bea4",
+                            care?.documents_id || []
+                          )}
+                        </Td>
+                        <Td>
+                          {formatDate(
+                            care?.created_at ?? "",
+                            "DD/MM/YYYY HH:mm:ss"
+                          )}
+                        </Td>
                       </tr>
                     ))}
                   </tbody>
@@ -373,7 +431,11 @@ export default function AreaForm(props: RouteComponentProps<IPageParams>) {
                             <div>
                               <p className="title">{patient?.name}</p>
                               <div className="subTitle">
-                                <p>{patient?.birthdate ? age(patient?.birthdate) : ''}</p>
+                                <p>
+                                  {patient?.birthdate
+                                    ? age(patient?.birthdate)
+                                    : ""}
+                                </p>
                                 <p>Sexo: {patient?.gender}</p>
                                 <p>Nome da Mãe: {patient?.mother_name}</p>
                               </div>
@@ -381,7 +443,9 @@ export default function AreaForm(props: RouteComponentProps<IPageParams>) {
                           </PatientData>
                           <Button
                             background="default"
-                            onClick={() => { history.push(`/patient/${patient?._id}/edit`) }}
+                            onClick={() => {
+                              history.push(`/patient/${patient?._id}/edit`);
+                            }}
                           >
                             <CreateIcon />
                           </Button>
@@ -408,34 +472,29 @@ export default function AreaForm(props: RouteComponentProps<IPageParams>) {
 
             {/* Step 2 */}
             {currentStep === 1 && (
-              <Grid container style={{ marginBottom: '40px' }}>
-                <Grid item md={6} xs={12}>
-                  <TextField
-                    id="input-care-date"
-                    label="Data e hora do atendimento"
-                    variant="outlined"
-                    // defaultValue={new Date().toISOString()}
-                    InputLabelProps={{
-                      shrink: true,
-                    }}
-                    type="datetime-local"
-                    size="small"
-                    value={state.started_at}
-                    onChange={(element) => setState(prevState => ({ ...prevState, started_at: element.target.value }))}
-                    fullWidth
-                  />
-                </Grid>
-                <Grid item md={6} xs={12}>
+              <Grid container style={{ marginBottom: "40px" }}>
+                <Grid item md={4} xs={12}>
                   <Autocomplete
                     id="combo-box-health-insurance"
                     options={careState.healthInsurance}
                     getOptionLabel={(option) => option.name}
                     value={selectHealhInsurance()}
-                    getOptionSelected={(option, value) => option._id === state.health_insurance_id}
-                    renderInput={(params) => <TextField {...params} label="Convênio" variant="outlined" />}
+                    getOptionSelected={(option, value) =>
+                      option._id === state.health_insurance_id
+                    }
+                    renderInput={(params) => (
+                      <TextField
+                        {...params}
+                        label="Convênio"
+                        variant="outlined"
+                      />
+                    )}
                     onChange={(event, value) => {
                       if (value) {
-                        setState(prevState => ({ ...prevState, health_insurance_id: value._id }));
+                        setState((prevState) => ({
+                          ...prevState,
+                          health_insurance_id: value._id,
+                        }));
                       }
                       dispatch(healthPlanRequest(value && value._id));
                     }}
@@ -444,18 +503,25 @@ export default function AreaForm(props: RouteComponentProps<IPageParams>) {
                     fullWidth
                   />
                 </Grid>
-                <Grid item md={6} xs={12}>
+                <Grid item md={4} xs={12}>
                   <Autocomplete
                     id="combo-box-health-plan"
                     options={careState.healthPlan}
                     getOptionLabel={(option) => option.name}
                     value={selectHealhPlan()}
-                    getOptionSelected={(option, value) => option._id === state.health_plan_id}
-                    renderInput={(params) => <TextField {...params} label="Plano" variant="outlined" />}
+                    getOptionSelected={(option, value) =>
+                      option._id === state.health_plan_id
+                    }
+                    renderInput={(params) => (
+                      <TextField {...params} label="Plano" variant="outlined" />
+                    )}
                     size="small"
                     onChange={(event, value) => {
                       if (value) {
-                        setState(prevState => ({ ...prevState, health_plan_id: value._id }));
+                        setState((prevState) => ({
+                          ...prevState,
+                          health_plan_id: value._id,
+                        }));
                       }
                       dispatch(healthSubPlanRequest(value && value._id));
                     }}
@@ -463,18 +529,29 @@ export default function AreaForm(props: RouteComponentProps<IPageParams>) {
                     fullWidth
                   />
                 </Grid>
-                <Grid item md={6} xs={12}>
+                <Grid item md={4} xs={12}>
                   <Autocomplete
                     id="combo-box-health-sub-plan"
                     options={careState.healthSubPlan}
                     getOptionLabel={(option) => option.name}
                     value={selectHealhSubPlan()}
-                    getOptionSelected={(option, value) => option._id === state.health_sub_plan_id}
-                    renderInput={(params) => <TextField {...params} label="Sub-Plano" variant="outlined" />}
+                    getOptionSelected={(option, value) =>
+                      option._id === state.health_sub_plan_id
+                    }
+                    renderInput={(params) => (
+                      <TextField
+                        {...params}
+                        label="Sub-Plano"
+                        variant="outlined"
+                      />
+                    )}
                     size="small"
                     onChange={(event, value) => {
                       if (value) {
-                        setState(prevState => ({ ...prevState, health_sub_plan_id: value._id }));
+                        setState((prevState) => ({
+                          ...prevState,
+                          health_sub_plan_id: value._id,
+                        }));
                       }
                     }}
                     noOptionsText="Nenhum sub-plano encontrado"
@@ -489,7 +566,12 @@ export default function AreaForm(props: RouteComponentProps<IPageParams>) {
                     variant="outlined"
                     size="small"
                     value={state.contract}
-                    onChange={(element) => setState(prevState => ({ ...prevState, contract: element.target.value }))}
+                    onChange={(element) =>
+                      setState((prevState) => ({
+                        ...prevState,
+                        contract: element.target.value,
+                      }))
+                    }
                     fullWidth
                   />
                 </Grid>
@@ -501,7 +583,12 @@ export default function AreaForm(props: RouteComponentProps<IPageParams>) {
                     variant="outlined"
                     size="small"
                     value={state.health_plan_card_number}
-                    onChange={(element) => setState(prevState => ({ ...prevState, health_plan_card_number: element.target.value }))}
+                    onChange={(element) =>
+                      setState((prevState) => ({
+                        ...prevState,
+                        health_plan_card_number: element.target.value,
+                      }))
+                    }
                     fullWidth
                   />
                 </Grid>
@@ -516,7 +603,12 @@ export default function AreaForm(props: RouteComponentProps<IPageParams>) {
                       shrink: true,
                     }}
                     value={state.health_plan_card_validate}
-                    onChange={(element) => setState(prevState => ({ ...prevState, health_plan_card_validate: element.target.value }))}
+                    onChange={(element) =>
+                      setState((prevState) => ({
+                        ...prevState,
+                        health_plan_card_validate: element.target.value,
+                      }))
+                    }
                     fullWidth
                   />
                 </Grid>
@@ -527,7 +619,12 @@ export default function AreaForm(props: RouteComponentProps<IPageParams>) {
                     variant="outlined"
                     size="small"
                     value={state.origin_id}
-                    onChange={(element) => setState(prevState => ({ ...prevState, origin_id: element.target.value }))}
+                    onChange={(element) =>
+                      setState((prevState) => ({
+                        ...prevState,
+                        origin_id: element.target.value,
+                      }))
+                    }
                     fullWidth
                   />
                 </Grid>
@@ -537,12 +634,23 @@ export default function AreaForm(props: RouteComponentProps<IPageParams>) {
                     options={careState.accommondation_type}
                     getOptionLabel={(option) => option.name}
                     value={selectAccommodationType()}
-                    getOptionSelected={(option, value) => option._id === state.accommodation_type_id}
-                    renderInput={(params) => <TextField {...params} label="Tipo de acomodação" variant="outlined" />}
+                    getOptionSelected={(option, value) =>
+                      option._id === state.accommodation_type_id
+                    }
+                    renderInput={(params) => (
+                      <TextField
+                        {...params}
+                        label="Tipo de acomodação"
+                        variant="outlined"
+                      />
+                    )}
                     size="small"
                     onChange={(event, value) => {
                       if (value) {
-                        setState(prevState => ({ ...prevState, accommodation_type_id: value._id }));
+                        setState((prevState) => ({
+                          ...prevState,
+                          accommodation_type_id: value._id,
+                        }));
                       }
                     }}
                     noOptionsText="Nenhum Tipo de acomodação encontrada"
@@ -555,12 +663,23 @@ export default function AreaForm(props: RouteComponentProps<IPageParams>) {
                     options={careState.care_type}
                     getOptionLabel={(option) => option.name}
                     value={selectCareType()}
-                    getOptionSelected={(option, value) => option._id === state.care_type_id}
-                    renderInput={(params) => <TextField {...params} label="Tipo do programa Home Care" variant="outlined" />}
+                    getOptionSelected={(option, value) =>
+                      option._id === state.care_type_id
+                    }
+                    renderInput={(params) => (
+                      <TextField
+                        {...params}
+                        label="Tipo do programa Home Care"
+                        variant="outlined"
+                      />
+                    )}
                     size="small"
                     onChange={(event, value) => {
                       if (value) {
-                        setState(prevState => ({ ...prevState, care_type_id: value._id }));
+                        setState((prevState) => ({
+                          ...prevState,
+                          care_type_id: value._id,
+                        }));
                       }
                     }}
                     noOptionsText="Nenhum Tipo do programa Home Care foi encontrado"
@@ -574,32 +693,39 @@ export default function AreaForm(props: RouteComponentProps<IPageParams>) {
                     variant="outlined"
                     size="small"
                     value={state?.procedure_id}
-                    onChange={(element) => setState(prevState => ({ ...prevState, procedure_id: element.target.value }))}
+                    onChange={(element) =>
+                      setState((prevState) => ({
+                        ...prevState,
+                        procedure_id: element.target.value,
+                      }))
+                    }
                     fullWidth
                   />
                 </Grid>
-                <Grid item md={4} xs={12}>
-                  {/* <TextField
-                    id="input-diagnostic"
-                    label="Diagnóstico (CID)" // CID - Name
-                    variant="outlined"
-                    size="small"
-                    value={state?.cid_id}
-                    onChange={(element) => setState(prevState => ({ ...prevState, cid_id: element.target.value }))}
-                    fullWidth
-                  /> */}
+                <Grid item md={12} xs={12}>
                   <Autocomplete
                     id="input-diagnostic"
                     options={careState.cid}
-                    getOptionLabel={(option) => `${option.cid} - ${option.name}`}
+                    getOptionLabel={(option) =>
+                      `${option.cid} - ${option.name}`
+                    }
                     value={selectCid()}
-                    renderInput={(params) => <TextField {...params} label="Diaginóstico (CID)" variant="outlined" />}
+                    renderInput={(params) => (
+                      <TextField
+                        {...params}
+                        label="Diaginóstico (CID)"
+                        variant="outlined"
+                      />
+                    )}
                     size="small"
                     onKeyUp={debounceSearchCidData}
                     onChange={(event, value) => {
                       // console.log('asdasd')
                       if (value) {
-                        handleSelectCid({ _id: value._id || '', name: value.name })
+                        handleSelectCid({
+                          _id: value._id || "",
+                          name: value.name,
+                        });
                       }
                     }}
                     fullWidth
@@ -611,11 +737,20 @@ export default function AreaForm(props: RouteComponentProps<IPageParams>) {
                     options={userState.list.data}
                     getOptionLabel={(option) => option.name}
                     value={selectUser()}
-                    renderInput={(params) => <TextField {...params} label="Médico responsável" variant="outlined" />}
+                    renderInput={(params) => (
+                      <TextField
+                        {...params}
+                        label="Médico responsável"
+                        variant="outlined"
+                      />
+                    )}
                     size="small"
                     onChange={(event, value) => {
                       if (value) {
-                        handleSelectUser({ _id: value._id || '', name: value.name })
+                        handleSelectUser({
+                          _id: value._id || "",
+                          name: value.name,
+                        });
                       }
                     }}
                     fullWidth
@@ -627,11 +762,16 @@ export default function AreaForm(props: RouteComponentProps<IPageParams>) {
                     options={areaState.list.data}
                     getOptionLabel={(option) => option.name}
                     value={selectArea()}
-                    renderInput={(params) => <TextField {...params} label="Área" variant="outlined" />}
+                    renderInput={(params) => (
+                      <TextField {...params} label="Área" variant="outlined" />
+                    )}
                     size="small"
                     onChange={(event, value) => {
                       if (value) {
-                        handleSelectArea({ _id: value._id || '', name: value.name })
+                        handleSelectArea({
+                          _id: value._id || "",
+                          name: value.name,
+                        });
                       }
                     }}
                     fullWidth
@@ -640,7 +780,6 @@ export default function AreaForm(props: RouteComponentProps<IPageParams>) {
               </Grid>
             )}
 
-
             {/* Step 3 */}
             {currentStep === 2 && (
               <Grid container direction="column">
@@ -648,9 +787,18 @@ export default function AreaForm(props: RouteComponentProps<IPageParams>) {
                   <Profile>
                     <IconProfile />
                     <div>
-                      <h5>{selectCheckbox?.patient_id && selectCheckbox.patient_id?.name}</h5>
-                      <p>{selectCheckbox?.patient_id && age(selectCheckbox.patient_id?.birthdate)}</p>
-                      <p>{selectCheckbox?.patient_id && selectCheckbox.patient_id?.fiscal_number}</p>
+                      <h5>
+                        {selectCheckbox?.patient_id &&
+                          selectCheckbox.patient_id?.name}
+                      </h5>
+                      <p>
+                        {selectCheckbox?.patient_id &&
+                          age(selectCheckbox.patient_id?.birthdate)}
+                      </p>
+                      <p>
+                        {selectCheckbox?.patient_id &&
+                          selectCheckbox.patient_id?.fiscal_number}
+                      </p>
                     </div>
                   </Profile>
                 </Box>
@@ -659,23 +807,46 @@ export default function AreaForm(props: RouteComponentProps<IPageParams>) {
                   <Divider />
                 </Box>
 
-                <Box display="flex" flexDirection="column" justifyContent="center" mt={4} paddingLeft={9}>
-                  <Box display="flex" flexDirection="column" className="box-position-icon">
-                    <EventIcon style={{ color: '#0899BA' }} />
-                    <Typography variant="subtitle2" component="p" style={{ fontWeight: 'bold' }}>
+                <Box
+                  display="flex"
+                  flexDirection="column"
+                  justifyContent="center"
+                  mt={4}
+                  paddingLeft={9}
+                >
+                  <Box
+                    display="flex"
+                    flexDirection="column"
+                    className="box-position-icon"
+                  >
+                    <EventIcon style={{ color: "#0899BA" }} />
+                    <Typography
+                      variant="subtitle2"
+                      component="p"
+                      style={{ fontWeight: "bold" }}
+                    >
                       Dados do atendimento
                     </Typography>
                     <Typography variant="caption" color="textSecondary">
-                      {formatDate(state?.started_at ?? '', 'DD/MM/YYYY HH:mm:ss')}
+                      {formatDate(new Date().toISOString(), "DD/MM/YYYY HH:mm:ss")}
                     </Typography>
                     <Typography variant="caption" color="textSecondary">
                       Procedimento: {state?.procedure_id}
                     </Typography>
                   </Box>
 
-                  <Box display="flex" flexDirection="column" mt={4} className="box-position-icon">
-                    <HomeIcon style={{ color: '#0899BA' }} />
-                    <Typography variant="subtitle2" component="p" style={{ fontWeight: 'bold' }}>
+                  <Box
+                    display="flex"
+                    flexDirection="column"
+                    mt={4}
+                    className="box-position-icon"
+                  >
+                    <HomeIcon style={{ color: "#0899BA" }} />
+                    <Typography
+                      variant="subtitle2"
+                      component="p"
+                      style={{ fontWeight: "bold" }}
+                    >
                       Dados do Home Care
                     </Typography>
                     <Typography variant="caption" color="textSecondary">
@@ -686,9 +857,18 @@ export default function AreaForm(props: RouteComponentProps<IPageParams>) {
                     </Typography>
                   </Box>
 
-                  <Box display="flex" flexDirection="column" mt={4} className="box-position-icon">
-                    <RecentActorsSharpIcon style={{ color: '#0899BA' }} />
-                    <Typography variant="subtitle2" component="p" style={{ fontWeight: 'bold' }}>
+                  <Box
+                    display="flex"
+                    flexDirection="column"
+                    mt={4}
+                    className="box-position-icon"
+                  >
+                    <RecentActorsSharpIcon style={{ color: "#0899BA" }} />
+                    <Typography
+                      variant="subtitle2"
+                      component="p"
+                      style={{ fontWeight: "bold" }}
+                    >
                       Dados do plano de saúde
                     </Typography>
                     <Typography variant="caption" color="textSecondary">
@@ -714,16 +894,26 @@ export default function AreaForm(props: RouteComponentProps<IPageParams>) {
                     </Typography>
                   </Box>
 
-                  <Box display="flex" flexDirection="column" mt={4} mb={5} className="box-position-icon">
-                    <LocalHospitalSharpIcon style={{ color: '#0899BA' }} />
-                    <Typography variant="subtitle2" component="p" style={{ fontWeight: 'bold' }}>
+                  <Box
+                    display="flex"
+                    flexDirection="column"
+                    mt={4}
+                    mb={5}
+                    className="box-position-icon"
+                  >
+                    <LocalHospitalSharpIcon style={{ color: "#0899BA" }} />
+                    <Typography
+                      variant="subtitle2"
+                      component="p"
+                      style={{ fontWeight: "bold" }}
+                    >
                       Dados do hospital
                     </Typography>
                     <Typography variant="caption" color="textSecondary">
                       Médico responsável: {selectUser()?.name}
                     </Typography>
                     <Typography variant="caption" color="textSecondary">
-                      {`${selectCid()?.cid ?? ''} - ${selectCid()?.name ?? ''}`}
+                      {`${selectCid()?.cid ?? ""} - ${selectCid()?.name ?? ""}`}
                     </Typography>
                   </Box>
                 </Box>
@@ -740,16 +930,13 @@ export default function AreaForm(props: RouteComponentProps<IPageParams>) {
               Anterior
             </Button>
 
-            {currentStep === (steps.length - 1) ? (
-              <Button
-                background="primary"
-                onClick={handleSaveFormCare}
-              >
+            {currentStep === steps.length - 1 ? (
+              <Button background="primary" onClick={handleSaveFormCare}>
                 Finalizar
               </Button>
             ) : (
                 <Button
-                  disabled={currentStep === (steps.length - 1)}
+                  disabled={currentStep === steps.length - 1}
                   background="primary"
                   onClick={handleNextStep}
                 >
@@ -758,7 +945,6 @@ export default function AreaForm(props: RouteComponentProps<IPageParams>) {
               )}
           </ButtonsContent>
         </FormSection>
-
       </Container>
 
       <Dialog
@@ -771,17 +957,17 @@ export default function AreaForm(props: RouteComponentProps<IPageParams>) {
         <DialogContent>
           <DialogContentText id="alert-dialog-description">
             Tem certeza que deseja cancelar este cadastro?
-					</DialogContentText>
+          </DialogContentText>
         </DialogContent>
         <DialogActions>
           <Button onClick={handleCloseModalCancel} color="primary">
             Não
-					</Button>
+          </Button>
           <Button onClick={handleCancelForm} color="primary" autoFocus>
             Sim
-					</Button>
+          </Button>
         </DialogActions>
       </Dialog>
-    </Sidebar >
+    </Sidebar>
   );
 }
