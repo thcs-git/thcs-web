@@ -33,13 +33,12 @@ import {
 } from '@material-ui/core';
 import { SearchOutlined } from '@material-ui/icons';
 import Autocomplete from '@material-ui/lab/Autocomplete';
-import DayJsUtils from '@date-io/dayjs';
 
 import Sidebar from '../../../components/Sidebar';
 import { FormTitle, SelectComponent as Select } from '../../../styles/components/Form';
 import { SwitchComponent as Switch } from '../../../styles/components/Switch';
 
-import { formatDate } from '../../../helpers/date';
+import { formatDate, age } from '../../../helpers/date';
 import { bloodTypes, maritalStatus } from '../../../helpers/patient';
 
 import DatePicker from '../../../styles/components/DatePicker';
@@ -95,13 +94,6 @@ function TabPanel(props: TabPanelProps) {
       )}
     </div>
   );
-}
-
-function a11yProps(index: any) {
-  return {
-    id: `simple-tab-${index}`,
-    'aria-controls': `simple-tabpanel-${index}`,
-  };
 }
 
 export default function PatientForm(props: RouteComponentProps<IPageParams>) {
@@ -301,7 +293,7 @@ export default function PatientForm(props: RouteComponentProps<IPageParams>) {
                   <FormContent>
                     <FormGroupSection>
                       <Grid container>
-                        <Grid item md={9} xs={12}>
+                        <Grid item md={7} xs={12}>
                           <TextField
                             id="input-name"
                             label="Nome do paciente"
@@ -322,6 +314,18 @@ export default function PatientForm(props: RouteComponentProps<IPageParams>) {
                               shrink: true,
                             }}
                             fullWidth
+                          />
+                        </Grid>
+
+                        <Grid item md={2} xs={12}>
+                          <TextField
+                            id="input-age"
+                            label="Idade"
+                            variant="outlined"
+                            size="small"
+                            value={age(state.birthdate)}
+                            fullWidth
+                            disabled
                           />
                         </Grid>
 
@@ -352,7 +356,7 @@ export default function PatientForm(props: RouteComponentProps<IPageParams>) {
                         </Grid>
                         <Grid item md={8} xs={12}>
                           <TextField
-                            id="input-fantasy-name"
+                            id="input-mother-name"
                             label="Nome da mãe"
                             variant="outlined"
                             size="small"
@@ -697,10 +701,10 @@ export default function PatientForm(props: RouteComponentProps<IPageParams>) {
               <ButtonsContent>
                 <ButtonComponent background="secondary" variant="outlined" onClick={() => patientState.success ? history.push('/patient') : handleOpenModalCancel()}>
                   Voltar
-            </ButtonComponent>
+                </ButtonComponent>
                 <ButtonComponent background="success" onClick={handleSaveFormPatient}>
                   Salvar
-            </ButtonComponent>
+                </ButtonComponent>
               </ButtonsContent>
             </TabPanel>
           </Container>

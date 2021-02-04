@@ -6,7 +6,8 @@ import {
   updateUserRequest,
   getAddress as getAddressAction,
   loadUserById,
-  loadProfessionsRequest as getProfessionsAction
+  loadProfessionsRequest as getProfessionsAction,
+  loadUserTypesRequest as getUserTypesAction,
 } from '../../../store/ducks/users/actions';
 import { UserInterface, ProfessionUserInterface } from '../../../store/ducks/users/types';
 
@@ -21,6 +22,7 @@ import { CompanyInterface } from '../../../store/ducks/companies/types';
 
 import { ApplicationState } from '../../../store';
 
+import { ufs } from '../../../helpers/constants/address';
 import Loading from '../../../components/Loading';
 
 import { useHistory, RouteComponentProps } from 'react-router-dom';
@@ -49,7 +51,7 @@ import { FormTitle, SelectComponent as Select } from '../../../styles/components
 import { SwitchComponent as Switch } from '../../../styles/components/Switch';
 import { ChipComponent as Chip } from '../../../styles/components/Chip';
 
-import { formatDate } from '../../../helpers/date';
+import { formatDate, age } from '../../../helpers/date';
 
 import DatePicker from '../../../styles/components/DatePicker';
 import { TabContent, TabNav, TabNavItem, TabBody, TabBodyItem } from '../../../styles/components/Tabs';
@@ -111,6 +113,7 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
     cellphone: '',
     user_type_id: '',
     specialties: [],
+    council_state: '',
     council_number: '',
     active: true,
   });
@@ -121,7 +124,7 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
   });
 
   const genders = ['Masculino', 'Feminino', 'Indefinido'];
-  const userTypes = [{ id: '1', description: 'Medico' }, { id: '1', description: 'Enfermeiro' }, { id: '1', description: 'Administrativo' }];
+  const userTypes = [{ id: '1', description: 'Assistencial' }, { id: '2', description: 'Administrativo' }];
 
   const [openModalCancel, setOpenModalCancel] = useState(false);
 
@@ -130,6 +133,7 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
     dispatch(getCouncilsAction());
     dispatch(getProfessionsAction());
     dispatch(getCompaniesAction());
+    dispatch(getUserTypesAction());
   }, []);
 
   useEffect(() => {
@@ -139,10 +143,13 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
   }, [params]);
 
   useEffect(() => {
-    setState(prevState => ({
-      ...prevState,
-      ...userState.data,
-    }));
+    if (userState.data._id) {
+      setState(prevState => ({
+        ...prevState,
+        ...userState.data,
+        user_type_id: (typeof userState.data.user_type_id === 'object') ? userState.data.user_type_id._id : userState.data.user_type_id
+      }));
+    }
   }, [userState]);
 
   useEffect(() => {
@@ -162,10 +169,6 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
     // }));
 
   }, [userState.data.address]);
-
-  useEffect(() => {
-    console.log(state);
-  }, [state]);
 
   useEffect(() => {
     if (userState.error) {
@@ -193,24 +196,27 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
   }, [currentTab]);
 
   const handleUserType = useCallback((event: any, newValue: any) => {
-    setForm(prevState => ({
+    setState(prevState => ({
       ...prevState,
-      userType: newValue,
+      user_type_id: newValue._id,
     }));
   }, [state.user_type_id]);
 
   const handleCouncil = useCallback((event: any, newValue: any) => {
-    setForm(prevState => ({
-      ...prevState,
-      council_id: newValue,
-    }));
-
     setState(prevState => ({
       ...prevState,
       council_id: newValue
     }));
 
   }, [state.council_id]);
+
+  const handleCouncilState = useCallback((event: any, newValue: any) => {
+    setState(prevState => ({
+      ...prevState,
+      council_state: newValue.initials
+    }));
+
+  }, [state.council_state]);
 
   const getAddress = useCallback(() => {
     dispatch(getAddressAction(state.address.postal_code));
@@ -244,7 +250,7 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
     const selected = userState.data.professions.filter(item => item._id === state.profession_id);
 
     return (selected[0]) ? selected[0] : null;
-  }, [state.profession_id]);
+  }, [state.profession_id, state.professions]);
 
   // Especialides
   function handleSelectMainSpecialty(value: SpecialtyInterface) {
@@ -282,6 +288,22 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
 
     return (selected[0]) ? selected[0] : null;
   }, [state.main_specialty_id]);
+
+  const selectCouncilState = useCallback(() => {
+    const selected = ufs.filter(item => item.initials === state.council_state);
+
+    return (selected[0]) ? selected[0] : null;
+  }, [state.council_state]);
+
+  const selectUserType = useCallback(() => {
+    if (!userState.data.user_types) {
+      return null;
+    }
+
+    const selected = userState.data.user_types.filter(item => item._id === state.user_type_id);
+
+    return (selected[0]) ? selected[0] : null;
+  }, [state.user_type_id, state.user_types]);
 
   //Empresas
   function handleSelectCompany(value: CompanyInterface) {
@@ -362,6 +384,18 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
                       </Grid>
 
                       <Grid item md={2} xs={12}>
+                        <TextField
+                          id="input-age"
+                          label="Idade"
+                          variant="outlined"
+                          size="small"
+                          value={age(state.birthdate)}
+                          fullWidth
+                          disabled
+                        />
+                      </Grid>
+
+                      <Grid item md={2} xs={12}>
                         <FormControl variant="outlined" size="small" fullWidth>
                           <InputLabel id="select-patient-gender">Sexo</InputLabel>
                           <Select
@@ -378,9 +412,9 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
                           </Select>
                         </FormControl>
                       </Grid>
-                      <Grid item md={8} xs={12}>
+                      <Grid item md={6} xs={12}>
                         <TextField
-                          id="input-fantasy-name"
+                          id="input-mother-name"
                           label="Nome da mãe"
                           variant="outlined"
                           size="small"
@@ -579,15 +613,15 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
                     </Grid>
                   </Grid>
                   <Grid container>
-                    <Grid item md={2} xs={12}>
+                    <Grid item md={3} xs={12}>
                       <FormGroupSection>
                         <Autocomplete
                           id="combo-box-user-type"
-                          options={userTypes}
-                          getOptionLabel={(option) => option.description}
+                          options={state.user_types || []}
+                          getOptionLabel={(option) => option.name}
                           renderInput={(params) => <TextField {...params} label="Tipo do Usuário" variant="outlined" />}
-                          value={form?.userType}
-                          getOptionSelected={(option, value) => option.id === form?.userType?.id}
+                          value={selectUserType()}
+                          getOptionSelected={(option, value) => option._id === state.user_type_id}
                           onChange={(event: any, newValue) => {
                             handleUserType(event, newValue);
                           }}
@@ -635,7 +669,7 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
                         <Autocomplete
                           id="combo-box-council"
                           options={councilState.list.data}
-                          getOptionLabel={(option) => option.name}
+                          getOptionLabel={(option) => `${option.initials} - ${option.name}`}
                           renderInput={(params) => <TextField {...params} label="Conselho" variant="outlined" />}
                           value={userState.data?.council_id || null}
                           getOptionSelected={(option, value) => option._id === state?.council_id?._id}
@@ -646,6 +680,22 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
                           fullWidth
                         />
                       </FormGroupSection>
+                    </Grid>
+                    <Grid item md={1} xs={12}>
+                      <Autocomplete
+                        id="combo-box-council-state"
+                        options={ufs}
+                        getOptionLabel={(option) => option.initials}
+                        renderInput={(params) => <TextField {...params} label="UF" variant="outlined" />}
+                        value={selectCouncilState()}
+                        getOptionSelected={(option, value) => option.initials === state.council_state}
+                        onChange={(event: any, newValue) => {
+                          handleCouncilState(event, newValue);
+                        }}
+                        size="small"
+                        fullWidth
+                        autoComplete={false}
+                      />
                     </Grid>
                     <Grid item md={3} xs={12}>
                       <TextField
@@ -743,11 +793,22 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
           </FormContent>
           <ButtonsContent>
             <ButtonComponent background="default" onClick={() => userState.success ? history.push('/user') : handleOpenModalCancel()}>
-              Voltar
+              Cancelar
             </ButtonComponent>
-            <ButtonComponent background="primary" onClick={handleSaveFormUser}>
-              Salvar
-            </ButtonComponent>
+            {currentTab === 0 ? (
+              <ButtonComponent background="primary" onClick={() => selectTab(1)}>
+                Próximo
+              </ButtonComponent>
+            ) : (
+                <>
+                  <ButtonComponent background="default" onClick={() => selectTab(0)}>
+                    Voltar
+                  </ButtonComponent>
+                  <ButtonComponent background="success" onClick={handleSaveFormUser}>
+                    Salvar
+                </ButtonComponent>
+                </>
+              )}
           </ButtonsContent>
         </FormSection>
       </Container>

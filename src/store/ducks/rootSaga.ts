@@ -28,7 +28,7 @@ import { PatientTypes } from './patients/types';
 import { get as getPatients, createPatient, getAddress as getAddressPatient, getPatientById, updatePatient, searchPatient } from './patients/sagas';
 
 import { UserTypes } from './users/types';
-import { get as getUsers, createUser, getAddress as getAddressUser, getUserById, updateUser, searchUser, getProfessions } from './users/sagas';
+import { get as getUsers, createUser, getAddress as getAddressUser, getUserById, updateUser, searchUser, getProfessions, getUserTypes } from './users/sagas';
 
 import { CareTypes } from './cares/types';
 import {
@@ -157,5 +157,6 @@ export default function* rootSaga() {
     takeLatest(UserTypes.UPDATE_USER_REQUEST, updateUser),
     takeLatest(UserTypes.SEARCH_REQUEST, searchUser),
     takeLatest(UserTypes.LOAD_REQUEST_PROFESSION, getProfessions),
+    takeLatest(UserTypes.LOAD_REQUEST_USER_TYPES, getUserTypes),
   ]);
 }

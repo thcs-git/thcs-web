@@ -52,6 +52,6 @@ export const age = (date: any) => {
   } else if (years > 12) {
     return `${years} anos`;
   } else {
-    return dayjs(date).format('DD/MM/YYYY');
+    return (date) ? dayjs(date).format('DD/MM/YYYY') : '';
   }
 };
