@@ -4,7 +4,7 @@ import { AxiosResponse } from 'axios';
 
 import { apiSollar, viacep } from '../../../services/axios';
 
-import { loadSuccess, loadFailure, successGetAddress, createUserSuccess, loadSuccessGetUserById, updateUserSuccess, loadProfessionsSuccess } from './actions';
+import { loadSuccess, loadFailure, successGetAddress, createUserSuccess, loadSuccessGetUserById, updateUserSuccess, loadProfessionsSuccess, loadUserTypesSuccess } from './actions';
 import { UserInterface, ViacepDataInterface } from './types';
 
 const token = localStorage.getItem('token');
@@ -93,7 +93,7 @@ export function* updateUser({ payload: { data } }: any) {
   delete data.phone;
   delete data.cellphone;
 
-  data.user_type_id = { _id: '5fc05d1803058800244bc41b' }
+  // data.user_type_id = { _id: '5fc05d1803058800244bc41b' }
 
   try {
     const response: AxiosResponse = yield call(apiSollar.put, `/user/${_id}/update`, { ...data }, { headers: { token } });
@@ -139,11 +139,23 @@ export function* getProfessions({payload}:any) {
   }
 }
 
-
 export function* searchUser({ payload: { value } }: any) {
   try {
     const response: AxiosResponse = yield call(apiSollar.get, `/user/?limit=10&page=1${!!value ? '&search=' + value : ''}`)
     yield put(loadSuccess(response.data))
+  } catch (error) {
+    toast.info("Não foi possível buscar os dados do usuário");
+    yield put(loadFailure());
+  }
+}
+
+export function* getUserTypes({ payload: { value } }: any) {
+  try {
+    const response: AxiosResponse = yield call(apiSollar.get, `/usertype/?limit=10&page=1&search=${value || ''}`)
+
+    console.log('saga: getUserTypes => response.data', response.data)
+
+    yield put(loadUserTypesSuccess(response.data))
   } catch (error) {
     toast.info("Não foi possível buscar os dados do usuário");
     yield put(loadFailure());

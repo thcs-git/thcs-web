@@ -22,6 +22,9 @@ export enum UserTypes {
 
   LOAD_REQUEST_PROFESSION = "@user/LOAD_REQUEST_PROFESSION",
   LOAD_RESPONSE_PROFESSION = "@user/LOAD_RESPONSE_PROFESSION",
+
+  LOAD_REQUEST_USER_TYPES = "@user/LOAD_REQUEST_USER_TYPES",
+  LOAD_RESPONSE_USER_TYPES = "@user/LOAD_RESPONSE_USER_TYPES",
 }
 
 /**
@@ -36,11 +39,20 @@ export interface ProfessionUserInterface {
   _id: string;
   name: string;
 };
+export interface UserTypesInterface {
+  _id: string;
+  name: string;
+};
 
 export interface CompanyUserInterface {
   id: string;
   name: string;
 };
+
+export interface UserTypeInterface {
+  _id: string;
+  name: string;
+}
 
 export interface UserListItems {
   _id: string;
@@ -72,7 +84,7 @@ export interface UserInterface {
 	email: string; // email
 	phone: string;
   cellphone: string;
-  user_type_id: string;
+  user_type_id: string | UserTypeInterface;
   profession_id?: string;
   main_specialty_id?: string;
   specialties: (SpecialtiesUserInterface | {})[];
@@ -84,11 +96,13 @@ export interface UserInterface {
     initials?: string;
     active?: boolean;
   };
+  council_state: string;
   council_number: string;
   username?: string;
   password?: string;
   active: boolean; // active
   professions?: ProfessionUserInterface[];
+  user_types?: UserTypesInterface[];
 }
 
 

@@ -7,7 +7,7 @@ export const ButtonsContent = styled.div`
 
   margin-bottom: 20px;
 
-  & > button:first-child {
+  & > button:not(:last-child) {
     margin-right: 10px;
   }
 `;
