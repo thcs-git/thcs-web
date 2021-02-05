@@ -9,13 +9,14 @@ import {
   DialogTitle,
   Grid,
   TableContainer,
-  Table,
   TableHead,
   TableRow,
   TableCell,
-  TableBody
+  TableBody,
+  Checkbox,
+  Tooltip
 } from '@material-ui/core';
-import { Create as CreateIcon, Search as SearchIcon, AccountCircle, Visibility } from '@material-ui/icons';
+import { Create as CreateIcon, Search as SearchIcon, AccountCircle, Visibility, Check as CheckIcon, Error } from '@material-ui/icons';
 import { Alert, AlertTitle } from '@material-ui/lab';
 
 import { useDispatch, useSelector } from 'react-redux';
@@ -31,20 +32,17 @@ import Sidebar from '../../../../components/Sidebar';
 
 import { age, formatDate } from '../../../../helpers/date';
 
+import { Table, Th, Td } from "../../../../styles/components/Table";
 import Button from '../../../../styles/components/Button';
 import { FormTitle } from '../../../../styles/components/Form';
 
 import {
   ButtonsContent,
-  FormSection,
-  FormContent,
   InputFiled as TextField,
   PatientResume,
   PatientResumeContent,
   PatientData,
   SearchContent,
-  StepperComponent,
-  StepComponent,
   NoDataIcon,
   PatientNotFound
 } from './styles';
@@ -58,6 +56,7 @@ export default function PatientCaptureForm() {
 
   const [patientSearch, setPatientSearch] = useState<string>('');
   const [patient, setPatient] = useState<any>({});
+  const [selectedPatient, setSelectedPatient] = useState<any>({});
 
   const [care, setCare] = useState<CareInterface>({
     status: 'Pre-Atendimento',
@@ -68,6 +67,10 @@ export default function PatientCaptureForm() {
 
   const [openModalConfirm, setOpenModalConfirm] = useState<boolean>(false);
   const [openModalCare, setOpenModalCare] = useState<boolean>(false);
+
+  useEffect(() => {
+    dispatch(searchPatientAction(''));
+  }, []);
 
   useEffect(() => {
     if (patientState.list.total === 1) {
@@ -104,14 +107,68 @@ export default function PatientCaptureForm() {
     open ? setOpenModalCare(open) : setOpenModalCare(!openModalCare);
   }, [openModalCare]);
 
+  const handleCheckDocument = (documentId: string, documents: Array<any>) => {
+    const found = documents.find(
+      (doc) =>
+        doc.document_group_id === documentId && !doc.canceled && doc.finished
+    );
+
+    const documentRoute = () => {
+      switch (documentId) {
+        case "5ffd79012f5d2b1d8ff6bea3":
+          return "socioambiental";
+        case "5ff65469b4d4ac07d186e99f":
+          return "nead";
+        case "5ffd7acd2f5d2b1d8ff6bea4":
+          return "abemid";
+        default:
+          return "";
+      }
+    };
+
+    if (found) {
+      return found.status === "Não Elegível" ? (
+        <Tooltip title="Não Elegível">
+          <Error
+            style={{ color: "#FF6565", cursor: "pointer" }}
+            onClick={() =>
+              history.push(
+                `/patient/capture/${found.care_id}/${documentRoute()}/${found._id
+                }`
+              )
+            }
+          />
+        </Tooltip>
+      ) : (
+          <Tooltip title="Elegível">
+            <CheckIcon
+              style={{ color: "#4FC66A", cursor: "pointer" }}
+              onClick={() =>
+                history.push(
+                  `/patient/capture/${found.care_id}/${documentRoute()}/${found._id
+                  }`
+                )
+              }
+            />
+          </Tooltip>
+        );
+    } else {
+      return (
+        <Tooltip title="Não Realizado">
+          <CheckIcon style={{ color: "#EBEBEB" }} />
+        </Tooltip>
+      );
+    }
+  };
+
   const handleSubmitPatientCapture = useCallback(() => {
     setOpenModalConfirm(false);
 
-    const params = { ...care, patient_id: patient._id };
+    const params = { ...care, patient_id: selectedPatient._id || patient._id };
 
     dispatch(createCareAction(params))
 
-  }, [dispatch, care, patient]);
+  }, [dispatch, care, patient, selectedPatient]);
 
   return (
     <>
@@ -119,7 +176,6 @@ export default function PatientCaptureForm() {
         {(patientState.loading || careState.loading) && (
           <Loading />
         )}
-        {console.log('careState', careState)}
         <Container>
           <FormTitle>Captação de Pacientes</FormTitle>
           <h4>Primeiro, encontre o paciente que deseja realizar a captação:</h4>
@@ -149,7 +205,7 @@ export default function PatientCaptureForm() {
             </Grid>
           </Grid>
 
-          {patient?._id && (
+          {patient?._id ? (
             <Grid container>
               <Grid item md={12} xs={12}>
 
@@ -214,7 +270,57 @@ export default function PatientCaptureForm() {
                 </ButtonsContent>
               </Grid>
             </Grid>
-          )}
+          ) : (
+              <>
+                <h3>Pra te ajudar, aqui tem a lista dos últimos pacientes cadastrados</h3>
+
+                <br />
+
+                <Table>
+                  <thead>
+                    <tr>
+                      <Th></Th>
+                      <Th>Paciente</Th>
+                      <Th>CPF</Th>
+                      <Th>Cadastrado em</Th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {patientState.list.data.map((item, index) => (
+                      <tr key={index}>
+                        <Td center>
+                          <Checkbox
+                            checked={selectedPatient?._id === item?._id}
+                            onChange={(element) => {
+                              if (item._id && (item._id === element.target.value || item._id === selectedPatient?._id)) {
+                                setSelectedPatient({});
+                              } else {
+                                setSelectedPatient(item);
+                              }
+                            }}
+                            inputProps={{ "aria-label": "primary checkbox" }}
+                          />
+                        </Td>
+                        <Td>{item?.name}</Td>
+                        <Td>{item?.fiscal_number}</Td>
+                        <Td>{formatDate(item?.created_at, 'DD/MM/YYYY HH:mm:ss')}</Td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </Table>
+
+                {selectedPatient && (
+                  <ButtonsContent>
+                    <Button
+                      background="success"
+                      onClick={() => toggleModalConfirm(true)}
+                    >
+                      Selecionar Paciente
+                    </Button>
+                  </ButtonsContent>
+                )}
+              </>
+            )}
 
           {patientState.error && (
             <PatientNotFound>
@@ -257,7 +363,7 @@ export default function PatientCaptureForm() {
             <DialogTitle id="alert-dialog-title">Atendimentos do Paciente</DialogTitle>
             <DialogContent>
               <TableContainer>
-                <Table size="small">
+                <Table>
                   <TableHead>
                     <TableRow>
                       <TableCell>Nome</TableCell>
