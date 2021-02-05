@@ -101,7 +101,7 @@ export default function Nead(props: RouteComponentProps<IPageParams>) {
     if (document?._id) {
       handleFieldAnswer();
     }
-  }, [document, currentStep]);
+  }, [document]);
 
   useEffect(() => {
     calculateScore();
@@ -155,7 +155,8 @@ export default function Nead(props: RouteComponentProps<IPageParams>) {
     });
 
     const getComplexity = (score: number) => {
-      if (currentStep === 1) {
+      // Critérios para indicação imediata de internação domiciliar (GRUPO 2)
+      if (currentStep === 2) {
         if (count24hours > 0) {
           return 'Alta Complexidade';
         } else if (count12hours > 0) {
@@ -163,7 +164,9 @@ export default function Nead(props: RouteComponentProps<IPageParams>) {
         } else {
           return 'Sem Complexidade';
         }
-      } else if (currentStep === 2) {
+      }
+      // Atividades (GRUPO 3)
+      else if (currentStep === 3) {
         if (partialScore >= 6 && partialScore <= 11) {
           return 'Baixa Complexidade';
         } else if (partialScore >= 12 && partialScore <= 17) {
@@ -173,7 +176,9 @@ export default function Nead(props: RouteComponentProps<IPageParams>) {
         } else {
           return 'Sem Complexidade';
         }
-      } else if (currentStep === 3) {
+      }
+      // KATZ
+      else if (currentStep === 0) {
         if (score < 2) {
           return 'Alta Complexidade';
         } else if (score >= 3 && score <= 4) {
@@ -187,7 +192,8 @@ export default function Nead(props: RouteComponentProps<IPageParams>) {
     };
 
     const getStatus = (score: number) => {
-      if (currentStep === 0) {
+      // Elegibilidade (GRUPO 1)
+      if (currentStep === 1) {
         return (countNoAnswers > 0) ? 'Não Elegível' : 'Elegível';
       } else {
         return 'Não Identificado';
@@ -354,7 +360,7 @@ export default function Nead(props: RouteComponentProps<IPageParams>) {
 
               <ScoreTotalContent>
                 <ScoreLabel>PONTUAÇÃO KATZ:</ScoreLabel>
-                <ScoreTotal>{steps[currentStep].score.total}</ScoreTotal>
+                <ScoreTotal>{steps[currentStep].score.total} - {steps[currentStep].score.complexity}</ScoreTotal>
               </ScoreTotalContent>
             </>
           )}
@@ -460,7 +466,7 @@ export default function Nead(props: RouteComponentProps<IPageParams>) {
 
               <ScoreTotalContent>
                 <ScoreLabel>PONTUAÇÃO FINAL:</ScoreLabel>
-                <ScoreTotal>{steps[currentStep].score.total}</ScoreTotal>
+                <ScoreTotal>{steps[currentStep].score.total} - {steps[currentStep].score.complexity}</ScoreTotal>
               </ScoreTotalContent>
             </>
           )}
