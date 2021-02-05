@@ -2,8 +2,9 @@ import React, { useState, useEffect, useCallback } from 'react';
 import Tab from '@material-ui/core/Tab';
 
 import { useDispatch, useSelector } from 'react-redux';
-import { createPatientRequest, updatePatientRequest, getAddress as getAddressAction, loadPatientById, setIfRegistrationCompleted, loadFailure } from '../../../store/ducks/patients/actions';
+import { createPatientRequest, updatePatientRequest, getAddress as getAddressAction, loadPatientById, loadFailure } from '../../../store/ducks/patients/actions';
 import { PatientInterface } from '../../../store/ducks/patients/types';
+
 import { loadRequest as getAreasAction } from '../../../store/ducks/areas/actions';
 
 import { ApplicationState } from '../../../store';
@@ -34,15 +35,16 @@ import {
 import { SearchOutlined } from '@material-ui/icons';
 import Autocomplete from '@material-ui/lab/Autocomplete';
 
+import CaptureDataDialog from '../../../components/Dialogs/CaptureData';
 import Sidebar from '../../../components/Sidebar';
+
 import { FormTitle, SelectComponent as Select } from '../../../styles/components/Form';
 import { SwitchComponent as Switch } from '../../../styles/components/Switch';
+import DatePicker from '../../../styles/components/DatePicker';
+import ButtonComponent from '../../../styles/components/Button';
 
 import { formatDate, age } from '../../../helpers/date';
 import { bloodTypes, maritalStatus } from '../../../helpers/patient';
-
-import DatePicker from '../../../styles/components/DatePicker';
-import ButtonComponent from '../../../styles/components/Button';
 
 import {
   ButtonsContent,
