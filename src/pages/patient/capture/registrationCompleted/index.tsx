@@ -1,11 +1,11 @@
 import React, { useState, useCallback, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
-import { Container, Grid, Menu, MenuItem, Dialog, DialogTitle, DialogContent, DialogContentText, DialogActions, Radio, RadioGroup, FormControlLabel, TextField, FormControl, Card, CardContent } from '@material-ui/core';
+import { Container, Dialog, DialogTitle, DialogContent, DialogContentText, DialogActions, Radio, RadioGroup, FormControlLabel, TextField, FormControl } from '@material-ui/core';
 
 
 import { setIfRegistrationCompleted } from '../../../../store/ducks/patients/actions';
-import { CareInterface } from '../../../../store/ducks/cares/types';
+import { CareInterface, ICaptureData } from '../../../../store/ducks/cares/types';
 import { createCareRequest as createCareAction } from '../../../../store/ducks/cares/actions';
 
 import Button from '../../../../styles/components/Button';
@@ -15,13 +15,9 @@ import { ReactComponent as IconProfile } from '../../../../assets/img/icon-profi
 import { BoxCustom as Box, Profile, SuccessContent, ButtonsContainer, PatientWrapper } from './styles';
 import { ApplicationState } from '../../../../store';
 
-import { age } from '../../../../helpers/date';
+import CaptureDataDialog from '../../../../components/Dialogs/CaptureData';
 
-interface ICaptureData {
-  type: string;
-  orderNumber: string;
-  estimate: string;
-}
+import { age } from '../../../../helpers/date';
 
 const registrationCompleted: React.FC<any> = (props) => {
   // ----------------------------------------------
@@ -51,11 +47,24 @@ const registrationCompleted: React.FC<any> = (props) => {
   const { patients: patientState, cares: careState } = useSelector((state: ApplicationState) => state);
 
   const [captureOptionsModalOpen, setCaptureModalModalOpen] = useState(false);
-  const [captureData, setCaptureData] = useState<ICaptureData>({
-    type: '',
-    orderNumber: '',
-    estimate: '',
+  const [captureData, setCaptureData] = useState<ICaptureData | any>({
   });
+
+  const handleSubmitCaptureData = () => {
+    const careParams = {
+      patient_id: patientState.data._id || params.id,
+      status: 'Pre-Atendimento',
+      capture: {
+        ...captureData,
+        status: 'Em Andamento',
+      },
+      care_type_id: '5fd66ca189a402ec48110cc1',
+      user_id: '600f0d615ba0702f45864035',
+    };
+
+    dispatch(createCareAction(careParams));
+  };
+
 
   useEffect(() => {
     if (careState.success && !careState.error && careState.data._id) {
@@ -186,9 +195,21 @@ const registrationCompleted: React.FC<any> = (props) => {
         </DialogContent>
         <DialogActions>
           <Button onClick={() => toggleModalConfirm()} color="primary">Não</Button>
-          <Button onClick={handleSubmitPatientCapture} color="primary" autoFocus>Sim</Button>
+          <Button onClick={() => {
+            toggleModalConfirm(false);
+            setCaptureModalModalOpen(true);
+          }}
+            color="primary" autoFocus>Sim</Button>
         </DialogActions>
       </Dialog>
+
+      <CaptureDataDialog
+        dialogState={captureOptionsModalOpen}
+        toogleModalState={() => setCaptureModalModalOpen(false)}
+        captureData={captureData}
+        setCaptureData={setCaptureData}
+        saveCallback={handleSubmitCaptureData}
+      />
     </Container>
   );
 }

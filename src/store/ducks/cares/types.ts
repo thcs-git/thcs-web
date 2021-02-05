@@ -272,4 +272,19 @@ export interface DocumentState {
   success?: boolean;
 }
 
+export interface ICaptureData {
+  inpatient: boolean;
+  estimate: string;
+  order_number: string;
+  health_insurance: string;
+  health_plan: string;
+  health_sub_plan: string;
+  hospital: string;
+  unity: string;
+  assistant_doctor: string;
+  sector: string;
+  bed: string;
+  status: string;
+}
+
 export type LoadRequestParams = Partial<Omit<CareList, 'data'>>
