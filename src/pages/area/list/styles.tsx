@@ -13,7 +13,7 @@ export const FormSearch = styled.form`
 `;
 
 export const List = styled.div`
-  margin-bottom: 20px;
+ // margin-bottom: 10px;
 `;
 export const ListLink = styled(Link)`
   text-decoration: none;

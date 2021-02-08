@@ -26,8 +26,9 @@ export default function PatientCard(props: any) {
           <div>
             <p className="title">{patient?.name}</p>
             <div className="subTitle">
-              <p>{patient?.birthdate ? age(patient?.birthdate) : ''}</p>
-              <p>Sexo: {patient?.gender}</p>
+              <p>{patient?.birthdate ? age(patient?.birthdate) : ''},{patient?.gender}</p>
+              <p>CPF: {patient?.fiscal_number}</p>
+              {/* <p>Sexo: {patient?.gender}</p> */}
               <p>Nome da Mãe: {patient?.mother_name}</p>
             </div>
           </div>
