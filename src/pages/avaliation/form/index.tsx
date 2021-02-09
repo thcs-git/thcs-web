@@ -398,7 +398,7 @@ export default function AreaForm(props: RouteComponentProps<IPageParams>) {
                 <Grid item md={6} xs={12}>
                   <TextField
                     id="input-diagnostic"
-                    label="Diaginóstico"
+                    label="Diagnóstico"
                     variant="outlined"
                     size="small"
                     // value={form.cellphone}

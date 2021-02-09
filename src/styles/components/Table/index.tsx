@@ -4,6 +4,10 @@ interface ITableCellInterface {
   center?: boolean
 }
 
+interface IComplexityStatus {
+  status?: string;
+}
+
 export const Table = styled.table`
   width: 100%;
   background: #fff;
@@ -19,6 +23,25 @@ export const Table = styled.table`
 export const Td = styled.td<ITableCellInterface>`
   text-align: ${props => props.center ? 'center' : 'left'};
   border-top: 1px solid #ccc;
+`;
+
+export const ComplexityStatus = styled.div<IComplexityStatus>`
+  color: ${(props) => {
+    switch (props.status) {
+      case 'Baixa Complexidade':
+        return `var(--success)`;
+      case 'Alta Complexidade':
+        return `var(--danger)`;
+      case 'Média Complexidade':
+        return `var(--yellow)`;
+      default:
+        return `var(--black)`;
+    }
+  }};
+
+  display: flex;
+  align-items: center;
+  justify-items: center;
 `;
 
 export const Th = styled.td<ITableCellInterface>`

@@ -104,12 +104,13 @@ export interface CareInterface {
   health_plan_card_validate?: string;
   origin_id?: string;
   accommodation_type_id?: string;
-  care_type_id: string;
+  care_type_id?: string | CareTypeInterface;
   procedure_id?: string;
   cid_id?: string;
   area_id?: string;
-  user_id: string; // *
+  user_id?: string; // *
   status?: string, // * Pre-Atendimento, Em atendimento, Cancelado, Finalizado
+  complexity?: string,
 	started_at?: string;
 	created_at?: string;
 	created_by?: { _id: string };
@@ -121,6 +122,7 @@ export interface CareInterface {
     order_number?: string,
     status?: string,
     estimate?: string,
+    complexity?: string,
   }
 }
 
@@ -166,6 +168,11 @@ export interface HealthPlanInterface {
   name: string;
 }
 
+export interface CareTypeInterface {
+  _id: string;
+  name: string;
+  description: string;
+}
 export interface CidInterface {
   _id: string;
   name: string;
@@ -263,6 +270,21 @@ export interface DocumentState {
   loading?: boolean;
   error?: boolean;
   success?: boolean;
+}
+
+export interface ICaptureData {
+  inpatient: boolean;
+  estimate: string;
+  order_number: string;
+  health_insurance: string;
+  health_plan: string;
+  health_sub_plan: string;
+  hospital: string;
+  unity: string;
+  assistant_doctor: string;
+  sector: string;
+  bed: string;
+  status: string;
 }
 
 export type LoadRequestParams = Partial<Omit<CareList, 'data'>>

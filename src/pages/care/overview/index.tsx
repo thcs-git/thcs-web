@@ -30,6 +30,7 @@ import { RouteComponentProps } from 'react-router-dom';
 import { age, formatDate } from '../../../helpers/date';
 import mask from '../../../utils/mask';
 import { CareState } from '../../../store/ducks/cares/types';
+import Loading from '../../../components/Loading';
 
 interface IPageParams {
   id?: string;
@@ -85,6 +86,7 @@ export default function PatientOverview(props: RouteComponentProps<IPageParams>)
   return (
     <>
       <Sidebar>
+        {careState.loading && <Loading />}
         <Container>
           <FormTitle>Overview de Paciente</FormTitle>
 

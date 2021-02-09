@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { loadRequest, loadCustomerById, getAddress as getAddressAction, updateCompanyRequest, createCustomerRequest } from '../../../store/ducks/customers/actions';
+import { loadRequest, loadCustomerById, getAddress as getAddressAction, updateCustomerRequest, createCustomerRequest } from '../../../store/ducks/customers/actions';
 import { ApplicationState } from '../../../store';
 
 import { useHistory, RouteComponentProps } from 'react-router-dom';
@@ -107,7 +107,7 @@ export default function CustomerForm(props: RouteComponentProps<IPageParams>) {
 
   const handleSaveFormCustomer = useCallback(() => {
     if (params.id) {
-      dispatch(updateCompanyRequest(state));
+      dispatch(updateCustomerRequest(state));
     } else {
       dispatch(createCustomerRequest(state));
     }
@@ -182,7 +182,7 @@ export default function CustomerForm(props: RouteComponentProps<IPageParams>) {
           {/*  */}
           <FormGroupSection>
             <Grid container>
-              <Grid item md={3} xs={12} style={{  marginRight: 10}}>
+              <Grid item md={3} xs={12} style={{ marginRight: 10 }}>
                 <FormControl variant="outlined" size="small" fullWidth>
                   <InputLabel htmlFor="search-input">CEP</InputLabel>
                   <OutlinedInputFiled
@@ -207,7 +207,7 @@ export default function CustomerForm(props: RouteComponentProps<IPageParams>) {
                         <SearchOutlined style={{ color: 'var(--primary)' }} />
                       </InputAdornment>
                     }
-                    // labelWidth={155}
+                  // labelWidth={155}
 
                   />
                 </FormControl>
@@ -226,16 +226,16 @@ export default function CustomerForm(props: RouteComponentProps<IPageParams>) {
               </Grid>
 
               <Grid item md={1} xs={12}>
-                  <TextField
-                    id="input-address-uf"
-                    label="UF"
-                    variant="outlined"
-                    size="small"
-                    value={state.address.state}
-                    onChange={(element) => setState({ ...state, address: { ...state.address, state: element.target.value } })}
-                    fullWidth
-                  />
-                </Grid>
+                <TextField
+                  id="input-address-uf"
+                  label="UF"
+                  variant="outlined"
+                  size="small"
+                  value={state.address.state}
+                  onChange={(element) => setState({ ...state, address: { ...state.address, state: element.target.value } })}
+                  fullWidth
+                />
+              </Grid>
 
               <Grid item md={4} xs={12}>
                 <TextField
@@ -306,7 +306,7 @@ export default function CustomerForm(props: RouteComponentProps<IPageParams>) {
                 variant="outlined"
                 size="small"
                 value={state.phones?.number}
-                onChange={(element) => setState({ ...state, phones: { ...state.phones, number: element.target.value }  })}
+                onChange={(element) => setState({ ...state, phones: { ...state.phones, number: element.target.value } })}
                 placeholder="0000-0000"
                 fullWidth
               />

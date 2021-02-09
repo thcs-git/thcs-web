@@ -100,6 +100,7 @@ export interface PatientDataItems {
   social_name: string;
   email: string;
   fiscal_number: string;
+  created_at: string;
   active: boolean;
 }
 

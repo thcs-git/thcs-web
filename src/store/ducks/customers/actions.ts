@@ -12,7 +12,7 @@ export const successGetAddress = (data: ViacepDataInterface) => action(CustomerT
 export const createCustomerRequest = (data: CustomerInterface) => action(CustomerTypes.CREATE_CUSTOMER_REQUEST, { data });
 export const createCustomerSuccess = (data: CustomerInterface) => action(CustomerTypes.UPDATE_CUSTOMER_REQUEST, { data });
 
-export const updateCompanyRequest = (data: CustomerInterface) => action(CustomerTypes.UPDATE_CUSTOMER_REQUEST, { data });
+export const updateCustomerRequest = (data: CustomerInterface) => action(CustomerTypes.UPDATE_CUSTOMER_REQUEST, { data });
 
 export const loadCustomerById = (id: string) => action(CustomerTypes.LOAD_REQUEST_BY_ID, { id });
 

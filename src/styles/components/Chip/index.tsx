@@ -11,3 +11,11 @@ export const ChipComponent = styled(Chip)`
     background: var(--secondary);
   }
 `;
+
+export const ChipList = styled.div`
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+
+  margin-bottom: 20px;
+`;
