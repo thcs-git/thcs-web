@@ -94,7 +94,7 @@ export default function CouncilList() {
               {careState.list.data.map((care, index) => (
                 <tr key={index}>
                   <Td>
-                    <Link to={`/patient/${care._id}/overview`}>
+                    <Link to={`/care/${care._id}/overview`}>
                       {care.patient_id?.social_name || care.patient_id?.name}
                     </Link>
                   </Td>

@@ -13,7 +13,7 @@ export const getDayOfTheWeekName = (dayOfTheWeek: number) => {
   return daysOfWeek[dayOfTheWeek];
 }
 
-export const formatDate = (value: string, format: string) => {
+export const formatDate = (value: any, format: string) => {
   return dayjs(value).format(format);
 }
 

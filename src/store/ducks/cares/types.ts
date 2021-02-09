@@ -95,10 +95,10 @@ export enum CareTypes {
 
 export interface CareInterface {
   _id?: string;
-	patient_id?: Record<string, PatientInterface>; // *
-	health_insurance_id?: string;
-	health_plan_id?: string;
-	health_sub_plan_id?: string;
+	patient_id?: any; // *
+	health_insurance_id?: any;
+	health_plan_id?: any;
+	health_sub_plan_id?: any;
   contract?: string;
   health_plan_card_number?: string;
   health_plan_card_validate?: string;
