@@ -28,6 +28,7 @@ import {
   ListItemSubTitle,
   FormSearch,
   ButtonsContent,
+  ItemTable
 } from './styles';
 
 export default function CouncilList() {
@@ -98,23 +99,25 @@ export default function CouncilList() {
           />
            <Table
             tableCells={[
-              { name: 'Área', align: 'center' },
-              { name: 'Intervalo de abastecimento', align: 'center' },
-              { name: 'Dia de Abastecimento', align: 'center' },
-              { name: '      ', align: 'center' },
-              { name: '      ', align: 'center' }
+              { name: 'Área', align: 'left' ,},
+              { name: 'Intervalo de abastecimento', align: 'left' },
+              { name: 'Dia de Abastecimento', align: 'left' },
+              { name: 'Status', align: 'left' },
             ]}
           >
             {areaState.list.data.map((area, index) => (
               <TableRow key={`area_${index}`}>
-                <TableCell align="center">
+                <TableCell align="left">
+                <ItemTable>
                   <ListLink key={index} to={`/area/${area._id}/edit`}>{area.name}</ListLink>
+                </ItemTable>
+
                 </TableCell>
-                <TableCell align="center">{area.supply_days}{area.supply_days <2?' dia':' dias'}</TableCell> {/* Socioambiental */}
-                <TableCell align="center">{mapDays(area.week_day)}</TableCell> {/* Pedido */}
-                <TableCell align="center">
+                <TableCell align="left">{area.supply_days}{area.supply_days <2?' dia':' dias'}</TableCell> {/* Socioambiental */}
+                <TableCell align="left">{mapDays(area.week_day)}</TableCell> {/* Pedido */}
+                <TableCell align="left">
                   <ListItemStatus active={area.active}>{area.active ? 'Ativo' : 'Inativo'}</ListItemStatus></TableCell> {/* Última captação */}
-                <TableCell align="center">
+                {/* <TableCell align="center">
                   <Button aria-controls={`patient-capture-menu${index}`} id={`btn_patient-capture-menu${index}`} aria-haspopup="true" onClick={handleOpenRowMenu}>
                     <MoreVert style={{ color: '#0899BA' }}/>
                   </Button>
@@ -128,7 +131,7 @@ export default function CouncilList() {
                   >
                     <MenuItem><ListLink key={index} to={`/area/${area._id}/edit`}>Editar</ListLink></MenuItem>
                   </Menu>
-                </TableCell>
+                </TableCell> */}
               </TableRow>
             ))}
           </Table>
