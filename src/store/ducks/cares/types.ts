@@ -87,6 +87,10 @@ export enum CareTypes {
   // CID
   SEARCH_CID_REQUEST = "@care/SEARCH_CID_REQUEST",
   SEARCH_CID_SUCCESS = "@care/SEARCH_CID_SUCCESS",
+
+  // Document
+  LOAD_DOCUMENT_REQUEST = "@care/LOAD_DOCUMENT_REQUEST",
+  LOAD_DOCUMENT_SUCCESS = "@care/LOAD_DOCUMENT_SUCCESS",
 }
 
 /**
@@ -95,10 +99,10 @@ export enum CareTypes {
 
 export interface CareInterface {
   _id?: string;
-	patient_id?: Record<string, PatientInterface>; // *
-	health_insurance_id?: string;
-	health_plan_id?: string;
-	health_sub_plan_id?: string;
+  patient_id?: any; // *
+  health_insurance_id?: any;
+  health_plan_id?: any;
+  health_sub_plan_id?: any;
   contract?: string;
   health_plan_card_number?: string;
   health_plan_card_validate?: string;
@@ -111,10 +115,10 @@ export interface CareInterface {
   user_id?: string; // *
   status?: string, // * Pre-Atendimento, Em atendimento, Cancelado, Finalizado
   complexity?: string,
-	started_at?: string;
-	created_at?: string;
-	created_by?: { _id: string };
-	updated_at?: string;
+  started_at?: string;
+  created_at?: string;
+  created_by?: { _id: string };
+  updated_at?: string;
   updated_by?: { _id: string };
   documents_id?: Array<any>;
   capture?: {
@@ -154,6 +158,10 @@ export interface CareState {
   documentAbemid: DocumentState;
   documentGroupNead: DocumentGroupInterface;
   documentNead: DocumentState;
+  document: any;
+  // document?: {
+  //   document_group_id: DocumentGroupInterface
+  // } & DocumentGroupInterface;
 }
 
 //========
@@ -183,13 +191,13 @@ export interface CidInterface {
 
 export interface DocumentGroupInterface {
   _id?: string;
-	name?: string;
-	description?: string;
-	fields?: DocumentGroupFields[];
-	created_at?: string;
-	created_by?: { _id: string };
-	updated_at?: string;
-	updated_by?: { _id: string };
+  name?: string;
+  description?: string;
+  fields?: DocumentGroupFields[];
+  created_at?: string;
+  created_by?: { _id: string };
+  updated_at?: string;
+  updated_by?: { _id: string };
 }
 
 export interface DocumentGroupFields {
@@ -234,16 +242,16 @@ export interface DocumentInterface {
   pacient_id?: string | PatientInterface;
   care_id?: string | CareInterface;
   document_group_id?: string | DocumentGroupData;
-	finished?: boolean;
-	canceled?: boolean;
+  finished?: boolean;
+  canceled?: boolean;
   fields?: DocumentFields[];
   score?: number;
   complexity?: string;
   status?: string;
-	created_at?: string;
-	created_by?: { _id: string };
-	updated_at?: string;
-	updated_by?: { _id: string };
+  created_at?: string;
+  created_by?: { _id: string };
+  updated_at?: string;
+  updated_by?: { _id: string };
 }
 
 export interface DocumentFields {

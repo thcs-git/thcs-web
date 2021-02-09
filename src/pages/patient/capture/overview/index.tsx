@@ -186,7 +186,7 @@ export default function PatientCaptureForm(props: RouteComponentProps<IPageParam
 
   const handleCheckDocument = (documentId: string, documents: Array<any>) => {
     const found = documents.find(doc => (
-      doc.document_group_id === documentId &&
+      doc.document_group_id._id === documentId &&
       !doc.canceled &&
       doc.finished
     ));
@@ -196,7 +196,7 @@ export default function PatientCaptureForm(props: RouteComponentProps<IPageParam
 
   const handleDocument = (documentId: string, documents: Array<any>) => {
     const found = documents.find(doc => (
-      doc.document_group_id === documentId &&
+      doc.document_group_id._id === documentId &&
       !doc.canceled &&
       doc.finished
     ));
@@ -381,7 +381,7 @@ export default function PatientCaptureForm(props: RouteComponentProps<IPageParam
                           ) : (
                               <>
                                 {(document?._id) && (
-                                  <Button onClick={() => history.push(handleScoreRoute(documentGroup?._id || '', care?._id || '', document?._id))}>
+                                  <Button onClick={() => window.open(`/care/${care?._id}/medical-records/document/${document?._id}/print`, "_blank")}>
                                     <Visibility className="primary" />
                                   </Button>
                                 )}
