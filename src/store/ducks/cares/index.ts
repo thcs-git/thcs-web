@@ -41,6 +41,7 @@ export const INITIAL_STATE: CareState = {
   documentAbemid: {},
   documentGroupNead: {},
   documentNead: {},
+  document: '',
 };
 
 const reducer: Reducer<CareState> = (state = INITIAL_STATE, action) => {
@@ -171,7 +172,7 @@ const reducer: Reducer<CareState> = (state = INITIAL_STATE, action) => {
     case CareTypes.LOAD_SUCCCES_CARE_BY_ID:
       return {
         ...state,
-        data: {...action.payload.data},
+        data: { ...action.payload.data },
         loading: false,
         error: false,
         success: false,
@@ -430,6 +431,22 @@ const reducer: Reducer<CareState> = (state = INITIAL_STATE, action) => {
           error: false,
           success: true
         },
+        loading: false,
+        error: false,
+        success: true
+      };
+    case CareTypes.LOAD_DOCUMENT_REQUEST:
+      return {
+        ...state,
+        document: {},
+        loading: true,
+        error: false,
+        success: false
+      };
+    case CareTypes.LOAD_DOCUMENT_SUCCESS:
+      return {
+        ...state,
+        document: action.payload.data,
         loading: false,
         error: false,
         success: true

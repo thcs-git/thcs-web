@@ -118,3 +118,9 @@ export const careTypeSuccess = (data: HealthPlanInterface) => action(CareTypes.C
 export const cidRequest = (cid: string) => action(CareTypes.SEARCH_CID_REQUEST, { cid });
 export const cidSuccess = (data: HealthPlanInterface) => action(CareTypes.SEARCH_CID_SUCCESS, { data });
 
+
+/**
+ * Document
+ */
+export const loadDocumentRequest = (id: string) => action(CareTypes.LOAD_DOCUMENT_REQUEST, { id });
+export const loadDocumentSuccess = (data: any) => action(CareTypes.LOAD_DOCUMENT_SUCCESS, { data });
