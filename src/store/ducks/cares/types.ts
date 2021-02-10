@@ -126,7 +126,14 @@ export interface CareInterface {
     order_number?: string,
     status?: string,
     estimate?: string,
+    inpatient?: boolean,
     complexity?: string,
+    hospital?: string,
+    unity?: string,
+    doctor?: string,
+    assistant_doctor?: string,
+    sector?: string,
+    bed?: string,
   }
 }
 
