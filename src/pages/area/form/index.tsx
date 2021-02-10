@@ -35,7 +35,8 @@ import {
   FormSection,
   FormContent,
   InputFiled as TextField,
-  FormGroupSection
+  FormGroupSection,
+  FormGroupSectionCity
 } from './styles';
 
 interface IFormFields extends AreaInterface {
@@ -316,8 +317,24 @@ export default function AreaForm(props: RouteComponentProps<IPageParams>) {
 
                 </TabBodyItem>
                 <TabBodyItem className={currentTab === 1 ? 'show' : ''}>
-                  <Grid container>
                     <Grid item md={5} xs={12}>
+                      <FormGroupSectionCity>
+                        <Autocomplete
+                          id="combo-box-neigthborhoods-city"
+                          options={areaState.districts}
+                          getOptionLabel={(option) => `${option.municipio.microrregiao.mesorregiao.UF.sigla} - ${option.nome}`}
+                          renderInput={(params) => <TextField {...params} label="Cidades" variant="outlined" />}
+                          size="small"
+                          onChange={(event, value) => {
+                            if (value) {
+                              handleSelectNeighborhood(value)
+                            }
+                          }}
+                        />
+                      </FormGroupSectionCity>
+                    </Grid>
+                  <Grid container>
+                    <Grid item md={7} xs={12}>
                       <FormGroupSection>
                         <Autocomplete
                           id="combo-box-neigthborhoods"
@@ -334,6 +351,7 @@ export default function AreaForm(props: RouteComponentProps<IPageParams>) {
                         />
                       </FormGroupSection>
                     </Grid>
+
                     <Grid item md={12} xs={12}>
                       <ChipList>
                         {state.neighborhoods.map((item: any, index) => (

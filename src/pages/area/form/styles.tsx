@@ -23,7 +23,9 @@ export const FormSection = styled.div`
 export const FormGroupSection = styled.div`
   margin-bottom: 40px;
 `;
-
+export const FormGroupSectionCity = styled.div`
+  margin-bottom: 10px;
+`;
 export const FormContent = styled.div``;
 
 export const InputFiled = styled(TextField)`
