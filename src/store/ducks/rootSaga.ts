@@ -1,3 +1,4 @@
+import { loadDocumentRequest } from './cares/actions';
 import { all, takeLatest } from "redux-saga/effects";
 
 import { AreaTypes } from "./areas/types";
@@ -32,29 +33,30 @@ import { get as getUsers, createUser, getAddress as getAddressUser, getUserById,
 
 import { CareTypes } from './cares/types';
 import {
-    get as getCares,
-    createCare,
-    getCareById,
-    updateCare,
-    search as searchCare,
-    getDocumentGroupSocioAmbiental,
-    getDocumentSocioAmbiental,
-    storeDocumentSocioAmbiental,
-    updateDocumentSocioAmbiental,
-    getDocumentGroupAbemid,
-    getDocumentAbemid,
-    storeDocumentAbemid,
-    updateDocumentAbemid,
-    getDocumentGroupNead,
-    getDocumentNead,
-    storeDocumentNead,
-    updateDocumentNead,
-    getHealthInsurance,
-    getHealthPlan,
-    getHealthSubPlan,
-    getAccommodationType,
-    getCareType,
-    searchCid
+  get as getCares,
+  createCare,
+  getCareById,
+  updateCare,
+  search as searchCare,
+  getDocumentGroupSocioAmbiental,
+  getDocumentSocioAmbiental,
+  storeDocumentSocioAmbiental,
+  updateDocumentSocioAmbiental,
+  getDocumentGroupAbemid,
+  getDocumentAbemid,
+  storeDocumentAbemid,
+  updateDocumentAbemid,
+  getDocumentGroupNead,
+  getDocumentNead,
+  storeDocumentNead,
+  updateDocumentNead,
+  getHealthInsurance,
+  getHealthPlan,
+  getHealthSubPlan,
+  getAccommodationType,
+  getCareType,
+  searchCid,
+  getDocumentById
 } from './cares/sagas';
 
 export default function* rootSaga() {
@@ -101,6 +103,7 @@ export default function* rootSaga() {
     takeLatest(CareTypes.TYPE_ACCOMMODATION_REQUEST, getAccommodationType),
     takeLatest(CareTypes.CARE_TYPE_REQUEST, getCareType),
     takeLatest(CareTypes.SEARCH_CID_REQUEST, searchCid),
+    takeLatest(CareTypes.LOAD_DOCUMENT_REQUEST, getDocumentById),
 
     // Council
     takeLatest(CouncilTypes.LOAD_REQUEST, getCouncils),

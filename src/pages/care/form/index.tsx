@@ -36,7 +36,6 @@ import { searchRequest as searchPatientAction } from "../../../store/ducks/patie
 
 import { useHistory, RouteComponentProps } from "react-router-dom";
 import {
-  Badge,
   Box,
   Container,
   Dialog,
@@ -60,6 +59,7 @@ import Button from "../../../styles/components/Button";
 import { age, formatDate } from "../../../helpers/date";
 
 import { ReactComponent as IconProfile } from "../../../assets/img/icon-profile.svg";
+import { ReactComponent as IconNoData } from "../../../assets/img/no-data.svg";
 import {
   ButtonsContent,
   FormSection,
@@ -143,7 +143,7 @@ export default function AreaForm(props: RouteComponentProps<IPageParams>) {
     dispatch(healthInsuranceRequest());
     dispatch(AccommodationTypeRequest());
     dispatch(careTypeRequest());
-    dispatch(getCares({ status: "Pre-Atendimento", "capture.status": "Aprovado" }));
+    dispatch(getCares({ status: "Pre-Atendimento", "capture.status": "Aprovado", 'patient_id.active': true }));
   }, [dispatch]);
 
   useEffect(() => {
@@ -363,62 +363,70 @@ export default function AreaForm(props: RouteComponentProps<IPageParams>) {
             {/* Step 1 */}
             {currentStep === 0 && (
               <>
-                <Table>
-                  <thead>
-                    <tr>
-                      <Th></Th>
-                      <Th>Paciente</Th>
-                      <Th>Pedido</Th>
-                      <Th>Socioambiental</Th>
-                      <Th>NEAD</Th>
-                      <Th>ABEMID</Th>
-                      <Th>Última captação</Th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {careState.list.data.map((care, index) => (
-                      <tr key={index}>
-                        <Td center>
-                          <Checkbox
-                            checked={selectCheckbox?._id === care?._id}
-                            onChange={(element) => {
-                              if (care._id && care._id === element.target.value)
-                                setSelectCheckbox({});
-                              else setSelectCheckbox(care);
-                            }}
-                            inputProps={{ "aria-label": "primary checkbox" }}
-                          />
-                        </Td>
-                        <Td>{care?.patient_id?.name}</Td>
-                        <Td>{care.patient_id?.fiscal_number}</Td>
-                        <Td>
-                          {handleCheckDocument(
-                            "5ffd79012f5d2b1d8ff6bea3",
-                            care?.documents_id || []
-                          )}
-                        </Td>
-                        <Td>
-                          {handleCheckDocument(
-                            "5ff65469b4d4ac07d186e99f",
-                            care?.documents_id || []
-                          )}
-                        </Td>
-                        <Td>
-                          {handleCheckDocument(
-                            "5ffd7acd2f5d2b1d8ff6bea4",
-                            care?.documents_id || []
-                          )}
-                        </Td>
-                        <Td>
-                          {formatDate(
-                            care?.created_at ?? "",
-                            "DD/MM/YYYY HH:mm:ss"
-                          )}
-                        </Td>
+                {careState.list.data.length > 0 ? (
+                  <Table>
+                    <thead>
+                      <tr>
+                        <Th></Th>
+                        <Th>Paciente</Th>
+                        <Th>Pedido</Th>
+                        <Th>Socioambiental</Th>
+                        <Th>NEAD</Th>
+                        <Th>ABEMID</Th>
+                        <Th>Última captação</Th>
                       </tr>
-                    ))}
-                  </tbody>
-                </Table>
+                    </thead>
+                    <tbody>
+                      {careState.list.data.map((care, index) => (
+                        <tr key={index}>
+                          <Td center>
+                            <Checkbox
+                              checked={selectCheckbox?._id === care?._id}
+                              onChange={(element) => {
+                                if (care._id && care._id === element.target.value)
+                                  setSelectCheckbox({});
+                                else setSelectCheckbox(care);
+                              }}
+                              inputProps={{ "aria-label": "primary checkbox" }}
+                            />
+                          </Td>
+                          <Td>{care?.patient_id?.social_name || care?.patient_id?.name}</Td>
+                          <Td>{care.patient_id?.fiscal_number}</Td>
+                          <Td>
+                            {handleCheckDocument(
+                              "5ffd79012f5d2b1d8ff6bea3",
+                              care?.documents_id || []
+                            )}
+                          </Td>
+                          <Td>
+                            {handleCheckDocument(
+                              "5ff65469b4d4ac07d186e99f",
+                              care?.documents_id || []
+                            )}
+                          </Td>
+                          <Td>
+                            {handleCheckDocument(
+                              "5ffd7acd2f5d2b1d8ff6bea4",
+                              care?.documents_id || []
+                            )}
+                          </Td>
+                          <Td>
+                            {formatDate(
+                              care?.created_at ?? "",
+                              "DD/MM/YYYY HH:mm:ss"
+                            )}
+                          </Td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </Table>
+                ) : (
+                    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', width: '100%', height: 150, paddingBottom: 20 }}>
+                      <IconNoData style={{ width: 50 }} />
+                      <p>Nenhum paciente com captação aprovada para iniciar um atendimento</p>
+                    </div>
+                  )}
+
                 {patient?._id && (
                   <Grid container>
                     <Grid item md={12} xs={12}>
@@ -936,7 +944,7 @@ export default function AreaForm(props: RouteComponentProps<IPageParams>) {
               </Button>
             ) : (
                 <Button
-                  disabled={currentStep === steps.length - 1}
+                  disabled={currentStep === steps.length - 1 || !patient?._id}
                   background="primary"
                   onClick={handleNextStep}
                 >
