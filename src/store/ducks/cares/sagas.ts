@@ -25,7 +25,8 @@ import {
   healthSubPlanSuccess,
   AccommodationTypeSuccess,
   careTypeSuccess,
-  cidSuccess
+  cidSuccess,
+  loadDocumentSuccess
 } from './actions';
 
 import { apiSollar } from '../../../services/axios';
@@ -76,14 +77,14 @@ export function* getCareById({ payload: { id: _id } }: any) {
   }
 }
 
-export function* createCare({payload: { data }}: any) {
+export function* createCare({ payload: { data } }: any) {
   try {
-    const response:AxiosResponse = yield call(apiSollar.post, `/care/store`, data, { headers: { token } })
+    const response: AxiosResponse = yield call(apiSollar.post, `/care/store`, data, { headers: { token } })
 
     yield put(createCareSuccess(response.data))
 
     toast.success('Atendimento cadastrado com sucesso!');
-  } catch(e) {
+  } catch (e) {
     toast.error('Erro ao cadastrar o atendimento');
     yield put(loadFailure());
   }
@@ -374,6 +375,21 @@ export function* searchCid({ payload }: any) {
   } catch (error) {
     console.log(error)
     toast.error('Erro ao buscar CID');
+    yield put(loadFailure());
+  }
+}
+
+export function* getDocumentById({ payload }: any) {
+
+  const { id } = payload;
+
+  try {
+    const { data }: AxiosResponse = yield call(apiSollar.get, `/documents?_id=${id}`);
+
+    yield put(loadDocumentSuccess(data))
+  } catch (error) {
+    console.log(error)
+    toast.error('Erro ao obter documento');
     yield put(loadFailure());
   }
 }
