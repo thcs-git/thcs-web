@@ -1,37 +1,93 @@
-import { loadDocumentRequest } from './cares/actions';
+//import { loadDocumentRequest } from './cares/actions';
 import { all, takeLatest } from "redux-saga/effects";
 
 import { AreaTypes } from "./areas/types";
-import { get as getAreas, createArea, updateArea, getAreaById, getDistricts, searchArea } from "./areas/sagas";
+import {
+  get as getAreas,
+  createArea,
+  updateArea,
+  getAreaById,
+  getDistricts,
+  searchArea,
+} from "./areas/sagas";
 
 import { LoginTypes } from "./login/types";
 import { doLogin } from "./login/sagas";
 
-import { CustomerTypes } from './customers/types';
-import { get, getCustomerById, getAddress as getAddressCustomer, createCompanyCustomer, updateCompanyCustomer, searchCustomer } from './customers/sagas';
+import { CustomerTypes } from "./customers/types";
+import {
+  get,
+  getCustomerById,
+  getAddress as getAddressCustomer,
+  createCompanyCustomer,
+  updateCompanyCustomer,
+  searchCustomer,
+} from "./customers/sagas";
 
-import { CompanyTypes } from './companies/types';
-import { get as getCompanies, getAddress, createCompany, getById as getCompanyById, update as updateCompany, searchCompany } from './companies/sagas';
+import { CompanyTypes } from "./companies/types";
+import {
+  get as getCompanies,
+  getAddress,
+  createCompany,
+  getById as getCompanyById,
+  update as updateCompany,
+  searchCompany,
+} from "./companies/sagas";
 
-import { SpecialtyTypes } from './specialties/types';
-import { get as getSpecialties, store as storeSpecialty, getById as getSpecialtyById, update as updateSpecialty, searchSpecialty } from './specialties/sagas';
+import { SpecialtyTypes } from "./specialties/types";
+import {
+  get as getSpecialties,
+  store as storeSpecialty,
+  getById as getSpecialtyById,
+  update as updateSpecialty,
+  searchSpecialty,
+} from "./specialties/sagas";
 
-import { CouncilTypes } from './councils/types';
-import { get as getCouncils, store as storeCouncil, getById as getCouncilById, update as updateCouncil, searchConcil } from './councils/sagas';
+import { CouncilTypes } from "./councils/types";
+import {
+  get as getCouncils,
+  store as storeCouncil,
+  getById as getCouncilById,
+  update as updateCouncil,
+  searchConcil,
+} from "./councils/sagas";
 
-import { DocumentTypes } from './documents/types';
-import { store as storeDocuments, getByCareId as getDocumentsByCareId, get as getDocuments } from './documents/sagas';
+import { DocumentTypes } from "./documents/types";
+import {
+  store as storeDocuments,
+  getByCareId as getDocumentsByCareId,
+  get as getDocuments,
+} from "./documents/sagas";
 
-import { DocumentGroupTypes } from './documentGroups/types';
-import { get as getDocumentGroups, getByIds as getDocumentGroupsByIds } from './documentGroups/sagas';
+import { DocumentGroupTypes } from "./documentGroups/types";
+import {
+  get as getDocumentGroups,
+  getByIds as getDocumentGroupsByIds,
+} from "./documentGroups/sagas";
 
-import { PatientTypes } from './patients/types';
-import { get as getPatients, createPatient, getAddress as getAddressPatient, getPatientById, updatePatient, searchPatient } from './patients/sagas';
+import { PatientTypes } from "./patients/types";
+import {
+  get as getPatients,
+  createPatient,
+  getAddress as getAddressPatient,
+  getPatientById,
+  updatePatient,
+  searchPatient,
+} from "./patients/sagas";
 
-import { UserTypes } from './users/types';
-import { get as getUsers, createUser, getAddress as getAddressUser, getUserById, updateUser, searchUser, getProfessions, getUserTypes } from './users/sagas';
+import { UserTypes } from "./users/types";
+import {
+  get as getUsers,
+  createUser,
+  getAddress as getAddressUser,
+  getUserById,
+  updateUser,
+  searchUser,
+  getProfessions,
+  getUserTypes,
+} from "./users/sagas";
 
-import { CareTypes } from './cares/types';
+import { CareTypes } from "./cares/types";
 import {
   get as getCares,
   createCare,
@@ -56,8 +112,8 @@ import {
   getAccommodationType,
   getCareType,
   searchCid,
-  getDocumentById
-} from './cares/sagas';
+  //getDocumentById,
+} from "./cares/sagas";
 
 export default function* rootSaga() {
   return yield all([
@@ -82,10 +138,22 @@ export default function* rootSaga() {
     takeLatest(CareTypes.UPDATE_CARE_REQUEST, updateCare),
     takeLatest(CareTypes.SEARCH_CARE_REQUEST, searchCare),
 
-    takeLatest(CareTypes.DOCUMENT_GROUP_SOCIOAMBIENTAL_REQUEST, getDocumentGroupSocioAmbiental),
-    takeLatest(CareTypes.DOCUMENT_SOCIOAMBIENTAL_REQUEST, getDocumentSocioAmbiental),
-    takeLatest(CareTypes.DOCUMENT_SOCIOAMBIENTAL_STORE_REQUEST, storeDocumentSocioAmbiental),
-    takeLatest(CareTypes.DOCUMENT_SOCIOAMBIENTAL_UPDATE_REQUEST, updateDocumentSocioAmbiental),
+    takeLatest(
+      CareTypes.DOCUMENT_GROUP_SOCIOAMBIENTAL_REQUEST,
+      getDocumentGroupSocioAmbiental
+    ),
+    takeLatest(
+      CareTypes.DOCUMENT_SOCIOAMBIENTAL_REQUEST,
+      getDocumentSocioAmbiental
+    ),
+    takeLatest(
+      CareTypes.DOCUMENT_SOCIOAMBIENTAL_STORE_REQUEST,
+      storeDocumentSocioAmbiental
+    ),
+    takeLatest(
+      CareTypes.DOCUMENT_SOCIOAMBIENTAL_UPDATE_REQUEST,
+      updateDocumentSocioAmbiental
+    ),
 
     takeLatest(CareTypes.DOCUMENT_GROUP_ABEMID_REQUEST, getDocumentGroupAbemid),
     takeLatest(CareTypes.DOCUMENT_ABEMID_REQUEST, getDocumentAbemid),
@@ -103,7 +171,7 @@ export default function* rootSaga() {
     takeLatest(CareTypes.TYPE_ACCOMMODATION_REQUEST, getAccommodationType),
     takeLatest(CareTypes.CARE_TYPE_REQUEST, getCareType),
     takeLatest(CareTypes.SEARCH_CID_REQUEST, searchCid),
-    takeLatest(CareTypes.LOAD_DOCUMENT_REQUEST, getDocumentById),
+    //takeLatest(CareTypes.LOAD_DOCUMENT_REQUEST, getDocumentById),
 
     // Council
     takeLatest(CouncilTypes.LOAD_REQUEST, getCouncils),
@@ -142,7 +210,10 @@ export default function* rootSaga() {
 
     // Document Groups
     takeLatest(DocumentGroupTypes.LOAD_REQUEST, getDocumentGroups),
-    takeLatest(DocumentGroupTypes.LOAD_REQUEST_DOCUMENTS_BY_ID, getDocumentGroupsByIds),
+    takeLatest(
+      DocumentGroupTypes.LOAD_REQUEST_DOCUMENTS_BY_ID,
+      getDocumentGroupsByIds
+    ),
 
     /** Patients */
     takeLatest(PatientTypes.LOAD_REQUEST, getPatients),
