@@ -69,7 +69,7 @@ export default function PatientCaptureForm() {
   const [openModalCare, setOpenModalCare] = useState<boolean>(false);
 
   useEffect(() => {
-    dispatch(searchPatientAction(''));
+    dispatch(searchPatientAction({ active: true }));
   }, []);
 
   useEffect(() => {
@@ -95,7 +95,7 @@ export default function PatientCaptureForm() {
     setPatient({});
 
     if (value.length > 0) {
-      dispatch(searchPatientAction(value));
+      dispatch(searchPatientAction({ fiscal_number: value }));
     }
   }, []);
 
