@@ -41,6 +41,8 @@ import AvaliationList from '../pages/avaliation/list';
 // import PatientForm from '../pages/patient/form';
 // import CareOverview from '../pages/patient/overview';
 
+import ProfessionForm from '../pages/profession/form/index';
+
 import Login from '../pages/login';
 
 const Routes = () => (
