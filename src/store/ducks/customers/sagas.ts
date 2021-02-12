@@ -4,7 +4,7 @@ import { toast } from 'react-toastify';
 import history from '../../../routes/history';
 import { apiSollar, viacep } from '../../../services/axios';
 
-import { loadSuccess, loadFailure, loadSuccessCustomerById, successGetAddress, createCustomerSuccess } from './actions';
+import { loadSuccess, loadFailure, loadSuccessCustomerById, successGetAddress, createCustomerSuccess, updateCustomerSuccess } from './actions';
 
 import { ViacepDataInterface } from './types';
 import { AxiosResponse } from 'axios';
@@ -36,14 +36,19 @@ export function* getCustomerById({ payload: { id: _id } }: any) {
 
 export function* createCompanyCustomer({ payload: { data } }: any) {
   try {
-    const response: AxiosResponse = yield call(apiSollar.post, `/client/store`, { ...data, created_by: { _id: '5e8cfe7de9b6b8501c8033ac' }, })
+    const response: AxiosResponse = yield call(apiSollar.post, `/client/store`, data);
 
-    yield put(loadSuccess(response.data))
-    toast.success("Cliente cadastrado com sucesso!");
+    if (response.data) {
+      yield put(createCustomerSuccess(response.data[0]));
+      toast.success("Cliente cadastrado com sucesso!");
+    } else {
+      toast.error("Não foi possível cadastrar um novo cliente");
+      yield put(loadFailure());
+    }
 
-    history.push('/customer');
-    location.reload();
-  } catch(e) {
+    // history.push('/customer');
+    // location.reload();
+  } catch (e) {
     toast.error("Não foi possível cadastrar um novo cliente");
     yield put(loadFailure());
   }
@@ -57,14 +62,14 @@ export function* updateCompanyCustomer({ payload: { data } }: any) {
     const response: AxiosResponse = yield call(apiSollar.put, `/client/${_id}/update`, { ...data, _id })
 
     toast.success('Empresa atualizada com sucesso!');
-    yield put(createCustomerSuccess(response.data[0]))
+    yield put(updateCustomerSuccess(response.data[0]))
   } catch (error) {
     toast.error("Não foi possível atualizar os dados do cliente");
     yield put(loadFailure());
   }
 }
 
-export function* getAddress({payload}:any) {
+export function* getAddress({ payload }: any) {
 
   try {
     const { data }: AxiosResponse<ViacepDataInterface> = yield call(viacep.get, `${payload.postalCode}/json`);

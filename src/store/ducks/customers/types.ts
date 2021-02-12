@@ -26,7 +26,7 @@ export enum CustomerTypes {
  * Data types
  */
 export interface CustomerInterface {
-  id?: string;
+  _id?: string;
   name?: string;
   fantasy_name?: string;
   fiscal_number?: string;
