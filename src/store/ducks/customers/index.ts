@@ -3,7 +3,7 @@ import { CustomerState, CustomerTypes } from './types';
 
 export const INITIAL_STATE: CustomerState = {
   data: {
-    id: '',
+    _id: '',
     name: '',
     fantasy_name: '',
     fiscal_number: '',
@@ -44,7 +44,7 @@ const reducer: Reducer<CustomerState> = (state = INITIAL_STATE, action) => {
         ...state,
         list: action.payload.data,
         loading: false,
-        success: false,
+        success: true,
       };
     case CustomerTypes.LOAD_SUCCESS_BY_ID:
       return {
@@ -55,7 +55,7 @@ const reducer: Reducer<CustomerState> = (state = INITIAL_STATE, action) => {
       };
     case CustomerTypes.LOAD_FAILURE:
       return {
-      ...state, loading: false, error: true, success: false,
+        ...state, loading: false, error: true, success: false,
         list: {
           data: [],
           limit: '10',
@@ -64,6 +64,14 @@ const reducer: Reducer<CustomerState> = (state = INITIAL_STATE, action) => {
         }
       };
     case CustomerTypes.CREATE_CUSTOMER_SUCCESS:
+      return {
+        ...state,
+        data: action.payload.data,
+        loading: false,
+        error: false,
+        success: true
+      }
+    case CustomerTypes.UPDATE_CUSTOMER_SUCCESS:
       return {
         ...state,
         data: action.payload.data,
