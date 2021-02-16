@@ -16,6 +16,7 @@ export enum AreaTypes {
   LOAD_SUCCCES_AREA_BY_ID = "@area/LOAD_SUCCCES_AREA_BY_ID",
 
   LOAD_GET_DISTRICTS = "@area/LOAD_GET_DISTRICTS",
+  LOAD_GET_CITYS = "@area/LOAD_GET_CITYS",
   LOAD_SUCCCES_GET_DISTRICTS = "@area/LOAD_SUCCCES_GET_DISTRICTS",
 
   SEARCH_REQUEST = "@area/SEARCH_REQUEST",
@@ -35,16 +36,22 @@ export interface NeighborhoodAreaInterface {
   name: string;
 }
 
+export interface CityAreaInterface {
+  _id: string;
+  name: string;
+  sigla: string;
+}
+
 export interface AreaInterface {
   _id?: string;
-	name: string;
-	describe?: string;
-	supply_days: number;
+  name: string;
+  describe?: string;
+  supply_days: number;
   week_day: number;
-  users: (UserAreaInterface | {})[],
-  neighborhoods: (NeighborhoodAreaInterface | {})[],
-	created_by?: { _id: string };
-	active: boolean;
+  users: (UserAreaInterface | {})[];
+  neighborhoods: (NeighborhoodAreaInterface | {})[];
+  created_by?: { _id: string };
+  active: boolean;
 }
 
 export interface AreaList {
@@ -66,4 +73,4 @@ export interface AreaState {
   error: boolean;
 }
 
-export type LoadRequestParams = Partial<Omit<AreaList, 'data'>>
+export type LoadRequestParams = Partial<Omit<AreaList, "data">>;

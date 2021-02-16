@@ -2,8 +2,8 @@ import React, { useState, useEffect, useCallback, ChangeEvent, ReactNode } from 
 
 import { useDispatch, useSelector } from 'react-redux';
 import { ApplicationState } from '../../../store';
-import { AreaInterface, UserAreaInterface, NeighborhoodAreaInterface } from '../../../store/ducks/areas/types';
-import { loadRequest, loadAreaById, updateAreaRequest, createAreaRequest, loadGetDistricts as getDistrictsAction } from '../../../store/ducks/areas/actions';
+import { AreaInterface, UserAreaInterface, NeighborhoodAreaInterface, CityAreaInterface } from '../../../store/ducks/areas/types';
+import { loadRequest, loadAreaById, updateAreaRequest, createAreaRequest, loadGetDistricts as getDistrictsAction, loadGetCitys } from '../../../store/ducks/areas/actions';
 import { loadRequest as getUsersAction } from '../../../store/ducks/users/actions';
 
 import { useHistory, RouteComponentProps } from 'react-router-dom';
@@ -62,6 +62,36 @@ export default function AreaForm(props: RouteComponentProps<IPageParams>) {
   const userState = useSelector((state: ApplicationState) => state.users);
 
   const { params } = props.match;
+
+  const States = [
+    {id:1,name:"São Paulo",sigla:'SP'},
+    {id:2,name:'Paraná',sigla:'PR'},
+    {id:3,name:'Santa Catarina',sigla:'SC'},
+    {id:4,name:'Rio Garnde do Sul',sigla:'RS'},
+    {id:5,name:'Mato Grosso do Sul',sigla:'MS'},
+    {id:6,name:'Rondônia',sigla:'RO'},
+    {id:7,name:'Acre',sigla:'AC'},
+    {id:8,name:'Amazonas',sigla:'AM'},
+    {id:9,name:'Roraima',sigla:'RR'},
+    {id:10,name:'Pará',sigla:'PA'},
+    {id:11,name:'Amapá',sigla:'AP'},
+    {id:12,name:'Tocantins',sigla:'TO'},
+    {id:13,name:'Maranhão',sigla:'MA'},
+    {id:14,name:'Rio Grande do Norte',sigla:'RN'},
+    {id:15,name:'Paraíba',sigla:'PB'},
+    {id:16,name:'Pernambuco',sigla:'PE'},
+    {id:17,name:'Alagoas',sigla:'AL'},
+    {id:18,name:'Sergipe',sigla:'SE'},
+    {id:19,name:'Bahia',sigla:'BA'},
+    {id:20,name:'Minas Gerais',sigla:'MG'},
+    {id:21,name:'Rio de Janeiro',sigla:'RJ'},
+    {id:22,name:'Mato Grosso',sigla:'MT'},
+    {id:23,name:'Goiás',sigla:'GO'},
+    {id:24,name:'Distrito Federal',sigla:'DF'},
+    {id:25,name:'Piauí',sigla:'PI'},
+    {id:26,name:'Ceará',sigla:'CE'},
+    {id:27,name:'Espírito Santo',sigla:'ES'}
+  ];
 
   const neighborhoods = [
     { _id: '1', name: 'bairro 1' },
@@ -159,7 +189,11 @@ export default function AreaForm(props: RouteComponentProps<IPageParams>) {
       supply_days: value,
       week_day: (value === 1) ? -1 : prevState.week_day
     }))
-  }
+  };
+  function handleStates (value:any){
+    dispatch(loadGetCitys(value.sigla));
+    console.log(value);
+};
 
   const handleDayOfTheWeek = useCallback((event: any, newValue: any) => {
     setState(prevState => ({
@@ -317,6 +351,21 @@ export default function AreaForm(props: RouteComponentProps<IPageParams>) {
 
                 </TabBodyItem>
                 <TabBodyItem className={currentTab === 1 ? 'show' : ''}>
+                <Grid item md={4} xs={12}>
+                        <FormGroupSection>
+                          <Autocomplete
+                            id="combo-box-day-of-week"
+                            options={States}
+                            getOptionLabel={(option) => option.name}
+                            renderInput={(params) => <TextField {...params} label="Estado" variant="outlined" />}
+                            onChange={(event,value:any) => {
+                              handleStates(value);
+                            }}
+                            size="small"
+                            fullWidth
+                          />
+                        </FormGroupSection>
+                      </Grid>
                     <Grid item md={5} xs={12}>
                       <FormGroupSectionCity>
                         <Autocomplete
