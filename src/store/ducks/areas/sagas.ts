@@ -8,6 +8,7 @@ import {
   createAreaSuccess,
   loadSuccessGetAreaById,
   updateAreaSuccess,
+  loadGetCitys,
   loadSuccessGetDistricts,
   loadSuccessGetCitys,
 } from "./actions";
@@ -89,15 +90,16 @@ export function* updateArea({ payload: { data } }: any) {
   }
 }
 export function* getCitys({ payload: { value } }: any) {
+  console.log(value);
   try {
     const response: AxiosResponse = yield call(
       apiSollar.get,
-      `/location${value ? "&search=" + value : ""}`,
+      `/location?&search=${value}`,
       {
         headers: { token },
       }
     );
-    yield put(loadSuccessGetCitys(response));
+    yield put(loadSuccessGetCitys(response.data));
   } catch (error) {
     yield put(loadFailure());
     toast.error("Não foi possível obter as cidades do estado");
@@ -107,7 +109,7 @@ export function* getDistricts() {
   try {
     const { data }: AxiosResponse = yield call(
       ibge.get,
-      `/localidades/distritos`
+      `/localidades/estados/PE/distritos`
     );
 
     if (data.erro) {

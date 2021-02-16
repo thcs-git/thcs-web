@@ -100,7 +100,7 @@ export default function CouncilList() {
            <Table
             tableCells={[
               { name: 'Área', align: 'left' ,},
-              { name: 'Intervalo de abastecimento', align: 'left' },
+              { name: 'Intervalo de Abastecimento', align: 'left' },
               { name: 'Dia de Abastecimento', align: 'left' },
               { name: 'Status', align: 'left' },
             ]}

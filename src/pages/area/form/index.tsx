@@ -3,7 +3,7 @@ import React, { useState, useEffect, useCallback, ChangeEvent, ReactNode } from 
 import { useDispatch, useSelector } from 'react-redux';
 import { ApplicationState } from '../../../store';
 import { AreaInterface, UserAreaInterface, NeighborhoodAreaInterface, CityAreaInterface } from '../../../store/ducks/areas/types';
-import { loadRequest, loadAreaById, updateAreaRequest, createAreaRequest, loadGetDistricts as getDistrictsAction, loadGetCitys } from '../../../store/ducks/areas/actions';
+import { loadRequest, loadAreaById, updateAreaRequest, createAreaRequest, loadGetDistricts as getDistrictsAction, loadGetCitys as getStatesAction } from '../../../store/ducks/areas/actions';
 import { loadRequest as getUsersAction } from '../../../store/ducks/users/actions';
 
 import { useHistory, RouteComponentProps } from 'react-router-dom';
@@ -151,6 +151,7 @@ export default function AreaForm(props: RouteComponentProps<IPageParams>) {
     }
 
     dispatch(getUsersAction());
+
     dispatch(getDistrictsAction());
   }, [dispatch]);
 
@@ -165,9 +166,11 @@ export default function AreaForm(props: RouteComponentProps<IPageParams>) {
   function handleSaveFormArea() {
     if (state?._id) {
       dispatch(updateAreaRequest(state));
+
     } else {
       dispatch(createAreaRequest(state));
     }
+    history.push(`/area`);
   }
 
   function handleOpenModalCancel() {
@@ -191,8 +194,8 @@ export default function AreaForm(props: RouteComponentProps<IPageParams>) {
     }))
   };
   function handleStates (value:any){
-    dispatch(loadGetCitys(value.sigla));
-    console.log(value);
+    value?dispatch(getStatesAction(value.sigla)):null;
+
 };
 
   const handleDayOfTheWeek = useCallback((event: any, newValue: any) => {
@@ -213,8 +216,9 @@ export default function AreaForm(props: RouteComponentProps<IPageParams>) {
 
     setState(prevState => ({
       ...prevState,
-      neighborhoods: [...prevState.neighborhoods, { _id: value.id, name: value.nome }]
+      neighborhoods: [...prevState.neighborhoods, {_id:value.id,name:value.name}]
     }));
+    console.log(state.neighborhoods);
   }
 
   function handleDeleteNeighborhood(neighborhood: NeighborhoodAreaInterface) {
@@ -352,12 +356,12 @@ export default function AreaForm(props: RouteComponentProps<IPageParams>) {
                 </TabBodyItem>
                 <TabBodyItem className={currentTab === 1 ? 'show' : ''}>
                 <Grid item md={4} xs={12}>
-                        <FormGroupSection>
+                        <FormGroupSection >
                           <Autocomplete
-                            id="combo-box-day-of-week"
-                            options={States}
+                            id="combo-box-neigthborhoods-states"
+                            options={States || []}
                             getOptionLabel={(option) => option.name}
-                            renderInput={(params) => <TextField {...params} label="Estado" variant="outlined" />}
+                            renderInput={(params) => <TextField {...params} label="Estados" variant="outlined" />}
                             onChange={(event,value:any) => {
                               handleStates(value);
                             }}
@@ -367,18 +371,18 @@ export default function AreaForm(props: RouteComponentProps<IPageParams>) {
                         </FormGroupSection>
                       </Grid>
                     <Grid item md={5} xs={12}>
-                      <FormGroupSectionCity>
+                      <FormGroupSectionCity >
                         <Autocomplete
                           id="combo-box-neigthborhoods-city"
-                          options={areaState.districts}
-                          getOptionLabel={(option) => `${option.municipio.microrregiao.mesorregiao.UF.sigla} - ${option.nome}`}
+                          options={areaState.citys || []}
+                           getOptionLabel={(option) => option.name}
                           renderInput={(params) => <TextField {...params} label="Cidades" variant="outlined" />}
                           size="small"
-                          onChange={(event, value) => {
-                            if (value) {
-                              handleSelectNeighborhood(value)
-                            }
-                          }}
+                          // onChange={(event, value) => {
+                          //   if (value) {
+                          //     handleSelectNeighborhood(value)
+                          //   }
+                          // }}
                         />
                       </FormGroupSectionCity>
                     </Grid>
@@ -387,7 +391,7 @@ export default function AreaForm(props: RouteComponentProps<IPageParams>) {
                       <FormGroupSection>
                         <Autocomplete
                           id="combo-box-neigthborhoods"
-                          options={areaState.districts}
+                          options={areaState.districts || []}
                           getOptionLabel={(option) => `${option.municipio.microrregiao.mesorregiao.UF.sigla} - ${option.nome}`}
                           renderInput={(params) => <TextField {...params} label="Bairros" variant="outlined" />}
                           size="small"
@@ -454,11 +458,25 @@ export default function AreaForm(props: RouteComponentProps<IPageParams>) {
 
           <ButtonsContent>
             <Button variant="outlined" background="default" onClick={() => handleOpenModalCancel()}>
-              Voltar
+              Cancelar
               </Button>
-            <Button variant="contained" background="success" onClick={() => handleSaveFormArea()}>
-              Salvar
-					</Button>
+                    <ButtonsContent>
+                      {currentTab !=0 && (
+                        <Button variant="outlined" background="default" onClick={() => currentTab ===1?selectTab(0):selectTab(1)}>
+                         Voltar
+                      </Button>
+                      )}
+                      {currentTab !=2 && (
+                        <Button variant="outlined" background="default" onClick={() => currentTab ===0?selectTab(1):selectTab(2)}>
+                        Próximo
+                      </Button>
+                      )}
+                    </ButtonsContent>
+                    {currentTab ===2 && (
+                       <Button variant="contained" background="success" onClick={() => handleSaveFormArea()}>
+                        Salvar
+					          </Button>
+                    )}
           </ButtonsContent>
         </FormSection>
       </Container >

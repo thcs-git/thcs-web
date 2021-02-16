@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { Pagination as TablePagination, Table } from './styles';
+import { Pagination as TablePagination, Table, Caption } from './styles';
 import PaginationActions from './paginationActions';
 
 import { PaginationProps } from './intefaces';
@@ -15,14 +15,16 @@ const Pagination = (props: PaginationProps) => {
   return (
     <Table>
       <tbody>
+
         <tr>
           <TablePagination
             rowsPerPageOptions={[5, 10, 25, { label: 'Todos', value: totalRows }]}
             count={totalRows}
             rowsPerPage={parseInt(rowsPerPage)}
             page={parseInt(page)}
+
             labelRowsPerPage="Resultados por página:"
-            labelDisplayedRows={({ from, to, count, page }) => `${page} de ${Math.ceil(count / parseInt(rowsPerPage))}`}
+            labelDisplayedRows={({ from, to, count, page }) => `${count} itens  ||  ${page} de ${Math.ceil(count / parseInt(rowsPerPage))}`}
             SelectProps={{
               inputProps: { 'aria-label': 'rows per page' },
               native: true,
@@ -36,6 +38,7 @@ const Pagination = (props: PaginationProps) => {
               />
             }
           />
+
         </tr>
       </tbody>
     </Table>

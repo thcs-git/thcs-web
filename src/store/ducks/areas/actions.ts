@@ -25,12 +25,12 @@ export const loadSuccessGetAreaById = (data: AreaInterface) =>
   action(AreaTypes.LOAD_SUCCCES_AREA_BY_ID, { data });
 
 export const loadGetDistricts = () => action(AreaTypes.LOAD_GET_DISTRICTS);
-export const loadGetCitys = (data: any) =>
-  action(AreaTypes.LOAD_GET_CITYS, { data });
+export const loadGetCitys = (value: string) =>
+  action(AreaTypes.LOAD_GET_CITYS, { value });
 export const loadSuccessGetDistricts = (data: any) =>
   action(AreaTypes.LOAD_SUCCCES_GET_DISTRICTS, { data });
-export const loadSuccessGetCitys = (value: any) =>
-  action(AreaTypes.LOAD_GET_CITYS, { value });
+export const loadSuccessGetCitys = (data: any) =>
+  action(AreaTypes.LOAD_SUCCCES_GET_CITYS, { data });
 
 export const searchRequest = (value: string) =>
   action(AreaTypes.SEARCH_REQUEST, { value });

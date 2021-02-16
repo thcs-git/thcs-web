@@ -17,6 +17,7 @@ export enum AreaTypes {
 
   LOAD_GET_DISTRICTS = "@area/LOAD_GET_DISTRICTS",
   LOAD_GET_CITYS = "@area/LOAD_GET_CITYS",
+  LOAD_SUCCCES_GET_CITYS = "@area/LOAD_SUCCCES_GET_CITYS",
   LOAD_SUCCCES_GET_DISTRICTS = "@area/LOAD_SUCCCES_GET_DISTRICTS",
 
   SEARCH_REQUEST = "@area/SEARCH_REQUEST",
@@ -69,6 +70,7 @@ export interface AreaState {
   data: AreaInterface;
   list: AreaList;
   districts: any[];
+  citys: any[];
   loading: boolean;
   error: boolean;
 }

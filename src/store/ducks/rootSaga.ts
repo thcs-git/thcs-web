@@ -18,6 +18,7 @@ import {
   getAreaById,
   getDistricts,
   searchArea,
+  getCitys,
 } from "./areas/sagas";
 
 import { LoginTypes } from "./login/types";
@@ -140,6 +141,7 @@ export default function* rootSaga() {
     takeLatest(AreaTypes.CREATE_AREA_REQUEST, createArea),
     takeLatest(AreaTypes.UPDATE_AREA_REQUEST, updateArea),
     takeLatest(AreaTypes.LOAD_GET_DISTRICTS, getDistricts),
+    takeLatest(AreaTypes.LOAD_GET_CITYS, getCitys),
     takeLatest(AreaTypes.SEARCH_REQUEST, searchArea),
 
     // Care
@@ -247,12 +249,12 @@ export default function* rootSaga() {
 
     /** UnconfirmedUsers */
     takeLatest(UnconfirmedUserTypes.LOAD_REQUEST, getUnconfirmedUsers),
-    takeLatest(UnconfirmedUserTypes.CREATE_USER_REQUEST, createUnconfirmedUser),
+    // takeLatest(UnconfirmedUserTypes.CREATE_USER_REQUEST, createUnconfirmedUser),
     takeLatest(
       UnconfirmedUserTypes.LOAD_REQUEST_USER_BY_ID,
       getUnconfirmedUserById
     ),
-    takeLatest(UnconfirmedUserTypes.UPDATE_USER_REQUEST, updateUnconfirmedUser),
-    takeLatest(UnconfirmedUserTypes.SEARCH_REQUEST, searchUnconfirmedUser),
+    // takeLatest(UnconfirmedUserTypes.UPDATE_USER_REQUEST, updateUnconfirmedUser),
+    // takeLatest(UnconfirmedUserTypes.SEARCH_REQUEST, searchUnconfirmedUser),
   ]);
 }
