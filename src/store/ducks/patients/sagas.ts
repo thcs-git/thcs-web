@@ -39,7 +39,7 @@ export function* createPatient({ payload: { data } }: any) {
     yield put(setIfRegistrationCompleted(true, response.data._id));
 
     toast.success('Paciente cadastrado com sucesso!');
-  } catch(e) {
+  } catch (e) {
     toast.error('Erro ao cadastrar o paciente');
     yield put(setIfRegistrationCompleted(false));
     yield put(loadFailureCreatePatient());
@@ -62,7 +62,7 @@ export function* updatePatient({ payload: { data } }: any) {
   }
 }
 
-export function* getAddress({ payload }:any) {
+export function* getAddress({ payload }: any) {
   try {
     const { data }: AxiosResponse<ViacepDataInterface> = yield call(viacep.get, `${payload.postalCode}/json`);
 
@@ -78,9 +78,22 @@ export function* getAddress({ payload }:any) {
   }
 }
 
-export function* searchPatient({ payload: { value } }: any) {
+export function* searchPatient({ payload: { params } }: any) {
   try {
-    const response: AxiosResponse = yield call(apiSollar.get, `/patient/?limit=10&page=1${!!value ? '&search=' + value : ''}`)
+    let searchQuery, requestParams;
+
+    if (typeof params === 'string') {
+      searchQuery = `&search=${params}`
+    } else {
+      requestParams = params;
+
+      delete requestParams.limit;
+      delete requestParams.page;
+
+      requestParams = { params: requestParams };
+    }
+
+    const response: AxiosResponse = yield call(apiSollar.get, `/patient/?limit=${params.limit ?? 10}&page=${params.page || 1}${searchQuery}`, requestParams)
     yield put(loadSuccess(response.data))
   } catch (error) {
     toast.info("Não foi possível buscar os dados do paciente");

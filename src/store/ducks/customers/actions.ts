@@ -10,9 +10,10 @@ export const getAddress = (postalCode: string) => action(CustomerTypes.LOAD_REQU
 export const successGetAddress = (data: ViacepDataInterface) => action(CustomerTypes.LOAD_RESPONSE_ADDRESS, { data });
 
 export const createCustomerRequest = (data: CustomerInterface) => action(CustomerTypes.CREATE_CUSTOMER_REQUEST, { data });
-export const createCustomerSuccess = (data: CustomerInterface) => action(CustomerTypes.UPDATE_CUSTOMER_REQUEST, { data });
+export const createCustomerSuccess = (data: CustomerInterface) => action(CustomerTypes.CREATE_CUSTOMER_SUCCESS, { data });
 
 export const updateCustomerRequest = (data: CustomerInterface) => action(CustomerTypes.UPDATE_CUSTOMER_REQUEST, { data });
+export const updateCustomerSuccess = (data: CustomerInterface) => action(CustomerTypes.UPDATE_CUSTOMER_SUCCESS, { data });
 
 export const loadCustomerById = (id: string) => action(CustomerTypes.LOAD_REQUEST_BY_ID, { id });
 
