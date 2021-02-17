@@ -1,21 +1,20 @@
+import { combineReducers } from "redux";
 
-import { combineReducers } from 'redux';
-
-import { IInitialState } from './states';
+import { IInitialState } from "./states";
 
 /** Reducers  */
-import areas from './areas';
-import login from './login';
-import cares from './cares';
-import companies from './companies';
-import customers from './customers';
-import councils from './councils';
-import documents from './documents';
-import documentGroups from './documentGroups';
-import specialties from './specialties';
-import patients from './patients';
-import users from './users';
-import unconfirmedusers from './unconfirmeduser'
+import areas from "./areas";
+import login from "./login";
+import cares from "./cares";
+import companies from "./companies";
+import customers from "./customers";
+import councils from "./councils";
+import documents from "./documents";
+import documentGroups from "./documentGroups";
+import specialties from "./specialties";
+import patients from "./patients";
+import users from "./users";
+import profession from "./professions";
 
 export default combineReducers<IInitialState>({
   areas,
@@ -29,5 +28,5 @@ export default combineReducers<IInitialState>({
   documentGroups,
   patients,
   users,
-  unconfirmedusers,
+  profession,
 });

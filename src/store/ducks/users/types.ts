@@ -35,20 +35,20 @@ export enum UserTypes {
 export interface SpecialtiesUserInterface {
   id: string;
   name: string;
-};
+}
 export interface ProfessionUserInterface {
   _id: string;
   name: string;
-};
+}
 export interface UserTypesInterface {
   _id: string;
   name: string;
-};
+}
 
 export interface CompanyUserInterface {
   id: string;
   name: string;
-};
+}
 
 export interface UserTypeInterface {
   _id: string;
@@ -59,13 +59,14 @@ export interface UserListItems {
   _id: string;
   name: string;
   email: string;
+  profession: ProfessionUserInterface;
   active: boolean;
 }
 
 export interface UserInterface {
   _id?: string;
   companies: (CompanyUserInterface | {})[];
-	name: string; // name
+  name: string; // name
   birthdate: string;
   gender: string;
   national_id: string;
@@ -73,17 +74,17 @@ export interface UserInterface {
   fiscal_number: string;
   mother_name: string;
   nationality: string;
-	address: {
+  address: {
     postal_code: string;
-    street: string,
-    number: string,
+    street: string;
+    number: string;
     district: string;
     city: string;
     state: string;
     complement: string;
   };
-	email: string; // email
-	phone: string;
+  email: string; // email
+  phone: string;
   cellphone: string;
   user_type_id: string | UserTypeInterface;
   profession_id?: string;
@@ -91,7 +92,7 @@ export interface UserInterface {
   specialties: (SpecialtiesUserInterface | {})[];
   council_id?: {
     _id: string;
-    company_id: { _id: string; };
+    company_id: { _id: string };
     name: string;
     describe?: string;
     initials?: string;
@@ -106,24 +107,23 @@ export interface UserInterface {
   user_types?: UserTypesInterface[];
 }
 
-
 export interface UserList {
   data: UserListItems[];
   limit: string;
   page: string;
   total: number;
   search?: string;
-
+  profession_id?: string;
 }
 
 export interface ViacepDataInterface {
-  cep: string,
-  logradouro: string,
-  complemento: string,
-  bairro: string,
-  localidade: string,
-  uf: string,
-  erro?: boolean,
+  cep: string;
+  logradouro: string;
+  complemento: string;
+  bairro: string;
+  localidade: string;
+  uf: string;
+  erro?: boolean;
 }
 
 /**
@@ -137,4 +137,4 @@ export interface UserState {
   success: boolean;
 }
 
-export type LoadRequestParams = Partial<Omit<UserList, 'data'>>
+export type LoadRequestParams = Partial<Omit<UserList, "data">>;

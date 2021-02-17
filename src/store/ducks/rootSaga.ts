@@ -1,12 +1,12 @@
 //import { loadDocumentRequest } from './cares/actions';
 import { UnconfirmedUserTypes } from "./unconfirmeduser/types";
-import {
-  get as getUnconfirmedUsers,
-  createUnconfirmedUser,
-  getUnconfirmedUserById,
-  updateUnconfirmedUser,
-  searchUnconfirmedUser,
-} from "./unconfirmeduser/sagas";
+// import {
+//   get as getUnconfirmedUsers,
+//   createUnconfirmedUser,
+//   getUnconfirmedUserById,
+//   updateUnconfirmedUser,
+//   searchUnconfirmedUser,
+// } from "./unconfirmeduser/sagas";
 
 import { all, takeLatest } from "redux-saga/effects";
 
@@ -127,6 +127,7 @@ import {
   //getDocumentById,
 } from "./cares/sagas";
 
+import { get as getProfession } from "./professions/sagas";
 export default function* rootSaga() {
   return yield all([
     takeLatest(LoginTypes.LOAD_REQUEST, doLogin),
@@ -247,13 +248,16 @@ export default function* rootSaga() {
     takeLatest(UserTypes.LOAD_REQUEST_PROFESSION, getProfessions),
     takeLatest(UserTypes.LOAD_REQUEST_USER_TYPES, getUserTypes),
 
+    /** Profession */
+    takeLatest(UserTypes.LOAD_REQUEST, getProfession),
+
     /** UnconfirmedUsers */
-    takeLatest(UnconfirmedUserTypes.LOAD_REQUEST, getUnconfirmedUsers),
+    //  takeLatest(UnconfirmedUserTypes.LOAD_REQUEST, getUnconfirmedUsers),
     // takeLatest(UnconfirmedUserTypes.CREATE_USER_REQUEST, createUnconfirmedUser),
-    takeLatest(
-      UnconfirmedUserTypes.LOAD_REQUEST_USER_BY_ID,
-      getUnconfirmedUserById
-    ),
+    //  takeLatest(
+    //    UnconfirmedUserTypes.LOAD_REQUEST_USER_BY_ID,
+    //    getUnconfirmedUserById
+    //  ),
     // takeLatest(UnconfirmedUserTypes.UPDATE_USER_REQUEST, updateUnconfirmedUser),
     // takeLatest(UnconfirmedUserTypes.SEARCH_REQUEST, searchUnconfirmedUser),
   ]);

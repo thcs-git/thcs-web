@@ -1,39 +1,42 @@
-import { UnconfirmedUserInterface } from './unconfirmeduser/types';
-import { INITIAL_STATE } from './login'
-import { LoginState } from './login/types'
+import { UnconfirmedUserInterface } from "./unconfirmeduser/types";
+import { INITIAL_STATE } from "./login";
+import { LoginState } from "./login/types";
 
-import { INITIAL_STATE as INITIAL_STATE_CARE } from './cares';
-import { CareState } from './cares/types';
+import { INITIAL_STATE as INITIAL_STATE_CARE } from "./cares";
+import { CareState } from "./cares/types";
 
-import { INITIAL_STATE as INITIAL_STATE_CUSTOMER } from './customers';
-import { CustomerState } from './customers/types';
+import { INITIAL_STATE as INITIAL_STATE_CUSTOMER } from "./customers";
+import { CustomerState } from "./customers/types";
 
-import { INITIAL_STATE as INITIAL_STATE_COMPANY } from './companies';
-import { CompanyState } from './companies/types';
+import { INITIAL_STATE as INITIAL_STATE_COMPANY } from "./companies";
+import { CompanyState } from "./companies/types";
 
-import { INITIAL_STATE as INITIAL_STATE_SPECIALTY } from './specialties';
-import { SpecialtyState } from './specialties/types'
+import { INITIAL_STATE as INITIAL_STATE_SPECIALTY } from "./specialties";
+import { SpecialtyState } from "./specialties/types";
 
-import { INITIAL_STATE as INITIAL_STATE_COUNCIL } from './councils';
-import { CouncilState } from './councils/types';
+import { INITIAL_STATE as INITIAL_STATE_COUNCIL } from "./councils";
+import { CouncilState } from "./councils/types";
 
-import { INITIAL_STATE as INITIAL_STATE_DOCUMENT } from './documents';
-import { DocumentState } from './documents/types';
+import { INITIAL_STATE as INITIAL_STATE_DOCUMENT } from "./documents";
+import { DocumentState } from "./documents/types";
 
-import { INITIAL_STATE as INITIAL_STATE_DOCUMENT_GROUP } from './documentGroups';
-import { DocumentGroupState } from './documentGroups/types';
+import { INITIAL_STATE as INITIAL_STATE_DOCUMENT_GROUP } from "./documentGroups";
+import { DocumentGroupState } from "./documentGroups/types";
 
-import { INITIAL_STATE as INITIAL_STATE_AREA } from './areas';
-import { AreaState } from './areas/types';
+import { INITIAL_STATE as INITIAL_STATE_AREA } from "./areas";
+import { AreaState } from "./areas/types";
 
-import { INITIAL_STATE as INITIAL_STATE_PATIENT } from './patients';
-import { PatientState } from './patients/types';
+import { INITIAL_STATE as INITIAL_STATE_PATIENT } from "./patients";
+import { PatientState } from "./patients/types";
 
-import { INITIAL_STATE as INITIAL_STATE_USER } from './users';
-import { UserState } from './users/types';
+import { INITIAL_STATE as INITIAL_STATE_USER } from "./users";
+import { UserState } from "./users/types";
 
-import { INITIAL_STATE as INITIAL_STATE_UNCONFIRMEDUSER } from './unconfirmeduser';
-import { UnconfirmedUserState } from './unconfirmeduser/types';
+import { INITIAL_STATE as INITIAL_STATE_PROFESSION } from "./professions";
+import { ProfessionState, ProfessionTypes } from "./professions/types";
+
+import { INITIAL_STATE as INITIAL_STATE_UNCONFIRMEDUSER } from "./unconfirmeduser";
+import { UnconfirmedUserState } from "./unconfirmeduser/types";
 
 /**
  * Initial state tree interface
@@ -50,7 +53,7 @@ export interface IInitialState {
   documentGroups: Readonly<DocumentGroupState>;
   patients: Readonly<PatientState>;
   users: Readonly<UserState>;
-  unconfirmedusers: Readonly<UnconfirmedUserState>;
+  profession: Readonly<ProfessionState>;
 }
 
 /**
@@ -68,5 +71,5 @@ export const InitialState: IInitialState = {
   documentGroups: INITIAL_STATE_DOCUMENT_GROUP,
   patients: INITIAL_STATE_PATIENT,
   users: INITIAL_STATE_USER,
-  unconfirmedusers: INITIAL_STATE_UNCONFIRMEDUSER,
-}
+  profession: INITIAL_STATE_PROFESSION,
+};

@@ -15,21 +15,23 @@ import {
   loadUserTypesSuccess,
 } from "./actions";
 import { ViacepDataInterface } from "./types";
+import { Console } from "console";
 
 const token = localStorage.getItem("token");
 
 export function* get({ payload }: any) {
   const { params } = payload;
-  const response: AxiosResponse = yield call(
-    apiSollar.get,
-    `/user?limit=${params.limit ?? 10}&page=${params.page || 1}${
-      params.search ? "&search=" + params.search : ""
-    }`
-  );
 
   try {
+    const response: AxiosResponse = yield call(
+      apiSollar.get,
+      `/user?limit=${params.limit ?? 10}&page=${params.page || 1}${
+        params.search ? "&search=" + params.search : ""
+      }${params.profession_id ? "&profession_id=" + params.profession_id : ""}`
+    );
     yield put(loadSuccess(response.data));
   } catch (error) {
+    toast.error("Não foi possível atualizar os dados do usuario");
     yield put(loadFailure());
   }
 }
@@ -194,18 +196,14 @@ export function* getAddress({ payload }: any) {
   }
 }
 
-export function* getProfessions({ payload }: any) {
+export function* getProfessions() {
   try {
-    const { data }: AxiosResponse = yield call(apiSollar.get, `/profession`, {
-      params: payload,
+    const response: AxiosResponse = yield call(apiSollar.get, `/profession`, {
+      headers: { token },
     });
+    console.log(response);
 
-    if (data.erro) {
-      yield put(loadFailure());
-      return;
-    }
-
-    yield put(loadProfessionsSuccess(data));
+    yield put(loadProfessionsSuccess(response.data));
   } catch (error) {
     yield put(loadFailure());
   }

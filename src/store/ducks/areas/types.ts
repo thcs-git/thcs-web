@@ -30,6 +30,7 @@ export enum AreaTypes {
 export interface UserAreaInterface {
   _id: string;
   name: string;
+  profession: any;
 }
 
 export interface NeighborhoodAreaInterface {

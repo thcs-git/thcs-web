@@ -4,7 +4,9 @@ import { useDispatch, useSelector } from 'react-redux';
 import { ApplicationState } from '../../../store';
 import { AreaInterface, UserAreaInterface, NeighborhoodAreaInterface, CityAreaInterface } from '../../../store/ducks/areas/types';
 import { loadRequest, loadAreaById, updateAreaRequest, createAreaRequest, loadGetDistricts as getDistrictsAction, loadGetCitys as getStatesAction } from '../../../store/ducks/areas/actions';
-import { loadRequest as getUsersAction } from '../../../store/ducks/users/actions';
+import { ProfessionInterface } from '../../../store/ducks/professions/types';
+import { loadRequest as getProfessions } from '../../../store/ducks/professions/actions';
+import { loadRequest as getUsersAction, loadProfessionsRequest } from '../../../store/ducks/users/actions';
 
 import { useHistory, RouteComponentProps } from 'react-router-dom';
 import {
@@ -61,6 +63,7 @@ export default function AreaForm(props: RouteComponentProps<IPageParams>) {
   const dispatch = useDispatch();
   const areaState = useSelector((state: ApplicationState) => state.areas);
   const userState = useSelector((state: ApplicationState) => state.users);
+  const professionState = useSelector((state: ApplicationState)=> state.profession);
 
   const { params } = props.match;
   const useStyles = makeStyles((theme) => ({
@@ -199,6 +202,9 @@ export default function AreaForm(props: RouteComponentProps<IPageParams>) {
     dispatch(getUsersAction());
 
     dispatch(getDistrictsAction());
+    //dispatch(getProfessions());
+    console.log(professionState);
+
   }, [dispatch]);
 
   useEffect(() => {
@@ -243,7 +249,10 @@ export default function AreaForm(props: RouteComponentProps<IPageParams>) {
     value?dispatch(getStatesAction(value.sigla)):null;
 
 };
-
+  function handleSelectProfession(value:any){
+    console.log(value);
+      value?dispatch(getUsersAction({profession_id:value._id})):dispatch(getUsersAction());
+  };
   const handleDayOfTheWeek = useCallback((event: any, newValue: any) => {
     setState(prevState => ({
       ...prevState,
@@ -287,6 +296,7 @@ export default function AreaForm(props: RouteComponentProps<IPageParams>) {
 
   // Prestadores
   function handleSelectUser(value: UserAreaInterface) {
+
     setState(prevState => ({
       ...prevState,
       users: [...prevState.users, value]
@@ -471,13 +481,15 @@ export default function AreaForm(props: RouteComponentProps<IPageParams>) {
                       <FormGroupSection>
                         <Autocomplete
                           id="combo-box-profession"
-                          options={userState.list.data}
+                          options={professionState.list.data}
                           getOptionLabel={(option) => option.name}
                           renderInput={(params) => <TextField {...params} label="Funções" variant="outlined" />}
                           size="small"
                           onChange={(event, value) => {
                             if (value) {
-                              handleSelectUser({ _id: value._id || '', name: value.name })
+                              handleSelectProfession( value || null);
+                            }else{
+                              handleSelectProfession( null);
                             }
                           }}
                           fullWidth
@@ -494,7 +506,7 @@ export default function AreaForm(props: RouteComponentProps<IPageParams>) {
                           size="small"
                           onChange={(event, value) => {
                             if (value) {
-                              handleSelectUser({ _id: value._id || '', name: value.name })
+                              handleSelectUser({ _id: value._id || '', name: value.name, profession:value.profession})
                             }
                           }}
                           fullWidth
@@ -502,6 +514,7 @@ export default function AreaForm(props: RouteComponentProps<IPageParams>) {
                       </FormGroupSection>
                     </Grid>
                     <Grid item md={12} xs={12}>
+
                       <ChipList>
                         {state.users.map((item: any, index) => (
                           <div key={`user_selected_${index}`}>
