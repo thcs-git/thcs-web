@@ -3,7 +3,12 @@ import { useDispatch, useSelector } from 'react-redux';
 import InputMask, { Props } from 'react-input-mask';
 
 import { loadRequest, loadCustomerById, getAddress as getAddressAction, updateCustomerRequest, createCustomerRequest } from '../../../store/ducks/customers/actions';
+
 import { ApplicationState } from '../../../store';
+import { loadCustomerById, getAddress as getAddressAction, updateCustomerRequest, createCustomerRequest } from '../../../store/ducks/customers/actions';
+import { CustomerInterface } from '../../../store/ducks/customers/types';
+import { createUserRequest as createUserAction } from '../../../store/ducks/users/actions';
+import { UserInterface } from '../../../store/ducks/users/types';
 
 import { useHistory, RouteComponentProps } from 'react-router-dom';
 import {
@@ -22,10 +27,6 @@ import { SearchOutlined } from '@material-ui/icons';
 
 import Sidebar from '../../../components/Sidebar';
 import { FormTitle } from '../../../styles/components/Form';
-
-import DatePicker from '../../../styles/components/DatePicker';
-
-import { CustomerInterface } from '../../../store/ducks/customers/types';
 
 import {
   ButtonsContent,
@@ -47,12 +48,14 @@ interface IPageParams {
 export default function CustomerForm(props: RouteComponentProps<IPageParams>) {
   const history = useHistory();
   const dispatch = useDispatch();
+
   const customerState = useSelector((state: ApplicationState) => state.customers);
+  const userState = useSelector((state: ApplicationState) => state.users);
+
   const [openModalCancel, setOpenModalCancel] = useState(false);
   const { params } = props.match;
 
   const [state, setState] = useState<CustomerInterface>({
-    id: params.id || '',
     name: '',
     fantasy_name: '',
     fiscal_number: '',
@@ -72,6 +75,35 @@ export default function CustomerForm(props: RouteComponentProps<IPageParams>) {
       whatsapp: false,
     },
     cellphone: ''
+  });
+
+  const [userData, setUserData] = useState<UserInterface>({
+    companies: ['5ee65a9b1a550217e4a8c0f4'], //empresa que vai vir do login
+    name: '',
+    birthdate: '',
+    gender: '',
+    national_id: '',
+    issuing_organ: '',
+    fiscal_number: '',
+    mother_name: '',
+    nationality: '',
+    address: {
+      postal_code: '',
+      street: '',
+      number: '',
+      district: '',
+      city: '',
+      state: '',
+      complement: '',
+    },
+    email: '',
+    phone: '',
+    cellphone: '',
+    user_type_id: '',
+    specialties: [],
+    council_state: '',
+    council_number: '',
+    active: true,
   });
 
   useEffect(() => {
@@ -94,13 +126,13 @@ export default function CustomerForm(props: RouteComponentProps<IPageParams>) {
 
     setState(prevState => {
       return {
-        ...customerState.data,
+        ...prevState,
         address: {
           ...customerState.data.address
         }
       }
-    })
-  }, [customerState]);
+    });
+  }, [customerState.data.address]);
 
 
   useEffect(() => {
@@ -108,6 +140,39 @@ export default function CustomerForm(props: RouteComponentProps<IPageParams>) {
       dispatch(loadCustomerById(params.id))
     }
   }, [dispatch, params]);
+
+  useEffect(() => {
+    if (!params.id && customerState.success && !customerState.error && !customerState.loading) {
+
+      if (customerState.data._id) {
+        dispatch(createUserAction({
+          ...userData,
+          companies: [customerState.data._id],
+          name: state.name || ``,
+          fiscal_number: state.fiscal_number || ``,
+          birthdate: '',
+          gender: '',
+          national_id: '',
+          issuing_organ: '',
+          mother_name: '',
+          nationality: '',
+          address: state.address,
+          email: state.email || ``,
+          phone: state.cellphone || ``,
+          cellphone: state.cellphone || ``,
+          user_type_id: '6025b77d83576e461426786a',
+          council_state: '',
+          council_number: '',
+        }));
+      }
+    }
+  }, [customerState.success]);
+
+  useEffect(() => {
+    if (!params.id && userState.success && !userState.error && !userState.loading) {
+      history.push("/customer");
+    }
+  }, [userState.success]);
 
   const handleSaveFormCustomer = useCallback(() => {
     if (params.id) {
@@ -136,7 +201,11 @@ export default function CustomerForm(props: RouteComponentProps<IPageParams>) {
 
   return (
     <Sidebar>
+<<<<<<< HEAD
       {customerState.loading && <Loading />}
+=======
+      {console.log('customerState ', customerState)}
+>>>>>>> 4fe0a12eed2aef9c4efaad634e31b2aeb15ad4c9
       <FormSection>
         <FormContent>
           <FormTitle>Cadastro de Clientes</FormTitle>

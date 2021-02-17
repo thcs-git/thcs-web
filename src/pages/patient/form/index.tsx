@@ -142,7 +142,7 @@ export default function PatientForm(props: RouteComponentProps<IPageParams>) {
       cellphone: '',
       relationship: ''
     },
-    active: false,
+    active: true,
     sus_card: 'FIELD_NOT_EXISTS_IN_PATIENT_REGISTRATION',
     blood_type: '',
     organ_donor: false,

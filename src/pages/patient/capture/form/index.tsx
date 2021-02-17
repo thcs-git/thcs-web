@@ -69,7 +69,7 @@ export default function PatientCaptureForm() {
   const [openModalCare, setOpenModalCare] = useState<boolean>(false);
 
   useEffect(() => {
-    dispatch(searchPatientAction(''));
+    dispatch(searchPatientAction({ active: true }));
   }, []);
 
   useEffect(() => {
@@ -81,7 +81,7 @@ export default function PatientCaptureForm() {
 
   useEffect(() => {
     if (patient?._id) {
-      dispatch(getCares({ status: 'Pre-Atendimento', 'capture.status': 'Em Andamento', 'patient_id.fiscal_number': patient.fiscal_number }));
+      dispatch(getCares({ status: 'Pre-Atendimento', 'capture.status': 'Em Andamento', 'patient_id.fiscal_number': patient.fiscal_number, 'patient_id.active': true }));
     }
   }, [patient]);
 
@@ -95,7 +95,7 @@ export default function PatientCaptureForm() {
     setPatient({});
 
     if (value.length > 0) {
-      dispatch(searchPatientAction(value));
+      dispatch(searchPatientAction({ fiscal_number: value }));
     }
   }, []);
 
@@ -301,7 +301,7 @@ export default function PatientCaptureForm() {
                             inputProps={{ "aria-label": "primary checkbox" }}
                           />
                         </Td>
-                        <Td>{item?.name}</Td>
+                        <Td>{item?.social_name || item?.name}</Td>
                         <Td>{item?.fiscal_number}</Td>
                         <Td>{formatDate(item?.created_at, 'DD/MM/YYYY HH:mm:ss')}</Td>
                       </tr>

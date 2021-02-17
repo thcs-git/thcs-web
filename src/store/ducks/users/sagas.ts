@@ -5,7 +5,7 @@ import { AxiosResponse } from 'axios';
 import { apiSollar, viacep } from '../../../services/axios';
 
 import { loadSuccess, loadFailure, successGetAddress, createUserSuccess, loadSuccessGetUserById, updateUserSuccess, loadProfessionsSuccess, loadUserTypesSuccess } from './actions';
-import { UserInterface, ViacepDataInterface } from './types';
+import { ViacepDataInterface } from './types';
 
 const token = localStorage.getItem('token');
 
@@ -31,7 +31,7 @@ export function* getUserById({ payload: { id: _id } }: any) {
   }
 }
 
-export function* createUser({payload: { data }}: any) {
+export function* createUser({ payload: { data } }: any) {
   const phones = [];
 
   if (data.phone.length > 0) {
@@ -58,10 +58,12 @@ export function* createUser({payload: { data }}: any) {
   data.user_type_id = { _id: '5fc05d1803058800244bc41b' }
 
   try {
-    const response:AxiosResponse = yield call(apiSollar.post, `/user/store`, data, { headers: { token } })
-    yield put(createUserSuccess(response.data))
+    const response: AxiosResponse = yield call(apiSollar.post, `/user/store`, data, { headers: { token } })
+
+    yield put(createUserSuccess(response.data[0]));
     toast.success('Usuário atualizado com sucesso!');
-  } catch(e) {
+  } catch (e) {
+    console.log('e', e);
     toast.error('Não foi possível cadastrar o usuário');
     yield put(loadFailure());
   }
@@ -108,7 +110,7 @@ export function* updateUser({ payload: { data } }: any) {
   }
 }
 
-export function* getAddress({payload}:any) {
+export function* getAddress({ payload }: any) {
   try {
     const { data }: AxiosResponse<ViacepDataInterface> = yield call(viacep.get, `${payload.postalCode}/json`);
 
@@ -124,7 +126,7 @@ export function* getAddress({payload}:any) {
   }
 }
 
-export function* getProfessions({payload}:any) {
+export function* getProfessions({ payload }: any) {
   try {
     const { data }: AxiosResponse = yield call(apiSollar.get, `/profession`, { params: payload });
 
