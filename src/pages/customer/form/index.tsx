@@ -2,8 +2,6 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import InputMask, { Props } from 'react-input-mask';
 
-import { loadRequest, loadCustomerById, getAddress as getAddressAction, updateCustomerRequest, createCustomerRequest } from '../../../store/ducks/customers/actions';
-
 import { ApplicationState } from '../../../store';
 import { loadCustomerById, getAddress as getAddressAction, updateCustomerRequest, createCustomerRequest } from '../../../store/ducks/customers/actions';
 import { CustomerInterface } from '../../../store/ducks/customers/types';
@@ -201,11 +199,7 @@ export default function CustomerForm(props: RouteComponentProps<IPageParams>) {
 
   return (
     <Sidebar>
-<<<<<<< HEAD
       {customerState.loading && <Loading />}
-=======
-      {console.log('customerState ', customerState)}
->>>>>>> 4fe0a12eed2aef9c4efaad634e31b2aeb15ad4c9
       <FormSection>
         <FormContent>
           <FormTitle>Cadastro de Clientes</FormTitle>
