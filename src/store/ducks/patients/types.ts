@@ -69,10 +69,10 @@ export interface PatientInterface {
 	blood_type: string;
 	organ_donor: boolean;
   responsable: {
-    name: String,
-    phone: String,
-    cellphone: String,
-    relationship: String
+    name: string,
+    phone: string,
+    cellphone: string,
+    relationship: string
   };
   active: boolean;
   hospital?: string;
