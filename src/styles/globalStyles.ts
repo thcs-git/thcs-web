@@ -1,4 +1,4 @@
-import { createGlobalStyle } from 'styled-components';
+import { createGlobalStyle } from "styled-components";
 
 export default createGlobalStyle`
   * {
@@ -49,8 +49,11 @@ export default createGlobalStyle`
     --gray-dark: #666666;
     --outline: #2F3336;
     --success: #4FC66A;
+    --sucess-button-hover:4EC86F0A;
     --success-hover: #4FC66A99;
+    --button-hover:#4EC86F0A;
     --danger: #FF6565;
+    --danger-hover:#FF8800
     --warning: #f9ca24;
     --white: #FFFFFF;
     --background: #FAFAFA;

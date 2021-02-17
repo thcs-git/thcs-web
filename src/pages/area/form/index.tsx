@@ -17,6 +17,7 @@ import {
   DialogTitle,
   FormControlLabel,
   Grid,
+  makeStyles,
   Tabs,
 } from '@material-ui/core';
 import Autocomplete from '@material-ui/lab/Autocomplete';
@@ -62,7 +63,52 @@ export default function AreaForm(props: RouteComponentProps<IPageParams>) {
   const userState = useSelector((state: ApplicationState) => state.users);
 
   const { params } = props.match;
+  const useStyles = makeStyles((theme) => ({
+    register:{
+      textTransform: 'capitalize',
+      fontSize: '18px',
+      '&:hover': {
+        backgroundColor: 'var(--sucess-button-hover)',
+        color:'var(--success)',
+        borderColor:'var(--success-hover)',
 
+      },
+      borderColor:'var(--success)',
+      color:'var(--success)',
+      contrastText: "#fff"
+
+    },
+    proxim: {
+      textTransform: 'capitalize',
+      fontSize: '18px',
+      backgroundColor: 'var(--success)',
+      '&:hover': {
+        backgroundColor: 'var(--success-hover)',
+        color:'#ffff',
+        borderColor:'var(--success-hover)'
+
+      },
+      color:"#fff",
+      contrastText: "#fff",
+      borderColor:'var(--success)',
+    },
+    cancel:{
+      textTransform: 'capitalize',
+      fontSize: '18px',
+      '&:hover': {
+        backgroundColor: 'var(--danger-hover)',
+        color:'var(--danger)',
+        borderColor:'var(--danger-hover)',
+
+      },
+      borderColor:'var(--danger)',
+      color:'var(--danger)',
+      contrastText: "#fff"
+    }
+
+
+  }));
+  const classes = useStyles();
   const States = [
     {id:1,name:"São Paulo",sigla:'SP'},
     {id:2,name:'Paraná',sigla:'PR'},
@@ -216,15 +262,16 @@ export default function AreaForm(props: RouteComponentProps<IPageParams>) {
 
     setState(prevState => ({
       ...prevState,
-      neighborhoods: [...prevState.neighborhoods, {_id:value.id,name:value.name}]
+      neighborhoods: [...prevState.neighborhoods, {_id:value.id,name:value.nome}]
     }));
     console.log(state.neighborhoods);
   }
 
   function handleDeleteNeighborhood(neighborhood: NeighborhoodAreaInterface) {
     let neighborhoodsSelected = [...state.neighborhoods];
+
     const neighborhoodFounded = neighborhoodsSelected.findIndex((item: any) => {
-      return neighborhood._id === item.id
+      return neighborhood._id === item._id
     });
 
     if (neighborhoodFounded > -1) {
@@ -420,7 +467,24 @@ export default function AreaForm(props: RouteComponentProps<IPageParams>) {
                 </TabBodyItem>
                 <TabBodyItem className={currentTab === 2 ? 'show' : ''}>
                   <Grid container>
-                    <Grid item md={5} xs={12}>
+                  <Grid item md={7} xs={12}>
+                      <FormGroupSection>
+                        <Autocomplete
+                          id="combo-box-profession"
+                          options={userState.list.data}
+                          getOptionLabel={(option) => option.name}
+                          renderInput={(params) => <TextField {...params} label="Funções" variant="outlined" />}
+                          size="small"
+                          onChange={(event, value) => {
+                            if (value) {
+                              handleSelectUser({ _id: value._id || '', name: value.name })
+                            }
+                          }}
+                          fullWidth
+                        />
+                      </FormGroupSection>
+                    </Grid>
+                    <Grid item md={7} xs={12}>
                       <FormGroupSection>
                         <Autocomplete
                           id="combo-box-users"
@@ -457,17 +521,17 @@ export default function AreaForm(props: RouteComponentProps<IPageParams>) {
           </FormContent>
 
           <ButtonsContent>
-            <Button variant="outlined" background="default" onClick={() => handleOpenModalCancel()}>
+            <Button variant="outlined" className={classes.cancel} onClick={() => handleOpenModalCancel()}>
               Cancelar
               </Button>
-                    <ButtonsContent>
+                  <ButtonsContent>
                       {currentTab !=0 && (
-                        <Button variant="outlined" background="default" onClick={() => currentTab ===1?selectTab(0):selectTab(1)}>
+                        <Button variant="outlined" color="primary"  className={classes.register} onClick={() => currentTab ===1?selectTab(0):selectTab(1)}>
                          Voltar
                       </Button>
                       )}
                       {currentTab !=2 && (
-                        <Button variant="outlined" background="default" onClick={() => currentTab ===0?selectTab(1):selectTab(2)}>
+                        <Button variant="outlined" color="primary"  className={classes.proxim} onClick={() => currentTab === 0 ? selectTab(1):selectTab(2)}>
                         Próximo
                       </Button>
                       )}
