@@ -36,12 +36,10 @@ const token = localStorage.getItem('token');
 export function* get({ payload }: any) {
   try {
     const { params } = payload;
-    const searchParams = params;
 
-    delete searchParams.limit;
-    delete searchParams.page;
+    console.log(`/attendance/getAttendance?limit=${params.limit ?? 10}&page=${params.page || 1}`)
 
-    const response: AxiosResponse = yield call(apiSollar.get, `/attendance/getAttendance?limit=${params.limit ?? 10}&page=${params.page || 1}`, { params: searchParams })
+    const response: AxiosResponse = yield call(apiSollar.get, `/attendance/getAttendance?limit=${params.limit ?? 10}&page=${params.page || 1}${params.search ? '&search=' + params.search : ''}`)
 
     yield put(searchCareSuccess(response.data))
   } catch (error) {
