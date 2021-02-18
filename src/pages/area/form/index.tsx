@@ -175,6 +175,7 @@ export default function AreaForm(props: RouteComponentProps<IPageParams>) {
     supply_days: 0,
     week_day: 0,
     users: [],
+
     neighborhoods: [],
     created_by: { _id: '5fb81e21c7921937fdb79994' },
     active: true
@@ -250,9 +251,12 @@ export default function AreaForm(props: RouteComponentProps<IPageParams>) {
 
 };
   function handleSelectProfession(value:any){
+
     console.log(value);
+
       value?dispatch(getUsersAction({profession_id:value._id})):dispatch(getUsersAction());
-  };
+      console.log(areaState);
+  }
   const handleDayOfTheWeek = useCallback((event: any, newValue: any) => {
     setState(prevState => ({
       ...prevState,
@@ -295,12 +299,15 @@ export default function AreaForm(props: RouteComponentProps<IPageParams>) {
 
 
   // Prestadores
-  function handleSelectUser(value: UserAreaInterface) {
-
+  function handleSelectUser(value: any) {
+    console.log(value);
+    //console.log(state.profession);
     setState(prevState => ({
       ...prevState,
+     // profession:[...prevState.profession, value],
       users: [...prevState.users, value]
     }));
+    console.log(state.users);
   }
 
   function handleDeleteUser(user: UserAreaInterface) {
@@ -409,10 +416,9 @@ export default function AreaForm(props: RouteComponentProps<IPageParams>) {
                       </Grid>
                     )}
                   </Grid>
-
                 </TabBodyItem>
                 <TabBodyItem className={currentTab === 1 ? 'show' : ''}>
-                <Grid item md={4} xs={12}>
+                  <Grid item md={4} xs={12}>
                         <FormGroupSection >
                           <Autocomplete
                             id="combo-box-neigthborhoods-states"
@@ -461,7 +467,6 @@ export default function AreaForm(props: RouteComponentProps<IPageParams>) {
                         />
                       </FormGroupSection>
                     </Grid>
-
                     <Grid item md={12} xs={12}>
                       <ChipList>
                         {state.neighborhoods.map((item: any, index) => (
@@ -487,9 +492,9 @@ export default function AreaForm(props: RouteComponentProps<IPageParams>) {
                           size="small"
                           onChange={(event, value) => {
                             if (value) {
-                              handleSelectProfession( value || null);
+                              handleSelectProfession(value);
                             }else{
-                              handleSelectProfession( null);
+                              handleSelectProfession(null);
                             }
                           }}
                           fullWidth
@@ -506,7 +511,8 @@ export default function AreaForm(props: RouteComponentProps<IPageParams>) {
                           size="small"
                           onChange={(event, value) => {
                             if (value) {
-                              handleSelectUser({ _id: value._id || '', name: value.name, profession:value.profession})
+                              console.log(value);
+                              handleSelectUser({ _id: value._id || '', name: value.name, profession:value.profession_id.name || ''})
                             }
                           }}
                           fullWidth
@@ -514,7 +520,6 @@ export default function AreaForm(props: RouteComponentProps<IPageParams>) {
                       </FormGroupSection>
                     </Grid>
                     <Grid item md={12} xs={12}>
-
                       <ChipList>
                         {state.users.map((item: any, index) => (
                           <div key={`user_selected_${index}`}>
@@ -527,7 +532,6 @@ export default function AreaForm(props: RouteComponentProps<IPageParams>) {
                       </ChipList>
                     </Grid>
                   </Grid>
-
                 </TabBodyItem>
               </TabBody>
             </TabContent>

@@ -7,6 +7,7 @@ export const INITIAL_STATE: AreaState = {
     supply_days: 0,
     week_day: 0,
     users: [],
+
     neighborhoods: [],
     active: true,
   },
@@ -18,7 +19,7 @@ export const INITIAL_STATE: AreaState = {
   },
   districts: [],
   citys: [],
-
+  profession: [],
   error: false,
   loading: false,
 };

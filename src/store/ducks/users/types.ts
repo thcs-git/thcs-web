@@ -59,7 +59,7 @@ export interface UserListItems {
   _id: string;
   name: string;
   email: string;
-  profession: ProfessionUserInterface;
+  profession_id: ProfessionUserInterface;
   active: boolean;
 }
 

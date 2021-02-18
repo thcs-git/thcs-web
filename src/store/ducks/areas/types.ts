@@ -30,9 +30,12 @@ export enum AreaTypes {
 export interface UserAreaInterface {
   _id: string;
   name: string;
-  profession: any;
+  profession: string;
 }
-
+export interface ProfessionAreaInterface {
+  profession: string;
+  users: UserAreaInterface[];
+}
 export interface NeighborhoodAreaInterface {
   _id: string;
   name: string;
@@ -51,6 +54,7 @@ export interface AreaInterface {
   supply_days: number;
   week_day: number;
   users: (UserAreaInterface | {})[];
+
   neighborhoods: (NeighborhoodAreaInterface | {})[];
   created_by?: { _id: string };
   active: boolean;
@@ -72,6 +76,7 @@ export interface AreaState {
   list: AreaList;
   districts: any[];
   citys: any[];
+  profession: ProfessionAreaInterface[];
   loading: boolean;
   error: boolean;
 }
