@@ -28,16 +28,16 @@ import {
 import Autocomplete from '@material-ui/lab/Autocomplete';
 import { SearchOutlined } from '@material-ui/icons';
 
+import LOCALSTORAGE from '../../../helpers/constants/localStorage';
+
+import Loading from '../../../components/Loading';
 import Sidebar from '../../../components/Sidebar';
-import Alert from '../../../components/Alert';
 
 import ButtonComponent from '../../../styles/components/Button';
 import { FormTitle } from '../../../styles/components/Form';
 
 import {
   ButtonsContent,
-  ButtonDefeault,
-  ButtonPrimary,
   FormSection,
   FormContent,
   InputFiled as TextField,
@@ -59,7 +59,7 @@ export default function CompanyForm(props: RouteComponentProps<IPageParams>) {
 
   const [state, setState] = useState<CompanyInterface>({
     _id: params.id || '',
-    customer_id: '',
+    customer_id: localStorage.getItem(LOCALSTORAGE.CUSTOMER) || '',
     name: '',
     fantasy_name: '',
     fiscal_number: '',
@@ -76,7 +76,7 @@ export default function CompanyForm(props: RouteComponentProps<IPageParams>) {
     phone: '',
     cellphone: '',
     active: true,
-    created_by: { _id: '5e8cfe7de9b6b8501c8033ac' }
+    created_by: { _id: localStorage.getItem(LOCALSTORAGE.USER_ID) || '' }
   });
   const [customers, setCustomers] = useState<CustomerDataItems[]>([]);
 
@@ -91,13 +91,15 @@ export default function CompanyForm(props: RouteComponentProps<IPageParams>) {
   }, [dispatch]);
 
   useEffect(() => {
-    setState(prevState => {
-      return {
-        ...prevState,
-        ...companyState.data
-      }
-    })
-  }, [companyState]);
+    if (params.id) {
+      setState(prevState => {
+        return {
+          ...prevState,
+          ...companyState.data
+        }
+      })
+    }
+  }, [companyState, params.id]);
 
   useEffect(() => {
     setState(prevState => {
@@ -108,12 +110,6 @@ export default function CompanyForm(props: RouteComponentProps<IPageParams>) {
         }
       }
     });
-
-    // setForm(prevState => ({
-    //   ...prevState,
-    //   phone: companyState.data.phones.find(phone => phone.cellnumber)?.cellnumber || '',
-    //   cellphone: companyState.data.phones.find(phone => phone.number)?.number || '',
-    // }));
 
   }, [companyState.data?.address]);
 
@@ -164,26 +160,13 @@ export default function CompanyForm(props: RouteComponentProps<IPageParams>) {
 
   return (
     <Sidebar>
+      {companyState.loading && <Loading />}
       <Container>
         <FormSection>
           <FormContent>
             <FormTitle>Cadastro de Empresas</FormTitle>
 
             <FormGroupSection>
-              <Grid container>
-                <Grid item md={6} xs={12}>
-                  <Autocomplete
-                    id="combo-box-demo"
-                    options={customers}
-                    getOptionLabel={(option) => option.name}
-                    renderInput={(params) => <TextField {...params} label="Cliente" variant="outlined" />}
-                    onChange={(event, value) => setCustomer(value)}
-                    value={selectCustomer()}
-                    size="small"
-                    fullWidth
-                  />
-                </Grid>
-              </Grid>
               <Grid container>
                 <Grid item md={6} xs={12}>
                   <TextField
@@ -224,17 +207,17 @@ export default function CompanyForm(props: RouteComponentProps<IPageParams>) {
                     value={state.fiscal_number}
                     onChange={(element) => setState({ ...state, fiscal_number: element.target.value })}
                   >
-                  {(inputProps: any) => (
-                    <TextField
-                      {...inputProps}
-                      id="input-fiscal-number"
-                      label="CNPJ"
-                      variant="outlined"
-                      size="small"
-                      placeholder="00.000.000/0000-00"
-                      fullWidth
-                    />)}
-                </InputMask>
+                    {(inputProps: any) => (
+                      <TextField
+                        {...inputProps}
+                        id="input-fiscal-number"
+                        label="CNPJ"
+                        variant="outlined"
+                        size="small"
+                        placeholder="00.000.000/0000-00"
+                        fullWidth
+                      />)}
+                  </InputMask>
                 </Grid>
 
                 <Grid item md={10} />
@@ -248,27 +231,27 @@ export default function CompanyForm(props: RouteComponentProps<IPageParams>) {
                   <FormControl variant="outlined" size="small" fullWidth>
                     <InputLabel htmlFor="search-input">CEP</InputLabel>
                     <InputMask
-                    mask="99999-999"
-                    value={state.address.postal_code}
-                    onChange={(element) => setState({ ...state, address: { ...state.address, postal_code: element.target.value } })}
-                    onBlur={getAddress}
+                      mask="99999-999"
+                      value={state.address.postal_code}
+                      onChange={(element) => setState({ ...state, address: { ...state.address, postal_code: element.target.value } })}
+                      onBlur={getAddress}
 
-                  >
-                    {(inputProps: any) => (
-                      <OutlinedInputFiled
-                        id="input-postal-code"
-                        label="CEP"
-                        placeholder="00000-000"
-                        labelWidth={155}
-                        style={{ marginRight: 12 }}
-                        endAdornment={
-                          <InputAdornment position="end">
-                            <SearchOutlined style={{ color: 'var(--primary)' }} />
-                          </InputAdornment>
-                        }
-                      />
-                    )}
-                  </InputMask>
+                    >
+                      {(inputProps: any) => (
+                        <OutlinedInputFiled
+                          id="input-postal-code"
+                          label="CEP"
+                          placeholder="00000-000"
+                          labelWidth={155}
+                          style={{ marginRight: 12 }}
+                          endAdornment={
+                            <InputAdornment position="end">
+                              <SearchOutlined style={{ color: 'var(--primary)' }} />
+                            </InputAdornment>
+                          }
+                        />
+                      )}
+                    </InputMask>
                     {/* <OutlinedInputFiled
                       id="input-postal-code"
                       label="CEP"
@@ -373,7 +356,7 @@ export default function CompanyForm(props: RouteComponentProps<IPageParams>) {
                   fullWidth
                 />
               </Grid>
-              <Grid item md={2} xs={12}>
+              <Grid item md={3} xs={12}>
                 {/* <TextField
                   id="input-phone"
                   label="Telefone"
@@ -389,27 +372,27 @@ export default function CompanyForm(props: RouteComponentProps<IPageParams>) {
                   value={state.phone}
                   onChange={(element) => setState({ ...state, phone: element.target.value })}
                 >
-                {(inputProps: any) => (
-                  <TextField
-                    {...inputProps}
-                    id="input-phone"
-                    label="Telefone"
-                    variant="outlined"
-                    size="small"
-                    // value={state.phones?.number}
-                    // onChange={(element) => setState({ ...state, phones: { ...state.phones, number: element.target.value } })}
-                    placeholder="(00) 0000-0000"
-                    fullWidth
-                  />
-                )}
-              </InputMask>
+                  {(inputProps: any) => (
+                    <TextField
+                      {...inputProps}
+                      id="input-phone"
+                      label="Telefone"
+                      variant="outlined"
+                      size="small"
+                      // value={state.phones?.number}
+                      // onChange={(element) => setState({ ...state, phones: { ...state.phones, number: element.target.value } })}
+                      placeholder="(00) 0000-0000"
+                      fullWidth
+                    />
+                  )}
+                </InputMask>
               </Grid>
-              <Grid item md={2} xs={12}>
+              <Grid item md={3} xs={12}>
                 <InputMask
-                    mask="(99) 9 9999-9999"
-                    value={state.cellphone}
-                    onChange={(element) => setState({ ...state, cellphone: element.target.value })}
-                  >
+                  mask="(99) 9 9999-9999"
+                  value={state.cellphone}
+                  onChange={(element) => setState({ ...state, cellphone: element.target.value })}
+                >
                   {(inputProps: any) => (
                     <TextField
                       id="input-cellphone"
