@@ -37,14 +37,14 @@ export interface NeighborhoodAreaInterface {
 
 export interface AreaInterface {
   _id?: string;
-	name: string;
-	describe?: string;
-	supply_days: number;
+  name: string;
+  describe?: string;
+  supply_days: number;
   week_day: number;
   users: (UserAreaInterface | {})[],
   neighborhoods: (NeighborhoodAreaInterface | {})[],
-	created_by?: { _id: string };
-	active: boolean;
+  created_by?: { _id: string };
+  active: boolean;
 }
 
 export interface AreaList {
