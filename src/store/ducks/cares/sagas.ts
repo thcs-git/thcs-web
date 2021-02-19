@@ -31,6 +31,8 @@ import {
 
 import { apiSollar } from '../../../services/axios';
 
+import { handleCompanySelected } from '../../../helpers/localStorage';
+
 const token = localStorage.getItem('token');
 
 export function* get({ payload }: any) {
@@ -77,6 +79,12 @@ export function* getCareById({ payload: { id: _id } }: any) {
 
 export function* createCare({ payload: { data } }: any) {
   try {
+    const company = handleCompanySelected();
+
+    if (!company) {
+      toast.error('Parametro de empresa nao encontrado');
+      return
+    }
     const response: AxiosResponse = yield call(apiSollar.post, `/care/store`, data, { headers: { token } })
 
     yield put(createCareSuccess(response.data))

@@ -9,9 +9,6 @@ import { apiSollar, ibge } from '../../../services/axios';
 const token = localStorage.getItem('token');
 
 export function* get({ payload }: any) {
-  const { params } = payload;
-  const response: AxiosResponse = yield call(apiSollar.get, `/patientarea?limit=${params.limit ?? 10}&page=${params.page || 1}${params.search ? '&search=' + params.search : ''}`,)
-
   try {
     const { params } = payload;
     const response: AxiosResponse = yield call(apiSollar.get, `/patientarea?limit=${params.limit ?? 10}&page=${params.page || 1}`,)
@@ -33,14 +30,14 @@ export function* getAreaById({ payload: { id: _id } }: any) {
   }
 }
 
-export function* createArea({payload: { data }}: any) {
+export function* createArea({ payload: { data } }: any) {
   try {
-    const response:AxiosResponse = yield call(apiSollar.post, `/patientarea/store`, data, { headers: { token } })
+    const response: AxiosResponse = yield call(apiSollar.post, `/patientarea/store`, data, { headers: { token } })
 
     yield put(createAreaSuccess(response.data))
 
     toast.success('Area cadastrado com sucesso!');
-  } catch(e) {
+  } catch (e) {
     toast.error('Erro ao cadastrar o area');
     yield put(loadFailure());
   }

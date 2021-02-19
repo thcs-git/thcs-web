@@ -13,6 +13,9 @@ import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
 import ExitToApp from '@material-ui/icons/ExitToApp';
 import AccountCircle from '@material-ui/icons/AccountCircle';
+import SettingsIcon from '@material-ui/icons/Settings';
+import Slide from '@material-ui/core/Slide';
+import { TransitionProps } from '@material-ui/core/transitions';
 
 import {
   Button,
@@ -42,6 +45,8 @@ import StarRateIcon from '@material-ui/icons/StarRate';
 import { AccordionMenu, Logo, UserContent } from './styles';
 import LOCALSTORAGE from '../../helpers/constants/localStorage';
 
+// Components
+import ConfigComponent from '../Configuration';
 
 const drawerWidth = 220;
 
@@ -114,6 +119,12 @@ const useStyles = makeStyles((theme: Theme) =>
   })
 );
 
+const Transition = React.forwardRef(function Transition(
+  props: TransitionProps & { children?: React.ReactElement },
+  ref: React.Ref<unknown>,
+) {
+  return <Slide direction="up" ref={ref} {...props} />;
+});
 
 const Sibebar = (props: Props<any>) => {
   const history = useHistory();
@@ -126,6 +137,7 @@ const Sibebar = (props: Props<any>) => {
   const [username, setUsername] = useState(localStorage.getItem(LOCALSTORAGE.USERNAME) || '');
 
   const [openModalLogout, setOpenModalLogout] = useState(false);
+  const [openModalConfig, setOpenModalConfig] = useState(false);
 
   const AccordionRef = useRef<HTMLDivElement>(null);
 
@@ -155,7 +167,11 @@ const Sibebar = (props: Props<any>) => {
 
   const handleCloseModalLogout = useCallback(() => {
     setOpenModalLogout(false);
-  }, [])
+  }, []);
+
+  const handleToggleModalConfig = useCallback(() => {
+    setOpenModalConfig(!openModalConfig);
+  }, []);
 
   return (
     <div className={classes.root}>
@@ -216,6 +232,12 @@ const Sibebar = (props: Props<any>) => {
         </List>
         <Divider />
         <List disablePadding={true}>
+          <ListItem style={{ marginLeft: 10 }} className={classes.logOutButton} onClick={() => setOpenModalConfig(true)}>
+            <ListItemIcon>
+              <SettingsIcon style={{ color: '#fff' }} />
+            </ListItemIcon>
+            <ListItemText primary="Configurações" />
+          </ListItem>
           <ListItem style={{ marginLeft: 10 }} className={classes.logOutButton} onClick={handleOpenModalLogout}>
             <ListItemIcon>
               <ExitToApp style={{ color: '#fff' }} />
@@ -247,6 +269,30 @@ const Sibebar = (props: Props<any>) => {
           <Button onClick={handleLogout} color="primary" autoFocus>
             Sim
 					</Button>
+        </DialogActions>
+      </Dialog>
+
+      <Dialog
+        fullScreen
+        open={openModalConfig}
+        // onClose={handleToggleModalConfig}
+        aria-labelledby="alert-dialog-title"
+        aria-describedby="alert-dialog-description"
+        TransitionComponent={Transition}
+      >
+        <DialogTitle id="alert-dialog-title">Configurações</DialogTitle>
+        <DialogContent>
+          <ConfigComponent />
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => {
+            setOpenModalConfig(false)
+            location.reload()
+          }}
+            color="primary"
+          >
+            Fechar
+          </Button>
         </DialogActions>
       </Dialog>
     </div>
