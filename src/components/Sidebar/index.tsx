@@ -1,4 +1,10 @@
-import React, { useState, Props, useRef, useCallback } from 'react';
+import React, { useState, useEffect, Props, useCallback } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+
+import { ApplicationState } from '../../store';
+
+import { loadCompanyById } from '../../store/ducks/companies/actions';
+
 import clsx from 'clsx';
 import { createStyles, makeStyles, useTheme, Theme } from '@material-ui/core/styles';
 import Drawer from '@material-ui/core/Drawer';
@@ -34,15 +40,13 @@ import { useHistory } from "react-router-dom";
 import DashboardIcon from '@material-ui/icons/Dashboard';
 import AssignmentIndIcon from '@material-ui/icons/AssignmentInd';
 import BusinessIcon from '@material-ui/icons/Business';
-import FolderSpecialIcon from '@material-ui/icons/FolderSpecial';
-import GavelIcon from '@material-ui/icons/Gavel';
 import ExtensionIcon from '@material-ui/icons/Extension';
 import PersonIcon from '@material-ui/icons/Person';
 import GroupAddIcon from '@material-ui/icons/GroupAdd';
 import LocalHospital from '@material-ui/icons/LocalHospital';
 import StarRateIcon from '@material-ui/icons/StarRate';
 
-import { AccordionMenu, Logo, UserContent } from './styles';
+import { Logo, UserContent } from './styles';
 import LOCALSTORAGE from '../../helpers/constants/localStorage';
 
 // Components
@@ -54,8 +58,6 @@ const itemsMenu = [
   { title: 'Dashboard', route: '/', icon: <DashboardIcon style={{ color: '#fff' }} /> },
   { title: 'Clientes', route: '/customer', icon: <AssignmentIndIcon style={{ color: '#fff' }} /> },
   { title: 'Empresas', route: '/company', icon: <BusinessIcon style={{ color: '#fff' }} /> },
-  { title: 'Especialidade', route: '/specialty', icon: <FolderSpecialIcon style={{ color: '#fff' }} /> },
-  { title: 'Conselhos', route: '/council', icon: <GavelIcon style={{ color: '#fff' }} /> },
   { title: 'Área', route: '/area', icon: <ExtensionIcon style={{ color: '#fff' }} /> },
   { title: 'Usuários', route: '/user', icon: <PersonIcon style={{ color: '#fff' }} /> },
   { title: 'Pacientes', route: '/patient', icon: <GroupAddIcon style={{ color: '#fff' }} /> },
@@ -115,6 +117,7 @@ const useStyles = makeStyles((theme: Theme) =>
     },
     logOutButton: {
       cursor: 'pointer',
+      marginLeft: 0,
     },
   })
 );
@@ -129,22 +132,23 @@ const Transition = React.forwardRef(function Transition(
 const Sibebar = (props: Props<any>) => {
   const history = useHistory();
   const classes = useStyles();
-  const theme = useTheme();
+  const dispatch = useDispatch();
+
+  const companyState = useSelector((state: ApplicationState) => state.companies);
+
   const [open, setOpen] = useState<Boolean>(() => {
     let toggleSidebar = localStorage.getItem(LOCALSTORAGE.TOGGLE_SIDEBAR) || 'false';
     return JSON.parse(toggleSidebar)
   });
   const [username, setUsername] = useState(localStorage.getItem(LOCALSTORAGE.USERNAME) || '');
+  const [company, setCompany] = useState(localStorage.getItem(LOCALSTORAGE.COMPANY_SELECTED) || '');
 
   const [openModalLogout, setOpenModalLogout] = useState(false);
   const [openModalConfig, setOpenModalConfig] = useState(false);
 
-  const AccordionRef = useRef<HTMLDivElement>(null);
-
-  // useEffect(() => {
-  // if (!open) AccordionRef.current?.removeAttribute('expanded')
-  // else AccordionRef.current?.setAttribute('expanded', 'true');
-  // }, [open]);
+  useEffect(() => {
+    dispatch(loadCompanyById(company))
+  }, []);
 
   const handleDrawerClose = useCallback(() => {
     setOpen(prev => {
@@ -152,9 +156,6 @@ const Sibebar = (props: Props<any>) => {
       return !prev
     });
   }, []);
-
-  // const openDropDownAndMenu = () => {
-  // };
 
   const handleLogout = useCallback(() => {
     localStorage.removeItem('@sollar_token');
@@ -196,10 +197,17 @@ const Sibebar = (props: Props<any>) => {
           </IconButton>
         </div>
         {/* <Divider /> */}
+
         <UserContent>
           <AccountCircle />
           <h3>{username}</h3>
+          <br />
+          <div style={{ display: 'flex', alignItems: 'center', }}>
+            <BusinessIcon />
+            <h4 style={{ color: '#ffffff', marginLeft: 10 }}>{companyState.data.name}</h4>
+          </div>
         </UserContent>
+
         <List disablePadding={true}>
           {itemsMenu.map((item, index) => (
             <ListItem key={index} component="button" button onClick={() => history.push(item.route)}>
@@ -209,36 +217,16 @@ const Sibebar = (props: Props<any>) => {
               <ListItemText primary={item.title} />
             </ListItem>
           ))}
-          {/* <AccordionMenu
-            ref={AccordionRef}
-            // onClick={openDropDownAndMenu}
-            // {...(!open ? { expanded: true } : {})}
-            expanded={false}
-          >
-            <AccordionSummary
-              expandIcon={open && <ExpandMoreIcon />}
-              aria-controls="panel1a-content"
-              id="panel1a-header"
-            >
-              <Typography display="block"><SupervisorAccountIcon />{open && 'Administrador'}</Typography>
-            </AccordionSummary>
-            <AccordionDetails>
-              <Typography>
-                Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse malesuada lacus ex,
-                sit amet blandit leo lobortis eget.
-              </Typography>
-            </AccordionDetails>
-          </AccordionMenu> */}
         </List>
         <Divider />
         <List disablePadding={true}>
-          <ListItem style={{ marginLeft: 10 }} className={classes.logOutButton} onClick={() => setOpenModalConfig(true)}>
+          <ListItem className={classes.logOutButton} onClick={() => setOpenModalConfig(true)}>
             <ListItemIcon>
               <SettingsIcon style={{ color: '#fff' }} />
             </ListItemIcon>
             <ListItemText primary="Configurações" />
           </ListItem>
-          <ListItem style={{ marginLeft: 10 }} className={classes.logOutButton} onClick={handleOpenModalLogout}>
+          <ListItem className={classes.logOutButton} onClick={handleOpenModalLogout}>
             <ListItemIcon>
               <ExitToApp style={{ color: '#fff' }} />
             </ListItemIcon>
