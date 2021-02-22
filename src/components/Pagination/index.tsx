@@ -24,7 +24,7 @@ const Pagination = (props: PaginationProps) => {
             page={parseInt(page)}
 
             labelRowsPerPage="Resultados por página:"
-            labelDisplayedRows={({ from, to, count, page }) => `${count} itens  ||  ${page} de ${Math.ceil(count / parseInt(rowsPerPage))}`}
+            labelDisplayedRows={({ from, to, count, page }) => `${count} itens    ${page} de ${Math.ceil(count / parseInt(rowsPerPage))}`}
             SelectProps={{
               inputProps: { 'aria-label': 'rows per page' },
               native: true,
