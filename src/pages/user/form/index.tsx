@@ -53,6 +53,7 @@ import { SwitchComponent as Switch } from '../../../styles/components/Switch';
 import { ChipComponent as Chip } from '../../../styles/components/Chip';
 
 import { formatDate, age } from '../../../helpers/date';
+import LOCALSTORAGE from '../../../helpers/constants/localStorage';
 
 import DatePicker from '../../../styles/components/DatePicker';
 import { TabContent, TabNav, TabNavItem, TabBody, TabBodyItem } from '../../../styles/components/Tabs';
@@ -81,17 +82,19 @@ interface IPageParams {
 export default function UserForm(props: RouteComponentProps<IPageParams>) {
   const history = useHistory();
   const dispatch = useDispatch();
+
   const userState = useSelector((state: ApplicationState) => state.users);
   const specialtyState = useSelector((state: ApplicationState) => state.specialties);
   const councilState = useSelector((state: ApplicationState) => state.councils);
   const companyState = useSelector((state: ApplicationState) => state.companies);
 
   const { params } = props.match;
+  const currentCompany = localStorage.getItem(LOCALSTORAGE.COMPANY_SELECTED);
 
   const [currentTab, setCurrentTab] = useState(0);
 
   const [state, setState] = useState<UserInterface>({
-    companies: ['5ee65a9b1a550217e4a8c0f4'], //empresa que vai vir do login
+    companies: [currentCompany || ''],
     name: '',
     birthdate: '',
     gender: '',
@@ -529,20 +532,20 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
                             value={state.address?.postal_code}
                             onChange={(element) => setState({ ...state, address: { ...state.address, postal_code: element.target.value } })}
                             onBlur={getAddress}
-                            >
+                          >
                             {(inputProps: Props) => (
-                                <OutlinedInputFiled
+                              <OutlinedInputFiled
                                 id="input-postal-code"
                                 label="CEP"
                                 placeholder="00000-000"
                                 endAdornment={
-                                    <InputAdornment position="end">
+                                  <InputAdornment position="end">
                                     <SearchOutlined style={{ color: 'var(--primary)' }} />
-                                    </InputAdornment>
+                                  </InputAdornment>
                                 }
                                 labelWidth={155}
                                 style={{ marginRight: 12 }}
-                                />
+                              />
                             )}
                           </InputMask>
                         </FormControl>
@@ -634,25 +637,25 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
                       />
                     </Grid>
                     <Grid item md={2} xs={12}>
-                    <InputMask
-                      mask="(99) 9999-9999"
-                      value={state.phone}
-                      onChange={(element) => setState({ ...state, phone: element.target.value })}
-                    >
-                      {(inputProps: any) => (
-                        <TextField
-                          {...inputProps}
-                          id="input-phone"
-                          label="Telefone"
-                          variant="outlined"
-                          size="small"
-                          // value={state.phones?.number}
-                          // onChange={(element) => setState({ ...state, phones: { ...state.phones, number: element.target.value } })}
-                          placeholder="0000-0000"
-                          fullWidth
-                        />
-                      )}
-                    </InputMask>
+                      <InputMask
+                        mask="(99) 9999-9999"
+                        value={state.phone}
+                        onChange={(element) => setState({ ...state, phone: element.target.value })}
+                      >
+                        {(inputProps: any) => (
+                          <TextField
+                            {...inputProps}
+                            id="input-phone"
+                            label="Telefone"
+                            variant="outlined"
+                            size="small"
+                            // value={state.phones?.number}
+                            // onChange={(element) => setState({ ...state, phones: { ...state.phones, number: element.target.value } })}
+                            placeholder="0000-0000"
+                            fullWidth
+                          />
+                        )}
+                      </InputMask>
                       {/* <TextField
                         id="input-phone"
                         label="Telefone"

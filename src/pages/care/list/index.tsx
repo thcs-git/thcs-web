@@ -137,29 +137,34 @@ export default function CouncilList() {
               page: '1',
               limit: careState.list.limit,
               total: careState.list.total,
+              search
             }))}
 
             handleLastPage={() => dispatch(loadRequest({
               page: (Math.ceil(+careState.list.total / +careState.list.limit)).toString(),
               limit: careState.list.limit,
               total: careState.list.total,
+              search
             }))}
 
             handleNextPage={() => dispatch(loadRequest({
               page: (+careState.list.page + 1).toString(),
               limit: careState.list.limit,
               total: careState.list.total,
+              search
             }))}
 
             handlePreviosPage={() => dispatch(loadRequest({
               page: (+careState.list.page - 1).toString(),
               limit: careState.list.limit,
               total: careState.list.total,
+              search
             }))}
 
             handleChangeRowsPerPage={event => dispatch(loadRequest({
               limit: event.target.value,
-              page: '1'
+              page: '1',
+              search
             }))}
           />
         </Container>

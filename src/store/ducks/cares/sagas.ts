@@ -31,17 +31,17 @@ import {
 
 import { apiSollar } from '../../../services/axios';
 
+import { handleCompanySelected } from '../../../helpers/localStorage';
+
 const token = localStorage.getItem('token');
 
 export function* get({ payload }: any) {
   try {
     const { params } = payload;
-    const searchParams = params;
 
-    delete searchParams.limit;
-    delete searchParams.page;
+    console.log(`/attendance/getAttendance?limit=${params.limit ?? 10}&page=${params.page || 1}`)
 
-    const response: AxiosResponse = yield call(apiSollar.get, `/attendance/getAttendance?limit=${params.limit ?? 10}&page=${params.page || 1}`, { params: searchParams })
+    const response: AxiosResponse = yield call(apiSollar.get, `/attendance/getAttendance?limit=${params.limit ?? 10}&page=${params.page || 1}${params.search ? '&search=' + params.search : ''}`)
 
     yield put(searchCareSuccess(response.data))
   } catch (error) {
@@ -79,6 +79,12 @@ export function* getCareById({ payload: { id: _id } }: any) {
 
 export function* createCare({ payload: { data } }: any) {
   try {
+    const company = handleCompanySelected();
+
+    if (!company) {
+      toast.error('Parametro de empresa nao encontrado');
+      return
+    }
     const response: AxiosResponse = yield call(apiSollar.post, `/care/store`, data, { headers: { token } })
 
     yield put(createCareSuccess(response.data))

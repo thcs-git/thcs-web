@@ -53,9 +53,14 @@ export interface AreaInterface {
   describe?: string;
   supply_days: number;
   week_day: number;
+<<<<<<< HEAD
   users: (UserAreaInterface | {})[];
 
   neighborhoods: (NeighborhoodAreaInterface | {})[];
+=======
+  users: (UserAreaInterface | {})[],
+  neighborhoods: (NeighborhoodAreaInterface | {})[],
+>>>>>>> dev
   created_by?: { _id: string };
   active: boolean;
 }

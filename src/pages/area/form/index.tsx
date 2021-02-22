@@ -172,7 +172,7 @@ export default function AreaForm(props: RouteComponentProps<IPageParams>) {
   const [state, setState] = useState<IFormFields>({
     name: '',
     describe: '',
-    supply_days: 0,
+    supply_days: 1,
     week_day: 0,
     users: [],
 

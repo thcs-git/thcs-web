@@ -40,6 +40,10 @@ export default createGlobalStyle`
     color: var(--danger);
   }
 
+  p, button, span {
+    font-size: 14px !important;
+  }
+
   :root {
     --primary: #16679A;
     --primary-hover: #16679A99;

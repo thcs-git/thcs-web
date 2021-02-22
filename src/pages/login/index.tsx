@@ -176,7 +176,7 @@ export default function SignIn() {
               onBlur={handleEmailValidator}
             />
             <FormControl fullWidth margin='normal' variant="outlined">
-              <InputLabel htmlFor="outlined-adornment-password">Password</InputLabel>
+              <InputLabel htmlFor="outlined-adornment-password">Senha</InputLabel>
               <OutlinedInput
                 id="outlined-adornment-password"
                 type={showPassword ? 'text' : 'password'}

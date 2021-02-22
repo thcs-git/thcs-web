@@ -15,9 +15,13 @@ export function* doLogin({ payload }: any) {
 
     const { data } = response;
 
+    console.log('data', data);
+
     localStorage.setItem(LOCALSTORAGE.TOKEN, data.token)
     localStorage.setItem(LOCALSTORAGE.USERNAME, data.username)
     localStorage.setItem(LOCALSTORAGE.USER_ID, data._id)
+    localStorage.setItem(LOCALSTORAGE.COMPANY_SELECTED, data.companies[0]._id || null)
+    localStorage.setItem(LOCALSTORAGE.CUSTOMER, data.companies[0].customer_id || null)
 
     yield put(loadSuccess(data));
 
