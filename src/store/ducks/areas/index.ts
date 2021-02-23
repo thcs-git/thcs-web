@@ -8,7 +8,7 @@ export const INITIAL_STATE: AreaState = {
     week_day: 0,
     users: [],
 
-    neighborhoods: [],
+    districts: [],
     active: true,
   },
   list: {
@@ -18,6 +18,7 @@ export const INITIAL_STATE: AreaState = {
     total: 0,
   },
   districts: [],
+  districts_: [],
   citys: [],
   profession: [],
   error: false,
@@ -97,12 +98,20 @@ const reducer: Reducer<AreaState> = (state = INITIAL_STATE, action) => {
     case AreaTypes.LOAD_SUCCCES_GET_CITYS:
       return {
         ...state,
-        citys: action.payload.data.data,
+        citys: action.payload.data,
         loading: false,
         error: false,
         success: false,
       };
     case AreaTypes.LOAD_SUCCCES_GET_DISTRICTS:
+      return {
+        ...state,
+        districts: action.payload.data,
+        loading: false,
+        error: false,
+        success: false,
+      };
+    case AreaTypes.LOAD_SUCCCES_GET_DISTRICTS_:
       return {
         ...state,
         districts: action.payload.data,

@@ -19,6 +19,7 @@ import {
   getDistricts,
   searchArea,
   getCitys,
+  getDistrict,
 } from "./areas/sagas";
 
 import { LoginTypes } from "./login/types";
@@ -143,6 +144,7 @@ export default function* rootSaga() {
     takeLatest(AreaTypes.UPDATE_AREA_REQUEST, updateArea),
     takeLatest(AreaTypes.LOAD_GET_DISTRICTS, getDistricts),
     takeLatest(AreaTypes.LOAD_GET_CITYS, getCitys),
+    takeLatest(AreaTypes.LOAD_GET_DISTRICTS_, getDistrict),
     takeLatest(AreaTypes.SEARCH_REQUEST, searchArea),
 
     // Care

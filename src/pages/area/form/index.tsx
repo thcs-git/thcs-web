@@ -3,7 +3,7 @@ import React, { useState, useEffect, useCallback, ChangeEvent, ReactNode } from 
 import { useDispatch, useSelector } from 'react-redux';
 import { ApplicationState } from '../../../store';
 import { AreaInterface, UserAreaInterface, NeighborhoodAreaInterface, CityAreaInterface } from '../../../store/ducks/areas/types';
-import { loadRequest, loadAreaById, updateAreaRequest, createAreaRequest, loadGetDistricts as getDistrictsAction, loadGetCitys as getStatesAction } from '../../../store/ducks/areas/actions';
+import { loadRequest, loadAreaById, updateAreaRequest, createAreaRequest, loadGetDistricts as getDistrictsAction, loadGetCitys as getStatesAction,loadGetDistricts_ } from '../../../store/ducks/areas/actions';
 import { ProfessionInterface } from '../../../store/ducks/professions/types';
 import { loadRequest as getProfessions } from '../../../store/ducks/professions/actions';
 import { loadRequest as getUsersAction, loadProfessionsRequest } from '../../../store/ducks/users/actions';
@@ -41,6 +41,8 @@ import {
   FormGroupSection,
   FormGroupSectionCity
 } from './styles';
+import validateName from '../../../utils/validateName';
+
 
 interface IFormFields extends AreaInterface {
   form?: {
@@ -61,6 +63,7 @@ interface TabPanelProps {
 export default function AreaForm(props: RouteComponentProps<IPageParams>) {
   const history = useHistory();
   const dispatch = useDispatch();
+  const [inputName, setInputName ] = useState({value:"", error: false});
   const areaState = useSelector((state: ApplicationState) => state.areas);
   const userState = useSelector((state: ApplicationState) => state.users);
   const professionState = useSelector((state: ApplicationState)=> state.profession);
@@ -175,8 +178,7 @@ export default function AreaForm(props: RouteComponentProps<IPageParams>) {
     supply_days: 1,
     week_day: 0,
     users: [],
-
-    neighborhoods: [],
+    districts: [],
     created_by: { _id: '5fb81e21c7921937fdb79994' },
     active: true
   });
@@ -216,6 +218,23 @@ export default function AreaForm(props: RouteComponentProps<IPageParams>) {
 
   }, [areaState]);
 
+  const handleNameValidator = useCallback(()=>{
+    if(!validateName(inputName.value)){
+      setInputName(prev =>({
+        ...prev,
+        error: true
+      }))
+    }else{
+      setInputName(prev=>({
+        ...prev,
+        error:false
+      }));
+      console.log(inputName);
+      setState(prevState => ({ ...prevState, name: inputName.value }))
+      console.log(state);
+    }
+
+  },[inputName]);
   function handleSaveFormArea() {
     if (state?._id) {
       dispatch(updateAreaRequest(state));
@@ -248,8 +267,14 @@ export default function AreaForm(props: RouteComponentProps<IPageParams>) {
   };
   function handleStates (value:any){
     value?dispatch(getStatesAction(value.sigla)):null;
+    console.log(areaState.citys);
 
 };
+  function handleSelectDistricts(value:any){
+    console.log(value);
+    dispatch(loadGetDistricts_(value.name));
+    console.log(areaState.districts_);
+  }
   function handleSelectProfession(value:any){
 
     console.log(value);
@@ -275,13 +300,13 @@ export default function AreaForm(props: RouteComponentProps<IPageParams>) {
 
     setState(prevState => ({
       ...prevState,
-      neighborhoods: [...prevState.neighborhoods, {_id:value.id,name:value.nome}]
+      districts: [...prevState.districts, {_id:value._id,name:value.name}]
     }));
-    console.log(state.neighborhoods);
+    console.log(state.districts);
   }
 
   function handleDeleteNeighborhood(neighborhood: NeighborhoodAreaInterface) {
-    let neighborhoodsSelected = [...state.neighborhoods];
+    let neighborhoodsSelected = [...state.districts];
 
     const neighborhoodFounded = neighborhoodsSelected.findIndex((item: any) => {
       return neighborhood._id === item._id
@@ -293,7 +318,7 @@ export default function AreaForm(props: RouteComponentProps<IPageParams>) {
 
     setState(prevState => ({
       ...prevState,
-      neighborhoods: neighborhoodsSelected
+      districts: neighborhoodsSelected
     }))
   }
 
@@ -304,8 +329,8 @@ export default function AreaForm(props: RouteComponentProps<IPageParams>) {
     //console.log(state.profession);
     setState(prevState => ({
       ...prevState,
-     // profession:[...prevState.profession, value],
-      users: [...prevState.users, value]
+      users: [...prevState.users, value],
+
     }));
     console.log(state.users);
   }
@@ -339,7 +364,7 @@ export default function AreaForm(props: RouteComponentProps<IPageParams>) {
                   Dados da Área
                 </TabNavItem>
                 <TabNavItem className={currentTab === 1 ? 'active' : ''} onClick={() => selectTab(1)}>
-                  <Badge badgeContent={state.neighborhoods.length} max={99} color="primary">
+                  <Badge badgeContent={state.districts.length} max={99} color="primary">
                     {`Bairros`}
                   </Badge>
                 </TabNavItem>
@@ -356,11 +381,17 @@ export default function AreaForm(props: RouteComponentProps<IPageParams>) {
                       <FormGroupSection>
                         <TextField
                           id="input-name"
+                          error={inputName.error}
                           label="Nome"
                           variant="outlined"
                           size="small"
-                          value={state.name}
-                          onChange={(element) => setState(prevState => ({ ...prevState, name: element.target.value }))}
+                          value={inputName.value}
+                          autoFocus
+                          onChange={element => setInputName(prev =>({
+                            ...prev,
+                            value:element.target.value
+                          }))}
+                          onBlur={handleNameValidator}
                           fullWidth
                         />
                       </FormGroupSection>
@@ -426,7 +457,9 @@ export default function AreaForm(props: RouteComponentProps<IPageParams>) {
                             getOptionLabel={(option) => option.name}
                             renderInput={(params) => <TextField {...params} label="Estados" variant="outlined" />}
                             onChange={(event,value:any) => {
-                              handleStates(value);
+                              if(value){
+                                handleStates(value);
+                              }
                             }}
                             size="small"
                             fullWidth
@@ -441,11 +474,11 @@ export default function AreaForm(props: RouteComponentProps<IPageParams>) {
                            getOptionLabel={(option) => option.name}
                           renderInput={(params) => <TextField {...params} label="Cidades" variant="outlined" />}
                           size="small"
-                          // onChange={(event, value) => {
-                          //   if (value) {
-                          //     handleSelectNeighborhood(value)
-                          //   }
-                          // }}
+                          onChange={(event, value:any) => {
+                            if(value){
+                              handleSelectDistricts(value);
+                            }
+                          }}
                         />
                       </FormGroupSectionCity>
                     </Grid>
@@ -455,7 +488,7 @@ export default function AreaForm(props: RouteComponentProps<IPageParams>) {
                         <Autocomplete
                           id="combo-box-neigthborhoods"
                           options={areaState.districts || []}
-                          getOptionLabel={(option) => `${option.municipio.microrregiao.mesorregiao.UF.sigla} - ${option.nome}`}
+                          getOptionLabel={(option) => `${option.name}`}
                           renderInput={(params) => <TextField {...params} label="Bairros" variant="outlined" />}
                           size="small"
                           onChange={(event, value) => {
@@ -469,7 +502,7 @@ export default function AreaForm(props: RouteComponentProps<IPageParams>) {
                     </Grid>
                     <Grid item md={12} xs={12}>
                       <ChipList>
-                        {state.neighborhoods.map((item: any, index) => (
+                        {state.districts.map((item: any, index) => (
                           <Chip
                             key={`neighborhook_selected_${index}`}
                             label={item.name}

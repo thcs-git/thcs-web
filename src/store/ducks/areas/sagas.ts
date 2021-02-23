@@ -94,15 +94,31 @@ export function* getCitys({ payload: { value } }: any) {
   try {
     const response: AxiosResponse = yield call(
       apiSollar.get,
-      `/location?&search=${value}`,
+      `/location?&state=${value}`,
       {
         headers: { token },
       }
     );
-    yield put(loadSuccessGetCitys(response.data));
+    console.log(response.data.data);
+    yield put(loadSuccessGetCitys(response.data.data));
   } catch (error) {
     yield put(loadFailure());
     toast.error("Não foi possível obter as cidades do estado");
+  }
+}
+export function* getDistrict({ payload: { value } }: any) {
+  try {
+    const response: AxiosResponse = yield call(
+      apiSollar.get,
+      `/districts?&city=${value}`,
+      {
+        headers: { token },
+      }
+    );
+    yield put(loadSuccessGetDistricts(response.data.data));
+  } catch (error) {
+    yield put(loadFailure());
+    toast.error("Não foi possível obter os bairros da Cidade");
   }
 }
 export function* getDistricts() {

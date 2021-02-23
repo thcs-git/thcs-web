@@ -16,9 +16,13 @@ export enum AreaTypes {
   LOAD_SUCCCES_AREA_BY_ID = "@area/LOAD_SUCCCES_AREA_BY_ID",
 
   LOAD_GET_DISTRICTS = "@area/LOAD_GET_DISTRICTS",
+  LOAD_GET_DISTRICTS_ = "@area/LOAD_GET_DISTRICTS_",
   LOAD_GET_CITYS = "@area/LOAD_GET_CITYS",
   LOAD_SUCCCES_GET_CITYS = "@area/LOAD_SUCCCES_GET_CITYS",
+
   LOAD_SUCCCES_GET_DISTRICTS = "@area/LOAD_SUCCCES_GET_DISTRICTS",
+
+  LOAD_SUCCCES_GET_DISTRICTS_ = "@area/LOAD_SUCCCES_GET_DISTRICTS_",
 
   SEARCH_REQUEST = "@area/SEARCH_REQUEST",
 }
@@ -35,6 +39,13 @@ export interface UserAreaInterface {
 export interface ProfessionAreaInterface {
   profession: string;
   users: UserAreaInterface[];
+}
+export interface DistricAreaInterface {
+  _id: string;
+  location_id: string;
+  name: string;
+  city: string;
+  state: string;
 }
 export interface NeighborhoodAreaInterface {
   _id: string;
@@ -53,14 +64,8 @@ export interface AreaInterface {
   describe?: string;
   supply_days: number;
   week_day: number;
-<<<<<<< HEAD
   users: (UserAreaInterface | {})[];
-
-  neighborhoods: (NeighborhoodAreaInterface | {})[];
-=======
-  users: (UserAreaInterface | {})[],
-  neighborhoods: (NeighborhoodAreaInterface | {})[],
->>>>>>> dev
+  districts: (NeighborhoodAreaInterface | {})[];
   created_by?: { _id: string };
   active: boolean;
 }
@@ -81,6 +86,7 @@ export interface AreaState {
   list: AreaList;
   districts: any[];
   citys: any[];
+  districts_: any[];
   profession: ProfessionAreaInterface[];
   loading: boolean;
   error: boolean;

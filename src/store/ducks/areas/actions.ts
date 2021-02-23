@@ -27,6 +27,9 @@ export const loadSuccessGetAreaById = (data: AreaInterface) =>
 export const loadGetDistricts = () => action(AreaTypes.LOAD_GET_DISTRICTS);
 export const loadGetCitys = (value: string) =>
   action(AreaTypes.LOAD_GET_CITYS, { value });
+
+export const loadGetDistricts_ = (value: any) =>
+  action(AreaTypes.LOAD_GET_DISTRICTS_, { value });
 export const loadSuccessGetDistricts = (data: any) =>
   action(AreaTypes.LOAD_SUCCCES_GET_DISTRICTS, { data });
 export const loadSuccessGetCitys = (data: any) =>
