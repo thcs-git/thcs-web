@@ -64,9 +64,9 @@ export interface AreaInterface {
   describe?: string;
   supply_days: number;
   week_day: number;
-  users: (UserAreaInterface | {})[];
+  users: UserAreaInterface[];
   districts: (NeighborhoodAreaInterface | {})[];
-  created_by?: { _id: string };
+  created_by?: { _id: any };
   active: boolean;
 }
 
