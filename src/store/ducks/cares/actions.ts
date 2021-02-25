@@ -124,3 +124,19 @@ export const cidSuccess = (data: HealthPlanInterface) => action(CareTypes.SEARCH
  */
 export const loadDocumentRequest = (id: string) => action(CareTypes.LOAD_DOCUMENT_REQUEST, { id });
 export const loadDocumentSuccess = (data: any) => action(CareTypes.LOAD_DOCUMENT_SUCCESS, { data });
+
+
+/**
+ * Schedule
+ */
+export const loadScheduleRequest = (params: any) => action(CareTypes.LOAD_SCHEDULE_REQUEST, { params });
+export const loadScheduleSuccess = (data: any) => action(CareTypes.LOAD_SCHEDULE_SUCCESS, { data });
+
+export const createScheduleRequest = (data: any) => action(CareTypes.CREATE_SCHEDULE_REQUEST, { ...data });
+export const createScheduleSuccess = (data: any) => action(CareTypes.CREATE_SCHEDULE_SUCCESS, { data });
+
+export const updateScheduleRequest = (params: any) => action(CareTypes.UPDATE_SCHEDULE_REQUEST, { ...params });
+export const updateScheduleSuccess = (data: any) => action(CareTypes.UPDATE_SCHEDULE_SUCCESS, { data });
+
+export const deleteScheduleRequest = (id: string) => action(CareTypes.DELETE_SCHEDULE_REQUEST, { id });
+export const deleteScheduleSuccess = (data: any) => action(CareTypes.DELETE_SCHEDULE_SUCCESS, { data });
