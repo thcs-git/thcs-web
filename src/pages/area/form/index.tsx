@@ -202,17 +202,10 @@ export default function AreaForm(props: RouteComponentProps<IPageParams>) {
       dispatch(loadRequest());
     }
     dispatch(getUsersAction());
-    //dispatch(getDistrictsAction());
-    //dispatch(getProfessions());
+
 
   }, [dispatch]);
 
-  // useEffect(() =>{
-
-  //   setState(prevState =>({
-  //     ...prevState
-  //   }))
-  // })
   useEffect(() => {
     if(params.id){
        const dayOfTheWeekSelected = daysOfTheWeek.find(day => day.id === areaState.data.week_day) || null;
@@ -226,7 +219,8 @@ export default function AreaForm(props: RouteComponentProps<IPageParams>) {
       }));
     setState(prevState => ({
       ...prevState,
-      ...areaState.data
+      ...areaState.data,
+      form: { dayOfTheWeek: dayOfTheWeekSelected }
     }));
     }
   }, [areaState,params.id]);
