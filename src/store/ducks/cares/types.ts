@@ -91,6 +91,19 @@ export enum CareTypes {
   // Document
   LOAD_DOCUMENT_REQUEST = "@care/LOAD_DOCUMENT_REQUEST",
   LOAD_DOCUMENT_SUCCESS = "@care/LOAD_DOCUMENT_SUCCESS",
+
+  // Schedule
+  LOAD_SCHEDULE_REQUEST = "@care/LOAD_SCHEDULE_REQUEST",
+  LOAD_SCHEDULE_SUCCESS = "@care/LOAD_SCHEDULE_SUCCESS",
+
+  CREATE_SCHEDULE_REQUEST = "@care/CREATE_SCHEDULE_REQUEST",
+  CREATE_SCHEDULE_SUCCESS = "@care/CREATE_SCHEDULE_SUCCESS",
+
+  UPDATE_SCHEDULE_REQUEST = "@care/UPDATE_SCHEDULE_REQUEST",
+  UPDATE_SCHEDULE_SUCCESS = "@care/UPDATE_SCHEDULE_SUCCESS",
+
+  DELETE_SCHEDULE_REQUEST = "@care/DELETE_SCHEDULE_REQUEST",
+  DELETE_SCHEDULE_SUCCESS = "@care/DELETE_SCHEDULE_SUCCESS",
 }
 
 /**
@@ -110,7 +123,7 @@ export interface CareInterface {
   accommodation_type_id?: string;
   care_type_id?: string | CareTypeInterface;
   procedure_id?: string;
-  cid_id?: string;
+  cid_id?: string | CidPopulateInterface;
   area_id?: string;
   user_id?: string; // *
   status?: string, // * Pre-Atendimento, Em atendimento, Cancelado, Finalizado
@@ -142,6 +155,7 @@ export interface CareList {
   limit: string;
   page: string;
   total: number;
+  search?: string;
 }
 
 /**
@@ -166,12 +180,30 @@ export interface CareState {
   documentGroupNead: DocumentGroupInterface;
   documentNead: DocumentState;
   document: any;
+  schedule?: ScheduleInterface[];
   // document?: {
   //   document_group_id: DocumentGroupInterface
   // } & DocumentGroupInterface;
 }
 
 //========
+export interface ScheduleInterface {
+  attendance_id: string;
+  user_id: string | UserSimpleDataInterface;
+  start_at?: string;
+  end_at?: string;
+  description?: string;
+  active: boolean;
+  created_at?: string;
+  created_by?: string;
+  canceled_at?: string;
+  canceled_by?: string;
+}
+
+export interface UserSimpleDataInterface {
+  _id: string;
+  name: string;
+}
 
 export interface HealthInsuranceInterface {
   _id: string;
@@ -179,6 +211,11 @@ export interface HealthInsuranceInterface {
 }
 
 export interface HealthPlanInterface {
+  _id: string;
+  name: string;
+}
+
+export interface CidPopulateInterface {
   _id: string;
   name: string;
 }

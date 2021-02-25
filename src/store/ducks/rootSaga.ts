@@ -1,4 +1,3 @@
-import { loadDocumentRequest } from './cares/actions';
 import { all, takeLatest } from "redux-saga/effects";
 
 import { AreaTypes } from "./areas/types";
@@ -56,7 +55,11 @@ import {
   getAccommodationType,
   getCareType,
   searchCid,
-  getDocumentById
+  getDocumentById,
+  getSchedule,
+  storeSchedule,
+  updateSchedule,
+  deleteSchedule,
 } from './cares/sagas';
 
 export default function* rootSaga() {
@@ -104,6 +107,11 @@ export default function* rootSaga() {
     takeLatest(CareTypes.CARE_TYPE_REQUEST, getCareType),
     takeLatest(CareTypes.SEARCH_CID_REQUEST, searchCid),
     takeLatest(CareTypes.LOAD_DOCUMENT_REQUEST, getDocumentById),
+
+    takeLatest(CareTypes.LOAD_SCHEDULE_REQUEST, getSchedule),
+    takeLatest(CareTypes.CREATE_SCHEDULE_REQUEST, storeSchedule),
+    takeLatest(CareTypes.UPDATE_SCHEDULE_REQUEST, updateSchedule),
+    takeLatest(CareTypes.DELETE_SCHEDULE_REQUEST, deleteSchedule),
 
     // Council
     takeLatest(CouncilTypes.LOAD_REQUEST, getCouncils),

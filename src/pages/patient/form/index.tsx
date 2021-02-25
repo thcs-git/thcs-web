@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import Tab from '@material-ui/core/Tab';
+import InputMask from 'react-input-mask';
 
 import { useDispatch, useSelector } from 'react-redux';
 import { createPatientRequest, updatePatientRequest, getAddress as getAddressAction, loadPatientById, loadFailure } from '../../../store/ducks/patients/actions';
@@ -383,7 +384,25 @@ export default function PatientForm(props: RouteComponentProps<IPageParams>) {
                       <Grid container>
 
                         <Grid item md={3} xs={12}>
-                          <TextField
+                          <InputMask
+                            mask="999.999.999-99"
+                            value={state.fiscal_number}
+                            onChange={(element) => setState({ ...state, fiscal_number: element.target.value })}
+                          >
+                            {(inputProps: any) => (
+                              <TextField
+                                {...inputProps}
+                                id="input-fiscal-number"
+                                label="CPF"
+                                variant="outlined"
+                                size="small"
+                                // value={state.fiscal_number}
+                                // onChange={(element) => setState({ ...state, fiscal_number: element.target.value })}
+                                placeholder="000.000.000-00"
+                                fullWidth
+                              />)}
+                          </InputMask>
+                          {/* <TextField
                             id="input-fiscal-number"
                             label="CPF"
                             variant="outlined"
@@ -392,10 +411,28 @@ export default function PatientForm(props: RouteComponentProps<IPageParams>) {
                             onChange={(element) => setState({ ...state, fiscal_number: element.target.value })}
                             placeholder="000.000.000-00"
                             fullWidth
-                          />
+                          /> */}
                         </Grid>
                         <Grid item md={4} xs={12}>
-                          <TextField
+                          <InputMask
+                            mask="9.999-999"
+                            value={state.national_id}
+                            onChange={(element) => setState({ ...state, national_id: element.target.value })}
+                          >
+                            {(inputProps: any) => (
+                              <TextField
+                                {...inputProps}
+                                id="input-nation-id"
+                                label="RG"
+                                variant="outlined"
+                                size="small"
+                                // value={state.fiscal_number}
+                                // onChange={(element) => setState({ ...state, fiscal_number: element.target.value })}
+                                placeholder="0.000-000"
+                                fullWidth
+                              />)}
+                          </InputMask>
+                          {/* <TextField
                             id="input-nation-id"
                             label="RG"
                             variant="outlined"
@@ -404,7 +441,7 @@ export default function PatientForm(props: RouteComponentProps<IPageParams>) {
                             onChange={(element) => setState({ ...state, national_id: element.target.value })}
                             placeholder="0.000-000"
                             fullWidth
-                          />
+                          /> */}
                         </Grid>
 
                         <Grid item md={5} xs={12}>
@@ -486,7 +523,7 @@ export default function PatientForm(props: RouteComponentProps<IPageParams>) {
                         <Grid item md={3} xs={12}>
                           <FormControl variant="outlined" size="small" fullWidth>
                             <InputLabel htmlFor="search-input">CEP</InputLabel>
-                            <OutlinedInputFiled
+                            {/* <OutlinedInputFiled
                               id="input-postal-code"
                               label="CEP"
                               placeholder="00000-000"
@@ -500,7 +537,28 @@ export default function PatientForm(props: RouteComponentProps<IPageParams>) {
                               }
                               labelWidth={155}
                               style={{ marginRight: 12 }}
-                            />
+                            /> */}
+                            <InputMask
+                            mask="99999-999"
+                            value={state.address_id.postal_code}
+                            onChange={(element) => setState({ ...state, address_id: { ...state.address_id, postal_code: element.target.value } })}
+                            onBlur={getAddress}
+                            >
+                            {(inputProps: any) => (
+                                <OutlinedInputFiled
+                                id="input-postal-code"
+                                label="CEP"
+                                placeholder="00000-000"
+                                endAdornment={
+                                    <InputAdornment position="end">
+                                    <SearchOutlined style={{ color: 'var(--primary)' }} />
+                                    </InputAdornment>
+                                }
+                                labelWidth={155}
+                                style={{ marginRight: 12 }}
+                                />
+                            )}
+                          </InputMask>
                           </FormControl>
                         </Grid>
 
@@ -604,7 +662,7 @@ export default function PatientForm(props: RouteComponentProps<IPageParams>) {
                           />
                         </Grid>
                         <Grid item md={3} xs={12}>
-                          <TextField
+                          {/* <TextField
                             id="input-phone"
                             label="Telefone Residencial"
                             variant="outlined"
@@ -621,10 +679,64 @@ export default function PatientForm(props: RouteComponentProps<IPageParams>) {
                             }}
                             placeholder="0000-0000"
                             fullWidth
-                          />
+                          /> */}
+                          <InputMask
+                            mask="(99) 9999-9999"
+                            value={state.phones[0]?.number}
+                            onChange={(element) => {
+                              setState(prevState => ({
+                                ...prevState,
+                                phones: [{
+                                  ...prevState.phones[0],
+                                  number: element.target.value
+                                }]
+                              }));
+                            }}
+                          >
+                            {(inputProps: any) => (
+                              <TextField
+                                {...inputProps}
+                                id="input-phone"
+                                label="Telefone"
+                                variant="outlined"
+                                size="small"
+                                // value={state.phones?.number}
+                                // onChange={(element) => setState({ ...state, phones: { ...state.phones, number: element.target.value } })}
+                                placeholder="(00) 0000-0000"
+                                fullWidth
+                              />
+                            )}
+                          </InputMask>
                         </Grid>
                         <Grid item md={3} xs={12}>
-                          <TextField
+                          <InputMask
+                            mask="(99) 9 9999-9999"
+                            value={state.phones[0]?.cellnumber}
+                            onChange={(element) => {
+                              setState(prevState => ({
+                                ...prevState,
+                                phones: [{
+                                  ...prevState.phones[0],
+                                  cellnumber: element.target.value
+                                }]
+                              }));
+                            }}
+                          >
+                            {(inputProps: any) => (
+                              <TextField
+                                {...inputProps}
+                                id="input-cellphone"
+                                label="Celular"
+                                variant="outlined"
+                                size="small"
+                                // value={state.cellphone}
+                                // onChange={(element) => setState({ ...state, cellphone: element.target.value })}
+                                placeholder="(00) 0 0000-0000"
+                                fullWidth
+                              />
+                            )}
+                          </InputMask>
+                          {/* <TextField
                             id="input-cellphone"
                             label="Celular"
                             variant="outlined"
@@ -641,7 +753,7 @@ export default function PatientForm(props: RouteComponentProps<IPageParams>) {
                             }}
                             placeholder="00000-0000"
                             fullWidth
-                          />
+                          /> */}
                         </Grid>
                       </Grid>
                     </FormGroupSection>
@@ -660,7 +772,26 @@ export default function PatientForm(props: RouteComponentProps<IPageParams>) {
                           />
                         </Grid>
                         <Grid item md={4} xs={6}>
-                          <TextField
+                        <InputMask
+                          mask="(99) 9 9999-9999"
+                          value={state.responsable?.phone}
+                          onChange={(element) => setState({ ...state, responsable: { ...state.responsable, phone: element.target.value } })}
+                        >
+                          {(inputProps: any) => (
+                            <TextField
+                              {...inputProps}
+                              id="input-phone"
+                              label="Telefone do responsável"
+                              variant="outlined"
+                              size="small"
+                              // value={state.phones?.number}
+                              // onChange={(element) => setState({ ...state, phones: { ...state.phones, number: element.target.value } })}
+                              placeholder="(00) 0 0000-0000"
+                              fullWidth
+                            />
+                          )}
+                        </InputMask>
+                          {/* <TextField
                             id="input-responsible-phone"
                             label="Telefone do responsável"
                             variant="outlined"
@@ -669,7 +800,7 @@ export default function PatientForm(props: RouteComponentProps<IPageParams>) {
                             onChange={(element) => setState({ ...state, responsable: { ...state.responsable, phone: element.target.value } })}
                             placeholder=""
                             fullWidth
-                          />
+                          /> */}
                         </Grid>
                         <Grid item md={4} xs={6}>
                           <TextField

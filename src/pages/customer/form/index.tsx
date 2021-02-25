@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import InputMask, { Props } from 'react-input-mask';
 
 import { ApplicationState } from '../../../store';
 import { loadCustomerById, getAddress as getAddressAction, updateCustomerRequest, createCustomerRequest } from '../../../store/ducks/customers/actions';
@@ -35,6 +36,8 @@ import {
   OutlinedInputFiled,
   FormGroupSection
 } from './styles';
+import mask from '../../../utils/mask';
+import Loading from '../../../components/Loading';
 
 interface IPageParams {
   id?: string;
@@ -196,7 +199,7 @@ export default function CustomerForm(props: RouteComponentProps<IPageParams>) {
 
   return (
     <Sidebar>
-      {console.log('customerState ', customerState)}
+      {customerState.loading && <Loading />}
       <FormSection>
         <FormContent>
           <FormTitle>Cadastro de Clientes</FormTitle>
@@ -228,16 +231,25 @@ export default function CustomerForm(props: RouteComponentProps<IPageParams>) {
               </Grid>
 
               <Grid item md={3} xs={12}>
-                <TextField
-                  id="input-fiscal-number"
-                  label="CNPJ"
-                  variant="outlined"
-                  size="small"
+                <InputMask
+                  mask="99.999.999/9999-99"
                   value={state.fiscal_number}
                   onChange={(element) => setState({ ...state, fiscal_number: element.target.value })}
-                  placeholder="00.000.000/0000-00"
-                  fullWidth
-                />
+                >
+                  {(inputProps: any) => (
+                    <TextField
+                      {...inputProps}
+                      id="input-fiscal-number"
+                      label="CNPJ"
+                      variant="outlined"
+                      size="small"
+                      // value={state.fiscal_number}
+                      // onChange={(element) => setState({ ...state, fiscal_number: element.target.value })}
+                      placeholder="00.000.000/0000-00"
+                      fullWidth
+                    />)}
+                </InputMask>
+
               </Grid>
 
               <Grid item md={10} />
@@ -250,10 +262,8 @@ export default function CustomerForm(props: RouteComponentProps<IPageParams>) {
               <Grid item md={3} xs={12} style={{ marginRight: 10 }}>
                 <FormControl variant="outlined" size="small" fullWidth>
                   <InputLabel htmlFor="search-input">CEP</InputLabel>
-                  <OutlinedInputFiled
-                    id="input-postal-code"
-                    label="CEP"
-                    placeholder="00000-000"
+                  <InputMask
+                    mask="99999-999"
                     value={state.address.postal_code}
                     onChange={element => {
                       setState(prev => {
@@ -267,14 +277,33 @@ export default function CustomerForm(props: RouteComponentProps<IPageParams>) {
                       })
                     }}
                     onBlur={getAddress}
-                    endAdornment={
-                      <InputAdornment position="end">
-                        <SearchOutlined style={{ color: 'var(--primary)' }} />
-                      </InputAdornment>
-                    }
-                  // labelWidth={155}
-
-                  />
+                  >
+                    {(inputProps: Props) => (
+                      <OutlinedInputFiled
+                        id="input-postal-code"
+                        label="CEP"
+                        placeholder="00000-000"
+                        // value={state.address.postal_code}
+                        // onChange={element => {
+                        //   setState(prev => {
+                        //     return {
+                        //       ...prev,
+                        //       address: {
+                        //         ...prev.address,
+                        //         postal_code: element.target.value
+                        //       }
+                        //     }
+                        //   })
+                        // }}
+                        // onBlur={getAddress}
+                        endAdornment={
+                          <InputAdornment position="end">
+                            <SearchOutlined style={{ color: 'var(--primary)' }} />
+                          </InputAdornment>
+                        }
+                      />
+                    )}
+                  </InputMask>
                 </FormControl>
               </Grid>
 
@@ -365,28 +394,46 @@ export default function CustomerForm(props: RouteComponentProps<IPageParams>) {
               />
             </Grid>
             <Grid item md={2} xs={12}>
-              <TextField
-                id="input-phone"
-                label="Telefone"
-                variant="outlined"
-                size="small"
+              <InputMask
+                mask="(99) 9999-9999"
                 value={state.phones?.number}
                 onChange={(element) => setState({ ...state, phones: { ...state.phones, number: element.target.value } })}
-                placeholder="0000-0000"
-                fullWidth
-              />
+              >
+                {(inputProps: any) => (
+                  <TextField
+                    {...inputProps}
+                    id="input-phone"
+                    label="Telefone"
+                    variant="outlined"
+                    size="small"
+                    // value={state.phones?.number}
+                    // onChange={(element) => setState({ ...state, phones: { ...state.phones, number: element.target.value } })}
+                    placeholder="0000-0000"
+                    fullWidth
+                  />
+                )}
+              </InputMask>
             </Grid>
             <Grid item md={2} xs={12}>
-              <TextField
-                id="input-cellphone"
-                label="Celular"
-                variant="outlined"
-                size="small"
+              <InputMask
+                mask="(99) 9 9999-9999"
                 value={state.cellphone}
                 onChange={(element) => setState({ ...state, cellphone: element.target.value })}
-                placeholder="00000-0000"
-                fullWidth
-              />
+              >
+                {(inputProps: any) => (
+                  <TextField
+                    {...inputProps}
+                    id="input-cellphone"
+                    label="Celular"
+                    variant="outlined"
+                    size="small"
+                    // value={state.cellphone}
+                    // onChange={(element) => setState({ ...state, cellphone: element.target.value })}
+                    placeholder="00000-0000"
+                    fullWidth
+                  />
+                )}
+              </InputMask>
             </Grid>
           </Grid>
         </FormContent>

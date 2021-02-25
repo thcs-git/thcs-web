@@ -1,5 +1,4 @@
 import axios from 'axios';
-import { toast } from 'react-toastify';
 
 import LOCALSTORAGE from '../helpers/constants/localStorage';
 
@@ -16,20 +15,24 @@ export const ibge = axios.create({
 });
 
 apiSollar.interceptors.request.use(
-  function(config) {
+  function (config) {
     // Do something before request is sent
     const token = localStorage.getItem(LOCALSTORAGE.TOKEN);
     const username = localStorage.getItem(LOCALSTORAGE.USERNAME) || '';
     const user_id = localStorage.getItem(LOCALSTORAGE.USER_ID) || '';
+    const company_id = localStorage.getItem(LOCALSTORAGE.COMPANY_SELECTED) || '';
+    const customer_id = localStorage.getItem(LOCALSTORAGE.CUSTOMER) || '';
 
     if (token) {
       config.headers.token = `${token}`;
       config.headers.user = JSON.stringify({ id: user_id, username });
+      config.headers.company_id = company_id;
+      config.headers.customer_id = customer_id;
     }
 
     return config;
   },
-  function(error) {
+  function (error) {
     // Do something with request error
     return Promise.reject(error);
   }

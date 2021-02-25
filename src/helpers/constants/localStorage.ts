@@ -5,4 +5,6 @@ export default {
   REMEMBER_ME: '@sollar_remember_me',
   USERNAME: '@sollar_username',
   USER_ID: '@sollar_user_id',
+  COMPANY_SELECTED: `@sollar_company_selected`,
+  CUSTOMER: `@sollar_customer`
 }

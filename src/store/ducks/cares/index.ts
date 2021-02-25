@@ -42,6 +42,7 @@ export const INITIAL_STATE: CareState = {
   documentGroupNead: {},
   documentNead: {},
   document: '',
+  schedule: [],
 };
 
 const reducer: Reducer<CareState> = (state = INITIAL_STATE, action) => {
@@ -451,6 +452,66 @@ const reducer: Reducer<CareState> = (state = INITIAL_STATE, action) => {
         error: false,
         success: true
       };
+    case CareTypes.LOAD_SCHEDULE_REQUEST:
+      return {
+        ...state,
+        loading: true,
+        error: false,
+        success: false
+      };
+    case CareTypes.LOAD_SCHEDULE_SUCCESS:
+      return {
+        ...state,
+        schedule: action.payload.data,
+        loading: false,
+        error: false,
+        success: true
+      };
+    case CareTypes.CREATE_SCHEDULE_REQUEST:
+      return {
+        ...state,
+        loading: true,
+        error: false,
+        success: false
+      };
+    case CareTypes.CREATE_SCHEDULE_SUCCESS:
+      return {
+        ...state,
+        schedule: action.payload.data,
+        loading: false,
+        error: false,
+        success: true
+      };
+    case CareTypes.UPDATE_SCHEDULE_REQUEST:
+      return {
+        ...state,
+        loading: true,
+        error: false,
+        success: false
+      };
+    case CareTypes.UPDATE_SCHEDULE_SUCCESS:
+      return {
+        ...state,
+        schedule: action.payload.data,
+        loading: false,
+        error: false,
+        success: true
+      };
+    case CareTypes.DELETE_SCHEDULE_REQUEST:
+      return {
+        ...state,
+        loading: true,
+        error: false,
+        success: false
+      };
+    case CareTypes.DELETE_SCHEDULE_SUCCESS:
+      return {
+        ...state,
+        loading: false,
+        error: false,
+        success: true
+      };
+
     case CareTypes.CLEAN:
       return INITIAL_STATE;
     default:

@@ -26,22 +26,26 @@ import {
   AccommodationTypeSuccess,
   careTypeSuccess,
   cidSuccess,
-  loadDocumentSuccess
+  loadDocumentSuccess,
+  loadScheduleSuccess,
+  createScheduleSuccess,
+  updateScheduleSuccess,
+  deleteScheduleSuccess,
 } from './actions';
 
 import { apiSollar } from '../../../services/axios';
+
+import { handleCompanySelected } from '../../../helpers/localStorage';
 
 const token = localStorage.getItem('token');
 
 export function* get({ payload }: any) {
   try {
     const { params } = payload;
-    const searchParams = params;
 
-    delete searchParams.limit;
-    delete searchParams.page;
+    console.log(`/attendance/getAttendance?limit=${params.limit ?? 10}&page=${params.page || 1}`)
 
-    const response: AxiosResponse = yield call(apiSollar.get, `/attendance/getAttendance?limit=${params.limit ?? 10}&page=${params.page || 1}`, { params: searchParams })
+    const response: AxiosResponse = yield call(apiSollar.get, `/attendance/getAttendance?limit=${params.limit ?? 10}&page=${params.page || 1}${params.search ? '&search=' + params.search : ''}`)
 
     yield put(searchCareSuccess(response.data))
   } catch (error) {
@@ -79,6 +83,12 @@ export function* getCareById({ payload: { id: _id } }: any) {
 
 export function* createCare({ payload: { data } }: any) {
   try {
+    const company = handleCompanySelected();
+
+    if (!company) {
+      toast.error('Parametro de empresa nao encontrado');
+      return
+    }
     const response: AxiosResponse = yield call(apiSollar.post, `/care/store`, data, { headers: { token } })
 
     yield put(createCareSuccess(response.data))
@@ -390,6 +400,68 @@ export function* getDocumentById({ payload }: any) {
   } catch (error) {
     console.log(error)
     toast.error('Erro ao obter documento');
+    yield put(loadFailure());
+  }
+}
+
+export function* getSchedule({ payload }: any) {
+  try {
+    const { data }: AxiosResponse = yield call(apiSollar.get, `/schedule`, { ...payload });
+
+    yield put(loadScheduleSuccess(data.data))
+  } catch (error) {
+    console.log(error)
+    toast.error('Erro ao obter a agenda');
+    yield put(loadFailure());
+  }
+}
+
+export function* storeSchedule({ payload }: any) {
+  try {
+    const { data }: AxiosResponse = yield call(apiSollar.post, `/schedule/store`, { ...payload });
+
+    yield put(createScheduleSuccess(data));
+
+    toast.success('Agendamento adicionado com sucesso!');
+
+  } catch (error) {
+    console.log(error)
+    toast.error('Erro ao obter a agenda');
+    yield put(loadFailure());
+  }
+}
+
+export function* updateSchedule({ payload }: any) {
+  try {
+    const { _id, ...scheduleData } = payload;
+
+    console.log('_id', _id);
+    console.log('scheduleData', scheduleData);
+
+    const { data }: AxiosResponse = yield call(apiSollar.put, `/schedule/${_id}/update`, { ...scheduleData });
+
+    yield put(updateScheduleSuccess(data));
+
+    toast.success('Agendamento atualizado com sucesso!');
+
+  } catch (error) {
+    console.log(error)
+    toast.error('Erro ao obter a agenda');
+    yield put(loadFailure());
+  }
+}
+
+export function* deleteSchedule({ payload }: any) {
+  try {
+    const { data }: AxiosResponse = yield call(apiSollar.delete, `/schedule/${payload.id}/delete`);
+
+    yield put(deleteScheduleSuccess(data));
+
+    toast.success('Agendamento removido com sucesso!');
+
+  } catch (error) {
+    console.log(error)
+    toast.error('Erro ao obter a agenda');
     yield put(loadFailure());
   }
 }
