@@ -82,7 +82,7 @@ export interface AreaList {
  * State type
  */
 export interface AreaState {
-  areaState: AreaState;
+  //areaState: AreaState;
   data: AreaInterface;
   list: AreaList;
   districts: any[];
