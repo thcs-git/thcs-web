@@ -2,8 +2,10 @@ import React, { useCallback, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Box, Divider, Grid, List, ListItem, ListItemText, Menu, MenuItem, Tooltip, Typography } from '@material-ui/core';
 import Card from '@material-ui/core/Card';
+import { useHistory } from "react-router-dom";
 
 import QueueIcon from '@material-ui/icons/Queue';
+import TodayRoundedIcon from '@material-ui/icons/TodayRounded';
 import { FormTitle } from '../../../styles/components/Form';
 import Sidebar from '../../../components/Sidebar';
 
@@ -29,7 +31,6 @@ import { ApplicationState } from '../../../store';
 import { RouteComponentProps } from 'react-router-dom';
 import { age, formatDate } from '../../../helpers/date';
 import mask from '../../../utils/mask';
-import { CareState } from '../../../store/ducks/cares/types';
 import Loading from '../../../components/Loading';
 
 interface IPageParams {
@@ -37,6 +38,7 @@ interface IPageParams {
 }
 
 export default function PatientOverview(props: RouteComponentProps<IPageParams>) {
+  const history = useHistory();
   const dispatch = useDispatch();
   const { params } = props.match;
   const careState = useSelector((state: ApplicationState) => state.cares);
@@ -384,8 +386,13 @@ export default function PatientOverview(props: RouteComponentProps<IPageParams>)
               </Grid>
             </Grid> {/* grid container */}
 
-            <Grid container md={4} xs={12}> {/** Aside */}
-              <Grid item></Grid>
+            <Grid container md={4} xs={12} style={{ marginTop: '2%' }}> {/** Aside */}
+              <Grid item md={12}>
+                <ButtonComponent onClick={() => history.push(`/care/${params.id}/overview/schedule`)} background="primary" fullWidth>
+                  <TodayRoundedIcon />
+                  <p>Agenda</p>
+                </ButtonComponent>
+              </Grid>
             </Grid>
           </Grid>
         </Container>

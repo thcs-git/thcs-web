@@ -29,3 +29,7 @@ export const LowerComplexityLabel = styled.span`
 export const NoComplexityLabel = styled.span`
   color: var(--gray);
 `;
+
+export const TextCenter = styled.p`
+  text-align: center;
+`;

@@ -9,6 +9,7 @@ import Dashboard from '../pages/dashboard';
 import CareList from '../pages/care/list';
 import CareForm from '../pages/care/form';
 import CareOverview from '../pages/care/overview';
+import CareSchedule from '../pages/care/overview/schedule';
 
 import CompanyList from '../pages/company/list';
 import CompanyForm from '../pages/company/form';
@@ -101,7 +102,8 @@ const Routes = () => (
       <PrivateRoute path="/care" component={CareList} exact />
       <PrivateRoute path="/care/:id/edit" component={CareForm} />
       <PrivateRoute path="/care/create" component={CareForm} />
-      <PrivateRoute path="/care/:id/overview" component={CareOverview} />
+      <PrivateRoute path="/care/:id/overview" exact component={CareOverview} />
+      <PrivateRoute path="/care/:id/overview/schedule" component={CareSchedule} />
       <PrivateRoute path="/care/:id/medical-records/document/:documentId/print" component={PrintDocument} />
 
       {/* avaliation */}
