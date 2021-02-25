@@ -43,6 +43,7 @@ import {
   FormGroupSectionCity
 } from './styles';
 import validateName from '../../../utils/validateName';
+import Item from '../../../components/List/Item';
 
 
 interface IFormFields extends AreaInterface {
@@ -113,6 +114,7 @@ export default function AreaForm(props: RouteComponentProps<IPageParams>) {
         borderColor:'var(--danger-hover)',
 
       },
+      maxHeight:'38px',
       borderColor:'var(--danger)',
       color:'var(--danger)',
       contrastText: "#fff"
@@ -120,7 +122,10 @@ export default function AreaForm(props: RouteComponentProps<IPageParams>) {
 
 
   }));
+
   const classes = useStyles();
+
+  //////////////////////////////  INITIAL STATE ///////////////////////////////
   const States = [
     {id:1,name:"São Paulo",sigla:'SP'},
     {id:2,name:'Paraná',sigla:'PR'},
@@ -186,37 +191,51 @@ export default function AreaForm(props: RouteComponentProps<IPageParams>) {
     active: true
   });
 
-
   const [currentTab, setCurrentTab] = useState(0);
   let load = false;
   const selectTab = useCallback((index: number) => {
     setCurrentTab(index);
   }, [currentTab]);
-
   const [openModalCancel, setOpenModalCancel] = useState(false);
+
 
   useEffect(() => {
     if (params.id) {
       dispatch(loadAreaById(params.id));
+      dispatch(loadGetDistricts_(areaState.data?.districts[0]));
+      const dayOfTheWeekSelected = daysOfTheWeek.find(day => day.id === areaState.data.week_day) || null;
+      setInputName(prev =>({
+         ...prev,
+         value:areaState.data.name
+       }));
+         setInputDays(prev =>({
+         ...prev,
+         value:dayOfTheWeekSelected?.name || ""
+       }));
+
+
     } else{
       dispatch(loadRequest());
     }
     dispatch(getUsersAction());
-
-
   }, [dispatch]);
 
+  // //////////////////////////  INITIAL STATE ///////////////////////////////
+
+  // //////////////////////////  RELOAD /////////////////////////////////////
   useEffect(() => {
     if(params.id){
-       const dayOfTheWeekSelected = daysOfTheWeek.find(day => day.id === areaState.data.week_day) || null;
-     setInputName(prev =>({
-        ...prev,
-        value:areaState.data.name
-      }));
-        setInputDays(prev =>({
-        ...prev,
-        value:dayOfTheWeekSelected?.name || ""
-      }));
+        const dayOfTheWeekSelected = daysOfTheWeek.find(day => day.id === areaState.data.week_day) || null;
+    //  setInputName(prev =>({
+    //     ...prev,
+    //     value:areaState.data.name
+    //   }));
+    //     setInputDays(prev =>({
+    //     ...prev,
+    //     value:dayOfTheWeekSelected?.name || ""
+    //   }));
+
+
     setState(prevState => ({
       ...prevState,
       ...areaState.data,
@@ -225,9 +244,10 @@ export default function AreaForm(props: RouteComponentProps<IPageParams>) {
     }
   }, [areaState,params.id]);
 
+  // //////////////////////////  RELOAD /////////////////////////////////////
 
 
- ///////////////// VALIDATION  //////////////////////////////////////
+ //////////////////////////////  VALIDATION  //////////////////////////////////////
   const handleNameValidator = useCallback(()=>{
     if(!validateName(inputName.value) ){
       setInputName(prev =>({
@@ -275,6 +295,7 @@ export default function AreaForm(props: RouteComponentProps<IPageParams>) {
   },[inputState]);
 
   const handleCityValidator = useCallback(()=>{
+
     if(!validateName(inputCity.value)){
       setInpuCity(prev=>({
         ...prev,
@@ -304,7 +325,7 @@ export default function AreaForm(props: RouteComponentProps<IPageParams>) {
   },[inputDistrict]);
 
   function goToNextTab(currentTab:Number){
-    console.log(state.districts.length);
+
     switch(currentTab){
       case 0:
         if((inputName.error == false && state.supply_days === 0) || (inputName.error == false && inputDays.error == false) ){
@@ -319,9 +340,11 @@ export default function AreaForm(props: RouteComponentProps<IPageParams>) {
   }
 //////////////////////////////// VALIDATION ///////////////////////////////////////////////////
 
+
+
   function handleSaveFormArea() {
     if (state?._id) {
-      if(inputName.error == false && (state.supply_days === 0 || inputDays.error == false ) && (state.districts.length > 0) ){
+      if(inputName.error == false && (state.supply_days === 0 || inputDays.error == false )  ){
          dispatch(updateAreaRequest(state));
          history.push(`/area`);
       }else{
@@ -362,7 +385,7 @@ export default function AreaForm(props: RouteComponentProps<IPageParams>) {
     }))
   };
   function handleStates (value:any){
-    console.log(value);
+
     if(value){
       setInputState(prev =>({
       ...prev,
@@ -378,7 +401,8 @@ export default function AreaForm(props: RouteComponentProps<IPageParams>) {
         ...prev,
         value:value.name
       }))
-      dispatch(loadGetDistricts_(value.name));
+
+      dispatch(loadGetDistricts_({city:value.name}));
     }
 
   }
@@ -405,23 +429,44 @@ export default function AreaForm(props: RouteComponentProps<IPageParams>) {
   }, [state.week_day]);
 
   // Bairros
-  function handleSelectNeighborhood(value: any) {
+  const  handleSelectNeighborhood= useCallback((event:any,value1: any)=> {
+    const found  = state.districts.findIndex((item:any)=>{
+          return item._id === value1._id;
+        });
+        if(value1 && (found == -1)){
+              setInputDistrict(prev=>({
+                ...prev,
+                value:value1.name,
+              }));
+              setState(prevState => ({
+                    ...prevState,
+                    districts: [...prevState.districts, {_id:value1._id, name:value1.name, city:value1.city}]
+                  }))
+            }else{
+                  toast.error("Bairro já cadastrado na área");
+                }
 
-    if(value){
-      setInputDistrict(prev=>({
-        ...prev,
-        value:value.name
-      }))
-    }
+  },[state.districts]);
 
-    setState(prevState => ({
-      ...prevState,
-      districts: [...prevState.districts, {_id:value._id,name:value.name}]
-    }));
+  //   const found  = state.districts.findIndex((item:any)=>{
+  //     return item._id === value1._id;
+  //   })
+  //   if(value1 && (found == -1)){
+  //     setInputDistrict(prev=>({
+  //       ...prev,
+  //       value:value1.name,
+  //     }));
+  //     setState(prevState => ({
+  //     ...prevState,
+  //     districts: [...prevState.districts, {_id:value1._id, name:value1.name, city:value1.city}]
+  //   })),[state.districts]);
 
-  }
+  //   }else{
+  //     toast.error("Bairro já cadastrado na área");
+  //   }
+  // },[state.districts])
 
-  function handleDeleteNeighborhood(neighborhood: NeighborhoodAreaInterface) {
+   function handleDeleteNeighborhood(neighborhood: NeighborhoodAreaInterface) {
     let neighborhoodsSelected = [...state.districts];
 
     const neighborhoodFounded = neighborhoodsSelected.findIndex((item: any) => {
@@ -431,21 +476,27 @@ export default function AreaForm(props: RouteComponentProps<IPageParams>) {
     if (neighborhoodFounded > -1) {
       neighborhoodsSelected.splice(neighborhoodFounded, 1);
     };
+
+     setState(prevState => ({
+      ...prevState,
+      districts: neighborhoodsSelected
+    }))
     setState(prevState => ({
       ...prevState,
       districts: neighborhoodsSelected
     }))
+
+
   }
 
 
   // Prestadores
   function handleSelectUser(value: any) {
-    console.log(value);
-    console.log(state.users);
+
     const found = state.users.findIndex((item: any)=>{
       return item._id === value._id;
     })
-    //console.log(state.profession);
+
      if(found > -1){
         toast.error("Prestador já cadastrado na área");
      }else{
@@ -454,7 +505,7 @@ export default function AreaForm(props: RouteComponentProps<IPageParams>) {
       users: [...prevState.users, value],
 
     }));
-    console.log(state);
+
    }
 
 
@@ -585,6 +636,7 @@ export default function AreaForm(props: RouteComponentProps<IPageParams>) {
                           <Autocomplete
                             id="combo-box-neigthborhoods-states"
                             options={States || []}
+                            disabled= {state.districts[0]? true:false}
                             getOptionLabel={(option) => option.name}
                             renderInput={(params) => <TextField {...params} autoFocus error={inputState.error} label="Estados" variant="outlined"
                             onBlur={handleStateValidator} />}
@@ -609,6 +661,7 @@ export default function AreaForm(props: RouteComponentProps<IPageParams>) {
                       <FormGroupSectionCity >
                         <Autocomplete
                           id="combo-box-neigthborhoods-city"
+                          disabled= {state.districts[0]? true:false}
                           options={areaState.citys || []}
                           onClose={() => {
                             load=false;
@@ -662,7 +715,7 @@ export default function AreaForm(props: RouteComponentProps<IPageParams>) {
                           size="small"
                           onChange={(event, value) => {
                             if (value) {
-                              handleSelectNeighborhood(value)
+                              handleSelectNeighborhood(event, value)
                             }
                           }}
                           fullWidth
@@ -716,12 +769,13 @@ export default function AreaForm(props: RouteComponentProps<IPageParams>) {
                         <Autocomplete
                           id="combo-box-users"
                           options={userState.list.data}
+
                           getOptionLabel={(option) => option.name}
                           renderInput={(params) => <TextField {...params} label="Prestador" variant="outlined" />}
                           size="small"
                           onChange={(event, value) => {
                             if (value) {
-                              console.log(value);
+
                               handleSelectUser({ _id: value._id || '', name: value.name, profession:value.profession_id.name || ''})
                             }
                           }}
@@ -748,9 +802,12 @@ export default function AreaForm(props: RouteComponentProps<IPageParams>) {
           </FormContent>
 
           <ButtonsContent>
-            <Button variant="outlined" className={classes.cancel} onClick={() => handleOpenModalCancel()}>
+            <ButtonsContent>
+                 <Button variant="outlined" className={classes.cancel} onClick={() => handleOpenModalCancel()}>
               Cancelar
               </Button>
+            </ButtonsContent>
+
                   <ButtonsContent>
                       {currentTab !=0 && (
                         <Button variant="outlined" color="primary"  className={classes.register} onClick={() => currentTab ===1?selectTab(0):selectTab(1)}>
@@ -763,12 +820,15 @@ export default function AreaForm(props: RouteComponentProps<IPageParams>) {
                       </Button>
                       )}
                     </ButtonsContent>
-                    {currentTab ===2 && (
+<ButtonsContent>
+          {currentTab ===2 && (
                        <Button variant="contained" background="success" onClick={() => handleSaveFormArea()}>
                         Salvar
 					          </Button>
                     )}
           </ButtonsContent>
+          </ButtonsContent>
+
         </FormSection>
       </Container >
       <Dialog

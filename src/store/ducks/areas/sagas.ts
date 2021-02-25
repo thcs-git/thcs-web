@@ -110,7 +110,7 @@ export function* getDistrict({ payload: { value } }: any) {
   try {
     const response: AxiosResponse = yield call(
       apiSollar.get,
-      `/districts?&city=${value}`,
+      `/districts?&city=${value.city}`,
       {
         headers: { token },
       }

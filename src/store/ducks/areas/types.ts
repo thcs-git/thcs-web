@@ -50,6 +50,7 @@ export interface DistricAreaInterface {
 export interface NeighborhoodAreaInterface {
   _id: string;
   name: string;
+  city: string;
 }
 
 export interface CityAreaInterface {
@@ -85,7 +86,7 @@ export interface AreaState {
   //areaState: AreaState;
   data: AreaInterface;
   list: AreaList;
-  districts: any[];
+  districts: NeighborhoodAreaInterface[];
   citys: any[];
   districts_: any[];
   profession: ProfessionAreaInterface[];
