@@ -2,7 +2,7 @@ import React, { useState, useEffect, useCallback, ChangeEvent, ReactNode } from 
 import { handleUserSelectedId } from './../../../helpers/localStorage';
 import { useDispatch, useSelector } from 'react-redux';
 import { ApplicationState } from '../../../store';
-import { AreaInterface, UserAreaInterface, NeighborhoodAreaInterface, CityAreaInterface } from '../../../store/ducks/areas/types';
+import { AreaInterface, UserAreaInterface, NeighborhoodAreaInterface, CityAreaInterface, AreaTypes } from '../../../store/ducks/areas/types';
 import { loadRequest, loadAreaById, updateAreaRequest, createAreaRequest, loadGetDistricts as getDistrictsAction, loadGetCitys as getStatesAction,loadGetDistricts_ } from '../../../store/ducks/areas/actions';
 import { ProfessionInterface } from '../../../store/ducks/professions/types';
 import { loadRequest as getProfessions } from '../../../store/ducks/professions/actions';
@@ -198,18 +198,7 @@ export default function AreaForm(props: RouteComponentProps<IPageParams>) {
   useEffect(() => {
     if (params.id) {
       dispatch(loadAreaById(params.id));
-      setInputName(prev =>({
-        ...prev,
-        value:areaState.data.name
-      }));
-      const dayOfTheWeekSelected = daysOfTheWeek.find(day => day.id === areaState.data.week_day) || null;
-      setInputDays(prev =>({
-        ...prev,
-        value:dayOfTheWeekSelected?.name || ""
-      }));
-      setState(prevState => ({ ...prevState, ...areaState.data, form: { dayOfTheWeek: dayOfTheWeekSelected } }));
-
-    } else {
+    } else{
       dispatch(loadRequest());
     }
     dispatch(getUsersAction());
@@ -217,6 +206,30 @@ export default function AreaForm(props: RouteComponentProps<IPageParams>) {
     //dispatch(getProfessions());
 
   }, [dispatch]);
+
+  // useEffect(() =>{
+
+  //   setState(prevState =>({
+  //     ...prevState
+  //   }))
+  // })
+  useEffect(() => {
+    if(params.id){
+       const dayOfTheWeekSelected = daysOfTheWeek.find(day => day.id === areaState.data.week_day) || null;
+     setInputName(prev =>({
+        ...prev,
+        value:areaState.data.name
+      }));
+        setInputDays(prev =>({
+        ...prev,
+        value:dayOfTheWeekSelected?.name || ""
+      }));
+    setState(prevState => ({
+      ...prevState,
+      ...areaState.data
+    }));
+    }
+  }, [areaState,params.id]);
 
 
 
@@ -545,7 +558,7 @@ export default function AreaForm(props: RouteComponentProps<IPageParams>) {
                             id="combo-box-day-of-week"
                             options={daysOfTheWeek}
                             getOptionLabel={(option) => option.name}
-                            renderInput={(params) => <TextField {...params} autoFocus error={inputDays.error} label="Dia da semana" variant="outlined"
+                            renderInput={(params) => <TextField {...params} error={inputDays.error} label="Dia da semana" variant="outlined"
                             onBlur={handleDaysValidator}
                             /> }
                             value={state.form?.dayOfTheWeek ?? null}
