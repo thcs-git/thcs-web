@@ -168,6 +168,23 @@ export default function CompanyForm(props: RouteComponentProps<IPageParams>) {
 
             <FormGroupSection>
               <Grid container>
+                <Grid item md={12} xs={12}>
+                  <TextField
+                    id="input-customer"
+                    label="Cliente"
+                    variant="outlined"
+                    size="small"
+                    value={localStorage.getItem(LOCALSTORAGE.CUSTOMER_NAME)}
+                    fullWidth
+                    disabled
+                  />
+                </Grid>
+              </Grid>
+            </FormGroupSection>
+
+            <FormGroupSection>
+              <Grid container>
+
                 <Grid item md={6} xs={12}>
                   <TextField
                     id="input-social-name"
@@ -345,7 +362,7 @@ export default function CompanyForm(props: RouteComponentProps<IPageParams>) {
             </FormGroupSection>
 
             <Grid container>
-              <Grid item md={3} xs={12}>
+              <Grid item md={4} xs={12}>
                 <TextField
                   id="input-email"
                   label="E-mail"
