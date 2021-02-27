@@ -7,7 +7,14 @@ dayjs.extend(timezone)
 
 dayjs.tz.setDefault("America/Sao_Paulo");
 
-const daysOfWeek = ['Domingo', 'Segunda-Feira', 'Terça-Feira', 'Quarta-Feira', 'Quinta-Feira', 'Sexta-Feira', 'Sábado']
+const daysOfWeek = ['Domingo', 'Segunda-Feira', 'Terça-Feira', 'Quarta-Feira', 'Quinta-Feira', 'Sexta-Feira', 'Sábado'];
+
+export const translate: any = {
+  week: 'Semana',
+  month: 'Mês',
+  year: 'Ano',
+  day: 'Dia'
+}
 
 export const getDayOfTheWeekName = (dayOfTheWeek: number) => {
   return daysOfWeek[dayOfTheWeek];

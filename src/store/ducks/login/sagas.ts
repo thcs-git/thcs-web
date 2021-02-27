@@ -27,7 +27,7 @@ export function* doLogin({ payload }: any) {
     yield put(loadSuccess(data));
 
     history.push('/');
-    // location.reload();
+    location.reload();
 
   } catch (err) {
     yield put(loadFailure());
