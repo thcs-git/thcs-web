@@ -29,7 +29,7 @@ import { TextCenter } from '../../../../styles/components/Text';
 import ButtonComponent from '../../../../styles/components/Button';
 import { ComplexityStatus } from '../../../../styles/components/Table';
 
-import { ScheduleItem, CardTitle, CalendarContent } from './styles';
+import { ScheduleItem, CardTitle, CalendarContent, ScheduleEventStatus } from './styles';
 
 interface IDay {
   allDay: boolean;
@@ -227,16 +227,52 @@ export default function SchedulePage(props: RouteComponentProps<IPageParams>) {
     }
   }, [schedule]);
 
-  function renderEventContent(eventInfo: any) {
-    return (
-      <ScheduleItem>
-        <div>{eventInfo.timeText}</div>
-        <div className="scheduleText">
-          <i>{eventInfo.event.title}</i>
-        </div>
-      </ScheduleItem>
-    )
-  }
+  const renderEventStatus = (event: any) => {
+    const today = dayjs();
+    const eventDate = dayjs(event.start);
+    const diffDate = eventDate.diff(today, 'days');
+    const { extendedProps: eventData } = event;
+
+    if (diffDate < 0) {
+      return <ScheduleEventStatus color="late" />
+    } else if (diffDate === 0) {
+
+      if (eventData.checkin) {
+
+        const checkins = eventData.checkin.sort().reverse();
+
+        if (checkins.length > 0) {
+
+          const { start_at: checkIn, end_at: checkOut } = checkins[0];
+
+          if (checkIn && !checkOut) {
+            return <ScheduleEventStatus color="visiting" />
+          } else if (checkIn && checkOut) {
+            return <ScheduleEventStatus color="complete" />
+          } else {
+            return <ScheduleEventStatus color="future" />
+          }
+
+        } else {
+          return <ScheduleEventStatus color="future" />
+        }
+      } else {
+        return <ScheduleEventStatus color="future" />
+      }
+
+    } else {
+      return <ScheduleEventStatus color="future" />
+    }
+  };
+
+  const renderEventContent = (eventInfo: any) => (
+    <ScheduleItem>
+      {renderEventStatus(eventInfo.event)}
+      <div className="scheduleText">
+        <i>{eventInfo.event.title}</i>
+      </div>
+    </ScheduleItem>
+  );
 
   const translateSchedule = useCallback(() => {
     const schedules = careState.schedule;
