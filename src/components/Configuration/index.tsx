@@ -37,12 +37,15 @@ export default function Configuration() {
     return (selected[0]) ? selected[0] : null;
   }, [companies, user]);
 
-  const changeCompany = useCallback((id: string) => {
-    localStorage.setItem(LOCALSTORAGE.COMPANY_SELECTED, id);
+  const changeCompany = useCallback((company: any) => {
+    console.log(company);
+
+    localStorage.setItem(LOCALSTORAGE.COMPANY_SELECTED, company._id);
+    localStorage.setItem(LOCALSTORAGE.COMPANY_NAME, company.name);
 
     setUser(prevState => ({
       ...prevState,
-      companySelected: id
+      companySelected: company._id
     }))
   }, [user]);
 
@@ -65,7 +68,7 @@ export default function Configuration() {
           value={selectCompany()}
           renderInput={(params) => <TextField {...params} label="Empresa" variant="outlined" />}
           size="small"
-          onChange={(event, value) => changeCompany(value._id)}
+          onChange={(event, value) => changeCompany(value)}
           noOptionsText="Nenhuma empresa encontrada"
           fullWidth
         />

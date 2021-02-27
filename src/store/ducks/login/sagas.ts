@@ -20,7 +20,9 @@ export function* doLogin({ payload }: any) {
     localStorage.setItem(LOCALSTORAGE.USERNAME, data.username)
     localStorage.setItem(LOCALSTORAGE.USER_ID, data._id)
     localStorage.setItem(LOCALSTORAGE.COMPANY_SELECTED, data.companies[0]._id || null)
-    localStorage.setItem(LOCALSTORAGE.CUSTOMER, data.companies[0].customer_id || null)
+    localStorage.setItem(LOCALSTORAGE.COMPANY_NAME, data.companies[0].name || null)
+    localStorage.setItem(LOCALSTORAGE.CUSTOMER, data.companies[0].customer_id._id || null)
+    localStorage.setItem(LOCALSTORAGE.CUSTOMER_NAME, data.companies[0].customer_id.name || null)
 
     yield put(loadSuccess(data));
 
