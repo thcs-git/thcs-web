@@ -18,6 +18,7 @@ import { ApplicationState } from '../../../../store';
 import CaptureDataDialog from '../../../../components/Dialogs/CaptureData';
 
 import { age } from '../../../../helpers/date';
+import LOCALSTORAGE from '../../../../helpers/constants/localStorage';
 
 const registrationCompleted: React.FC<any> = (props) => {
   // ----------------------------------------------
@@ -29,8 +30,9 @@ const registrationCompleted: React.FC<any> = (props) => {
     health_plan_card_number: '123456789',
     contract: '123123',
     care_type_id: '5fd66ca189a402ec48110cc1',
-    user_id: '5e8cfe7de9b6b8501c8033ac',
-    created_by: { _id: '5e8cfe7de9b6b8501c8033ac' },
+    user_id: localStorage.getItem(LOCALSTORAGE.USER_ID) || ``,
+    company_id: localStorage.getItem(LOCALSTORAGE.COMPANY_SELECTED),
+    created_by: { _id: localStorage.getItem(LOCALSTORAGE.USER_ID) || `` },
     status: 'Pre-Atendimento',
     capture: {
       status: 'Em Andamento',
@@ -59,7 +61,6 @@ const registrationCompleted: React.FC<any> = (props) => {
         status: 'Em Andamento',
       },
       care_type_id: '5fd66ca189a402ec48110cc1',
-      user_id: '600f0d615ba0702f45864035',
     };
 
     dispatch(createCareAction(careParams));
@@ -79,7 +80,10 @@ const registrationCompleted: React.FC<any> = (props) => {
   const handleSubmitPatientCapture = useCallback(() => {
     setOpenModalConfirm(false);
 
-    const careParams: any = { ...care, patient_id: patientState.data._id };
+    const careParams: any = {
+      ...care,
+      patient_id: patientState.data._id,
+    };
 
     dispatch(createCareAction(careParams))
 
