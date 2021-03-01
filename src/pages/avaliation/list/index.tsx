@@ -50,11 +50,11 @@ export default function AvaliationList() {
     dispatch(getCares({ status: 'Pre-Atendimento' }))
   }, []);
 
-  useEffect(() => {
-    if (careState.data.status === 'Atendimento') {
-      history.push(`care/${careState.data._id}/overview`);
-    }
-  }, [careState.data.status]);
+  // useEffect(() => {
+  //   if (careState.data.status === 'Atendimento') {
+  //     history.push(`care/${careState.data._id}/overview`);
+  //   }
+  // }, [careState.data.status]);
 
   const handleChangeInput = useCallback((event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     setSearch(event.target.value)
@@ -164,7 +164,6 @@ export default function AvaliationList() {
 
     const updateParams = {
       ...care,
-      status: (captureStatus.approved === 'Aprovado') ? 'Atendimento' : care.status,
       capture: {
         ...care.capture,
         status: captureStatus.approved,

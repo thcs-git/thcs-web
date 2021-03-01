@@ -113,6 +113,7 @@ export enum CareTypes {
 export interface CareInterface {
   _id?: string;
   patient_id?: any; // *
+  company_id?: any; // *
   health_insurance_id?: any;
   health_plan_id?: any;
   health_sub_plan_id?: any;

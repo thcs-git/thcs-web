@@ -25,16 +25,18 @@ import { ApplicationState } from '../../../../store';
 import { searchRequest as searchPatientAction } from '../../../../store/ducks/patients/actions';
 
 import { createCareRequest as createCareAction, searchCareRequest as getCares } from '../../../../store/ducks/cares/actions';
-import { CareInterface } from '../../../../store/ducks/cares/types';
+import { CareInterface, ICaptureData } from '../../../../store/ducks/cares/types';
 
 import Loading from '../../../../components/Loading';
 import Sidebar from '../../../../components/Sidebar';
 
 import { age, formatDate } from '../../../../helpers/date';
+import LOCALSTORAGE from '../../../../helpers/constants/localStorage';
 
 import { Table, Th, Td } from "../../../../styles/components/Table";
 import Button from '../../../../styles/components/Button';
 import { FormTitle } from '../../../../styles/components/Form';
+import CaptureDataDialog from '../../../../components/Dialogs/CaptureData';
 
 import {
   ButtonsContent,
@@ -67,6 +69,9 @@ export default function PatientCaptureForm() {
 
   const [openModalConfirm, setOpenModalConfirm] = useState<boolean>(false);
   const [openModalCare, setOpenModalCare] = useState<boolean>(false);
+  const [captureOptionsModalOpen, setCaptureModalModalOpen] = useState<boolean>(false);
+  const [captureData, setCaptureData] = useState<ICaptureData | any>({
+  });
 
   useEffect(() => {
     dispatch(searchPatientAction({ active: true }));
@@ -161,6 +166,22 @@ export default function PatientCaptureForm() {
     }
   };
 
+  const handleSubmitCaptureData = () => {
+    const careParams = {
+      patient_id: selectedPatient?._id || '',
+      status: 'Pre-Atendimento',
+      capture: {
+        ...captureData,
+        status: 'Em Andamento',
+      },
+      care_type_id: '5fd66ca189a402ec48110cc1',
+      user_id: localStorage.getItem(LOCALSTORAGE.USER_ID) || ``,
+      company_id: localStorage.getItem(LOCALSTORAGE.COMPANY_SELECTED) || ``,
+    };
+
+    dispatch(createCareAction(careParams));
+  };
+
   const handleSubmitPatientCapture = useCallback(() => {
     setOpenModalConfirm(false);
 
@@ -181,7 +202,7 @@ export default function PatientCaptureForm() {
           <h4>Primeiro, encontre o paciente que deseja realizar a captação:</h4>
           <br />
           <Grid container>
-            <Grid item md={3} xs={12}>
+            <Grid item md={4} sm={4} xs={12}>
               <SearchContent>
                 <TextField
                   id="input-search-fiscal-number"
@@ -262,7 +283,7 @@ export default function PatientCaptureForm() {
                 <ButtonsContent>
                   <Button
                     background="success"
-                    onClick={() => toggleModalConfirm(true)}
+                    onClick={() => setCaptureModalModalOpen(true)}
                     disabled={careState.list.data.length > 0}
                   >
                     Selecionar Paciente
@@ -313,7 +334,7 @@ export default function PatientCaptureForm() {
                   <ButtonsContent>
                     <Button
                       background="success"
-                      onClick={() => toggleModalConfirm(true)}
+                      onClick={() => setCaptureModalModalOpen(true)}
                     >
                       Selecionar Paciente
                     </Button>
@@ -328,6 +349,14 @@ export default function PatientCaptureForm() {
               <p>Paciente não encontrado</p>
             </PatientNotFound>
           )}
+
+          <CaptureDataDialog
+            dialogState={captureOptionsModalOpen}
+            toogleModalState={() => setCaptureModalModalOpen(false)}
+            captureData={captureData}
+            setCaptureData={setCaptureData}
+            saveCallback={handleSubmitCaptureData}
+          />
 
           <Dialog
             open={openModalConfirm}

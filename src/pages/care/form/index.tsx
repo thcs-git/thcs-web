@@ -944,7 +944,7 @@ export default function AreaForm(props: RouteComponentProps<IPageParams>) {
               </Button>
             ) : (
                 <Button
-                  disabled={currentStep === steps.length - 1 || !patient?._id}
+                  disabled={currentStep === (steps.length - 1) || !selectCheckbox?._id}
                   background="primary"
                   onClick={handleNextStep}
                 >
