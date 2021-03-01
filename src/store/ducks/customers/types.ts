@@ -20,6 +20,8 @@ export enum CustomerTypes {
 
   SEARCH_REQUEST = "@customer/SEARCH_REQUEST",
 
+  CLEAN = "@customer/CLEAN"
+
 }
 
 /**

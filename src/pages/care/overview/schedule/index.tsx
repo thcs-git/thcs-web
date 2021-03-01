@@ -283,9 +283,13 @@ export default function SchedulePage(props: RouteComponentProps<IPageParams>) {
   const renderComplexityList = useCallback(() => {
     const complexity = companyState.data.settings?.complexity?.find(item => item.title === (careState.data?.complexity || careState.data?.capture?.complexity || 'Sem Complexidade'));
 
-    return complexity?.recommendation.map((recommendation, key) => (
+    return (complexity?.recommendation.length) ? complexity?.recommendation.map((recommendation, key) => (
       <p key={`recommendation_${key}`}>{`${recommendation.amount} ${(typeof recommendation.profession_id === 'object' ? recommendation.profession_id.name : '')}, ${recommendation.interval}x por ${translateDateHelper[recommendation.frequency].toLowerCase()}`}</p>
-    ));
+    )) : (
+        <TextCenter>
+          Nenhuma periodicidade encontrada para essa complexidade
+        </TextCenter>
+      );
   }, [careState]);
 
   const renderEventContent = (eventInfo: any) => (
@@ -414,7 +418,7 @@ export default function SchedulePage(props: RouteComponentProps<IPageParams>) {
                         <h4>Complexidade - Indicações</h4>
                       </CardTitle>
 
-                      <TextCenter style={{ marginBottom: 20 }}>
+                      <TextCenter style={{ marginBottom: 20, fontWeight: 'bold' }}>
                         <ComplexityStatus status={careState.data?.complexity || careState.data?.capture?.complexity || 'Sem Complexidade'} style={{ justifyContent: 'center' }}>
                           {careState.data?.complexity || careState.data?.capture?.complexity || 'Sem Complexidade'}
                         </ComplexityStatus>
@@ -436,9 +440,17 @@ export default function SchedulePage(props: RouteComponentProps<IPageParams>) {
                         <h4>Equipe Multidisciplinar</h4>
                       </CardTitle>
                       <div>
-                        {team.map(user => (
-                          <p>{user.name}</p>
-                        ))}
+                        {team.length ? (
+                          <>
+                            {team.map(user => (
+                              <p>{user.name}</p>
+                            ))}
+                          </>
+                        ) : (
+                            <TextCenter>
+                              Nenhum profissional foi adicionado
+                            </TextCenter>
+                          )}
                       </div>
                     </CardContent>
                   </Card>

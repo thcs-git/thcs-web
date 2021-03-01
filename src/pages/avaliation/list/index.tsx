@@ -8,7 +8,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { ApplicationState } from '../../../store/';
 import { loadRequest, searchCareRequest } from '../../../store/ducks/cares/actions';
 
-import { searchCareRequest as getCares, updateCareRequest as updateCareAction } from '../../../store/ducks/cares/actions';
+import { searchCareRequest as getCares, updateCareRequest as updateCareAction, cleanAction } from '../../../store/ducks/cares/actions';
 
 import PaginationComponent from '../../../components/Pagination';
 import Sidebar from '../../../components/Sidebar';
@@ -46,8 +46,15 @@ export default function AvaliationList() {
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
 
   useEffect(() => {
+    dispatch(cleanAction());
     dispatch(getCares({ status: 'Pre-Atendimento' }))
   }, []);
+
+  useEffect(() => {
+    if (careState.data.status === 'Atendimento') {
+      history.push(`care/${careState.data._id}/overview`);
+    }
+  }, [careState.data.status]);
 
   const handleChangeInput = useCallback((event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     setSearch(event.target.value)
@@ -157,6 +164,7 @@ export default function AvaliationList() {
 
     const updateParams = {
       ...care,
+      status: (captureStatus.approved === 'Aprovado') ? 'Atendimento' : care.status,
       capture: {
         ...care.capture,
         status: captureStatus.approved,
@@ -165,13 +173,15 @@ export default function AvaliationList() {
     };
 
     dispatch(updateCareAction(updateParams));
+    dispatch(getCares({ status: 'Pre-Atendimento' }));
 
-  }, [captureStatus]);
+  }, [captureStatus, careState]);
 
   return (
     <>
       <Sidebar>
         {careState.loading && <Loading />}
+        {console.log('careState', careState)}
         <Container>
           <FormTitle>Lista de Avaliações</FormTitle>
 

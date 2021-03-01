@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import InputMask, { Props } from 'react-input-mask';
 
 import { ApplicationState } from '../../../store';
-import { loadCustomerById, getAddress as getAddressAction, updateCustomerRequest, createCustomerRequest } from '../../../store/ducks/customers/actions';
+import { loadCustomerById, getAddress as getAddressAction, updateCustomerRequest, createCustomerRequest, cleanAction } from '../../../store/ducks/customers/actions';
 import { CustomerInterface } from '../../../store/ducks/customers/types';
 import { createUserRequest as createUserAction } from '../../../store/ducks/users/actions';
 import { UserInterface } from '../../../store/ducks/users/types';
@@ -105,6 +105,16 @@ export default function CustomerForm(props: RouteComponentProps<IPageParams>) {
   });
 
   useEffect(() => {
+    dispatch(cleanAction());
+  }, []);
+
+  useEffect(() => {
+    if (params.id) {
+      setState(customerState.data);
+    }
+  }, [customerState]);
+
+  useEffect(() => {
     if (customerState.error) {
       setState(prev => ({
         ...prev,
@@ -182,6 +192,8 @@ export default function CustomerForm(props: RouteComponentProps<IPageParams>) {
 
   const getAddress = useCallback(() => {
     dispatch(getAddressAction(state.address.postal_code));
+
+    document.getElementById('input-address-number')?.focus();
   }, [state.address.postal_code]);
 
   function handleOpenModalCancel() {
@@ -193,6 +205,7 @@ export default function CustomerForm(props: RouteComponentProps<IPageParams>) {
   }
 
   function handleCancelForm() {
+    dispatch(cleanAction());
     setOpenModalCancel(false);
     history.push('/customer');
   }
