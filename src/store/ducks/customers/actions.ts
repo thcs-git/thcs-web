@@ -22,3 +22,5 @@ export const loadSuccessCustomerById = (data: CustomerInterface) => action(Custo
 export const loadFailure = () => action(CustomerTypes.LOAD_FAILURE);
 
 export const searchRequest = (value: string) => action(CustomerTypes.SEARCH_REQUEST, { value });
+
+export const cleanAction = () => action(CustomerTypes.CLEAN);

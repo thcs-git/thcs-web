@@ -42,6 +42,7 @@ const reducer: Reducer<CustomerState> = (state = INITIAL_STATE, action) => {
     case CustomerTypes.LOAD_SUCCCES:
       return {
         ...state,
+        data: INITIAL_STATE.data,
         list: action.payload.data,
         loading: false,
         success: true,
@@ -79,6 +80,13 @@ const reducer: Reducer<CustomerState> = (state = INITIAL_STATE, action) => {
         error: false,
         success: true
       }
+    case CustomerTypes.LOAD_REQUEST_ADDRESS:
+      return {
+        ...state,
+        loading: true,
+        error: false,
+        success: false,
+      };
     case CustomerTypes.LOAD_RESPONSE_ADDRESS:
       return {
         ...state,
@@ -100,6 +108,9 @@ const reducer: Reducer<CustomerState> = (state = INITIAL_STATE, action) => {
       };
     case CustomerTypes.SEARCH_REQUEST:
       return { ...state, loading: true, error: false };
+
+    case CustomerTypes.CLEAN:
+      return INITIAL_STATE;
     default:
       return state;
   }
