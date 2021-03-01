@@ -6,7 +6,7 @@ import debounce from 'lodash.debounce';
 
 import { useDispatch, useSelector } from 'react-redux';
 import { ApplicationState } from '../../../store/';
-import { loadRequest, searchCareRequest } from '../../../store/ducks/cares/actions';
+import { loadRequest, searchCareRequest as getCares } from '../../../store/ducks/cares/actions';
 
 import PaginationComponent from '../../../components/Pagination';
 import Sidebar from '../../../components/Sidebar';
@@ -18,24 +18,13 @@ import Button from '../../../styles/components/Button';
 
 import { formatDate } from '../../../helpers/date';
 
-import {
-  List,
-  ListLink,
-  ListItem,
-  ListItemContent,
-  ListItemStatus,
-  ListItemTitle,
-  ListItemSubTitle,
-  CheckListContent
-} from './styles';
-
 export default function CouncilList() {
   const history = useHistory();
   const dispatch = useDispatch();
   const careState = useSelector((state: ApplicationState) => state.cares);
 
   useEffect(() => {
-    dispatch(loadRequest());
+    dispatch(getCares({ status: 'Atendimento' }))
   }, []);
 
   const [search, setSearch] = useState('');
@@ -52,7 +41,7 @@ export default function CouncilList() {
 
   const handleChangeInput = useCallback((event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     setSearch(event.target.value)
-    dispatch(searchCareRequest({ search: event.target.value }));
+    dispatch(getCares({ search: event.target.value, status: 'Atendimento' }));
   }, [search]);
 
   const debounceSearchRequest = debounce(handleChangeInput, 900);

@@ -15,6 +15,7 @@ import CaptureDataDialog from '../../../../components/Dialogs/CaptureData';
 import Loading from '../../../../components/Loading';
 import Sidebar from '../../../../components/Sidebar';
 
+import LOCALSTORAGE from '../../../../helpers/constants/localStorage';
 import { formatDate } from '../../../../helpers/date';
 
 import Button from '../../../../styles/components/Button';
@@ -60,6 +61,8 @@ export default function PatientCaptureForm(props: RouteComponentProps<IPageParam
 
   const { params } = props.match;
   const { state } = props.location;
+
+  const userSessionId = localStorage.getItem(LOCALSTORAGE.USER_ID) || '';
 
   const [care, setCare] = useState<CareInterface>();
   const [documentGroups, setDocumentGroups] = useState<DocumentGroupList>();
@@ -212,7 +215,7 @@ export default function PatientCaptureForm(props: RouteComponentProps<IPageParam
         ...captureData
       },
       care_type_id: '5fd66ca189a402ec48110cc1',
-      user_id: '600f0d615ba0702f45864035',
+      user_id: userSessionId,
     };
 
     dispatch(updateCareRequest(updateParams));
@@ -229,10 +232,12 @@ export default function PatientCaptureForm(props: RouteComponentProps<IPageParam
         status: 'Aguardando'
       },
       care_type_id: '5fd66ca189a402ec48110cc1',
-      user_id: '600f0d615ba0702f45864035',
+      user_id: userSessionId,
     };
 
     dispatch(updateCareRequest(updateParams));
+
+    history.push('/avaliation');
   }, [care, captureData]);
 
   const handleValidadeFinishEnable = useCallback(() => {
@@ -249,21 +254,6 @@ export default function PatientCaptureForm(props: RouteComponentProps<IPageParam
   const handlePrint = () => {
     alert('print');
   };
-
-  const selectHealhInsurance = useCallback(() => {
-    const selected = careState.healthInsurance.filter(item => item._id === captureData.health_insurance_id);
-    return (selected[0]) ? selected[0] : null;
-  }, [captureData.health_insurance_id]);
-
-  const selectHealhPlan = useCallback(() => {
-    const selected = careState.healthPlan.filter(item => item._id === captureData.health_plan_id);
-    return (selected[0]) ? selected[0] : null;
-  }, [captureData.health_plan_id]);
-
-  const selectHealhSubPlan = useCallback(() => {
-    const selected = careState.healthSubPlan.filter(item => item._id === captureData.health_sub_plan_id);
-    return (selected[0]) ? selected[0] : null;
-  }, [captureData.health_sub_plan_id]);
 
   return (
     <>

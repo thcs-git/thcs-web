@@ -134,21 +134,18 @@ const Sibebar = (props: Props<any>) => {
   const classes = useStyles();
   const dispatch = useDispatch();
 
-  const companyState = useSelector((state: ApplicationState) => state.companies);
-
   const [open, setOpen] = useState<Boolean>(() => {
     let toggleSidebar = localStorage.getItem(LOCALSTORAGE.TOGGLE_SIDEBAR) || 'false';
     return JSON.parse(toggleSidebar)
   });
   const [username, setUsername] = useState(localStorage.getItem(LOCALSTORAGE.USERNAME) || '');
-  const [company, setCompany] = useState(localStorage.getItem(LOCALSTORAGE.COMPANY_SELECTED) || '');
+  const [company, setCompany] = useState({
+    _id: localStorage.getItem(LOCALSTORAGE.COMPANY_SELECTED) || '',
+    name: localStorage.getItem(LOCALSTORAGE.COMPANY_NAME) || '',
+  });
 
   const [openModalLogout, setOpenModalLogout] = useState(false);
   const [openModalConfig, setOpenModalConfig] = useState(false);
-
-  useEffect(() => {
-    dispatch(loadCompanyById(company))
-  }, []);
 
   const handleDrawerClose = useCallback(() => {
     setOpen(prev => {
@@ -204,7 +201,7 @@ const Sibebar = (props: Props<any>) => {
           <br />
           <div style={{ display: 'flex', alignItems: 'center', }}>
             <BusinessIcon />
-            <h4 style={{ color: '#ffffff', marginLeft: 10 }}>{companyState.data.name}</h4>
+            <h4 style={{ color: '#ffffff', marginLeft: 10 }}>{company.name}</h4>
           </div>
         </UserContent>
 
