@@ -25,7 +25,7 @@ const reducer: Reducer<CouncilState> = (state = INITIAL_STATE, action) => {
   switch (action.type) {
     case CouncilTypes.LOAD_REQUEST:
       return { ...state, loading: true };
-    case CouncilTypes.LOAD_SUCCCES:
+    case CouncilTypes.LOAD_SUCCESS:
       return {
         ...state,
         list: action.payload.data,
@@ -33,13 +33,13 @@ const reducer: Reducer<CouncilState> = (state = INITIAL_STATE, action) => {
       };
     case CouncilTypes.LOAD_FAILURE:
       return {
-      ...state, loading: false, error: true,
-      list: {
-        data: [],
-        limit: '10',
-        page: '1',
-        total: 0
-      }
+        ...state, loading: false, error: true,
+        list: {
+          data: [],
+          limit: '10',
+          page: '1',
+          total: 0
+        }
       };
     case CouncilTypes.LOAD_SUCCESS_COUNCIL_BY_ID:
       return {

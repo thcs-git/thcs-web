@@ -4,7 +4,7 @@ import { PatientInterface } from '../patients/types';
  */
 export enum DocumentGroupTypes {
   LOAD_REQUEST = "@documentGroup/LOAD_REQUEST",
-  LOAD_SUCCCES = "@documentGroup/LOAD_SUCCCES",
+  LOAD_SUCCESS = "@documentGroup/LOAD_SUCCESS",
   LOAD_FAILURE = "@documentGroup/LOAD_FAILURE",
 
   LOAD_REQUEST_DOCUMENTS_BY_ID = "@documentGroup/LOAD_REQUEST_DOCUMENTS_BY_ID",
@@ -17,13 +17,13 @@ export enum DocumentGroupTypes {
 
 export interface DocumentGroupInterface {
   _id?: string;
-	name?: string;
-	description?: string;
-	fields?: DocumentGroupFields[];
-	created_at?: string;
-	created_by?: { _id: string };
-	updated_at?: string;
-	updated_by?: { _id: string };
+  name?: string;
+  description?: string;
+  fields?: DocumentGroupFields[];
+  created_at?: string;
+  created_by?: { _id: string };
+  updated_at?: string;
+  updated_by?: { _id: string };
 }
 
 export interface DocumentGroupFields {

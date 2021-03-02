@@ -3,7 +3,7 @@
  */
 export enum CompanyTypes {
   LOAD_REQUEST = "@company/LOAD_REQUEST",
-  LOAD_SUCCCES = "@company/LOAD_SUCCCES",
+  LOAD_SUCCESS = "@company/LOAD_SUCCESS",
   LOAD_FAILURE = "@company/LOAD_FAILURE",
 
   LOAD_REQUEST_ADDRESS = "@company/LOAD_REQUEST_ADDRESS",

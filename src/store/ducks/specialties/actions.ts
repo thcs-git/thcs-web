@@ -3,7 +3,7 @@ import { SpecialtyTypes, SpecialtyInterface, LoadRequestParams } from './types';
 
 export const loadRequest = (params: LoadRequestParams = {}) => action(SpecialtyTypes.LOAD_REQUEST, { params });
 
-export const loadSuccess = (data: SpecialtyInterface) => action(SpecialtyTypes.LOAD_SUCCCES, { data });
+export const loadSuccess = (data: SpecialtyInterface) => action(SpecialtyTypes.LOAD_SUCCESS, { data });
 
 export const createSpecialtyRequest = (data: SpecialtyInterface) => action(SpecialtyTypes.CREATE_SPECIALTY_REQUEST, { data });
 export const createSpecialtySuccess = (data: SpecialtyInterface) => action(SpecialtyTypes.CREATE_SPECIALTY_SUCCESS, { data });

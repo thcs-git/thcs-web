@@ -76,7 +76,7 @@ export default function CustomerForm(props: RouteComponentProps<IPageParams>) {
   });
 
   const [userData, setUserData] = useState<UserInterface>({
-    companies: ['5ee65a9b1a550217e4a8c0f4'], //empresa que vai vir do login
+    companies: [], //empresa que vai vir do login
     name: '',
     birthdate: '',
     gender: '',
@@ -155,7 +155,7 @@ export default function CustomerForm(props: RouteComponentProps<IPageParams>) {
       if (customerState.data._id) {
         dispatch(createUserAction({
           ...userData,
-          companies: [customerState.data._id],
+          customer_id: customerState.data._id,
           name: state.name || ``,
           fiscal_number: state.fiscal_number || ``,
           birthdate: '',

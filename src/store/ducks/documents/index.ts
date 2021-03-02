@@ -20,7 +20,7 @@ const reducer: Reducer<DocumentState> = (state = INITIAL_STATE, action) => {
   switch (action.type) {
     case DocumentTypes.LOAD_REQUEST:
       return { ...state, loading: true, success: false, };
-    case DocumentTypes.LOAD_SUCCCES:
+    case DocumentTypes.LOAD_SUCCESS:
       return {
         ...state,
         list: action.payload.data,

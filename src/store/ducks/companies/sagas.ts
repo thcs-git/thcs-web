@@ -11,16 +11,18 @@ const token = localStorage.getItem('token');
 
 export function* get({ payload }: any) {
   const { params } = payload;
+
   const response: AxiosResponse = yield call(apiSollar.get, `/companies?limit=${params.limit ?? 10}&page=${params.page || 1}${params.search ? '&search=' + params.search : ''}`);
 
   try {
     yield put(loadSuccess(response.data))
   } catch (error) {
+    console.log('error', error);
     yield put(loadFailure());
   }
 }
 
-export function* getAddress({payload}:any) {
+export function* getAddress({ payload }: any) {
 
   try {
     const { data }: AxiosResponse<ViacepDataInterface> = yield call(viacep.get, `${payload.postalCode}/json`);
@@ -37,28 +39,18 @@ export function* getAddress({payload}:any) {
   }
 }
 
-export function* createCompany({ payload: { data } }: any) {
+export function* store({ payload: { data } }: any) {
   console.log('data', data);
   try {
-    const response:AxiosResponse = yield call(apiSollar.post, `/companies/store`, data, { headers: { token } })
+    const response: AxiosResponse = yield call(apiSollar.post, `/companies/store`, data, { headers: { token } })
 
-    yield put(loadSuccess(response.data))
-    toast.success('Usuário atualizado com sucesso!');
-  } catch(e) {
+    yield put(createCompanySuccess(response.data))
+    toast.success('Empresa cadastrada com sucesso!');
+  } catch (e) {
     toast.error('Ocorreu um erro ao cadastrar uma nova empresa');
     yield put(loadFailure());
   }
 
-}
-
-export function* store({ payload }: any) {
-  const response: AxiosResponse = yield call(apiSollar.post, `/companies/store`, { ...payload });
-
-  try {
-    yield put(createCompanySuccess(response.data))
-  } catch (error) {
-    yield put(loadFailure());
-  }
 }
 
 export function* getById({ payload: { id: _id } }: any) {
@@ -70,7 +62,6 @@ export function* getById({ payload: { id: _id } }: any) {
     yield put(loadFailure());
   }
 }
-
 
 export function* update({ payload: { data } }: any) {
   const { _id } = data;
@@ -91,6 +82,7 @@ export function* searchCompany({ payload: { value } }: any) {
     const response: AxiosResponse = yield call(apiSollar.get, `/companies/?limit=10${!!value ? '&search=' + value : ''}`)
     yield put(loadSuccess(response.data))
   } catch (error) {
+    console.log('error', error);
     toast.info("Não foi possível buscar os dados da empresa");
     yield put(loadFailure());
   }

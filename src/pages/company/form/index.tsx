@@ -114,7 +114,7 @@ export default function CompanyForm(props: RouteComponentProps<IPageParams>) {
   }, [companyState.data?.address]);
 
   useEffect(() => {
-    if (companyState.success) history.push('/company');
+    if (companyState.success && companyState.data?._id) history.push('/company');
   }, [companyState.success])
 
   useEffect(() => {

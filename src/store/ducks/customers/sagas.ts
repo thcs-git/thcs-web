@@ -1,13 +1,12 @@
 import { put, call } from 'redux-saga/effects';
 import { toast } from 'react-toastify';
+import { AxiosResponse } from 'axios';
 
-import history from '../../../routes/history';
 import { apiSollar, viacep } from '../../../services/axios';
 
 import { loadSuccess, loadFailure, loadSuccessCustomerById, successGetAddress, createCustomerSuccess, updateCustomerSuccess } from './actions';
-
 import { ViacepDataInterface } from './types';
-import { AxiosResponse } from 'axios';
+
 
 export function* get({ payload }: any) {
   const { params } = payload;
@@ -45,9 +44,6 @@ export function* createCompanyCustomer({ payload: { data } }: any) {
       toast.error("Não foi possível cadastrar um novo cliente");
       yield put(loadFailure());
     }
-
-    // history.push('/customer');
-    // location.reload();
   } catch (e) {
     toast.error("Não foi possível cadastrar um novo cliente");
     yield put(loadFailure());

@@ -2,7 +2,7 @@ import { action } from 'typesafe-actions';
 import { PatientTypes, PatientInterface, ViacepDataInterface, LoadRequestParams } from './types';
 
 export const loadRequest = (params: LoadRequestParams = {}) => action(PatientTypes.LOAD_REQUEST, { params });
-export const loadSuccess = (data: PatientInterface) => action(PatientTypes.LOAD_SUCCCES, { data });
+export const loadSuccess = (data: PatientInterface) => action(PatientTypes.LOAD_SUCCESS, { data });
 export const loadFailure = (data?: PatientInterface) => action(PatientTypes.LOAD_FAILURE, { data });
 export const loadFailureCreatePatient = (data?: PatientInterface) => action(PatientTypes.LOAD_FAILURE_CREATE_PATIENT, { data });
 
@@ -16,7 +16,7 @@ export const updatePatientRequest = (data: PatientInterface) => action(PatientTy
 export const updatePatientSuccess = (data: PatientInterface) => action(PatientTypes.UPDATE_PATIENT_SUCCESS, { data });
 
 export const loadPatientById = (id: string) => action(PatientTypes.LOAD_REQUEST_PATIENT_BY_ID, { id });
-export const loadSuccessGetPatientById = (data: PatientInterface) => action(PatientTypes.LOAD_SUCCCES_PATIENT_BY_ID, { data });
+export const loadSuccessGetPatientById = (data: PatientInterface) => action(PatientTypes.LOAD_SUCCESS_PATIENT_BY_ID, { data });
 
 export const searchRequest = (params: any) => action(PatientTypes.SEARCH_REQUEST, { params });
 

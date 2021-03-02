@@ -38,8 +38,6 @@ export default function Configuration() {
   }, [companies, user]);
 
   const changeCompany = useCallback((company: any) => {
-    console.log(company);
-
     localStorage.setItem(LOCALSTORAGE.COMPANY_SELECTED, company._id);
     localStorage.setItem(LOCALSTORAGE.COMPANY_NAME, company.name);
 
