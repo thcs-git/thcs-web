@@ -40,7 +40,7 @@ import { useHistory } from "react-router-dom";
 import DashboardIcon from '@material-ui/icons/Dashboard';
 import AssignmentIndIcon from '@material-ui/icons/AssignmentInd';
 import BusinessIcon from '@material-ui/icons/Business';
-import ExtensionIcon from '@material-ui/icons/Extension';
+import LocationOncon from '@material-ui/icons/LocationOn';
 import PersonIcon from '@material-ui/icons/Person';
 import GroupAddIcon from '@material-ui/icons/GroupAdd';
 import LocalHospital from '@material-ui/icons/LocalHospital';
@@ -58,11 +58,11 @@ const itemsMenu = [
   { title: 'Dashboard', route: '/', icon: <DashboardIcon style={{ color: '#fff' }} /> },
   { title: 'Clientes', route: '/customer', icon: <AssignmentIndIcon style={{ color: '#fff' }} /> },
   { title: 'Empresas', route: '/company', icon: <BusinessIcon style={{ color: '#fff' }} /> },
-  { title: 'Área', route: '/area', icon: <ExtensionIcon style={{ color: '#fff' }} /> },
   { title: 'Usuários', route: '/user', icon: <PersonIcon style={{ color: '#fff' }} /> },
+  { title: 'Área', route: '/area', icon: <LocationOncon style={{ color: '#fff' }} /> },
   { title: 'Pacientes', route: '/patient', icon: <GroupAddIcon style={{ color: '#fff' }} /> },
-  { title: 'Atendimento', route: '/care', icon: <LocalHospital style={{ color: '#fff' }} /> },
   { title: 'Avaliação', route: '/avaliation', icon: <StarRateIcon style={{ color: '#fff' }} /> },
+  { title: 'Atendimento', route: '/care', icon: <LocalHospital style={{ color: '#fff' }} /> },
 ]
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -195,13 +195,16 @@ const Sibebar = (props: Props<any>) => {
         </div>
         {/* <Divider /> */}
 
-        <UserContent>
+        <UserContent className={!open ? 'hide' : ''}>
           <AccountCircle />
-          <h3>{username}</h3>
-          <br />
-          <div style={{ display: 'flex', alignItems: 'center', }}>
-            <BusinessIcon />
-            <h4 style={{ color: '#ffffff', marginLeft: 10 }}>{company.name}</h4>
+
+          <div>
+            <h3>{username}</h3>
+            <br />
+            <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', }}>
+              <BusinessIcon />
+              <h4 style={{ color: '#ffffff', marginLeft: 10 }}>{company.name}</h4>
+            </div>
           </div>
         </UserContent>
 

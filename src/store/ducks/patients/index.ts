@@ -38,23 +38,24 @@ export const INITIAL_STATE: PatientState = {
       relationship: ''
     },
     active: true
-    },
-    list: {
-      data: [],
-      limit: '10',
-      page: '1',
-      total: 0
-    },
-    error: false,
-    loading: false,
-    success: false,
-    isRegistrationCompleted: false,
+  },
+  list: {
+    data: [],
+    limit: '10',
+    page: '1',
+    total: 0
+  },
+  error: false,
+  loading: false,
+  success: false,
+  isRegistrationCompleted: false,
 };
 
 const reducer: Reducer<PatientState> = (state = INITIAL_STATE, action) => {
   switch (action.type) {
     case PatientTypes.REGISTRAION_COMPLETED:
-      return { ...state,
+      return {
+        ...state,
         data: {
           ...state.data,
           _id: action.payload.id
@@ -63,7 +64,7 @@ const reducer: Reducer<PatientState> = (state = INITIAL_STATE, action) => {
       };
     case PatientTypes.LOAD_REQUEST:
       return { ...state, loading: true, success: false, };
-    case PatientTypes.LOAD_SUCCCES:
+    case PatientTypes.LOAD_SUCCESS:
       return {
         ...state,
         list: action.payload.data,
@@ -75,10 +76,10 @@ const reducer: Reducer<PatientState> = (state = INITIAL_STATE, action) => {
       return {
         ...state, error: false, loading: true, success: false
       }
-    case PatientTypes.LOAD_SUCCCES_PATIENT_BY_ID:
+    case PatientTypes.LOAD_SUCCESS_PATIENT_BY_ID:
       return {
         ...state,
-        data: {...action.payload.data},
+        data: { ...action.payload.data },
         loading: false,
         error: false,
         success: false,
@@ -102,12 +103,12 @@ const reducer: Reducer<PatientState> = (state = INITIAL_STATE, action) => {
     case PatientTypes.LOAD_FAILURE:
       return {
         ...INITIAL_STATE, loading: false, error: true, success: false,
-          list: {
-            data: [],
-            limit: '10',
-            page: '1',
-            total: 0
-          }
+        list: {
+          data: [],
+          limit: '10',
+          page: '1',
+          total: 0
+        }
       };
     case PatientTypes.LOAD_FAILURE_CREATE_PATIENT:
       return {

@@ -39,7 +39,7 @@ const reducer: Reducer<CustomerState> = (state = INITIAL_STATE, action) => {
   switch (action.type) {
     case CustomerTypes.LOAD_REQUEST:
       return { ...state, loading: true };
-    case CustomerTypes.LOAD_SUCCCES:
+    case CustomerTypes.LOAD_SUCCESS:
       return {
         ...state,
         data: INITIAL_STATE.data,

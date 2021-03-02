@@ -37,8 +37,13 @@ export const INITIAL_STATE: CompanyState = {
 const reducer: Reducer<CompanyState> = (state = INITIAL_STATE, action) => {
   switch (action.type) {
     case CompanyTypes.LOAD_REQUEST:
-      return { ...state, loading: true };
-    case CompanyTypes.LOAD_SUCCCES:
+      return {
+        ...state,
+        loading: true,
+        error: false,
+        success: false
+      };
+    case CompanyTypes.LOAD_SUCCESS:
       return {
         ...state,
         list: action.payload.data,
@@ -46,7 +51,11 @@ const reducer: Reducer<CompanyState> = (state = INITIAL_STATE, action) => {
       };
     case CompanyTypes.LOAD_FAILURE:
       return {
-      ...state, loading: false, error: true, success: false, list: { data: [] }
+        ...state,
+        list: INITIAL_STATE.list,
+        loading: false,
+        error: true,
+        success: false
       };
     case CompanyTypes.LOAD_RESPONSE_ADDRESS:
       return {
@@ -67,33 +76,51 @@ const reducer: Reducer<CompanyState> = (state = INITIAL_STATE, action) => {
           }
         }
       };
-      case CompanyTypes.LOAD_SUCCESS_COMPANY_BY_ID:
-        return {
-          ...state,
-          data: action.payload.data,
-          loading: false,
-          error: false,
-          success: false,
-        };
+    case CompanyTypes.LOAD_SUCCESS_COMPANY_BY_ID:
+      return {
+        ...state,
+        data: action.payload.data,
+        loading: false,
+        error: false,
+        success: false,
+      };
 
-      case CompanyTypes.UPDATE_COMPANY_REQUEST:
-        return {
-          ...state,
-          data: action.payload.data,
-          loading: true,
-          error: false,
-          success: true
-        }
-      case CompanyTypes.UPDATE_COMPANY_SUCCESS:
-        return {
-          ...state,
-          data: action.payload.data,
-          loading: false,
-          error: false,
-          success: true
-        }
-      case CompanyTypes.SEARCH_REQUEST:
-        return { ...state, loading: true, error: false };
+    case CompanyTypes.CREATE_COMPANY_REQUEST:
+      return {
+        ...state,
+        data: action.payload.data,
+        loading: true,
+        error: false,
+        success: false
+      };
+
+    case CompanyTypes.CREATE_COMPANY_SUCCESS:
+      return {
+        ...state,
+        data: action.payload.data,
+        loading: false,
+        error: false,
+        success: true
+      };
+
+    case CompanyTypes.UPDATE_COMPANY_REQUEST:
+      return {
+        ...state,
+        data: action.payload.data,
+        loading: true,
+        error: false,
+        success: true
+      }
+    case CompanyTypes.UPDATE_COMPANY_SUCCESS:
+      return {
+        ...state,
+        data: action.payload.data,
+        loading: false,
+        error: false,
+        success: true
+      }
+    case CompanyTypes.SEARCH_REQUEST:
+      return { ...state, loading: true, error: false };
     default:
       return state;
   }

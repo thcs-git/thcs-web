@@ -225,6 +225,7 @@ export default function PatientForm(props: RouteComponentProps<IPageParams>) {
 
   const getAddress = useCallback(() => {
     dispatch(getAddressAction(state.address_id.postal_code));
+    document.getElementById('input-address-number')?.focus();
   }, [state.address_id.postal_code]);
 
   const handleBloodType = useCallback((event: any, newValue: any) => {
@@ -352,7 +353,7 @@ export default function PatientForm(props: RouteComponentProps<IPageParams>) {
                             renderInput={(params) => <TextField {...params} label="Sexo" variant="outlined" />}
                             size="small"
                             onChange={(element, value) => setState({ ...state, gender: value || '' })}
-                            value={state?.gender}
+                            // value={state?.gender}
                             noOptionsText="Nenhum resultado encontrado"
                             fullWidth
                           />
@@ -453,6 +454,7 @@ export default function PatientForm(props: RouteComponentProps<IPageParams>) {
                             value={state.issuing_organ}
                             onChange={(element) => setState({ ...state, issuing_organ: element.target.value })}
                             fullWidth
+                            autoComplete="off"
                           />
                         </Grid>
                         <Grid item md={3} xs={12}>
@@ -461,8 +463,8 @@ export default function PatientForm(props: RouteComponentProps<IPageParams>) {
                               id="combo-box-marital-status"
                               options={maritalStatus}
                               getOptionLabel={(option) => option}
-                              renderInput={(params) => <TextField {...params} label="Estado Civil" variant="outlined" />}
-                              value={state?.marital_status}
+                              renderInput={(params) => <TextField {...params} label="Estado Civil" variant="outlined" autoComplete="off" />}
+                              // value={state?.marital_status}
                               getOptionSelected={(option, value) => option === state?.marital_status}
                               onChange={(event: any, newValue) => {
                                 setState(prevState => ({
@@ -473,6 +475,8 @@ export default function PatientForm(props: RouteComponentProps<IPageParams>) {
                               size="small"
                               noOptionsText="Nenhum resultado encontrado"
                               fullWidth
+                              autoComplete={false}
+                              autoHighlight={false}
                             />
                           </FormGroupSection>
                         </Grid>
@@ -484,7 +488,7 @@ export default function PatientForm(props: RouteComponentProps<IPageParams>) {
                               options={bloodTypes}
                               getOptionLabel={(option) => option}
                               renderInput={(params) => <TextField {...params} label="Tipo sanguíneo" variant="outlined" />}
-                              value={state?.blood_type}
+                              // value={state?.blood_type}
                               getOptionSelected={(option, value) => option === state?.blood_type}
                               onChange={(event: any, newValue) => {
                                 handleBloodType(event, newValue);
@@ -539,26 +543,26 @@ export default function PatientForm(props: RouteComponentProps<IPageParams>) {
                               style={{ marginRight: 12 }}
                             /> */}
                             <InputMask
-                            mask="99999-999"
-                            value={state.address_id.postal_code}
-                            onChange={(element) => setState({ ...state, address_id: { ...state.address_id, postal_code: element.target.value } })}
-                            onBlur={getAddress}
+                              mask="99999-999"
+                              value={state.address_id.postal_code}
+                              onChange={(element) => setState({ ...state, address_id: { ...state.address_id, postal_code: element.target.value } })}
+                              onBlur={getAddress}
                             >
-                            {(inputProps: any) => (
+                              {(inputProps: any) => (
                                 <OutlinedInputFiled
-                                id="input-postal-code"
-                                label="CEP"
-                                placeholder="00000-000"
-                                endAdornment={
+                                  id="input-postal-code"
+                                  label="CEP"
+                                  placeholder="00000-000"
+                                  endAdornment={
                                     <InputAdornment position="end">
-                                    <SearchOutlined style={{ color: 'var(--primary)' }} />
+                                      <SearchOutlined style={{ color: 'var(--primary)' }} />
                                     </InputAdornment>
-                                }
-                                labelWidth={155}
-                                style={{ marginRight: 12 }}
+                                  }
+                                  labelWidth={155}
+                                  style={{ marginRight: 12 }}
                                 />
-                            )}
-                          </InputMask>
+                              )}
+                            </InputMask>
                           </FormControl>
                         </Grid>
 
@@ -772,25 +776,25 @@ export default function PatientForm(props: RouteComponentProps<IPageParams>) {
                           />
                         </Grid>
                         <Grid item md={4} xs={6}>
-                        <InputMask
-                          mask="(99) 9 9999-9999"
-                          value={state.responsable?.phone}
-                          onChange={(element) => setState({ ...state, responsable: { ...state.responsable, phone: element.target.value } })}
-                        >
-                          {(inputProps: any) => (
-                            <TextField
-                              {...inputProps}
-                              id="input-phone"
-                              label="Telefone do responsável"
-                              variant="outlined"
-                              size="small"
-                              // value={state.phones?.number}
-                              // onChange={(element) => setState({ ...state, phones: { ...state.phones, number: element.target.value } })}
-                              placeholder="(00) 0 0000-0000"
-                              fullWidth
-                            />
-                          )}
-                        </InputMask>
+                          <InputMask
+                            mask="(99) 9 9999-9999"
+                            value={state.responsable?.phone}
+                            onChange={(element) => setState({ ...state, responsable: { ...state.responsable, phone: element.target.value } })}
+                          >
+                            {(inputProps: any) => (
+                              <TextField
+                                {...inputProps}
+                                id="input-reponsable-phone"
+                                label="Telefone do responsável"
+                                variant="outlined"
+                                size="small"
+                                // value={state.phones?.number}
+                                // onChange={(element) => setState({ ...state, phones: { ...state.phones, number: element.target.value } })}
+                                placeholder="(00) 0 0000-0000"
+                                fullWidth
+                              />
+                            )}
+                          </InputMask>
                           {/* <TextField
                             id="input-responsible-phone"
                             label="Telefone do responsável"

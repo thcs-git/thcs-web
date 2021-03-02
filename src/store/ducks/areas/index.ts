@@ -25,7 +25,7 @@ const reducer: Reducer<AreaState> = (state = INITIAL_STATE, action) => {
   switch (action.type) {
     case AreaTypes.LOAD_REQUEST:
       return { ...state, loading: true, success: false, };
-    case AreaTypes.LOAD_SUCCCES:
+    case AreaTypes.LOAD_SUCCESS:
       return {
         ...state,
         list: action.payload.data,
@@ -37,10 +37,10 @@ const reducer: Reducer<AreaState> = (state = INITIAL_STATE, action) => {
       return {
         ...state, error: false, loading: true, success: false
       }
-    case AreaTypes.LOAD_SUCCCES_AREA_BY_ID:
+    case AreaTypes.LOAD_SUCCESS_AREA_BY_ID:
       return {
         ...state,
-        data: {...action.payload.data},
+        data: { ...action.payload.data },
         loading: false,
         error: false,
         success: false,
@@ -85,7 +85,7 @@ const reducer: Reducer<AreaState> = (state = INITIAL_STATE, action) => {
         error: false,
         success: true
       };
-    case AreaTypes.LOAD_SUCCCES_GET_DISTRICTS:
+    case AreaTypes.LOAD_SUCCESS_GET_DISTRICTS:
       return {
         ...state,
         districts: action.payload.data,

@@ -180,7 +180,6 @@ export default function AvaliationList() {
     <>
       <Sidebar>
         {careState.loading && <Loading />}
-        {console.log('careState', careState)}
         <Container>
           <FormTitle>Lista de Avaliações</FormTitle>
 

@@ -3,7 +3,7 @@ import { DocumentGroupTypes, DocumentGroupInterface, LoadRequestParams } from '.
 
 export const loadRequest = (params: any) => action(DocumentGroupTypes.LOAD_REQUEST, { params });
 
-export const loadSuccess = (data: DocumentGroupInterface) => action(DocumentGroupTypes.LOAD_SUCCCES, { data });
+export const loadSuccess = (data: DocumentGroupInterface) => action(DocumentGroupTypes.LOAD_SUCCESS, { data });
 
 export const loadFailure = () => action(DocumentGroupTypes.LOAD_FAILURE);
 

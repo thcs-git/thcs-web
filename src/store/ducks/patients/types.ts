@@ -3,7 +3,7 @@
  */
 export enum PatientTypes {
   LOAD_REQUEST = "@patient/LOAD_REQUEST",
-  LOAD_SUCCCES = "@patient/LOAD_SUCCCES",
+  LOAD_SUCCESS = "@patient/LOAD_SUCCESS",
   LOAD_FAILURE = "@patient/LOAD_FAILURE",
   LOAD_FAILURE_CREATE_PATIENT = "@patient/LOAD_FAILURE_CREATE_PATIENT",
 
@@ -17,7 +17,7 @@ export enum PatientTypes {
   LOAD_RESPONSE_ADDRESS = "@patient/LOAD_RESPONSE_ADDRESS",
 
   LOAD_REQUEST_PATIENT_BY_ID = "@patient/LOAD_REQUEST_PATIENT_BY_ID",
-  LOAD_SUCCCES_PATIENT_BY_ID = "@patient/LOAD_SUCCCES_PATIENT_BY_ID",
+  LOAD_SUCCESS_PATIENT_BY_ID = "@patient/LOAD_SUCCESS_PATIENT_BY_ID",
 
   SEARCH_REQUEST = "@patient/SEARCH_REQUEST",
 
@@ -49,25 +49,25 @@ export interface PatientPhonesInterface {
 export interface PatientInterface {
   _id?: string;
   companies: [string] | [];
-	name: string;
+  name: string;
   social_name: string;
   birthdate: string;
   gender: string;
-	mother_name: string;
-	profession: string;
-	nationality: string;
+  mother_name: string;
+  profession: string;
+  nationality: string;
   naturalness: string;
   marital_status: string;
   fiscal_number: string;
   national_id: string;
   issuing_organ: string;
-	address_id: PatientAddressInterface;
+  address_id: PatientAddressInterface;
   area_id?: string;
-	email: string;
+  email: string;
   phones: PatientPhonesInterface[] | [];
-	sus_card: string;
-	blood_type: string;
-	organ_donor: boolean;
+  sus_card: string;
+  blood_type: string;
+  organ_donor: boolean;
   responsable: {
     name: string,
     phone: string,
