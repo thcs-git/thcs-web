@@ -16,7 +16,7 @@ const reducer: Reducer<LoginState> = (state = INITIAL_STATE, action) => {
   switch (action.type) {
     case LoginTypes.LOAD_REQUEST:
       return { ...state, loading: true, signedIn: false };
-    case LoginTypes.LOAD_SUCCCES:
+    case LoginTypes.LOAD_SUCCESS:
       return {
         ...state,
         loading: false,
@@ -24,7 +24,7 @@ const reducer: Reducer<LoginState> = (state = INITIAL_STATE, action) => {
       };
     case LoginTypes.LOAD_FAILURE:
       return {
-      ...state, loading: false, error: true, signedIn: false
+        ...state, loading: false, error: true, signedIn: false
       };
     default:
       return state;

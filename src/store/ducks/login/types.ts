@@ -3,7 +3,7 @@
  */
 export enum LoginTypes {
   LOAD_REQUEST = "@login/LOAD_REQUEST",
-  LOAD_SUCCCES = "@login/LOAD_SUCCCES",
+  LOAD_SUCCESS = "@login/LOAD_SUCCESS",
   LOAD_FAILURE = "@login/LOAD_FAILURE",
 }
 

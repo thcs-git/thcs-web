@@ -3,7 +3,7 @@
  */
 export enum UserTypes {
   LOAD_REQUEST = "@user/LOAD_REQUEST",
-  LOAD_SUCCCES = "@user/LOAD_SUCCCES",
+  LOAD_SUCCESS = "@user/LOAD_SUCCESS",
   LOAD_FAILURE = "@user/LOAD_FAILURE",
 
   CREATE_USER_REQUEST = "@user/CREATE_USER_REQUEST",
@@ -16,7 +16,7 @@ export enum UserTypes {
   LOAD_RESPONSE_ADDRESS = "@user/LOAD_RESPONSE_ADDRESS",
 
   LOAD_REQUEST_USER_BY_ID = "@user/LOAD_REQUEST_USER_BY_ID",
-  LOAD_SUCCCES_USER_BY_ID = "@user/LOAD_SUCCCES_USER_BY_ID",
+  LOAD_SUCCESS_USER_BY_ID = "@user/LOAD_SUCCESS_USER_BY_ID",
 
   SEARCH_REQUEST = "@user/SEARCH_REQUEST",
 
@@ -64,7 +64,8 @@ export interface UserListItems {
 export interface UserInterface {
   _id?: string;
   companies: (CompanyUserInterface | {})[];
-	name: string; // name
+  customer_id?: string;
+  name: string; // name
   birthdate: string;
   gender: string;
   national_id: string;
@@ -72,7 +73,7 @@ export interface UserInterface {
   fiscal_number: string;
   mother_name: string;
   nationality: string;
-	address: {
+  address: {
     postal_code: string;
     street: string,
     number: string,
@@ -81,8 +82,8 @@ export interface UserInterface {
     state: string;
     complement: string;
   };
-	email: string; // email
-	phone: string;
+  email: string; // email
+  phone: string;
   cellphone: string;
   user_type_id: string | UserTypeInterface;
   profession_id?: string;

@@ -10,7 +10,7 @@ import { CustomerTypes } from './customers/types';
 import { get, getCustomerById, getAddress as getAddressCustomer, createCompanyCustomer, updateCompanyCustomer, searchCustomer } from './customers/sagas';
 
 import { CompanyTypes } from './companies/types';
-import { get as getCompanies, getAddress, createCompany, getById as getCompanyById, update as updateCompany, searchCompany } from './companies/sagas';
+import { get as getCompanies, getAddress, store as createCompany, getById as getCompanyById, update as updateCompany, searchCompany } from './companies/sagas';
 
 import { SpecialtyTypes } from './specialties/types';
 import { get as getSpecialties, store as storeSpecialty, getById as getSpecialtyById, update as updateSpecialty, searchSpecialty } from './specialties/sagas';

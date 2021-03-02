@@ -117,8 +117,8 @@ const registrationCompleted: React.FC<any> = (props) => {
           }}>
             Editar
             </Button>
-          {/* <Button variant="contained"  background="success" onClick={() => setCaptureModalModalOpen(true)}> */}
-          <Button variant="contained" background="success" onClick={() => toggleModalConfirm(true)}>
+          <Button variant="contained" background="success" onClick={() => setCaptureModalModalOpen(true)}>
+            {/* <Button variant="contained" background="success" onClick={() => toggleModalConfirm(true)}> */}
             Iniciar Captação
             </Button>
         </ButtonsContainer>

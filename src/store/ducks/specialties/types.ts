@@ -3,7 +3,7 @@
  */
 export enum SpecialtyTypes {
   LOAD_REQUEST = "@specialty/LOAD_REQUEST",
-  LOAD_SUCCCES = "@specialty/LOAD_SUCCCES",
+  LOAD_SUCCESS = "@specialty/LOAD_SUCCESS",
   LOAD_FAILURE = "@specialty/LOAD_FAILURE",
 
   CREATE_SPECIALTY_REQUEST = "@specialty/CREATE_SPECIALTY_REQUEST",
@@ -26,9 +26,9 @@ export enum SpecialtyTypes {
 export interface SpecialtyInterface {
   _id?: string;
   council_id: { _id: string, name: string, };
-	name: string;
-	describe: string;
-	active: boolean;
+  name: string;
+  describe: string;
+  active: boolean;
 }
 
 

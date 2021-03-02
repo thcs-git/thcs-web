@@ -5,7 +5,7 @@ import { CareInterface } from '../cares/types';
  */
 export enum DocumentTypes {
   LOAD_REQUEST = "@document/LOAD_REQUEST",
-  LOAD_SUCCCES = "@document/LOAD_SUCCCES",
+  LOAD_SUCCESS = "@document/LOAD_SUCCESS",
   LOAD_FAILURE = "@document/LOAD_FAILURE",
 
   CREATE_DOCUMENT_REQUEST = "@document/CREATE_DOCUMENT_REQUEST",
@@ -24,16 +24,16 @@ export interface DocumentInterface {
   pacient_id?: string | PatientInterface;
   care_id?: string | CareInterface;
   document_group_id?: Record<string, DocumentGroupData>;
-	finished?: boolean;
-	canceled?: boolean;
+  finished?: boolean;
+  canceled?: boolean;
   fields?: DocumentFields[];
   score?: number;
   complexity?: string;
   status?: string;
-	created_at?: string;
-	created_by?: { _id: string };
-	updated_at?: string;
-	updated_by?: { _id: string };
+  created_at?: string;
+  created_by?: { _id: string };
+  updated_at?: string;
+  updated_by?: { _id: string };
 }
 
 export interface DocumentFields {

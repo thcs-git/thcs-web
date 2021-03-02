@@ -214,7 +214,11 @@ export default function SchedulePage(props: RouteComponentProps<IPageParams>) {
         }));
       }
 
-      // setDayOptionsModalOpen(false);
+      setDayOptionsModalOpen(false);
+
+      setTimeout(() => {
+        dispatch(loadScheduleRequest({ attendance_id: params.id }))
+      }, 2000);
 
     }
 
@@ -226,6 +230,11 @@ export default function SchedulePage(props: RouteComponentProps<IPageParams>) {
 
     if (schedule.data._id) {
       dispatch(deleteScheduleAction(schedule.data._id));
+
+      setTimeout(() => {
+        dispatch(loadScheduleRequest({ attendance_id: params.id }))
+      }, 2000);
+
       setDayOptionsModalOpen(false);
     }
   }, [schedule]);
@@ -256,10 +265,10 @@ export default function SchedulePage(props: RouteComponentProps<IPageParams>) {
   const renderEventStatus = (event: any) => {
     const today = dayjs();
     const eventDate = dayjs(event.start);
-    const diffDate = eventDate.diff(today, 'days');
+    const diffDate = eventDate.diff(today, 'minutes');
     const { extendedProps: eventData } = event;
 
-    if (diffDate < 0 && !eventData.checkin) {
+    if (diffDate < 0 && (!eventData.checkin || eventData.checkin.length === 0)) {
       return <ScheduleEventStatus color="late" />
     } else if (eventData?.checkin?.length > 0) {
 
@@ -268,7 +277,7 @@ export default function SchedulePage(props: RouteComponentProps<IPageParams>) {
       const { start_at: checkIn, end_at: checkOut } = checkins[0];
 
       if (checkIn && !checkOut) {
-        return <ScheduleEventStatus color="visiting" />
+        return <ScheduleEventStatus color="visiting" className="pulse" />
       } else if (checkIn && checkOut) {
         return <ScheduleEventStatus color="complete" />
       } else {

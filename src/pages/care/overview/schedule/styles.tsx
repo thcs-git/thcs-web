@@ -63,6 +63,30 @@ export const ScheduleEventStatus = styled.div<IEventStatus>`
   margin-right: 5px;
 
   border-radius: 50px;
+
+  &.pulse {
+    box-shadow: 0 0 0 0 var(--warning);
+    transform: scale(1);
+    animation: pulse 2s infinite;
+  }
+
+  @keyframes pulse {
+    0% {
+      transform: scale(0.95);
+      box-shadow: 0 0 0 0 var(--warning);
+    }
+
+    70% {
+      transform: scale(1);
+      box-shadow: 0 0 0 10px rgba(0, 0, 0, 0);
+    }
+
+    100% {
+      transform: scale(0.95);
+      box-shadow: 0 0 0 0 rgba(0, 0, 0, 0);
+    }
+  }
+
 `;
 
 export const CardTitle = styled.div`
