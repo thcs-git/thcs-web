@@ -109,11 +109,12 @@ export function* createUser({ payload: { data } }: any) {
   }
 
   data.username = data.email;
-  data.password = data.fiscal_number;
+  data.password = data.fiscal_number
+    .replaceAll(".", "")
+    .replaceAll("/", "")
+    .replaceAll("-", "");
 
   data.phones = phones;
-
-  data.user_type_id = { _id: "5fc05d1803058800244bc41b" };
 
   try {
     const response: AxiosResponse = yield call(
@@ -123,8 +124,8 @@ export function* createUser({ payload: { data } }: any) {
       { headers: { token } }
     );
 
-    yield put(createUserSuccess(response.data[0]));
-    toast.success("Usuário atualizado com sucesso!");
+    yield put(createUserSuccess(response.data));
+    toast.success("Usuário cadastrado com sucesso!");
   } catch (e) {
     console.log("e", e);
     toast.error("Não foi possível cadastrar o usuário");
@@ -157,8 +158,6 @@ export function* updateUser({ payload: { data } }: any) {
 
   delete data.phone;
   delete data.cellphone;
-
-  // data.user_type_id = { _id: '5fc05d1803058800244bc41b' }
 
   try {
     const response: AxiosResponse = yield call(
@@ -226,7 +225,7 @@ export function* getUserTypes({ payload: { value } }: any) {
   try {
     const response: AxiosResponse = yield call(
       apiSollar.get,
-      `/usertype/?limit=10&page=1&search=${value || ""}`
+      `/usertype/?limit=10&page=1${!!value ? "&search=" + value : ""}`
     );
 
     console.log("saga: getUserTypes => response.data", response.data);

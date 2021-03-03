@@ -215,6 +215,7 @@ export default function AreaForm(props: RouteComponentProps<IPageParams>) {
       ...selectCheckbox,
       ...state,
       status: "Atendimento",
+      origin_id: '5fd667d948392d0621196553',
       created_at: selectCheckbox?.created_at,
       start_at: new Date()
     };
@@ -944,7 +945,7 @@ export default function AreaForm(props: RouteComponentProps<IPageParams>) {
               </Button>
             ) : (
                 <Button
-                  disabled={currentStep === steps.length - 1 || !patient?._id}
+                  disabled={currentStep === (steps.length - 1) || !selectCheckbox?._id}
                   background="primary"
                   onClick={handleNextStep}
                 >

@@ -3,7 +3,7 @@ import { DocumentTypes, DocumentInterface, LoadRequestParams } from './types';
 
 export const loadRequest = (params: any) => action(DocumentTypes.LOAD_REQUEST, { params });
 
-export const loadSuccess = (data: DocumentInterface) => action(DocumentTypes.LOAD_SUCCCES, { data });
+export const loadSuccess = (data: DocumentInterface) => action(DocumentTypes.LOAD_SUCCESS, { data });
 
 export const loadFailure = () => action(DocumentTypes.LOAD_FAILURE);
 

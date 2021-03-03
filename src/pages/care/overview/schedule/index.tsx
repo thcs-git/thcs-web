@@ -19,7 +19,7 @@ import { ApplicationState } from '../../../../store';
 import { loadCareById, loadScheduleRequest, createScheduleRequest as storeScheduleAction, deleteScheduleRequest as deleteScheduleAction, updateScheduleRequest as updateScheduleAction } from '../../../../store/ducks/cares/actions';
 import { searchRequest as searchUserAction } from '../../../../store/ducks/users/actions';
 
-import { formatDate, stringToDate } from "../../../../helpers/date";
+import { formatDate, translate as translateDateHelper } from "../../../../helpers/date";
 
 import Sidebar from '../../../../components/Sidebar';
 import Loading from '../../../../components/Loading';
@@ -29,7 +29,7 @@ import { TextCenter } from '../../../../styles/components/Text';
 import ButtonComponent from '../../../../styles/components/Button';
 import { ComplexityStatus } from '../../../../styles/components/Table';
 
-import { ScheduleItem, CardTitle, CalendarContent } from './styles';
+import { ScheduleItem, CardTitle, CalendarContent, ScheduleEventStatus } from './styles';
 
 interface IDay {
   allDay: boolean;
@@ -61,6 +61,7 @@ export default function SchedulePage(props: RouteComponentProps<IPageParams>) {
   const dispatch = useDispatch();
   const careState = useSelector((state: ApplicationState) => state.cares);
   const userState = useSelector((state: ApplicationState) => state.users);
+  const companyState = useSelector((state: ApplicationState) => state.companies);
 
   const { params } = props.match;
 
@@ -82,6 +83,7 @@ export default function SchedulePage(props: RouteComponentProps<IPageParams>) {
   const [schedule, setSchedule] = useState<ISchedule>({});
   const [events, setEvents] = useState<any[]>([]);
   const [eventSelected, setEventSelected] = useState<EventClickArg>();
+  const [team, setTeam] = useState<any[]>([]);
 
   useEffect(() => {
     setSchedule({});
@@ -104,6 +106,7 @@ export default function SchedulePage(props: RouteComponentProps<IPageParams>) {
   useEffect(() => {
     if (careState.schedule?.length) {
       translateSchedule();
+      handleTeam();
     }
   }, [careState.schedule]);
 
@@ -211,7 +214,11 @@ export default function SchedulePage(props: RouteComponentProps<IPageParams>) {
         }));
       }
 
-      // setDayOptionsModalOpen(false);
+      setDayOptionsModalOpen(false);
+
+      setTimeout(() => {
+        dispatch(loadScheduleRequest({ attendance_id: params.id }))
+      }, 2000);
 
     }
 
@@ -223,20 +230,85 @@ export default function SchedulePage(props: RouteComponentProps<IPageParams>) {
 
     if (schedule.data._id) {
       dispatch(deleteScheduleAction(schedule.data._id));
+
+      setTimeout(() => {
+        dispatch(loadScheduleRequest({ attendance_id: params.id }))
+      }, 2000);
+
       setDayOptionsModalOpen(false);
     }
   }, [schedule]);
 
-  function renderEventContent(eventInfo: any) {
-    return (
-      <ScheduleItem>
-        <div>{eventInfo.timeText}</div>
-        <div className="scheduleText">
-          <i>{eventInfo.event.title}</i>
-        </div>
-      </ScheduleItem>
-    )
-  }
+  const handleTeam = useCallback(() => {
+    const teamUsers: any = [];
+
+    careState.schedule?.forEach(item => {
+      if (teamUsers.length === 0) {
+        teamUsers.push(item.user_id);
+      } else {
+        const founded = teamUsers.findIndex((user: any) => {
+          if (typeof item.user_id === 'object') {
+            return user._id === item.user_id._id
+          }
+        });
+
+        if (founded < 0) {
+          teamUsers.push(item.user_id);
+        }
+      }
+    });
+
+    setTeam(teamUsers);
+
+  }, [careState.schedule]);
+
+  const renderEventStatus = (event: any) => {
+    const today = dayjs();
+    const eventDate = dayjs(event.start);
+    const diffDate = eventDate.diff(today, 'minutes');
+    const { extendedProps: eventData } = event;
+
+    if (diffDate < 0 && (!eventData.checkin || eventData.checkin.length === 0)) {
+      return <ScheduleEventStatus color="late" />
+    } else if (eventData?.checkin?.length > 0) {
+
+      const checkins = eventData.checkin.sort().reverse();
+
+      const { start_at: checkIn, end_at: checkOut } = checkins[0];
+
+      if (checkIn && !checkOut) {
+        return <ScheduleEventStatus color="visiting" className="pulse" />
+      } else if (checkIn && checkOut) {
+        return <ScheduleEventStatus color="complete" />
+      } else {
+        return <ScheduleEventStatus color="future" />
+      }
+
+    } else {
+      return <ScheduleEventStatus color="future" />
+    }
+  };
+
+  const renderComplexityList = useCallback(() => {
+    const complexity = companyState.data.settings?.complexity?.find(item => item.title === (careState.data?.complexity || careState.data?.capture?.complexity || 'Sem Complexidade'));
+
+    return (complexity?.recommendation.length) ? complexity?.recommendation.map((recommendation, key) => (
+      <p key={`recommendation_${key}`}>{`${recommendation.amount} ${(typeof recommendation.profession_id === 'object' ? recommendation.profession_id.name : '')}, ${recommendation.interval}x por ${translateDateHelper[recommendation.frequency].toLowerCase()}`}</p>
+    )) : (
+        <TextCenter>
+          Nenhuma periodicidade encontrada para essa complexidade
+        </TextCenter>
+      );
+  }, [careState]);
+
+  const renderEventContent = (eventInfo: any) => (
+    <ScheduleItem>
+      {renderEventStatus(eventInfo.event)}
+      <div className="scheduleText">
+        <i>{eventInfo.event.title}</i>
+      </div>
+    </ScheduleItem>
+  );
 
   const translateSchedule = useCallback(() => {
     const schedules = careState.schedule;
@@ -355,11 +427,15 @@ export default function SchedulePage(props: RouteComponentProps<IPageParams>) {
                         <h4>Complexidade - Indicações</h4>
                       </CardTitle>
 
-                      <TextCenter>
+                      <TextCenter style={{ marginBottom: 20, fontWeight: 'bold' }}>
                         <ComplexityStatus status={careState.data?.complexity || careState.data?.capture?.complexity || 'Sem Complexidade'} style={{ justifyContent: 'center' }}>
                           {careState.data?.complexity || careState.data?.capture?.complexity || 'Sem Complexidade'}
                         </ComplexityStatus>
                       </TextCenter>
+
+                      <div>
+                        {renderComplexityList()}
+                      </div>
 
                     </CardContent>
                   </Card>
@@ -372,6 +448,19 @@ export default function SchedulePage(props: RouteComponentProps<IPageParams>) {
                         <SupervisorAccountRounded />
                         <h4>Equipe Multidisciplinar</h4>
                       </CardTitle>
+                      <div>
+                        {team.length ? (
+                          <>
+                            {team.map(user => (
+                              <p>{user.name}</p>
+                            ))}
+                          </>
+                        ) : (
+                            <TextCenter>
+                              Nenhum profissional foi adicionado
+                            </TextCenter>
+                          )}
+                      </div>
                     </CardContent>
                   </Card>
                 </Grid>

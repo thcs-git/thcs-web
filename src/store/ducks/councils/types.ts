@@ -3,7 +3,7 @@
  */
 export enum CouncilTypes {
   LOAD_REQUEST = "@council/LOAD_REQUEST",
-  LOAD_SUCCCES = "@council/LOAD_SUCCCES",
+  LOAD_SUCCESS = "@council/LOAD_SUCCESS",
   LOAD_FAILURE = "@council/LOAD_FAILURE",
 
   CREATE_COUNCIL_REQUEST = "@council/CREATE_COUNCIL_REQUEST",
@@ -25,11 +25,11 @@ export enum CouncilTypes {
 export interface CouncilInterface {
   _id?: string;
   company_id: { _id: string; };
-	name: string;
-	describe?: string;
-	initials?: string;
-	federative_unit?: string;
-	active?: boolean;
+  name: string;
+  describe?: string;
+  initials?: string;
+  federative_unit?: string;
+  active?: boolean;
 }
 
 

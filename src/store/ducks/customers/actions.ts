@@ -4,7 +4,7 @@ import { CustomerTypes, CustomerInterface, ViacepDataInterface, LoadRequestParam
 export const loadRequest = (params: LoadRequestParams = {}) => action(CustomerTypes.LOAD_REQUEST, { params });
 
 export const loadSuccess = (data: CustomerInterface) =>
-  action(CustomerTypes.LOAD_SUCCCES, { data });
+  action(CustomerTypes.LOAD_SUCCESS, { data });
 
 export const getAddress = (postalCode: string) => action(CustomerTypes.LOAD_REQUEST_ADDRESS, { postalCode });
 export const successGetAddress = (data: ViacepDataInterface) => action(CustomerTypes.LOAD_RESPONSE_ADDRESS, { data });
@@ -22,3 +22,5 @@ export const loadSuccessCustomerById = (data: CustomerInterface) => action(Custo
 export const loadFailure = () => action(CustomerTypes.LOAD_FAILURE);
 
 export const searchRequest = (value: string) => action(CustomerTypes.SEARCH_REQUEST, { value });
+
+export const cleanAction = () => action(CustomerTypes.CLEAN);

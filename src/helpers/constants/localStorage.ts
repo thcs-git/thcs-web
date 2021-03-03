@@ -6,5 +6,7 @@ export default {
   USERNAME: '@sollar_username',
   USER_ID: '@sollar_user_id',
   COMPANY_SELECTED: `@sollar_company_selected`,
-  CUSTOMER: `@sollar_customer`
+  COMPANY_NAME: `@sollar_company_name`,
+  CUSTOMER: `@sollar_customer`,
+  CUSTOMER_NAME: `@sollar_customer_name`
 }

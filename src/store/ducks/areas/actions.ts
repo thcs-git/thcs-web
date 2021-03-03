@@ -5,7 +5,7 @@ export const loadRequest = (params: LoadRequestParams = {}) =>
   action(AreaTypes.LOAD_REQUEST, { params });
 
 export const loadSuccess = (data: AreaInterface) =>
-  action(AreaTypes.LOAD_SUCCCES, { data });
+  action(AreaTypes.LOAD_SUCCESS, { data });
 
 export const loadFailure = () => action(AreaTypes.LOAD_FAILURE);
 
@@ -22,7 +22,7 @@ export const updateAreaSuccess = (data: AreaInterface) =>
 export const loadAreaById = (id: string) =>
   action(AreaTypes.LOAD_REQUEST_AREA_BY_ID, { id });
 export const loadSuccessGetAreaById = (data: AreaInterface) =>
-  action(AreaTypes.LOAD_SUCCCES_AREA_BY_ID, { data });
+  action(AreaTypes.LOAD_SUCCESS_AREA_BY_ID, { data });
 
 export const loadGetDistricts = () => action(AreaTypes.LOAD_GET_DISTRICTS);
 export const loadGetCitys = (value: string) =>

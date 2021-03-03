@@ -24,7 +24,7 @@ const reducer: Reducer<SpecialtyState> = (state = INITIAL_STATE, action) => {
   switch (action.type) {
     case SpecialtyTypes.LOAD_REQUEST:
       return { ...state, loading: true };
-    case SpecialtyTypes.LOAD_SUCCCES:
+    case SpecialtyTypes.LOAD_SUCCESS:
       return {
         ...state,
         list: action.payload.data,
@@ -32,7 +32,7 @@ const reducer: Reducer<SpecialtyState> = (state = INITIAL_STATE, action) => {
       };
     case SpecialtyTypes.LOAD_FAILURE:
       return {
-      ...state, loading: false, error: true, success: false,
+        ...state, loading: false, error: true, success: false,
         list: {
           data: [],
           limit: '10',

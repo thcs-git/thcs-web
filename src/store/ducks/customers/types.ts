@@ -3,7 +3,7 @@
  */
 export enum CustomerTypes {
   LOAD_REQUEST = "@customer/LOAD_REQUEST",
-  LOAD_SUCCCES = "@customer/LOAD_SUCCCES",
+  LOAD_SUCCESS = "@customer/LOAD_SUCCESS",
   LOAD_FAILURE = "@customer/LOAD_FAILURE",
 
   LOAD_REQUEST_BY_ID = "@customer/LOAD_REQUEST_BY_ID",
@@ -19,6 +19,8 @@ export enum CustomerTypes {
   LOAD_RESPONSE_ADDRESS = "@customer/LOAD_RESPONSE_ADDRESS",
 
   SEARCH_REQUEST = "@customer/SEARCH_REQUEST",
+
+  CLEAN = "@customer/CLEAN"
 
 }
 

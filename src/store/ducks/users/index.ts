@@ -46,7 +46,7 @@ const reducer: Reducer<UserState> = (state = INITIAL_STATE, action) => {
   switch (action.type) {
     case UserTypes.LOAD_REQUEST:
       return { ...state, loading: true, success: false };
-    case UserTypes.LOAD_SUCCCES:
+    case UserTypes.LOAD_SUCCESS:
       return {
         ...state,
         list: action.payload.data,
@@ -61,7 +61,7 @@ const reducer: Reducer<UserState> = (state = INITIAL_STATE, action) => {
         loading: true,
         success: false,
       };
-    case UserTypes.LOAD_SUCCCES_USER_BY_ID:
+    case UserTypes.LOAD_SUCCESS_USER_BY_ID:
       return {
         ...state,
         data: {

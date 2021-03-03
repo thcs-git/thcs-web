@@ -1,9 +1,28 @@
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
 import FullCalendar, { EventClickArg, EventApi, EventInput, EventAddArg } from '@fullcalendar/react';
 import dayGridPlugin from '@fullcalendar/daygrid';
 import timeGridPlugin from '@fullcalendar/timegrid';
 import interactionPlugin from '@fullcalendar/interaction';
 import ptBrLocale from '@fullcalendar/core/locales/pt-br';
+
+interface IEventStatus {
+  color: 'complete' | 'late' | 'future' | 'visiting';
+}
+
+const statusColor: any = {
+  complete: css`
+    background: var(--success);
+  `,
+  late: css`
+    background: var(--danger);
+  `,
+  future: css`
+    background: var(--gray);
+  `,
+  visiting: css`
+   background: var(--warning);
+  `,
+};
 
 export const ScheduleItem = styled.div`
 
@@ -32,6 +51,42 @@ export const ScheduleItem = styled.div`
   & > .scheduleText {
     color: var(--black);
   }
+`;
+
+export const ScheduleEventStatus = styled.div<IEventStatus>`
+  ${(props: IEventStatus) => statusColor[props.color || 'var(--gray)']};
+
+  width: 10px;
+  height: 10px;
+
+  margin-left: 5px;
+  margin-right: 5px;
+
+  border-radius: 50px;
+
+  &.pulse {
+    box-shadow: 0 0 0 0 var(--warning);
+    transform: scale(1);
+    animation: pulse 2s infinite;
+  }
+
+  @keyframes pulse {
+    0% {
+      transform: scale(0.95);
+      box-shadow: 0 0 0 0 var(--warning);
+    }
+
+    70% {
+      transform: scale(1);
+      box-shadow: 0 0 0 10px rgba(0, 0, 0, 0);
+    }
+
+    100% {
+      transform: scale(0.95);
+      box-shadow: 0 0 0 0 rgba(0, 0, 0, 0);
+    }
+  }
+
 `;
 
 export const CardTitle = styled.div`

@@ -29,7 +29,7 @@ import { CompanyTypes } from "./companies/types";
 import {
   get as getCompanies,
   getAddress,
-  createCompany,
+  store as createCompany,
   getById as getCompanyById,
   update as updateCompany,
   searchCompany,

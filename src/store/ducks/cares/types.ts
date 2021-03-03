@@ -4,7 +4,7 @@ import { PatientInterface } from '../patients/types';
  */
 export enum CareTypes {
   LOAD_REQUEST = "@care/LOAD_REQUEST",
-  LOAD_SUCCCES = "@care/LOAD_SUCCCES",
+  LOAD_SUCCESS = "@care/LOAD_SUCCESS",
   LOAD_FAILURE = "@care/LOAD_FAILURE",
 
   CLEAN = "@care/CLEAN",
@@ -16,7 +16,7 @@ export enum CareTypes {
   UPDATE_CARE_SUCCESS = "@care/UPDATE_CARE_SUCCESS",
 
   LOAD_REQUEST_CARE_BY_ID = "@care/LOAD_REQUEST_CARE_BY_ID",
-  LOAD_SUCCCES_CARE_BY_ID = "@care/LOAD_SUCCCES_CARE_BY_ID",
+  LOAD_SUCCESS_CARE_BY_ID = "@care/LOAD_SUCCESS_CARE_BY_ID",
 
   SEARCH_CARE_REQUEST = "@care/SEARCH_CARE_REQUEST",
   SEARCH_CARE_SUCCESS = "@care/SEARCH_CARE_SUCCESS",
@@ -113,6 +113,7 @@ export enum CareTypes {
 export interface CareInterface {
   _id?: string;
   patient_id?: any; // *
+  company_id?: any; // *
   health_insurance_id?: any;
   health_plan_id?: any;
   health_sub_plan_id?: any;

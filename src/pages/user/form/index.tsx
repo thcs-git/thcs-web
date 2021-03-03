@@ -89,12 +89,12 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
   const companyState = useSelector((state: ApplicationState) => state.companies);
 
   const { params } = props.match;
-  const currentCompany = localStorage.getItem(LOCALSTORAGE.COMPANY_SELECTED);
 
+  const currentCompany = localStorage.getItem(LOCALSTORAGE.COMPANY_SELECTED);
   const [currentTab, setCurrentTab] = useState(0);
 
   const [state, setState] = useState<UserInterface>({
-    companies: [currentCompany || ''],
+    companies: [],
     name: '',
     birthdate: '',
     gender: '',
@@ -128,7 +128,6 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
   });
 
   const genders = ['Masculino', 'Feminino', 'Indefinido'];
-  const userTypes = [{ id: '1', description: 'Assistencial' }, { id: '2', description: 'Administrativo' }];
 
   const [openModalCancel, setOpenModalCancel] = useState(false);
 
@@ -168,15 +167,6 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
       }
     });
 
-    // setForm(prevState => ({
-    //   ...prevState,
-    //   phone: companyState.data.phones.find(phone => phone.cellnumber)?.cellnumber || '',
-    //   cellphone: companyState.data.phones.find(phone => phone.number)?.number || '',
-    // }));
-
-  }, [userState.data.address]);
-
-  useEffect(() => {
     if (userState.error) {
       setState(prevState => {
         return {
@@ -226,6 +216,7 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
 
   const getAddress = useCallback(() => {
     dispatch(getAddressAction(state.address.postal_code));
+    document.getElementById('input-address-number')?.focus();
   }, [state.address?.postal_code]);
 
   function handleOpenModalCancel() {
@@ -704,7 +695,7 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
                       <FormGroupSection>
                         <Autocomplete
                           id="combo-box-user-type"
-                          options={state.user_types || []}
+                          options={userState.data.user_types || []}
                           getOptionLabel={(option) => option.name}
                           renderInput={(params) => <TextField {...params} label="Tipo do Usuário" variant="outlined" />}
                           value={selectUserType()}
@@ -736,7 +727,7 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
                       <FormGroupSection>
                         <Autocomplete
                           id="combo-box-profession"
-                          options={state.professions || []}
+                          options={userState.data.professions || []}
                           getOptionLabel={(option) => option.name}
                           renderInput={(params) => <TextField {...params} label="Função" variant="outlined" />}
                           getOptionSelected={(option, value) => option._id === state?.profession_id}
@@ -765,6 +756,8 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
                           }}
                           size="small"
                           fullWidth
+                          autoComplete={false}
+                          autoHighlight={false}
                         />
                       </FormGroupSection>
                     </Grid>
@@ -782,6 +775,7 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
                         size="small"
                         fullWidth
                         autoComplete={false}
+                        autoHighlight={false}
                       />
                     </Grid>
                     <Grid item md={3} xs={12}>
@@ -794,6 +788,7 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
                         onChange={(element) => setState({ ...state, council_number: element.target.value })}
                         placeholder="00000-0000"
                         fullWidth
+                        autoComplete="off"
                       />
                     </Grid>
                     <Grid item md={5} xs={12}>
@@ -812,6 +807,8 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
                           }}
                           size="small"
                           fullWidth
+                          autoComplete={false}
+                          autoHighlight={false}
                         />
                       </FormGroupSection>
                     </Grid>
@@ -831,6 +828,8 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
                             }
                           }}
                           fullWidth
+                          autoComplete={false}
+                          autoHighlight={false}
                         />
                       </FormGroupSection>
                     </Grid>
@@ -851,7 +850,7 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
                           id="combo-box-company"
                           options={companyState.list.data}
                           getOptionLabel={(option) => option.name}
-                          renderInput={(params) => <TextField {...params} label="Empresa" variant="outlined" />}
+                          renderInput={(params) => <TextField {...params} label="Empresa" variant="outlined" autoComplete="off" />}
                           size="small"
                           onChange={(event, value) => {
                             if (value) {
@@ -859,6 +858,8 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
                             }
                           }}
                           fullWidth
+                          autoComplete={false}
+                          autoHighlight={false}
                         />
                       </FormGroupSection>
                     </Grid>
@@ -868,7 +869,7 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
                           <Chip
                             key={`company_selected_${index}`}
                             label={item.name}
-                            onDelete={event => handleDeleteEspecialty(item)}
+                            onDelete={event => handleDeleteCompany(item)}
                           />
                         ))}
                       </ChipList>

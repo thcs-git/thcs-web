@@ -40,7 +40,7 @@ import { useHistory } from "react-router-dom";
 import DashboardIcon from '@material-ui/icons/Dashboard';
 import AssignmentIndIcon from '@material-ui/icons/AssignmentInd';
 import BusinessIcon from '@material-ui/icons/Business';
-import ExtensionIcon from '@material-ui/icons/Extension';
+import LocationOncon from '@material-ui/icons/LocationOn';
 import PersonIcon from '@material-ui/icons/Person';
 import GroupAddIcon from '@material-ui/icons/GroupAdd';
 import LocalHospital from '@material-ui/icons/LocalHospital';
@@ -58,12 +58,12 @@ const itemsMenu = [
   { title: 'Dashboard', route: '/', icon: <DashboardIcon style={{ color: '#fff' }} /> },
   { title: 'Clientes', route: '/customer', icon: <AssignmentIndIcon style={{ color: '#fff' }} /> },
   { title: 'Empresas', route: '/company', icon: <BusinessIcon style={{ color: '#fff' }} /> },
-  { title: 'Área', route: '/area', icon: <ExtensionIcon style={{ color: '#fff' }} /> },
   { title: 'Usuários', route: '/user', icon: <PersonIcon style={{ color: '#fff' }} /> },
+  { title: 'Área', route: '/area', icon: <LocationOncon style={{ color: '#fff' }} /> },
   { title: 'Pacientes', route: '/patient', icon: <GroupAddIcon style={{ color: '#fff' }} /> },
-  { title: 'Atendimento', route: '/care', icon: <LocalHospital style={{ color: '#fff' }} /> },
   { title: 'Avaliação', route: '/avaliation', icon: <StarRateIcon style={{ color: '#fff' }} /> },
-  { title: 'QrCode', route: '/qrcode',icon: <StarRateIcon style={{ color: '#fff' }} /> }
+  { title: 'QrCode', route: '/qrcode',icon: <StarRateIcon style={{ color: '#fff' }} /> },
+  { title: 'Atendimento', route: '/care', icon: <LocalHospital style={{ color: '#fff' }} /> },
 ]
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -135,21 +135,18 @@ const Sibebar = (props: Props<any>) => {
   const classes = useStyles();
   const dispatch = useDispatch();
 
-  const companyState = useSelector((state: ApplicationState) => state.companies);
-
   const [open, setOpen] = useState<Boolean>(() => {
     let toggleSidebar = localStorage.getItem(LOCALSTORAGE.TOGGLE_SIDEBAR) || 'false';
     return JSON.parse(toggleSidebar)
   });
   const [username, setUsername] = useState(localStorage.getItem(LOCALSTORAGE.USERNAME) || '');
-  const [company, setCompany] = useState(localStorage.getItem(LOCALSTORAGE.COMPANY_SELECTED) || '');
+  const [company, setCompany] = useState({
+    _id: localStorage.getItem(LOCALSTORAGE.COMPANY_SELECTED) || '',
+    name: localStorage.getItem(LOCALSTORAGE.COMPANY_NAME) || '',
+  });
 
   const [openModalLogout, setOpenModalLogout] = useState(false);
   const [openModalConfig, setOpenModalConfig] = useState(false);
-
-  useEffect(() => {
-    dispatch(loadCompanyById(company))
-  }, []);
 
   const handleDrawerClose = useCallback(() => {
     setOpen(prev => {
@@ -199,13 +196,16 @@ const Sibebar = (props: Props<any>) => {
         </div>
         {/* <Divider /> */}
 
-        <UserContent>
+        <UserContent className={!open ? 'hide' : ''}>
           <AccountCircle />
-          <h3>{username}</h3>
-          <br />
-          <div style={{ display: 'flex', alignItems: 'center', }}>
-            <BusinessIcon />
-            <h4 style={{ color: '#ffffff', marginLeft: 10 }}>{companyState.data.name}</h4>
+
+          <div>
+            <h3>{username}</h3>
+            <br />
+            <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', }}>
+              <BusinessIcon />
+              <h4 style={{ color: '#ffffff', marginLeft: 10 }}>{company.name}</h4>
+            </div>
           </div>
         </UserContent>
 

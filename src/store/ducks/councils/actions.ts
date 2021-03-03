@@ -3,7 +3,7 @@ import { CouncilTypes, CouncilInterface, LoadRequestParams } from './types';
 
 export const loadRequest = (params: LoadRequestParams = {}) => action(CouncilTypes.LOAD_REQUEST, { params });
 
-export const loadSuccess = (data: CouncilInterface) => action(CouncilTypes.LOAD_SUCCCES, { data });
+export const loadSuccess = (data: CouncilInterface) => action(CouncilTypes.LOAD_SUCCESS, { data });
 
 export const loadFailure = () => action(CouncilTypes.LOAD_FAILURE);
 

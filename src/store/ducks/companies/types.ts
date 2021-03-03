@@ -3,7 +3,7 @@
  */
 export enum CompanyTypes {
   LOAD_REQUEST = "@company/LOAD_REQUEST",
-  LOAD_SUCCCES = "@company/LOAD_SUCCCES",
+  LOAD_SUCCESS = "@company/LOAD_SUCCESS",
   LOAD_FAILURE = "@company/LOAD_FAILURE",
 
   LOAD_REQUEST_ADDRESS = "@company/LOAD_REQUEST_ADDRESS",
@@ -28,10 +28,10 @@ export enum CompanyTypes {
 export interface CompanyInterface {
   _id?: string;
   customer_id: string;
-	name: string;
-	fantasy_name: string;
-	fiscal_number: string;
-	address: {
+  name: string;
+  fantasy_name: string;
+  fiscal_number: string;
+  address: {
     postal_code: string;
     street: string,
     number: string,
@@ -40,11 +40,39 @@ export interface CompanyInterface {
     state: string;
     complement: string;
   };
-	email: string;
-	phone: string;
-	cellphone: string;
-	active: boolean;
-	created_by: { _id: string };
+  email: string;
+  phone: string;
+  cellphone: string;
+  settings?: {
+    document?: [
+      {
+        specialty: string,
+        document_group: string,
+        order: Number,
+        created_at: string,
+        created_by: string,
+      }
+    ],
+    complexity?: [
+      {
+        title: string,
+        description: string,
+        color: string,
+        severity: string,
+        recommendation: [
+          {
+            profession_id: string | IProfession,
+            description: string,
+            amount: string,
+            interval: string,
+            frequency: string,
+          }
+        ],
+      }
+    ],
+  },
+  active: boolean;
+  created_by: { _id: string };
 }
 
 export interface ViacepDataInterface {
@@ -74,6 +102,14 @@ export interface CompanyState {
   loading: boolean;
   error: boolean;
   success: boolean;
+}
+
+export interface IProfession {
+  active: boolean,
+  created_at: string;
+  describe: string;
+  name: string;
+  _id: string;
 }
 
 export type LoadRequestParams = Partial<Omit<CompanyList, 'data'>>

@@ -49,9 +49,10 @@ const reducer: Reducer<CareState> = (state = INITIAL_STATE, action) => {
   switch (action.type) {
     case CareTypes.LOAD_REQUEST:
       return { ...state, loading: true, success: false, };
-    case CareTypes.LOAD_SUCCCES:
+    case CareTypes.LOAD_SUCCESS:
       return {
         ...state,
+        data: INITIAL_STATE.data,
         list: action.payload.data,
         loading: false,
         success: false,
@@ -161,6 +162,7 @@ const reducer: Reducer<CareState> = (state = INITIAL_STATE, action) => {
     case CareTypes.SEARCH_CARE_SUCCESS:
       return {
         ...state,
+        data: INITIAL_STATE.data,
         list: action.payload.data,
         loading: false,
         success: false,
@@ -170,7 +172,7 @@ const reducer: Reducer<CareState> = (state = INITIAL_STATE, action) => {
       return {
         ...state, error: false, loading: true, success: false
       }
-    case CareTypes.LOAD_SUCCCES_CARE_BY_ID:
+    case CareTypes.LOAD_SUCCESS_CARE_BY_ID:
       return {
         ...state,
         data: { ...action.payload.data },
