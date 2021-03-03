@@ -305,6 +305,7 @@ export default function PatientForm(props: RouteComponentProps<IPageParams>) {
                             size="small"
                             value={state.name}
                             onChange={(element) => setState({ ...state, name: element.target.value })}
+                            autoComplete="false"
                             fullWidth
                           />
                         </Grid>

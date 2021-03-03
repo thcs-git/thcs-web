@@ -479,7 +479,7 @@ export default function PatientCaptureForm(props: RouteComponentProps<IPageParam
           <DialogTitle id="scroll-dialog-title">Concluir a Captação</DialogTitle>
           <DialogContent>
             <DialogContentText id="scroll-dialog-description" tabIndex={-1}>
-              Tem certeza que deseja concluir a captação do paciente e iniciar o atendimento?
+              Tem certeza que deseja concluir a captação do paciente e iniciar o processo de autorização do plano de saúde?
             </DialogContentText>
           </DialogContent>
           <DialogActions>

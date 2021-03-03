@@ -258,6 +258,7 @@ export default function AreaForm(props: RouteComponentProps<IPageParams>) {
                           size="small"
                           value={state.name}
                           onChange={(element) => setState(prevState => ({ ...prevState, name: element.target.value }))}
+                          autoComplete="off"
                           fullWidth
                         />
                       </FormGroupSection>
@@ -290,13 +291,14 @@ export default function AreaForm(props: RouteComponentProps<IPageParams>) {
                             id="combo-box-day-of-week"
                             options={daysOfTheWeek}
                             getOptionLabel={(option) => option.name}
-                            renderInput={(params) => <TextField {...params} label="Dia da semana" variant="outlined" />}
+                            renderInput={(params) => <TextField {...params} label="Dia da semana" variant="outlined" autoComplete="off" />}
                             value={state.form?.dayOfTheWeek ?? null}
                             getOptionSelected={(option, value) => option.id === state.week_day}
                             onChange={(event: any, newValue) => {
                               handleDayOfTheWeek(event, newValue);
                             }}
                             size="small"
+                            autoComplete={false}
                             fullWidth
                           />
                         </FormGroupSection>
@@ -323,13 +325,14 @@ export default function AreaForm(props: RouteComponentProps<IPageParams>) {
                           id="combo-box-neigthborhoods"
                           options={areaState.districts}
                           getOptionLabel={(option) => `${option.municipio.microrregiao.mesorregiao.UF.sigla} - ${option.nome}`}
-                          renderInput={(params) => <TextField {...params} label="Bairros" variant="outlined" />}
+                          renderInput={(params) => <TextField {...params} label="Bairros" variant="outlined" autoComplete="off" />}
                           size="small"
                           onChange={(event, value) => {
                             if (value) {
                               handleSelectNeighborhood(value)
                             }
                           }}
+                          autoComplete={false}
                           fullWidth
                         />
                       </FormGroupSection>
@@ -355,13 +358,14 @@ export default function AreaForm(props: RouteComponentProps<IPageParams>) {
                           id="combo-box-users"
                           options={userState.list.data}
                           getOptionLabel={(option) => option.name}
-                          renderInput={(params) => <TextField {...params} label="Prestador" variant="outlined" />}
+                          renderInput={(params) => <TextField {...params} label="Prestador" variant="outlined" autoComplete="off" />}
                           size="small"
                           onChange={(event, value) => {
                             if (value) {
                               handleSelectUser({ _id: value._id || '', name: value.name })
                             }
                           }}
+                          autoComplete={false}
                           fullWidth
                         />
                       </FormGroupSection>
