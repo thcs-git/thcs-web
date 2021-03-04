@@ -31,7 +31,7 @@ export const loadGetCitys = (value: string) =>
 export const loadGetDistricts_ = (value: any) =>
   action(AreaTypes.LOAD_GET_DISTRICTS_, { value });
 export const loadSuccessGetDistricts = (data: any) =>
-  action(AreaTypes.LOAD_SUCCCES_GET_DISTRICTS, { data });
+  action(AreaTypes.LOAD_SUCCCES_GET_DISTRICTS_, { data });
 export const loadSuccessGetCitys = (data: any) =>
   action(AreaTypes.LOAD_SUCCCES_GET_CITYS, { data });
 

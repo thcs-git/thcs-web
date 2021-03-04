@@ -191,6 +191,7 @@ export default function AreaForm(props: RouteComponentProps<IPageParams>) {
     active: true
   });
 
+
   const [currentTab, setCurrentTab] = useState(0);
   let load = false;
   const selectTab = useCallback((index: number) => {
@@ -202,7 +203,8 @@ export default function AreaForm(props: RouteComponentProps<IPageParams>) {
   useEffect(() => {
     if (params.id) {
       dispatch(loadAreaById(params.id));
-      dispatch(loadGetDistricts_(areaState.data?.districts[0]));
+
+
       const dayOfTheWeekSelected = daysOfTheWeek.find(day => day.id === areaState.data.week_day) || null;
       setInputName(prev =>({
          ...prev,
@@ -324,11 +326,24 @@ export default function AreaForm(props: RouteComponentProps<IPageParams>) {
     }
   },[inputDistrict]);
 
+  function goToNextMenu(currentTab:number){
+    if(currentTab === 1){
+      if(areaState.data?.districts[0]){
+        dispatch(loadGetDistricts_(areaState.data?.districts[0]));
+      }
+
+    }
+    console.log(currentTab);
+    selectTab(currentTab);
+  }
   function goToNextTab(currentTab:Number){
 
     switch(currentTab){
       case 0:
         if((inputName.error == false && state.supply_days === 0) || (inputName.error == false && inputDays.error == false) ){
+          if(areaState.data?.districts[0]){
+            dispatch(loadGetDistricts_(areaState.data?.districts[0]));
+          }
           selectTab(1);
         }
         break;
@@ -344,7 +359,7 @@ export default function AreaForm(props: RouteComponentProps<IPageParams>) {
 
   function handleSaveFormArea() {
     if (state?._id) {
-      if(inputName.error == false && (state.supply_days === 0 || inputDays.error == false )  ){
+      if(inputName.error == false && (state.supply_days === 0 || inputDays.error == false ) && (state.districts.length > 0)  ){
          dispatch(updateAreaRequest(state));
          history.push(`/area`);
       }else{
@@ -404,6 +419,7 @@ export default function AreaForm(props: RouteComponentProps<IPageParams>) {
 
       dispatch(loadGetDistricts_({city:value.name}));
     }
+    console.log(areaState);
 
   }
   function handleSelectProfession(value:any){
@@ -466,7 +482,7 @@ export default function AreaForm(props: RouteComponentProps<IPageParams>) {
   //   }
   // },[state.districts])
 
-   function handleDeleteNeighborhood(neighborhood: NeighborhoodAreaInterface) {
+   async function handleDeleteNeighborhood(neighborhood: NeighborhoodAreaInterface) {
     let neighborhoodsSelected = [...state.districts];
 
     const neighborhoodFounded = neighborhoodsSelected.findIndex((item: any) => {
@@ -476,15 +492,22 @@ export default function AreaForm(props: RouteComponentProps<IPageParams>) {
     if (neighborhoodFounded > -1) {
       neighborhoodsSelected.splice(neighborhoodFounded, 1);
     };
+    console.log(neighborhoodsSelected);
 
-     setState(prevState => ({
+    if(neighborhoodsSelected.length<1){
+
+      setState(prevState=>({
+        ...prevState,
+        districts:[]
+      }))
+    }else{
+      setState(prevState => ({
       ...prevState,
-      districts: neighborhoodsSelected
+      districts: [... neighborhoodsSelected]
     }))
-    setState(prevState => ({
-      ...prevState,
-      districts: neighborhoodsSelected
-    }))
+    }
+
+    console.log(state.districts);
 
 
   }
@@ -505,10 +528,7 @@ export default function AreaForm(props: RouteComponentProps<IPageParams>) {
       users: [...prevState.users, value],
 
     }));
-
    }
-
-
   }
 
   function handleDeleteUser(user: UserAreaInterface) {
@@ -536,15 +556,15 @@ export default function AreaForm(props: RouteComponentProps<IPageParams>) {
             <FormTitle>Cadastro de Área</FormTitle>
             <TabContent>
               <TabNav>
-                <TabNavItem className={currentTab === 0 ? 'active' : ''} onClick={() => selectTab(0)}>
+                <TabNavItem className={currentTab === 0 ? 'active' : ''} onClick={() => goToNextMenu(0)}>
                   Dados da Área
                 </TabNavItem>
-                <TabNavItem className={currentTab === 1 ? 'active' : ''} onClick={() => selectTab(1)}>
+                <TabNavItem className={currentTab === 1 ? 'active' : ''} onClick={() => goToNextMenu(1)}>
                   <Badge badgeContent={state.districts.length} max={99} color="primary">
                     {`Bairros`}
                   </Badge>
                 </TabNavItem>
-                <TabNavItem className={currentTab === 2 ? 'active' : ''} onClick={() => selectTab(2)}>
+                <TabNavItem className={currentTab === 2 ? 'active' : ''} onClick={() => goToNextMenu(2)}>
                   <Badge badgeContent={state.users.length} max={99} color="primary">
                     {`Prestadores`}
                   </Badge>
@@ -667,7 +687,7 @@ export default function AreaForm(props: RouteComponentProps<IPageParams>) {
                             load=false;
                           }}
                            getOptionLabel={(option) => option.name}
-                          renderInput={(params) => <TextField {...params} error={inputCity.error} label="Cidades" variant="outlined" onBlur={handleCityValidator}  InputProps={{
+                          renderInput={(params) => <TextField {...params} error={inputCity.error} label="Cidades" variant="outlined" onBlur={handleCityValidator} InputProps={{
                             ...params.InputProps,
                             endAdornment: (
                               <React.Fragment>
@@ -696,7 +716,7 @@ export default function AreaForm(props: RouteComponentProps<IPageParams>) {
                       <FormGroupSection>
                         <Autocomplete
                           id="combo-box-neigthborhoods"
-                          options={areaState.districts || []}
+                          options={areaState.districts_ || []}
                           onClose={() => {
                             load=false;
                           }}
@@ -775,8 +795,7 @@ export default function AreaForm(props: RouteComponentProps<IPageParams>) {
                           size="small"
                           onChange={(event, value) => {
                             if (value) {
-
-                              handleSelectUser({ _id: value._id || '', name: value.name, profession:value.profession_id.name || ''})
+                              handleSelectUser({ _id: value._id || '', name: value.name, profession:value.profession_id?.name || ''})
                             }
                           }}
                           fullWidth

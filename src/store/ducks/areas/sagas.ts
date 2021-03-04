@@ -115,6 +115,7 @@ export function* getDistrict({ payload: { value } }: any) {
         headers: { token },
       }
     );
+    console.log(response);
     yield put(loadSuccessGetDistricts(response.data.data));
   } catch (error) {
     yield put(loadFailure());

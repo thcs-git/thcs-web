@@ -7,7 +7,6 @@ export const INITIAL_STATE: AreaState = {
     supply_days: 0,
     week_day: 0,
     users: [],
-
     districts: [],
     active: true,
   },
@@ -98,6 +97,14 @@ const reducer: Reducer<AreaState> = (state = INITIAL_STATE, action) => {
     case AreaTypes.LOAD_SUCCCES_GET_CITYS:
       return {
         ...state,
+        data: {
+          name: state.data.name,
+          supply_days: state.data.supply_days,
+          week_day: state.data.week_day,
+          users: state.data.users,
+          districts: [],
+          active: state.data.active,
+        },
         citys: action.payload.data,
         loading: false,
         error: false,
@@ -114,7 +121,7 @@ const reducer: Reducer<AreaState> = (state = INITIAL_STATE, action) => {
     case AreaTypes.LOAD_SUCCCES_GET_DISTRICTS_:
       return {
         ...state,
-        districts: action.payload.data,
+        districts_: action.payload.data,
         loading: false,
         error: false,
         success: false,
