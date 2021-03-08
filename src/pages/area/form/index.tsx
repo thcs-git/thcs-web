@@ -64,7 +64,7 @@ export default function AreaForm(props: RouteComponentProps<IPageParams>) {
   const history = useHistory();
   const dispatch = useDispatch();
   const [inputName, setInputName ] = useState({value:"", error: false});
-  const [inputDays, setInputDays] = useState({value:"", error: false});
+  const [inputDays, setInputDays] = useState({value:"", error: true});
   const [inputState, setInputState ] = useState({value:"", error: false});
   const [inputCity, setInpuCity] = useState({value:"", error: false});
   const [inputDistrict, setInputDistrict ] = useState({value:"", error: false});
@@ -325,7 +325,9 @@ export default function AreaForm(props: RouteComponentProps<IPageParams>) {
 
     switch(currentTab){
       case 0:
-        if((inputName.error == false && state.supply_days === 0) || (inputName.error == false && inputDays.error == false) ){
+        console.log(inputDays);
+        console.log(state.supply_days);
+        if((inputName.error == false && state.supply_days == 1) || (inputName.error == false && inputDays.error == false) ){
           if(areaState.data?.districts[0]){
             dispatch(loadGetDistricts_(areaState.data?.districts[0]));
           }
@@ -779,7 +781,6 @@ export default function AreaForm(props: RouteComponentProps<IPageParams>) {
                         <Autocomplete
                           id="combo-box-users"
                           options={userState.list.data}
-                          value={}
                           getOptionLabel={(option) => option.name}
                           renderInput={(params) => <TextField {...params} label="Prestador" variant="outlined" />}
                           size="small"
