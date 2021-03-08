@@ -46,6 +46,7 @@ export default createGlobalStyle`
 
   :root {
     --primary: #16679A;
+    --primary-foccus:#7AC7D8;
     --primary-hover: #16679A99;
     --secondary: #0899BA;
     --gray: #CCCCCC;
@@ -56,8 +57,9 @@ export default createGlobalStyle`
     --sucess-button-hover:4EC86F0A;
     --success-hover: #4FC66A99;
     --button-hover:#4EC86F0A;
+    --alert:#B00020
     --danger: #FF6565;
-    --danger-hover:#FF8800
+    --danger-hover:#FF6568;
     --warning: #f9ca24;
     --white: #FFFFFF;
     --background: #FAFAFA;

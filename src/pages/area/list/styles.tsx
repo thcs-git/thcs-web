@@ -42,7 +42,7 @@ export const ItemTable = styled.div`
     padding:4px;
     `
 export const ListItemStatus = styled.div<IListItemStatus>`
-  color: ${(props) => (props.active ? `var(--success)` : `var(--danger)`)};
+  color: ${(props) => (props.active ? `var(--success)` : `var(--danger-hover)`)};
   font-weight: bold;
   padding-top: 10px;
   padding-bottom:10px;
