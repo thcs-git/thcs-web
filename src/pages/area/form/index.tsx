@@ -275,6 +275,7 @@ export default function AreaForm(props: RouteComponentProps<IPageParams>) {
                           size="small"
                           value={state.name}
                           onChange={(element) => setState(prevState => ({ ...prevState, name: element.target.value }))}
+                          autoComplete="off"
                           fullWidth
                         />
                       </FormGroupSection>
@@ -307,13 +308,14 @@ export default function AreaForm(props: RouteComponentProps<IPageParams>) {
                             id="combo-box-day-of-week"
                             options={daysOfTheWeek}
                             getOptionLabel={(option) => option.name}
-                            renderInput={(params) => <TextField {...params} label="Dia da semana" variant="outlined" />}
+                            renderInput={(params) => <TextField {...params} label="Dia da semana" variant="outlined" autoComplete="off" />}
                             value={state.form?.dayOfTheWeek ?? null}
                             getOptionSelected={(option, value) => option.id === state.week_day}
                             onChange={(event: any, newValue) => {
                               handleDayOfTheWeek(event, newValue);
                             }}
                             size="small"
+                            autoComplete={false}
                             fullWidth
                           />
                         </FormGroupSection>

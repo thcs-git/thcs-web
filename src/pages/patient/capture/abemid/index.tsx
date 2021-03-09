@@ -289,12 +289,15 @@ export default function Abemid(props: RouteComponentProps<IPageParams>) {
             >
               Cancelar
             </Button>
-            <Button
-              background="primary"
-              onClick={handleSubmit}
-            >
-              Finalizar
-            </Button>
+
+            {careState.data.capture?.status === 'Em Andamento' && (
+              <Button
+                background="primary"
+                onClick={handleSubmit}
+              >
+                Finalizar
+              </Button>
+            )}
           </ButtonsContent>
         </FormContent>
 

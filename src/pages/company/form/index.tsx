@@ -143,6 +143,7 @@ export default function CompanyForm(props: RouteComponentProps<IPageParams>) {
 
   const getAddress = useCallback(() => {
     dispatch(getAddressAction(state.address.postal_code));
+    document.getElementById('input-address-number')?.focus();
   }, [state.address.postal_code]);
 
   const selectCustomer = useCallback(() => {

@@ -64,6 +64,13 @@ const reducer: Reducer<CustomerState> = (state = INITIAL_STATE, action) => {
           total: 0
         }
       };
+    case CustomerTypes.CREATE_CUSTOMER_REQUEST:
+      return {
+        ...state,
+        loading: true,
+        error: false,
+        success: false
+      }
     case CustomerTypes.CREATE_CUSTOMER_SUCCESS:
       return {
         ...state,

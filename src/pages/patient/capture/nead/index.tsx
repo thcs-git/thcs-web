@@ -487,12 +487,16 @@ export default function Nead(props: RouteComponentProps<IPageParams>) {
             </Button>
 
             {currentStep === (steps.length - 1) ? (
-              <Button
-                background="primary"
-                onClick={handleSubmit}
-              >
-                Finalizar
-              </Button>
+              <>
+                {careState.data.capture?.status === 'Em Andamento' && (
+                  <Button
+                    background="primary"
+                    onClick={handleSubmit}
+                  >
+                    Finalizar
+                  </Button>
+                )}
+              </>
             ) : (
                 <Button
                   disabled={currentStep === (steps.length - 1)}
