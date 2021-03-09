@@ -61,7 +61,23 @@ export interface AreaList {
 export interface AreaState {
   data: AreaInterface;
   list: AreaList;
-  districts: any[];
+  districts?: {
+    data: [
+      {
+        _id: string,
+        location_id: number,
+        state: string,
+        name: string,
+        neighborhoods: [{
+          _id: string,
+          name: string,
+        }]
+      }
+    ],
+    limit: number,
+    page: number,
+    total: number,
+  };
   loading: boolean;
   error: boolean;
 }

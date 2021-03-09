@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useCallback, ChangeEvent, ReactNode } from 'react';
+import debounce from 'lodash.debounce';
 
 import { useDispatch, useSelector } from 'react-redux';
 import { ApplicationState } from '../../../store';
@@ -40,7 +41,9 @@ import {
 
 interface IFormFields extends AreaInterface {
   form?: {
-    dayOfTheWeek: { id: number, name: string } | null,
+    dayOfTheWeek?: { id: number, name: string } | null,
+    state?: string,
+    neighborhoods?: any[],
   }
 }
 
@@ -62,10 +65,6 @@ export default function AreaForm(props: RouteComponentProps<IPageParams>) {
 
   const { params } = props.match;
 
-  const neighborhoods = [
-    { _id: '1', name: 'bairro 1' },
-    { _id: '2', name: 'bairro 2' },
-  ];
   const daysOfTheWeek = [
     { id: 0, name: 'Domingo' },
     { id: 1, name: 'Segunda-Feira' },
@@ -102,6 +101,8 @@ export default function AreaForm(props: RouteComponentProps<IPageParams>) {
 
   const [currentTab, setCurrentTab] = useState(0);
 
+  const debounceSearchLocations = debounce(handleLocations, 900);
+
   const selectTab = useCallback((index: number) => {
     setCurrentTab(index);
   }, [currentTab]);
@@ -130,6 +131,10 @@ export default function AreaForm(props: RouteComponentProps<IPageParams>) {
     }));
 
   }, [areaState]);
+
+  function handleLocations(name: string) {
+    dispatch(getDistrictsAction(name));
+  }
 
   function handleSaveFormArea() {
     if (state?._id) {
@@ -172,20 +177,31 @@ export default function AreaForm(props: RouteComponentProps<IPageParams>) {
   }, [state.week_day]);
 
   // Bairros
-  function handleSelectNeighborhood(value: any) {
+  function handleSelectDistrict(value: any) {
 
-    console.log('value', value);
+    const { neighborhoods, state } = value;
 
     setState(prevState => ({
       ...prevState,
-      neighborhoods: [...prevState.neighborhoods, { _id: value.id, name: value.nome }]
+      form: {
+        ...prevState.form,
+        state,
+        neighborhoods,
+      }
+    }));
+  }
+
+  function handleSelectNeighborhood(value: any) {
+    setState(prevState => ({
+      ...prevState,
+      neighborhoods: [...prevState.neighborhoods, value]
     }));
   }
 
   function handleDeleteNeighborhood(neighborhood: NeighborhoodAreaInterface) {
     let neighborhoodsSelected = [...state.neighborhoods];
     const neighborhoodFounded = neighborhoodsSelected.findIndex((item: any) => {
-      return neighborhood._id === item.id
+      return neighborhood._id === item._id
     });
 
     if (neighborhoodFounded > -1) {
@@ -226,6 +242,7 @@ export default function AreaForm(props: RouteComponentProps<IPageParams>) {
   return (
     <Sidebar>
       {areaState.loading && <Loading />}
+      {console.log(`areaState`, areaState)}
       <Container>
         <FormSection>
           <FormContent>
@@ -319,24 +336,46 @@ export default function AreaForm(props: RouteComponentProps<IPageParams>) {
                 </TabBodyItem>
                 <TabBodyItem className={currentTab === 1 ? 'show' : ''}>
                   <Grid container>
-                    <Grid item md={5} xs={12}>
+                    <Grid item md={12} xs={12}>
                       <FormGroupSection>
                         <Autocomplete
-                          id="combo-box-neigthborhoods"
-                          options={areaState.districts}
-                          getOptionLabel={(option) => `${option.municipio.microrregiao.mesorregiao.UF.sigla} - ${option.nome}`}
-                          renderInput={(params) => <TextField {...params} label="Bairros" variant="outlined" autoComplete="off" />}
+                          id="combo-box-district"
+                          options={areaState.districts?.data || []}
+                          getOptionLabel={(option) => `${option.state} - ${option.name}`}
+                          renderInput={(params) => <TextField {...params} label="Cidades" variant="outlined" />}
                           size="small"
                           onChange={(event, value) => {
                             if (value) {
-                              handleSelectNeighborhood(value)
+                              handleSelectDistrict(value)
                             }
                           }}
+                          onInputChange={(event, value) => debounceSearchLocations(value)}
                           autoComplete={false}
                           fullWidth
                         />
                       </FormGroupSection>
                     </Grid>
+                    <Grid item md={12} xs={12}>
+                      <FormGroupSection>
+                        <Autocomplete
+                          id="combo-box-neigthborhoods"
+                          options={state.form?.neighborhoods || []}
+                          getOptionLabel={(option) => `${option.name}`}
+                          renderInput={(params) => <TextField {...params} label="Bairros" variant="outlined" autoComplete="off" />}
+                          size="small"
+                          onChange={(event, value) => {
+                            console.log(`value`, value);
+                            if (value) {
+                              handleSelectNeighborhood(value)
+                            }
+                          }}
+                          // onInputChange={(event, value) => debounceSearchLocations(value)}
+                          autoComplete={false}
+                          fullWidth
+                        />
+                      </FormGroupSection>
+                    </Grid>
+
                     <Grid item md={12} xs={12}>
                       <ChipList>
                         {state.neighborhoods.map((item: any, index) => (
