@@ -16,7 +16,6 @@ export const INITIAL_STATE: AreaState = {
     page: '1',
     total: 0
   },
-  districts: [],
   error: false,
   loading: false,
 };

@@ -57,9 +57,9 @@ export function* updateArea({ payload: { data } }: any) {
   }
 }
 
-export function* getDistricts() {
+export function* getDistricts({ payload: { name } }: any) {
   try {
-    const { data }: AxiosResponse = yield call(ibge.get, `/localidades/distritos`);
+    const { data }: AxiosResponse = yield call(apiSollar.get, `/location${!!name ? '?name=' + name.toUpperCase() : ''}`);
 
     if (data.erro) {
       yield put(loadFailure());

@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useCallback, ChangeEvent } from 'react';
-import { useHistory } from 'react-router-dom';
-import { Container, FormControl, InputLabel, OutlinedInput, InputAdornment, IconButton } from '@material-ui/core';
+import { useHistory, Link } from 'react-router-dom';
+import { Container, TableRow, TableCell } from '@material-ui/core';
 import { SearchOutlined } from '@material-ui/icons';
 import debounce from 'lodash.debounce';
 
@@ -10,23 +10,16 @@ import { useDispatch, useSelector } from 'react-redux';
 import { ApplicationState } from '../../../store/';
 import { loadRequest, searchRequest } from '../../../store/ducks/areas/actions';
 
-import PaginationComponent from '../../../components/Pagination';
-import Sidebar from '../../../components/Sidebar';
 import SearchComponent from '../../../components/List/Search';
 import Loading from '../../../components/Loading';
+import PaginationComponent from '../../../components/Pagination';
+import Sidebar from '../../../components/Sidebar';
+import Table from '../../../components/Table';
 
 import { FormTitle } from '../../../styles/components/Form';
-import Button from '../../../styles/components/Button';
 import {
-  List,
   ListLink,
-  ListItem,
-  ListItemContent,
   ListItemStatus,
-  ListItemTitle,
-  ListItemSubTitle,
-  FormSearch,
-  ButtonsContent,
 } from './styles';
 
 export default function CouncilList() {
@@ -70,21 +63,27 @@ export default function CouncilList() {
             onChangeInput={debounceSearchRequest}
           />
 
-          <List>
+          <Table
+            tableCells={[
+              { name: 'Área', align: 'left', },
+              { name: 'Intervalo de Abastecimento', align: 'left' },
+              { name: 'Dia de Abastecimento', align: 'left' },
+              { name: 'Status', align: 'left' },
+            ]}
+          >
             {areaState.list.data.map((area, index) => (
-              <ListLink key={index} to={`/area/${area._id}/edit`}>
-                <ListItem variant="outlined">
-                  <ListItemContent>
-                    <ListItemStatus active={area.active}>{area.active ? 'Ativo' : 'Inativo'}</ListItemStatus>
-                    <div>
-                      <ListItemTitle>{area.name}</ListItemTitle>
-                      <ListItemSubTitle>Intervalo do abastecimento: {area.supply_days} dia(s), {getDayOfTheWeekName(area.week_day)}</ListItemSubTitle>
-                    </div>
-                  </ListItemContent>
-                </ListItem>
-              </ListLink>
+              <TableRow key={`area_${index}`}>
+                <TableCell align="left">
+                  <Link key={index} to={`/area/${area._id}/edit`}>{area.name}</Link>
+                </TableCell>
+                <TableCell align="left">{area.supply_days}{area.supply_days < 2 ? ' dia' : ' dias'}</TableCell>
+                <TableCell align="left">{getDayOfTheWeekName(area.week_day)}</TableCell>
+                <TableCell align="left">
+                  <ListItemStatus active={area.active}>{area.active ? 'Ativo' : 'Inativo'}</ListItemStatus>
+                </TableCell>
+              </TableRow>
             ))}
-          </List>
+          </Table>
           <PaginationComponent
             page={areaState.list.page}
             rowsPerPage={areaState.list.limit}
