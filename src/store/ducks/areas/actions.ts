@@ -16,7 +16,7 @@ export const updateAreaSuccess = (data: AreaInterface) => action(AreaTypes.UPDAT
 export const loadAreaById = (id: string) => action(AreaTypes.LOAD_REQUEST_AREA_BY_ID, { id });
 export const loadSuccessGetAreaById = (data: AreaInterface) => action(AreaTypes.LOAD_SUCCESS_AREA_BY_ID, { data });
 
-export const loadGetDistricts = () => action(AreaTypes.LOAD_GET_DISTRICTS);
+export const loadGetDistricts = (name?: string) => action(AreaTypes.LOAD_GET_DISTRICTS, { name });
 export const loadSuccessGetDistricts = (data: any) => action(AreaTypes.LOAD_SUCCESS_GET_DISTRICTS, { data });
 
 export const searchRequest = (value: string) => action(AreaTypes.SEARCH_REQUEST, { value });
