@@ -37,3 +37,5 @@ export const loadSuccessGetCitys = (data: any) =>
 
 export const searchRequest = (value: string) =>
   action(AreaTypes.SEARCH_REQUEST, { value });
+
+export const cleanAction = () => action(AreaTypes.CLEAN);

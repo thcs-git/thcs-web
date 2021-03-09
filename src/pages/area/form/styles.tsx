@@ -39,7 +39,10 @@ export const InputFiled = styled(TextField)`
     background: var(--white);
   }
 `;
-
+export const DivideTitle = styled.h3`
+  color: var(--primary);
+  margin-bottom: 20px;
+`;
 export const OutlinedInputFiled = styled(OutlinedInput)`
   background: var(--white);
 `;

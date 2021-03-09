@@ -1,3 +1,4 @@
+import { NeighborhoodAreaInterface } from "./../location/types";
 import { Reducer } from "redux";
 import { AreaState, AreaTypes } from "./types";
 
@@ -128,6 +129,8 @@ const reducer: Reducer<AreaState> = (state = INITIAL_STATE, action) => {
       };
     case AreaTypes.SEARCH_REQUEST:
       return { ...state, loading: true, error: false };
+    case AreaTypes.CLEAN:
+      return INITIAL_STATE;
     default:
       return state;
   }

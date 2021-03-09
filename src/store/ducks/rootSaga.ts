@@ -1,3 +1,4 @@
+import { cleanAction } from "./customers/actions";
 import { all, takeLatest } from "redux-saga/effects";
 
 import { AreaTypes } from "./areas/types";
@@ -140,6 +141,7 @@ export default function* rootSaga() {
     takeLatest(AreaTypes.LOAD_GET_CITYS, getCitys),
     takeLatest(AreaTypes.LOAD_GET_DISTRICTS_, getDistrict),
     takeLatest(AreaTypes.SEARCH_REQUEST, searchArea),
+    takeLatest(AreaTypes.CLEAN, cleanAction),
 
     // Care
     takeLatest(CareTypes.LOAD_REQUEST, getCares),

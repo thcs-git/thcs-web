@@ -26,6 +26,7 @@ export enum AreaTypes {
   LOAD_SUCCCES_GET_DISTRICTS_ = "@area/LOAD_SUCCCES_GET_DISTRICTS_",
 
   SEARCH_REQUEST = "@area/SEARCH_REQUEST",
+  CLEAN = "@area/CLEAN",
 }
 
 /**
@@ -52,6 +53,7 @@ export interface NeighborhoodAreaInterface {
   _id: string;
   name: string;
   city: string;
+  state: string;
 }
 
 export interface CityAreaInterface {
@@ -67,7 +69,7 @@ export interface AreaInterface {
   supply_days: number;
   week_day: number;
   users: UserAreaInterface[];
-  districts: (NeighborhoodAreaInterface | {})[];
+  districts: NeighborhoodAreaInterface[];
   created_by?: { _id: any };
   active: boolean;
 }
