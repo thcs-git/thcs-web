@@ -21,7 +21,7 @@ export const loadSuccessGetUserById = (data: UserInterface) => action(UserTypes.
 
 export const loadFailure = () => action(UserTypes.LOAD_FAILURE);
 
-export const searchRequest = (value: string) => action(UserTypes.SEARCH_REQUEST, { value });
+export const searchRequest = (data: any) => action(UserTypes.SEARCH_REQUEST, { data });
 
 export const loadUserTypesRequest = (value?: string) => action(UserTypes.LOAD_REQUEST_USER_TYPES, { value });
 export const loadUserTypesSuccess = (value: any) => action(UserTypes.LOAD_RESPONSE_USER_TYPES, { ...value });

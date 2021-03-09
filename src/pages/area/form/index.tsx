@@ -1,11 +1,13 @@
-import React, { useState, useEffect, useCallback, ChangeEvent, ReactNode } from 'react';
+import React, { useState, useEffect, useCallback, ReactNode } from 'react';
 import debounce from 'lodash.debounce';
 
 import { useDispatch, useSelector } from 'react-redux';
 import { ApplicationState } from '../../../store';
 import { AreaInterface, UserAreaInterface, NeighborhoodAreaInterface } from '../../../store/ducks/areas/types';
 import { loadRequest, loadAreaById, updateAreaRequest, createAreaRequest, loadGetDistricts as getDistrictsAction } from '../../../store/ducks/areas/actions';
-import { loadRequest as getUsersAction } from '../../../store/ducks/users/actions';
+
+import { ProfessionUserInterface } from '../../../store/ducks/users/types';
+import { loadRequest as getUsersAction, loadProfessionsRequest as getProfessionsAction, searchRequest as searchUserAction } from '../../../store/ducks/users/actions';
 
 import { useHistory, RouteComponentProps } from 'react-router-dom';
 import {
@@ -41,9 +43,12 @@ import {
 
 interface IFormFields extends AreaInterface {
   form?: {
-    dayOfTheWeek?: { id: number, name: string } | null,
-    state?: string,
-    neighborhoods?: any[],
+    dayOfTheWeek?: { id: number, name: string } | null;
+    state?: string;
+    profession_id?: string;
+    professions?: any[];
+    neighborhoods?: any[];
+    user_id?: any;
   }
 }
 
@@ -120,8 +125,8 @@ export default function AreaForm(props: RouteComponentProps<IPageParams>) {
       dispatch(loadRequest());
     }
 
-    dispatch(getUsersAction());
     dispatch(getDistrictsAction());
+    dispatch(getProfessionsAction());
   }, [dispatch]);
 
   useEffect(() => {
@@ -214,12 +219,37 @@ export default function AreaForm(props: RouteComponentProps<IPageParams>) {
     }))
   }
 
-
   // Prestadores
+  const handleSelectProfession = useCallback((value: ProfessionUserInterface) => {
+    setState(prevState => ({
+      ...prevState,
+      form: {
+        ...prevState.form,
+        profession_id: value._id
+      }
+    }));
+
+    dispatch(searchUserAction({ profession_id: value._id }));
+  }, [state]);
+
+  const selectProfession = useCallback(() => {
+    if (!userState.data.professions) {
+      return null;
+    }
+
+    const selected = userState.data.professions.filter(item => item._id === state.form?.profession_id);
+
+    return (selected[0]) ? selected[0] : null;
+  }, [state, userState.data.professions]);
+
   function handleSelectUser(value: UserAreaInterface) {
     setState(prevState => ({
       ...prevState,
-      users: [...prevState.users, value]
+      users: [...prevState.users, value],
+      form: {
+        ...prevState.form,
+        user_id: null,
+      }
     }));
   }
 
@@ -391,7 +421,26 @@ export default function AreaForm(props: RouteComponentProps<IPageParams>) {
                 </TabBodyItem>
                 <TabBodyItem className={currentTab === 2 ? 'show' : ''}>
                   <Grid container>
-                    <Grid item md={5} xs={12}>
+                    <Grid item md={12} xs={12}>
+                      <FormGroupSection>
+                        <Autocomplete
+                          id="combo-box-profession"
+                          options={userState.data.professions || []}
+                          getOptionLabel={(option) => option.name}
+                          renderInput={(params) => <TextField {...params} label="Função" variant="outlined" />}
+                          getOptionSelected={(option, value) => option._id === state.form?.profession_id}
+                          value={selectProfession()}
+                          onChange={(event, value) => {
+                            if (value) {
+                              handleSelectProfession(value)
+                            }
+                          }}
+                          size="small"
+                          fullWidth
+                        />
+                      </FormGroupSection>
+                    </Grid>
+                    <Grid item md={12} xs={12}>
                       <FormGroupSection>
                         <Autocomplete
                           id="combo-box-users"
@@ -399,12 +448,14 @@ export default function AreaForm(props: RouteComponentProps<IPageParams>) {
                           getOptionLabel={(option) => option.name}
                           renderInput={(params) => <TextField {...params} label="Prestador" variant="outlined" autoComplete="off" />}
                           size="small"
+                          value={state.form?.user_id}
                           onChange={(event, value) => {
                             if (value) {
                               handleSelectUser({ _id: value._id || '', name: value.name })
                             }
                           }}
                           autoComplete={false}
+                          disabled={!state.form?.profession_id}
                           fullWidth
                         />
                       </FormGroupSection>
