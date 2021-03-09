@@ -41,12 +41,10 @@ import {
   InputLabel,
   InputAdornment,
   MenuItem,
-  Snackbar,
 } from '@material-ui/core';
 import { SearchOutlined } from '@material-ui/icons';
 import Autocomplete from '@material-ui/lab/Autocomplete';
 
-import Alert from '../../../components/Alert';
 import Sidebar from '../../../components/Sidebar';
 import { FormTitle, SelectComponent as Select } from '../../../styles/components/Form';
 import { SwitchComponent as Switch } from '../../../styles/components/Switch';
@@ -886,15 +884,15 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
                 Próximo
               </ButtonComponent>
             ) : (
-                <>
-                  <ButtonComponent background="default" onClick={() => selectTab(0)}>
-                    Voltar
+              <>
+                <ButtonComponent background="default" onClick={() => selectTab(0)}>
+                  Voltar
                   </ButtonComponent>
-                  <ButtonComponent background="success" onClick={handleSaveFormUser}>
-                    Salvar
+                <ButtonComponent background="success" onClick={handleSaveFormUser}>
+                  Salvar
                 </ButtonComponent>
-                </>
-              )}
+              </>
+            )}
           </ButtonsContent>
         </FormSection>
       </Container>

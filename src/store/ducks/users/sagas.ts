@@ -137,9 +137,9 @@ export function* getProfessions({ payload }: any) {
   }
 }
 
-export function* searchUser({ payload: { value } }: any) {
+export function* searchUser({ payload: { data } }: any) {
   try {
-    const response: AxiosResponse = yield call(apiSollar.get, `/user/?limit=10&page=1${!!value ? '&search=' + value : ''}`)
+    const response: AxiosResponse = yield call(apiSollar.get, `/user/?limit=10&page=1`, { params: data })
     yield put(loadSuccess(response.data))
   } catch (error) {
     toast.info("Não foi possível buscar os dados do usuário");
@@ -150,8 +150,6 @@ export function* searchUser({ payload: { value } }: any) {
 export function* getUserTypes({ payload: { value } }: any) {
   try {
     const response: AxiosResponse = yield call(apiSollar.get, `/usertype/?limit=10&page=1${!!value ? '&search=' + value : ''}`)
-
-    console.log('saga: getUserTypes => response.data', response.data)
 
     yield put(loadUserTypesSuccess(response.data))
   } catch (error) {
