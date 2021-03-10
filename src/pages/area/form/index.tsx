@@ -103,6 +103,7 @@ export default function AreaForm(props: RouteComponentProps<IPageParams>) {
     created_by: { _id: '5fb81e21c7921937fdb79994' },
     active: true
   });
+  const [users, setUsers] = useState<any[]>([]);
 
   const [currentTab, setCurrentTab] = useState(0);
 
@@ -136,6 +137,12 @@ export default function AreaForm(props: RouteComponentProps<IPageParams>) {
     }));
 
   }, [areaState]);
+
+  useEffect(() => {
+    if (users.length === 0) {
+      setUsers(userState.list.data);
+    }
+  }, [userState.data]);
 
   function handleLocations(name: string) {
     dispatch(getDistrictsAction(name));
@@ -240,9 +247,9 @@ export default function AreaForm(props: RouteComponentProps<IPageParams>) {
     const selected = userState.data.professions.filter(item => item._id === state.form?.profession_id);
 
     return (selected[0]) ? selected[0] : null;
-  }, [state, userState.data.professions]);
+  }, [state, userState.data.professions, users]);
 
-  function handleSelectUser(value: UserAreaInterface) {
+  const handleSelectUser = useCallback((value: UserAreaInterface) => {
     setState(prevState => ({
       ...prevState,
       users: [...prevState.users, value],
@@ -251,28 +258,46 @@ export default function AreaForm(props: RouteComponentProps<IPageParams>) {
         user_id: null,
       }
     }));
-  }
 
-  function handleDeleteUser(user: UserAreaInterface) {
+    let usersCopy = [...users];
+
+    const userIndex = usersCopy.findIndex(item => item._id === value._id);
+
+    if (userIndex > -1) {
+      usersCopy.splice(userIndex, 1);
+      setUsers(usersCopy);
+    }
+
+  }, [users]);
+
+  const handleDeleteUser = useCallback((user: UserAreaInterface) => {
     let usersSelected = [...state.users];
+
     const userFounded = usersSelected.findIndex((item: any) => {
       return user._id === item._id
     });
 
     if (userFounded > -1) {
-      usersSelected.splice(userFounded, 1);
-    };
+      const userData = usersSelected.find((item: any) => {
+        return user._id === item._id
+      });
 
-    setState(prevState => ({
-      ...prevState,
-      users: usersSelected
-    }))
-  }
+      let usersCopy = [...users];
+      usersCopy.push(userData);
+      setUsers(usersCopy);
+
+      usersSelected.splice(userFounded, 1);
+
+      setState(prevState => ({
+        ...prevState,
+        users: usersSelected
+      }));
+    }
+  }, [state.users]);
 
   return (
     <Sidebar>
       {areaState.loading && <Loading />}
-      {console.log(`areaState`, areaState)}
       <Container>
         <FormSection>
           <FormContent>
@@ -444,7 +469,7 @@ export default function AreaForm(props: RouteComponentProps<IPageParams>) {
                       <FormGroupSection>
                         <Autocomplete
                           id="combo-box-users"
-                          options={userState.list.data}
+                          options={users}
                           getOptionLabel={(option) => option.name}
                           renderInput={(params) => <TextField {...params} label="Prestador" variant="outlined" autoComplete="off" />}
                           size="small"
