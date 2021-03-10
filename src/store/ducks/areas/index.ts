@@ -18,6 +18,7 @@ export const INITIAL_STATE: AreaState = {
   },
   error: false,
   loading: false,
+  success: false,
 };
 
 const reducer: Reducer<AreaState> = (state = INITIAL_STATE, action) => {
@@ -50,7 +51,7 @@ const reducer: Reducer<AreaState> = (state = INITIAL_STATE, action) => {
         data: action.payload.data,
         loading: true,
         error: false,
-        success: true
+        success: false
       }
     case AreaTypes.UPDATE_AREA_SUCCESS:
       return {
