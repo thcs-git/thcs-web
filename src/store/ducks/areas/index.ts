@@ -4,7 +4,7 @@ import { AreaState, AreaTypes } from './types';
 export const INITIAL_STATE: AreaState = {
   data: {
     name: '',
-    supply_days: 0,
+    supply_days: 1,
     week_day: 0,
     users: [],
     neighborhoods: [],

@@ -68,6 +68,8 @@ export default function CouncilList() {
               { name: 'Área', align: 'left', },
               { name: 'Intervalo de Abastecimento', align: 'left' },
               { name: 'Dia de Abastecimento', align: 'left' },
+              { name: 'Qtd. Bairros', align: 'left' },
+              { name: 'Qtd. Prestadores', align: 'left' },
               { name: 'Status', align: 'left' },
             ]}
           >
@@ -77,7 +79,9 @@ export default function CouncilList() {
                   <Link key={index} to={`/area/${area._id}/edit`}>{area.name}</Link>
                 </TableCell>
                 <TableCell align="left">{area.supply_days}{area.supply_days < 2 ? ' dia' : ' dias'}</TableCell>
-                <TableCell align="left">{getDayOfTheWeekName(area.week_day)}</TableCell>
+                <TableCell align="left">{area.week_day ? getDayOfTheWeekName(area.week_day) : '-'}</TableCell>
+                <TableCell align="left">{area.neighborhoods.length}</TableCell>
+                <TableCell align="left">{area.users.length}</TableCell>
                 <TableCell align="left">
                   <ListItemStatus active={area.active}>{area.active ? 'Ativo' : 'Inativo'}</ListItemStatus>
                 </TableCell>

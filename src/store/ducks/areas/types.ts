@@ -40,7 +40,7 @@ export interface AreaInterface {
   name: string;
   describe?: string;
   supply_days: number;
-  week_day: number;
+  week_day: number | null;
   users: (UserAreaInterface | {})[],
   neighborhoods: (NeighborhoodAreaInterface | {})[],
   created_by?: { _id: string };
