@@ -139,10 +139,8 @@ export default function AreaForm(props: RouteComponentProps<IPageParams>) {
   }, [areaState]);
 
   useEffect(() => {
-    if (users.length === 0) {
-      setUsers(userState.list.data);
-    }
-  }, [userState.data]);
+    setUsers(userState.list.data);
+  }, [userState.list.data]);
 
   function handleLocations(name: string) {
     dispatch(getDistrictsAction(name));
@@ -247,7 +245,7 @@ export default function AreaForm(props: RouteComponentProps<IPageParams>) {
     const selected = userState.data.professions.filter(item => item._id === state.form?.profession_id);
 
     return (selected[0]) ? selected[0] : null;
-  }, [state, userState.data.professions, users]);
+  }, [state, userState.data.professions]);
 
   const handleSelectUser = useCallback((value: UserAreaInterface) => {
     setState(prevState => ({
