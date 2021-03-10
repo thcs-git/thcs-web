@@ -80,6 +80,7 @@ export interface AreaState {
   };
   loading: boolean;
   error: boolean;
+  success: boolean;
 }
 
 export type LoadRequestParams = Partial<Omit<AreaList, 'data'>>

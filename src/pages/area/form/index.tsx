@@ -136,6 +136,10 @@ export default function AreaForm(props: RouteComponentProps<IPageParams>) {
       ...areaState.data
     }));
 
+    if (areaState.success) {
+      history.push('/area');
+    }
+
   }, [areaState]);
 
   useEffect(() => {
