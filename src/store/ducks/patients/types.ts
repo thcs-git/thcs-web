@@ -1,3 +1,5 @@
+import { AreaInterface } from "../areas/types";
+
 /**
  * Action types
  */
@@ -62,7 +64,7 @@ export interface PatientInterface {
   national_id: string;
   issuing_organ: string;
   address_id: PatientAddressInterface;
-  area_id?: string;
+  area_id?: string | AreaInterface;
   email: string;
   phones: PatientPhonesInterface[] | [];
   sus_card: string;
@@ -97,6 +99,7 @@ export interface PatientList {
 export interface PatientDataItems {
   _id: string;
   name: string;
+  mother_name: string;
   social_name: string;
   email: string;
   fiscal_number: string;
