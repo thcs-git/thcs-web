@@ -43,8 +43,6 @@ export const ListItemStatus = styled.div<IListItemStatus>`
   color: ${(props) => (props.active ? `var(--success)` : `var(--danger)`)};
   font-weight: bold;
 
-  padding: 16px;
-
   width: 80px;
 `;
 

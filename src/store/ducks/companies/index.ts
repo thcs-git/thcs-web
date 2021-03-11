@@ -17,6 +17,7 @@ export const INITIAL_STATE: CompanyState = {
       state: '',
       complement: '',
     },
+    responsable_name: '',
     email: '',
     phone: '',
     cellphone: '',
@@ -121,6 +122,9 @@ const reducer: Reducer<CompanyState> = (state = INITIAL_STATE, action) => {
       }
     case CompanyTypes.SEARCH_REQUEST:
       return { ...state, loading: true, error: false };
+
+    case CompanyTypes.CLEAN:
+      return INITIAL_STATE;
     default:
       return state;
   }

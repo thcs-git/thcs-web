@@ -1,9 +1,9 @@
 import styled from 'styled-components';
 import { Select } from '@material-ui/core';
 
-export const FormTitle = styled.h3`
+export const FormTitle = styled.h2`
   color: var(--primary);
-  margin-bottom: 20px;
+  margin-bottom: 40px;
 `;
 
 export const SelectComponent = styled(Select)`

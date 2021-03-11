@@ -18,3 +18,5 @@ export const loadCompanyById = (id: string) => action(CompanyTypes.LOAD_REQUEST_
 export const loadSuccessGetCompanyById = (data: CompanyInterface) => action(CompanyTypes.LOAD_SUCCESS_COMPANY_BY_ID, { data });
 
 export const searchRequest = (value: string) => action(CompanyTypes.SEARCH_REQUEST, { value });
+
+export const cleanAction = () => action(CompanyTypes.CLEAN);
