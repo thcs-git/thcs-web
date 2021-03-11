@@ -8,7 +8,7 @@ export const INITIAL_STATE: AreaState = {
     supply_days: 0,
     week_day: 0,
     users: [],
-    districts: [],
+    neighborhoods: [],
     active: true,
   },
   list: {
@@ -103,7 +103,7 @@ const reducer: Reducer<AreaState> = (state = INITIAL_STATE, action) => {
           supply_days: state.data.supply_days,
           week_day: state.data.week_day,
           users: state.data.users,
-          districts: [],
+          neighborhoods: [],
           active: state.data.active,
         },
         citys: action.payload.data,
