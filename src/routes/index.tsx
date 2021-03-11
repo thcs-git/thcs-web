@@ -43,11 +43,13 @@ import AvaliationList from '../pages/avaliation/list';
 // import CareOverview from '../pages/patient/overview';
 
 import Login from '../pages/login';
+import Register from '../pages/register';
 
 const Routes = () => (
   <BrowserRouter>
     <Switch>
       <GuestRoute path="/login" component={Login} />
+      <GuestRoute path="/register" component={Register} />
 
       <PrivateRoute path="/" component={Dashboard} exact />
       <PrivateRoute path="/dashboard" component={Dashboard} />
