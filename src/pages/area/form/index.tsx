@@ -1,5 +1,7 @@
 import React, { useState, useEffect, useCallback, ReactNode } from 'react';
 import debounce from 'lodash.debounce';
+import validator from 'validator';
+import { toast } from 'react-toastify';
 
 import { useDispatch, useSelector } from 'react-redux';
 import { ApplicationState } from '../../../store';
@@ -18,7 +20,9 @@ import {
   DialogContent,
   DialogContentText,
   DialogTitle,
+  FormControl,
   FormControlLabel,
+  FormHelperText,
   Grid,
   Tabs,
 } from '@material-ui/core';
@@ -55,11 +59,8 @@ interface IFormFields extends AreaInterface {
 interface IPageParams {
   id?: string;
 }
-
-interface TabPanelProps {
-  children?: ReactNode;
-  index: any;
-  value: any;
+interface BigObject<T> {
+  [index: string]: T
 }
 
 export default function AreaForm(props: RouteComponentProps<IPageParams>) {
@@ -103,6 +104,13 @@ export default function AreaForm(props: RouteComponentProps<IPageParams>) {
     created_by: { _id: '5fb81e21c7921937fdb79994' },
     active: true
   });
+  const [fieldsValidation, setFieldValidations] = useState<any>({
+    name: false,
+    supply_days: true,
+    week_day: true,
+    users: true,
+    neighborhoods: true,
+  });
   const [users, setUsers] = useState<any[]>([]);
 
   const [currentTab, setCurrentTab] = useState(0);
@@ -140,17 +148,47 @@ export default function AreaForm(props: RouteComponentProps<IPageParams>) {
       history.push('/area');
     }
 
+    // Força o validador em 'true' quando entrar na tela para editar
+    if (params?.id) {
+      setFieldValidations({
+        name: true,
+        supply_days: true,
+        week_day: true,
+        users: true,
+        neighborhoods: true,
+      })
+    }
+
   }, [areaState]);
 
   useEffect(() => {
     setUsers(userState.list.data);
   }, [userState.list.data]);
 
+  const handleValidateFields = useCallback(() => {
+    let isValid: boolean = true;
+
+    for (let key of Object.keys(fieldsValidation)) {
+      if (!fieldsValidation[key]) {
+        isValid = false;
+      }
+    }
+
+    return isValid;
+
+  }, [fieldsValidation, state]);
+
   function handleLocations(name: string) {
     dispatch(getDistrictsAction(name));
   }
 
   function handleSaveFormArea() {
+
+    if (!handleValidateFields()) {
+      toast.error('Existem campos que precisam ser preenchidos para continuar');
+      return;
+    }
+
     if (state?._id) {
       dispatch(updateAreaRequest(state));
     } else {
@@ -176,13 +214,15 @@ export default function AreaForm(props: RouteComponentProps<IPageParams>) {
       ...prevState,
       supply_days: value,
       week_day: (value === 1) ? -1 : prevState.week_day
-    }))
+    }));
+
+    setFieldValidations((prevState: any) => ({ ...prevState, week_day: !(value >= 1 && state.week_day === 0) }))
   }
 
   const handleDayOfTheWeek = useCallback((event: any, newValue: any) => {
     setState(prevState => ({
       ...prevState,
-      week_day: newValue.id,
+      week_day: newValue?.id || null,
       form: {
         ...prevState.form,
         dayOfTheWeek: newValue,
@@ -326,25 +366,30 @@ export default function AreaForm(props: RouteComponentProps<IPageParams>) {
                     <Grid item md={12} xs={12}>
                       <FormGroupSection>
                         <TextField
-                          id="input-name"
+                          id="input-area-name"
                           label="Nome"
                           variant="outlined"
                           size="small"
                           value={state.name}
-                          onChange={(element) => setState(prevState => ({ ...prevState, name: element.target.value }))}
-                          autoComplete="off"
+                          onChange={(element) => {
+                            setState(prevState => ({ ...prevState, name: element.target.value }));
+                            setFieldValidations((prevState: any) => ({ ...prevState, name: !validator.isEmpty(element.target.value) }));
+                          }}
+                          error={!fieldsValidation.name}
+                          helperText={!fieldsValidation.name ? `Por favor, insira um nome para a área.` : null}
+                          autoComplete="new-password"
                           fullWidth
                         />
                       </FormGroupSection>
                     </Grid>
-                    <Grid item md={7} xs={12}>
-                      <FormGroupSection>
+                    <Grid item md={7} sm={10} xs={12}>
+                      <FormGroupSection error>
                         <p>Abastecimento/dias</p>
                         <div style={{ paddingLeft: 10 }}>
                           <Slider
                             marks={supplyIntervals}
                             value={state.supply_days}
-                            defaultValue={0}
+                            defaultValue={1}
                             getAriaValueText={value => `${value}`}
                             aria-labelledby="discrete-slider-restrict"
                             step={null}
@@ -359,22 +404,32 @@ export default function AreaForm(props: RouteComponentProps<IPageParams>) {
                     <Grid item md={5}>
                     </Grid>
                     {state.supply_days > 1 && (
-                      <Grid item md={4} xs={12}>
-                        <FormGroupSection>
+                      <Grid item md={4} sm={6} xs={12}>
+                        <FormGroupSection error>
                           <Autocomplete
                             id="combo-box-day-of-week"
-                            options={daysOfTheWeek}
-                            getOptionLabel={(option) => option.name}
-                            renderInput={(params) => <TextField {...params} label="Dia da semana" variant="outlined" autoComplete="off" />}
-                            value={state.form?.dayOfTheWeek ?? null}
-                            getOptionSelected={(option, value) => option.id === state.week_day}
-                            onChange={(event: any, newValue) => {
-                              handleDayOfTheWeek(event, newValue);
-                            }}
                             size="small"
                             autoComplete={false}
+                            options={daysOfTheWeek}
+                            getOptionLabel={(option) => option.name}
+                            value={state.form?.dayOfTheWeek ?? null}
+                            getOptionSelected={(option, value) => option.id === state.week_day}
+                            renderInput={(params) => (
+                              <TextField
+                                {...params}
+                                label="Dia da semana"
+                                variant="outlined"
+                                autoComplete="new-password"
+                                error={!fieldsValidation.week_day}
+                              />
+                            )}
+                            onChange={(event: any, newValue) => {
+                              handleDayOfTheWeek(event, newValue);
+                              setFieldValidations((prevState: any) => ({ ...prevState, week_day: !validator.isEmpty(newValue?.name || '') }));
+                            }}
                             fullWidth
                           />
+                          {!fieldsValidation.week_day && <FormHelperText>Selecione um dia da semana</FormHelperText>}
                         </FormGroupSection>
                       </Grid>
                     )}
@@ -399,7 +454,7 @@ export default function AreaForm(props: RouteComponentProps<IPageParams>) {
                           id="combo-box-district"
                           options={areaState.districts?.data || []}
                           getOptionLabel={(option) => `${option.state} - ${option.name}`}
-                          renderInput={(params) => <TextField {...params} label="Cidades" variant="outlined" />}
+                          renderInput={(params) => <TextField {...params} label="Cidades" variant="outlined" autoComplete="new-password" />}
                           size="small"
                           onChange={(event, value) => {
                             if (value) {
@@ -407,7 +462,6 @@ export default function AreaForm(props: RouteComponentProps<IPageParams>) {
                             }
                           }}
                           onInputChange={(event, value) => debounceSearchLocations(value)}
-                          autoComplete={false}
                           fullWidth
                         />
                       </FormGroupSection>
@@ -418,16 +472,13 @@ export default function AreaForm(props: RouteComponentProps<IPageParams>) {
                           id="combo-box-neigthborhoods"
                           options={state.form?.neighborhoods || []}
                           getOptionLabel={(option) => `${option.name}`}
-                          renderInput={(params) => <TextField {...params} label="Bairros" variant="outlined" autoComplete="off" />}
+                          renderInput={(params) => <TextField {...params} label="Bairros" variant="outlined" autoComplete="new-password" />}
                           size="small"
                           onChange={(event, value) => {
-                            console.log(`value`, value);
                             if (value) {
                               handleSelectNeighborhood(value)
                             }
                           }}
-                          // onInputChange={(event, value) => debounceSearchLocations(value)}
-                          autoComplete={false}
                           fullWidth
                         />
                       </FormGroupSection>
@@ -454,7 +505,7 @@ export default function AreaForm(props: RouteComponentProps<IPageParams>) {
                           id="combo-box-profession"
                           options={userState.data.professions || []}
                           getOptionLabel={(option) => option.name}
-                          renderInput={(params) => <TextField {...params} label="Função" variant="outlined" />}
+                          renderInput={(params) => <TextField {...params} label="Função" variant="outlined" autoComplete="new-password" />}
                           getOptionSelected={(option, value) => option._id === state.form?.profession_id}
                           value={selectProfession()}
                           onChange={(event, value) => {
@@ -470,10 +521,10 @@ export default function AreaForm(props: RouteComponentProps<IPageParams>) {
                     <Grid item md={12} xs={12}>
                       <FormGroupSection>
                         <Autocomplete
-                          id="combo-box-users"
+                          id="combo-box-area-users"
                           options={users}
                           getOptionLabel={(option) => option.name}
-                          renderInput={(params) => <TextField {...params} label="Prestador" variant="outlined" autoComplete="off" />}
+                          renderInput={(params) => <TextField {...params} label="Prestador" variant="outlined" autoComplete="new-password" />}
                           size="small"
                           value={state.form?.user_id}
                           onChange={(event, value) => {
@@ -481,7 +532,6 @@ export default function AreaForm(props: RouteComponentProps<IPageParams>) {
                               handleSelectUser({ _id: value._id || '', name: value.name })
                             }
                           }}
-                          autoComplete={false}
                           disabled={!state.form?.profession_id}
                           fullWidth
                         />
