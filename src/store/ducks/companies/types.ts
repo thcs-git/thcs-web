@@ -19,6 +19,8 @@ export enum CompanyTypes {
   UPDATE_COMPANY_SUCCESS = "@company/UPDATE_COMPANY_SUCCESS",
 
   SEARCH_REQUEST = "@company/SEARCH_REQUEST",
+
+  CLEAN = "@company/CLEAN",
 }
 
 /**
@@ -40,6 +42,7 @@ export interface CompanyInterface {
     state: string;
     complement: string;
   };
+  responsable_name: string;
   email: string;
   phone: string;
   cellphone: string;
@@ -73,6 +76,7 @@ export interface CompanyInterface {
   },
   active: boolean;
   created_by: { _id: string };
+  created_at?: string;
 }
 
 export interface ViacepDataInterface {

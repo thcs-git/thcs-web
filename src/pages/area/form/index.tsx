@@ -104,6 +104,7 @@ export default function AreaForm(props: RouteComponentProps<IPageParams>) {
     created_by: { _id: '5fb81e21c7921937fdb79994' },
     active: true
   });
+
   const [fieldsValidation, setFieldValidations] = useState<any>({
     name: false,
     supply_days: true,
@@ -111,10 +112,9 @@ export default function AreaForm(props: RouteComponentProps<IPageParams>) {
     users: true,
     neighborhoods: true,
   });
+
   const [users, setUsers] = useState<any[]>([]);
-
   const [currentTab, setCurrentTab] = useState(0);
-
   const debounceSearchLocations = debounce(handleLocations, 900);
 
   const selectTab = useCallback((index: number) => {
