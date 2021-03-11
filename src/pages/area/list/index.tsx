@@ -17,10 +17,7 @@ import Sidebar from '../../../components/Sidebar';
 import Table from '../../../components/Table';
 
 import { FormTitle } from '../../../styles/components/Form';
-import {
-  ListLink,
-  ListItemStatus,
-} from './styles';
+import { ListItemStatus } from './styles';
 
 export default function CouncilList() {
   const history = useHistory();
