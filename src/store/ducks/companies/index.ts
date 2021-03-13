@@ -77,6 +77,13 @@ const reducer: Reducer<CompanyState> = (state = INITIAL_STATE, action) => {
           }
         }
       };
+    case CompanyTypes.LOAD_REQUEST_COMPANY_BY_ID:
+      return {
+        ...state,
+        loading: true,
+        error: false,
+        success: false,
+      };
     case CompanyTypes.LOAD_SUCCESS_COMPANY_BY_ID:
       return {
         ...state,
@@ -85,7 +92,6 @@ const reducer: Reducer<CompanyState> = (state = INITIAL_STATE, action) => {
         error: false,
         success: false,
       };
-
     case CompanyTypes.CREATE_COMPANY_REQUEST:
       return {
         ...state,

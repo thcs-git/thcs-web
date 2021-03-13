@@ -25,6 +25,8 @@ export enum UserTypes {
 
   LOAD_REQUEST_USER_TYPES = "@user/LOAD_REQUEST_USER_TYPES",
   LOAD_RESPONSE_USER_TYPES = "@user/LOAD_RESPONSE_USER_TYPES",
+
+  CLEAN = "@user/CLEAN",
 }
 
 /**
