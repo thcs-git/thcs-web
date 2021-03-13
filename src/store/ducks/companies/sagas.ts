@@ -40,8 +40,30 @@ export function* getAddress({ payload }: any) {
 }
 
 export function* store({ payload: { data } }: any) {
-  console.log('data', data);
   try {
+    const phones = [];
+
+    if (data?.phone?.length > 0) {
+      phones.push({
+        whatsapp: false,
+        telegram: false,
+        number: data.phone
+      });
+    }
+
+    if (data?.cellphone?.length > 0) {
+      phones.push({
+        whatsapp: false,
+        telegram: false,
+        number: data.cellphone
+      });
+    }
+
+    data.phones = phones;
+
+    delete data.phone;
+    delete data.cellphone;
+
     const response: AxiosResponse = yield call(apiSollar.post, `/companies/store`, data, { headers: { token } })
 
     yield put(createCompanySuccess(response.data))
@@ -55,7 +77,20 @@ export function* store({ payload: { data } }: any) {
 
 export function* getById({ payload: { id: _id } }: any) {
   try {
-    const response: AxiosResponse = yield call(apiSollar.get, `/companies`, { params: { _id } })
+    const response: AxiosResponse = yield call(apiSollar.get, `/companies`, { params: { _id } });
+
+    const { phones = [] } = response.data;
+
+    if (phones.length > 0) {
+      phones.forEach((phone: any) => {
+        if (phone.phone) {
+          response.data.phone = phone.phone;
+        } else if (phone.cellphone) {
+          response.data.cellphone = phone.cellphone;
+        }
+      })
+    }
+
     yield put(loadSuccessGetCompanyById(response.data))
 
   } catch (error) {
@@ -67,6 +102,32 @@ export function* update({ payload: { data } }: any) {
   const { _id } = data;
 
   try {
+    const phones = [];
+
+    console.log('data', data);
+
+
+    if (data?.phone?.length > 0) {
+      phones.push({
+        whatsapp: false,
+        telegram: false,
+        phone: data.phone
+      });
+    }
+
+    if (data?.cellphone?.length > 0) {
+      phones.push({
+        whatsapp: false,
+        telegram: false,
+        cellphone: data.cellphone
+      });
+    }
+
+    data.phones = phones;
+
+    delete data.phone;
+    delete data.cellphone;
+
     const response: AxiosResponse = yield call(apiSollar.put, `/companies/${_id}/update`, { ...data })
 
     toast.success('Empresa atualizada com sucesso!');
