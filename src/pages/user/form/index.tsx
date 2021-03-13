@@ -9,6 +9,7 @@ import {
   loadUserById,
   loadProfessionsRequest as getProfessionsAction,
   loadUserTypesRequest as getUserTypesAction,
+  cleanAction
 } from '../../../store/ducks/users/actions';
 import { UserInterface, ProfessionUserInterface } from '../../../store/ducks/users/types';
 
@@ -130,6 +131,7 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
   const [openModalCancel, setOpenModalCancel] = useState(false);
 
   useEffect(() => {
+    dispatch(cleanAction());
     dispatch(getSpecialtiesAction());
     dispatch(getCouncilsAction());
     dispatch(getProfessionsAction());

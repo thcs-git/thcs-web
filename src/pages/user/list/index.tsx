@@ -1,8 +1,7 @@
 import React, { useState, useEffect, useCallback, ChangeEvent } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
-import { Container, FormControl, InputLabel, OutlinedInput, InputAdornment, IconButton } from '@material-ui/core';
-import { SearchOutlined } from '@material-ui/icons';
+import { Container } from '@material-ui/core';
 import debounce from 'lodash.debounce';
 
 import { UserInterface } from '../../../store/ducks/users/types';
@@ -10,13 +9,12 @@ import { UserInterface } from '../../../store/ducks/users/types';
 import Loading from '../../../components/Loading';
 
 import { ApplicationState } from '../../../store';
-import { loadRequest, searchRequest } from '../../../store/ducks/users/actions';
+import { loadRequest, searchRequest, cleanAction } from '../../../store/ducks/users/actions';
 
 import PaginationComponent from '../../../components/Pagination';
 import Sidebar from '../../../components/Sidebar';
 import SearchComponent from '../../../components/List/Search';
 import { FormTitle } from '../../../styles/components/Form';
-import Button from '../../../styles/components/Button';
 import {
   List,
   ListLink,
@@ -24,9 +22,6 @@ import {
   ListItemContent,
   ListItemStatus,
   ListItemTitle,
-  ListItemSubTitle,
-  FormSearch,
-  ButtonsContent,
 } from './styles';
 
 const token = window.localStorage.getItem('token');
@@ -43,6 +38,7 @@ export default function UserList() {
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
 
   useEffect(() => {
+    dispatch(cleanAction());
     dispatch(loadRequest());
   }, [])
 
