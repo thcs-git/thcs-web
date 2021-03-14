@@ -1,7 +1,8 @@
 import React, { useState, useEffect, useCallback, ChangeEvent } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { useHistory } from 'react-router-dom';
-import { Container } from '@material-ui/core';
+import { useHistory, Link } from 'react-router-dom';
+import { Container, Button, Menu, MenuItem, TableRow, TableCell } from '@material-ui/core';
+import { MoreVert } from '@material-ui/icons';
 import debounce from 'lodash.debounce';
 
 import { UserInterface } from '../../../store/ducks/users/types';
@@ -14,6 +15,8 @@ import { loadRequest, searchRequest, cleanAction } from '../../../store/ducks/us
 import PaginationComponent from '../../../components/Pagination';
 import Sidebar from '../../../components/Sidebar';
 import SearchComponent from '../../../components/List/Search';
+import Table from '../../../components/Table';
+
 import { FormTitle } from '../../../styles/components/Form';
 import {
   List,
@@ -23,6 +26,7 @@ import {
   ListItemStatus,
   ListItemTitle,
 } from './styles';
+import { formatDate } from '../../../helpers/date';
 
 const token = window.localStorage.getItem('token');
 
@@ -42,13 +46,13 @@ export default function UserList() {
     dispatch(loadRequest());
   }, [])
 
-  const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
+  const handleOpenRowMenu = useCallback((event: React.MouseEvent<HTMLButtonElement>) => {
     setAnchorEl(event.currentTarget);
-  };
+  }, [anchorEl]);
 
-  const handleClose = () => {
+  const handleCloseRowMenu = useCallback(() => {
     setAnchorEl(null);
-  };
+  }, [anchorEl]);
 
   const handleChangeInput = useCallback((event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     setSearch(event.target.value)
@@ -70,21 +74,48 @@ export default function UserList() {
             onChangeInput={debounceSearchRequest}
           />
 
-          <List>
+          <Table
+            tableCells={[
+              { name: 'Prestador', align: 'left', },
+              { name: 'Especialidades', align: 'left' },
+              { name: 'Adicionado em', align: 'left' },
+              { name: 'Status', align: 'left' },
+              { name: '', align: 'left' },
+            ]}
+          >
             {userState.list.data.map((user, index) => (
-              <ListLink key={index} to={`/user/${user._id}/edit`}>
-                <ListItem variant="outlined">
-                  <ListItemContent>
-                    <ListItemStatus active={user.active}>{user.active ? 'Ativo' : 'Inativo'}</ListItemStatus>
-                    <div>
-                      <ListItemTitle>{user.name}</ListItemTitle>
-                      {/* <ListItemSubTitle>{user.user_type_id.description} • {user.especialties[0].description}</ListItemSubTitle> */}
-                    </div>
-                  </ListItemContent>
-                </ListItem>
-              </ListLink>
+              <TableRow key={`user_${index}`}>
+                <TableCell align="left">
+                  <Link key={index} to={`/user/${user._id}/edit`}>{user.name}</Link>
+                </TableCell>
+                <TableCell>
+                  {user.specialties.map((specialty, index) => (
+                    `${specialty.name}${index < (user.specialties.length - 1) ? ',' : ''}`
+                  ))}
+                </TableCell>
+                <TableCell>
+                  {formatDate(user.created_at, 'DD/MM/YYYY HH:mm:ss')}
+                </TableCell>
+                <TableCell>
+                  <ListItemStatus active={user.active}>{user.active ? 'Ativo' : 'Inativo'}</ListItemStatus>
+                </TableCell>
+                <TableCell align="center">
+                  <Button aria-controls={`user-menu${index}`} id={`btn_user-menu${index}`} aria-haspopup="true" onClick={handleOpenRowMenu}>
+                    <MoreVert style={{ color: '#0899BA' }} />
+                  </Button>
+                  <Menu
+                    id={`user-menu${index}`}
+                    anchorEl={anchorEl}
+                    keepMounted
+                    open={anchorEl?.id === `btn_user-menu${index}`}
+                    onClose={handleCloseRowMenu}
+                  >
+                    <MenuItem onClick={() => history.push(`/user/${user._id}/edit`)}>Editar</MenuItem>
+                  </Menu>
+                </TableCell>
+              </TableRow>
             ))}
-          </List>
+          </Table>
           <PaginationComponent
             page={userState.list.page}
             rowsPerPage={userState.list.limit}

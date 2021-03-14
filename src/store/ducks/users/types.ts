@@ -34,7 +34,7 @@ export enum UserTypes {
  */
 
 export interface SpecialtiesUserInterface {
-  id: string;
+  _id: string;
   name: string;
 };
 export interface ProfessionUserInterface {
@@ -60,6 +60,8 @@ export interface UserListItems {
   _id: string;
   name: string;
   email: string;
+  created_at: string;
+  specialties: SpecialtiesUserInterface[];
   active: boolean;
 }
 
