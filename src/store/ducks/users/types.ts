@@ -25,6 +25,8 @@ export enum UserTypes {
 
   LOAD_REQUEST_USER_TYPES = "@user/LOAD_REQUEST_USER_TYPES",
   LOAD_RESPONSE_USER_TYPES = "@user/LOAD_RESPONSE_USER_TYPES",
+
+  CLEAN = "@user/CLEAN",
 }
 
 /**
@@ -32,7 +34,7 @@ export enum UserTypes {
  */
 
 export interface SpecialtiesUserInterface {
-  id: string;
+  _id: string;
   name: string;
 };
 export interface ProfessionUserInterface {
@@ -58,6 +60,8 @@ export interface UserListItems {
   _id: string;
   name: string;
   email: string;
+  created_at: string;
+  specialties: SpecialtiesUserInterface[];
   active: boolean;
 }
 

@@ -1,7 +1,6 @@
 import React, { useState, useEffect, useCallback, ChangeEvent } from 'react';
 import { useHistory, Link } from 'react-router-dom';
 import { Container, TableRow, TableCell } from '@material-ui/core';
-import { SearchOutlined } from '@material-ui/icons';
 import debounce from 'lodash.debounce';
 
 

@@ -1,4 +1,23 @@
 import React, { useState, useEffect, useCallback } from 'react';
+import { useHistory, RouteComponentProps } from 'react-router-dom';
+import {
+  Button,
+  Container,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogContentText,
+  DialogTitle,
+  Divider,
+  Grid,
+  FormControl,
+  FormControlLabel,
+  InputLabel,
+  InputAdornment,
+  MenuItem,
+} from '@material-ui/core';
+import { SearchOutlined } from '@material-ui/icons';
+import Autocomplete from '@material-ui/lab/Autocomplete';
 import InputMask, { Props } from 'react-input-mask';
 
 import { useDispatch, useSelector } from 'react-redux';
@@ -9,6 +28,7 @@ import {
   loadUserById,
   loadProfessionsRequest as getProfessionsAction,
   loadUserTypesRequest as getUserTypesAction,
+  cleanAction
 } from '../../../store/ducks/users/actions';
 import { UserInterface, ProfessionUserInterface } from '../../../store/ducks/users/types';
 
@@ -25,25 +45,6 @@ import { ApplicationState } from '../../../store';
 
 import { ufs } from '../../../helpers/constants/address';
 import Loading from '../../../components/Loading';
-
-import { useHistory, RouteComponentProps } from 'react-router-dom';
-import {
-  Button,
-  Container,
-  Dialog,
-  DialogActions,
-  DialogContent,
-  DialogContentText,
-  DialogTitle,
-  Grid,
-  FormControl,
-  FormControlLabel,
-  InputLabel,
-  InputAdornment,
-  MenuItem,
-} from '@material-ui/core';
-import { SearchOutlined } from '@material-ui/icons';
-import Autocomplete from '@material-ui/lab/Autocomplete';
 
 import Sidebar from '../../../components/Sidebar';
 import { FormTitle, SelectComponent as Select } from '../../../styles/components/Form';
@@ -119,6 +120,8 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
     council_number: '',
     active: true,
   });
+  const [specialties, setSpecialties] = useState<any[]>([]);
+  const [companies, setCompanies] = useState<any[]>([]);
 
   const [form, setForm] = useState<IFormFields>({
     userType: null,
@@ -130,6 +133,7 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
   const [openModalCancel, setOpenModalCancel] = useState(false);
 
   useEffect(() => {
+    dispatch(cleanAction());
     dispatch(getSpecialtiesAction());
     dispatch(getCouncilsAction());
     dispatch(getProfessionsAction());
@@ -142,6 +146,14 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
       dispatch(loadUserById(params.id))
     }
   }, [params]);
+
+  useEffect(() => {
+    setSpecialties(specialtyState.list.data);
+  }, [specialtyState.list.data]);
+
+  useEffect(() => {
+    setCompanies(companyState.list.data);
+  }, [companyState.list.data]);
 
   useEffect(() => {
     if (userState.data._id) {
@@ -258,23 +270,42 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
       ...prevState,
       specialties: [...prevState.specialties, value]
     }));
+
+    let specialtiesCopy: SpecialtyInterface[] = [...specialties];
+
+    const specialtyIndex = specialtiesCopy.findIndex(item => item._id === value._id);
+
+    if (specialtyIndex > -1) {
+      specialtiesCopy.splice(specialtyIndex, 1);
+      setSpecialties(specialtiesCopy);
+    }
   }
 
-  function handleDeleteEspecialty(especialty: SpecialtyInterface) {
+  const handleDeleteEspecialty = useCallback((especialty: SpecialtyInterface) => {
     let specialtiesSelected = [...state.specialties];
+
     const especialtyFounded = specialtiesSelected.findIndex((item: any) => {
       return especialty._id === item._id
     });
 
     if (especialtyFounded > -1) {
-      specialtiesSelected.splice(especialtyFounded, 1);
-    };
+      const specialtyData = specialtiesSelected.find((item: any) => {
+        return especialty._id === item._id
+      });
 
-    setState(prevState => ({
-      ...prevState,
-      specialties: specialtiesSelected
-    }))
-  }
+      let specialtiesCopy = [...specialties];
+
+      specialtiesCopy.push(specialtyData);
+      setSpecialties(specialtiesCopy);
+
+      specialtiesSelected.splice(especialtyFounded, 1);
+
+      setState(prevState => ({
+        ...prevState,
+        specialties: specialtiesSelected
+      }))
+    };
+  }, [state.specialties]);
 
   const selectMainSpecialty = useCallback(() => {
     const selected = specialtyState.list.data.filter(item => item._id === state.main_specialty_id);
@@ -304,23 +335,41 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
       ...prevState,
       companies: [...prevState.companies, value]
     }));
+
+    let companiesCopy: CompanyInterface[] = [...companies];
+
+    const companiesIndex = companiesCopy.findIndex(item => item._id === value._id);
+
+    if (companiesIndex > -1) {
+      companiesCopy.splice(companiesIndex, 1);
+      setCompanies(companiesCopy);
+    }
   }
 
-  function handleDeleteCompany(company: CompanyInterface) {
+  const handleDeleteCompany = useCallback((company: CompanyInterface) => {
     let companiesSelected = [...state.companies];
     const companyFounded = companiesSelected.findIndex((item: any) => {
       return company._id === item._id
-    });
+    })
 
     if (companyFounded > -1) {
-      companiesSelected.splice(companyFounded, 1);
-    };
+      const companyData = companiesSelected.find((item: any) => {
+        return company._id === item._id
+      });
 
-    setState(prevState => ({
-      ...prevState,
-      companies: companiesSelected
-    }))
-  }
+      let companiesCopy = [...companies];
+
+      companiesCopy.push(companyData);
+      setCompanies(companiesCopy);
+
+      companiesSelected.splice(companyFounded, 1);
+
+      setState(prevState => ({
+        ...prevState,
+        companies: companiesSelected
+      }))
+    }
+  }, [state.companies]);
 
   const handleSaveFormUser = useCallback(() => {
     if (state?._id) {
@@ -362,8 +411,19 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
                           fullWidth
                         />
                       </Grid>
+                      <Grid item md={7} xs={12}>
+                        <TextField
+                          id="input-mother-name"
+                          label="Nome da mãe"
+                          variant="outlined"
+                          size="small"
+                          value={state.mother_name}
+                          onChange={(element) => setState({ ...state, mother_name: element.target.value })}
+                          fullWidth
+                        />
+                      </Grid>
 
-                      <Grid item md={2} xs={12}>
+                      <Grid item md={3} xs={12}>
                         <DatePicker
                           id="input-fiscal-birthdate"
                           label="Data de Nascimento"
@@ -387,8 +447,71 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
                           disabled
                         />
                       </Grid>
+                    </Grid>
+                    <Grid container>
+                      <Grid item md={4} xs={12}>
 
-                      <Grid item md={2} xs={12}>
+                        <InputMask
+                          mask="999.999.999-99"
+                          value={state.fiscal_number}
+                          onChange={(element) => setState({ ...state, fiscal_number: element.target.value })}
+                        >
+                          {(inputProps: any) => (
+                            <TextField
+                              {...inputProps}
+                              id="input-fiscal-number"
+                              label="CPF"
+                              variant="outlined"
+                              size="small"
+                              placeholder="000.000.000-00"
+                              fullWidth
+                            />)}
+                        </InputMask>
+                      </Grid>
+                      <Grid item md={3} xs={12}>
+                        <InputMask
+                          mask="9.999-999"
+                          value={state.national_id}
+                          onChange={(element) => setState({ ...state, national_id: element.target.value })}
+                        >
+                          {(inputProps: any) => (
+                            <TextField
+                              {...inputProps}
+                              id="input-nation-id"
+                              label="RG"
+                              variant="outlined"
+                              size="small"
+                              placeholder="0.000-000"
+                              fullWidth
+                            />)}
+                        </InputMask>
+                      </Grid>
+
+                      <Grid item md={5} xs={12}>
+                        <TextField
+                          id="input-emitting-organ"
+                          label="Órgão Emissor"
+                          variant="outlined"
+                          size="small"
+                          value={state.issuing_organ}
+                          onChange={(element) => setState({ ...state, issuing_organ: element.target.value })}
+                          fullWidth
+                        />
+                      </Grid>
+
+                      <Grid item md={4} xs={12}>
+                        <TextField
+                          id="input-nationality"
+                          label="Nacionalidade"
+                          variant="outlined"
+                          size="small"
+                          value={state.nationality}
+                          onChange={(element) => setState({ ...state, nationality: element.target.value })}
+                          fullWidth
+                        />
+                      </Grid>
+
+                      <Grid item md={3} xs={12}>
                         <FormControl variant="outlined" size="small" fullWidth>
                           <InputLabel id="select-patient-gender">Sexo</InputLabel>
                           <Select
@@ -405,108 +528,12 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
                           </Select>
                         </FormControl>
                       </Grid>
-                      <Grid item md={6} xs={12}>
-                        <TextField
-                          id="input-mother-name"
-                          label="Nome da mãe"
-                          variant="outlined"
-                          size="small"
-                          value={state.mother_name}
-                          onChange={(element) => setState({ ...state, mother_name: element.target.value })}
-                          fullWidth
-                        />
-                      </Grid>
-                    </Grid>
-                    <Grid container>
-                      <Grid item md={2} xs={12}>
-                        {/* <TextField
-                          id="input-fiscal-number"
-                          label="CPF"
-                          variant="outlined"
-                          size="small"
-                          value={state.fiscal_number}
-                          onChange={(element) => setState({ ...state, fiscal_number: element.target.value })}
-                          placeholder="000.000.000-00"
-                          fullWidth
-                        /> */}
-
-                        <InputMask
-                          mask="999.999.999-99"
-                          value={state.fiscal_number}
-                          onChange={(element) => setState({ ...state, fiscal_number: element.target.value })}
-                        >
-                          {(inputProps: any) => (
-                            <TextField
-                              {...inputProps}
-                              id="input-fiscal-number"
-                              label="CPF"
-                              variant="outlined"
-                              size="small"
-                              // value={state.fiscal_number}
-                              // onChange={(element) => setState({ ...state, fiscal_number: element.target.value })}
-                              placeholder="000.000.000-00"
-                              fullWidth
-                            />)}
-                        </InputMask>
-                      </Grid>
-                      <Grid item md={2} xs={12}>
-                        {/* <TextField
-                          id="input-nation-id"
-                          label="RG"
-                          variant="outlined"
-                          size="small"
-                          value={state.national_id}
-                          onChange={(element) => setState({ ...state, national_id: element.target.value })}
-                          placeholder="0.000-000"
-                          fullWidth
-                        /> */}
-                        <InputMask
-                          mask="9.999-999"
-                          value={state.national_id}
-                          onChange={(element) => setState({ ...state, national_id: element.target.value })}
-                        >
-                          {(inputProps: any) => (
-                            <TextField
-                              {...inputProps}
-                              id="input-nation-id"
-                              label="RG"
-                              variant="outlined"
-                              size="small"
-                              // value={state.fiscal_number}
-                              // onChange={(element) => setState({ ...state, fiscal_number: element.target.value })}
-                              placeholder="0.000-000"
-                              fullWidth
-                            />)}
-                        </InputMask>
-                      </Grid>
-
-                      <Grid item md={2} xs={12}>
-                        <TextField
-                          id="input-emitting-organ"
-                          label="Órgão Emissor"
-                          variant="outlined"
-                          size="small"
-                          value={state.issuing_organ}
-                          onChange={(element) => setState({ ...state, issuing_organ: element.target.value })}
-                          fullWidth
-                        />
-                      </Grid>
-
-                      <Grid item md={2} xs={12}>
-                        <TextField
-                          id="input-nationality"
-                          label="Nacionalidade"
-                          variant="outlined"
-                          size="small"
-                          value={state.nationality}
-                          onChange={(element) => setState({ ...state, nationality: element.target.value })}
-                          fullWidth
-                        />
-                      </Grid>
 
                       <Grid item md={10} />
                     </Grid>
                   </FormGroupSection>
+
+                  <Divider style={{ marginBottom: 30 }} />
 
                   {/*  */}
                   <FormGroupSection>
@@ -538,7 +565,7 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
                         </FormControl>
                       </Grid>
 
-                      <Grid item md={8} xs={12}>
+                      <Grid item md={10} xs={12}>
                         <TextField
                           id="input-address"
                           label="Endereço"
@@ -561,7 +588,19 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
                         />
                       </Grid>
 
-                      <Grid item md={3} xs={12}>
+                      <Grid item md={10} xs={12}>
+                        <TextField
+                          id="input-address-complement"
+                          label="Complemento"
+                          variant="outlined"
+                          size="small"
+                          value={state.address?.complement}
+                          onChange={(element) => setState({ ...state, address: { ...state.address, complement: element.target.value } })}
+                          fullWidth
+                        />
+                      </Grid>
+
+                      <Grid item md={6} xs={12}>
                         <TextField
                           id="input-neighborhood"
                           label="Bairro"
@@ -573,7 +612,7 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
                         />
                       </Grid>
 
-                      <Grid item md={3} xs={12}>
+                      <Grid item md={5} xs={12}>
                         <TextField
                           id="input-city"
                           label="Cidade"
@@ -581,18 +620,6 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
                           size="small"
                           value={state.address?.city}
                           onChange={(element) => setState({ ...state, address: { ...state.address, city: element.target.value } })}
-                          fullWidth
-                        />
-                      </Grid>
-
-                      <Grid item md={5} xs={12}>
-                        <TextField
-                          id="input-address-complement"
-                          label="Complemento"
-                          variant="outlined"
-                          size="small"
-                          value={state.address?.complement}
-                          onChange={(element) => setState({ ...state, address: { ...state.address, complement: element.target.value } })}
                           fullWidth
                         />
                       </Grid>
@@ -623,7 +650,7 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
                         fullWidth
                       />
                     </Grid>
-                    <Grid item md={2} xs={12}>
+                    <Grid item md={3} xs={12}>
                       <InputMask
                         mask="(99) 9999-9999"
                         value={state.phone}
@@ -636,25 +663,13 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
                             label="Telefone"
                             variant="outlined"
                             size="small"
-                            // value={state.phones?.number}
-                            // onChange={(element) => setState({ ...state, phones: { ...state.phones, number: element.target.value } })}
                             placeholder="0000-0000"
                             fullWidth
                           />
                         )}
                       </InputMask>
-                      {/* <TextField
-                        id="input-phone"
-                        label="Telefone"
-                        variant="outlined"
-                        size="small"
-                        value={state.phone}
-                        onChange={(element) => setState({ ...state, phone: element.target.value })}
-                        placeholder="0000-0000"
-                        fullWidth
-                      /> */}
                     </Grid>
-                    <Grid item md={2} xs={12}>
+                    <Grid item md={3} xs={12}>
                       <InputMask
                         mask="(99) 9 9999-9999"
                         value={state.cellphone}
@@ -667,23 +682,11 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
                             label="Celular"
                             variant="outlined"
                             size="small"
-                            // value={state.cellphone}
-                            // onChange={(element) => setState({ ...state, cellphone: element.target.value })}
                             placeholder="(00) 0 0000-0000"
                             fullWidth
                           />
                         )}
                       </InputMask>
-                      {/* <TextField
-                        id="input-cellphone"
-                        label="Celular"
-                        variant="outlined"
-                        size="small"
-                        value={state.cellphone}
-                        onChange={(element) => setState({ ...state, cellphone: element.target.value })}
-                        placeholder="00000-0000"
-                        fullWidth
-                      /> */}
                     </Grid>
                   </Grid>
                   <Grid container>
@@ -745,15 +748,15 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
                           options={councilState.list.data}
                           getOptionLabel={(option) => `${option.initials} - ${option.name}`}
                           renderInput={(params) => <TextField {...params} label="Conselho" variant="outlined" />}
-                          value={userState.data?.council_id || null}
+                          value={state?.council_id}
                           getOptionSelected={(option, value) => option._id === state?.council_id?._id}
                           onChange={(event: any, newValue) => {
                             handleCouncil(event, newValue);
                           }}
                           size="small"
-                          fullWidth
                           autoComplete={false}
                           autoHighlight={false}
+                          fullWidth
                         />
                       </FormGroupSection>
                     </Grid>
@@ -769,9 +772,9 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
                           handleCouncilState(event, newValue);
                         }}
                         size="small"
-                        fullWidth
                         autoComplete={false}
                         autoHighlight={false}
+                        fullWidth
                       />
                     </Grid>
                     <Grid item md={3} xs={12}>
@@ -783,8 +786,9 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
                         value={state.council_number}
                         onChange={(element) => setState({ ...state, council_number: element.target.value })}
                         placeholder="00000-0000"
-                        fullWidth
                         autoComplete="off"
+                        style={{ marginLeft: 10 }}
+                        fullWidth
                       />
                     </Grid>
                     <Grid item md={5} xs={12}>
@@ -802,9 +806,9 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
                             }
                           }}
                           size="small"
-                          fullWidth
                           autoComplete={false}
                           autoHighlight={false}
+                          fullWidth
                         />
                       </FormGroupSection>
                     </Grid>
@@ -814,7 +818,7 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
                       <FormGroupSection>
                         <Autocomplete
                           id="combo-box-especialty"
-                          options={specialtyState.list.data}
+                          options={specialties}
                           getOptionLabel={(option) => option.name}
                           renderInput={(params) => <TextField {...params} label="Especialidade" variant="outlined" />}
                           size="small"
@@ -823,9 +827,9 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
                               handleSelectEspecialty(value)
                             }
                           }}
-                          fullWidth
                           autoComplete={false}
                           autoHighlight={false}
+                          fullWidth
                         />
                       </FormGroupSection>
                     </Grid>
@@ -844,7 +848,7 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
                       <FormGroupSection>
                         <Autocomplete
                           id="combo-box-company"
-                          options={companyState.list.data}
+                          options={companies}
                           getOptionLabel={(option) => option.name}
                           renderInput={(params) => <TextField {...params} label="Empresa" variant="outlined" autoComplete="off" />}
                           size="small"
@@ -853,9 +857,9 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
                               handleSelectCompany(value)
                             }
                           }}
-                          fullWidth
                           autoComplete={false}
                           autoHighlight={false}
+                          fullWidth
                         />
                       </FormGroupSection>
                     </Grid>

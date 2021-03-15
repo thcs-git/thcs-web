@@ -25,3 +25,5 @@ export const searchRequest = (data: any) => action(UserTypes.SEARCH_REQUEST, { d
 
 export const loadUserTypesRequest = (value?: string) => action(UserTypes.LOAD_REQUEST_USER_TYPES, { value });
 export const loadUserTypesSuccess = (value: any) => action(UserTypes.LOAD_RESPONSE_USER_TYPES, { ...value });
+
+export const cleanAction = () => action(UserTypes.CLEAN);

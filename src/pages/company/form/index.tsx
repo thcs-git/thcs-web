@@ -135,19 +135,30 @@ export default function CompanyForm(props: RouteComponentProps<IPageParams>) {
         complement: true,
         responsable_name: true,
         email: true,
+        phone: !!companyState.data.phone,
+        cellphone: !!companyState.data.cellphone,
       })
     }
   }, [companyState, params.id]);
 
   useEffect(() => {
-    setState(prevState => {
-      return {
-        ...prevState,
-        address: {
-          ...companyState.data.address
-        }
+    setState(prevState => ({
+      ...prevState,
+      address: {
+        ...companyState.data.address
       }
-    });
+    }));
+
+    setFieldValidations((prevState: any) => ({
+      ...prevState,
+      postal_code: !validator.isEmpty(companyState.data.address.postal_code),
+      street: !validator.isEmpty(companyState.data.address.street),
+      number: !validator.isEmpty(companyState.data.address.number),
+      district: !validator.isEmpty(companyState.data.address.district),
+      city: !validator.isEmpty(companyState.data.address.city),
+      state: !validator.isEmpty(companyState.data.address.state),
+      complement: !validator.isEmpty(companyState.data.address.complement),
+    }));
 
   }, [companyState.data?.address]);
 
@@ -174,6 +185,10 @@ export default function CompanyForm(props: RouteComponentProps<IPageParams>) {
         isValid = false;
       }
     }
+
+    console.log('isValid', isValid);
+    console.log('fieldsValidation', fieldsValidation);
+
 
     return isValid;
 
@@ -340,7 +355,10 @@ export default function CompanyForm(props: RouteComponentProps<IPageParams>) {
                     variant="outlined"
                     size="small"
                     value={state.address.street}
-                    onChange={(element) => setState({ ...state, address: { ...state.address, street: element.target.value } })}
+                    onChange={(element) => {
+                      setState({ ...state, address: { ...state.address, street: element.target.value } });
+                      setFieldValidations((prevState: any) => ({ ...prevState, street: !validator.isEmpty(element.target.value) }));
+                    }}
                     fullWidth
                   />
                 </Grid>
@@ -352,7 +370,10 @@ export default function CompanyForm(props: RouteComponentProps<IPageParams>) {
                     variant="outlined"
                     size="small"
                     value={state.address.number}
-                    onChange={(element) => setState({ ...state, address: { ...state.address, number: element.target.value } })}
+                    onChange={(element) => {
+                      setState({ ...state, address: { ...state.address, number: element.target.value } });
+                      setFieldValidations((prevState: any) => ({ ...prevState, number: !validator.isEmpty(element.target.value) }));
+                    }}
                     fullWidth
                   />
                 </Grid>
@@ -364,7 +385,10 @@ export default function CompanyForm(props: RouteComponentProps<IPageParams>) {
                     variant="outlined"
                     size="small"
                     value={state.address.complement}
-                    onChange={(element) => setState({ ...state, address: { ...state.address, complement: element.target.value } })}
+                    onChange={(element) => {
+                      setState({ ...state, address: { ...state.address, complement: element.target.value } });
+                      setFieldValidations((prevState: any) => ({ ...prevState, complement: !validator.isEmpty(element.target.value) }));
+                    }}
                     fullWidth
                   />
                 </Grid>
@@ -376,7 +400,10 @@ export default function CompanyForm(props: RouteComponentProps<IPageParams>) {
                     variant="outlined"
                     size="small"
                     value={state.address.district}
-                    onChange={(element) => setState({ ...state, address: { ...state.address, district: element.target.value } })}
+                    onChange={(element) => {
+                      setState({ ...state, address: { ...state.address, district: element.target.value } });
+                      setFieldValidations((prevState: any) => ({ ...prevState, district: !validator.isEmpty(element.target.value) }));
+                    }}
                     fullWidth
                   />
                 </Grid>
@@ -388,7 +415,10 @@ export default function CompanyForm(props: RouteComponentProps<IPageParams>) {
                     variant="outlined"
                     size="small"
                     value={state.address.city}
-                    onChange={(element) => setState({ ...state, address: { ...state.address, city: element.target.value } })}
+                    onChange={(element) => {
+                      setState({ ...state, address: { ...state.address, city: element.target.value } });
+                      setFieldValidations((prevState: any) => ({ ...prevState, city: !validator.isEmpty(element.target.value) }));
+                    }}
                     fullWidth
                   />
                 </Grid>
@@ -400,7 +430,10 @@ export default function CompanyForm(props: RouteComponentProps<IPageParams>) {
                     variant="outlined"
                     size="small"
                     value={state.address.state}
-                    onChange={(element) => setState({ ...state, address: { ...state.address, state: element.target.value } })}
+                    onChange={(element) => {
+                      setState({ ...state, address: { ...state.address, state: element.target.value } });
+                      setFieldValidations((prevState: any) => ({ ...prevState, state: !validator.isEmpty(element.target.value) }));
+                    }}
                     fullWidth
                   />
                 </Grid>
@@ -454,8 +487,8 @@ export default function CompanyForm(props: RouteComponentProps<IPageParams>) {
                   size="small"
                   value={state.email}
                   onChange={(element) => {
-                    setState({ ...state, email: element.target.value })
-                    setFieldValidations((prevState: any) => ({ ...prevState, email: !validator.isEmail(element.target.value) }));
+                    setState({ ...state, email: element.target.value });
+                    setFieldValidations((prevState: any) => ({ ...prevState, email: validator.isEmail(element.target.value) }));
                   }}
                   fullWidth
                 />
