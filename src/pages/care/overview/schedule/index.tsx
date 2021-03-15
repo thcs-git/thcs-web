@@ -95,7 +95,7 @@ export default function SchedulePage(props: RouteComponentProps<IPageParams>) {
       dispatch(loadCareById(params.id));
     }
 
-    dispatch(searchUserAction(''));
+    dispatch(searchUserAction({}));
 
   }, [dispatch]);
 
@@ -295,10 +295,10 @@ export default function SchedulePage(props: RouteComponentProps<IPageParams>) {
     return (complexity?.recommendation.length) ? complexity?.recommendation.map((recommendation, key) => (
       <p key={`recommendation_${key}`}>{`${recommendation.amount} ${(typeof recommendation.profession_id === 'object' ? recommendation.profession_id.name : '')}, ${recommendation.interval}x por ${translateDateHelper[recommendation.frequency].toLowerCase()}`}</p>
     )) : (
-        <TextCenter>
-          Nenhuma periodicidade encontrada para essa complexidade
-        </TextCenter>
-      );
+      <TextCenter>
+        Nenhuma periodicidade encontrada para essa complexidade
+      </TextCenter>
+    );
   }, [careState]);
 
   const renderEventContent = (eventInfo: any) => (
@@ -456,10 +456,10 @@ export default function SchedulePage(props: RouteComponentProps<IPageParams>) {
                             ))}
                           </>
                         ) : (
-                            <TextCenter>
-                              Nenhum profissional foi adicionado
-                            </TextCenter>
-                          )}
+                          <TextCenter>
+                            Nenhum profissional foi adicionado
+                          </TextCenter>
+                        )}
                       </div>
                     </CardContent>
                   </Card>

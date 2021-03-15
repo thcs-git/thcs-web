@@ -11,10 +11,11 @@ import { useDispatch, useSelector } from 'react-redux';
 import { ApplicationState } from '../../../store/';
 import { loadRequest, searchRequest } from '../../../store/ducks/areas/actions';
 
-import PaginationComponent from '../../../components/Pagination';
-import Sidebar from '../../../components/Sidebar';
 import SearchComponent from '../../../components/List/Search';
 import Loading from '../../../components/Loading';
+import PaginationComponent from '../../../components/Pagination';
+import Sidebar from '../../../components/Sidebar';
+
 
 import { FormTitle } from '../../../styles/components/Form';
 import Button from '../../../styles/components/Button';
@@ -138,17 +139,18 @@ export default function CouncilList() {
 
               {/* <List>
             {areaState.list.data.map((area, index) => (
-              <ListLink key={index} to={`/area/${area._id}/edit`}>
-                <ListItem variant="outlined">
-                  <ListItemContent>
-                    <ListItemStatus active={area.active}>{area.active ? 'Ativo' : 'Inativo'}</ListItemStatus>
-                    <div>
-                      <ListItemTitle>{area.name}</ListItemTitle>
-                      <ListItemSubTitle>Intervalo do abastecimento: {area.supply_days} dia(s), {getDayOfTheWeekName(area.week_day)}</ListItemSubTitle>
-                    </div>
-                  </ListItemContent>
-                </ListItem>
-              </ListLink>
+              <TableRow key={`area_${index}`}>
+                <TableCell align="left">
+                  <Link key={index} to={`/area/${area._id}/edit`}>{area.name}</Link>
+                </TableCell>
+                <TableCell align="left">{area.supply_days}{area.supply_days < 2 ? ' dia' : ' dias'}</TableCell>
+                <TableCell align="left">{area.week_day ? getDayOfTheWeekName(area.week_day) : '-'}</TableCell>
+                <TableCell align="left">{area.neighborhoods.length}</TableCell>
+                <TableCell align="left">{area.users.length}</TableCell>
+                <TableCell align="left">
+                  <ListItemStatus active={area.active}>{area.active ? 'Ativo' : 'Inativo'}</ListItemStatus>
+                </TableCell>
+              </TableRow>
             ))}
           </List> */}
           <PaginationComponent

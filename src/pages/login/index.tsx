@@ -25,13 +25,14 @@ import { makeStyles } from '@material-ui/core/styles';
 
 import { ContainerLogin, WelcomeTextWrapper, HomeIconLogo, LogoText, TextGray,TextBlue } from './styles';
 
-import Button from '../../components/Button';
+import Button from '../../styles/components/Button';
 import Alert from '../../components/Alert';
 import Loading from '../../components/Loading';
 
 import validateEmail from '../../utils/validateEmail';
 import LOCALSTORAGE from '../../helpers/constants/localStorage';
 import { toast } from 'react-toastify';
+import { useHistory } from 'react-router-dom';
 
 function Copyright() {
   return (
@@ -66,6 +67,14 @@ const useStyles = makeStyles((theme) => ({
     width: '100%', // Fix IE 11 issue.
     marginTop: theme.spacing(1),
   },
+  create_account: {
+    marginBottom: '14px',
+    '&:hover': {
+      background: '#f7f7f7',
+      fontWeight: 'bold',
+      transition: '300ms',
+    }
+  },
   submit: {
     margin: theme.spacing(3, 0, 2),
     padding: '10px',
@@ -73,7 +82,9 @@ const useStyles = makeStyles((theme) => ({
     fontSize: '18px',
     backgroundColor: 'var(--success)',
     '&:hover': {
-      backgroundColor: 'var(--success-hover)'
+      backgroundColor: '#4fc66ae3',
+      fontWeight: 'bold',
+      transition: '300ms',
     }
   },
   register:{
@@ -95,6 +106,7 @@ const useStyles = makeStyles((theme) => ({
 const SIZE_INPUT_PASSWORD = 3;
 
 export default function SignIn() {
+  const history = useHistory();
   const dispatch = useDispatch();
   const loginState = useSelector((state: ApplicationState) => state.login);
 
@@ -217,14 +229,14 @@ export default function SignIn() {
               Entrar
           </Button>
           <Button
-              type="submit"
+              background="success_rounded"
+              type="button"
               fullWidth
-              variant="outlined"
-
-              className={classes.register}
-              href="/register"
-            ><a>Crie uma conta</a>
-
+              variant="contained"
+              className={classes.create_account}
+              onClick={() => history.push('/register')}
+            >
+              Criar conta
           </Button>
             <Grid container>
               <Box textAlign="center" width="100%">

@@ -1,13 +1,15 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import InputMask from 'react-input-mask';
+import validator from 'validator';
+import { toast } from 'react-toastify';
 
 import { ApplicationState } from '../../../store';
 
 import { loadRequest as getCustomersAction } from '../../../store/ducks/customers/actions';
 import { CustomerDataItems } from '../../../store/ducks/customers/types';
 
-import { getAddress as getAddressAction, createCompanyRequest, updateCompanyRequest, loadCompanyById } from '../../../store/ducks/companies/actions';
+import { getAddress as getAddressAction, createCompanyRequest, updateCompanyRequest, loadCompanyById, cleanAction } from '../../../store/ducks/companies/actions';
 import { CompanyInterface } from '../../../store/ducks/companies/types';
 
 import { useHistory, RouteComponentProps } from 'react-router-dom';
@@ -22,10 +24,9 @@ import {
   FormControl,
   InputLabel,
   InputAdornment,
-  Snackbar,
-  Container
+  Container,
+  FormControlLabel,
 } from '@material-ui/core';
-import Autocomplete from '@material-ui/lab/Autocomplete';
 import { SearchOutlined } from '@material-ui/icons';
 
 import LOCALSTORAGE from '../../../helpers/constants/localStorage';
@@ -35,6 +36,7 @@ import Sidebar from '../../../components/Sidebar';
 
 import ButtonComponent from '../../../styles/components/Button';
 import { FormTitle } from '../../../styles/components/Form';
+import { SwitchComponent as Switch } from '../../../styles/components/Switch';
 
 import {
   ButtonsContent,
@@ -72,6 +74,7 @@ export default function CompanyForm(props: RouteComponentProps<IPageParams>) {
       state: '',
       complement: '',
     },
+    responsable_name: '',
     email: '',
     phone: '',
     cellphone: '',
@@ -80,7 +83,26 @@ export default function CompanyForm(props: RouteComponentProps<IPageParams>) {
   });
   const [customers, setCustomers] = useState<CustomerDataItems[]>([]);
 
+  const [fieldsValidation, setFieldValidations] = useState<any>({
+    name: false,
+    fantasy_name: false,
+    fiscal_number: false,
+    postal_code: false,
+    street: false,
+    number: false,
+    district: false,
+    city: false,
+    state: false,
+    complement: false,
+    responsable_name: false,
+    email: false,
+  });
+
   const [openModalCancel, setOpenModalCancel] = useState(false);
+
+  useEffect(() => {
+    dispatch(cleanAction());
+  }, []);
 
   useEffect(() => {
     dispatch(getCustomersAction());
@@ -97,19 +119,46 @@ export default function CompanyForm(props: RouteComponentProps<IPageParams>) {
           ...prevState,
           ...companyState.data
         }
+      });
+
+      // Força o validador em 'true' quando entrar na tela para editar
+      setFieldValidations({
+        name: true,
+        fantasy_name: true,
+        fiscal_number: true,
+        postal_code: true,
+        street: true,
+        number: true,
+        district: true,
+        city: true,
+        state: true,
+        complement: true,
+        responsable_name: true,
+        email: true,
+        phone: !!companyState.data.phone,
+        cellphone: !!companyState.data.cellphone,
       })
     }
   }, [companyState, params.id]);
 
   useEffect(() => {
-    setState(prevState => {
-      return {
-        ...prevState,
-        address: {
-          ...companyState.data.address
-        }
+    setState(prevState => ({
+      ...prevState,
+      address: {
+        ...companyState.data.address
       }
-    });
+    }));
+
+    setFieldValidations((prevState: any) => ({
+      ...prevState,
+      postal_code: !validator.isEmpty(companyState.data.address.postal_code),
+      street: !validator.isEmpty(companyState.data.address.street),
+      number: !validator.isEmpty(companyState.data.address.number),
+      district: !validator.isEmpty(companyState.data.address.district),
+      city: !validator.isEmpty(companyState.data.address.city),
+      state: !validator.isEmpty(companyState.data.address.state),
+      complement: !validator.isEmpty(companyState.data.address.complement),
+    }));
 
   }, [companyState.data?.address]);
 
@@ -128,6 +177,23 @@ export default function CompanyForm(props: RouteComponentProps<IPageParams>) {
     }));
   }, [customers]);
 
+  const handleValidateFields = useCallback(() => {
+    let isValid: boolean = true;
+
+    for (let key of Object.keys(fieldsValidation)) {
+      if (!fieldsValidation[key]) {
+        isValid = false;
+      }
+    }
+
+    console.log('isValid', isValid);
+    console.log('fieldsValidation', fieldsValidation);
+
+
+    return isValid;
+
+  }, [fieldsValidation, state]);
+
   function handleOpenModalCancel() {
     setOpenModalCancel(true);
   }
@@ -143,6 +209,7 @@ export default function CompanyForm(props: RouteComponentProps<IPageParams>) {
 
   const getAddress = useCallback(() => {
     dispatch(getAddressAction(state.address.postal_code));
+    document.getElementById('input-address-number')?.focus();
   }, [state.address.postal_code]);
 
   const selectCustomer = useCallback(() => {
@@ -151,6 +218,11 @@ export default function CompanyForm(props: RouteComponentProps<IPageParams>) {
   }, [state.customer_id]);
 
   const handleSaveFormCustomer = useCallback(() => {
+    if (!handleValidateFields()) {
+      toast.error('Existem campos que precisam ser preenchidos para continuar');
+      return;
+    }
+
     if (params.id) {
       dispatch(updateCompanyRequest(state));
     } else {
@@ -180,19 +252,21 @@ export default function CompanyForm(props: RouteComponentProps<IPageParams>) {
                   />
                 </Grid>
               </Grid>
-            </FormGroupSection>
-
-            <FormGroupSection>
               <Grid container>
 
-                <Grid item md={6} xs={12}>
+                <Grid item md={12} xs={12}>
                   <TextField
                     id="input-social-name"
                     label="Nome Social"
                     variant="outlined"
                     size="small"
                     value={state.name}
-                    onChange={(element) => setState({ ...state, name: element.target.value })}
+                    onChange={(element) => {
+                      setState({ ...state, name: element.target.value })
+                      setFieldValidations((prevState: any) => ({ ...prevState, name: !validator.isEmpty(element.target.value) }));
+                    }}
+                    error={!fieldsValidation.name}
+                    helperText={!fieldsValidation.name ? `Por favor, insira um nome para a empresa.` : null}
                     fullWidth
                   />
                 </Grid>
@@ -203,26 +277,24 @@ export default function CompanyForm(props: RouteComponentProps<IPageParams>) {
                     variant="outlined"
                     size="small"
                     value={state.fantasy_name}
-                    onChange={(element) => setState({ ...state, fantasy_name: element.target.value })}
+                    onChange={(element) => {
+                      setState({ ...state, fantasy_name: element.target.value })
+                      setFieldValidations((prevState: any) => ({ ...prevState, fantasy_name: !validator.isEmpty(element.target.value) }));
+                    }}
+                    error={!fieldsValidation.fantasy_name}
+                    helperText={!fieldsValidation.fantasy_name ? `Por favor, insira o nome fantasia da empresa.` : null}
                     fullWidth
                   />
                 </Grid>
 
-                <Grid item md={3} xs={12}>
-                  {/* <TextField
-                    id="input-fiscal-number"
-                    label="CNPJ"
-                    variant="outlined"
-                    size="small"
-                    value={state.fiscal_number}
-                    onChange={(element) => setState({ ...state, fiscal_number: element.target.value })}
-                    placeholder="00.000.000/0000-00"
-                    fullWidth
-                  /> */}
+                <Grid item md={6} xs={12}>
                   <InputMask
                     mask="99.999.999/9999-99"
                     value={state.fiscal_number}
-                    onChange={(element) => setState({ ...state, fiscal_number: element.target.value })}
+                    onChange={(element) => {
+                      setState({ ...state, fiscal_number: element.target.value })
+                      setFieldValidations((prevState: any) => ({ ...prevState, fiscal_number: !validator.isEmpty(element.target.value) }));
+                    }}
                   >
                     {(inputProps: any) => (
                       <TextField
@@ -232,6 +304,8 @@ export default function CompanyForm(props: RouteComponentProps<IPageParams>) {
                         variant="outlined"
                         size="small"
                         placeholder="00.000.000/0000-00"
+                        error={!fieldsValidation.fiscal_number}
+                        helperText={!fieldsValidation.fiscal_number ? `Por favor, insira o nome fantasia da empresa.` : null}
                         fullWidth
                       />)}
                   </InputMask>
@@ -241,10 +315,12 @@ export default function CompanyForm(props: RouteComponentProps<IPageParams>) {
               </Grid>
             </FormGroupSection>
 
+            <hr />
+
             {/*  */}
             <FormGroupSection>
               <Grid container>
-                <Grid item md={2} xs={12}>
+                <Grid item md={3} xs={12}>
                   <FormControl variant="outlined" size="small" fullWidth>
                     <InputLabel htmlFor="search-input">CEP</InputLabel>
                     <InputMask
@@ -269,32 +345,20 @@ export default function CompanyForm(props: RouteComponentProps<IPageParams>) {
                         />
                       )}
                     </InputMask>
-                    {/* <OutlinedInputFiled
-                      id="input-postal-code"
-                      label="CEP"
-                      placeholder="00000-000"
-                      value={state.address.postal_code}
-                      onChange={(element) => setState({ ...state, address: { ...state.address, postal_code: element.target.value } })}
-                      onBlur={getAddress}
-                      endAdornment={
-                        <InputAdornment position="end">
-                          <SearchOutlined style={{ color: 'var(--primary)' }} />
-                        </InputAdornment>
-                      }
-                      labelWidth={155}
-                      style={{ marginRight: 12 }}
-                    /> */}
                   </FormControl>
                 </Grid>
 
-                <Grid item md={8} xs={12}>
+                <Grid item md={9} xs={12}>
                   <TextField
                     id="input-address"
                     label="Endereço"
                     variant="outlined"
                     size="small"
                     value={state.address.street}
-                    onChange={(element) => setState({ ...state, address: { ...state.address, street: element.target.value } })}
+                    onChange={(element) => {
+                      setState({ ...state, address: { ...state.address, street: element.target.value } });
+                      setFieldValidations((prevState: any) => ({ ...prevState, street: !validator.isEmpty(element.target.value) }));
+                    }}
                     fullWidth
                   />
                 </Grid>
@@ -306,43 +370,55 @@ export default function CompanyForm(props: RouteComponentProps<IPageParams>) {
                     variant="outlined"
                     size="small"
                     value={state.address.number}
-                    onChange={(element) => setState({ ...state, address: { ...state.address, number: element.target.value } })}
+                    onChange={(element) => {
+                      setState({ ...state, address: { ...state.address, number: element.target.value } });
+                      setFieldValidations((prevState: any) => ({ ...prevState, number: !validator.isEmpty(element.target.value) }));
+                    }}
                     fullWidth
                   />
                 </Grid>
 
-                <Grid item md={3} xs={12}>
-                  <TextField
-                    id="input-neighborhood"
-                    label="Bairro"
-                    variant="outlined"
-                    size="small"
-                    value={state.address.district}
-                    onChange={(element) => setState({ ...state, address: { ...state.address, district: element.target.value } })}
-                    fullWidth
-                  />
-                </Grid>
-
-                <Grid item md={3} xs={12}>
-                  <TextField
-                    id="input-city"
-                    label="Cidade"
-                    variant="outlined"
-                    size="small"
-                    value={state.address.city}
-                    onChange={(element) => setState({ ...state, address: { ...state.address, city: element.target.value } })}
-                    fullWidth
-                  />
-                </Grid>
-
-                <Grid item md={5} xs={12}>
+                <Grid item md={10} xs={12}>
                   <TextField
                     id="input-address-complement"
                     label="Complemento"
                     variant="outlined"
                     size="small"
                     value={state.address.complement}
-                    onChange={(element) => setState({ ...state, address: { ...state.address, complement: element.target.value } })}
+                    onChange={(element) => {
+                      setState({ ...state, address: { ...state.address, complement: element.target.value } });
+                      setFieldValidations((prevState: any) => ({ ...prevState, complement: !validator.isEmpty(element.target.value) }));
+                    }}
+                    fullWidth
+                  />
+                </Grid>
+
+                <Grid item md={4} xs={12}>
+                  <TextField
+                    id="input-neighborhood"
+                    label="Bairro"
+                    variant="outlined"
+                    size="small"
+                    value={state.address.district}
+                    onChange={(element) => {
+                      setState({ ...state, address: { ...state.address, district: element.target.value } });
+                      setFieldValidations((prevState: any) => ({ ...prevState, district: !validator.isEmpty(element.target.value) }));
+                    }}
+                    fullWidth
+                  />
+                </Grid>
+
+                <Grid item md={7} xs={12}>
+                  <TextField
+                    id="input-city"
+                    label="Cidade"
+                    variant="outlined"
+                    size="small"
+                    value={state.address.city}
+                    onChange={(element) => {
+                      setState({ ...state, address: { ...state.address, city: element.target.value } });
+                      setFieldValidations((prevState: any) => ({ ...prevState, city: !validator.isEmpty(element.target.value) }));
+                    }}
                     fullWidth
                   />
                 </Grid>
@@ -354,7 +430,10 @@ export default function CompanyForm(props: RouteComponentProps<IPageParams>) {
                     variant="outlined"
                     size="small"
                     value={state.address.state}
-                    onChange={(element) => setState({ ...state, address: { ...state.address, state: element.target.value } })}
+                    onChange={(element) => {
+                      setState({ ...state, address: { ...state.address, state: element.target.value } });
+                      setFieldValidations((prevState: any) => ({ ...prevState, state: !validator.isEmpty(element.target.value) }));
+                    }}
                     fullWidth
                   />
                 </Grid>
@@ -362,32 +441,28 @@ export default function CompanyForm(props: RouteComponentProps<IPageParams>) {
             </FormGroupSection>
 
             <Grid container>
-              <Grid item md={4} xs={12}>
+              <Grid item md={9} xs={12}>
                 <TextField
-                  id="input-email"
-                  label="E-mail"
+                  id="input-responsable-name"
+                  label="Nome do responsável"
                   variant="outlined"
                   size="small"
-                  value={state.email}
-                  onChange={(element) => setState({ ...state, email: element.target.value })}
+                  value={state.responsable_name}
+                  onChange={(element) => {
+                    setState({ ...state, responsable_name: element.target.value })
+                    setFieldValidations((prevState: any) => ({ ...prevState, responsable_name: !validator.isEmpty(element.target.value) }));
+                  }}
                   fullWidth
                 />
               </Grid>
               <Grid item md={3} xs={12}>
-                {/* <TextField
-                  id="input-phone"
-                  label="Telefone"
-                  variant="outlined"
-                  size="small"
-                  value={state.phone}
-                  onChange={(element) => setState({ ...state, phone: element.target.value })}
-                  placeholder="0000-0000"
-                  fullWidth
-                /> */}
                 <InputMask
                   mask="(99) 9999-9999"
                   value={state.phone}
-                  onChange={(element) => setState({ ...state, phone: element.target.value })}
+                  onChange={(element) => {
+                    setState({ ...state, phone: element.target.value });
+                    setFieldValidations((prevState: any) => ({ ...prevState, phone: !validator.isEmpty(element.target.value) }));
+                  }}
                 >
                   {(inputProps: any) => (
                     <TextField
@@ -396,19 +471,36 @@ export default function CompanyForm(props: RouteComponentProps<IPageParams>) {
                       label="Telefone"
                       variant="outlined"
                       size="small"
-                      // value={state.phones?.number}
-                      // onChange={(element) => setState({ ...state, phones: { ...state.phones, number: element.target.value } })}
                       placeholder="(00) 0000-0000"
+                      error={!fieldsValidation.phone}
+                      helperText={!fieldsValidation.phone ? `Por favor, insira um telefone válido.` : null}
                       fullWidth
                     />
                   )}
                 </InputMask>
               </Grid>
+              <Grid item md={9} xs={12}>
+                <TextField
+                  id="input-email"
+                  label="E-mail"
+                  variant="outlined"
+                  size="small"
+                  value={state.email}
+                  onChange={(element) => {
+                    setState({ ...state, email: element.target.value });
+                    setFieldValidations((prevState: any) => ({ ...prevState, email: validator.isEmail(element.target.value) }));
+                  }}
+                  fullWidth
+                />
+              </Grid>
               <Grid item md={3} xs={12}>
                 <InputMask
                   mask="(99) 9 9999-9999"
                   value={state.cellphone}
-                  onChange={(element) => setState({ ...state, cellphone: element.target.value })}
+                  onChange={(element) => {
+                    setState({ ...state, cellphone: element.target.value });
+                    setFieldValidations((prevState: any) => ({ ...prevState, cellphone: !validator.isMobilePhone(element.target.value, 'pt-BR') }));
+                  }}
                 >
                   {(inputProps: any) => (
                     <TextField
@@ -419,11 +511,32 @@ export default function CompanyForm(props: RouteComponentProps<IPageParams>) {
                       // value={state.cellphone}
                       // onChange={(element) => setState({ ...state, cellphone: element.target.value })}
                       placeholder="00000-0000"
+                      error={!fieldsValidation.cellphone}
+                      helperText={!fieldsValidation.cellphone ? `Por favor, insira um celular válido.` : null}
                       fullWidth
                     />
                   )}
                 </InputMask>
               </Grid>
+
+              {params.id && (
+                <Grid item md={3} xs={12}>
+                  <FormControlLabel
+                    control={(
+                      <Switch
+                        checked={state.active}
+                        onChange={(event) => {
+                          setState(prevState => ({
+                            ...prevState,
+                            active: event.target.checked
+                          }))
+                        }} />
+                    )}
+                    label="Ativo?"
+                    labelPlacement="start"
+                  />
+                </Grid>
+              )}
             </Grid>
           </FormContent>
           <ButtonsContent>
@@ -436,17 +549,6 @@ export default function CompanyForm(props: RouteComponentProps<IPageParams>) {
           </ButtonsContent>
         </FormSection>
       </Container>
-      {/* <Snackbar
-        autoHideDuration={10}
-        anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
-        open={companyState.error}
-        key={'login_error'}
-        onClose={() => console.log('fechar toast')}
-      >
-        <Alert severity="error" onClose={() => console.log('2 fechar toast')}>
-          Não foi possível cadastrar a empresa
-          </Alert>
-      </Snackbar> */}
 
       <Dialog
         open={openModalCancel}

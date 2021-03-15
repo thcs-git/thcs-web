@@ -17,7 +17,7 @@ import SearchComponent from '../../../components/List/Search';
 import Loading from '../../../components/Loading';
 import { FormTitle, SelectComponent as Select, FieldContent } from '../../../styles/components/Form';
 
-import { formatDate, age } from '../../../helpers/date';
+import { formatDate } from '../../../helpers/date';
 
 import { ListItemCaptureStatus, CaptionList } from './styles';
 

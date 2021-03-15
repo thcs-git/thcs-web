@@ -96,6 +96,7 @@ export interface AreaState {
   profession: ProfessionAreaInterface[];
   loading: boolean;
   error: boolean;
+  success: boolean;
 }
 
 export type LoadRequestParams = Partial<Omit<AreaList, "data">>;

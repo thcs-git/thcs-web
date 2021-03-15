@@ -182,6 +182,9 @@ const reducer: Reducer<UserState> = (state = INITIAL_STATE, action) => {
         error: false,
         success: false,
       };
+
+    case UserTypes.CLEAN:
+      return INITIAL_STATE;
     default:
       return state;
   }

@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef, useCallback, ChangeEvent } from 'react';
-import { useHistory } from 'react-router-dom';
+import { useHistory, Link } from 'react-router-dom';
 
 import debounce from 'lodash.debounce';
 import { useDispatch, useSelector } from 'react-redux';
@@ -7,28 +7,21 @@ import { ApplicationState } from '../../../store/';
 import { loadRequest, searchRequest } from '../../../store/ducks/companies/actions';
 import { CompanyInterface } from '../../../store/ducks/companies/types';
 
-import { Container, FormControl, InputLabel, OutlinedInput, InputAdornment, IconButton } from '@material-ui/core';
-import { SearchOutlined } from '@material-ui/icons';
+import { Container, Menu, MenuItem, TableRow, TableCell } from '@material-ui/core';
+import { SearchOutlined, MoreVert } from '@material-ui/icons';
 
 import PaginationComponent from '../../../components/Pagination';
 import Loading from '../../../components/Loading';
 import Sidebar from '../../../components/Sidebar';
 import SearchComponent from '../../../components/List/Search';
+import Table from '../../../components/Table';
+
 import { FormTitle } from '../../../styles/components/Form';
 import Button from '../../../styles/components/Button';
-import {
-  List,
-  ListLink,
-  ListItem,
-  ListItemContent,
-  ListItemStatus,
-  ListItemTitle,
-  ListItemSubTitle,
-  FormSearch,
-  ButtonsContent,
-} from './styles';
 
-const token = window.localStorage.getItem('token');
+import { formatDate } from '../../../helpers/date';
+
+import { ListItemStatus } from './styles';
 
 export default function CompanyList() {
   const history = useHistory();
@@ -40,15 +33,15 @@ export default function CompanyList() {
 
   useEffect(() => {
     dispatch(loadRequest());
-  }, [])
+  }, []);
 
-  const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
+  const handleOpenRowMenu = useCallback((event: React.MouseEvent<HTMLButtonElement>) => {
     setAnchorEl(event.currentTarget);
-  };
+  }, [anchorEl]);
 
-  const handleClose = () => {
+  const handleCloseRowMenu = useCallback(() => {
     setAnchorEl(null);
-  };
+  }, [anchorEl]);
 
   const handleChangeInput = useCallback((event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     setSearch(event.target.value)
@@ -70,22 +63,44 @@ export default function CompanyList() {
             onChangeInput={debounceSearchRequest}
           />
 
-          <List>
+          <Table
+            tableCells={[
+              { name: 'Nome fantasia', align: 'left', },
+              { name: 'CNPJ', align: 'left' },
+              { name: 'Status', align: 'left' },
+              { name: 'Adicionado em', align: 'left' },
+              { name: '', align: 'left' },
+            ]}
+          >
             {companyState.list.data.map((company: CompanyInterface, index: number) => (
-              <ListLink key={index} to={`/company/${company._id}/edit`}>
-                <ListItem variant="outlined">
-                  <ListItemContent>
-                    <ListItemStatus active={company.active}>{company.active ? 'Ativo' : 'Inativo'}</ListItemStatus>
-                    <div>
-                      <ListItemTitle>{company.name}</ListItemTitle>
-                      <ListItemSubTitle>{company.fantasy_name}</ListItemSubTitle>
-                      <ListItemSubTitle>{company.fiscal_number}</ListItemSubTitle>
-                    </div>
-                  </ListItemContent>
-                </ListItem>
-              </ListLink>
+              <TableRow key={`patient_${index}`}>
+                <TableCell align="left">
+                  <Link key={index} to={`/company/${company._id}/edit`}>{company.fantasy_name}</Link>
+                </TableCell>
+                <TableCell>
+                  {company.fiscal_number}
+                </TableCell>
+                <TableCell>
+                  <ListItemStatus active={company.active}>{company.active ? 'Ativo' : 'Inativo'}</ListItemStatus>
+                </TableCell>
+                <TableCell align="left">{formatDate(company.created_at, 'DD/MM/YYYY HH:mm:ss')}</TableCell>
+                <TableCell align="center">
+                  <Button aria-controls={`patient-menu${index}`} id={`btn_patient-menu${index}`} aria-haspopup="true" onClick={handleOpenRowMenu}>
+                    <MoreVert style={{ color: '#0899BA' }} />
+                  </Button>
+                  <Menu
+                    id={`patient-menu${index}`}
+                    anchorEl={anchorEl}
+                    keepMounted
+                    open={anchorEl?.id === `btn_patient-menu${index}`}
+                    onClose={handleCloseRowMenu}
+                  >
+                    <MenuItem onClick={() => history.push(`/company/${company._id}/edit`)}>Editar</MenuItem>
+                  </Menu>
+                </TableCell>
+              </TableRow>
             ))}
-          </List>
+          </Table>
           <PaginationComponent
             page={companyState.list.page}
             rowsPerPage={companyState.list.limit}

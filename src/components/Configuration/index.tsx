@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { TextField } from '@material-ui/core';
+import { Grid, TextField } from '@material-ui/core';
 import { Autocomplete } from '@material-ui/lab';
 
 import { ApplicationState } from '../../store';
@@ -58,18 +58,23 @@ export default function Configuration() {
 
         <br />
 
-        <Autocomplete
-          id="combo-box-health-plan"
-          options={companies}
-          getOptionLabel={(option: any) => option.name}
-          getOptionSelected={(option, value) => option._id === user.companySelected}
-          value={selectCompany()}
-          renderInput={(params) => <TextField {...params} label="Empresa" variant="outlined" />}
-          size="small"
-          onChange={(event, value) => changeCompany(value)}
-          noOptionsText="Nenhuma empresa encontrada"
-          fullWidth
-        />
+        <Grid container>
+          <Grid item sm={4} md={4} lg={4}>
+            <Autocomplete
+              id="combo-box-change-company"
+              options={companies}
+              getOptionLabel={(option: any) => option.name}
+              getOptionSelected={(option, value) => option._id === user.companySelected}
+              value={selectCompany()}
+              renderInput={(params) => <TextField {...params} label="Empresa" variant="outlined" autoComplete="off" />}
+              size="small"
+              onChange={(event, value) => changeCompany(value)}
+              noOptionsText="Nenhuma empresa encontrada"
+              autoComplete={false}
+            />
+          </Grid>
+        </Grid>
+
       </div>
     </>
   );

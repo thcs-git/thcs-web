@@ -1,5 +1,5 @@
 import React, { useState, useCallback, useEffect } from 'react';
-import { useHistory } from 'react-router-dom';
+import { useHistory, RouteComponentProps } from 'react-router-dom';
 import {
   Container,
   Dialog,
@@ -49,9 +49,14 @@ import {
   PatientNotFound
 } from './styles';
 
-export default function PatientCaptureForm() {
+export default function PatientCaptureForm(props: RouteComponentProps) {
   const dispatch = useDispatch();
   const history = useHistory();
+
+  const { location: { search: searchParams } } = props;
+
+  const query = new URLSearchParams(searchParams);
+  const patientId = query.get('patient_id');
 
   const patientState = useSelector((state: ApplicationState) => state.patients);
   const careState = useSelector((state: ApplicationState) => state.cares);
@@ -82,6 +87,9 @@ export default function PatientCaptureForm() {
       setPatient(patientState.list.data[0]);
       setPatientSearch(patientState.list.data[0].fiscal_number);
     }
+
+    validatePatientParam();
+
   }, [patientState]);
 
   useEffect(() => {
@@ -145,18 +153,18 @@ export default function PatientCaptureForm() {
           />
         </Tooltip>
       ) : (
-          <Tooltip title="Elegível">
-            <CheckIcon
-              style={{ color: "#4FC66A", cursor: "pointer" }}
-              onClick={() =>
-                history.push(
-                  `/patient/capture/${found.care_id}/${documentRoute()}/${found._id
-                  }`
-                )
-              }
-            />
-          </Tooltip>
-        );
+        <Tooltip title="Elegível">
+          <CheckIcon
+            style={{ color: "#4FC66A", cursor: "pointer" }}
+            onClick={() =>
+              history.push(
+                `/patient/capture/${found.care_id}/${documentRoute()}/${found._id
+                }`
+              )
+            }
+          />
+        </Tooltip>
+      );
     } else {
       return (
         <Tooltip title="Não Realizado">
@@ -165,6 +173,17 @@ export default function PatientCaptureForm() {
       );
     }
   };
+
+  const validatePatientParam = useCallback(() => {
+    const patientFounded = patientState.list.data.filter(item => patientId === item._id);
+
+    if (patientFounded.length > 0) {
+      setSelectedPatient(patientFounded[0]);
+      setCaptureModalModalOpen(true);
+    }
+
+    return (patientFounded);
+  }, [patientState]);
 
   const handleSubmitCaptureData = () => {
     const careParams = {
@@ -292,56 +311,56 @@ export default function PatientCaptureForm() {
               </Grid>
             </Grid>
           ) : (
-              <>
-                <h3>Pra te ajudar, aqui tem a lista dos últimos pacientes cadastrados</h3>
+            <>
+              <h3>Pra te ajudar, aqui tem a lista dos últimos pacientes cadastrados</h3>
 
-                <br />
+              <br />
 
-                <Table>
-                  <thead>
-                    <tr>
-                      <Th></Th>
-                      <Th>Paciente</Th>
-                      <Th>CPF</Th>
-                      <Th>Cadastrado em</Th>
+              <Table>
+                <thead>
+                  <tr>
+                    <Th></Th>
+                    <Th>Paciente</Th>
+                    <Th>CPF</Th>
+                    <Th>Cadastrado em</Th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {patientState.list.data.map((item, index) => (
+                    <tr key={`select_patient_${index}`}>
+                      <Td center>
+                        <Checkbox
+                          checked={selectedPatient?._id === item?._id}
+                          onChange={(element) => {
+                            if (item._id && (item._id === element.target.value || item._id === selectedPatient?._id)) {
+                              setSelectedPatient({});
+                            } else {
+                              setSelectedPatient(item);
+                            }
+                          }}
+                          inputProps={{ "aria-label": "primary checkbox" }}
+                        />
+                      </Td>
+                      <Td>{item?.social_name || item?.name}</Td>
+                      <Td>{item?.fiscal_number}</Td>
+                      <Td>{formatDate(item?.created_at, 'DD/MM/YYYY HH:mm:ss')}</Td>
                     </tr>
-                  </thead>
-                  <tbody>
-                    {patientState.list.data.map((item, index) => (
-                      <tr key={index}>
-                        <Td center>
-                          <Checkbox
-                            checked={selectedPatient?._id === item?._id}
-                            onChange={(element) => {
-                              if (item._id && (item._id === element.target.value || item._id === selectedPatient?._id)) {
-                                setSelectedPatient({});
-                              } else {
-                                setSelectedPatient(item);
-                              }
-                            }}
-                            inputProps={{ "aria-label": "primary checkbox" }}
-                          />
-                        </Td>
-                        <Td>{item?.social_name || item?.name}</Td>
-                        <Td>{item?.fiscal_number}</Td>
-                        <Td>{formatDate(item?.created_at, 'DD/MM/YYYY HH:mm:ss')}</Td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </Table>
+                  ))}
+                </tbody>
+              </Table>
 
-                {selectedPatient && (
-                  <ButtonsContent>
-                    <Button
-                      background="success"
-                      onClick={() => setCaptureModalModalOpen(true)}
-                    >
-                      Selecionar Paciente
+              {selectedPatient && (
+                <ButtonsContent>
+                  <Button
+                    background="success"
+                    onClick={() => setCaptureModalModalOpen(true)}
+                  >
+                    Selecionar Paciente
                     </Button>
-                  </ButtonsContent>
-                )}
-              </>
-            )}
+                </ButtonsContent>
+              )}
+            </>
+          )}
 
           {patientState.error && (
             <PatientNotFound>

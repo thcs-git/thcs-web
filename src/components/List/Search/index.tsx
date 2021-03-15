@@ -31,7 +31,7 @@ const Search = ({ value, onChangeInput, buttonTitle, handleButton, inputPlacehol
                 </IconButton>
               </InputAdornment>
             }
-            labelWidth={155}
+            labelWidth={165}
           />
         </FormControl>
 

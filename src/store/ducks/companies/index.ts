@@ -17,6 +17,7 @@ export const INITIAL_STATE: CompanyState = {
       state: '',
       complement: '',
     },
+    responsable_name: '',
     email: '',
     phone: '',
     cellphone: '',
@@ -76,6 +77,13 @@ const reducer: Reducer<CompanyState> = (state = INITIAL_STATE, action) => {
           }
         }
       };
+    case CompanyTypes.LOAD_REQUEST_COMPANY_BY_ID:
+      return {
+        ...state,
+        loading: true,
+        error: false,
+        success: false,
+      };
     case CompanyTypes.LOAD_SUCCESS_COMPANY_BY_ID:
       return {
         ...state,
@@ -84,7 +92,6 @@ const reducer: Reducer<CompanyState> = (state = INITIAL_STATE, action) => {
         error: false,
         success: false,
       };
-
     case CompanyTypes.CREATE_COMPANY_REQUEST:
       return {
         ...state,
@@ -121,6 +128,9 @@ const reducer: Reducer<CompanyState> = (state = INITIAL_STATE, action) => {
       }
     case CompanyTypes.SEARCH_REQUEST:
       return { ...state, loading: true, error: false };
+
+    case CompanyTypes.CLEAN:
+      return INITIAL_STATE;
     default:
       return state;
   }

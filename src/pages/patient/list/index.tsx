@@ -1,28 +1,22 @@
 import React, { useState, useEffect, useCallback, ChangeEvent } from 'react';
-import { useHistory } from 'react-router-dom';
-import { Container } from '@material-ui/core';
+import { useHistory, Link } from 'react-router-dom';
+import { Button, Container, Menu, MenuItem, TableRow, TableCell } from '@material-ui/core';
+import { MoreVert } from '@material-ui/icons';
 import debounce from 'lodash.debounce';
 
 import { useDispatch, useSelector } from 'react-redux';
 import { ApplicationState } from '../../../store/';
 import { loadRequest, searchRequest, setIfRegistrationCompleted } from '../../../store/ducks/patients/actions';
 
+import { formatDate } from '../../../helpers/date';
+
+import Loading from '../../../components/Loading';
 import Sidebar from '../../../components/Sidebar';
 import SearchComponent from '../../../components/List/Search';
 import PaginationComponent from '../../../components/Pagination';
+import Table from '../../../components/Table';
 
 import { FormTitle } from '../../../styles/components/Form';
-import {
-  List,
-  ListLink,
-  ListItem,
-  ListItemContent,
-  ListItemStatus,
-  ListItemTitle,
-  ListItemSubTitle,
-} from './styles';
-import Loading from '../../../components/Loading';
-import { loadFailure } from '../../../store/ducks/areas/actions';
 
 export default function PatientList() {
   const history = useHistory();
@@ -36,14 +30,13 @@ export default function PatientList() {
     dispatch(loadRequest());
   }, []);
 
-  const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
+  const handleOpenRowMenu = useCallback((event: React.MouseEvent<HTMLButtonElement>) => {
     setAnchorEl(event.currentTarget);
-  };
+  }, [anchorEl]);
 
-  const handleClose = () => {
+  const handleCloseRowMenu = useCallback(() => {
     setAnchorEl(null);
-  };
-
+  }, [anchorEl]);
 
   const handleChangeInput = useCallback((event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     setSearch(event.target.value)
@@ -70,21 +63,42 @@ export default function PatientList() {
             onChangeInput={debounceSearchRequest}
           />
 
-          <List>
+          <Table
+            tableCells={[
+              { name: 'Paciente', align: 'left', },
+              { name: 'CPF', align: 'left' },
+              { name: 'Mãe', align: 'left' },
+              { name: 'Data de cadastro', align: 'left' },
+              { name: '', align: 'left' },
+            ]}
+          >
             {patientState.list.data.map((patient, index) => (
-              <ListLink key={index} to={`/patient/${patient._id}/edit`}>
-                <ListItem variant="outlined">
-                  <ListItemContent>
-                    <ListItemStatus active={patient.active}>{patient.active ? 'Ativo' : 'Inativo'}</ListItemStatus>
-                    <div>
-                      <ListItemTitle>{patient.social_name || patient.name}</ListItemTitle>
-                      <ListItemSubTitle>{patient.fiscal_number}</ListItemSubTitle>
-                    </div>
-                  </ListItemContent>
-                </ListItem>
-              </ListLink>
+              <TableRow key={`patient_${index}`}>
+                <TableCell align="left">
+                  <Link key={index} to={`/patient/${patient._id}/edit`}>{patient.social_name || patient.name}</Link>
+                </TableCell>
+                <TableCell align="left">{patient.fiscal_number}</TableCell>
+                <TableCell align="left">{patient.mother_name}</TableCell>
+                <TableCell align="left">{formatDate(patient.created_at, 'DD/MM/YYYY HH:mm:ss')}</TableCell>
+                <TableCell align="center">
+                  <Button aria-controls={`patient-menu${index}`} id={`btn_patient-menu${index}`} aria-haspopup="true" onClick={handleOpenRowMenu}>
+                    <MoreVert style={{ color: '#0899BA' }} />
+                  </Button>
+                  <Menu
+                    id={`patient-menu${index}`}
+                    anchorEl={anchorEl}
+                    keepMounted
+                    open={anchorEl?.id === `btn_patient-menu${index}`}
+                    onClose={handleCloseRowMenu}
+                  >
+                    <MenuItem onClick={() => history.push(`/patient/capture/create?patient_id=${patient._id}`)}>Iniciar captação</MenuItem>
+                    <MenuItem onClick={() => history.push(`/patient/${patient._id}/edit`)}>Visualizar cadastro</MenuItem>
+                  </Menu>
+                </TableCell>
+              </TableRow>
             ))}
-          </List>
+          </Table>
+
           <PaginationComponent
             page={patientState.list.page}
             rowsPerPage={patientState.list.limit}
