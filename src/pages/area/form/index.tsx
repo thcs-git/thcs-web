@@ -268,7 +268,7 @@ export default function AreaForm(props: RouteComponentProps<IPageParams>) {
   },[inputName]);
 
   const handleDaysValidator = useCallback(()=>{
-    console.log(state);
+
       if(!validateName(inputDays.value)){
           setInputDays(prev =>({
           ...prev,
@@ -441,8 +441,7 @@ export default function AreaForm(props: RouteComponentProps<IPageParams>) {
     const found  = state.neighborhoods.findIndex((item:any)=>{
           return item._id === value1._id;
         });
-        console.log("state",inputState.value);
-        console.log(value1);
+
         if(value1 && (found == -1)){
               setInputDistrict(prev=>({
                 ...prev,
@@ -458,23 +457,7 @@ export default function AreaForm(props: RouteComponentProps<IPageParams>) {
 
   },[state.neighborhoods]);
 
-  //   const found  = state.districts.findIndex((item:any)=>{
-  //     return item._id === value1._id;
-  //   })
-  //   if(value1 && (found == -1)){
-  //     setInputDistrict(prev=>({
-  //       ...prev,
-  //       value:value1.name,
-  //     }));
-  //     setState(prevState => ({
-  //     ...prevState,
-  //     districts: [...prevState.districts, {_id:value1._id, name:value1.name, city:value1.city}]
-  //   })),[state.districts]);
 
-  //   }else{
-  //     toast.error("Bairro já cadastrado na área");
-  //   }
-  // },[state.districts])
 
    async function handleDeleteNeighborhood(neighborhood: NeighborhoodAreaInterface) {
     let neighborhoodsSelected = [...state.neighborhoods];
@@ -486,7 +469,7 @@ export default function AreaForm(props: RouteComponentProps<IPageParams>) {
     if (neighborhoodFounded > -1) {
       neighborhoodsSelected.splice(neighborhoodFounded, 1);
     };
-    console.log(neighborhoodsSelected);
+
 
     if(neighborhoodsSelected.length<1){
 
@@ -509,16 +492,16 @@ export default function AreaForm(props: RouteComponentProps<IPageParams>) {
     });
     if(foundProfession >-1){
       const pro = handlePutUser(value, state.profession_users[foundProfession]);
-      console.log(pro);
+
       setState(prevState=>({
         ...prevState,
         profession_users:[...prevState.profession_users]
       }));
     }else{
-       console.log("não tem");
+
       let prof:ProfessionAreaInterface = {profession:value.profession, users:[]};
       const pro = handlePutUser(value,prof);
-      console.log(pro);
+
       setState(prevState=>({
         ...prevState,
         profession_users:[...prevState.profession_users, pro]
@@ -542,12 +525,11 @@ export default function AreaForm(props: RouteComponentProps<IPageParams>) {
 
     let professionSelected = [...state.profession_users];
     const professionFounded = professionSelected.findIndex((item: any) => {
-      console.log(item);
-      console.log(profession);
+
         return item.profession === profession.profession
 
     });
-    console.log(professionFounded);
+
     if (professionFounded > -1) {
       const userFound = professionSelected[professionFounded].users.findIndex((item:any)=>{
           return item._id === user._id;
