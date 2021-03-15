@@ -109,6 +109,9 @@ export default function AreaForm(props: RouteComponentProps<IPageParams>) {
       paddingTop:'1rem'
 
     },
+    chip:{
+      paddingBottom:'1rem'
+    },
     cancel:{
       textTransform: 'capitalize',
       fontSize: '18px',
@@ -581,7 +584,7 @@ export default function AreaForm(props: RouteComponentProps<IPageParams>) {
                   </Badge>
                 </TabNavItem>
                 <TabNavItem className={currentTab === 2 ? 'active' : ''} onClick={() => goToNextMenu(2)}>
-                  <Badge badgeContent={state.users.length} max={99} color="primary">
+                  <Badge badgeContent={state.profession_users.length} max={99} color="primary">
                     {`Prestadores`}
                   </Badge>
                 </TabNavItem>
@@ -844,7 +847,7 @@ export default function AreaForm(props: RouteComponentProps<IPageParams>) {
                             <div key={`profession_selected_${index}`}>
                             <DivideTitle>{item.profession?item.profession:"Profissionais sem Função"}</DivideTitle>
                             {item.users.map((user:any)=>(
-                              <div key={`user_selected_${index}`}>
+                              <div key={`user_selected_${index}`} className={classes.chip}>
                                 <Chip
                                   label={user.name}
                                   onDelete={event => handleDeleteUser(user,item)}
