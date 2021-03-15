@@ -2,7 +2,7 @@ import React, { useState, useEffect, useCallback, ChangeEvent, ReactNode } from 
 import { handleUserSelectedId } from './../../../helpers/localStorage';
 import { useDispatch, useSelector } from 'react-redux';
 import { ApplicationState } from '../../../store';
-import { AreaInterface, UserAreaInterface, NeighborhoodAreaInterface, CityAreaInterface, AreaTypes } from '../../../store/ducks/areas/types';
+import { AreaInterface, UserAreaInterface, NeighborhoodAreaInterface, CityAreaInterface, AreaTypes, ProfessionAreaInterface } from '../../../store/ducks/areas/types';
 import { loadRequest, loadAreaById, updateAreaRequest, createAreaRequest, loadGetDistricts as getDistrictsAction, loadGetCitys as getStatesAction,loadGetDistricts_ } from '../../../store/ducks/areas/actions';
 import { loadRequest as getUsersAction, loadProfessionsRequest } from '../../../store/ducks/users/actions';
 import { toast } from 'react-toastify';
@@ -44,6 +44,7 @@ import {
   DivideTitle
 } from './styles';
 import validateName from '../../../utils/validateName';
+import { AnyARecord } from 'dns';
 
 interface IFormFields extends AreaInterface {
   form?: {
@@ -103,6 +104,10 @@ export default function AreaForm(props: RouteComponentProps<IPageParams>) {
       color:"#fff",
       contrastText: "#fff",
       borderColor:'var(--success)',
+    },
+    tittleChip:{
+      paddingTop:'1rem'
+
     },
     cancel:{
       textTransform: 'capitalize',
@@ -186,7 +191,8 @@ export default function AreaForm(props: RouteComponentProps<IPageParams>) {
     users: [],
     neighborhoods: [],
     created_by: { _id: handleUserSelectedId()  },
-    active: true
+    active: true,
+    profession_users:[]
   });
 
   const [currentTab, setCurrentTab] = useState(0);
@@ -233,7 +239,7 @@ export default function AreaForm(props: RouteComponentProps<IPageParams>) {
     let usersIfProfession = null;
     if(state.users.length>1){
       state.users.map((item)=>{
-        
+
 
       });
     }
@@ -491,43 +497,69 @@ export default function AreaForm(props: RouteComponentProps<IPageParams>) {
       neighborhoods: [... neighborhoodsSelected]
     }))
     }
-
-
-
   }
-
 
   // Prestadores
   function handleSelectUser(value: any) {
-
-    const found = state.users.findIndex((item: any)=>{
-      return item._id === value._id;
-    })
-
-     if(found > -1){
-        toast.error("Prestador já cadastrado na área");
-     }else{
-      setState(prevState => ({
-      ...prevState,
-      users: [...prevState.users, value],
-
-    }));
-   }
-  }
-
-  function handleDeleteUser(user: UserAreaInterface) {
-    let usersSelected = [...state.users];
-    const userFounded = usersSelected.findIndex((item: any) => {
-      return user._id === item._id
+    const foundProfession = state.profession_users.findIndex((profession:ProfessionAreaInterface)=>{
+     return profession.profession == value.profession
     });
+    if(foundProfession >-1){
+      const pro = handlePutUser(value, state.profession_users[foundProfession]);
+      console.log(pro);
+      setState(prevState=>({
+        ...prevState,
+        profession_users:[...prevState.profession_users]
+      }));
+    }else{
+       console.log("não tem");
+      let prof:ProfessionAreaInterface = {profession:value.profession, users:[]};
+      const pro = handlePutUser(value,prof);
+      console.log(pro);
+      setState(prevState=>({
+        ...prevState,
+        profession_users:[...prevState.profession_users, pro]
+      }));
+    }
 
-    if (userFounded > -1) {
-      usersSelected.splice(userFounded, 1);
-    };
+  }
+  function handlePutUser (user:UserAreaInterface, profession:ProfessionAreaInterface) :ProfessionAreaInterface{
+       const foundUser = profession.users.findIndex((userProfession)=>{
+        return userProfession._id == user._id;
+      })
+      if(foundUser >-1){
+        toast.error("Prestador já cadastrado na área");
+      }else{
+        profession.users.push(user);
+      }
+      return profession;
+  }
+  //
+  function handleDeleteUser(user: UserAreaInterface, profession:ProfessionAreaInterface) {
 
+    let professionSelected = [...state.profession_users];
+    const professionFounded = professionSelected.findIndex((item: any) => {
+      console.log(item);
+      console.log(profession);
+        return item.profession === profession.profession
+
+    });
+    console.log(professionFounded);
+    if (professionFounded > -1) {
+      const userFound = professionSelected[professionFounded].users.findIndex((item:any)=>{
+          return item._id === user._id;
+      });
+
+      if(userFound > -1){
+        professionSelected[professionFounded].users.splice(userFound, 1);
+      }
+      if(professionSelected[professionFounded].users.length<1){
+        professionSelected.splice(professionFounded,1);
+      }
+  };
     setState(prevState => ({
       ...prevState,
-      users: usersSelected
+      profession_users:[ ...professionSelected ]
     }))
   }
 
@@ -806,17 +838,22 @@ export default function AreaForm(props: RouteComponentProps<IPageParams>) {
                       </FormGroupSection>
                     </Grid>
                     <Grid item md={12} xs={12}>
-
-
                       <ChipList>
-                        {state.users.map((item: any, index) => (
-
-                          <div key={`user_selected_${index}`}>
-                            <Chip
-                              label={item.name}
-                              onDelete={event => handleDeleteUser(item)}
-                            />
+                        {state.profession_users.map((item: any, index) => (
+                          <Grid item md={12} xs={12} className={classes.tittleChip}>
+                            <div key={`profession_selected_${index}`}>
+                            <DivideTitle>{item.profession?item.profession:"Profissionais sem Função"}</DivideTitle>
+                            {item.users.map((user:any)=>(
+                              <div key={`user_selected_${index}`}>
+                                <Chip
+                                  label={user.name}
+                                  onDelete={event => handleDeleteUser(user,item)}
+                                />
+                              </div>
+                            ))}
                           </div>
+                          <Divider></Divider>
+                          </Grid>
                         ))}
                       </ChipList>
                     </Grid>

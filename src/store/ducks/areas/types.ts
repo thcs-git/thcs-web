@@ -72,6 +72,7 @@ export interface AreaInterface {
   neighborhoods: NeighborhoodAreaInterface[];
   created_by?: { _id: any };
   active: boolean;
+  profession_users: ProfessionAreaInterface[];
 }
 
 export interface AreaList {
