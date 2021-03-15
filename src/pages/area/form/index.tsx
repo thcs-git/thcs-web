@@ -18,7 +18,6 @@ import {
   DialogTitle,
   Divider,
   FormControlLabel,
-  FormHelperText,
   Grid,
   makeStyles,
   Tabs,
@@ -46,24 +45,21 @@ import {
 } from './styles';
 import validateName from '../../../utils/validateName';
 import { AnyARecord } from 'dns';
-import validator from 'validator';
 
 interface IFormFields extends AreaInterface {
   form?: {
-    dayOfTheWeek?: { id: number, name: string } | null;
-    state?: string;
-    profession_id?: string;
-    professions?: any[];
-    neighborhoods?: any[];
-    user_id?: any;
+    dayOfTheWeek: { id: number, name: string } | null,
   }
 }
 
 interface IPageParams {
   id?: string;
 }
-interface BigObject<T> {
-  [index: string]: T
+
+interface TabPanelProps {
+  children?: ReactNode;
+  index: any;
+  value: any;
 }
 
 export default function AreaForm(props: RouteComponentProps<IPageParams>) {
@@ -202,15 +198,6 @@ export default function AreaForm(props: RouteComponentProps<IPageParams>) {
     profession_users:[]
   });
 
-  const [fieldsValidation, setFieldValidations] = useState<any>({
-    name: false,
-    supply_days: true,
-    week_day: true,
-    users: true,
-    neighborhoods: true,
-  });
-
-  const [users, setUsers] = useState<any[]>([]);
   const [currentTab, setCurrentTab] = useState(0);
   let load = false;
   const selectTab = useCallback((index: number) => {
@@ -366,27 +353,6 @@ export default function AreaForm(props: RouteComponentProps<IPageParams>) {
 //////////////////////////////// VALIDATION ///////////////////////////////////////////////////
 
 
-
-  useEffect(() => {
-    setUsers(userState.list.data);
-  }, [userState.list.data]);
-
-  const handleValidateFields = useCallback(() => {
-    let isValid: boolean = true;
-
-    for (let key of Object.keys(fieldsValidation)) {
-      if (!fieldsValidation[key]) {
-        isValid = false;
-      }
-    }
-
-    return isValid;
-
-  }, [fieldsValidation, state]);
-
-  // function handleLocations(name: string) {
-  //   dispatch(getDistrictsAction(name));
-  // }
 
   function handleSaveFormArea() {
     if (params.id) {
@@ -654,7 +620,7 @@ export default function AreaForm(props: RouteComponentProps<IPageParams>) {
                           <Slider
                             marks={supplyIntervals}
                             value={state.supply_days}
-                            defaultValue={1}
+                            defaultValue={0}
                             getAriaValueText={value => `${value}`}
                             aria-labelledby="discrete-slider-restrict"
                             step={null}
@@ -672,12 +638,10 @@ export default function AreaForm(props: RouteComponentProps<IPageParams>) {
                     <Grid item md={5}>
                     </Grid>
                     {state.supply_days > 1 && (
-                      <Grid item md={4} sm={6} xs={12}>
-                        <FormGroupSection error>
+                      <Grid item md={4} xs={12}>
+                        <FormGroupSection>
                           <Autocomplete
                             id="combo-box-day-of-week"
-                            size="small"
-                            autoComplete={false}
                             options={daysOfTheWeek}
                             getOptionLabel={(option) => option.name}
                             renderInput={(params) => <TextField {...params} autoFocus error={inputDays.error} label="Dia da semana" variant="outlined"
@@ -685,24 +649,13 @@ export default function AreaForm(props: RouteComponentProps<IPageParams>) {
                              helperText={inputDays.error && "Selecione um dia válido"}/> }
                             value={state.form?.dayOfTheWeek ?? null}
                             getOptionSelected={(option, value) => option.id === state.week_day}
-                            // renderInput={(params) => (
-                            //   <TextField
-                            //     {...params}
-                            //     label="Dia da semana"
-                            //     variant="outlined"
-                            //     autoComplete="new-password"
-                            //     error={!fieldsValidation.week_day}
-                            //   />
-                            // )}
                             onChange={(event: any, newValue) => {
                               handleDayOfTheWeek(event, newValue);
-                              setFieldValidations((prevState: any) => ({ ...prevState, week_day: !validator.isEmpty(newValue?.name || '') }));
                             }}
 
-                            //size="small"
+                            size="small"
                             fullWidth
                           />
-                          {!fieldsValidation.week_day && <FormHelperText>Selecione um dia da semana</FormHelperText>}
                         </FormGroupSection>
                       </Grid>
                     )}
@@ -824,7 +777,6 @@ export default function AreaForm(props: RouteComponentProps<IPageParams>) {
                         />
                       </FormGroupSection>
                     </Grid>
-
                     <Grid item md={12} xs={12}>
 
 
@@ -874,18 +826,16 @@ export default function AreaForm(props: RouteComponentProps<IPageParams>) {
                     <Grid item md={7} xs={12}>
                       <FormGroupSection>
                         <Autocomplete
-                          id="combo-box-area-users"
-                          options={users}
+                          id="combo-box-users"
+                          options={userState.list.data}
                           getOptionLabel={(option) => option.name}
-                          renderInput={(params) => <TextField {...params} label="Prestador" variant="outlined" autoComplete="new-password" />}
+                          renderInput={(params) => <TextField {...params} label="Prestador" variant="outlined" />}
                           size="small"
-                          value={state.form?.user_id}
                           onChange={(event, value) => {
                             if (value) {
                               handleSelectUser({ _id: value._id || '', name: value.name, profession:value.profession_id?.name || ''})
                             }
                           }}
-                          disabled={!state.form?.profession_id}
                           fullWidth
                         />
                       </FormGroupSection>
