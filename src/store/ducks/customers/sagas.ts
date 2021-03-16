@@ -4,7 +4,7 @@ import { AxiosResponse } from 'axios';
 
 import { apiSollar, viacep } from '../../../services/axios';
 
-import { loadSuccess, loadFailure, loadSuccessCustomerById, successGetAddress, createCustomerSuccess, updateCustomerSuccess } from './actions';
+import { loadSuccess, loadFailure, loadFailureCep, loadSuccessCustomerById, successGetAddress, createCustomerSuccess, updateCustomerSuccess } from './actions';
 import { ViacepDataInterface } from './types';
 
 
@@ -71,7 +71,7 @@ export function* getAddress({ payload }: any) {
     const { data }: AxiosResponse<ViacepDataInterface> = yield call(viacep.get, `${payload.postalCode}/json`);
 
     if (data.erro) {
-      yield put(loadFailure());
+      yield put(loadFailureCep());
       return;
     }
 

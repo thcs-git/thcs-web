@@ -194,6 +194,25 @@ export default function CustomerForm(props: RouteComponentProps<IPageParams>) {
     }
   }, [userState.success]);
 
+  useEffect(() => {
+    const field = customerState.errorCep ? 'input-postal-code' : 'input-address-number';
+
+    customerState.errorCep && setState(prevState => ({
+      ...prevState,
+      address: {
+        ...prevState.address,
+        city: '',
+        complement: '',
+        district: '',
+        number: '',
+        state: '',
+        street: '',
+      }
+    }));
+
+    document.getElementById(field)?.focus();
+  }, [customerState.errorCep]);
+
   const handleSaveFormCustomer = useCallback(() => {
     if (params.id) {
       dispatch(updateCustomerRequest(state));
@@ -215,8 +234,6 @@ export default function CustomerForm(props: RouteComponentProps<IPageParams>) {
 
   const getAddress = useCallback(() => {
     dispatch(getAddressAction(state.address.postal_code));
-
-    document.getElementById('input-address-number')?.focus();
   }, [state.address.postal_code]);
 
   function handleOpenModalCancel() {
@@ -332,6 +349,8 @@ export default function CustomerForm(props: RouteComponentProps<IPageParams>) {
                           id="input-postal-code"
                           label="CEP"
                           placeholder="00000-000"
+                          error={customerState.errorCep}
+                          // helperText={customerState.errorCep ? `CEP inválido` : null}
                           // value={state.address.postal_code}
                           // onChange={element => {
                           //   setState(prev => {
@@ -351,8 +370,13 @@ export default function CustomerForm(props: RouteComponentProps<IPageParams>) {
                             </InputAdornment>
                           }
                         />
-                      )}
+                        )}
                     </InputMask>
+                    {customerState.errorCep && (
+                      <p style={{ color: '#f44336', margin: '4px 4px' }}>
+                        CEP inválido
+                      </p>
+                    )}
                   </FormControl>
                 </Grid>
 
