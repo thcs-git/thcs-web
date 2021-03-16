@@ -49,6 +49,7 @@ export interface CustomerInterface {
     whatsapp: boolean,
   },
   cellphone?: string;
+  active?: boolean
 }
 
 export interface ViacepDataInterface {
