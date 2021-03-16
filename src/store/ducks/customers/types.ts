@@ -5,6 +5,7 @@ export enum CustomerTypes {
   LOAD_REQUEST = "@customer/LOAD_REQUEST",
   LOAD_SUCCESS = "@customer/LOAD_SUCCESS",
   LOAD_FAILURE = "@customer/LOAD_FAILURE",
+  LOAD_FAILURE_CEP = "@customer/LOAD_FAILURE_CEP",
 
   LOAD_REQUEST_BY_ID = "@customer/LOAD_REQUEST_BY_ID",
   LOAD_SUCCESS_BY_ID = "@customer/LOAD_SUCCESS_BY_ID",
@@ -87,6 +88,7 @@ export interface CustomerState {
   loading: boolean;
   error: boolean;
   success: boolean;
+  errorCep?: boolean;
 }
 
 export type LoadRequestParams = Partial<Omit<CustomerList, 'data'>>
