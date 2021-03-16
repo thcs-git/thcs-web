@@ -44,6 +44,7 @@ import {
 } from './styles';
 import mask from '../../../utils/mask';
 import Loading from '../../../components/Loading';
+import { validateCNPJ as validateCNPJHelper } from '../../../helpers/validateCNPJ';
 
 interface IPageParams {
   id?: string;
@@ -58,6 +59,10 @@ export default function CustomerForm(props: RouteComponentProps<IPageParams>) {
 
   const [openModalCancel, setOpenModalCancel] = useState(false);
   const { params } = props.match;
+
+  const [validates, setVlidates] = useState({
+    fiscal_number: false,
+  });
 
   const [state, setState] = useState<CustomerInterface>({
     name: '',
@@ -197,6 +202,17 @@ export default function CustomerForm(props: RouteComponentProps<IPageParams>) {
     }
   }, [state, params]);
 
+  const validateCNPJField = useCallback((element) => {
+    const isValidField = validateCNPJHelper(element.target.value) || false;
+
+    console.log(isValidField);
+    setVlidates(prevState => ({
+      ...prevState,
+      fiscal_number: !isValidField
+    }));
+
+  }, []);
+
   const getAddress = useCallback(() => {
     dispatch(getAddressAction(state.address.postal_code));
 
@@ -268,6 +284,7 @@ export default function CustomerForm(props: RouteComponentProps<IPageParams>) {
                     mask="99.999.999/9999-99"
                     value={state.fiscal_number}
                     onChange={(element) => setState({ ...state, fiscal_number: element.target.value })}
+                    onBlur={validateCNPJField}
                   >
                     {(inputProps: any) => (
                       <TextField
@@ -276,6 +293,8 @@ export default function CustomerForm(props: RouteComponentProps<IPageParams>) {
                         label="CNPJ"
                         variant="outlined"
                         size="small"
+                        error={validates.fiscal_number}
+                        helperText={validates.fiscal_number ? `CNPJ inválido ou inexistente` : null}
                         // value={state.fiscal_number}
                         // onChange={(element) => setState({ ...state, fiscal_number: element.target.value })}
                         placeholder="00.000.000/0000-00"
