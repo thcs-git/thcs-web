@@ -1,5 +1,5 @@
 import styled from 'styled-components';
-import { TextField, OutlinedInput, Button } from '@material-ui/core';
+import { TextField, OutlinedInput, Button, FormControl } from '@material-ui/core';
 
 export const ButtonsContent = styled.div`
   display: flex;
@@ -20,7 +20,7 @@ export const FormSection = styled.div`
   height: calc(100vh - 96px);
 `;
 
-export const FormGroupSection = styled.div`
+export const FormGroupSection = styled(FormControl)`
   margin-bottom: 20px;
 `;
 

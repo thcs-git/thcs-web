@@ -90,7 +90,7 @@ export interface UserInterface {
   phone: string;
   cellphone: string;
   user_type_id: string | UserTypeInterface;
-  profession_id?: string;
+  profession_id?: string | ProfessionUserInterface;
   main_specialty_id?: string;
   specialties: (SpecialtiesUserInterface | {})[];
   council_id?: {

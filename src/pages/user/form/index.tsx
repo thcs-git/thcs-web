@@ -10,15 +10,12 @@ import {
   DialogTitle,
   Divider,
   Grid,
-  FormControl,
   FormControlLabel,
-  InputLabel,
-  InputAdornment,
-  MenuItem,
 } from '@material-ui/core';
-import { SearchOutlined } from '@material-ui/icons';
 import Autocomplete from '@material-ui/lab/Autocomplete';
 import InputMask, { Props } from 'react-input-mask';
+import validator from 'validator';
+import { toast } from 'react-toastify';
 
 import { useDispatch, useSelector } from 'react-redux';
 import {
@@ -124,6 +121,35 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
   const [specialties, setSpecialties] = useState<any[]>([]);
   const [companies, setCompanies] = useState<any[]>([]);
 
+  const [fieldsValidation, setFieldValidations] = useState<any>({
+    companies: false,
+    name: false,
+    birthdate: false,
+    gender: false,
+    national_id: false,
+    issuing_organ: false,
+    fiscal_number: false,
+    mother_name: false,
+    nationality: false,
+    address: {
+      postal_code: false,
+      street: false,
+      number: false,
+      district: false,
+      city: false,
+      state: false,
+      complement: true,
+    },
+    email: false,
+    phone: false,
+    cellphone: false,
+    user_type_id: false,
+    specialties: true,
+    council_state: false,
+    council_number: false,
+    active: true,
+  });
+
   const [form, setForm] = useState<IFormFields>({
     userType: null,
     council: null,
@@ -166,6 +192,39 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
         user_type_id: (typeof userState.data.user_type_id === 'object') ? userState.data.user_type_id._id : userState.data.user_type_id
       }));
     }
+
+    // Força o validador em 'true' quando entrar na tela para editar
+    if (params?.id) {
+      setFieldValidations({
+        companies: true,
+        name: true,
+        birthdate: true,
+        gender: true,
+        national_id: true,
+        issuing_organ: true,
+        fiscal_number: true,
+        mother_name: true,
+        nationality: true,
+        address: {
+          postal_code: true,
+          street: true,
+          number: true,
+          district: true,
+          city: true,
+          state: true,
+          complement: true,
+        },
+        email: true,
+        phone: true,
+        cellphone: true,
+        user_type_id: true,
+        specialties: true,
+        council_state: true,
+        council_number: true,
+        active: true,
+      });
+    }
+
   }, [userState]);
 
   useEffect(() => {
@@ -177,6 +236,21 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
         }
       }
     });
+
+    if (userState.data.address.postal_code) {
+      setFieldValidations((prevState: any) => ({
+        ...prevState,
+        address: {
+          postal_code: true,
+          street: true,
+          number: !!(userState.data.address.number),
+          district: true,
+          city: true,
+          state: true,
+          complement: true,
+        },
+      }));
+    }
 
     if (userState.error) {
       setState(prevState => {
@@ -192,11 +266,37 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
             complement: '',
           },
         }
-      })
+      });
+
+      setFieldValidations((prevState: any) => ({
+        ...prevState,
+        address: {
+          postal_code: false,
+          street: false,
+          number: false,
+          district: false,
+          city: false,
+          state: false,
+          complement: false,
+        },
+      }));
 
       return;
     }
   }, [userState.data.address]);
+
+  const handleValidateFields = useCallback(() => {
+    let isValid: boolean = true;
+
+    for (let key of Object.keys(fieldsValidation)) {
+      if (!fieldsValidation[key]) {
+        isValid = false;
+      }
+    }
+
+    return isValid;
+
+  }, [fieldsValidation, state]);
 
   const selectTab = useCallback((index: number) => {
     setCurrentTab(index);
@@ -255,9 +355,14 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
       return null;
     }
 
-    const selected = userState.data.professions.filter(item => item._id === state.profession_id);
+    const selected = userState.data.professions.filter(item => {
+      if (typeof state.profession_id === 'object') {
+        return item._id === state?.profession_id?._id;
+      }
+    });
 
     return (selected[0]) ? selected[0] : null;
+
   }, [state.profession_id, state.professions]);
 
   // Especialides
@@ -316,6 +421,12 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
     return (selected[0]) ? selected[0] : null;
   }, [state.main_specialty_id]);
 
+  const selectCouncil = useCallback(() => {
+    const selected = councilState.list.data.filter(item => item._id === state.council_id?._id);
+
+    return (selected[0]) ? selected[0] : null;
+  }, [state.council_id]);
+
   const selectCouncilState = useCallback(() => {
     const selected = ufs.filter(item => item.initials === state.council_state);
 
@@ -345,6 +456,9 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
 
     if (companiesIndex > -1) {
       companiesCopy.splice(companiesIndex, 1);
+
+      setFieldValidations((prevState: any) => ({ ...prevState, companies: (companiesCopy.length > 0) }));
+
       setCompanies(companiesCopy);
     }
   }
@@ -375,6 +489,11 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
   }, [state.companies]);
 
   const handleSaveFormUser = useCallback(() => {
+    if (!handleValidateFields()) {
+      toast.error('Existem campos que precisam ser preenchidos para continuar');
+      return;
+    }
+
     if (state?._id) {
       dispatch(updateUserRequest(state));
     } else {
@@ -418,140 +537,180 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
                 </TabNav>
                 <TabBody>
                   <TabBodyItem className={currentTab === 0 ? 'show' : ''}>
-                    <FormGroupSection>
-                      <Grid container>
-                        <Grid item md={12} xs={12}>
-                          <TextField
-                            id="input-social-name"
-                            label="Nome do usuário"
-                            variant="outlined"
-                            size="small"
-                            value={state.name}
-                            onChange={(element) => setState({ ...state, name: element.target.value })}
-                            fullWidth
-                          />
-                        </Grid>
-                        <Grid item md={7} xs={12}>
-                          <TextField
-                            id="input-mother-name"
-                            label="Nome da mãe"
-                            variant="outlined"
-                            size="small"
-                            value={state.mother_name}
-                            onChange={(element) => setState({ ...state, mother_name: element.target.value })}
-                            fullWidth
-                          />
-                        </Grid>
+                    <Grid container>
+                      <Grid item md={12} xs={12}>
+                        <TextField
+                          id="input-social-name"
+                          label="Nome do usuário"
+                          variant="outlined"
+                          size="small"
+                          value={state.name}
+                          onChange={(element) => {
+                            setState({ ...state, name: element.target.value });
+                            setFieldValidations((prevState: any) => ({ ...prevState, name: !validator.isEmpty(element.target.value) }));
+                          }}
+                          error={!fieldsValidation.name}
+                          helperText={!fieldsValidation.name ? `Por favor, insira um nome para o usuário.` : null}
+                          fullWidth
+                        />
+                      </Grid>
+                      <Grid item md={7} xs={12}>
+                        <TextField
+                          id="input-mother-name"
+                          label="Nome da mãe"
+                          variant="outlined"
+                          size="small"
+                          value={state.mother_name}
+                          onChange={(element) => {
+                            setState({ ...state, mother_name: element.target.value });
+                            setFieldValidations((prevState: any) => ({ ...prevState, mother_name: !validator.isEmpty(element.target.value) }));
+                          }}
+                          error={!fieldsValidation.mother_name}
+                          helperText={!fieldsValidation.mother_name ? `Por favor, insira o nome da mãe do usuário.` : null}
+                          fullWidth
+                        />
+                      </Grid>
 
-                        <Grid item md={3} xs={12}>
-                          <DatePicker
-                            id="input-fiscal-birthdate"
-                            label="Data de Nascimento"
-                            value={state?.birthdate?.length > 10 ? formatDate(state.birthdate, 'YYYY-MM-DD') : state.birthdate}
-                            onChange={(element) => setState({ ...state, birthdate: element.target.value })}
-                            fullWidth
-                            InputLabelProps={{
-                              shrink: true,
+                      <Grid item md={3} xs={12}>
+                        <DatePicker
+                          id="input-fiscal-birthdate"
+                          label="Data de Nascimento"
+                          value={state?.birthdate?.length > 10 ? formatDate(state.birthdate, 'YYYY-MM-DD') : state.birthdate}
+                          onChange={(element) => {
+                            setState({ ...state, birthdate: element.target.value });
+                            setFieldValidations((prevState: any) => ({ ...prevState, birthdate: !validator.isEmpty(element.target.value) }));
+                          }}
+                          InputLabelProps={{
+                            shrink: true,
+                          }}
+                          error={!fieldsValidation.birthdate}
+                          helperText={!fieldsValidation.birthdate ? `Por favor, insira a data de nascimento.` : null}
+                          fullWidth
+                        />
+                      </Grid>
+
+                      <Grid item md={2} xs={12}>
+                        <TextField
+                          id="input-age"
+                          label="Idade"
+                          variant="outlined"
+                          size="small"
+                          value={age(state.birthdate)}
+                          fullWidth
+                          disabled
+                        />
+                      </Grid>
+                    </Grid>
+                    <Grid container>
+                      <Grid item md={4} xs={12}>
+
+                        <InputMask
+                          mask="999.999.999-99"
+                          value={state.fiscal_number}
+                          onChange={(element) => {
+                            setState({ ...state, fiscal_number: element.target.value });
+                            setFieldValidations((prevState: any) => ({ ...prevState, fiscal_number: !validator.isEmpty(element.target.value) }));
+                          }}
+                        >
+                          {(inputProps: any) => (
+                            <TextField
+                              {...inputProps}
+                              id="input-fiscal-number"
+                              label="CPF"
+                              variant="outlined"
+                              size="small"
+                              placeholder="000.000.000-00"
+                              error={!fieldsValidation.fiscal_number}
+                              helperText={!fieldsValidation.fiscal_number ? `Por favor, insira o CPF.` : null}
+                              fullWidth
+                            />)}
+                        </InputMask>
+                      </Grid>
+                      <Grid item md={3} xs={12}>
+                        <InputMask
+                          mask="9.999-999"
+                          value={state.national_id}
+                          onChange={(element) => {
+                            setState({ ...state, national_id: element.target.value });
+                            setFieldValidations((prevState: any) => ({ ...prevState, national_id: !validator.isEmpty(element.target.value) }));
+                          }}
+                        >
+                          {(inputProps: any) => (
+                            <TextField
+                              {...inputProps}
+                              id="input-nation-id"
+                              label="RG"
+                              variant="outlined"
+                              size="small"
+                              placeholder="0.000-000"
+                              error={!fieldsValidation.national_id}
+                              helperText={!fieldsValidation.national_id ? `Por favor, insira o RG.` : null}
+                              fullWidth
+                            />)}
+                        </InputMask>
+                      </Grid>
+
+                      <Grid item md={5} xs={12}>
+                        <TextField
+                          id="input-emitting-organ"
+                          label="Órgão Emissor"
+                          variant="outlined"
+                          size="small"
+                          value={state.issuing_organ}
+                          onChange={(element) => {
+                            setState({ ...state, issuing_organ: element.target.value });
+                            setFieldValidations((prevState: any) => ({ ...prevState, issuing_organ: !validator.isEmpty(element.target.value) }));
+                          }}
+                          error={!fieldsValidation.issuing_organ}
+                          helperText={!fieldsValidation.issuing_organ ? `Por favor, insira o orgão emissor.` : null}
+                          fullWidth
+                        />
+                      </Grid>
+
+                      <Grid item md={4} xs={12}>
+                        <TextField
+                          id="input-nationality"
+                          label="Nacionalidade"
+                          variant="outlined"
+                          size="small"
+                          value={state.nationality}
+                          onChange={(element) => {
+                            setState({ ...state, nationality: element.target.value });
+                            setFieldValidations((prevState: any) => ({ ...prevState, nationality: !validator.isEmpty(element.target.value) }));
+                          }}
+                          error={!fieldsValidation.nationality}
+                          helperText={!fieldsValidation.nationality ? `Por favor, insira a nacionalidade.` : null}
+                          fullWidth
+                        />
+                      </Grid>
+
+                      <Grid item md={3} xs={12}>
+                        <FormGroupSection fullWidth error>
+                          <Autocomplete
+                            id="combo-box-gender"
+                            size="small"
+                            options={genders}
+                            getOptionLabel={(option) => option}
+                            renderInput={(params) => (
+                              <TextField
+                                {...params}
+                                label="Sexo"
+                                variant="outlined"
+                                error={!fieldsValidation.gender}
+                                helperText={!fieldsValidation.gender ? 'Selecione o sexo' : null}
+                              />
+                            )}
+                            value={state.gender}
+                            onChange={(element, value) => {
+                              setState({ ...state, gender: value ? value : '' });
+                              setFieldValidations((prevState: any) => ({ ...prevState, gender: !validator.isEmpty(value ? value : '') }));
                             }}
-                          />
-                        </Grid>
-
-                        <Grid item md={2} xs={12}>
-                          <TextField
-                            id="input-age"
-                            label="Idade"
-                            variant="outlined"
-                            size="small"
-                            value={age(state.birthdate)}
+                            noOptionsText="Nenhum resultado encontrado"
                             fullWidth
-                            disabled
                           />
-                        </Grid>
+                        </FormGroupSection>
                       </Grid>
-                      <Grid container>
-                        <Grid item md={4} xs={12}>
-
-                          <InputMask
-                            mask="999.999.999-99"
-                            value={state.fiscal_number}
-                            onChange={(element) => setState({ ...state, fiscal_number: element.target.value })}
-                          >
-                            {(inputProps: any) => (
-                              <TextField
-                                {...inputProps}
-                                id="input-fiscal-number"
-                                label="CPF"
-                                variant="outlined"
-                                size="small"
-                                placeholder="000.000.000-00"
-                                fullWidth
-                              />)}
-                          </InputMask>
-                        </Grid>
-                        <Grid item md={3} xs={12}>
-                          <InputMask
-                            mask="9.999-999"
-                            value={state.national_id}
-                            onChange={(element) => setState({ ...state, national_id: element.target.value })}
-                          >
-                            {(inputProps: any) => (
-                              <TextField
-                                {...inputProps}
-                                id="input-nation-id"
-                                label="RG"
-                                variant="outlined"
-                                size="small"
-                                placeholder="0.000-000"
-                                fullWidth
-                              />)}
-                          </InputMask>
-                        </Grid>
-
-                        <Grid item md={5} xs={12}>
-                          <TextField
-                            id="input-emitting-organ"
-                            label="Órgão Emissor"
-                            variant="outlined"
-                            size="small"
-                            value={state.issuing_organ}
-                            onChange={(element) => setState({ ...state, issuing_organ: element.target.value })}
-                            fullWidth
-                          />
-                        </Grid>
-
-                        <Grid item md={4} xs={12}>
-                          <TextField
-                            id="input-nationality"
-                            label="Nacionalidade"
-                            variant="outlined"
-                            size="small"
-                            value={state.nationality}
-                            onChange={(element) => setState({ ...state, nationality: element.target.value })}
-                            fullWidth
-                          />
-                        </Grid>
-
-                        <Grid item md={3} xs={12}>
-                          <FormControl variant="outlined" size="small" fullWidth>
-                            <InputLabel id="select-patient-gender">Sexo</InputLabel>
-                            <Select
-                              labelId="select-patient-gender"
-                              id="demo-simple-select-filled"
-                              value={state.gender}
-                              onChange={(element) => setState({ ...state, gender: `${element.target.value}` || '' })}
-                              labelWidth={40}
-                            >
-                              <MenuItem value="">
-                                <em>&nbsp;</em>
-                              </MenuItem>
-                              {genders.map(gender => <MenuItem key={`gender_${gender}`} value={gender}>{gender}</MenuItem>)}
-                            </Select>
-                          </FormControl>
-                        </Grid>
-
-                        <Grid item md={10} />
-                      </Grid>
-                    </FormGroupSection>
+                    </Grid>
 
                     <Divider style={{ marginBottom: 30 }} />
 
@@ -559,30 +718,28 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
                     <FormGroupSection>
                       <Grid container>
                         <Grid item md={2} xs={12}>
-                          <FormControl variant="outlined" size="small" fullWidth>
-                            <InputLabel htmlFor="search-input">CEP</InputLabel>
-                            <InputMask
-                              mask="99999-999"
-                              value={state.address?.postal_code}
-                              onChange={(element) => setState({ ...state, address: { ...state.address, postal_code: element.target.value } })}
-                              onBlur={getAddress}
-                            >
-                              {(inputProps: Props) => (
-                                <OutlinedInputFiled
-                                  id="input-postal-code"
-                                  label="CEP"
-                                  placeholder="00000-000"
-                                  endAdornment={
-                                    <InputAdornment position="end">
-                                      <SearchOutlined style={{ color: 'var(--primary)' }} />
-                                    </InputAdornment>
-                                  }
-                                  labelWidth={155}
-                                  style={{ marginRight: 12 }}
-                                />
-                              )}
-                            </InputMask>
-                          </FormControl>
+                          <InputMask
+                            mask="99999-999"
+                            value={state.address?.postal_code}
+                            onChange={(element) => {
+                              setState({ ...state, address: { ...state.address, postal_code: element.target.value } });
+                              setFieldValidations((prevState: any) => ({ ...prevState, address: { ...prevState.address, postal_code: !validator.isEmpty(element.target.value) } }));
+                            }}
+                            onBlur={getAddress}
+                          >
+                            {(inputProps: any) => (
+                              <TextField
+                                {...inputProps}
+                                id="input-postal-code"
+                                label="CEP"
+                                placeholder="00000-000"
+                                size="small"
+                                variant="outlined"
+                                error={!fieldsValidation.address.postal_code}
+                                helperText={!fieldsValidation.address.postal_code ? `Por favor, insira o RG.` : null}
+                                fullWidth
+                              />)}
+                          </InputMask>
                         </Grid>
 
                         <Grid item md={10} xs={12}>
@@ -592,7 +749,12 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
                             variant="outlined"
                             size="small"
                             value={state.address?.street}
-                            onChange={(element) => setState({ ...state, address: { ...state.address, street: element.target.value } })}
+                            onChange={(element) => {
+                              setState({ ...state, address: { ...state.address, street: element.target.value } });
+                              setFieldValidations((prevState: any) => ({ ...prevState, address: { ...prevState.address, street: !validator.isEmpty(element.target.value) } }));
+                            }}
+                            error={!fieldsValidation.address.street}
+                            helperText={!fieldsValidation.address.street ? `Por favor, insira o nome da rua.` : null}
                             fullWidth
                           />
                         </Grid>
@@ -603,7 +765,12 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
                             variant="outlined"
                             size="small"
                             value={state.address?.number}
-                            onChange={(element) => setState({ ...state, address: { ...state.address, number: element.target.value } })}
+                            onChange={(element) => {
+                              setState({ ...state, address: { ...state.address, number: element.target.value } });
+                              setFieldValidations((prevState: any) => ({ ...prevState, address: { ...prevState.address, number: !validator.isEmpty(element.target.value) } }));
+                            }}
+                            error={!fieldsValidation.address.number}
+                            helperText={!fieldsValidation.address.number ? `Por favor, insira o número da residência.` : null}
                             fullWidth
                           />
                         </Grid>
@@ -615,7 +782,10 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
                             variant="outlined"
                             size="small"
                             value={state.address?.complement}
-                            onChange={(element) => setState({ ...state, address: { ...state.address, complement: element.target.value } })}
+                            onChange={(element) => {
+                              setState({ ...state, address: { ...state.address, complement: element.target.value } });
+                              setFieldValidations((prevState: any) => ({ ...prevState, address: { ...prevState.address, complement: !validator.isEmpty(element.target.value) } }));
+                            }}
                             fullWidth
                           />
                         </Grid>
@@ -627,7 +797,12 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
                             variant="outlined"
                             size="small"
                             value={state.address?.district}
-                            onChange={(element) => setState({ ...state, address: { ...state.address, district: element.target.value } })}
+                            onChange={(element) => {
+                              setState({ ...state, address: { ...state.address, district: element.target.value } });
+                              setFieldValidations((prevState: any) => ({ ...prevState, address: { ...prevState.address, district: !validator.isEmpty(element.target.value) } }));
+                            }}
+                            error={!fieldsValidation.address.district}
+                            helperText={!fieldsValidation.address.district ? `Por favor, insira o bairro.` : null}
                             fullWidth
                           />
                         </Grid>
@@ -639,7 +814,12 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
                             variant="outlined"
                             size="small"
                             value={state.address?.city}
-                            onChange={(element) => setState({ ...state, address: { ...state.address, city: element.target.value } })}
+                            onChange={(element) => {
+                              setState({ ...state, address: { ...state.address, city: element.target.value } });
+                              setFieldValidations((prevState: any) => ({ ...prevState, address: { ...prevState.address, city: !validator.isEmpty(element.target.value) } }));
+                            }}
+                            error={!fieldsValidation.address.city}
+                            helperText={!fieldsValidation.address.city ? `Por favor, insira a cidade.` : null}
                             fullWidth
                           />
                         </Grid>
@@ -651,7 +831,12 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
                             variant="outlined"
                             size="small"
                             value={state.address?.state}
-                            onChange={(element) => setState({ ...state, address: { ...state.address, state: element.target.value } })}
+                            onChange={(element) => {
+                              setState({ ...state, address: { ...state.address, state: element.target.value } });
+                              setFieldValidations((prevState: any) => ({ ...prevState, address: { ...prevState.address, state: !validator.isEmpty(element.target.value) } }));
+                            }}
+                            error={!fieldsValidation.address.state}
+                            helperText={!fieldsValidation.address.state ? `Por favor, insira o estado.` : null}
                             fullWidth
                           />
                         </Grid>
@@ -661,12 +846,17 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
                       <Grid item md={6} xs={12}>
                         <TextField
                           id="input-email"
+                          type="email"
                           label="E-mail"
                           variant="outlined"
                           size="small"
                           value={state.email}
-                          onChange={(element) => setState({ ...state, email: element.target.value })}
-                          type="email"
+                          onChange={(element) => {
+                            setState({ ...state, email: element.target.value });
+                            setFieldValidations((prevState: any) => ({ ...prevState, email: validator.isEmail(element.target.value) }));
+                          }}
+                          error={!fieldsValidation.email}
+                          helperText={!fieldsValidation.email ? `Por favor, insira o email do usuário.` : null}
                           fullWidth
                         />
                       </Grid>
@@ -674,7 +864,10 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
                         <InputMask
                           mask="(99) 9999-9999"
                           value={state.phone}
-                          onChange={(element) => setState({ ...state, phone: element.target.value })}
+                          onChange={(element) => {
+                            setState({ ...state, phone: element.target.value });
+                            setFieldValidations((prevState: any) => ({ ...prevState, phone: !validator.isEmpty(element.target.value) }));
+                          }}
                         >
                           {(inputProps: any) => (
                             <TextField
@@ -684,6 +877,8 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
                               variant="outlined"
                               size="small"
                               placeholder="0000-0000"
+                              error={!fieldsValidation.phone}
+                              helperText={!fieldsValidation.phone ? `Por favor, insira o telefone.` : null}
                               fullWidth
                             />
                           )}
@@ -691,9 +886,12 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
                       </Grid>
                       <Grid item md={3} xs={12}>
                         <InputMask
-                          mask="(99) 9 9999-9999"
+                          mask="(99) 99999-9999"
                           value={state.cellphone}
-                          onChange={(element) => setState({ ...state, cellphone: element.target.value })}
+                          onChange={(element) => {
+                            setState({ ...state, cellphone: element.target.value });
+                            setFieldValidations((prevState: any) => ({ ...prevState, cellphone: validator.isMobilePhone(element.target.value, 'pt-BR') }));
+                          }}
                         >
                           {(inputProps: any) => (
                             <TextField
@@ -703,6 +901,8 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
                               variant="outlined"
                               size="small"
                               placeholder="(00) 0 0000-0000"
+                              error={!fieldsValidation.cellphone}
+                              helperText={!fieldsValidation.cellphone ? `Por favor, insira o celular.` : null}
                               fullWidth
                             />
                           )}
@@ -710,17 +910,25 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
                       </Grid>
                     </Grid>
                     <Grid container>
-                      <Grid item md={3} xs={12}>
-                        <FormGroupSection>
+                      <Grid item md={4} xs={12}>
+                        <FormGroupSection fullWidth error>
                           <Autocomplete
                             id="combo-box-user-type"
                             options={userState.data.user_types || []}
                             getOptionLabel={(option) => option.name}
-                            renderInput={(params) => <TextField {...params} label="Tipo do Usuário" variant="outlined" />}
+                            renderInput={(params) => (
+                              <TextField {...params}
+                                label="Tipo do Usuário"
+                                variant="outlined"
+                                error={!fieldsValidation.user_type_id}
+                                helperText={!fieldsValidation.user_type_id ? `Selecione um tipo do usuário.` : null}
+                              />
+                            )}
                             value={selectUserType()}
                             getOptionSelected={(option, value) => option._id === state.user_type_id}
                             onChange={(event: any, newValue) => {
                               handleUserType(event, newValue);
+                              setFieldValidations((prevState: any) => ({ ...prevState, user_type_id: (newValue !== null) }));
                             }}
                             size="small"
                             fullWidth
@@ -743,7 +951,7 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
                   <TabBodyItem className={currentTab === 1 ? 'show' : ''}>
                     <Grid container>
                       <Grid item md={5} xs={12}>
-                        <FormGroupSection>
+                        <FormGroupSection fullWidth error>
                           <Autocomplete
                             id="combo-box-profession"
                             options={userState.data.professions || []}
@@ -762,16 +970,17 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
                         </FormGroupSection>
                       </Grid>
                       <Grid item md={3} xs={12}>
-                        <FormGroupSection>
+                        <FormGroupSection fullWidth error>
                           <Autocomplete
                             id="combo-box-council"
                             options={councilState.list.data}
                             getOptionLabel={(option) => `${option.initials} - ${option.name}`}
                             renderInput={(params) => <TextField {...params} label="Conselho" variant="outlined" />}
-                            value={state?.council_id}
+                            value={selectCouncil()}
                             getOptionSelected={(option, value) => option._id === state?.council_id?._id}
                             onChange={(event: any, newValue) => {
                               handleCouncil(event, newValue);
+                              setFieldValidations((prevState: any) => ({ ...prevState, council_id: (newValue !== null) }));
                             }}
                             size="small"
                             autoComplete={false}
@@ -781,38 +990,45 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
                         </FormGroupSection>
                       </Grid>
                       <Grid item md={1} xs={12}>
-                        <Autocomplete
-                          id="combo-box-council-state"
-                          options={ufs}
-                          getOptionLabel={(option) => option.initials}
-                          renderInput={(params) => <TextField {...params} label="UF" variant="outlined" />}
-                          value={selectCouncilState()}
-                          getOptionSelected={(option, value) => option.initials === state.council_state}
-                          onChange={(event: any, newValue) => {
-                            handleCouncilState(event, newValue);
-                          }}
-                          size="small"
-                          autoComplete={false}
-                          autoHighlight={false}
-                          fullWidth
-                        />
+                        <FormGroupSection fullWidth error>
+                          <Autocomplete
+                            id="combo-box-council-state"
+                            options={ufs}
+                            getOptionLabel={(option) => option.initials}
+                            renderInput={(params) => <TextField {...params} label="UF" variant="outlined" />}
+                            value={selectCouncilState()}
+                            getOptionSelected={(option, value) => option.initials === state.council_state}
+                            onChange={(event: any, newValue) => {
+                              handleCouncilState(event, newValue);
+                              setFieldValidations((prevState: any) => ({ ...prevState, council_state: (newValue !== null) }));
+                            }}
+                            size="small"
+                            autoComplete={false}
+                            autoHighlight={false}
+                            fullWidth
+                          />
+                        </FormGroupSection>
                       </Grid>
                       <Grid item md={3} xs={12}>
-                        <TextField
-                          id="input-council"
-                          label="Número do Conselho"
-                          variant="outlined"
-                          size="small"
-                          value={state.council_number}
-                          onChange={(element) => setState({ ...state, council_number: element.target.value })}
-                          placeholder="00000-0000"
-                          autoComplete="off"
-                          style={{ marginLeft: 10 }}
-                          fullWidth
-                        />
+                        <FormGroupSection fullWidth error>
+                          <TextField
+                            id="input-council"
+                            label="Número do Conselho"
+                            variant="outlined"
+                            size="small"
+                            value={state.council_number}
+                            onChange={(element) => {
+                              setState({ ...state, council_number: element.target.value });
+                              setFieldValidations((prevState: any) => ({ ...prevState, council_number: !validator.isEmpty(element.target.value) }));
+                            }}
+                            placeholder="00000-0000"
+                            autoComplete="off"
+                            fullWidth
+                          />
+                        </FormGroupSection>
                       </Grid>
                       <Grid item md={5} xs={12}>
-                        <FormGroupSection>
+                        <FormGroupSection fullWidth error>
                           <Autocomplete
                             id="combo-box-main-especialty"
                             options={specialtyState.list.data}
@@ -835,7 +1051,7 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
                       <Grid item md={6} xs={12}>
                       </Grid>
                       <Grid item md={6} xs={12}>
-                        <FormGroupSection>
+                        <FormGroupSection fullWidth error>
                           <Autocomplete
                             id="combo-box-especialty"
                             options={specialties}
@@ -865,7 +1081,7 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
                         </ChipList>
                       </Grid>
                       <Grid item md={6} xs={12}>
-                        <FormGroupSection>
+                        <FormGroupSection fullWidth error>
                           <Autocomplete
                             id="combo-box-company"
                             options={companies}

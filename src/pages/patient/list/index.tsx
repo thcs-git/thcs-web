@@ -91,8 +91,9 @@ export default function PatientList() {
                     open={anchorEl?.id === `btn_patient-menu${index}`}
                     onClose={handleCloseRowMenu}
                   >
+                    <MenuItem onClick={() => history.push(`/patient/${patient._id}/edit`)}>Editar</MenuItem>
+                    <MenuItem onClick={() => history.push(`/patient/${patient._id}/edit`)}>Visualizar</MenuItem>
                     <MenuItem onClick={() => history.push(`/patient/capture/create?patient_id=${patient._id}`)}>Iniciar captação</MenuItem>
-                    <MenuItem onClick={() => history.push(`/patient/${patient._id}/edit`)}>Visualizar cadastro</MenuItem>
                   </Menu>
                 </TableCell>
               </TableRow>
