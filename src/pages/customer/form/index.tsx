@@ -309,6 +309,25 @@ export default function CustomerForm(props: RouteComponentProps<IPageParams>) {
     document.getElementById(field)?.focus();
   }, [customerState.errorCep]);
 
+  useEffect(() => {
+    const field = customerState.errorCep ? 'input-postal-code' : 'input-address-number';
+
+    customerState.errorCep && setState(prevState => ({
+      ...prevState,
+      address: {
+        ...prevState.address,
+        city: '',
+        complement: '',
+        district: '',
+        number: '',
+        state: '',
+        street: '',
+      }
+    }));
+
+    document.getElementById(field)?.focus();
+  }, [customerState.errorCep]);
+
   const handleSaveFormCustomer = useCallback(() => {
     if (params.id && ModifiCondition()) {
       console.log(state);

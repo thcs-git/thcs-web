@@ -95,6 +95,16 @@ const reducer: Reducer<CustomerState> = (state = INITIAL_STATE, action) => {
           total: 0
         }
       };
+    case CustomerTypes.LOAD_FAILURE_CEP:
+      return {
+        ...state, loading: false, errorCep: true, success: true,
+        list: {
+          data: [],
+          limit: '10',
+          page: '1',
+          total: 0
+        }
+      };
     case CustomerTypes.CREATE_CUSTOMER_REQUEST:
       return {
         ...state,
