@@ -55,6 +55,7 @@ interface IFormFields extends CustomerInterface {
     uf: { id: number, name: string, sigla:string } | null,
   }
 }
+
 interface IPageParams {
   id?: string;
 }
@@ -111,7 +112,7 @@ export default function CustomerForm(props: RouteComponentProps<IPageParams>) {
   ];
   const [state, setState] = useState<IFormFields>({
     name: '',
-    social_name:'',
+
     fiscal_number: '',
     address: {
       postal_code: '',
@@ -339,12 +340,25 @@ export default function CustomerForm(props: RouteComponentProps<IPageParams>) {
       }
     }
 
-    console.log('fieldsValidation', fieldsValidation);
+  useEffect(() => {
+    const field = customerState.errorCep ? 'input-postal-code' : 'input-address-number';
 
+    customerState.errorCep && setState(prevState => ({
+      ...prevState,
+      address: {
+        ...prevState.address,
+        city: '',
+        complement: '',
+        district: '',
+        number: '',
+        state: '',
+        street: '',
+      }
+    }));
 
-    return teste;
+    document.getElementById(field)?.focus();
+  }, [customerState.errorCep]);
 
-  }, [fieldsValidation, state]);
   const handleSaveFormCustomer = useCallback(() => {
     console.log(!handleValidateFields());
     if (!fieldsValidation.name) {
