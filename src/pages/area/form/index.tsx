@@ -20,11 +20,9 @@ import {
   DialogContent,
   DialogContentText,
   DialogTitle,
-  FormControl,
   FormControlLabel,
   FormHelperText,
   Grid,
-  Tabs,
 } from '@material-ui/core';
 import Autocomplete from '@material-ui/lab/Autocomplete';
 
