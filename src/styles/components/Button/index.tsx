@@ -3,7 +3,7 @@ import styled, { css, StyledComponent, StyledComponentProps } from 'styled-compo
 import Button, { ButtonProps } from '@material-ui/core/Button';
 import { ButtonTypes } from './types';
 
-interface IButtonProps {
+interface IButtonProps extends ButtonProps {
   background?: string;
   center?: boolean
 }
@@ -37,6 +37,7 @@ const background: any = {
   `,
   success: css`
     background: var(--success);
+    border-color: var(--success);
     color: var(--white);
     &:hover {
       background: var(--success-hover);
@@ -78,9 +79,10 @@ const size: any = {
 const ButtonComponent = styled(Button)`
   ${(props: IButtonProps) => background[props.background || 'var(--primary)']}
   ${(props: IButtonProps) => props.center ? 'text-align: center;' : null}
+  ${(props: IButtonProps) => props.variant === 'outlined' ? `background: transparent !important; color: var(--black); color: ${`var(--${props.background});` || 'var(--primary);'}` : null}
 
-  min-width: 40px;
-  max-height: 40px;
+  min-width: 95px;
+  max-height: 36px;
   text-transform: capitalize;
 
   & svg {
