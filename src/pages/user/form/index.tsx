@@ -68,6 +68,7 @@ import {
   FormGroupSection,
   ChipList
 } from './styles';
+import FeedbackComponent from '../../../components/Feedback';
 
 interface IFormFields {
   userType: { id: string, description: string } | null,
@@ -144,6 +145,8 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
   useEffect(() => {
     if (params.id) {
       dispatch(loadUserById(params.id))
+    } else {
+      dispatch(cleanAction());
     }
   }, [params]);
 
@@ -382,523 +385,541 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
   return (
     <Sidebar>
       {userState.loading && <Loading />}
+
       <Container>
-        <FormSection>
-          <FormContent>
-            <FormTitle>Cadastro de Usuário</FormTitle>
+        {userState.success ? (
+          <FeedbackComponent
+            type="success"
+            title="Cadastro concluído!"
+            description="Os dados foram salvos no sistema. Deseja adicionar novo cadastro?"
+            buttons
+            successAction={() => {
+              dispatch(cleanAction());
+              history.push('/user/create');
+            }}
+            defaultAction={() => {
+              dispatch(cleanAction());
+              history.push('/user');
+            }}
+          />
+        ) : (
+          <FormSection>
+            <FormContent>
+              <FormTitle>Cadastro de Usuário</FormTitle>
 
-            <TabContent>
-              <TabNav>
-                <TabNavItem className={currentTab === 0 ? 'active' : ''} onClick={() => selectTab(0)}>
-                  Dados Pessoais
-                </TabNavItem>
-                <TabNavItem className={currentTab === 1 ? 'active' : ''} onClick={() => selectTab(1)}>
-                  Dados Profissionais
-                </TabNavItem>
-              </TabNav>
-              <TabBody>
-                <TabBodyItem className={currentTab === 0 ? 'show' : ''}>
-                  <FormGroupSection>
-                    <Grid container>
-                      <Grid item md={12} xs={12}>
-                        <TextField
-                          id="input-social-name"
-                          label="Nome do usuário"
-                          variant="outlined"
-                          size="small"
-                          value={state.name}
-                          onChange={(element) => setState({ ...state, name: element.target.value })}
-                          fullWidth
-                        />
+              <TabContent>
+                <TabNav>
+                  <TabNavItem className={currentTab === 0 ? 'active' : ''} onClick={() => selectTab(0)}>
+                    Dados Pessoais
+                  </TabNavItem>
+                  <TabNavItem className={currentTab === 1 ? 'active' : ''} onClick={() => selectTab(1)}>
+                    Dados Profissionais
+                  </TabNavItem>
+                </TabNav>
+                <TabBody>
+                  <TabBodyItem className={currentTab === 0 ? 'show' : ''}>
+                    <FormGroupSection>
+                      <Grid container>
+                        <Grid item md={12} xs={12}>
+                          <TextField
+                            id="input-social-name"
+                            label="Nome do usuário"
+                            variant="outlined"
+                            size="small"
+                            value={state.name}
+                            onChange={(element) => setState({ ...state, name: element.target.value })}
+                            fullWidth
+                          />
+                        </Grid>
+                        <Grid item md={7} xs={12}>
+                          <TextField
+                            id="input-mother-name"
+                            label="Nome da mãe"
+                            variant="outlined"
+                            size="small"
+                            value={state.mother_name}
+                            onChange={(element) => setState({ ...state, mother_name: element.target.value })}
+                            fullWidth
+                          />
+                        </Grid>
+
+                        <Grid item md={3} xs={12}>
+                          <DatePicker
+                            id="input-fiscal-birthdate"
+                            label="Data de Nascimento"
+                            value={state?.birthdate?.length > 10 ? formatDate(state.birthdate, 'YYYY-MM-DD') : state.birthdate}
+                            onChange={(element) => setState({ ...state, birthdate: element.target.value })}
+                            fullWidth
+                            InputLabelProps={{
+                              shrink: true,
+                            }}
+                          />
+                        </Grid>
+
+                        <Grid item md={2} xs={12}>
+                          <TextField
+                            id="input-age"
+                            label="Idade"
+                            variant="outlined"
+                            size="small"
+                            value={age(state.birthdate)}
+                            fullWidth
+                            disabled
+                          />
+                        </Grid>
                       </Grid>
-                      <Grid item md={7} xs={12}>
-                        <TextField
-                          id="input-mother-name"
-                          label="Nome da mãe"
-                          variant="outlined"
-                          size="small"
-                          value={state.mother_name}
-                          onChange={(element) => setState({ ...state, mother_name: element.target.value })}
-                          fullWidth
-                        />
-                      </Grid>
+                      <Grid container>
+                        <Grid item md={4} xs={12}>
 
-                      <Grid item md={3} xs={12}>
-                        <DatePicker
-                          id="input-fiscal-birthdate"
-                          label="Data de Nascimento"
-                          value={state?.birthdate?.length > 10 ? formatDate(state.birthdate, 'YYYY-MM-DD') : state.birthdate}
-                          onChange={(element) => setState({ ...state, birthdate: element.target.value })}
-                          fullWidth
-                          InputLabelProps={{
-                            shrink: true,
-                          }}
-                        />
-                      </Grid>
-
-                      <Grid item md={2} xs={12}>
-                        <TextField
-                          id="input-age"
-                          label="Idade"
-                          variant="outlined"
-                          size="small"
-                          value={age(state.birthdate)}
-                          fullWidth
-                          disabled
-                        />
-                      </Grid>
-                    </Grid>
-                    <Grid container>
-                      <Grid item md={4} xs={12}>
-
-                        <InputMask
-                          mask="999.999.999-99"
-                          value={state.fiscal_number}
-                          onChange={(element) => setState({ ...state, fiscal_number: element.target.value })}
-                        >
-                          {(inputProps: any) => (
-                            <TextField
-                              {...inputProps}
-                              id="input-fiscal-number"
-                              label="CPF"
-                              variant="outlined"
-                              size="small"
-                              placeholder="000.000.000-00"
-                              fullWidth
-                            />)}
-                        </InputMask>
-                      </Grid>
-                      <Grid item md={3} xs={12}>
-                        <InputMask
-                          mask="9.999-999"
-                          value={state.national_id}
-                          onChange={(element) => setState({ ...state, national_id: element.target.value })}
-                        >
-                          {(inputProps: any) => (
-                            <TextField
-                              {...inputProps}
-                              id="input-nation-id"
-                              label="RG"
-                              variant="outlined"
-                              size="small"
-                              placeholder="0.000-000"
-                              fullWidth
-                            />)}
-                        </InputMask>
-                      </Grid>
-
-                      <Grid item md={5} xs={12}>
-                        <TextField
-                          id="input-emitting-organ"
-                          label="Órgão Emissor"
-                          variant="outlined"
-                          size="small"
-                          value={state.issuing_organ}
-                          onChange={(element) => setState({ ...state, issuing_organ: element.target.value })}
-                          fullWidth
-                        />
-                      </Grid>
-
-                      <Grid item md={4} xs={12}>
-                        <TextField
-                          id="input-nationality"
-                          label="Nacionalidade"
-                          variant="outlined"
-                          size="small"
-                          value={state.nationality}
-                          onChange={(element) => setState({ ...state, nationality: element.target.value })}
-                          fullWidth
-                        />
-                      </Grid>
-
-                      <Grid item md={3} xs={12}>
-                        <FormControl variant="outlined" size="small" fullWidth>
-                          <InputLabel id="select-patient-gender">Sexo</InputLabel>
-                          <Select
-                            labelId="select-patient-gender"
-                            id="demo-simple-select-filled"
-                            value={state.gender}
-                            onChange={(element) => setState({ ...state, gender: `${element.target.value}` || '' })}
-                            labelWidth={40}
-                          >
-                            <MenuItem value="">
-                              <em>&nbsp;</em>
-                            </MenuItem>
-                            {genders.map(gender => <MenuItem key={`gender_${gender}`} value={gender}>{gender}</MenuItem>)}
-                          </Select>
-                        </FormControl>
-                      </Grid>
-
-                      <Grid item md={10} />
-                    </Grid>
-                  </FormGroupSection>
-
-                  <Divider style={{ marginBottom: 30 }} />
-
-                  {/*  */}
-                  <FormGroupSection>
-                    <Grid container>
-                      <Grid item md={2} xs={12}>
-                        <FormControl variant="outlined" size="small" fullWidth>
-                          <InputLabel htmlFor="search-input">CEP</InputLabel>
                           <InputMask
-                            mask="99999-999"
-                            value={state.address?.postal_code}
-                            onChange={(element) => setState({ ...state, address: { ...state.address, postal_code: element.target.value } })}
-                            onBlur={getAddress}
+                            mask="999.999.999-99"
+                            value={state.fiscal_number}
+                            onChange={(element) => setState({ ...state, fiscal_number: element.target.value })}
                           >
-                            {(inputProps: Props) => (
-                              <OutlinedInputFiled
-                                id="input-postal-code"
-                                label="CEP"
-                                placeholder="00000-000"
-                                endAdornment={
-                                  <InputAdornment position="end">
-                                    <SearchOutlined style={{ color: 'var(--primary)' }} />
-                                  </InputAdornment>
-                                }
-                                labelWidth={155}
-                                style={{ marginRight: 12 }}
-                              />
-                            )}
+                            {(inputProps: any) => (
+                              <TextField
+                                {...inputProps}
+                                id="input-fiscal-number"
+                                label="CPF"
+                                variant="outlined"
+                                size="small"
+                                placeholder="000.000.000-00"
+                                fullWidth
+                              />)}
                           </InputMask>
-                        </FormControl>
-                      </Grid>
+                        </Grid>
+                        <Grid item md={3} xs={12}>
+                          <InputMask
+                            mask="9.999-999"
+                            value={state.national_id}
+                            onChange={(element) => setState({ ...state, national_id: element.target.value })}
+                          >
+                            {(inputProps: any) => (
+                              <TextField
+                                {...inputProps}
+                                id="input-nation-id"
+                                label="RG"
+                                variant="outlined"
+                                size="small"
+                                placeholder="0.000-000"
+                                fullWidth
+                              />)}
+                          </InputMask>
+                        </Grid>
 
-                      <Grid item md={10} xs={12}>
-                        <TextField
-                          id="input-address"
-                          label="Endereço"
-                          variant="outlined"
-                          size="small"
-                          value={state.address?.street}
-                          onChange={(element) => setState({ ...state, address: { ...state.address, street: element.target.value } })}
-                          fullWidth
-                        />
-                      </Grid>
-                      <Grid item md={2} xs={12}>
-                        <TextField
-                          id="input-address-number"
-                          label="Número"
-                          variant="outlined"
-                          size="small"
-                          value={state.address?.number}
-                          onChange={(element) => setState({ ...state, address: { ...state.address, number: element.target.value } })}
-                          fullWidth
-                        />
-                      </Grid>
+                        <Grid item md={5} xs={12}>
+                          <TextField
+                            id="input-emitting-organ"
+                            label="Órgão Emissor"
+                            variant="outlined"
+                            size="small"
+                            value={state.issuing_organ}
+                            onChange={(element) => setState({ ...state, issuing_organ: element.target.value })}
+                            fullWidth
+                          />
+                        </Grid>
 
-                      <Grid item md={10} xs={12}>
-                        <TextField
-                          id="input-address-complement"
-                          label="Complemento"
-                          variant="outlined"
-                          size="small"
-                          value={state.address?.complement}
-                          onChange={(element) => setState({ ...state, address: { ...state.address, complement: element.target.value } })}
-                          fullWidth
-                        />
-                      </Grid>
+                        <Grid item md={4} xs={12}>
+                          <TextField
+                            id="input-nationality"
+                            label="Nacionalidade"
+                            variant="outlined"
+                            size="small"
+                            value={state.nationality}
+                            onChange={(element) => setState({ ...state, nationality: element.target.value })}
+                            fullWidth
+                          />
+                        </Grid>
 
+                        <Grid item md={3} xs={12}>
+                          <FormControl variant="outlined" size="small" fullWidth>
+                            <InputLabel id="select-patient-gender">Sexo</InputLabel>
+                            <Select
+                              labelId="select-patient-gender"
+                              id="demo-simple-select-filled"
+                              value={state.gender}
+                              onChange={(element) => setState({ ...state, gender: `${element.target.value}` || '' })}
+                              labelWidth={40}
+                            >
+                              <MenuItem value="">
+                                <em>&nbsp;</em>
+                              </MenuItem>
+                              {genders.map(gender => <MenuItem key={`gender_${gender}`} value={gender}>{gender}</MenuItem>)}
+                            </Select>
+                          </FormControl>
+                        </Grid>
+
+                        <Grid item md={10} />
+                      </Grid>
+                    </FormGroupSection>
+
+                    <Divider style={{ marginBottom: 30 }} />
+
+                    {/*  */}
+                    <FormGroupSection>
+                      <Grid container>
+                        <Grid item md={2} xs={12}>
+                          <FormControl variant="outlined" size="small" fullWidth>
+                            <InputLabel htmlFor="search-input">CEP</InputLabel>
+                            <InputMask
+                              mask="99999-999"
+                              value={state.address?.postal_code}
+                              onChange={(element) => setState({ ...state, address: { ...state.address, postal_code: element.target.value } })}
+                              onBlur={getAddress}
+                            >
+                              {(inputProps: Props) => (
+                                <OutlinedInputFiled
+                                  id="input-postal-code"
+                                  label="CEP"
+                                  placeholder="00000-000"
+                                  endAdornment={
+                                    <InputAdornment position="end">
+                                      <SearchOutlined style={{ color: 'var(--primary)' }} />
+                                    </InputAdornment>
+                                  }
+                                  labelWidth={155}
+                                  style={{ marginRight: 12 }}
+                                />
+                              )}
+                            </InputMask>
+                          </FormControl>
+                        </Grid>
+
+                        <Grid item md={10} xs={12}>
+                          <TextField
+                            id="input-address"
+                            label="Endereço"
+                            variant="outlined"
+                            size="small"
+                            value={state.address?.street}
+                            onChange={(element) => setState({ ...state, address: { ...state.address, street: element.target.value } })}
+                            fullWidth
+                          />
+                        </Grid>
+                        <Grid item md={2} xs={12}>
+                          <TextField
+                            id="input-address-number"
+                            label="Número"
+                            variant="outlined"
+                            size="small"
+                            value={state.address?.number}
+                            onChange={(element) => setState({ ...state, address: { ...state.address, number: element.target.value } })}
+                            fullWidth
+                          />
+                        </Grid>
+
+                        <Grid item md={10} xs={12}>
+                          <TextField
+                            id="input-address-complement"
+                            label="Complemento"
+                            variant="outlined"
+                            size="small"
+                            value={state.address?.complement}
+                            onChange={(element) => setState({ ...state, address: { ...state.address, complement: element.target.value } })}
+                            fullWidth
+                          />
+                        </Grid>
+
+                        <Grid item md={6} xs={12}>
+                          <TextField
+                            id="input-neighborhood"
+                            label="Bairro"
+                            variant="outlined"
+                            size="small"
+                            value={state.address?.district}
+                            onChange={(element) => setState({ ...state, address: { ...state.address, district: element.target.value } })}
+                            fullWidth
+                          />
+                        </Grid>
+
+                        <Grid item md={5} xs={12}>
+                          <TextField
+                            id="input-city"
+                            label="Cidade"
+                            variant="outlined"
+                            size="small"
+                            value={state.address?.city}
+                            onChange={(element) => setState({ ...state, address: { ...state.address, city: element.target.value } })}
+                            fullWidth
+                          />
+                        </Grid>
+
+                        <Grid item md={1} xs={12}>
+                          <TextField
+                            id="input-address-uf"
+                            label="UF"
+                            variant="outlined"
+                            size="small"
+                            value={state.address?.state}
+                            onChange={(element) => setState({ ...state, address: { ...state.address, state: element.target.value } })}
+                            fullWidth
+                          />
+                        </Grid>
+                      </Grid>
+                    </FormGroupSection>
+                    <Grid container>
                       <Grid item md={6} xs={12}>
                         <TextField
-                          id="input-neighborhood"
-                          label="Bairro"
+                          id="input-email"
+                          label="E-mail"
                           variant="outlined"
                           size="small"
-                          value={state.address?.district}
-                          onChange={(element) => setState({ ...state, address: { ...state.address, district: element.target.value } })}
+                          value={state.email}
+                          onChange={(element) => setState({ ...state, email: element.target.value })}
+                          type="email"
                           fullWidth
                         />
                       </Grid>
+                      <Grid item md={3} xs={12}>
+                        <InputMask
+                          mask="(99) 9999-9999"
+                          value={state.phone}
+                          onChange={(element) => setState({ ...state, phone: element.target.value })}
+                        >
+                          {(inputProps: any) => (
+                            <TextField
+                              {...inputProps}
+                              id="input-phone"
+                              label="Telefone"
+                              variant="outlined"
+                              size="small"
+                              placeholder="0000-0000"
+                              fullWidth
+                            />
+                          )}
+                        </InputMask>
+                      </Grid>
+                      <Grid item md={3} xs={12}>
+                        <InputMask
+                          mask="(99) 9 9999-9999"
+                          value={state.cellphone}
+                          onChange={(element) => setState({ ...state, cellphone: element.target.value })}
+                        >
+                          {(inputProps: any) => (
+                            <TextField
+                              {...inputProps}
+                              id="input-cellphone"
+                              label="Celular"
+                              variant="outlined"
+                              size="small"
+                              placeholder="(00) 0 0000-0000"
+                              fullWidth
+                            />
+                          )}
+                        </InputMask>
+                      </Grid>
+                    </Grid>
+                    <Grid container>
+                      <Grid item md={3} xs={12}>
+                        <FormGroupSection>
+                          <Autocomplete
+                            id="combo-box-user-type"
+                            options={userState.data.user_types || []}
+                            getOptionLabel={(option) => option.name}
+                            renderInput={(params) => <TextField {...params} label="Tipo do Usuário" variant="outlined" />}
+                            value={selectUserType()}
+                            getOptionSelected={(option, value) => option._id === state.user_type_id}
+                            onChange={(event: any, newValue) => {
+                              handleUserType(event, newValue);
+                            }}
+                            size="small"
+                            fullWidth
+                          />
+                        </FormGroupSection>
+                      </Grid>
 
+                      {state?._id && (
+                        <Grid item xs={12} md={12}>
+                          <FormControlLabel control={<Switch checked={state.active} onChange={(event) => {
+                            setState(prevState => ({
+                              ...prevState,
+                              active: event.target.checked
+                            }))
+                          }} />} label="Ativo?" />
+                        </Grid>
+                      )}
+                    </Grid>
+                  </TabBodyItem>
+                  <TabBodyItem className={currentTab === 1 ? 'show' : ''}>
+                    <Grid container>
                       <Grid item md={5} xs={12}>
-                        <TextField
-                          id="input-city"
-                          label="Cidade"
-                          variant="outlined"
-                          size="small"
-                          value={state.address?.city}
-                          onChange={(element) => setState({ ...state, address: { ...state.address, city: element.target.value } })}
-                          fullWidth
-                        />
+                        <FormGroupSection>
+                          <Autocomplete
+                            id="combo-box-profession"
+                            options={userState.data.professions || []}
+                            getOptionLabel={(option) => option.name}
+                            renderInput={(params) => <TextField {...params} label="Função" variant="outlined" />}
+                            getOptionSelected={(option, value) => option._id === state?.profession_id}
+                            value={selectProfession()}
+                            onChange={(event, value) => {
+                              if (value) {
+                                handleSelectProfession(value)
+                              }
+                            }}
+                            size="small"
+                            fullWidth
+                          />
+                        </FormGroupSection>
                       </Grid>
-
+                      <Grid item md={3} xs={12}>
+                        <FormGroupSection>
+                          <Autocomplete
+                            id="combo-box-council"
+                            options={councilState.list.data}
+                            getOptionLabel={(option) => `${option.initials} - ${option.name}`}
+                            renderInput={(params) => <TextField {...params} label="Conselho" variant="outlined" />}
+                            value={state?.council_id}
+                            getOptionSelected={(option, value) => option._id === state?.council_id?._id}
+                            onChange={(event: any, newValue) => {
+                              handleCouncil(event, newValue);
+                            }}
+                            size="small"
+                            autoComplete={false}
+                            autoHighlight={false}
+                            fullWidth
+                          />
+                        </FormGroupSection>
+                      </Grid>
                       <Grid item md={1} xs={12}>
+                        <Autocomplete
+                          id="combo-box-council-state"
+                          options={ufs}
+                          getOptionLabel={(option) => option.initials}
+                          renderInput={(params) => <TextField {...params} label="UF" variant="outlined" />}
+                          value={selectCouncilState()}
+                          getOptionSelected={(option, value) => option.initials === state.council_state}
+                          onChange={(event: any, newValue) => {
+                            handleCouncilState(event, newValue);
+                          }}
+                          size="small"
+                          autoComplete={false}
+                          autoHighlight={false}
+                          fullWidth
+                        />
+                      </Grid>
+                      <Grid item md={3} xs={12}>
                         <TextField
-                          id="input-address-uf"
-                          label="UF"
+                          id="input-council"
+                          label="Número do Conselho"
                           variant="outlined"
                           size="small"
-                          value={state.address?.state}
-                          onChange={(element) => setState({ ...state, address: { ...state.address, state: element.target.value } })}
+                          value={state.council_number}
+                          onChange={(element) => setState({ ...state, council_number: element.target.value })}
+                          placeholder="00000-0000"
+                          autoComplete="off"
+                          style={{ marginLeft: 10 }}
                           fullWidth
                         />
                       </Grid>
-                    </Grid>
-                  </FormGroupSection>
-                  <Grid container>
-                    <Grid item md={6} xs={12}>
-                      <TextField
-                        id="input-email"
-                        label="E-mail"
-                        variant="outlined"
-                        size="small"
-                        value={state.email}
-                        onChange={(element) => setState({ ...state, email: element.target.value })}
-                        type="email"
-                        fullWidth
-                      />
-                    </Grid>
-                    <Grid item md={3} xs={12}>
-                      <InputMask
-                        mask="(99) 9999-9999"
-                        value={state.phone}
-                        onChange={(element) => setState({ ...state, phone: element.target.value })}
-                      >
-                        {(inputProps: any) => (
-                          <TextField
-                            {...inputProps}
-                            id="input-phone"
-                            label="Telefone"
-                            variant="outlined"
+                      <Grid item md={5} xs={12}>
+                        <FormGroupSection>
+                          <Autocomplete
+                            id="combo-box-main-especialty"
+                            options={specialtyState.list.data}
+                            getOptionLabel={(option) => option.name}
+                            renderInput={(params) => <TextField {...params} label="Especialidade Principal" variant="outlined" />}
+                            getOptionSelected={(option, value) => option._id === state?.main_specialty_id}
+                            value={selectMainSpecialty()}
+                            onChange={(event, value) => {
+                              if (value) {
+                                handleSelectMainSpecialty(value)
+                              }
+                            }}
                             size="small"
-                            placeholder="0000-0000"
+                            autoComplete={false}
+                            autoHighlight={false}
                             fullWidth
                           />
-                        )}
-                      </InputMask>
-                    </Grid>
-                    <Grid item md={3} xs={12}>
-                      <InputMask
-                        mask="(99) 9 9999-9999"
-                        value={state.cellphone}
-                        onChange={(element) => setState({ ...state, cellphone: element.target.value })}
-                      >
-                        {(inputProps: any) => (
-                          <TextField
-                            {...inputProps}
-                            id="input-cellphone"
-                            label="Celular"
-                            variant="outlined"
-                            size="small"
-                            placeholder="(00) 0 0000-0000"
-                            fullWidth
-                          />
-                        )}
-                      </InputMask>
-                    </Grid>
-                  </Grid>
-                  <Grid container>
-                    <Grid item md={3} xs={12}>
-                      <FormGroupSection>
-                        <Autocomplete
-                          id="combo-box-user-type"
-                          options={userState.data.user_types || []}
-                          getOptionLabel={(option) => option.name}
-                          renderInput={(params) => <TextField {...params} label="Tipo do Usuário" variant="outlined" />}
-                          value={selectUserType()}
-                          getOptionSelected={(option, value) => option._id === state.user_type_id}
-                          onChange={(event: any, newValue) => {
-                            handleUserType(event, newValue);
-                          }}
-                          size="small"
-                          fullWidth
-                        />
-                      </FormGroupSection>
-                    </Grid>
-
-                    {state?._id && (
-                      <Grid item xs={12} md={12}>
-                        <FormControlLabel control={<Switch checked={state.active} onChange={(event) => {
-                          setState(prevState => ({
-                            ...prevState,
-                            active: event.target.checked
-                          }))
-                        }} />} label="Ativo?" />
+                        </FormGroupSection>
                       </Grid>
-                    )}
-                  </Grid>
-                </TabBodyItem>
-                <TabBodyItem className={currentTab === 1 ? 'show' : ''}>
-                  <Grid container>
-                    <Grid item md={5} xs={12}>
-                      <FormGroupSection>
-                        <Autocomplete
-                          id="combo-box-profession"
-                          options={userState.data.professions || []}
-                          getOptionLabel={(option) => option.name}
-                          renderInput={(params) => <TextField {...params} label="Função" variant="outlined" />}
-                          getOptionSelected={(option, value) => option._id === state?.profession_id}
-                          value={selectProfession()}
-                          onChange={(event, value) => {
-                            if (value) {
-                              handleSelectProfession(value)
-                            }
-                          }}
-                          size="small"
-                          fullWidth
-                        />
-                      </FormGroupSection>
-                    </Grid>
-                    <Grid item md={3} xs={12}>
-                      <FormGroupSection>
-                        <Autocomplete
-                          id="combo-box-council"
-                          options={councilState.list.data}
-                          getOptionLabel={(option) => `${option.initials} - ${option.name}`}
-                          renderInput={(params) => <TextField {...params} label="Conselho" variant="outlined" />}
-                          value={state?.council_id}
-                          getOptionSelected={(option, value) => option._id === state?.council_id?._id}
-                          onChange={(event: any, newValue) => {
-                            handleCouncil(event, newValue);
-                          }}
-                          size="small"
-                          autoComplete={false}
-                          autoHighlight={false}
-                          fullWidth
-                        />
-                      </FormGroupSection>
-                    </Grid>
-                    <Grid item md={1} xs={12}>
-                      <Autocomplete
-                        id="combo-box-council-state"
-                        options={ufs}
-                        getOptionLabel={(option) => option.initials}
-                        renderInput={(params) => <TextField {...params} label="UF" variant="outlined" />}
-                        value={selectCouncilState()}
-                        getOptionSelected={(option, value) => option.initials === state.council_state}
-                        onChange={(event: any, newValue) => {
-                          handleCouncilState(event, newValue);
-                        }}
-                        size="small"
-                        autoComplete={false}
-                        autoHighlight={false}
-                        fullWidth
-                      />
-                    </Grid>
-                    <Grid item md={3} xs={12}>
-                      <TextField
-                        id="input-council"
-                        label="Número do Conselho"
-                        variant="outlined"
-                        size="small"
-                        value={state.council_number}
-                        onChange={(element) => setState({ ...state, council_number: element.target.value })}
-                        placeholder="00000-0000"
-                        autoComplete="off"
-                        style={{ marginLeft: 10 }}
-                        fullWidth
-                      />
-                    </Grid>
-                    <Grid item md={5} xs={12}>
-                      <FormGroupSection>
-                        <Autocomplete
-                          id="combo-box-main-especialty"
-                          options={specialtyState.list.data}
-                          getOptionLabel={(option) => option.name}
-                          renderInput={(params) => <TextField {...params} label="Especialidade Principal" variant="outlined" />}
-                          getOptionSelected={(option, value) => option._id === state?.main_specialty_id}
-                          value={selectMainSpecialty()}
-                          onChange={(event, value) => {
-                            if (value) {
-                              handleSelectMainSpecialty(value)
-                            }
-                          }}
-                          size="small"
-                          autoComplete={false}
-                          autoHighlight={false}
-                          fullWidth
-                        />
-                      </FormGroupSection>
-                    </Grid>
-                    <Grid item md={6} xs={12}>
-                    </Grid>
-                    <Grid item md={6} xs={12}>
-                      <FormGroupSection>
-                        <Autocomplete
-                          id="combo-box-especialty"
-                          options={specialties}
-                          getOptionLabel={(option) => option.name}
-                          renderInput={(params) => <TextField {...params} label="Especialidade" variant="outlined" />}
-                          size="small"
-                          onChange={(event, value) => {
-                            if (value) {
-                              handleSelectEspecialty(value)
-                            }
-                          }}
-                          autoComplete={false}
-                          autoHighlight={false}
-                          fullWidth
-                        />
-                      </FormGroupSection>
-                    </Grid>
-                    <Grid item md={12} xs={12}>
-                      <ChipList>
-                        {state.specialties?.map((item: any, index) => (
-                          <Chip
-                            key={`especialty_selected_${index}`}
-                            label={item.name}
-                            onDelete={event => handleDeleteEspecialty(item)}
+                      <Grid item md={6} xs={12}>
+                      </Grid>
+                      <Grid item md={6} xs={12}>
+                        <FormGroupSection>
+                          <Autocomplete
+                            id="combo-box-especialty"
+                            options={specialties}
+                            getOptionLabel={(option) => option.name}
+                            renderInput={(params) => <TextField {...params} label="Especialidade" variant="outlined" />}
+                            size="small"
+                            onChange={(event, value) => {
+                              if (value) {
+                                handleSelectEspecialty(value)
+                              }
+                            }}
+                            autoComplete={false}
+                            autoHighlight={false}
+                            fullWidth
                           />
-                        ))}
-                      </ChipList>
-                    </Grid>
-                    <Grid item md={6} xs={12}>
-                      <FormGroupSection>
-                        <Autocomplete
-                          id="combo-box-company"
-                          options={companies}
-                          getOptionLabel={(option) => option.name}
-                          renderInput={(params) => <TextField {...params} label="Empresa" variant="outlined" autoComplete="off" />}
-                          size="small"
-                          onChange={(event, value) => {
-                            if (value) {
-                              handleSelectCompany(value)
-                            }
-                          }}
-                          autoComplete={false}
-                          autoHighlight={false}
-                          fullWidth
-                        />
-                      </FormGroupSection>
-                    </Grid>
-                    <Grid item md={12} xs={12}>
-                      <ChipList>
-                        {state.companies?.map((item: any, index) => (
-                          <Chip
-                            key={`company_selected_${index}`}
-                            label={item.name}
-                            onDelete={event => handleDeleteCompany(item)}
+                        </FormGroupSection>
+                      </Grid>
+                      <Grid item md={12} xs={12}>
+                        <ChipList>
+                          {state.specialties?.map((item: any, index) => (
+                            <Chip
+                              key={`especialty_selected_${index}`}
+                              label={item.name}
+                              onDelete={event => handleDeleteEspecialty(item)}
+                            />
+                          ))}
+                        </ChipList>
+                      </Grid>
+                      <Grid item md={6} xs={12}>
+                        <FormGroupSection>
+                          <Autocomplete
+                            id="combo-box-company"
+                            options={companies}
+                            getOptionLabel={(option) => option.name}
+                            renderInput={(params) => <TextField {...params} label="Empresa" variant="outlined" autoComplete="off" />}
+                            size="small"
+                            onChange={(event, value) => {
+                              if (value) {
+                                handleSelectCompany(value)
+                              }
+                            }}
+                            autoComplete={false}
+                            autoHighlight={false}
+                            fullWidth
                           />
-                        ))}
-                      </ChipList>
+                        </FormGroupSection>
+                      </Grid>
+                      <Grid item md={12} xs={12}>
+                        <ChipList>
+                          {state.companies?.map((item: any, index) => (
+                            <Chip
+                              key={`company_selected_${index}`}
+                              label={item.name}
+                              onDelete={event => handleDeleteCompany(item)}
+                            />
+                          ))}
+                        </ChipList>
+                      </Grid>
                     </Grid>
-                  </Grid>
-                </TabBodyItem>
-              </TabBody>
-            </TabContent>
-          </FormContent>
-          <ButtonsContent>
-            <ButtonComponent background="default" onClick={() => userState.success ? history.push('/user') : handleOpenModalCancel()}>
-              Cancelar
-            </ButtonComponent>
-            {currentTab === 0 ? (
-              <ButtonComponent background="primary" onClick={() => selectTab(1)}>
-                Próximo
+                  </TabBodyItem>
+                </TabBody>
+              </TabContent>
+            </FormContent>
+            <ButtonsContent>
+              <ButtonComponent background="default" onClick={() => userState.success ? history.push('/user') : handleOpenModalCancel()}>
+                Cancelar
               </ButtonComponent>
-            ) : (
-              <>
-                <ButtonComponent background="default" onClick={() => selectTab(0)}>
-                  Voltar
-                  </ButtonComponent>
-                <ButtonComponent background="success" onClick={handleSaveFormUser}>
-                  Salvar
+              {currentTab === 0 ? (
+                <ButtonComponent background="primary" onClick={() => selectTab(1)}>
+                  Próximo
                 </ButtonComponent>
-              </>
-            )}
-          </ButtonsContent>
-        </FormSection>
+              ) : (
+                <>
+                  <ButtonComponent background="default" onClick={() => selectTab(0)}>
+                    Voltar
+                  </ButtonComponent>
+                  <ButtonComponent background="success" onClick={handleSaveFormUser}>
+                    Salvar
+                  </ButtonComponent>
+                </>
+              )}
+            </ButtonsContent>
+          </FormSection>
+        )}
       </Container>
 
       <Dialog
