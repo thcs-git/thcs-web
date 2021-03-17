@@ -1,34 +1,35 @@
-import { Reducer } from 'redux';
-import { CustomerState, CustomerTypes } from './types';
+import { Reducer } from "redux";
+import { CustomerState, CustomerTypes } from "./types";
 
 export const INITIAL_STATE: CustomerState = {
   data: {
-    _id: '',
-    name: '',
-    fantasy_name: '',
-    fiscal_number: '',
+    _id: "",
+    name: "",
+    social_name: "",
+    fantasy_name: "",
+    fiscal_number: "",
     address: {
-      postal_code: '',
-      street: '',
-      number: '',
-      district: '',
-      city: '',
-      state: '',
-      complement: '',
+      postal_code: "",
+      street: "",
+      number: "",
+      district: "",
+      city: "",
+      state: "",
+      complement: "",
     },
-    email: '',
+    email: "",
     phones: {
-      number: '',
+      number: "",
       telegram: false,
       whatsapp: false,
     },
-    cellphone: ''
+    cellphone: "",
   },
   list: {
     data: [],
-    limit: '10',
-    page: '1',
-    total: 0
+    limit: "10",
+    page: "1",
+    total: 0,
   },
   error: false,
   loading: false,
@@ -53,51 +54,57 @@ const reducer: Reducer<CustomerState> = (state = INITIAL_STATE, action) => {
         ...state,
         data: action.payload.data,
         loading: false,
-        success: false
+        success: false,
       };
     case CustomerTypes.LOAD_FAILURE:
       return {
-        ...state, loading: false, error: true, success: false,
+        ...state,
+        loading: false,
+        error: true,
+        success: false,
         list: {
           data: [],
-          limit: '10',
-          page: '1',
-          total: 0
-        }
+          limit: "10",
+          page: "1",
+          total: 0,
+        },
       };
     case CustomerTypes.LOAD_FAILURE_CEP:
       return {
-        ...state, loading: false, errorCep: true, success: true,
+        ...state,
+        loading: false,
+        errorCep: true,
+        success: true,
         list: {
           data: [],
-          limit: '10',
-          page: '1',
-          total: 0
-        }
+          limit: "10",
+          page: "1",
+          total: 0,
+        },
       };
     case CustomerTypes.CREATE_CUSTOMER_REQUEST:
       return {
         ...state,
         loading: true,
         error: false,
-        success: false
-      }
+        success: false,
+      };
     case CustomerTypes.CREATE_CUSTOMER_SUCCESS:
       return {
         ...state,
         data: action.payload.data,
         loading: false,
         error: false,
-        success: true
-      }
+        success: true,
+      };
     case CustomerTypes.UPDATE_CUSTOMER_SUCCESS:
       return {
         ...state,
         data: action.payload.data,
         loading: false,
         error: false,
-        success: true
-      }
+        success: true,
+      };
     case CustomerTypes.LOAD_REQUEST_ADDRESS:
       return {
         ...state,
@@ -117,13 +124,13 @@ const reducer: Reducer<CustomerState> = (state = INITIAL_STATE, action) => {
             ...state.data.address,
             postal_code: action.payload.data.cep,
             street: action.payload.data.logradouro,
-            number: '',
+            number: "",
             district: action.payload.data.bairro,
             city: action.payload.data.localidade,
             state: action.payload.data.uf,
             complement: action.payload.data.complemento,
-          }
-        }
+          },
+        },
       };
     case CustomerTypes.SEARCH_REQUEST:
       return { ...state, loading: true, error: false };
@@ -133,6 +140,6 @@ const reducer: Reducer<CustomerState> = (state = INITIAL_STATE, action) => {
     default:
       return state;
   }
-}
+};
 
 export default reducer;

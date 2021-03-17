@@ -13,7 +13,7 @@ export const FormSearch = styled.form`
 `;
 
 export const List = styled.div`
- // margin-bottom: 10px;
+  margin-bottom: 20px;
 `;
 export const ListLink = styled(Link)`
   text-decoration: none;
@@ -44,9 +44,7 @@ export const ItemTable = styled.div`
 export const ListItemStatus = styled.div<IListItemStatus>`
   color: ${(props) => (props.active ? `var(--success)` : `var(--danger-hover)`)};
   font-weight: bold;
-  padding-top: 10px;
-  padding-bottom:10px;
-
+  padding: 10px;
   width: 80px;
 `;
 
@@ -62,8 +60,8 @@ export const ListItemSubTitle = styled.p`
 
 export const ButtonsContent = styled.div`
   width: 100%;
-
   display: flex;
   flex-direction: row;
   justify-content: flex-end;
+
 `;

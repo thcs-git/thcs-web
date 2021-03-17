@@ -13,7 +13,7 @@ import Button from '../Button';
 import { MenuFilter as Menu, Th} from './styles';
 
 interface ICellProps {
-  name: string, align: 'right' | 'left' | 'center',
+  name: string, align: 'right' | 'left' | 'center', width?:string
 
 }
 
@@ -43,7 +43,7 @@ const TableComponent = (props: ITableProps) => {
         <TableHead>
           <TableRow>
             {props.tableCells.map((cell, index) => (
-              <TableCell key={`cell_${index}`} align={cell.align} >{cell.name}</TableCell>
+              <TableCell key={`cell_${index}`} align={cell.align} style={{width:`${cell.width}`}} >{cell.name}</TableCell>
             ))}
 
             {props.hasFilter && (

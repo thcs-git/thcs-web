@@ -67,6 +67,7 @@ export default function CustomerForm(props: RouteComponentProps<IPageParams>) {
   const [state, setState] = useState<CustomerInterface>({
     name: '',
     fantasy_name: '',
+    social_name:'',
     fiscal_number: '',
     address: {
       postal_code: '',
@@ -169,6 +170,7 @@ export default function CustomerForm(props: RouteComponentProps<IPageParams>) {
           ...userData,
           customer_id: customerState.data._id,
           name: state.name || ``,
+
           fiscal_number: state.fiscal_number || ``,
           birthdate: '',
           gender: '',
@@ -258,9 +260,7 @@ export default function CustomerForm(props: RouteComponentProps<IPageParams>) {
           <FormSection>
           <FormContent>
             <FormTitle>Cadastro de Clientes</FormTitle>
-
             <FormGroupSection>
-
               <Grid container>
                 <Grid item md={12} xs={12}>
                     <TextField

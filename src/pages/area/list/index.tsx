@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useCallback, ChangeEvent } from 'react';
 import { useHistory } from 'react-router-dom';
-import { Container, FormControl, InputLabel, OutlinedInput, InputAdornment, IconButton, Checkbox, TableRow, TableCell, Menu, MenuItem } from '@material-ui/core';
+import { Container, FormControl, InputLabel, OutlinedInput, InputAdornment, IconButton, Checkbox, TableRow, TableCell, Menu, MenuItem, makeStyles } from '@material-ui/core';
 import { MoreVert, SearchOutlined } from '@material-ui/icons';
 import debounce from 'lodash.debounce';
 
@@ -31,8 +31,23 @@ import {
   ButtonsContent,
   ItemTable
 } from './styles';
+import classes from '*.module.css';
 
-export default function CouncilList() {
+
+export default function AreaList() {
+  const useStyles = makeStyles((theme) => ({
+    tablecelldot:{
+      width:'19px',
+      padding:'5px',
+    },
+    buttondots:{
+      minWidth:'9px',
+      width:'9px',
+      padding:'10px'
+    }
+
+    }));
+    const classe = useStyles();
   const history = useHistory();
   const dispatch = useDispatch();
   const areaState = useSelector((state: ApplicationState) => state.areas);
@@ -90,8 +105,9 @@ export default function CouncilList() {
   return (
 
     <>
+    {areaState.loading && <Loading />}
           <Sidebar>
-        {areaState.loading && <Loading />}
+
         <Container>
           <FormTitle>Lista de Áreas</FormTitle>
 
@@ -106,8 +122,8 @@ export default function CouncilList() {
               { name: 'Intervalo de Abastecimento', align: 'left' },
               { name: 'Dia de Abastecimento', align: 'left' },
               { name: 'Adicionado em', align: 'left'},
-              { name: 'Status', align: 'left' },
-              { name: '', align: 'left' },
+              { name: 'Status', align: 'left'},
+              { name: '', align: 'center' },
             ]}
           >
             {areaState.list.data.map((area, index) => (
@@ -128,8 +144,8 @@ export default function CouncilList() {
                 </TableCell> {/*  */}
 
                 <TableCell align="center">
-                  <Button aria-controls={`area-menu${index}`} id={`btn_area-menu${index}`} aria-haspopup="true" onClick={handleOpenRowMenu}>
-                    <MoreVert style={{ color: '#0899BA' }}/>
+                  <Button  aria-controls={`area-menu${index}`} id={`btn_area-menu${index}`} aria-haspopup="true" onClick={handleOpenRowMenu}>
+                    <MoreVert  style={{ color: '#0899BA' }}/>
                   </Button>
                   <Menu
                     id={`area-menu${index}`}
