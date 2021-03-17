@@ -185,6 +185,7 @@ const reducer: Reducer<UserState> = (state = INITIAL_STATE, action) => {
 
     case UserTypes.CLEAN:
       return INITIAL_STATE;
+
     default:
       return state;
   }
