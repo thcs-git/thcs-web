@@ -61,8 +61,7 @@ const FacebookCircularProgress = (props: CircularProgressProps) => {
         thickness={4}
         {...props}
       /> */}
-      {/* <LoadingSollar /> */}
-      <img src={logo} alt="loading..." />
+      <LoadingSollar width={80} />
     </>
   )
 
