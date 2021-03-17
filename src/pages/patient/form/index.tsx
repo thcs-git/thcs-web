@@ -153,7 +153,7 @@ export default function PatientForm(props: RouteComponentProps<IPageParams>) {
     sub_health_insurance: '',
     unit_health: ''
   });
-  const [canEdit, setCanEdit] = useState(false);
+  const [canEdit, setCanEdit] = useState(true);
 
   const [form, setForm] = useState<IFormFields>({
     bloodType: null,
@@ -162,9 +162,6 @@ export default function PatientForm(props: RouteComponentProps<IPageParams>) {
   });
 
   const [type, setType] = useState('registry');
-
-  const genders = ['Masculino', 'Feminino', 'Indefinido'];
-
   const [openModalCancel, setOpenModalCancel] = useState(false);
 
   useEffect(() => {
@@ -180,36 +177,11 @@ export default function PatientForm(props: RouteComponentProps<IPageParams>) {
   useEffect(() => {
     if (params.id) {
       setState(patientState.data);
+      setCanEdit(false);
     }
-
-    // setForm(prevState => ({
-    //   ...prevState,
-    //   phone: patientState.data.phones.find(phone => phone.cellnumber)?.cellnumber || '',
-    //   cellphone: patientState.data.phones.find(phone => phone.number)?.number || '',
-    // }));
-
   }, [patientState.data]);
 
   useEffect(() => {
-    // if (patientState.error) {
-    //   setState(prevState => {
-    //     return {
-    //       ...prevState,
-    //       address: {
-    //         ...prevState.address,
-    //         street: '',
-    //         number: '',
-    //         district: '',
-    //         city: '',
-    //         state: '',
-    //         complement: '',
-    //       },
-    //     }
-    //   })
-
-    //   return;
-    // }
-
     setState(prevState => {
       return {
         ...prevState,
