@@ -1,9 +1,8 @@
-import styled from 'styled-components';
-import Menu from '@material-ui/core/Menu';
+import styled from "styled-components";
+import Menu from "@material-ui/core/Menu";
 
 export const Th = styled.th`
   position: relative;
-  padding:4px;
 `;
 
 export const MenuFilter = styled(Menu)`
@@ -17,14 +16,9 @@ export const MenuFilter = styled(Menu)`
   > div {
     /* top: 142px !important;
     left: 1195px !important; */
-
   }
 
   ul > li {
     padding: 0px !important;
   }
-  th {
-    padding:4px;
-  }
 `;
-
