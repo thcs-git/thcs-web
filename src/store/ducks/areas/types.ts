@@ -71,6 +71,7 @@ export interface AreaInterface {
   users: UserAreaInterface[];
   neighborhoods: NeighborhoodAreaInterface[];
   created_by?: { _id: any };
+  created_at: string;
   active: boolean;
   profession_users: ProfessionAreaInterface[];
 }

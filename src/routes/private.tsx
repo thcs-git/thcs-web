@@ -26,6 +26,7 @@ const PrivateRoute: React.FC<IPrivateProps> = ({ component: Component, ...rest }
           />
         )
       }
+
     />
   );
 }

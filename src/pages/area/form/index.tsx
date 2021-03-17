@@ -44,7 +44,8 @@ import {
   DivideTitle
 } from './styles';
 import validateName from '../../../utils/validateName';
-import { AnyARecord } from 'dns';
+import _ from 'lodash';
+
 
 interface IFormFields extends AreaInterface {
   form?: {
@@ -53,6 +54,7 @@ interface IFormFields extends AreaInterface {
 }
 
 interface IPageParams {
+  mode?: string;
   id?: string;
 }
 
@@ -70,7 +72,7 @@ export default function AreaForm(props: RouteComponentProps<IPageParams>) {
   const [inputState, setInputState ] = useState({value:"", error: false});
   const [inputCity, setInpuCity] = useState({value:"", error: false});
   const [inputDistrict, setInputDistrict ] = useState({value:"", error: false});
-  const [value, setValue] = useState("");
+  const [Modif, setModif ] = useState({modification:false});
   const areaState = useSelector((state: ApplicationState) => state.areas);
   const userState = useSelector((state: ApplicationState) => state.users);
   const professionState = useSelector((state: ApplicationState)=> state.profession);
@@ -195,6 +197,7 @@ export default function AreaForm(props: RouteComponentProps<IPageParams>) {
     neighborhoods: [],
     created_by: { _id: handleUserSelectedId()  },
     active: true,
+    created_at: "",
     profession_users:[]
   });
 
@@ -206,6 +209,7 @@ export default function AreaForm(props: RouteComponentProps<IPageParams>) {
   const [openModalCancel, setOpenModalCancel] = useState(false);
 
   useEffect(() => {
+    console.log(params);
     if (params.id) {
       dispatch(loadAreaById(params.id));
       const dayOfTheWeekSelected = daysOfTheWeek.find(day => day.id === areaState.data.week_day) || null;
@@ -373,9 +377,28 @@ export default function AreaForm(props: RouteComponentProps<IPageParams>) {
      }
     }
   }
+  /////////////////////// Modification Tests /////////////////////////////////////////////
+  function isEquals(){
+    let areaS = {...areaState.data, form:{...state.form}};
+    return _.isEqual(state,areaS);
+  }
 
+  function ModifiCondition(){
+    if(params.mode === "edit" && !isEquals()){
+      return true;
+    }else{
+      return false;
+    }
+  }
+
+  /////////////////////////////Modification Tests  ////////////////////////////////////////
   function handleOpenModalCancel() {
-    setOpenModalCancel(true);
+    if(ModifiCondition()){
+     setOpenModalCancel(true);
+    }
+    else{
+      handleCancelForm();
+    }
   }
 
   function handleCloseModalCancel() {
@@ -393,6 +416,27 @@ export default function AreaForm(props: RouteComponentProps<IPageParams>) {
       week_day: (value === 1) ? -1 : prevState.week_day
     }))
   };
+
+///// dias de abstecimento
+  const handleDayOfTheWeek = useCallback((event: any, newValue: any) => {
+    if(newValue){
+       setInputDays(prev =>({
+      ...prev,
+      value:newValue.name,
+    }));
+      setState(prevState => ({
+        ...prevState,
+        week_day: newValue.id,
+        form: {
+          ...prevState.form,
+          dayOfTheWeek: newValue,
+        }
+    }));
+    }
+  }, [state.week_day]);
+
+
+  // Bairros
   function handleStates (value:any){
 
     if(value){
@@ -414,29 +458,6 @@ export default function AreaForm(props: RouteComponentProps<IPageParams>) {
       dispatch(loadGetDistricts_({city:value.name}));
     }
   }
-  function handleSelectProfession(value:any){
-
-    value?dispatch(getUsersAction({profession_id:value._id})):dispatch(getUsersAction());
-
-  }
-  const handleDayOfTheWeek = useCallback((event: any, newValue: any) => {
-    if(newValue){
-       setInputDays(prev =>({
-      ...prev,
-      value:newValue.name,
-    }));
-      setState(prevState => ({
-        ...prevState,
-        week_day: newValue.id,
-        form: {
-          ...prevState.form,
-          dayOfTheWeek: newValue,
-        }
-    }));
-    }
-  }, [state.week_day]);
-
-  // Bairros
   const  handleSelectNeighborhood= useCallback((event:any,value1: any)=> {
     const found  = state.neighborhoods.findIndex((item:any)=>{
           return item._id === value1._id;
@@ -486,6 +507,11 @@ export default function AreaForm(props: RouteComponentProps<IPageParams>) {
   }
 
   // Prestadores
+  function handleSelectProfession(value:any){
+
+    value?dispatch(getUsersAction({profession_id:value._id})):dispatch(getUsersAction());
+
+  }
   function handleSelectUser(value: any) {
     const foundProfession = state.profession_users.findIndex((profession:ProfessionAreaInterface)=>{
      return profession.profession == value.profession
@@ -549,9 +575,12 @@ export default function AreaForm(props: RouteComponentProps<IPageParams>) {
   }
 
   return (
+
     <Sidebar>
+
       {areaState.loading && <Loading />}
-      <Container>
+      {( params.mode === "edit"|| params.mode == null ) && (
+        <Container>
         <FormSection>
           <FormContent>
             <FormTitle>Cadastro de Área</FormTitle>
@@ -867,7 +896,7 @@ export default function AreaForm(props: RouteComponentProps<IPageParams>) {
                       </Button>
                       )}
                     </ButtonsContent>
-<ButtonsContent>
+          <ButtonsContent>
           {(currentTab === 2 || state._id)  && (
                        <Button  variant="contained" background="success" onClick={() => handleSaveFormArea()}>
                         Salvar
@@ -878,27 +907,35 @@ export default function AreaForm(props: RouteComponentProps<IPageParams>) {
 
         </FormSection>
       </Container >
-      <Dialog
+      )}
+      {params.mode === "view" && (
+        <Container>
+          <DivideTitle>Tela de View</DivideTitle>
+        </Container>
+      )}
+        <Dialog
         open={openModalCancel}
         onClose={handleCloseModalCancel}
         aria-labelledby="alert-dialog-title"
         aria-namedby="alert-dialog-description"
       >
-        <DialogTitle id="alert-dialog-title">Cancelar</DialogTitle>
+        <DialogTitle id="alert-dialog-title">Atenção</DialogTitle>
         <DialogContent>
           <DialogContentText id="alert-dialog-description">
-            Tem certeza que deseja cancelar este cadastro?
+            Você editou alguns campos neste cadastro. Deseja realmente descartar as alterações?
 					</DialogContentText>
         </DialogContent>
         <DialogActions>
           <Button onClick={handleCloseModalCancel} color="primary">
             Não
 					</Button>
-          <Button onClick={handleCancelForm} color="primary" autoFocus>
+          <Button onClick={handleCancelForm} color="secondary" autoFocus>
             Sim
 					</Button>
         </DialogActions>
       </Dialog>
+
+
     </Sidebar >
   );
 }

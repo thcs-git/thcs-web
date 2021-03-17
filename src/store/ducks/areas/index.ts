@@ -10,6 +10,7 @@ export const INITIAL_STATE: AreaState = {
     users: [],
     neighborhoods: [],
     active: true,
+    created_at: "",
     profession_users: [],
   },
   list: {
@@ -107,6 +108,7 @@ const reducer: Reducer<AreaState> = (state = INITIAL_STATE, action) => {
           users: state.data.users,
           neighborhoods: [],
           active: state.data.active,
+          created_at: state.data.created_at,
           profession_users: state.data.profession_users,
         },
         citys: action.payload.data,

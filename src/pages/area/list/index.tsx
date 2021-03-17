@@ -6,7 +6,7 @@ import debounce from 'lodash.debounce';
 
 
 import Table from '../../../components/Table';
-import { getDayOfTheWeekName } from '../../../helpers/date';
+import { formatDate, getDayOfTheWeekName } from '../../../helpers/date';
 import { useDispatch, useSelector } from 'react-redux';
 import { ApplicationState } from '../../../store/';
 import { loadRequest, searchRequest } from '../../../store/ducks/areas/actions';
@@ -45,6 +45,7 @@ export default function CouncilList() {
     setAnchorEl(event.currentTarget);
   }, [anchorEl]);
   const [search, setSearch] = useState('');
+
   const handleCloseRowMenu = useCallback(() => {
     setAnchorEl(null);
   }, [anchorEl]);
@@ -87,8 +88,9 @@ export default function CouncilList() {
   const debounceSearchRequest = debounce(handleChangeInput, 900)
 
   return (
+
     <>
-      <Sidebar>
+          <Sidebar>
         {areaState.loading && <Loading />}
         <Container>
           <FormTitle>Lista de Áreas</FormTitle>
@@ -103,56 +105,47 @@ export default function CouncilList() {
               { name: 'Área', align: 'left' ,},
               { name: 'Intervalo de Abastecimento', align: 'left' },
               { name: 'Dia de Abastecimento', align: 'left' },
+              { name: 'Adicionado em', align: 'left'},
               { name: 'Status', align: 'left' },
+              { name: '', align: 'left' },
             ]}
           >
             {areaState.list.data.map((area, index) => (
               <TableRow key={`area_${index}`}>
                 <TableCell align="left">
                 <ItemTable>
-                  <ListLink key={index} to={`/area/${area._id}/edit`}>{area.name}</ListLink>
+                  <ListLink key={index} to={`/area/${area._id}/edit/edit`}>{area.name}</ListLink>
                 </ItemTable>
 
                 </TableCell>
                 <TableCell align="left">{area.supply_days}{area.supply_days <2?' dia':' dias'}</TableCell> {/* Socioambiental */}
                 <TableCell align="left">{mapDays(area.week_day)}</TableCell> {/* Pedido */}
+                    <TableCell>
+                  {formatDate(area.created_at, 'DD/MM/YYYY HH:mm:ss')}
+                </TableCell>
                 <TableCell align="left">
-                  <ListItemStatus active={area.active}>{area.active ? 'Ativo' : 'Inativo'}</ListItemStatus></TableCell> {/* Última captação */}
-                {/* <TableCell align="center">
-                  <Button aria-controls={`patient-capture-menu${index}`} id={`btn_patient-capture-menu${index}`} aria-haspopup="true" onClick={handleOpenRowMenu}>
+                  <ListItemStatus active={area.active}>{area.active ? 'Ativo' : 'Inativo'}</ListItemStatus>
+                </TableCell> {/*  */}
+
+                <TableCell align="center">
+                  <Button aria-controls={`area-menu${index}`} id={`btn_area-menu${index}`} aria-haspopup="true" onClick={handleOpenRowMenu}>
                     <MoreVert style={{ color: '#0899BA' }}/>
                   </Button>
                   <Menu
-                    id={`patient-capture-menu${index}`}
+                    id={`area-menu${index}`}
                     anchorEl={anchorEl}
                     keepMounted
-                    open={anchorEl?.id === `btn_patient-capture-menu${index}`}
+                    open={anchorEl?.id === `btn_area-menu${index}`}
                     onClose={handleCloseRowMenu}
-
                   >
-                    <MenuItem><ListLink key={index} to={`/area/${area._id}/edit`}>Editar</ListLink></MenuItem>
+                    <MenuItem onClick={() => history.push(`/area/${area._id}/edit/edit`)}>Editar</MenuItem>
+                    <MenuItem onClick={() => history.push(`/area/${area._id}/view/view`)}>Visualizar</MenuItem>
                   </Menu>
-                </TableCell> */}
+                </TableCell>
               </TableRow>
+
             ))}
           </Table>
-
-              {/* <List>
-            {areaState.list.data.map((area, index) => (
-              <TableRow key={`area_${index}`}>
-                <TableCell align="left">
-                  <Link key={index} to={`/area/${area._id}/edit`}>{area.name}</Link>
-                </TableCell>
-                <TableCell align="left">{area.supply_days}{area.supply_days < 2 ? ' dia' : ' dias'}</TableCell>
-                <TableCell align="left">{area.week_day ? getDayOfTheWeekName(area.week_day) : '-'}</TableCell>
-                <TableCell align="left">{area.neighborhoods.length}</TableCell>
-                <TableCell align="left">{area.users.length}</TableCell>
-                <TableCell align="left">
-                  <ListItemStatus active={area.active}>{area.active ? 'Ativo' : 'Inativo'}</ListItemStatus>
-                </TableCell>
-              </TableRow>
-            ))}
-          </List> */}
           <PaginationComponent
             page={areaState.list.page}
             rowsPerPage={areaState.list.limit}
