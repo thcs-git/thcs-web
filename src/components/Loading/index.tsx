@@ -1,8 +1,8 @@
 import React, { useEffect, useRef } from 'react';
 import { createPortal } from 'react-dom';
 import { makeStyles, createStyles, Theme } from '@material-ui/core/styles';
-import CircularProgress, { CircularProgressProps } from '@material-ui/core/CircularProgress';
-import logo from '../../assets/img/sollar-loading.gif';
+import { CircularProgressProps } from '@material-ui/core/CircularProgress';
+
 import { ReactComponent as LoadingSollar } from '../../assets/img/loading-sollar.svg';
 
 const useStylesFacebook = makeStyles((theme: Theme) =>
