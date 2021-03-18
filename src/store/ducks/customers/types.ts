@@ -31,7 +31,6 @@ export interface CustomerInterface {
   _id?: string;
   name: string;
   social_name: string;
-  fantasy_name: string;
   fiscal_number: string;
   address: {
     _id?: string;
@@ -50,6 +49,7 @@ export interface CustomerInterface {
     whatsapp: boolean;
   };
   cellphone?: string;
+  responsible_user: string;
   active?: boolean;
 }
 

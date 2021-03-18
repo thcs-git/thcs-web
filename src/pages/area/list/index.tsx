@@ -37,13 +37,13 @@ import classes from '*.module.css';
 export default function AreaList() {
   const useStyles = makeStyles((theme) => ({
     tablecelldot:{
-      width:'19px',
+      width:'9px',
       padding:'5px',
     },
     buttondots:{
       minWidth:'9px',
       width:'9px',
-      padding:'10px'
+      padding:'1px'
     }
 
     }));
@@ -121,9 +121,10 @@ export default function AreaList() {
               { name: 'Área', align: 'left' ,},
               { name: 'Intervalo de Abastecimento', align: 'left' },
               { name: 'Dia de Abastecimento', align: 'left' },
-              { name: 'Adicionado em', align: 'left'},
-              { name: 'Status', align: 'left'},
-              { name: '', align: 'center' },
+              { name: 'Qtd. Prestadores', align: 'left' },
+              { name: 'Status', align: 'left',width:'10px'},
+              { name: 'Adicionado em', align: 'left' },
+              { name: '', align: 'center', width:'9px'},
             ]}
           >
             {areaState.list.data.map((area, index) => (
@@ -132,17 +133,16 @@ export default function AreaList() {
                 <ItemTable>
                   <ListLink key={index} to={`/area/${area._id}/edit/edit`}>{area.name}</ListLink>
                 </ItemTable>
-
                 </TableCell>
                 <TableCell align="left">{area.supply_days}{area.supply_days <2?' dia':' dias'}</TableCell> {/* Socioambiental */}
                 <TableCell align="left">{mapDays(area.week_day)}</TableCell> {/* Pedido */}
-                    <TableCell>
-                  {formatDate(area.created_at, 'DD/MM/YYYY HH:mm:ss')}
-                </TableCell>
+                <TableCell align="left">{area.profession_users.length}</TableCell>
                 <TableCell align="left">
                   <ListItemStatus active={area.active}>{area.active ? 'Ativo' : 'Inativo'}</ListItemStatus>
                 </TableCell> {/*  */}
-
+                    <TableCell>
+                  {formatDate(area.created_at, 'DD/MM/YYYY HH:mm:ss')}
+                </TableCell>
                 <TableCell align="center">
                   <Button  aria-controls={`area-menu${index}`} id={`btn_area-menu${index}`} aria-haspopup="true" onClick={handleOpenRowMenu}>
                     <MoreVert  style={{ color: '#0899BA' }}/>

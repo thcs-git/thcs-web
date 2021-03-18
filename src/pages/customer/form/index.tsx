@@ -66,7 +66,6 @@ export default function CustomerForm(props: RouteComponentProps<IPageParams>) {
 
   const [state, setState] = useState<CustomerInterface>({
     name: '',
-    fantasy_name: '',
     social_name:'',
     fiscal_number: '',
     address: {
@@ -85,6 +84,7 @@ export default function CustomerForm(props: RouteComponentProps<IPageParams>) {
       whatsapp: false,
     },
     cellphone: '',
+    responsible_user:'',
     active: true
   });
 
@@ -144,7 +144,6 @@ export default function CustomerForm(props: RouteComponentProps<IPageParams>) {
 
       return;
     }
-
     setState(prevState => {
       return {
         ...prevState,
@@ -170,7 +169,6 @@ export default function CustomerForm(props: RouteComponentProps<IPageParams>) {
           ...userData,
           customer_id: customerState.data._id,
           name: state.name || ``,
-
           fiscal_number: state.fiscal_number || ``,
           birthdate: '',
           gender: '',
@@ -256,7 +254,7 @@ export default function CustomerForm(props: RouteComponentProps<IPageParams>) {
     <Sidebar>
       {customerState.loading && <Loading />}
       <Container>
-        <BoxCustom style={{ background: '#fff', marginTop: 0 }} mt={5} padding={4}>
+        <BoxCustom style={{  marginTop: 0 }} mt={5} padding={4}>
           <FormSection>
           <FormContent>
             <FormTitle>Cadastro de Clientes</FormTitle>
@@ -265,7 +263,7 @@ export default function CustomerForm(props: RouteComponentProps<IPageParams>) {
                 <Grid item md={12} xs={12}>
                     <TextField
                       id="input-social-client"
-                      label="Cliente"
+                      label="Nome"
                       variant="outlined"
                       size="small"
                       value={state.name}
@@ -279,22 +277,12 @@ export default function CustomerForm(props: RouteComponentProps<IPageParams>) {
                     label="Nome Social"
                     variant="outlined"
                     size="small"
-                    value={state.name}
-                    onChange={(element) => setState({ ...state, name: element.target.value })}
+                    value={state.social_name}
+                    onChange={(element) => setState({ ...state, social_name: element.target.value })}
                     fullWidth
                   />
                 </Grid>
-                <Grid item md={7} xs={12}>
-                  <TextField
-                    id="input-fantasy-name"
-                    label="Nome Fantasia"
-                    variant="outlined"
-                    size="small"
-                    value={state.fantasy_name}
-                    onChange={(element) => setState({ ...state, fantasy_name: element.target.value })}
-                    fullWidth
-                  />
-                </Grid>
+
 
                 <Grid item md={5} xs={12}>
                   <InputMask
@@ -322,6 +310,10 @@ export default function CustomerForm(props: RouteComponentProps<IPageParams>) {
                 <Grid item md={10} />
               </Grid>
             </FormGroupSection>
+
+            <Grid item md={11} xs={11}>
+                <Divider style={{ marginBottom: 15, marginTop: 5 }} />
+              </Grid>
 
             <FormGroupSection>
               <Grid container>
@@ -462,8 +454,8 @@ export default function CustomerForm(props: RouteComponentProps<IPageParams>) {
                   label="Nome do responsável"
                   variant="outlined"
                   size="small"
-                  value={state.name}
-                  onChange={(element) => setState({ ...state, name: element.target.value })}
+                  value={state.responsible_user}
+                  onChange={(element) => setState({ ...state, responsible_user: element.target.value })}
                   fullWidth
                 />
               </Grid>

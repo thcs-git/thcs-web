@@ -6,7 +6,7 @@ export const INITIAL_STATE: CustomerState = {
     _id: "",
     name: "",
     social_name: "",
-    fantasy_name: "",
+
     fiscal_number: "",
     address: {
       postal_code: "",
@@ -23,6 +23,7 @@ export const INITIAL_STATE: CustomerState = {
       telegram: false,
       whatsapp: false,
     },
+    responsible_user: "",
     cellphone: "",
   },
   list: {

@@ -807,7 +807,7 @@ export default function AreaForm(props: RouteComponentProps<IPageParams>) {
                 </TabBodyItem>
                 <TabBodyItem className={currentTab === 2 ? 'show' : ''}>
                   <Grid container>
-                  <Grid item md={7} xs={12}>
+                  <Grid item md={12} xs={12}>
                       <FormGroupSection>
                         <Autocomplete
                           id="combo-box-profession"
