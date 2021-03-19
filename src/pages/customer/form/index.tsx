@@ -45,6 +45,7 @@ import {
 import mask from '../../../utils/mask';
 import Loading from '../../../components/Loading';
 import { validateCNPJ as validateCNPJHelper } from '../../../helpers/validateCNPJ';
+import _ from 'lodash';
 
 interface IPageParams {
   id?: string;
@@ -236,8 +237,25 @@ export default function CustomerForm(props: RouteComponentProps<IPageParams>) {
     dispatch(getAddressAction(state.address.postal_code));
   }, [state.address.postal_code]);
 
+  function isEquals(){
+    //let areaS = {...areaState.data, form:{...state.form}};
+    console.log(state);
+    console.log(customerState.data);
+    return _.isEqual(state,customerState.data);
+  }
+  function ModifiCondition(){
+    if(!isEquals()){
+      return true;
+    }else{
+      return false;
+    }
+  }
   function handleOpenModalCancel() {
-    setOpenModalCancel(true);
+    if(ModifiCondition()){
+      setOpenModalCancel(true);
+     }else{
+      handleCancelForm();
+     }
   }
 
   function handleCloseModalCancel() {
@@ -514,17 +532,16 @@ export default function CustomerForm(props: RouteComponentProps<IPageParams>) {
                       />
                     )}
                   </InputMask>
+
                 </Grid>
-                {/* {state?._id && ( */}
-                  <Grid item md={12} xs={12}>
-                    <FormControlLabel control={<Switch checked={state.active} onChange={(event) => {
-                      setState(prevState => ({
-                        ...prevState,
-                        active: event.target.checked
-                      }))
-                    }} />} label="Ativo?" />
-                  </Grid>
-                {/* )} */}
+                    <Grid>
+                      <FormControlLabel  control={ <Switch checked={state.active} color="primary" onChange={(event) => {
+                          setState(prevState => ({
+                            ...prevState,
+                            active: event.target.checked
+                          }))}}></Switch>} label="Ativo?"
+                     ></FormControlLabel>
+                    </Grid>
               </Grid>
             </FormGroupSection>
           </FormContent>
