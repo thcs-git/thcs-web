@@ -8,10 +8,13 @@ export const StepTitle = styled.h3`
 export const StepperComponent = styled(Stepper)`
   margin-bottom: 20px;
   background: none;
+
+  display: flex;
+  align-items: center;
 `;
 
 export const StepComponent = styled(Step)`
-  margin-bottom: 20px;
+  /* margin-bottom: 20px; */
   cursor: pointer;
 
   .MuiStepIcon-root.MuiStepIcon-active {
