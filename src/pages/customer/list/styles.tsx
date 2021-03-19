@@ -42,9 +42,7 @@ export const ListItemContent = styled(CardContent)`
 export const ListItemStatus = styled.div<IListItemStatus>`
   color: ${(props) => (props.active ? `var(--success)` : `var(--danger)`)};
   font-weight: bold;
-
-  padding: 16px;
-
+  padding: 0px;
   width: 80px;
 `;
 

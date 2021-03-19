@@ -44,7 +44,7 @@ export const ItemTable = styled.div`
 export const ListItemStatus = styled.div<IListItemStatus>`
   color: ${(props) => (props.active ? `var(--success)` : `var(--danger-hover)`)};
   font-weight: bold;
-  padding: 5px;
+  padding: 0px;
   width: 80px;
 `;
 

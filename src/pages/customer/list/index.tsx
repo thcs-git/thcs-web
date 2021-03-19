@@ -27,6 +27,7 @@ import {
 } from './styles';
 import { ItemTable } from '../../area/list/styles';
 import { formatDate } from '../../../helpers/date';
+import { BoxCustom } from '../form/styles';
 
 export default function CustomerList() {
   const history = useHistory();
@@ -73,7 +74,8 @@ export default function CustomerList() {
       {customerState.loading && <Loading />}
       <Sidebar>
         <Container>
-          <FormTitle>Lista de Clientes</FormTitle>
+        <BoxCustom style={{  marginTop: 0 }} mt={5} paddingLeft={15} paddingRight={15} paddingTop={8}>
+           <FormTitle>Lista de Clientes</FormTitle>
 
           <SearchComponent
             handleButton={() => history.push('/customer/create/')}
@@ -86,7 +88,7 @@ export default function CustomerList() {
               {name:"CNPJ",align:"left"},
               {name:"Status",align:"left"},
               {name:"Adicionado em",align:"left"},
-              {name:"",align:"center", width:'9px'}
+              {name:"",align:"center"}
             ]}>
               {customerState.list.data.map((customer, index) => (
                 <TableRow key={`customes_${index}`}>
@@ -100,8 +102,8 @@ export default function CustomerList() {
                   <TableCell align="left">{customer.fiscal_number}</TableCell>
                   <TableCell align="left"><ListItemStatus active={customer.active}>{customer.active ? 'Ativo' : 'Inativo'}</ListItemStatus></TableCell>
                   <TableCell align="left">{formatDate(customer.created_at, 'DD/MM/YYYY HH:mm:ss')}</TableCell>
-                  <TableCell align='center'>
-                  <Button  aria-controls={`customer-menu${index}`} id={`btn_customer-menu${index}`} aria-haspopup="true" onClick={handleOpenRowMenu}>
+                  <TableCell align='center' style={{width:'10px'}}>
+                  <Button   aria-controls={`customer-menu${index}`} id={`btn_customer-menu${index}`} aria-haspopup="true" onClick={handleOpenRowMenu}>
                     <MoreVert  style={{ color: '#0899BA' }}/>
                   </Button>
                   <Menu
@@ -159,6 +161,10 @@ export default function CustomerList() {
               search
             }))}
           />
+
+
+        </BoxCustom>
+
         </Container>
       </Sidebar>
     </>

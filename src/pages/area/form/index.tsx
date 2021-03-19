@@ -45,6 +45,7 @@ import {
 } from './styles';
 import validateName from '../../../utils/validateName';
 import _ from 'lodash';
+import { BoxCustom } from '../../customer/form/styles';
 
 
 interface IFormFields extends AreaInterface {
@@ -581,6 +582,7 @@ export default function AreaForm(props: RouteComponentProps<IPageParams>) {
       {areaState.loading && <Loading />}
       {( params.mode === "edit"|| params.mode == null ) && (
         <Container>
+           <BoxCustom style={{  marginTop: 0 }} mt={5} paddingLeft={15} paddingRight={15} paddingTop={8}>
         <FormSection>
           <FormContent>
             <FormTitle>Cadastro de Área</FormTitle>
@@ -807,7 +809,7 @@ export default function AreaForm(props: RouteComponentProps<IPageParams>) {
                 </TabBodyItem>
                 <TabBodyItem className={currentTab === 2 ? 'show' : ''}>
                   <Grid container>
-                  <Grid item md={12} xs={12}>
+                  <Grid item md={7} xs={12}>
                       <FormGroupSection>
                         <Autocomplete
                           id="combo-box-profession"
@@ -906,6 +908,7 @@ export default function AreaForm(props: RouteComponentProps<IPageParams>) {
           </ButtonsContent>
 
         </FormSection>
+        </BoxCustom>
       </Container >
       )}
       {params.mode === "view" && (
