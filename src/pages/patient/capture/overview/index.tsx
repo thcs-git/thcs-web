@@ -172,15 +172,28 @@ export default function PatientCaptureForm(props: RouteComponentProps<IPageParam
     }
   };
 
-  const handleScoreRoute = (id: string, care_id: string, document_id?: string) => {
+  const handleScoreRoute = useCallback((id: string, care_id: string, document_id?: string) => {
     const routes: any = {
       "5ff65469b4d4ac07d186e99f": `/patient/capture/${care_id}/nead`,
       "5ffd7acd2f5d2b1d8ff6bea4": `/patient/capture/${care_id}/abemid`,
       "5ffd79012f5d2b1d8ff6bea3": `/patient/capture/${care_id}/socioambiental`,
     };
 
-    return (document_id) ? `${routes[id]}/${document_id}` : routes[id];
-  };
+    // Verificar se tem um documento de nead preenchido para indicar que o katz foi preenchido
+    let katzIsDone = false;
+
+    if (care?.documents_id && care?.documents_id?.length > 0) {
+      const founded = care?.documents_id.find(doc => (
+        doc.document_group_id._id === '5ff65469b4d4ac07d186e99f' &&
+        !doc.canceled &&
+        doc.finished
+      ));
+
+      katzIsDone = (!!founded);
+    }
+
+    (document_id) ? history.push(`${routes[id]}/${document_id}`, { katzIsDone }) : history.push((routes[id]), { katzIsDone });
+  }, [care]);
 
   const toggleHistoryModal = () => {
     handleCloseRowMenu();
@@ -302,12 +315,12 @@ export default function PatientCaptureForm(props: RouteComponentProps<IPageParam
                           </Button>
                         </div>
                       ) : (
-                          <div>
-                            <Button center onClick={() => setModalPrint(true)}>
-                              <Print className="primary" style={{ width: 30, height: 30 }} />
-                            </Button>
-                          </div>
-                        )}
+                        <div>
+                          <Button center onClick={() => setModalPrint(true)}>
+                            <Print className="primary" style={{ width: 30, height: 30 }} />
+                          </Button>
+                        </div>
+                      )}
 
 
                     </PatientResumeContent>
@@ -334,9 +347,9 @@ export default function PatientCaptureForm(props: RouteComponentProps<IPageParam
                       <tr key={`documentGroup_${index}`}>
                         <Td center onClick={() => {
                           if (document?._id) {
-                            history.push(handleScoreRoute(documentGroup?._id || '', care?._id || '', document?._id))
+                            handleScoreRoute(documentGroup?._id || '', care?._id || '', document?._id);
                           } else {
-                            history.push(handleScoreRoute(documentGroup?._id || '', care?._id || ''))
+                            handleScoreRoute(documentGroup?._id || '', care?._id || '');
                           }
                         }}>{handleCheckDocument(documentGroup._id, care?.documents_id || [])}</Td>
                         <Td>{documentGroup.name}</Td>
@@ -359,24 +372,24 @@ export default function PatientCaptureForm(props: RouteComponentProps<IPageParam
                               >
                                 {document?._id ? (
                                   <div>
-                                    <MenuItem onClick={() => history.push(handleScoreRoute(documentGroup?._id || '', care?._id || '', document?._id))}>Editar</MenuItem>
+                                    <MenuItem onClick={() => handleScoreRoute(documentGroup?._id || '', care?._id || '', document?._id)}>Editar</MenuItem>
                                     <MenuItem onClick={() => console.log(document?._id)}>Excluir</MenuItem>
                                   </div>
                                 ) : (
-                                    <MenuItem onClick={() => history.push(handleScoreRoute(documentGroup?._id || '', care?._id || ''))}>Adicionar novo</MenuItem>
-                                  )}
+                                  <MenuItem onClick={() => handleScoreRoute(documentGroup?._id || '', care?._id || '')}>Adicionar novo</MenuItem>
+                                )}
                                 <MenuItem onClick={() => toggleHistoryModal()}>Ver histórico</MenuItem>
                               </Menu>
                             </>
                           ) : (
-                              <>
-                                {(document?._id) && (
-                                  <Button onClick={() => window.open(`/care/${care?._id}/medical-records/document/${document?._id}/print`, "_blank")}>
-                                    <Visibility className="primary" />
-                                  </Button>
-                                )}
-                              </>
-                            )}
+                            <>
+                              {(document?._id) && (
+                                <Button onClick={() => window.open(`/care/${care?._id}/medical-records/document/${document?._id}/print`, "_blank")}>
+                                  <Visibility className="primary" />
+                                </Button>
+                              )}
+                            </>
+                          )}
                         </Td>
                       </tr>
                     );
@@ -406,8 +419,8 @@ export default function PatientCaptureForm(props: RouteComponentProps<IPageParam
                       <p className="text-danger">Para concluir a captação, os itens com asterisco são obrigatórios: Orçamento + Tabela NEAD ou Tabela Abemid.</p>
                     </>
                   ) : (
-                      <p>{captureData.estimate}</p>
-                    )}
+                    <p>{captureData.estimate}</p>
+                  )}
                 </CardContent>
               </Card>
             </>
