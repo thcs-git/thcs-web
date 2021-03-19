@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { useHistory, RouteComponentProps } from 'react-router-dom';
-import { Container, StepLabel, Radio, RadioGroup, FormControlLabel, FormGroup, Checkbox } from '@material-ui/core';
+import { Container, StepLabel, Radio, RadioGroup, FormControlLabel, FormGroup, Checkbox, Stepper, Step, StepButton, Grid, Popover, IconButton } from '@material-ui/core';
+import { Help as HelpIcon } from '@material-ui/icons';
 
 import { useDispatch, useSelector } from 'react-redux';
 import { ApplicationState } from '../../../../store';
@@ -21,6 +22,8 @@ import Sidebar from '../../../../components/Sidebar';
 
 import Button from '../../../../styles/components/Button';
 import { FormTitle, QuestionSection, QuestionTitle, ScoreTotalContent, ScoreLabel, ScoreTotal } from '../../../../styles/components/Form';
+import { StepperComponent, StepComponent, StepTitle } from '../../../../styles/components/Step';
+
 
 import { ButtonsContent, FormContent } from './styles';
 
@@ -37,6 +40,7 @@ interface IScore {
 
 export default function Abemid(props: RouteComponentProps<IPageParams>) {
   const { params } = props.match;
+  const { state: routeState } = props.location;
 
   const history = useHistory();
   const dispatch = useDispatch();
@@ -57,6 +61,22 @@ export default function Abemid(props: RouteComponentProps<IPageParams>) {
   });
   const [document, setDocument] = useState<any>();
   const [score, setScore] = useState<IScore>({ total: 0, complexity: 'Sem Complexidade', status: '' });
+  const [steps, setSteps] = useState([
+    { title: 'KATZ', finished: (!!routeState.katzIsDone) },
+    { title: 'Abemid', finished: false },
+  ]);
+
+
+  const [anchorHelpPopover, setHelpPopover] = React.useState<HTMLButtonElement | null>(null);
+  const openHelpPopover = Boolean(anchorHelpPopover);
+
+  const handleClickHelpPopover = (event: React.MouseEvent<HTMLButtonElement>) => {
+    setHelpPopover(event.currentTarget);
+  };
+
+  const handleCloseHelpPopover = () => {
+    setHelpPopover(null);
+  };
 
   useEffect(() => {
     dispatch(actionDocumentGroupAbemidRequest());
@@ -66,6 +86,7 @@ export default function Abemid(props: RouteComponentProps<IPageParams>) {
       dispatch(actionDocumentAbemidRequest({ _id: params.documentId, care_id: params.id }));
     }
 
+    console.log('routeState.katzIsDone', routeState.katzIsDone);
   }, []);
 
   useEffect(() => {
@@ -127,8 +148,6 @@ export default function Abemid(props: RouteComponentProps<IPageParams>) {
     calculateScore();
 
   }, [documentGroup]);
-
-
 
   const calculateScore = useCallback(() => {
     let partialScore = 0, countQuestionFive = 0;
@@ -236,7 +255,63 @@ export default function Abemid(props: RouteComponentProps<IPageParams>) {
           </>
         )}
 
-        <FormTitle>{documentGroup.name}</FormTitle>
+        <div style={{ display: 'flex', alignItems: 'center', flexDirection: 'row', marginBottom: 40 }}>
+          <FormTitle style={{ marginBottom: 0 }}>
+            {documentGroup.name}
+          </FormTitle>
+          <IconButton aria-describedby={'popover_help_abemid'} onClick={handleClickHelpPopover} style={{ marginLeft: 10 }}>
+            <HelpIcon style={{ color: "#ccc" }} />
+          </IconButton >
+          <Popover
+            id={'popover_help_abemid'}
+            open={openHelpPopover}
+            anchorEl={anchorHelpPopover}
+            onClose={handleCloseHelpPopover}
+            anchorOrigin={{
+              vertical: 'bottom',
+              horizontal: 'center',
+            }}
+            transformOrigin={{
+              vertical: 'top',
+              horizontal: 'left',
+            }}
+          >
+            <div
+              style={{ paddingTop: 20, paddingLeft: 30, paddingBottom: 20, paddingRight: 30, maxWidth: 500, listStylePosition: 'inside', textAlign: 'justify' }}>
+              <p>Regra:</p>
+              <br />
+              <ul>
+                <li>Ao obter 01 pontuação 5, o paciente migra automaticamente para Média Complexidade;</li>
+
+                <li>Ao obter 02 ou mais pontuações 5, o paciente migra automaticamente para Alta Complexidade, independente do total de pontos obtidos (com cuidado).<br />Obs. A migração acima referida, ocorre independente dos pontos totais obtidos</li>
+
+                <li>Em TODOS os itens de avaliação, EXCETO os relacionados a coluna SUPORTE TERAPÊUTICO, os pontos NÃO se somam, SEMPRE prevalecendo o item de MAIOR pontuação em decorrência da maior COMPLEXIDADE</li>
+              </ul>
+              <br />
+
+              <ul>
+                <li>Inferior a 07 pontos Paciente não elegível para Internação Domiciliar</li>
+                <li>De 08 a 12 pontos Baixa Complexidade</li>
+                <li>De 13 a 18 pontos Média Complexidade Acima de 19 pontos Alta Complexidade</li>
+              </ul>
+            </div>
+          </Popover>
+
+        </div>
+
+        <Grid container>
+          <Grid item md={4} sm={4}>
+            <StepperComponent nonLinear activeStep={1}>
+              {steps.map((step, index) => (
+                <StepComponent key={`step_${index}`}>
+                  <StepButton completed={step.finished}>
+                    {step.title}
+                  </StepButton>
+                </StepComponent>
+              ))}
+            </StepperComponent>
+          </Grid>
+        </Grid>
 
         <FormContent>
           {documentGroup?.fields?.map((field: any, index: number) => (
@@ -278,7 +353,7 @@ export default function Abemid(props: RouteComponentProps<IPageParams>) {
           ))}
 
           <ScoreTotalContent>
-            <ScoreLabel>PONTUAÇÃO KATZ:</ScoreLabel>
+            <ScoreLabel>TOTAL DE PONTOS:</ScoreLabel>
             <ScoreTotal>{score.total}</ScoreTotal>
           </ScoreTotalContent>
 
