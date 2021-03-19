@@ -7,7 +7,7 @@ export const ButtonsContent = styled.div`
 
   margin-bottom: 20px;
 
-  & > button:first-child {
+  button:first-child {
     margin-right: 10px;
   }
 `;
@@ -27,14 +27,18 @@ export const FormSection = styled.div`
 `;
 
 export const FormGroupSection = styled.div`
-  margin-bottom: 40px;
+ // margin-bottom: 40px;
 `;
 
 export const FormContent = styled.div``;
 
 export const InputFiled = styled(TextField)`
   padding: 0 12px 12px 0;
+  &:focus {
+        background: #fff;
 
+        border: 1px solid var(--primary-hover);
+      };
   input {
     background: var(--white);
   }

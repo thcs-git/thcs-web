@@ -254,7 +254,7 @@ export default function CustomerForm(props: RouteComponentProps<IPageParams>) {
     <Sidebar>
       {customerState.loading && <Loading />}
       <Container>
-        <BoxCustom style={{  marginTop: 0 }} mt={5} padding={4}>
+        <BoxCustom style={{  marginTop: 0 }} mt={5} paddingLeft={15} paddingRight={15} paddingTop={8}>
           <FormSection>
           <FormContent>
             <FormTitle>Cadastro de Clientes</FormTitle>
@@ -271,54 +271,54 @@ export default function CustomerForm(props: RouteComponentProps<IPageParams>) {
                       fullWidth
                     />
                   </Grid>
-                <Grid item md={12} xs={12}>
-                  <TextField
-                    id="input-social-name"
-                    label="Nome Social"
-                    variant="outlined"
-                    size="small"
-                    value={state.social_name}
-                    onChange={(element) => setState({ ...state, social_name: element.target.value })}
-                    fullWidth
-                  />
-                </Grid>
+                  <Grid item md={7} xs={12}>
+                    <TextField
+                      id="input-social-name"
+                      label="Nome Social"
+                      variant="outlined"
+                      size="small"
+                      value={state.social_name}
+                      onChange={(element) => setState({ ...state, social_name: element.target.value })}
+                      fullWidth
+                    />
+                  </Grid>
 
 
-                <Grid item md={5} xs={12}>
-                  <InputMask
-                    mask="99.999.999/9999-99"
-                    value={state.fiscal_number}
-                    onChange={(element) => setState({ ...state, fiscal_number: element.target.value })}
-                    onBlur={validateCNPJField}
-                  >
-                    {(inputProps: any) => (
-                      <TextField
-                        {...inputProps}
-                        id="input-fiscal-number"
-                        label="CNPJ"
-                        variant="outlined"
-                        size="small"
-                        error={validates.fiscal_number}
-                        helperText={validates.fiscal_number ? `CNPJ inválido ou inexistente` : null}
-                        // value={state.fiscal_number}
-                        // onChange={(element) => setState({ ...state, fiscal_number: element.target.value })}
-                        placeholder="00.000.000/0000-00"
-                        fullWidth
-                      />)}
-                  </InputMask>
-                </Grid>
-                <Grid item md={10} />
+                  <Grid item md={5} xs={12}>
+                    <InputMask
+                      mask="99.999.999/9999-99"
+                      value={state.fiscal_number}
+                      onChange={(element) => setState({ ...state, fiscal_number: element.target.value })}
+                      onBlur={validateCNPJField}
+                    >
+                      {(inputProps: any) => (
+                        <TextField
+                          {...inputProps}
+                          id="input-fiscal-number"
+                          label="CNPJ"
+                          variant="outlined"
+                          size="small"
+                          error={validates.fiscal_number}
+                          helperText={validates.fiscal_number ? `CNPJ inválido ou inexistente` : null}
+                          // value={state.fiscal_number}
+                          // onChange={(element) => setState({ ...state, fiscal_number: element.target.value })}
+                          placeholder="00.000.000/0000-00"
+                          fullWidth
+                        />)}
+                    </InputMask>
+                  </Grid>
               </Grid>
             </FormGroupSection>
 
-            <Grid item md={11} xs={11}>
-                <Divider style={{ marginBottom: 15, marginTop: 5 }} />
-              </Grid>
+            <Grid item md={12} xs={12}>
+                <Divider style={{ marginBottom: 28, marginTop: 20 }} />
+            </Grid>
 
             <FormGroupSection>
               <Grid container>
-                <Grid item md={3} xs={12} style={{ paddingRight: 10 }}>
-                  <FormControl variant="outlined" size="small" fullWidth>
+                <Grid item md={3} xs={12}>
+
+                  <FormControl variant="outlined" size="small" style={{ paddingRight:10}} >
                     <InputLabel htmlFor="search-input">CEP</InputLabel>
                     <InputMask
                       mask="99999-999"
@@ -364,15 +364,16 @@ export default function CustomerForm(props: RouteComponentProps<IPageParams>) {
                         />
                         )}
                     </InputMask>
-                    {customerState.errorCep && (
+                    {/* {customerState.errorCep && (
                       <p style={{ color: '#f44336', margin: '4px 4px' }}>
                         CEP inválido
                       </p>
-                    )}
+                    )} */}
                   </FormControl>
                 </Grid>
 
                 <Grid item md={9} xs={12}>
+
                   <TextField
                     id="input-address"
                     label="Endereço"
@@ -384,7 +385,7 @@ export default function CustomerForm(props: RouteComponentProps<IPageParams>) {
                   />
                 </Grid>
 
-                <Grid item md={3} xs={12}>
+                <Grid item md={2} xs={12}>
                   <TextField
                     id="input-address-number"
                     label="Número"
@@ -396,7 +397,7 @@ export default function CustomerForm(props: RouteComponentProps<IPageParams>) {
                   />
                 </Grid>
 
-                <Grid item md={9} xs={12}>
+                <Grid item md={10} xs={12}>
                   <TextField
                     id="input-address-complement"
                     label="Complemento"
@@ -444,9 +445,10 @@ export default function CustomerForm(props: RouteComponentProps<IPageParams>) {
                   />
                 </Grid>
 
-              <Grid item md={12} xs={12}>
-                <Divider style={{ marginBottom: 15, marginTop: 5 }} />
-              </Grid>
+
+            <Grid item md={12} xs={12}>
+                <Divider style={{ marginBottom: 28, marginTop: 20 }} />
+            </Grid>
 
               <Grid item md={8} xs={12}>
                 <TextField
@@ -481,7 +483,6 @@ export default function CustomerForm(props: RouteComponentProps<IPageParams>) {
                   )}
                 </InputMask>
               </Grid>
-
               <Grid item md={8} xs={12}>
                 <TextField
                   id="input-email"
@@ -514,7 +515,7 @@ export default function CustomerForm(props: RouteComponentProps<IPageParams>) {
                     )}
                   </InputMask>
                 </Grid>
-                {state?._id && (
+                {/* {state?._id && ( */}
                   <Grid item md={12} xs={12}>
                     <FormControlLabel control={<Switch checked={state.active} onChange={(event) => {
                       setState(prevState => ({
@@ -523,11 +524,11 @@ export default function CustomerForm(props: RouteComponentProps<IPageParams>) {
                       }))
                     }} />} label="Ativo?" />
                   </Grid>
-                )}
+                {/* )} */}
               </Grid>
             </FormGroupSection>
           </FormContent>
-          <ButtonsContent>
+            <ButtonsContent style={{ paddingRight:15}}>
             <ButtonComponent variant="outlined" background="success_rounded" onClick={() => handleOpenModalCancel()}>
               Voltar
             </ButtonComponent>

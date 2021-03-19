@@ -73,9 +73,11 @@ export interface CustomerList {
 
 export interface CustomerDataItems {
   _id: string;
+  fiscal_number: string;
   name: string;
   active: boolean;
   email: string;
+  created_at: string;
 }
 
 /**
