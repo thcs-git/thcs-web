@@ -28,6 +28,7 @@ export enum CustomerTypes {
  * Data types
  */
 export interface CustomerInterface {
+  active: boolean;
   _id?: string;
   name: string;
   social_name: string;
@@ -49,8 +50,8 @@ export interface CustomerInterface {
     whatsapp: boolean;
   };
   cellphone?: string;
+  phone?: string;
   responsible_user: string;
-  active?: boolean;
 }
 
 export interface ViacepDataInterface {

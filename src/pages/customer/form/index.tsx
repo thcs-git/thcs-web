@@ -85,6 +85,7 @@ export default function CustomerForm(props: RouteComponentProps<IPageParams>) {
       whatsapp: false,
     },
     cellphone: '',
+    phone:'',
     responsible_user:'',
     active: true
   });
@@ -162,32 +163,32 @@ export default function CustomerForm(props: RouteComponentProps<IPageParams>) {
     }
   }, [dispatch, params]);
 
-  useEffect(() => {
-    if (!params.id && customerState.success && !customerState.error && !customerState.loading) {
+  // useEffect(() => {
+  //   if (!params.id && customerState.success && !customerState.error && !customerState.loading) {
 
-      if (customerState.data._id) {
-        dispatch(createUserAction({
-          ...userData,
-          customer_id: customerState.data._id,
-          name: state.name || ``,
-          fiscal_number: state.fiscal_number || ``,
-          birthdate: '',
-          gender: '',
-          national_id: '',
-          issuing_organ: '',
-          mother_name: '',
-          nationality: '',
-          address: state.address,
-          email: state.email || ``,
-          phone: state.cellphone || ``,
-          cellphone: state.cellphone || ``,
-          user_type_id: '6025b77d83576e461426786a',
-          council_state: '',
-          council_number: '',
-        }));
-      }
-    }
-  }, [customerState.success]);
+  //     if (customerState.data._id) {
+  //       dispatch(createUserAction({
+  //         ...userData,
+  //         customer_id: customerState.data._id,
+  //         name: state.name || ``,
+  //         fiscal_number: state.fiscal_number || ``,
+  //         birthdate: '',
+  //         gender: '',
+  //         national_id: '',
+  //         issuing_organ: '',
+  //         mother_name: '',
+  //         nationality: '',
+  //         address: state.address,
+  //         email: state.email || ``,
+  //         phone: state.cellphone || ``,
+  //         cellphone: state.cellphone || ``,
+  //         user_type_id: '6025b77d83576e461426786a',
+  //         council_state: '',
+  //         council_number: '',
+  //       }));
+  //     }
+  //   }
+  // }, [customerState.success]);
 
   // useEffect(() => {
   //   if (!params.id && userState.success && !userState.error && !userState.loading) {
@@ -235,10 +236,14 @@ export default function CustomerForm(props: RouteComponentProps<IPageParams>) {
   }, [customerState.errorCep]);
 
   const handleSaveFormCustomer = useCallback(() => {
-    if (params.id) {
+    console.log(state);
+    if (params.id && ModifiCondition()) {
       dispatch(updateCustomerRequest(state));
-    } else {
-      dispatch(createCustomerRequest(state));
+      history.push("/customer");
+    }else if(!params.id && ModifiCondition()){
+       dispatch(createCustomerRequest(state));
+    }else{
+      history.push("/customer");
     }
   }, [state, params]);
 
@@ -258,9 +263,7 @@ export default function CustomerForm(props: RouteComponentProps<IPageParams>) {
   }, [state.address.postal_code]);
 
   function isEquals(){
-    //let areaS = {...areaState.data, form:{...state.form}};
-    console.log(state);
-    console.log(customerState.data);
+
     return _.isEqual(state,customerState.data);
   }
   function ModifiCondition(){
@@ -292,7 +295,7 @@ export default function CustomerForm(props: RouteComponentProps<IPageParams>) {
     <Sidebar>
       {customerState.loading && <Loading />}
       <Container>
-      {userState.success ? (
+      {customerState.success? (
           <FeedbackComponent
             type="success"
             title="Cadastro concluído!"
@@ -300,17 +303,17 @@ export default function CustomerForm(props: RouteComponentProps<IPageParams>) {
             buttons
             successAction={() => {
               dispatch(cleanAction());
-              history.push('/user/create');
+              history.push('/custumer/create');
             }}
             defaultAction={() => {
               dispatch(cleanAction());
-              history.push('/user');
+              history.push('/customer');
             }}
           />):(
 <BoxCustom style={{  marginTop: 0 }} mt={5} paddingLeft={15} paddingRight={15} paddingTop={8}>
           <FormSection>
           <FormContent>
-            <FormTitle>Cadastro de Clientes</FormTitle>
+            <FormTitle>Cadastro de Cliente</FormTitle>
             <FormGroupSection>
               <Grid container>
                 <Grid item md={12} xs={12}>
@@ -529,7 +532,7 @@ export default function CustomerForm(props: RouteComponentProps<IPageParams>) {
                       variant="outlined"
                       size="small"
                       // value={state.cellphone}
-                      // onChange={(element) => setState({ ...state, cellphone: element.target.value })}
+                     //  onChange={(element) => setState({ ...state, cellphone: element.target.value })}
                       placeholder="00000-0000"
                       fullWidth
                     />
@@ -550,8 +553,8 @@ export default function CustomerForm(props: RouteComponentProps<IPageParams>) {
                 <Grid item md={4} xs={12}>
                   <InputMask
                     mask="(99) 9999-9999"
-                    value={state.phones?.number}
-                    onChange={(element) => setState({ ...state, phones: { ...state.phones, number: element.target.value } })}
+                    value={state.phone}
+                    onChange={(element) => setState({ ...state, phone: element.target.value  })}
                   >
                     {(inputProps: any) => (
                       <TextField
@@ -560,8 +563,8 @@ export default function CustomerForm(props: RouteComponentProps<IPageParams>) {
                         label="Telefone"
                         variant="outlined"
                         size="small"
-                         value={state.phones?.number}
-                       //  onChange={(element) => setState({ ...state, phones: { ...state.phones, number: element.target.value } })}
+                       //  value={state.phones}
+                        // onChange={(element) => setState({ ...state, phone: element.target.value } )}
                         placeholder="0000-0000"
                         fullWidth
                       />

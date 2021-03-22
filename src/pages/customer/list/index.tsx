@@ -24,8 +24,9 @@ import {
   ListItemSubTitle,
   FormSearch,
   ButtonsContent,
+  ItemTable
 } from './styles';
-import { ItemTable } from '../../area/list/styles';
+
 import { formatDate } from '../../../helpers/date';
 import { BoxCustom } from '../form/styles';
 

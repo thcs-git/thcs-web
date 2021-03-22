@@ -3,6 +3,7 @@ import { CustomerState, CustomerTypes } from "./types";
 
 export const INITIAL_STATE: CustomerState = {
   data: {
+    active: true,
     _id: "",
     name: "",
     social_name: "",
@@ -25,6 +26,7 @@ export const INITIAL_STATE: CustomerState = {
     },
     responsible_user: "",
     cellphone: "",
+    phone: "",
   },
   list: {
     data: [],
