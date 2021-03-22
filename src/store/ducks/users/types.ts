@@ -33,7 +33,12 @@ export enum UserTypes {
 /**
  * Data types
  */
-
+export interface Phones {
+  _id: string;
+  number: string;
+  whatapp: string;
+  telegram: string;
+}
 export interface SpecialtiesUserInterface {
   _id: string;
   name: string;

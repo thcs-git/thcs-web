@@ -46,7 +46,7 @@ import mask from '../../../utils/mask';
 import Loading from '../../../components/Loading';
 import { validateCNPJ as validateCNPJHelper } from '../../../helpers/validateCNPJ';
 import _ from 'lodash';
-
+import FeedbackComponent from '../../../components/Feedback';
 interface IPageParams {
   id?: string;
 }
@@ -189,13 +189,14 @@ export default function CustomerForm(props: RouteComponentProps<IPageParams>) {
     }
   }, [customerState.success]);
 
-  useEffect(() => {
-    if (!params.id && userState.success && !userState.error && !userState.loading) {
-      history.push("/customer");
-    }
-  }, [userState.success]);
+  // useEffect(() => {
+  //   if (!params.id && userState.success && !userState.error && !userState.loading) {
+  //     history.push("/customer");
+  //   }
+  // }, [userState.success]);
 
   useEffect(() => {
+    console.log(state.phones);
     const field = customerState.errorCep ? 'input-postal-code' : 'input-address-number';
 
     customerState.errorCep && setState(prevState => ({
@@ -272,7 +273,22 @@ export default function CustomerForm(props: RouteComponentProps<IPageParams>) {
     <Sidebar>
       {customerState.loading && <Loading />}
       <Container>
-        <BoxCustom style={{  marginTop: 0 }} mt={5} paddingLeft={15} paddingRight={15} paddingTop={8}>
+      {userState.success ? (
+          <FeedbackComponent
+            type="success"
+            title="Cadastro concluído!"
+            description="Os dados foram salvos no sistema. Deseja adicionar novo cadastro?"
+            buttons
+            successAction={() => {
+              dispatch(cleanAction());
+              history.push('/user/create');
+            }}
+            defaultAction={() => {
+              dispatch(cleanAction());
+              history.push('/user');
+            }}
+          />):(
+<BoxCustom style={{  marginTop: 0 }} mt={5} paddingLeft={15} paddingRight={15} paddingTop={8}>
           <FormSection>
           <FormContent>
             <FormTitle>Cadastro de Clientes</FormTitle>
@@ -525,8 +541,8 @@ export default function CustomerForm(props: RouteComponentProps<IPageParams>) {
                         label="Telefone"
                         variant="outlined"
                         size="small"
-                        // value={state.phones?.number}
-                        // onChange={(element) => setState({ ...state, phones: { ...state.phones, number: element.target.value } })}
+                         value={state.phones?.number}
+                       //  onChange={(element) => setState({ ...state, phones: { ...state.phones, number: element.target.value } })}
                         placeholder="0000-0000"
                         fullWidth
                       />
@@ -577,6 +593,8 @@ export default function CustomerForm(props: RouteComponentProps<IPageParams>) {
             </DialogActions>
           </Dialog>
         </BoxCustom>
+          )}
+
       </Container>
     </Sidebar>
   );
