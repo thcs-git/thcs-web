@@ -47,6 +47,8 @@ import Loading from '../../../components/Loading';
 import { validateCNPJ as validateCNPJHelper } from '../../../helpers/validateCNPJ';
 import _ from 'lodash';
 import FeedbackComponent from '../../../components/Feedback';
+import validator from 'validator';
+import { Autocomplete } from '@material-ui/lab';
 interface IPageParams {
   id?: string;
 }
@@ -57,14 +59,56 @@ export default function CustomerForm(props: RouteComponentProps<IPageParams>) {
 
   const customerState = useSelector((state: ApplicationState) => state.customers);
   const userState = useSelector((state: ApplicationState) => state.users);
-
+  const [inputPhone,setInputPhone] = useState({value:"",error:false});
+  const [inputCellPhone, setInputCellPhone] = useState({value:"",error:false});
   const [openModalCancel, setOpenModalCancel] = useState(false);
   const { params } = props.match;
 
-  const [validates, setVlidates] = useState({
+  const [fieldsValidation, setFieldValidations] = useState({
+    name:false,
+    social_name:false,
     fiscal_number: false,
-  });
+    postal_code:false,
+    street:false,
+    number:false,
+    district:false,
+    city:false,
+    state:false,
+    complement:false,
+    responsible_user:false,
+    email:false,
+    phone:false
 
+  });
+  const States = [
+    {id:1,name:"São Paulo",sigla:'SP'},
+    {id:2,name:'Paraná',sigla:'PR'},
+    {id:3,name:'Santa Catarina',sigla:'SC'},
+    {id:4,name:'Rio Garnde do Sul',sigla:'RS'},
+    {id:5,name:'Mato Grosso do Sul',sigla:'MS'},
+    {id:6,name:'Rondônia',sigla:'RO'},
+    {id:7,name:'Acre',sigla:'AC'},
+    {id:8,name:'Amazonas',sigla:'AM'},
+    {id:9,name:'Roraima',sigla:'RR'},
+    {id:10,name:'Pará',sigla:'PA'},
+    {id:11,name:'Amapá',sigla:'AP'},
+    {id:12,name:'Tocantins',sigla:'TO'},
+    {id:13,name:'Maranhão',sigla:'MA'},
+    {id:14,name:'Rio Grande do Norte',sigla:'RN'},
+    {id:15,name:'Paraíba',sigla:'PB'},
+    {id:16,name:'Pernambuco',sigla:'PE'},
+    {id:17,name:'Alagoas',sigla:'AL'},
+    {id:18,name:'Sergipe',sigla:'SE'},
+    {id:19,name:'Bahia',sigla:'BA'},
+    {id:20,name:'Minas Gerais',sigla:'MG'},
+    {id:21,name:'Rio de Janeiro',sigla:'RJ'},
+    {id:22,name:'Mato Grosso',sigla:'MT'},
+    {id:23,name:'Goiás',sigla:'GO'},
+    {id:24,name:'Distrito Federal',sigla:'DF'},
+    {id:25,name:'Piauí',sigla:'PI'},
+    {id:26,name:'Ceará',sigla:'CE'},
+    {id:27,name:'Espírito Santo',sigla:'ES'}
+  ];
   const [state, setState] = useState<CustomerInterface>({
     name: '',
     social_name:'',
@@ -90,34 +134,34 @@ export default function CustomerForm(props: RouteComponentProps<IPageParams>) {
     active: true
   });
 
-  const [userData, setUserData] = useState<UserInterface>({
-    companies: [], //empresa que vai vir do login
-    name: '',
-    birthdate: '',
-    gender: '',
-    national_id: '',
-    issuing_organ: '',
-    fiscal_number: '',
-    mother_name: '',
-    nationality: '',
-    address: {
-      postal_code: '',
-      street: '',
-      number: '',
-      district: '',
-      city: '',
-      state: '',
-      complement: '',
-    },
-    email: '',
-    phone: '',
-    cellphone: '',
-    user_type_id: '',
-    specialties: [],
-    council_state: '',
-    council_number: '',
-    active: true,
-  });
+  // const [userData, setUserData] = useState<UserInterface>({
+  //   companies: [], //empresa que vai vir do login
+  //   name: '',
+  //   birthdate: '',
+  //   gender: '',
+  //   national_id: '',
+  //   issuing_organ: '',
+  //   fiscal_number: '',
+  //   mother_name: '',
+  //   nationality: '',
+  //   address: {
+  //     postal_code: '',
+  //     street: '',
+  //     number: '',
+  //     district: '',
+  //     city: '',
+  //     state: '',
+  //     complement: '',
+  //   },
+  //   email: '',
+  //   phone: '',
+  //   cellphone: '',
+  //   user_type_id: '',
+  //   specialties: [],
+  //   council_state: '',
+  //   council_number: '',
+  //   active: true,
+  // });
 
   useEffect(() => {
     dispatch(cleanAction());
@@ -125,9 +169,38 @@ export default function CustomerForm(props: RouteComponentProps<IPageParams>) {
 
   useEffect(() => {
     if (params.id) {
-      setState(customerState.data);
+      setState(prevState=>{
+        return{
+          ...prevState,
+          ...customerState.data
+        }
+        });
+        setInputPhone(prev =>({
+          ...prev,
+          value:customerState.data.phone || ''
+        }));
+        setInputCellPhone(prev =>({
+          ...prev,
+          value:customerState.data.cellphone || ''
+        }));
+
+      // setFieldValidations({
+      //   name:false,
+      //   social_name:true,
+      //   fiscal_number:true,
+      //   postal_code:true,
+      //   street: true,
+      //   number: true,
+      //   district: true,
+      //   city: true,
+      //   state: true,
+      //   complement: true,
+      //   responsible_user:true,
+      //   email:true,
+      //   phone:true
+      // })
     }
-  }, [customerState]);
+  }, [customerState, params.id]);
 
   useEffect(() => {
     if (customerState.error) {
@@ -156,6 +229,11 @@ export default function CustomerForm(props: RouteComponentProps<IPageParams>) {
     });
   }, [customerState.data.address]);
 
+  // useEffect(()=>{
+  //   setInputPhone(prevState=>({
+
+  //   }))
+  // });
 
   useEffect(() => {
     if (params.id) {
@@ -197,9 +275,7 @@ export default function CustomerForm(props: RouteComponentProps<IPageParams>) {
   // }, [userState.success]);
 
   useEffect(() => {
-    console.log(state.phones);
     const field = customerState.errorCep ? 'input-postal-code' : 'input-address-number';
-
     customerState.errorCep && setState(prevState => ({
       ...prevState,
       address: {
@@ -212,13 +288,11 @@ export default function CustomerForm(props: RouteComponentProps<IPageParams>) {
         street: '',
       }
     }));
-
     document.getElementById(field)?.focus();
   }, [customerState.errorCep]);
 
   useEffect(() => {
     const field = customerState.errorCep ? 'input-postal-code' : 'input-address-number';
-
     customerState.errorCep && setState(prevState => ({
       ...prevState,
       address: {
@@ -236,8 +310,8 @@ export default function CustomerForm(props: RouteComponentProps<IPageParams>) {
   }, [customerState.errorCep]);
 
   const handleSaveFormCustomer = useCallback(() => {
-    console.log(state);
     if (params.id && ModifiCondition()) {
+      console.log(state);
       dispatch(updateCustomerRequest(state));
       history.push("/customer");
     }else if(!params.id && ModifiCondition()){
@@ -247,16 +321,123 @@ export default function CustomerForm(props: RouteComponentProps<IPageParams>) {
     }
   }, [state, params]);
 
+   /////////////// Handler ////////////
+   function handlerState(value:any){
+    if(value?.sigla){
+      setState({...state, address: { ...state.address, state:value.sigla ||"" }});
+    }
+   }
+  ///////// Validação ////////////////
   const validateCNPJField = useCallback((element) => {
-    const isValidField = validateCNPJHelper(element.target.value) || false;
-
-    console.log(isValidField);
-    setVlidates(prevState => ({
+  const isValidField = validateCNPJHelper(element.target.value) || false;
+    setFieldValidations(prevState => ({
       ...prevState,
       fiscal_number: !isValidField
     }));
 
   }, []);
+  const validationNameField = useCallback((element) =>{
+    const isValidField = validator.isEmpty(element.target.value);
+
+    setFieldValidations(prevState =>({
+      ...prevState,
+      name:isValidField
+    }));
+  },[]);
+
+  const validationSocialNameField = useCallback((element) =>{
+    const isValidField = validator.isEmpty(element.target.value);
+    setFieldValidations(prevState =>({
+      ...prevState,
+      social_name:isValidField
+    }));
+  },[]);
+
+  const validationPostalCodeField = useCallback((element) =>{
+    const isValidField = validator.isEmpty(element.target.value);
+    console.log(isValidField);
+    setFieldValidations(prevState =>({
+      ...prevState,
+      postal_code:isValidField
+    }));
+  },[]);
+
+  const validationStreetField = useCallback((element) =>{
+    const isValidField = validator.isEmpty(element.target.value);
+    console.log(isValidField);
+    setFieldValidations(prevState =>({
+      ...prevState,
+      street:isValidField
+    }));
+  },[]);
+
+  const validationNumberField = useCallback((element) =>{
+    const isValidField = validator.isEmpty(element.target.value);
+    setFieldValidations(prevState =>({
+      ...prevState,
+      number:isValidField
+    }));
+  },[]);
+
+  const validationDistrictField = useCallback((element) =>{
+    const isValidField = validator.isEmpty(element.target.value);
+    setFieldValidations(prevState =>({
+      ...prevState,
+      district:isValidField
+    }));
+  },[]);
+
+  const validationCityField = useCallback((element) =>{
+    const isValidField = validator.isEmpty(element.target.value);
+    setFieldValidations(prevState =>({
+      ...prevState,
+      city:isValidField
+    }));
+  },[]);
+
+  const validationStateField = useCallback((element) =>{
+    const isValidField = validator.isEmpty(element.target.value);
+    setFieldValidations(prevState =>({
+      ...prevState,
+      state:isValidField
+    }));
+  },[]);
+
+  const validationResponsableField = useCallback((element) =>{
+    const isValidField = validator.isEmpty(element.target.value);
+    setFieldValidations(prevState =>({
+      ...prevState,
+      responsible_user:isValidField
+    }));
+  },[]);
+
+  const validationPhoneField = useCallback((element) =>{
+    setInputPhone(prevState =>({
+      ...prevState,
+      error:validator.isEmpty(element.target.value)
+    }));
+
+
+  },[]);
+
+  const validationCellPhoneField = useCallback((element) =>{
+    const isValidField = validator.isEmpty(element.target.value);
+    setInputCellPhone(prevState =>({
+      ...prevState,
+      error:isValidField
+    }));
+  },[]);
+
+  const validationEmailField = useCallback((element) =>{
+    const isValidField = validator.isEmpty(element.target.value);
+    console.log(isValidField);
+    setFieldValidations(prevState =>({
+      ...prevState,
+      email:isValidField
+    }));
+  },[]);
+
+/////////////// Validação /////////////////////
 
   const getAddress = useCallback(() => {
     dispatch(getAddressAction(state.address.postal_code));
@@ -291,6 +472,7 @@ export default function CustomerForm(props: RouteComponentProps<IPageParams>) {
     history.push('/customer');
   }
 
+
   return (
     <Sidebar>
       {customerState.loading && <Loading />}
@@ -310,7 +492,7 @@ export default function CustomerForm(props: RouteComponentProps<IPageParams>) {
               history.push('/customer');
             }}
           />):(
-<BoxCustom style={{  marginTop: 0 }} mt={5} paddingLeft={15} paddingRight={15} paddingTop={8}>
+        <BoxCustom style={{  marginTop: 0 }} mt={5} paddingLeft={15} paddingRight={15} paddingTop={8}>
           <FormSection>
           <FormContent>
             <FormTitle>Cadastro de Cliente</FormTitle>
@@ -322,8 +504,11 @@ export default function CustomerForm(props: RouteComponentProps<IPageParams>) {
                       label="Nome"
                       variant="outlined"
                       size="small"
+                      onBlur={validationNameField}
                       value={state.name}
                       onChange={(element) => setState({ ...state, name: element.target.value })}
+                      error={fieldsValidation.name}
+                      helperText={fieldsValidation.name? 'Por Favor, insira um nome válido':null}
                       fullWidth
                     />
                   </Grid>
@@ -335,6 +520,9 @@ export default function CustomerForm(props: RouteComponentProps<IPageParams>) {
                       size="small"
                       value={state.social_name}
                       onChange={(element) => setState({ ...state, social_name: element.target.value })}
+                      onBlur={validationSocialNameField}
+                      error={fieldsValidation.social_name}
+                      helperText={fieldsValidation.social_name? 'Por favor insira um nome válido':null}
                       fullWidth
                     />
                   </Grid>
@@ -354,8 +542,8 @@ export default function CustomerForm(props: RouteComponentProps<IPageParams>) {
                           label="CNPJ"
                           variant="outlined"
                           size="small"
-                          error={validates.fiscal_number}
-                          helperText={validates.fiscal_number ? `CNPJ inválido ou inexistente` : null}
+                          error={fieldsValidation.fiscal_number}
+                          helperText={fieldsValidation.fiscal_number ? `CNPJ inválido ou inexistente` : null}
                           // value={state.fiscal_number}
                           // onChange={(element) => setState({ ...state, fiscal_number: element.target.value })}
                           placeholder="00.000.000/0000-00"
@@ -429,7 +617,6 @@ export default function CustomerForm(props: RouteComponentProps<IPageParams>) {
                 </Grid>
 
                 <Grid item md={9} xs={12}>
-
                   <TextField
                     id="input-address"
                     label="Endereço"
@@ -437,6 +624,9 @@ export default function CustomerForm(props: RouteComponentProps<IPageParams>) {
                     size="small"
                     value={state.address.street}
                     onChange={(element) => setState({ ...state, address: { ...state.address, street: element.target.value } })}
+                    onBlur={validationStreetField}
+                    error={fieldsValidation.street}
+                    helperText={fieldsValidation.street?'Por favor insira uma rua ou avenida':null}
                     fullWidth
                   />
                 </Grid>
@@ -448,6 +638,9 @@ export default function CustomerForm(props: RouteComponentProps<IPageParams>) {
                     variant="outlined"
                     size="small"
                     value={state.address.number}
+                    onBlur={validationNumberField}
+                    error={fieldsValidation.number}
+                    helperText={fieldsValidation.number?'Por favor insira uma número válido':null}
                     onChange={(element) => setState({ ...state, address: { ...state.address, number: element.target.value } })}
                     fullWidth
                   />
@@ -472,11 +665,13 @@ export default function CustomerForm(props: RouteComponentProps<IPageParams>) {
                     variant="outlined"
                     size="small"
                     value={state.address.district}
+                    onBlur={validationDistrictField}
+                    error={fieldsValidation.district}
+                    helperText={fieldsValidation.district?'Por favor inserir um bairro válido':null}
                     onChange={(element) => setState({ ...state, address: { ...state.address, district: element.target.value } })}
                     fullWidth
                   />
                 </Grid>
-
                 <Grid item md={6} xs={12}>
                   <TextField
                     id="input-city"
@@ -484,11 +679,29 @@ export default function CustomerForm(props: RouteComponentProps<IPageParams>) {
                     variant="outlined"
                     size="small"
                     value={state.address.city}
+                    onBlur={validationCityField}
+                    error={fieldsValidation.city}
+                    helperText={fieldsValidation.city?'Por favor insira uma cidade válida':null}
                     onChange={(element) => setState({ ...state, address: { ...state.address, city: element.target.value } })}
                     fullWidth
                   />
                 </Grid>
-
+                <Grid item md={2} xs={12}>
+                  <Autocomplete
+                    id="combo-box-neigthborhoods-states"
+                    options={States || []}
+                    getOptionLabel={(option) => option.sigla}
+                    fullWidth
+                    defaultValue={States.find(v =>v.sigla[0] )}
+                    onChange={(element, value:any) =>{
+                      handlerState(value);
+                    }}
+                    renderInput={(params) =>
+                      <TextField {...params} value={state.address.state} label="UF" variant="outlined" size="small"/>
+                    }
+                //  onBlur={handleStateValidator} helperText={inputState.error && "Selecione um estado válido"} />}
+                  />
+                </Grid>
                 <Grid item md={2} xs={12}>
                   <TextField
                     id="input-address-uf"
@@ -496,16 +709,17 @@ export default function CustomerForm(props: RouteComponentProps<IPageParams>) {
                     variant="outlined"
                     size="small"
                     value={state.address.state}
+                    onBlur={validationStateField}
+                    error={fieldsValidation.state}
+                    helperText={fieldsValidation.state?"Por favor insira um estado válido":null}
                     onChange={(element) => setState({ ...state, address: { ...state.address, state: element.target.value } })}
                     fullWidth
                   />
                 </Grid>
 
-
             <Grid item md={12} xs={12}>
                 <Divider style={{ marginBottom: 28, marginTop: 20 }} />
             </Grid>
-
               <Grid item md={8} xs={12}>
                 <TextField
                   id="input-responsible-name"
@@ -513,27 +727,32 @@ export default function CustomerForm(props: RouteComponentProps<IPageParams>) {
                   variant="outlined"
                   size="small"
                   value={state.responsible_user}
+                  onBlur={validationResponsableField}
+                  error={fieldsValidation.responsible_user}
+                  helperText={fieldsValidation.responsible_user?'Por Favor insira um resposável':null}
                   onChange={(element) => setState({ ...state, responsible_user: element.target.value })}
                   fullWidth
                 />
               </Grid>
-
               <Grid item md={4} xs={12}>
                 <InputMask
                   mask="(99) 9 9999-9999"
-                  value={state.cellphone}
-                  onChange={(element) => setState({ ...state, cellphone: element.target.value })}
+                  value={inputPhone.value}
+                  onChange={(element) => setInputPhone({ ...inputPhone, value: element.target.value })}
+                  onBlur={validationPhoneField}
                 >
                   {(inputProps: any) => (
                     <TextField
                       {...inputProps}
                       id="input-cellphone"
-                      label="Celular"
+                      label="Telefone"
                       variant="outlined"
                       size="small"
-                      // value={state.cellphone}
-                     //  onChange={(element) => setState({ ...state, cellphone: element.target.value })}
+                      // value={state.phone}
+                      //  onChange={(element) => setState({ ...state, cellphone: element.target.value })}
                       placeholder="00000-0000"
+                      error={inputPhone.error}
+                      helperText={inputPhone.error?'Por favor insira um telefone':null}
                       fullWidth
                     />
                   )}
@@ -546,6 +765,9 @@ export default function CustomerForm(props: RouteComponentProps<IPageParams>) {
                   variant="outlined"
                   size="small"
                   value={state.email}
+                  onBlur={validationEmailField}
+                  error={fieldsValidation.email}
+                  helperText={fieldsValidation.email?"Por Favor insira um email válido":null}
                   onChange={(element) => setState({ ...state, email: element.target.value })}
                   fullWidth
                 />
@@ -553,17 +775,17 @@ export default function CustomerForm(props: RouteComponentProps<IPageParams>) {
                 <Grid item md={4} xs={12}>
                   <InputMask
                     mask="(99) 9999-9999"
-                    value={state.phone}
-                    onChange={(element) => setState({ ...state, phone: element.target.value  })}
+                    value={inputCellPhone.value}
+                    onChange={(element) => setInputCellPhone({ ...inputCellPhone, value: element.target.value })}
                   >
                     {(inputProps: any) => (
                       <TextField
                         {...inputProps}
                         id="input-phone"
-                        label="Telefone"
+                        label="Celular"
                         variant="outlined"
                         size="small"
-                       //  value={state.phones}
+                        // value={state.phones}
                         // onChange={(element) => setState({ ...state, phone: element.target.value } )}
                         placeholder="0000-0000"
                         fullWidth
@@ -572,14 +794,14 @@ export default function CustomerForm(props: RouteComponentProps<IPageParams>) {
                   </InputMask>
 
                 </Grid>
-                    <Grid>
-                      <FormControlLabel  control={ <Switch checked={state.active} color="primary" onChange={(event) => {
-                          setState(prevState => ({
-                            ...prevState,
-                            active: event.target.checked
-                          }))}}></Switch>} label="Ativo?"
+                  <Grid style={{ paddingRight:15}}>
+                    <FormControlLabel  control={ <Switch checked={state.active} color="primary" onChange={(event) => {
+                      setState(prevState => ({
+                        ...prevState,
+                        active: event.target.checked
+                      }))}}></Switch>} label="Ativo?"
                      ></FormControlLabel>
-                    </Grid>
+                  </Grid>
               </Grid>
             </FormGroupSection>
           </FormContent>

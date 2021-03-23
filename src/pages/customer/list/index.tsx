@@ -34,18 +34,13 @@ export default function CustomerList() {
   const history = useHistory();
   const dispatch = useDispatch();
   const customerState = useSelector((state: ApplicationState) => state.customers);
+  const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const [search, setSearch] = useState('');
 
   useEffect(() => {
     dispatch(loadRequest());
   }, [])
 
-  const [customers, setCustomers] = useState([
-    { id: 1, name: 'customer 1', fiscalNumber: '00.000.000/0000-00', active: true },
-    { id: 2, name: 'customer 2', fiscalNumber: '00.000.000/0000-00', active: false },
-  ]);
-
-  const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
 
   const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
     setAnchorEl(event.currentTarget);
@@ -92,7 +87,7 @@ export default function CustomerList() {
               {name:"",align:"center"}
             ]}>
               {customerState.list.data.map((customer, index) => (
-                <TableRow key={`customes_${index}`}>
+                <TableRow key={`customer_${index}`}>
                   <TableCell align="left">
                     <ItemTable>
                       <ListLink key={customer._id} to={`/customer/${customer._id}/edit`}>
@@ -162,8 +157,6 @@ export default function CustomerList() {
               search
             }))}
           />
-
-
         </BoxCustom>
 
         </Container>
