@@ -637,6 +637,31 @@ export default function CustomerForm(props: RouteComponentProps<IPageParams>) {
                       fullWidth
                     />
                   </Grid>
+<<<<<<< HEAD
+=======
+                <Grid item md={12} xs={12}>
+                  <TextField
+                    id="input-social-name"
+                    label="Nome Social"
+                    variant="outlined"
+                    size="small"
+                    value={state.social_name}
+                    onChange={(element) => setState({ ...state, social_name: element.target.value })}
+                    fullWidth
+                  />
+                </Grid>
+                <Grid item md={7} xs={12}>
+                  <TextField
+                    id="input-fantasy-name"
+                    label="Nome Fantasia"
+                    variant="outlined"
+                    size="small"
+                    value={state.fantasy_name}
+                    onChange={(element) => setState({ ...state, fantasy_name: element.target.value })}
+                    fullWidth
+                  />
+                </Grid>
+>>>>>>> [SOLL-4] Added fields to form
 
                   <Grid item md={7} xs={12}>
                     <TextField
@@ -854,6 +879,7 @@ export default function CustomerForm(props: RouteComponentProps<IPageParams>) {
                   variant="outlined"
                   size="small"
                   value={state.responsible_user}
+<<<<<<< HEAD
               // onBlur={validationResponsableField}
                   error={!fieldsValidation.responsible_user}
                   helperText={!fieldsValidation.responsible_user?'Por Favor insira um resposável':null}
@@ -861,6 +887,9 @@ export default function CustomerForm(props: RouteComponentProps<IPageParams>) {
                   setState({ ...state, responsible_user: element.target.value })
                   setFieldValidations((prevState: any) => ({ ...prevState, responsible_user: !validator.isEmpty(element.target.value) }));} }
 
+=======
+                  onChange={(element) => setState({ ...state, responsible_user: element.target.value })}
+>>>>>>> [SOLL-4] Added fields to form
                   fullWidth
                 />
               </Grid>
