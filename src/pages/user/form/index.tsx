@@ -1056,7 +1056,10 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
                             id="combo-box-especialty"
                             options={specialties}
                             getOptionLabel={(option) => option.name}
-                            renderInput={(params) => <TextField {...params} label="Especialidade" variant="outlined" />}
+                            renderInput={(params: any) => {
+                              params.inputProps.value = '';
+                              return <TextField {...params} label="Especialidade" variant="outlined" />
+                            }}
                             size="small"
                             onChange={(event, value) => {
                               if (value) {
