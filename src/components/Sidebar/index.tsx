@@ -12,6 +12,7 @@ import List from '@material-ui/core/List';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import Divider from '@material-ui/core/Divider';
 import IconButton from '@material-ui/core/IconButton';
+import EditIcon from '@material-ui/icons/Edit';
 import MenuIcon from '@material-ui/icons/Menu';
 import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
 import ListItem from '@material-ui/core/ListItem';
@@ -203,7 +204,11 @@ const Sibebar = (props: Props<any>) => {
             <br />
             <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', }}>
               <BusinessIcon />
-              <h4 style={{ color: '#ffffff', marginLeft: 10 }}>{company.name}</h4>
+
+              <ListItem style={{ padding: 0 }} className={classes.logOutButton} onClick={() => setOpenModalConfig(true)}>
+                <h4 style={{ color: '#ffffff', marginLeft: 10 }}>{company.name}</h4>
+                <EditIcon style={{ color: '#fff', fontSize: '14px', marginLeft: '5px' }}  />
+              </ListItem>
             </div>
           </div>
         </UserContent>

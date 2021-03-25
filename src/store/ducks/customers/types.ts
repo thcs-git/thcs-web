@@ -31,7 +31,9 @@ export enum CustomerTypes {
 export interface CustomerInterface {
   _id?: string;
   name?: string;
+  social_name?: string;
   fantasy_name?: string;
+  responsible_user?: string;
   fiscal_number?: string;
   address: {
     _id?: string;

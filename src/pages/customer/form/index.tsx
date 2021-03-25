@@ -66,7 +66,9 @@ export default function CustomerForm(props: RouteComponentProps<IPageParams>) {
 
   const [state, setState] = useState<CustomerInterface>({
     name: '',
+    social_name: '',
     fantasy_name: '',
+    responsible_user: '',
     fiscal_number: '',
     address: {
       postal_code: '',
@@ -279,8 +281,8 @@ export default function CustomerForm(props: RouteComponentProps<IPageParams>) {
                     label="Nome Social"
                     variant="outlined"
                     size="small"
-                    value={state.name}
-                    onChange={(element) => setState({ ...state, name: element.target.value })}
+                    value={state.social_name}
+                    onChange={(element) => setState({ ...state, social_name: element.target.value })}
                     fullWidth
                   />
                 </Grid>
@@ -462,8 +464,8 @@ export default function CustomerForm(props: RouteComponentProps<IPageParams>) {
                   label="Nome do responsável"
                   variant="outlined"
                   size="small"
-                  value={state.name}
-                  onChange={(element) => setState({ ...state, name: element.target.value })}
+                  value={state.responsible_user}
+                  onChange={(element) => setState({ ...state, responsible_user: element.target.value })}
                   fullWidth
                 />
               </Grid>
