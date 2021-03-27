@@ -1,9 +1,5 @@
 import styled, { css } from 'styled-components';
-import FullCalendar, { EventClickArg, EventApi, EventInput, EventAddArg } from '@fullcalendar/react';
-import dayGridPlugin from '@fullcalendar/daygrid';
-import timeGridPlugin from '@fullcalendar/timegrid';
-import interactionPlugin from '@fullcalendar/interaction';
-import ptBrLocale from '@fullcalendar/core/locales/pt-br';
+import { List } from '@material-ui/core';
 
 interface IEventStatus {
   color: 'complete' | 'late' | 'future' | 'visiting';
@@ -132,5 +128,17 @@ export const CalendarContent = styled.div`
     background-color: #EFF1F2 !important;
     border-color: #EFF1F2 !important;
     color: var(--secondary) !important;
+  }
+`;
+
+export const HeaderContent = styled.div`
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+`;
+
+export const ResumeList = styled(List)`
+  & svg {
+    color: var(--secondary);
   }
 `;

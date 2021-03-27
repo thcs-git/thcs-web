@@ -138,5 +138,5 @@ export const createScheduleSuccess = (data: any) => action(CareTypes.CREATE_SCHE
 export const updateScheduleRequest = (params: any) => action(CareTypes.UPDATE_SCHEDULE_REQUEST, { ...params });
 export const updateScheduleSuccess = (data: any) => action(CareTypes.UPDATE_SCHEDULE_SUCCESS, { data });
 
-export const deleteScheduleRequest = (id: string) => action(CareTypes.DELETE_SCHEDULE_REQUEST, { id });
+export const deleteScheduleRequest = (id: string, type?: string) => action(CareTypes.DELETE_SCHEDULE_REQUEST, { id, type });
 export const deleteScheduleSuccess = (data: any) => action(CareTypes.DELETE_SCHEDULE_SUCCESS, { data });

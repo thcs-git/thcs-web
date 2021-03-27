@@ -1,11 +1,20 @@
 import dayjs from 'dayjs';
 import utc from 'dayjs/plugin/utc';
 import timezone from 'dayjs/plugin/timezone';
+import updateLocale from 'dayjs/plugin/updateLocale';
 
-dayjs.extend(utc)
-dayjs.extend(timezone)
+dayjs.extend(utc);
+dayjs.extend(timezone);
+dayjs.extend(updateLocale);
 
 dayjs.tz.setDefault("America/Sao_Paulo");
+
+dayjs.updateLocale('pt-BR', {
+  weekdays: [
+    'Domingo', 'Segunda-Feira', 'Terça-Feira', 'Quarta-Feira', 'Quinta-Feira', 'Sexta-Feira', 'Sábado'
+  ]
+});
+
 
 const daysOfWeek = ['Domingo', 'Segunda-Feira', 'Terça-Feira', 'Quarta-Feira', 'Quinta-Feira', 'Sexta-Feira', 'Sábado'];
 
@@ -21,7 +30,7 @@ export const getDayOfTheWeekName = (dayOfTheWeek: number) => {
 }
 
 export const formatDate = (value: any, format: string) => {
-  return dayjs(value).format(format);
+  return dayjs(value).tz("America/Sao_Paulo").format(format);
 }
 
 export const formatToISOString = (value: any) => {

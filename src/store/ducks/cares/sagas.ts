@@ -2,6 +2,8 @@ import { put, call } from 'redux-saga/effects';
 import { toast } from 'react-toastify';
 import { AxiosResponse } from 'axios';
 
+import LOCALSTORAGE from '../../../helpers/constants/localStorage';
+
 import {
   loadSuccess,
   loadFailure, createCareSuccess,
@@ -418,6 +420,7 @@ export function* getSchedule({ payload }: any) {
 
 export function* storeSchedule({ payload }: any) {
   try {
+    delete payload.exchange;
     const { data }: AxiosResponse = yield call(apiSollar.post, `/schedule/store`, { ...payload });
 
     yield put(createScheduleSuccess(data));
@@ -435,8 +438,12 @@ export function* updateSchedule({ payload }: any) {
   try {
     const { _id, ...scheduleData } = payload;
 
-    console.log('_id', _id);
-    console.log('scheduleData', scheduleData);
+    scheduleData.user_id = scheduleData.user_id._id;
+
+    if (scheduleData.exchange) {
+      scheduleData.exchange.created_at = new Date;
+      scheduleData.exchange.created_by = localStorage.getItem(LOCALSTORAGE.USER_ID);
+    }
 
     const { data }: AxiosResponse = yield call(apiSollar.put, `/schedule/${_id}/update`, { ...scheduleData });
 
@@ -453,7 +460,7 @@ export function* updateSchedule({ payload }: any) {
 
 export function* deleteSchedule({ payload }: any) {
   try {
-    const { data }: AxiosResponse = yield call(apiSollar.delete, `/schedule/${payload.id}/delete`);
+    const { data }: AxiosResponse = yield call(apiSollar.delete, `/schedule/${payload.id}/delete`, { params: { type: payload?.type } });
 
     yield put(deleteScheduleSuccess(data));
 
