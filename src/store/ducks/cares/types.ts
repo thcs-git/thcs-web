@@ -189,16 +189,27 @@ export interface CareState {
 
 //========
 export interface ScheduleInterface {
-  attendance_id: string;
+  attendance_id?: string;
   user_id: string | UserSimpleDataInterface;
+  type?: string;
   start_at?: string;
   end_at?: string;
+  days_interval_repeat?: number;
+  repeat_stop_at?: string;
+  exchange?: {
+    type?: string;
+    exchanged_to?: string | UserSimpleDataInterface | null;
+    description?: string;
+    vacation_end?: string;
+    created_at?: string;
+    created_by?: string | UserSimpleDataInterface;
+  },
   description?: string;
-  active: boolean;
+  active?: boolean;
   created_at?: string;
-  created_by?: string;
+  created_by?: string | UserSimpleDataInterface;
   canceled_at?: string;
-  canceled_by?: string;
+  canceled_by?: string | UserSimpleDataInterface;
 }
 
 export interface UserSimpleDataInterface {

@@ -24,6 +24,7 @@ const background: any = {
   `,
   danger: css`
     background: #e04848;
+    color: var(--white);
     &:hover {
       background: #a43d3d;
     }
@@ -86,7 +87,7 @@ const ButtonComponent = styled(Button)`
   text-transform: capitalize;
 
   & svg {
-    margin-right: 10px;
+    /* margin-right: 10px; */
 
     &.primary {
       color: var(--primary);
