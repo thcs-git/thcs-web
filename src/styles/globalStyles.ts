@@ -44,6 +44,10 @@ export default createGlobalStyle`
     font-size: 14px !important;
   }
 
+  .MuiTypography-colorError {
+    color: var(--danger);
+  }
+
   :root {
     --primary: #16679A;
     --primary-foccus:#7AC7D8;
