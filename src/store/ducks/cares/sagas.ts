@@ -4,8 +4,6 @@ import { AxiosResponse } from "axios";
 
 import LOCALSTORAGE from "../../../helpers/constants/localStorage";
 
-import LOCALSTORAGE from "../../../helpers/constants/localStorage";
-
 import {
   loadSuccess,
   loadFailure,

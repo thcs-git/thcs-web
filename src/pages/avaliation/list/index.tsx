@@ -141,9 +141,8 @@ export default function AvaliationList() {
   };
 
   const handleChangeFiles = async (element: React.ChangeEvent<HTMLInputElement>) => {
-    console.log(element.target.value);
-    let arquivo = element.target.value.split('.');
-    console.log(arquivo);
+
+    const files = element.target.files;
 
     if (!element) {
       setFile(prevState=>({
@@ -151,32 +150,31 @@ export default function AvaliationList() {
         error:false
       }))
       return;
-
     }else{
-      console.log(arquivo[1]);
-      if( arquivo[1]=='pdf'){
-        setFile(prevState=>({
-          ...prevState,
-          error:false
-        }))
-      }else{
-        setFile(prevState=>({
+        if(files && files?.length >0){
+          console.log(files[0]);
+           if(files[0].type == 'application/pdf'){
+            setFile(prevState=>({
+              ...prevState,
+              error:false
+            }))
+          }else{
+             setFile(prevState=>({
           ...prevState,
           error:true
         }))
-      }
-
+          }
+        }
     }
-
-    const files = element.target.files;
 
     if (files && files?.length > 0) {
       const fileData: any = await readFile(files[0]);
-
-      setCaptureStatus(prevState => ({
+      if(!file.error){
+           setCaptureStatus(prevState => ({
         ...prevState,
         attachment: fileData
       }));
+      }
     }
   };
 
@@ -367,9 +365,7 @@ export default function AvaliationList() {
               <DialogContentText tabIndex={-1}>Anexar Guia de Autorização</DialogContentText>
                 <TextField
                 error={file.error}
-                onChange={()=>{
-                  handleChangeFiles
-                }}
+                onChange={handleChangeFiles}
                 helperText={file.error?"Aquivo não compatível":null}
                 type='file'>
                 </TextField>
