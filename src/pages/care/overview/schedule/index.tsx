@@ -656,7 +656,7 @@ export default function SchedulePage(props: RouteComponentProps<IPageParams>) {
           <>
             <DialogTitle id="scroll-dialog-title">
               <strong>
-                Agendamento - {formatDate(schedule.day, 'DD/MM/YYYY')} ({getDayOfTheWeekName(parseInt(formatDate(schedule.day, 'd')))})
+                Agendamento - {formatDate(schedule.day, 'DD/MM/YYYY')} ({formatDate(schedule.day, 'dddd')})
               </strong>
             </DialogTitle>
 
@@ -705,7 +705,7 @@ export default function SchedulePage(props: RouteComponentProps<IPageParams>) {
                       id="event-date"
                       type="date"
                       size="small"
-                      label="Data de início e fim do evento:"
+                      label="Data início do evento:"
                       variant="outlined"
                       InputLabelProps={{
                         shrink: true,
@@ -720,7 +720,7 @@ export default function SchedulePage(props: RouteComponentProps<IPageParams>) {
               </Grid>
 
 
-              <p>Defina os horários de início e fim do turno:</p>
+              <p>Defina o horário do atendimento:</p>
               <br />
 
               <Grid container>
@@ -914,23 +914,28 @@ export default function SchedulePage(props: RouteComponentProps<IPageParams>) {
                   />
                 </ListItem>
 
-                <ListItem key="resume_type">
-                  <ListItemIcon>
-                    <IconPlantao style={{ marginLeft: '.35rem' }} />
-                  </ListItemIcon>
-                  <ListItemText
-                    primary={schedule.type}
-                  />
-                </ListItem>
+                {schedule.type && (
+                  <ListItem key="resume_type">
+                    <ListItemIcon>
+                      <IconPlantao style={{ marginLeft: '.35rem' }} />
+                    </ListItemIcon>
+                    <ListItemText
+                      primary={schedule.type}
+                    />
+                  </ListItem>
+                )}
 
-                <ListItem key="resume_description">
-                  <ListItemIcon>
-                    <CommentRoundedIcon />
-                  </ListItemIcon>
-                  <ListItemText
-                    primary={schedule?.data?.description || ''}
-                  />
-                </ListItem>
+                {schedule?.data?.description && (
+                  <ListItem key="resume_description">
+                    <ListItemIcon>
+                      <CommentRoundedIcon />
+                    </ListItemIcon>
+                    <ListItemText
+                      primary={schedule?.data?.description}
+                    />
+                  </ListItem>
+
+                )}
               </ResumeList>
 
 
