@@ -333,12 +333,13 @@ export default function CustomerForm(props: RouteComponentProps<IPageParams>) {
     let isValid: boolean = true;
     let valida = Object.values(fieldsValidation);
     let teste = valida.find(valor=>valor === false);
-    console.log(teste);
+
     for (let key of Object.keys(fieldsValidation)) {
       if (!fieldsValidation[key]) {
         isValid = false;
       }
     }
+  },[]);
 
   useEffect(() => {
     const field = customerState.errorCep ? 'input-postal-code' : 'input-address-number';
@@ -398,7 +399,7 @@ export default function CustomerForm(props: RouteComponentProps<IPageParams>) {
   }, [customerState.errorCep]);
 
   const handleSaveFormCustomer = useCallback(() => {
-    console.log(!handleValidateFields());
+
     if (!fieldsValidation.name) {
       toast.error('Existem campos que precisam ser preenchidos para continuar');
       return;
