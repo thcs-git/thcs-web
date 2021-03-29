@@ -115,6 +115,7 @@ export default function SchedulePage(props: RouteComponentProps<IPageParams>) {
     { title: 'Mensalmente', interval: 30 },
   ]);
   const [removeType, setRemoveType] = useState<string>('');
+
   const [exchangeType, setExchangeType] = useState<string>('');
   const [canEdit, setCanEdit] = useState<boolean>(true);
   const [canExchange, setCanExchange] = useState<boolean>(false);
@@ -229,14 +230,16 @@ export default function SchedulePage(props: RouteComponentProps<IPageParams>) {
   }
 
   const handleAddEvent = useCallback((event: any) => {
-
+    console.log(event);
     if (schedule.day && schedule?.start_at && schedule?.end_at) {
-
+          console.log(schedule.day);
+          console.log(schedule.start_at);
       const startAt = dayjs(schedule.day).startOf('day').format('YYYY-MM-DD');
+      console.log(startAt);
       const endAt = dayjs(schedule.day).startOf('day').format('YYYY-MM-DD');
 
       if (schedule?.data?._id) {
-
+          console.log(schedule.day);
         const startAt = dayjs(schedule.day).startOf('day').format('YYYY-MM-DD');
         const endAt = dayjs(schedule.day).startOf('day').format('YYYY-MM-DD');
 
@@ -253,13 +256,24 @@ export default function SchedulePage(props: RouteComponentProps<IPageParams>) {
               start: `${startAt}T${schedule.start_at}:00`,
               end: `${endAt}T${schedule.end_at}:00`,
             };
+            console.log(eventCopy[key]);
           }
+
         });
 
         setEvents(eventCopy);
+        console.log(events);
+        setSchedule(prevState=>({
+         ...prevState,
+         _id: data._id,
+         attendance_id: params.id,
+         start_at: `${startAt}T${schedule.start_at}:00`,
+         end_at: `${endAt}T${schedule.end_at}:00`,
+        }));
 
+        console.log(schedule);
         dispatch(updateScheduleAction({
-          ...scheduleData,
+          ...schedule,
           _id: data._id,
           attendance_id: params.id,
           start_at: `${startAt}T${schedule.start_at}:00`,
@@ -300,6 +314,8 @@ export default function SchedulePage(props: RouteComponentProps<IPageParams>) {
     }
 
   }, [schedule, events]);
+
+
 
   const handleRemoveEvent = useCallback(() => {
     eventSelected?.event.remove();
@@ -662,7 +678,7 @@ export default function SchedulePage(props: RouteComponentProps<IPageParams>) {
 
             <DialogContent>
 
-              <p>Para iniciar o agendamento de um evento, selecione a categoria:</p>
+              <p>Para iniciar o agendamento de um evento, selecione o profissional:</p>
               <br />
 
               <FieldContent>
