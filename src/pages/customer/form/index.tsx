@@ -112,7 +112,7 @@ export default function CustomerForm(props: RouteComponentProps<IPageParams>) {
   ];
   const [state, setState] = useState<IFormFields>({
     name: '',
-
+    social_name:'',
     fiscal_number: '',
     address: {
       postal_code: '',
