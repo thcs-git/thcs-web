@@ -665,7 +665,6 @@ export default function AreaForm(props: RouteComponentProps<IPageParams>) {
                             onChange={(event: any, newValue) => {
                               handleDayOfTheWeek(event, newValue);
                             }}
-
                             size="small"
                             fullWidth
                           />
