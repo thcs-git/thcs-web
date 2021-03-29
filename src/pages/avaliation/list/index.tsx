@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useCallback, ChangeEvent } from 'react';
 import { useHistory, Link } from 'react-router-dom';
-import { Container, Button, Menu, MenuItem, Dialog, DialogTitle, DialogContent, DialogContentText, DialogActions, RadioGroup, FormControlLabel, Radio, InputLabel, Tooltip, TableRow, TableCell } from '@material-ui/core';
+import { Container, Button, Menu, MenuItem, Dialog, DialogTitle, DialogContent, DialogContentText, DialogActions, RadioGroup, FormControlLabel, Radio, InputLabel, Tooltip, TableRow, TableCell, TextField } from '@material-ui/core';
 import { FiberManualRecord, ErrorOutline, MoreVert, Check as CheckIcon } from '@material-ui/icons';
 import debounce from 'lodash.debounce';
 
@@ -34,6 +34,7 @@ export default function AvaliationList() {
   const careState = useSelector((state: ApplicationState) => state.cares);
 
   const [search, setSearch] = useState('');
+  const [file,setFile] = useState({error:false});
   const [captureStatus, setCaptureStatus] = useState<ICaptureStatus>({
     care: {},
     approved: '',
@@ -140,8 +141,31 @@ export default function AvaliationList() {
   };
 
   const handleChangeFiles = async (element: React.ChangeEvent<HTMLInputElement>) => {
+    console.log(element.target.value);
+    let arquivo = element.target.value.split('.');
+    console.log(arquivo);
+
     if (!element) {
+      setFile(prevState=>({
+        ...prevState,
+        error:false
+      }))
       return;
+
+    }else{
+      console.log(arquivo[1]);
+      if( arquivo[1]=='pdf'){
+        setFile(prevState=>({
+          ...prevState,
+          error:false
+        }))
+      }else{
+        setFile(prevState=>({
+          ...prevState,
+          error:true
+        }))
+      }
+
     }
 
     const files = element.target.files;
@@ -335,9 +359,20 @@ export default function AvaliationList() {
                 </RadioGroup>
               </FieldContent>
 
-              <FieldContent>
+              {/* <FieldContent>
                 <DialogContentText tabIndex={-1}>Anexar Guia de Autorização</DialogContentText>
                 <input type="file" accept="application/pdf" onChange={handleChangeFiles} />
+              </FieldContent> */}
+              <FieldContent>
+              <DialogContentText tabIndex={-1}>Anexar Guia de Autorização</DialogContentText>
+                <TextField
+                error={file.error}
+                onChange={()=>{
+                  handleChangeFiles
+                }}
+                helperText={file.error?"Aquivo não compatível":null}
+                type='file'>
+                </TextField>
               </FieldContent>
 
               <FieldContent>
