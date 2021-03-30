@@ -153,7 +153,7 @@ export default function AvaliationList() {
     }else{
         if(files && files?.length >0){
           console.log(files[0]);
-           if(files[0].type == 'application/pdf'){
+           if(files[0].type == 'application/pdf' && files[0].size < 300000 ){
             setFile(prevState=>({
               ...prevState,
               error:false
@@ -363,10 +363,11 @@ export default function AvaliationList() {
               </FieldContent> */}
               <FieldContent>
               <DialogContentText tabIndex={-1}>Anexar Guia de Autorização</DialogContentText>
+              <DialogContentText>Arquivos .pdf e menores que 3 megabytes.</DialogContentText>
                 <TextField
                 error={file.error}
                 onChange={handleChangeFiles}
-                helperText={file.error?"Aquivo não compatível":null}
+                helperText={file.error?"Aquivo não compatível ou muito grande":null}
                 type='file'>
                 </TextField>
               </FieldContent>

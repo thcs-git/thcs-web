@@ -1,17 +1,17 @@
 {
   "files": {
-    "main.js": "/static/js/main.e3960def.chunk.js",
-    "main.js.map": "/static/js/main.e3960def.chunk.js.map",
-    "runtime-main.js": "/static/js/runtime-main.2fea4799.js",
-    "runtime-main.js.map": "/static/js/runtime-main.2fea4799.js.map",
+    "main.js": "/static/js/main.bf21cf89.chunk.js",
+    "main.js.map": "/static/js/main.bf21cf89.chunk.js.map",
+    "runtime-main.js": "/static/js/runtime-main.c46bfc35.js",
+    "runtime-main.js.map": "/static/js/runtime-main.c46bfc35.js.map",
     "static/css/2.dc7070d3.chunk.css": "/static/css/2.dc7070d3.chunk.css",
-    "static/js/2.00972735.chunk.js": "/static/js/2.00972735.chunk.js",
-    "static/js/2.00972735.chunk.js.map": "/static/js/2.00972735.chunk.js.map",
-    "static/js/3.8be7b973.chunk.js": "/static/js/3.8be7b973.chunk.js",
-    "static/js/3.8be7b973.chunk.js.map": "/static/js/3.8be7b973.chunk.js.map",
+    "static/js/2.03df077c.chunk.js": "/static/js/2.03df077c.chunk.js",
+    "static/js/2.03df077c.chunk.js.map": "/static/js/2.03df077c.chunk.js.map",
+    "static/js/3.81f80ccd.chunk.js": "/static/js/3.81f80ccd.chunk.js",
+    "static/js/3.81f80ccd.chunk.js.map": "/static/js/3.81f80ccd.chunk.js.map",
     "index.html": "/index.html",
     "static/css/2.dc7070d3.chunk.css.map": "/static/css/2.dc7070d3.chunk.css.map",
-    "static/js/2.00972735.chunk.js.LICENSE.txt": "/static/js/2.00972735.chunk.js.LICENSE.txt",
+    "static/js/2.03df077c.chunk.js.LICENSE.txt": "/static/js/2.03df077c.chunk.js.LICENSE.txt",
     "static/media/afericao-paciente.db96394f.svg": "/static/media/afericao-paciente.db96394f.svg",
     "static/media/cadastro-paciente.bba35b50.svg": "/static/media/cadastro-paciente.bba35b50.svg",
     "static/media/captacao-paciente.c976172b.svg": "/static/media/captacao-paciente.c976172b.svg",
@@ -21,20 +21,21 @@
     "static/media/icon-equipe-medica.8b60f73c.svg": "/static/media/icon-equipe-medica.8b60f73c.svg",
     "static/media/icon-medicacao.948385a3.svg": "/static/media/icon-medicacao.948385a3.svg",
     "static/media/icon-plano-internacoes.6e0e3ddc.svg": "/static/media/icon-plano-internacoes.6e0e3ddc.svg",
+    "static/media/icon-plantao.609ffa1b.svg": "/static/media/icon-plantao.609ffa1b.svg",
     "static/media/icon-profile.5e50ddaf.svg": "/static/media/icon-profile.5e50ddaf.svg",
     "static/media/icon-prontuario.6f42daba.svg": "/static/media/icon-prontuario.6f42daba.svg",
     "static/media/icon-status.740a568f.svg": "/static/media/icon-status.740a568f.svg",
     "static/media/icon-ultimos-procedimentos.4f50376b.svg": "/static/media/icon-ultimos-procedimentos.4f50376b.svg",
     "static/media/ilustracao-avaliacao-concluida.2249b05d.svg": "/static/media/ilustracao-avaliacao-concluida.2249b05d.svg",
+    "static/media/loading-sollar.c4d05bf1.svg": "/static/media/loading-sollar.c4d05bf1.svg",
     "static/media/marca-sollar-azul.cd90a1b8.svg": "/static/media/marca-sollar-azul.cd90a1b8.svg",
     "static/media/marca-sollar-branca.3767f6aa.svg": "/static/media/marca-sollar-branca.3767f6aa.svg",
-    "static/media/no-data.25cb842e.svg": "/static/media/no-data.25cb842e.svg",
-    "static/media/sollar-loading.1f37ea7e.gif": "/static/media/sollar-loading.1f37ea7e.gif"
+    "static/media/no-data.25cb842e.svg": "/static/media/no-data.25cb842e.svg"
   },
   "entrypoints": [
-    "static/js/runtime-main.2fea4799.js",
+    "static/js/runtime-main.c46bfc35.js",
     "static/css/2.dc7070d3.chunk.css",
-    "static/js/2.00972735.chunk.js",
-    "static/js/main.e3960def.chunk.js"
+    "static/js/2.03df077c.chunk.js",
+    "static/js/main.bf21cf89.chunk.js"
   ]
 }
