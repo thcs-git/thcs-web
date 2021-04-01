@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { useHistory, RouteComponentProps } from 'react-router-dom';
-import { Container, StepLabel, Radio, RadioGroup, FormControlLabel } from '@material-ui/core';
+import { Container, StepLabel, Radio, RadioGroup, FormControlLabel, IconButton, Popover } from '@material-ui/core';
+import { Help as HelpIcon } from '@material-ui/icons';
 
 import { useDispatch, useSelector } from 'react-redux';
 import { ApplicationState } from '../../../../store';
@@ -37,6 +38,9 @@ export default function Nead(props: RouteComponentProps<IPageParams>) {
 
   const careState = useSelector((state: ApplicationState) => state.cares);
   const { documentGroupNead: documentGroupState, documentNead: documentState } = careState;
+
+  const [anchorHelpPopover, setHelpPopover] = React.useState<HTMLButtonElement | null>(null);
+  const openHelpPopover = Boolean(anchorHelpPopover);
 
   const [steps, setSteps] = useState([
     { title: 'Escore de Katz', score: { total: 0, complexity: '', status: '' } },
@@ -306,6 +310,14 @@ export default function Nead(props: RouteComponentProps<IPageParams>) {
     setCurrentStep(step)
   }, [currentStep]);
 
+  const handleClickHelpPopover = (event: React.MouseEvent<HTMLButtonElement>) => {
+    setHelpPopover(event.currentTarget);
+  };
+
+  const handleCloseHelpPopover = () => {
+    setHelpPopover(null);
+  };
+
   return (
     <Sidebar>
       {careState.loading && <Loading />}
@@ -317,8 +329,60 @@ export default function Nead(props: RouteComponentProps<IPageParams>) {
             <PatientCard patient={care.patient_id} />
           </>
         )}
+        <div style={{ display: 'flex', alignItems: 'center', flexDirection: 'row', marginBottom: 40 }}>
+          <FormTitle style={{ margin: 0 }}>Tabela de avaliação para planejamento de atenção domiciliar</FormTitle>
+          <IconButton aria-describedby={'popover_help_abemid'} onClick={handleClickHelpPopover} style={{ marginLeft: 10 }}>
+              <HelpIcon style={{ color: "#ccc" }} />
+            </IconButton >
+            <Popover
+              id={'popover_help_abemid'}
+              open={openHelpPopover}
+              anchorEl={anchorHelpPopover}
+              onClose={handleCloseHelpPopover}
+              anchorOrigin={{
+                vertical: 'bottom',
+                horizontal: 'center',
+              }}
+              transformOrigin={{
+                vertical: 'top',
+                horizontal: 'left',
+              }}
+            >
+              <div
+                style={{ paddingTop: 20, paddingLeft: 30, paddingBottom: 20, paddingRight: 30, maxWidth: 500, listStylePosition: 'inside', textAlign: 'justify' }}>
+                <p>Regra:</p>
+                <br />
+                <ul>
+                  <li>GRUPO 1 – ELEGIBILIDADE</li>
+                  <p>Se responder <b>NÃO</b> a qualquer uma das questões, considerar contraindicar Atenção Domiciliar</p>
+                  <br />
 
-        <FormTitle>Tabela de avaliação para planejamento de atenção domiciliar</FormTitle>
+                  <li>GRUPO 2 – CRITÉRIOS PARA INDICAÇÃO IMEDIATA DE INTERNAÇÃO DOMICILIAR</li>
+                  <p>Para indicação de Planejamento de Atenção Domiciliar (P.A.D.), considerar a maior complexidade assinalada, ainda que uma única vez.</p>
+                  <br />
+
+                  <li>GRUPO 3 – CRITÉRIOS DE APOIO PARA INDICAÇÃO DE PLANEJAMENTO DE ATENÇÃO DOMICILIAR</li>
+                  <p>A resposta da pergunta três deve vir preenchida conforme o resultado da classificação do KATZ</p>
+                  <br />
+
+                  <li>Até 5 Pontos - Considerar procedimentos pontuais exclusivos ou outros programas:</li>
+                  <p>( ) Curativos  ( ) Medicações Parenterais ( ) Outros Programas</p>
+                  <br />
+
+                  <li>De 6 a 11 Pontos - Considerar Atendimento Domiciliar Multiprofissional (inclui procedimentos pontuais, desde que não exclusivos)</li>
+                  <br />
+
+                  <li>De 12 a 17 Pontos - Considerar Internação Domiciliar 12h</li>
+                  <br />
+
+                  <li>18 ou mais Pontos - Considerar Internação Domiciliar 24h</li>
+                  <br />
+                </ul>
+              </div>
+            </Popover>
+
+          </div>
+
         <StepperComponent activeStep={currentStep} alternativeLabel>
           {steps.map((step, index) => (
             <StepComponent key={`${step}_${index}`} onClick={() => handleNavigateStep(index)}>
