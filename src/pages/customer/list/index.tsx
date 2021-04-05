@@ -6,7 +6,7 @@ import { MoreVert, SearchOutlined } from '@material-ui/icons';
 import debounce from 'lodash.debounce';
 import Table from '../../../components/Table';
 import { ApplicationState } from '../../../store';
-import { loadRequest, searchRequest } from '../../../store/ducks/customers/actions';
+import { loadRequest, searchRequest, cleanAction } from '../../../store/ducks/customers/actions';
 import Sidebar from '../../../components/Sidebar';
 
 import PaginationComponent from '../../../components/Pagination';
@@ -29,26 +29,25 @@ import {
 
 import { formatDate } from '../../../helpers/date';
 import { BoxCustom } from '../form/styles';
+import { CustomerInterface } from '../../../store/ducks/customers/types';
 
 export default function CustomerList() {
   const history = useHistory();
   const dispatch = useDispatch();
   const customerState = useSelector((state: ApplicationState) => state.customers);
+
+  const [customers, setCustomers] = useState<CustomerInterface[]>([]);
+
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
+
   const [search, setSearch] = useState('');
 
   useEffect(() => {
+    dispatch(cleanAction());
     dispatch(loadRequest());
   }, [])
 
 
-  const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
-    setAnchorEl(event.currentTarget);
-  };
-
-  const handleClose = () => {
-    setAnchorEl(null);
-  };
 
   const handleCloseRowMenu = useCallback(()=>{
     setAnchorEl(null);
@@ -70,7 +69,7 @@ export default function CustomerList() {
       {customerState.loading && <Loading />}
       <Sidebar>
         <Container>
-        <BoxCustom style={{  marginTop: 0 }} mt={5} paddingLeft={15} paddingRight={15} paddingTop={8}>
+
            <FormTitle>Lista de Clientes</FormTitle>
 
           <SearchComponent
@@ -87,7 +86,7 @@ export default function CustomerList() {
               {name:"",align:"center"}
             ]}>
               {customerState.list.data.map((customer, index) => (
-                <TableRow key={`customer_${index}`}>
+                <TableRow key={`patient_${index}`}>
                   <TableCell align="left">
                     <ItemTable>
                       <ListLink key={customer._id} to={`/customer/${customer._id}/edit`}>
@@ -99,18 +98,18 @@ export default function CustomerList() {
                   <TableCell align="left"><ListItemStatus active={customer.active}>{customer.active ? 'Ativo' : 'Inativo'}</ListItemStatus></TableCell>
                   <TableCell align="left">{formatDate(customer.created_at, 'DD/MM/YYYY HH:mm:ss')}</TableCell>
                   <TableCell align='center' style={{width:'10px'}}>
-                  <Button   aria-controls={`customer-menu${index}`} id={`btn_customer-menu${index}`} aria-haspopup="true" onClick={handleOpenRowMenu}>
+                  <Button   aria-controls={`patient-menu${index}`} id={`btn_patient-menu${index}`} aria-haspopup="true" onClick={handleOpenRowMenu}>
                     <MoreVert  style={{ color: '#0899BA' }}/>
                   </Button>
                   <Menu
-                    id={`customer-menu${index}`}
+                    id={`patient-menu${index}`}
                     anchorEl={anchorEl}
                     keepMounted
-                    open={anchorEl?.id === `btn_customer-menu${index}`}
+                    open={anchorEl?.id === `btn_patient-menu${index}`}
                     onClose={handleCloseRowMenu}
                   >
                     <MenuItem onClick={() => history.push(`/customer/${customer._id}/edit`)}>Editar</MenuItem>
-                    <MenuItem onClick={() => history.push(`/customer/${customer._id}/view`)}>Visualizar</MenuItem>
+                    <MenuItem onClick={() => history.push(`/customer/${customer._id}/edit`)}>Visualizar</MenuItem>
                   </Menu>
                   </TableCell>
                 </TableRow>
@@ -157,7 +156,7 @@ export default function CustomerList() {
               search
             }))}
           />
-        </BoxCustom>
+
 
         </Container>
       </Sidebar>

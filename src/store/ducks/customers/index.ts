@@ -1,3 +1,4 @@
+import { registerUnconfirmedUserRequest } from "./../unconfirmeduser/actions";
 import { Reducer } from "redux";
 import { CustomerState, CustomerTypes } from "./types";
 
@@ -43,14 +44,17 @@ export const INITIAL_STATE: CustomerState = {
 const reducer: Reducer<CustomerState> = (state = INITIAL_STATE, action) => {
   switch (action.type) {
     case CustomerTypes.LOAD_REQUEST:
-      return { ...state, loading: true };
+      return {
+        ...state,
+        loading: true,
+        error: false,
+        success: false,
+      };
     case CustomerTypes.LOAD_SUCCESS:
       return {
         ...state,
-        data: INITIAL_STATE.data,
         list: action.payload.data,
         loading: false,
-        success: true,
       };
     case CustomerTypes.LOAD_SUCCESS_BY_ID:
       return {
@@ -58,6 +62,7 @@ const reducer: Reducer<CustomerState> = (state = INITIAL_STATE, action) => {
         data: action.payload.data,
         loading: false,
         success: false,
+        list: INITIAL_STATE.list,
       };
     case CustomerTypes.LOAD_FAILURE:
       return {
@@ -65,12 +70,7 @@ const reducer: Reducer<CustomerState> = (state = INITIAL_STATE, action) => {
         loading: false,
         error: true,
         success: false,
-        list: {
-          data: [],
-          limit: "10",
-          page: "1",
-          total: 0,
-        },
+        list: INITIAL_STATE.list,
       };
     case CustomerTypes.LOAD_FAILURE_CEP:
       return {
@@ -85,63 +85,7 @@ const reducer: Reducer<CustomerState> = (state = INITIAL_STATE, action) => {
           total: 0,
         },
       };
-    case CustomerTypes.LOAD_FAILURE_CEP:
-      return {
-        ...state, loading: false, errorCep: true, success: true,
-        list: {
-          data: [],
-          limit: '10',
-          page: '1',
-          total: 0
-        }
-      };
-    case CustomerTypes.LOAD_FAILURE_CEP:
-      return {
-        ...state, loading: false, errorCep: true, success: true,
-        list: {
-          data: [],
-          limit: '10',
-          page: '1',
-          total: 0
-        }
-      };
-    case CustomerTypes.LOAD_FAILURE_CEP:
-      return {
-        ...state, loading: false, errorCep: true, success: true,
-        list: {
-          data: [],
-          limit: '10',
-          page: '1',
-          total: 0
-        }
-      };
-    case CustomerTypes.LOAD_FAILURE_CEP:
-      return {
-        ...state, loading: false, errorCep: true, success: true,
-        list: {
-          data: [],
-          limit: '10',
-          page: '1',
-          total: 0
-        }
-      };
-    case CustomerTypes.LOAD_FAILURE_CEP:
-      return {
-        ...state, loading: false, errorCep: true, success: true,
-        list: {
-          data: [],
-          limit: '10',
-          page: '1',
-          total: 0
-        }
-      };
-    case CustomerTypes.CREATE_CUSTOMER_REQUEST:
-      return {
-        ...state,
-        loading: true,
-        error: false,
-        success: false,
-      };
+
     case CustomerTypes.CREATE_CUSTOMER_SUCCESS:
       return {
         ...state,
@@ -149,6 +93,7 @@ const reducer: Reducer<CustomerState> = (state = INITIAL_STATE, action) => {
         loading: false,
         error: false,
         success: true,
+        isRegistrationCompleted: true,
       };
     case CustomerTypes.UPDATE_CUSTOMER_SUCCESS:
       return {

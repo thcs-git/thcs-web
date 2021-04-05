@@ -363,7 +363,7 @@ export default function AvaliationList() {
               </FieldContent> */}
               <FieldContent>
               <DialogContentText tabIndex={-1}>Anexar Guia de Autorização</DialogContentText>
-              <DialogContentText>Arquivos .pdf e menores que 3 megabytes.</DialogContentText>
+              <DialogContentText>Arquivos .pdf e menores que 1 gigabytes.</DialogContentText>
                 <TextField
                 error={file.error}
                 onChange={handleChangeFiles}

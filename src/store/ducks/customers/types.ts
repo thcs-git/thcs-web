@@ -91,6 +91,7 @@ export interface CustomerState {
   error: boolean;
   success: boolean;
   errorCep?: boolean;
+  isRegistrationCompleted?: boolean;
 }
 
 export type LoadRequestParams = Partial<Omit<CustomerList, "data">>;
