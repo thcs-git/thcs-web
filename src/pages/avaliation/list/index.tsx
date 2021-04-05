@@ -153,7 +153,7 @@ export default function AvaliationList() {
     }else{
         if(files && files?.length >0){
           console.log(files[0]);
-           if(files[0].type == 'application/pdf' && files[0].size < 300000 ){
+           if(files[0].type == 'application/pdf' && files[0].size < 10000000 ){
             setFile(prevState=>({
               ...prevState,
               error:false

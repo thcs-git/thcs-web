@@ -59,6 +59,7 @@ import {
 import Box from '@material-ui/core/Box';
 import Typography from '@material-ui/core/Typography';
 import { loadSuccess } from '../../../store/ducks/areas/actions';
+import { objectValues } from 'react-toastify/dist/utils';
 
 interface IFormFields {
   bloodType: string | null,
@@ -211,13 +212,18 @@ export default function PatientForm(props: RouteComponentProps<IPageParams>) {
   }, [state.blood_type]);
 
   const selectPatientArea = useCallback(() => {
-    const selected = areaState.list.data.filter(item => {
+    if(canEdit){
+
+    }else{
+       const selected = areaState.list.data.filter(item => {
       if (typeof state?.area_id === 'object') {
         return item._id === state?.area_id._id
       }
     });
 
     return (selected[0]) ? selected[0] : null;
+    }
+
   }, [state.area_id, areaState]);
 
   function handleOpenModalCancel() {
@@ -613,7 +619,7 @@ export default function PatientForm(props: RouteComponentProps<IPageParams>) {
                           getOptionLabel={(option) => option.name}
                           renderInput={(params) => <TextField {...params} label="Área" variant="outlined" />}
                           size="small"
-                          value={selectPatientArea()}
+                         // value={selectPatientArea()}
                           onChange={(element, value) => setState({ ...state, area_id: value?._id })}
                           getOptionSelected={(option, value) => option._id === state?.area_id}
                           noOptionsText="Nenhum resultado encontrado"
@@ -642,12 +648,11 @@ export default function PatientForm(props: RouteComponentProps<IPageParams>) {
                           <InputMask
                             mask="(99) 9999-9999"
                             value={state.phones[0]?.number}
-                            onBlur={getAddress}
+                            //onBlur={getAddress}
                             onChange={(element) => {
                               setState(prevState => ({
                                 ...prevState,
                                 phones: [
-                                  ...prevState.phones,
                                   {
                                     ...prevState.phones[0],
                                     number: element.target.value
@@ -673,12 +678,11 @@ export default function PatientForm(props: RouteComponentProps<IPageParams>) {
                           <InputMask
                             mask="(99) 9 9999-9999"
                             value={state.phones[0]?.cellnumber}
-                            onBlur={getAddress}
+                           // onBlur={getAddress}
                             onChange={(element) => {
                               setState(prevState => ({
                                 ...prevState,
                                 phones: [
-                                  ...prevState.phones,
                                   {
                                     ...prevState.phones[1],
                                     cellnumber: element.target.value
