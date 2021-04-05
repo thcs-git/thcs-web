@@ -157,7 +157,7 @@ export default function AreaList() {
                     onClose={handleCloseRowMenu}
                   >
                     <MenuItem onClick={() => history.push(`/area/${area._id}/edit/edit`)}>Editar</MenuItem>
-                    <MenuItem onClick={() => history.push(`/area/${area._id}/view/view`)}>Visualizar</MenuItem>
+                    <MenuItem onClick={() => history.push(`/area/${area._id}/edit/edit`)}>Visualizar</MenuItem>
                   </Menu>
                 </TableCell>
               </TableRow>

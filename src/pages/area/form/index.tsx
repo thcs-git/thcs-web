@@ -46,6 +46,7 @@ import {
 import validateName from '../../../utils/validateName';
 import _ from 'lodash';
 import { BoxCustom } from '../../customer/form/styles';
+import { Edit } from '@material-ui/icons';
 
 
 interface IFormFields extends AreaInterface {
@@ -77,6 +78,7 @@ export default function AreaForm(props: RouteComponentProps<IPageParams>) {
   const areaState = useSelector((state: ApplicationState) => state.areas);
   const userState = useSelector((state: ApplicationState) => state.users);
   const professionState = useSelector((state: ApplicationState)=> state.profession);
+  const [canEdit, setCanEdit] = useState(true);
 
   const { params } = props.match;
   const useStyles = makeStyles((theme) => ({
@@ -108,6 +110,12 @@ export default function AreaForm(props: RouteComponentProps<IPageParams>) {
       contrastText: "#fff",
       borderColor:'var(--success)',
     },
+
+    sucess_round:{
+      backgroundColor: 'var(--white)',
+    color: 'var(--success)',
+    border: '1px solid var(--success)'},
+
     tittleChip:{
       paddingTop:'1rem'
 
@@ -212,6 +220,7 @@ export default function AreaForm(props: RouteComponentProps<IPageParams>) {
   useEffect(() => {
     console.log(params);
     if (params.id) {
+      setCanEdit(false)
       dispatch(loadAreaById(params.id));
       const dayOfTheWeekSelected = daysOfTheWeek.find(day => day.id === areaState.data.week_day) || null;
 
@@ -585,7 +594,16 @@ export default function AreaForm(props: RouteComponentProps<IPageParams>) {
            <BoxCustom style={{  marginTop: 0 }} mt={5} paddingLeft={15} paddingRight={15} paddingTop={8}>
         <FormSection>
           <FormContent>
+          <div style={{ display: 'flex', alignItems: 'center', flexDirection: 'row' }}>
             <FormTitle>Cadastro de Área</FormTitle>
+
+            {params.id && (
+              <Button style={{ marginTop: -20, marginLeft: 15, color: '#0899BA' }} onClick={() => setCanEdit(!canEdit)}>
+                <Edit style={{ marginRight: 5, width: 18 }} />
+              Editar
+              </Button>
+            )}
+          </div>
             <TabContent>
               <TabNav>
                 <TabNavItem className={currentTab === 0 ? 'active' : ''} onClick={() => goToNextMenu(0)}>
@@ -621,6 +639,7 @@ export default function AreaForm(props: RouteComponentProps<IPageParams>) {
                           }))}
                           onBlur={handleNameValidator}
                           fullWidth
+                          disabled={!canEdit}
                           helperText={inputName.error && "Entre com um nome válido"}
                         />
                       </FormGroupSection>
@@ -640,6 +659,7 @@ export default function AreaForm(props: RouteComponentProps<IPageParams>) {
                             min={1}
                             max={70}
                             valueLabelDisplay="auto"
+                            disabled={!canEdit}
                             onChange={(event, value) =>{
                                handleChangeSupply(value);
 
@@ -667,6 +687,7 @@ export default function AreaForm(props: RouteComponentProps<IPageParams>) {
                             }}
                             size="small"
                             fullWidth
+                            disabled={!canEdit}
                           />
                         </FormGroupSection>
                       </Grid>
@@ -675,7 +696,7 @@ export default function AreaForm(props: RouteComponentProps<IPageParams>) {
 
                     {state?._id && (
                       <Grid item md={12} xs={12}>
-                        <FormControlLabel control={<Switch checked={state.active} onChange={(event) => {
+                        <FormControlLabel control={<Switch checked={state.active} disabled={!canEdit} onChange={(event) => {
                           setState(prevState => ({
                             ...prevState,
                             active: event.target.checked
@@ -696,10 +717,9 @@ export default function AreaForm(props: RouteComponentProps<IPageParams>) {
                           <Autocomplete
                             id="combo-box-neigthborhoods-states"
                             options={States || []}
-                            disabled= {state.neighborhoods[0]? true:false}
+                            disabled= {!canEdit}
                             getOptionLabel={(option) => option.name}
-
-                            renderInput={(params) => <TextField {...params} autoFocus error={inputState.error} label="Estados" variant="outlined"
+                            renderInput={(params) => <TextField   {...params}  autoFocus error={inputState.error} label="Estados" variant="outlined"
                             onBlur={handleStateValidator} helperText={inputState.error && "Selecione um estado válido"} />}
                             onChange={(event,value:any) => {
                               if(value){
@@ -722,16 +742,17 @@ export default function AreaForm(props: RouteComponentProps<IPageParams>) {
                       </Grid>
                     <Grid item md={5} xs={12}>
                       {
-                        !state.neighborhoods[0] && (
+                        (!state.neighborhoods[0])  && (
                           <FormGroupSectionCity >
                         <Autocomplete
                           id="combo-box-neigthborhoods-city"
                           options={areaState.citys || []}
+                          disabled= {!canEdit}
                           onClose={() => {
                             load=false;
                           }}
                           getOptionLabel={(option) => option.name}
-                          renderInput={(params) => <TextField {...params} error={inputCity.error} label="Cidades"  variant="outlined" onBlur={handleCityValidator} InputProps={{
+                          renderInput={(params) => <TextField {...params} disabled= {!canEdit} error={inputCity.error} label="Cidades"  variant="outlined" onBlur={handleCityValidator} InputProps={{
                             ...params.InputProps,
                             endAdornment: (
                               <React.Fragment>
@@ -767,6 +788,7 @@ export default function AreaForm(props: RouteComponentProps<IPageParams>) {
                           onClose={() => {
                             load=false;
                           }}
+                          disabled= {!canEdit}
                           getOptionLabel={(option) => `${option.name}`}
                           renderInput={(params) => <TextField {...params}    error={inputDistrict.error} label="Bairros" variant="outlined"
                           onBlur={handleDistrictValidator}
@@ -790,9 +812,6 @@ export default function AreaForm(props: RouteComponentProps<IPageParams>) {
                       </FormGroupSection>
                     </Grid>
                     <Grid item md={12} xs={12}>
-
-
-
                       <ChipList>
                         {state.neighborhoods.map((item: any, index) => (
                           <Chip
@@ -812,6 +831,7 @@ export default function AreaForm(props: RouteComponentProps<IPageParams>) {
                       <FormGroupSection>
                         <Autocomplete
                           id="combo-box-profession"
+                          disabled= {!canEdit}
                           options={professionState.list.data}
                           getOptionLabel={(option) => option.name}
                           renderInput={(params) => <TextField {...params} label="Funções" variant="outlined" InputProps={{
@@ -839,6 +859,7 @@ export default function AreaForm(props: RouteComponentProps<IPageParams>) {
                       <FormGroupSection>
                         <Autocomplete
                           id="combo-box-users"
+                          disabled= {!canEdit}
                           options={userState.list.data}
                           getOptionLabel={(option) => option.name}
                           renderInput={(params) => <TextField {...params} label="Prestador" variant="outlined" />}
@@ -880,9 +901,15 @@ export default function AreaForm(props: RouteComponentProps<IPageParams>) {
 
           <ButtonsContent>
             <ButtonsContent>
-                 <Button variant="outlined" className={classes.cancel} onClick={() => handleOpenModalCancel()}>
+              {canEdit && (  <Button variant="outlined" className={classes.cancel} onClick={() => handleOpenModalCancel()}>
               Cancelar
-              </Button>
+              </Button>)}
+              {!canEdit && state._id && (
+                <Button variant="outlined"  className={classes.sucess_round} onClick={() => handleCancelForm()}>
+                  Voltar
+                </Button>
+
+              )}
             </ButtonsContent>
 
                   <ButtonsContent>
@@ -898,7 +925,7 @@ export default function AreaForm(props: RouteComponentProps<IPageParams>) {
                       )}
                     </ButtonsContent>
           <ButtonsContent>
-          {(currentTab === 2 || state._id)  && (
+          {((currentTab === 2 && canEdit) || (state._id && canEdit))  && (
                        <Button  variant="contained" background="success" onClick={() => handleSaveFormArea()}>
                         Salvar
 					          </Button>
