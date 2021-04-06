@@ -61,7 +61,7 @@ export default createGlobalStyle`
     --sucess-button-hover:4EC86F0A;
     --success-hover: #4FC66A99;
     --button-hover:#4EC86F0A;
-    --alert:#B00020
+    --alert:#B00020;
     --danger: #FF6565;
     --danger-hover:#FF6568;
     --warning: #f9ca24;
