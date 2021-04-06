@@ -1,36 +1,97 @@
+import { cleanAction } from "./customers/actions";
 import { all, takeLatest } from "redux-saga/effects";
 
 import { AreaTypes } from "./areas/types";
-import { get as getAreas, createArea, updateArea, getAreaById, getDistricts, searchArea } from "./areas/sagas";
+import {
+  get as getAreas,
+  createArea,
+  updateArea,
+  getAreaById,
+  getDistricts,
+  searchArea,
+  getCitys,
+  getDistrict,
+} from "./areas/sagas";
 
 import { LoginTypes } from "./login/types";
 import { doLogin } from "./login/sagas";
 
-import { CustomerTypes } from './customers/types';
-import { get, getCustomerById, getAddress as getAddressCustomer, createCompanyCustomer, updateCompanyCustomer, searchCustomer } from './customers/sagas';
+import { CustomerTypes } from "./customers/types";
+import {
+  get,
+  getCustomerById,
+  getAddress as getAddressCustomer,
+  createCompanyCustomer,
+  updateCompanyCustomer,
+  searchCustomer,
+} from "./customers/sagas";
 
-import { CompanyTypes } from './companies/types';
-import { get as getCompanies, getAddress, store as createCompany, getById as getCompanyById, update as updateCompany, searchCompany } from './companies/sagas';
+import { CompanyTypes } from "./companies/types";
+import {
+  get as getCompanies,
+  getAddress,
+  store as createCompany,
+  getById as getCompanyById,
+  update as updateCompany,
+  searchCompany,
+} from "./companies/sagas";
 
-import { SpecialtyTypes } from './specialties/types';
-import { get as getSpecialties, store as storeSpecialty, getById as getSpecialtyById, update as updateSpecialty, searchSpecialty } from './specialties/sagas';
+import { SpecialtyTypes } from "./specialties/types";
+import {
+  get as getSpecialties,
+  store as storeSpecialty,
+  getById as getSpecialtyById,
+  update as updateSpecialty,
+  searchSpecialty,
+} from "./specialties/sagas";
 
-import { CouncilTypes } from './councils/types';
-import { get as getCouncils, store as storeCouncil, getById as getCouncilById, update as updateCouncil, searchConcil } from './councils/sagas';
+import { CouncilTypes } from "./councils/types";
+import {
+  get as getCouncils,
+  store as storeCouncil,
+  getById as getCouncilById,
+  update as updateCouncil,
+  searchConcil,
+} from "./councils/sagas";
 
-import { DocumentTypes } from './documents/types';
-import { store as storeDocuments, getByCareId as getDocumentsByCareId, get as getDocuments } from './documents/sagas';
+import { DocumentTypes } from "./documents/types";
+import {
+  store as storeDocuments,
+  getByCareId as getDocumentsByCareId,
+  get as getDocuments,
+} from "./documents/sagas";
 
-import { DocumentGroupTypes } from './documentGroups/types';
-import { get as getDocumentGroups, getByIds as getDocumentGroupsByIds } from './documentGroups/sagas';
+import { DocumentGroupTypes } from "./documentGroups/types";
+import {
+  get as getDocumentGroups,
+  getByIds as getDocumentGroupsByIds,
+} from "./documentGroups/sagas";
 
-import { PatientTypes } from './patients/types';
-import { get as getPatients, createPatient, getAddress as getAddressPatient, getPatientById, updatePatient, searchPatient } from './patients/sagas';
+import { PatientTypes } from "./patients/types";
+import {
+  get as getPatients,
+  createPatient,
+  getAddress as getAddressPatient,
+  getPatientById,
+  updatePatient,
+  searchPatient,
+} from "./patients/sagas";
 
-import { UserTypes } from './users/types';
-import { get as getUsers, createUser, getAddress as getAddressUser, getUserById, updateUser, searchUser, getProfessions, getUserTypes } from './users/sagas';
+import { UserTypes } from "./users/types";
 
-import { CareTypes } from './cares/types';
+//import { CareTypes } from './cares/types';
+import {
+  get as getUsers,
+  createUser,
+  getAddress as getAddressUser,
+  getUserById,
+  updateUser,
+  searchUser,
+  getProfessions,
+  getUserTypes,
+} from "./users/sagas";
+
+import { CareTypes } from "./cares/types";
 import {
   get as getCares,
   createCare,
@@ -60,8 +121,9 @@ import {
   storeSchedule,
   updateSchedule,
   deleteSchedule,
-} from './cares/sagas';
+} from "./cares/sagas";
 
+import { get as getProfession } from "./professions/sagas";
 export default function* rootSaga() {
   return yield all([
     takeLatest(LoginTypes.LOAD_REQUEST, doLogin),
@@ -76,7 +138,10 @@ export default function* rootSaga() {
     takeLatest(AreaTypes.CREATE_AREA_REQUEST, createArea),
     takeLatest(AreaTypes.UPDATE_AREA_REQUEST, updateArea),
     takeLatest(AreaTypes.LOAD_GET_DISTRICTS, getDistricts),
+    takeLatest(AreaTypes.LOAD_GET_CITYS, getCitys),
+    takeLatest(AreaTypes.LOAD_GET_DISTRICTS_, getDistrict),
     takeLatest(AreaTypes.SEARCH_REQUEST, searchArea),
+    takeLatest(AreaTypes.CLEAN, cleanAction),
 
     // Care
     takeLatest(CareTypes.LOAD_REQUEST, getCares),
@@ -85,10 +150,22 @@ export default function* rootSaga() {
     takeLatest(CareTypes.UPDATE_CARE_REQUEST, updateCare),
     takeLatest(CareTypes.SEARCH_CARE_REQUEST, searchCare),
 
-    takeLatest(CareTypes.DOCUMENT_GROUP_SOCIOAMBIENTAL_REQUEST, getDocumentGroupSocioAmbiental),
-    takeLatest(CareTypes.DOCUMENT_SOCIOAMBIENTAL_REQUEST, getDocumentSocioAmbiental),
-    takeLatest(CareTypes.DOCUMENT_SOCIOAMBIENTAL_STORE_REQUEST, storeDocumentSocioAmbiental),
-    takeLatest(CareTypes.DOCUMENT_SOCIOAMBIENTAL_UPDATE_REQUEST, updateDocumentSocioAmbiental),
+    takeLatest(
+      CareTypes.DOCUMENT_GROUP_SOCIOAMBIENTAL_REQUEST,
+      getDocumentGroupSocioAmbiental
+    ),
+    takeLatest(
+      CareTypes.DOCUMENT_SOCIOAMBIENTAL_REQUEST,
+      getDocumentSocioAmbiental
+    ),
+    takeLatest(
+      CareTypes.DOCUMENT_SOCIOAMBIENTAL_STORE_REQUEST,
+      storeDocumentSocioAmbiental
+    ),
+    takeLatest(
+      CareTypes.DOCUMENT_SOCIOAMBIENTAL_UPDATE_REQUEST,
+      updateDocumentSocioAmbiental
+    ),
 
     takeLatest(CareTypes.DOCUMENT_GROUP_ABEMID_REQUEST, getDocumentGroupAbemid),
     takeLatest(CareTypes.DOCUMENT_ABEMID_REQUEST, getDocumentAbemid),
@@ -106,7 +183,12 @@ export default function* rootSaga() {
     takeLatest(CareTypes.TYPE_ACCOMMODATION_REQUEST, getAccommodationType),
     takeLatest(CareTypes.CARE_TYPE_REQUEST, getCareType),
     takeLatest(CareTypes.SEARCH_CID_REQUEST, searchCid),
-    takeLatest(CareTypes.LOAD_DOCUMENT_REQUEST, getDocumentById),
+    //takeLatest(CareTypes.LOAD_DOCUMENT_REQUEST, getDocumentById),
+
+    takeLatest(CareTypes.LOAD_SCHEDULE_REQUEST, getSchedule),
+    takeLatest(CareTypes.CREATE_SCHEDULE_REQUEST, storeSchedule),
+    takeLatest(CareTypes.UPDATE_SCHEDULE_REQUEST, updateSchedule),
+    takeLatest(CareTypes.DELETE_SCHEDULE_REQUEST, deleteSchedule),
 
     takeLatest(CareTypes.LOAD_SCHEDULE_REQUEST, getSchedule),
     takeLatest(CareTypes.CREATE_SCHEDULE_REQUEST, storeSchedule),
@@ -150,7 +232,10 @@ export default function* rootSaga() {
 
     // Document Groups
     takeLatest(DocumentGroupTypes.LOAD_REQUEST, getDocumentGroups),
-    takeLatest(DocumentGroupTypes.LOAD_REQUEST_DOCUMENTS_BY_ID, getDocumentGroupsByIds),
+    takeLatest(
+      DocumentGroupTypes.LOAD_REQUEST_DOCUMENTS_BY_ID,
+      getDocumentGroupsByIds
+    ),
 
     /** Patients */
     takeLatest(PatientTypes.LOAD_REQUEST, getPatients),
@@ -163,11 +248,25 @@ export default function* rootSaga() {
     /** Users */
     takeLatest(UserTypes.LOAD_REQUEST, getUsers),
     takeLatest(UserTypes.CREATE_USER_REQUEST, createUser),
+    // takeLatest(UserTypes.REGISTER_USER_REQUEST, registerUser),
     takeLatest(UserTypes.LOAD_REQUEST_ADDRESS, getAddressUser),
     takeLatest(UserTypes.LOAD_REQUEST_USER_BY_ID, getUserById),
     takeLatest(UserTypes.UPDATE_USER_REQUEST, updateUser),
     takeLatest(UserTypes.SEARCH_REQUEST, searchUser),
     takeLatest(UserTypes.LOAD_REQUEST_PROFESSION, getProfessions),
     takeLatest(UserTypes.LOAD_REQUEST_USER_TYPES, getUserTypes),
+
+    /** Profession */
+    takeLatest(UserTypes.LOAD_REQUEST, getProfession),
+
+    /** UnconfirmedUsers */
+    //  takeLatest(UnconfirmedUserTypes.LOAD_REQUEST, getUnconfirmedUsers),
+    // takeLatest(UnconfirmedUserTypes.CREATE_USER_REQUEST, createUnconfirmedUser),
+    //  takeLatest(
+    //    UnconfirmedUserTypes.LOAD_REQUEST_USER_BY_ID,
+    //    getUnconfirmedUserById
+    //  ),
+    // takeLatest(UnconfirmedUserTypes.UPDATE_USER_REQUEST, updateUnconfirmedUser),
+    // takeLatest(UnconfirmedUserTypes.SEARCH_REQUEST, searchUnconfirmedUser),
   ]);
 }

@@ -1,0 +1,41 @@
+{
+  "files": {
+    "main.js": "/static/js/main.993a51fa.chunk.js",
+    "main.js.map": "/static/js/main.993a51fa.chunk.js.map",
+    "runtime-main.js": "/static/js/runtime-main.6362213d.js",
+    "runtime-main.js.map": "/static/js/runtime-main.6362213d.js.map",
+    "static/css/2.dc7070d3.chunk.css": "/static/css/2.dc7070d3.chunk.css",
+    "static/js/2.0ed5fa39.chunk.js": "/static/js/2.0ed5fa39.chunk.js",
+    "static/js/2.0ed5fa39.chunk.js.map": "/static/js/2.0ed5fa39.chunk.js.map",
+    "static/js/3.1fbe07f8.chunk.js": "/static/js/3.1fbe07f8.chunk.js",
+    "static/js/3.1fbe07f8.chunk.js.map": "/static/js/3.1fbe07f8.chunk.js.map",
+    "index.html": "/index.html",
+    "static/css/2.dc7070d3.chunk.css.map": "/static/css/2.dc7070d3.chunk.css.map",
+    "static/js/2.0ed5fa39.chunk.js.LICENSE.txt": "/static/js/2.0ed5fa39.chunk.js.LICENSE.txt",
+    "static/media/afericao-paciente.db96394f.svg": "/static/media/afericao-paciente.db96394f.svg",
+    "static/media/cadastro-paciente.bba35b50.svg": "/static/media/cadastro-paciente.bba35b50.svg",
+    "static/media/captacao-paciente.c976172b.svg": "/static/media/captacao-paciente.c976172b.svg",
+    "static/media/icon-afericao.cbe4e043.svg": "/static/media/icon-afericao.cbe4e043.svg",
+    "static/media/icon-curativos.cac256c4.svg": "/static/media/icon-curativos.cac256c4.svg",
+    "static/media/icon-dados-pessoais.d1868741.svg": "/static/media/icon-dados-pessoais.d1868741.svg",
+    "static/media/icon-equipe-medica.8b60f73c.svg": "/static/media/icon-equipe-medica.8b60f73c.svg",
+    "static/media/icon-medicacao.948385a3.svg": "/static/media/icon-medicacao.948385a3.svg",
+    "static/media/icon-plano-internacoes.6e0e3ddc.svg": "/static/media/icon-plano-internacoes.6e0e3ddc.svg",
+    "static/media/icon-plantao.609ffa1b.svg": "/static/media/icon-plantao.609ffa1b.svg",
+    "static/media/icon-profile.5e50ddaf.svg": "/static/media/icon-profile.5e50ddaf.svg",
+    "static/media/icon-prontuario.6f42daba.svg": "/static/media/icon-prontuario.6f42daba.svg",
+    "static/media/icon-status.740a568f.svg": "/static/media/icon-status.740a568f.svg",
+    "static/media/icon-ultimos-procedimentos.4f50376b.svg": "/static/media/icon-ultimos-procedimentos.4f50376b.svg",
+    "static/media/ilustracao-avaliacao-concluida.2249b05d.svg": "/static/media/ilustracao-avaliacao-concluida.2249b05d.svg",
+    "static/media/loading-sollar.c4d05bf1.svg": "/static/media/loading-sollar.c4d05bf1.svg",
+    "static/media/marca-sollar-azul.cd90a1b8.svg": "/static/media/marca-sollar-azul.cd90a1b8.svg",
+    "static/media/marca-sollar-branca.3767f6aa.svg": "/static/media/marca-sollar-branca.3767f6aa.svg",
+    "static/media/no-data.25cb842e.svg": "/static/media/no-data.25cb842e.svg"
+  },
+  "entrypoints": [
+    "static/js/runtime-main.6362213d.js",
+    "static/css/2.dc7070d3.chunk.css",
+    "static/js/2.0ed5fa39.chunk.js",
+    "static/js/main.993a51fa.chunk.js"
+  ]
+}

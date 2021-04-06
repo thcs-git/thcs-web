@@ -1,4 +1,4 @@
-import { createGlobalStyle } from 'styled-components';
+import { createGlobalStyle } from "styled-components";
 
 export default createGlobalStyle`
   * {
@@ -15,6 +15,7 @@ export default createGlobalStyle`
     width: 100%;
     height: 100%;
     background-color: var(--background);
+
   }
 
   *, button, input {
@@ -49,6 +50,7 @@ export default createGlobalStyle`
 
   :root {
     --primary: #16679A;
+    --primary-foccus:#7AC7D8;
     --primary-hover: #16679A99;
     --secondary: #0899BA;
     --gray: #CCCCCC;
@@ -56,8 +58,12 @@ export default createGlobalStyle`
     --gray-dark: #666666;
     --outline: #2F3336;
     --success: #4FC66A;
+    --sucess-button-hover:4EC86F0A;
     --success-hover: #4FC66A99;
+    --button-hover:#4EC86F0A;
+    --alert:#B00020
     --danger: #FF6565;
+    --danger-hover:#FF6568;
     --warning: #f9ca24;
     --white: #FFFFFF;
     --background: #FAFAFA;

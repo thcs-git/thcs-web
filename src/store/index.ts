@@ -1,21 +1,23 @@
-import { createStore, applyMiddleware, compose } from 'redux';
-import createSagaMiddleware from 'redux-saga';
+import { ProfessionState } from "./ducks/professions/types";
+import { PrescriptionState } from "./ducks/prescripition/types";
+import { createStore, applyMiddleware, compose } from "redux";
+import createSagaMiddleware from "redux-saga";
 
-import { AreaState } from './ducks/areas/types';
-import { CompanyState } from './ducks/companies/types';
-import { CareState } from './ducks/cares/types';
-import { CouncilState } from './ducks/councils/types';
-import { CustomerState } from './ducks/customers/types';
-import { DocumentState } from './ducks/documents/types';
-import { DocumentGroupState } from './ducks/documentGroups/types';
-import { SpecialtyState } from './ducks/specialties/types';
-import { LoginState } from './ducks/login/types';
-import { PatientState } from './ducks/patients/types';
-import { UserState } from './ducks/users/types';
+import { AreaState } from "./ducks/areas/types";
+import { CompanyState } from "./ducks/companies/types";
+import { CareState } from "./ducks/cares/types";
+import { CouncilState } from "./ducks/councils/types";
+import { CustomerState } from "./ducks/customers/types";
+import { DocumentState } from "./ducks/documents/types";
+import { DocumentGroupState } from "./ducks/documentGroups/types";
+import { SpecialtyState } from "./ducks/specialties/types";
+import { LoginState } from "./ducks/login/types";
+import { PatientState } from "./ducks/patients/types";
+import { UserState } from "./ducks/users/types";
 
-import { InitialState } from './ducks/states';
-import combinedReducers from './ducks/rootReducer';
-import rootSaga from './ducks/rootSaga';
+import { InitialState } from "./ducks/states";
+import combinedReducers from "./ducks/rootReducer";
+import rootSaga from "./ducks/rootSaga";
 
 export interface ApplicationState {
   areas: AreaState;
@@ -28,7 +30,9 @@ export interface ApplicationState {
   documentGroups: DocumentGroupState;
   patients: PatientState;
   specialties: SpecialtyState;
+  prescription: PrescriptionState;
   users: UserState;
+  profession: ProfessionState;
 }
 
 const sagaMiddleware = createSagaMiddleware();
