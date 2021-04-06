@@ -42,6 +42,9 @@ export default function Nead(props: RouteComponentProps<IPageParams>) {
   const [anchorHelpPopover, setHelpPopover] = React.useState<HTMLButtonElement | null>(null);
   const openHelpPopover = Boolean(anchorHelpPopover);
 
+  const [anchorHelpGroup3Popover, setHelpGroup3Popover] = React.useState<HTMLButtonElement | null>(null);
+  const openHelpGroup3Popover = Boolean(anchorHelpGroup3Popover);
+
   const [steps, setSteps] = useState([
     { title: 'Escore de Katz', score: { total: 0, complexity: '', status: '' } },
     { title: 'Grupo 1', score: { total: 0, complexity: '', status: '' } },
@@ -318,6 +321,14 @@ export default function Nead(props: RouteComponentProps<IPageParams>) {
     setHelpPopover(null);
   };
 
+  const handleClickHelpGroup3Popover = (event: React.MouseEvent<HTMLButtonElement>) => {
+    setHelpGroup3Popover(event.currentTarget);
+  };
+
+  const handleCloseHelpGroup3Popover = () => {
+    setHelpGroup3Popover(null);
+  };
+
   return (
     <Sidebar>
       {careState.loading && <Loading />}
@@ -331,7 +342,7 @@ export default function Nead(props: RouteComponentProps<IPageParams>) {
         )}
         <div style={{ display: 'flex', alignItems: 'center', flexDirection: 'row', marginBottom: 40 }}>
           <FormTitle style={{ margin: 0 }}>Tabela de avaliação para planejamento de atenção domiciliar</FormTitle>
-          <IconButton aria-describedby={'popover_help_abemid'} onClick={handleClickHelpPopover} style={{ marginLeft: 10 }}>
+            <IconButton aria-describedby={'popover_help_abemid'} onClick={handleClickHelpPopover} style={{ marginLeft: 10 }}>
               <HelpIcon style={{ color: "#ccc" }} />
             </IconButton >
             <Popover
@@ -392,10 +403,10 @@ export default function Nead(props: RouteComponentProps<IPageParams>) {
         </StepperComponent>
 
         <FormContent>
-          {/* Grupo 1 */}
+          {/* Score de KATZ */}
           {currentStep === 0 && (
             <>
-              <StepTitle>Atividades</StepTitle>
+              <StepTitle>KATZ</StepTitle>
 
               {documentGroup?.fields?.map((field: any, index: number) => {
                 if (field.step === 0) {
@@ -429,7 +440,7 @@ export default function Nead(props: RouteComponentProps<IPageParams>) {
             </>
           )}
 
-          {/* Grupo 2 */}
+          {/* Grupo 1 */}
           {currentStep === 1 && (
             <>
               <StepTitle>Elegibilidade</StepTitle>
@@ -463,7 +474,7 @@ export default function Nead(props: RouteComponentProps<IPageParams>) {
             </>
           )}
 
-          {/* Grupo 3 */}
+          {/* Grupo 2 */}
           {currentStep === 2 && (
             <>
               <StepTitle>Critérios para indicação imediata de internação domiciliar</StepTitle>
@@ -497,10 +508,51 @@ export default function Nead(props: RouteComponentProps<IPageParams>) {
             </>
           )}
 
-          {/* Score de Katz */}
+          {/* Grupo 3 */}
           {currentStep === 3 && (
             <>
-              <StepTitle>Atividades</StepTitle>
+            <div style={{ display: 'flex', alignItems: 'center', flexDirection: 'row', marginBottom: 40 }}>
+              <StepTitle style={{ margin: 0 }}>Tabela de avaliação para planejamento de atenção domiciliar</StepTitle>
+
+              <IconButton aria-describedby={'popover_help_abemid_group_3'} onClick={handleClickHelpGroup3Popover} style={{ marginLeft: 10 }}>
+                <HelpIcon style={{ color: "#ccc" }} />
+              </IconButton >
+              <Popover
+                id={'popover_help_abemid_group_3'}
+                open={openHelpGroup3Popover}
+                anchorEl={anchorHelpGroup3Popover}
+                onClose={handleCloseHelpGroup3Popover}
+                anchorOrigin={{
+                  vertical: 'bottom',
+                  horizontal: 'center',
+                }}
+                transformOrigin={{
+                  vertical: 'top',
+                  horizontal: 'left',
+                }}
+              >
+                <div
+                  style={{ paddingTop: 20, paddingLeft: 30, paddingBottom: 20, paddingRight: 30, maxWidth: 500, listStylePosition: 'inside', textAlign: 'justify' }}>
+                  <p>Regra:</p>
+                  <br />
+                  <ul>
+                    <li>Até 5 Pontos - Considerar procedimentos pontuais exclusivos ou outros programas:</li>
+                    <p>( ) Curativos  ( ) Medicações Parenterais ( ) Outros Programas</p>
+                    <br />
+
+                    <li>De 6 a 11 Pontos - Considerar Atendimento Domiciliar Multiprofissional (inclui procedimentos pontuais, desde que não exclusivos)</li>
+                    <br />
+
+                    <li>De 12 a 17 Pontos - Considerar Internação Domiciliar 12h</li>
+                    <br />
+
+                    <li>18 ou mais Pontos - Considerar Internação Domiciliar 24h</li>
+                    <br />
+                  </ul>
+                </div>
+              </Popover>
+            </div>
+
 
               {documentGroup?.fields?.map((field: any, index: number) => {
                 if (field.step === 3) {
