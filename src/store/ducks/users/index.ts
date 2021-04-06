@@ -125,6 +125,26 @@ const reducer: Reducer<UserState> = (state = INITIAL_STATE, action) => {
         error: false,
         success: false,
       };
+    case UserTypes.ERROR_RESPONSE_ADDRESS:
+      return {
+        ...state,
+        data: {
+          ...state.data,
+          address: {
+            ...state.data.address,
+            postal_code: "",
+            street: "",
+            number: "",
+            district: "",
+            city: "",
+            state: "",
+            complement: "",
+          },
+        },
+        loading: false,
+        error: true,
+        success: false,
+      };
     case UserTypes.LOAD_RESPONSE_ADDRESS:
       return {
         ...state,
