@@ -38,7 +38,9 @@ export const ListItemContent = styled(CardContent)`
 
   padding: 4px !important;
 `;
-
+export const ItemTable = styled.div`
+    padding:4px;
+    `
 export const ListItemStatus = styled.div<IListItemStatus>`
   color: ${(props) => (props.active ? `var(--success)` : `var(--danger)`)};
   font-weight: bold;
@@ -60,7 +62,6 @@ export const ListItemSubTitle = styled.p`
 
 export const ButtonsContent = styled.div`
   width: 100%;
-
   display: flex;
   flex-direction: row;
   justify-content: flex-end;

@@ -21,48 +21,47 @@ export enum CustomerTypes {
 
   SEARCH_REQUEST = "@customer/SEARCH_REQUEST",
 
-  CLEAN = "@customer/CLEAN"
-
+  CLEAN = "@customer/CLEAN",
 }
 
 /**
  * Data types
  */
 export interface CustomerInterface {
+  active: boolean;
   _id?: string;
-  name?: string;
-  social_name?: string;
-  fantasy_name?: string;
-  responsible_user?: string;
-  fiscal_number?: string;
+  name: string;
+  social_name: string;
+  fiscal_number: string;
   address: {
     _id?: string;
     postal_code: string;
-    street: string,
-    number: string,
+    street: string;
+    number: string;
     district: string;
     city: string;
     state: string;
     complement: string;
   };
-  email?: string;
+  email: string;
   phones: {
-    number: string,
-    telegram: boolean,
-    whatsapp: boolean,
-  },
+    number: string;
+    telegram: boolean;
+    whatsapp: boolean;
+  };
   cellphone?: string;
-  active?: boolean
+  phone?: string;
+  responsible_user: string;
 }
 
 export interface ViacepDataInterface {
-  cep: string,
-  logradouro: string,
-  complemento: string,
-  bairro: string,
-  localidade: string,
-  uf: string,
-  erro?: boolean,
+  cep: string;
+  logradouro: string;
+  complemento: string;
+  bairro: string;
+  localidade: string;
+  uf: string;
+  erro?: boolean;
 }
 
 export interface CustomerList {
@@ -75,11 +74,12 @@ export interface CustomerList {
 
 export interface CustomerDataItems {
   _id: string;
+  fiscal_number: string;
   name: string;
   active: boolean;
   email: string;
+  created_at: string;
 }
-
 
 /**
  * State type
@@ -91,6 +91,7 @@ export interface CustomerState {
   error: boolean;
   success: boolean;
   errorCep?: boolean;
+  isRegistrationCompleted?: boolean;
 }
 
-export type LoadRequestParams = Partial<Omit<CustomerList, 'data'>>
+export type LoadRequestParams = Partial<Omit<CustomerList, "data">>;

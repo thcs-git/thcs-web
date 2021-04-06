@@ -111,8 +111,8 @@ export default function AreaForm(props: RouteComponentProps<IPageParams>) {
     origin_id: "",
     accommodation_type_id: "",
     care_type_id: "",
-    procedure_id: "",
-    cid_id: "",
+    procedure_id: "5fd6198426831ddc2483173c",
+    cid_id: "5ebf162559ba0b646c900240",
     user_id: "",
     area_id: "",
     status: "", // Pre-Atendimento, Em atendimento, Cancelado, Finalizad,
@@ -696,7 +696,7 @@ export default function AreaForm(props: RouteComponentProps<IPageParams>) {
                   />
                 </Grid>
                 <Grid item md={12} xs={12}>
-                  <TextField
+                  {/* <TextField
                     id="input-procedure"
                     label="Procedimento"
                     variant="outlined"
@@ -709,10 +709,10 @@ export default function AreaForm(props: RouteComponentProps<IPageParams>) {
                       }))
                     }
                     fullWidth
-                  />
+                  /> */}
                 </Grid>
                 <Grid item md={12} xs={12}>
-                  <Autocomplete
+                  {/* <Autocomplete
                     id="input-diagnostic"
                     options={careState.cid}
                     getOptionLabel={(option) =>
@@ -737,8 +737,9 @@ export default function AreaForm(props: RouteComponentProps<IPageParams>) {
                         });
                       }
                     }}
+                    noOptionsText="Nenhum CID foi encontrado"
                     fullWidth
-                  />
+                  /> */}
                 </Grid>
                 <Grid item md={8} xs={12}>
                   <Autocomplete

@@ -38,13 +38,13 @@ export const ListItemContent = styled(CardContent)`
 
   padding: 4px !important;
 `;
-
+export const ItemTable = styled.div`
+    padding:4px;
+    `;
 export const ListItemStatus = styled.div<IListItemStatus>`
-  color: ${(props) => (props.active ? `var(--success)` : `var(--danger)`)};
+  color: ${(props) => (props.active ? `var(--success)` : `var(--danger-hover)`)};
   font-weight: bold;
-
-  padding: 5px;
-
+  padding: 0px;
   width: 80px;
 `;
 
@@ -60,8 +60,8 @@ export const ListItemSubTitle = styled.p`
 
 export const ButtonsContent = styled.div`
   width: 100%;
-
   display: flex;
   flex-direction: row;
   justify-content: flex-end;
+
 `;

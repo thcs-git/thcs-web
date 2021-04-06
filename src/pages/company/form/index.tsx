@@ -248,7 +248,7 @@ export default function CompanyForm(props: RouteComponentProps<IPageParams>) {
                     size="small"
                     value={localStorage.getItem(LOCALSTORAGE.CUSTOMER_NAME)}
                     fullWidth
-                    disabled
+
                   />
                 </Grid>
               </Grid>

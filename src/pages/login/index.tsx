@@ -23,7 +23,7 @@ import VisibilityOff from '@material-ui/icons/VisibilityOff';
 
 import { makeStyles } from '@material-ui/core/styles';
 
-import { ContainerLogin, WelcomeTextWrapper, HomeIconLogo, LogoText, TextGray } from './styles';
+import { ContainerLogin, WelcomeTextWrapper, HomeIconLogo, LogoText, TextGray,TextBlue } from './styles';
 
 import Button from '../../styles/components/Button';
 import Alert from '../../components/Alert';
@@ -87,6 +87,20 @@ const useStyles = makeStyles((theme) => ({
       transition: '300ms',
     }
   },
+  register:{
+    margin: theme.spacing(1, 0, 2),
+    padding: '10px',
+    textTransform: 'capitalize',
+    fontSize: '18px',
+    '&:hover': {
+      backgroundColor: 'var(--success-hover)',
+      borderColor:'var(--success-hover)',
+      color: 'white',
+    },
+    borderColor:'var(--success-hover)',
+    contrastText: "#fff"
+
+  }
 }));
 
 const SIZE_INPUT_PASSWORD = 3;
@@ -226,13 +240,15 @@ export default function SignIn() {
           </Button>
             <Grid container>
               <Box textAlign="center" width="100%">
-                <TextGray >
+                <TextGray>
                   Esqueceu a senha? {' '}
                   <Link href="#">
-                    Clique aqui{' '}
+                    <TextBlue>
+                        Clique aqui{' '}
+                    </TextBlue>
                   </Link>
-                parar recuperar
-            </TextGray>
+                  parar recuperar
+                </TextGray>
               </Box>
             </Grid>
           </form>

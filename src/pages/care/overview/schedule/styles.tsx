@@ -10,7 +10,7 @@ const statusColor: any = {
     background: var(--success);
   `,
   late: css`
-    background: var(--danger);
+    background: var(--danger-hover);
   `,
   future: css`
     background: var(--gray);

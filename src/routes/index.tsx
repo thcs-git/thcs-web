@@ -38,9 +38,13 @@ import PatientCaptureSocioAmbiental from '../pages/patient/capture/socioambienta
 import PatientCaptureAbemid from '../pages/patient/capture/abemid';
 import PrintDocument from '../pages/care/medical-records/documents/print';
 
+import RegisterForm from '../pages/register/form';
 import AvaliationList from '../pages/avaliation/list';
+import QrCode from '../pages/qrcode/';
 // import PatientForm from '../pages/patient/form';
 // import CareOverview from '../pages/patient/overview';
+
+import ProfessionForm from '../pages/profession/form/index';
 
 import Login from '../pages/login';
 import Register from '../pages/register';
@@ -76,8 +80,9 @@ const Routes = () => (
 
       {/* Areas */}
       <PrivateRoute path="/area" component={AreaList} exact />
-      <PrivateRoute path="/area/:id/edit" component={AreaForm} />
+      <PrivateRoute path="/area/:id/:mode/edit" component={AreaForm} />
       <PrivateRoute path="/area/create" component={AreaForm} />
+      <PrivateRoute path="/area/:id/:mode/view" component={AreaForm} />
 
       {/* Usuário */}
       <PrivateRoute path="/user" component={UserList} exact />
@@ -108,8 +113,12 @@ const Routes = () => (
       <PrivateRoute path="/care/:id/overview/schedule" component={CareSchedule} />
       <PrivateRoute path="/care/:id/medical-records/document/:documentId/print" component={PrintDocument} />
 
+      {/* Register */ }
+      <GuestRoute path="/register" component={RegisterForm}/>
       {/* avaliation */}
       <PrivateRoute path="/avaliation" component={AvaliationList} exact />
+      {/* qrcode */}
+      <PrivateRoute path='/qrcode' component ={QrCode} exact></PrivateRoute>
       {/* <PrivateRoute path="/avaliation/:id/edit" component={CareForm} />
       <PrivateRoute path="/avaliation/create" component={CareForm} /> */}
     </Switch>

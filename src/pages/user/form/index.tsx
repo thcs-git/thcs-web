@@ -166,6 +166,8 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
     dispatch(getProfessionsAction());
     dispatch(getCompaniesAction());
     dispatch(getUserTypesAction());
+    console.log(userState);
+    console.log(specialtyState);
   }, []);
 
   useEffect(() => {

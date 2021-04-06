@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useCallback, ChangeEvent } from 'react';
 import { useHistory, Link } from 'react-router-dom';
-import { Container, Button, Menu, MenuItem, Dialog, DialogTitle, DialogContent, DialogContentText, DialogActions, RadioGroup, FormControlLabel, Radio, InputLabel, Tooltip, TableRow, TableCell } from '@material-ui/core';
+import { Container, Button, Menu, MenuItem, Dialog, DialogTitle, DialogContent, DialogContentText, DialogActions, RadioGroup, FormControlLabel, Radio, InputLabel, Tooltip, TableRow, TableCell, TextField } from '@material-ui/core';
 import { FiberManualRecord, ErrorOutline, MoreVert, Check as CheckIcon } from '@material-ui/icons';
 import debounce from 'lodash.debounce';
 
@@ -34,6 +34,7 @@ export default function AvaliationList() {
   const careState = useSelector((state: ApplicationState) => state.cares);
 
   const [search, setSearch] = useState('');
+  const [file,setFile] = useState({error:false});
   const [captureStatus, setCaptureStatus] = useState<ICaptureStatus>({
     care: {},
     approved: '',
@@ -140,19 +141,40 @@ export default function AvaliationList() {
   };
 
   const handleChangeFiles = async (element: React.ChangeEvent<HTMLInputElement>) => {
-    if (!element) {
-      return;
-    }
 
     const files = element.target.files;
 
+    if (!element) {
+      setFile(prevState=>({
+        ...prevState,
+        error:false
+      }))
+      return;
+    }else{
+        if(files && files?.length >0){
+          console.log(files[0]);
+           if(files[0].type == 'application/pdf' && files[0].size < 10000000 ){
+            setFile(prevState=>({
+              ...prevState,
+              error:false
+            }))
+          }else{
+             setFile(prevState=>({
+          ...prevState,
+          error:true
+        }))
+          }
+        }
+    }
+
     if (files && files?.length > 0) {
       const fileData: any = await readFile(files[0]);
-
-      setCaptureStatus(prevState => ({
+      if(!file.error){
+           setCaptureStatus(prevState => ({
         ...prevState,
         attachment: fileData
       }));
+      }
     }
   };
 
@@ -335,9 +357,19 @@ export default function AvaliationList() {
                 </RadioGroup>
               </FieldContent>
 
-              <FieldContent>
+              {/* <FieldContent>
                 <DialogContentText tabIndex={-1}>Anexar Guia de Autorização</DialogContentText>
                 <input type="file" accept="application/pdf" onChange={handleChangeFiles} />
+              </FieldContent> */}
+              <FieldContent>
+              <DialogContentText tabIndex={-1}>Anexar Guia de Autorização</DialogContentText>
+              <DialogContentText>Arquivos .pdf e menores que 1 gigabytes.</DialogContentText>
+                <TextField
+                error={file.error}
+                onChange={handleChangeFiles}
+                helperText={file.error?"Aquivo não compatível ou muito grande":null}
+                type='file'>
+                </TextField>
               </FieldContent>
 
               <FieldContent>

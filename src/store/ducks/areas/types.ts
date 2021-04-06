@@ -16,9 +16,17 @@ export enum AreaTypes {
   LOAD_SUCCESS_AREA_BY_ID = "@area/LOAD_SUCCESS_AREA_BY_ID",
 
   LOAD_GET_DISTRICTS = "@area/LOAD_GET_DISTRICTS",
+  LOAD_GET_DISTRICTS_ = "@area/LOAD_GET_DISTRICTS_",
+  LOAD_GET_CITYS = "@area/LOAD_GET_CITYS",
+  LOAD_SUCCCES_GET_CITYS = "@area/LOAD_SUCCCES_GET_CITYS",
+
+  LOAD_SUCCCES_GET_DISTRICTS = "@area/LOAD_SUCCCES_GET_DISTRICTS",
   LOAD_SUCCESS_GET_DISTRICTS = "@area/LOAD_SUCCESS_GET_DISTRICTS",
 
+  LOAD_SUCCCES_GET_DISTRICTS_ = "@area/LOAD_SUCCCES_GET_DISTRICTS_",
+
   SEARCH_REQUEST = "@area/SEARCH_REQUEST",
+  CLEAN = "@area/CLEAN",
 }
 
 /**
@@ -28,11 +36,30 @@ export enum AreaTypes {
 export interface UserAreaInterface {
   _id: string;
   name: string;
+  profession: string;
 }
-
+export interface ProfessionAreaInterface {
+  profession: string;
+  users: UserAreaInterface[];
+}
+export interface DistricAreaInterface {
+  _id: string;
+  location_id: string;
+  name: string;
+  city: string;
+  state: string;
+}
 export interface NeighborhoodAreaInterface {
   _id: string;
   name: string;
+  city: string;
+  state: string;
+}
+
+export interface CityAreaInterface {
+  _id: string;
+  name: string;
+  sigla: string;
 }
 
 export interface AreaInterface {
@@ -40,11 +67,13 @@ export interface AreaInterface {
   name: string;
   describe?: string;
   supply_days: number;
-  week_day: number | null;
-  users: (UserAreaInterface | {})[],
-  neighborhoods: (NeighborhoodAreaInterface | {})[],
-  created_by?: { _id: string };
+  week_day: number;
+  users: UserAreaInterface[];
+  neighborhoods: NeighborhoodAreaInterface[];
+  created_by?: { _id: any };
+  created_at: string;
   active: boolean;
+  profession_users: ProfessionAreaInterface[];
 }
 
 export interface AreaList {
@@ -59,28 +88,16 @@ export interface AreaList {
  * State type
  */
 export interface AreaState {
+  //areaState: AreaState;
   data: AreaInterface;
   list: AreaList;
-  districts?: {
-    data: [
-      {
-        _id: string,
-        location_id: number,
-        state: string,
-        name: string,
-        neighborhoods: [{
-          _id: string,
-          name: string,
-        }]
-      }
-    ],
-    limit: number,
-    page: number,
-    total: number,
-  };
+  districts: NeighborhoodAreaInterface[];
+  citys: any[];
+  districts_: any[];
+  profession: ProfessionAreaInterface[];
   loading: boolean;
   error: boolean;
   success: boolean;
 }
 
-export type LoadRequestParams = Partial<Omit<AreaList, 'data'>>
+export type LoadRequestParams = Partial<Omit<AreaList, "data">>;
