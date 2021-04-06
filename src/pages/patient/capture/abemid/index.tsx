@@ -354,7 +354,7 @@ export default function Abemid(props: RouteComponentProps<IPageParams>) {
 
           <ScoreTotalContent>
             <ScoreLabel>TOTAL DE PONTOS:</ScoreLabel>
-            <ScoreTotal>{score.total}</ScoreTotal>
+            <ScoreTotal>{score.total} - {score.complexity}</ScoreTotal>
           </ScoreTotalContent>
 
           <ButtonsContent>
