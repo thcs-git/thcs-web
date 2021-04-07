@@ -855,7 +855,7 @@ export default function AreaForm(props: RouteComponentProps<IPageParams>) {
                         />
                       </FormGroupSection>
                     </Grid>
-                    <Grid item md={7} xs={12}>
+                    <Grid item md={12} xs={12}>
                       <FormGroupSection>
                         <Autocomplete
                           id="combo-box-users"
@@ -876,20 +876,23 @@ export default function AreaForm(props: RouteComponentProps<IPageParams>) {
                     <Grid item md={12} xs={12}>
                       <ChipList>
                         {state.profession_users.map((item: any, index) => (
-                          <Grid item md={12} xs={12} className={classes.tittleChip}>
+                           <Grid md={12} xs={12} className={classes.tittleChip}>
                             <div key={`profession_selected_${index}`}>
                             <DivideTitle>{item.profession?item.profession:"Profissionais sem Função"}</DivideTitle>
+                           <Grid container>
                             {item.users.map((user:any)=>(
                               <div key={`user_selected_${index}`} className={classes.chip}>
-                                <Chip
+
+                                  <Chip
                                   label={user.name}
                                   onDelete={event => handleDeleteUser(user,item)}
                                 />
                               </div>
                             ))}
+                            </Grid>
                           </div>
                           <Divider></Divider>
-                          </Grid>
+                           </Grid>
                         ))}
                       </ChipList>
                     </Grid>

@@ -630,7 +630,7 @@ export default function CustomerForm(props: RouteComponentProps<IPageParams>) {
               <Grid container>
                 <Grid item md={3} xs={12}>
                   <FormControl variant="outlined" size="small" style={{ paddingRight:10}} >
-                    {/* <InputLabel htmlFor="search-input">CEP</InputLabel> */}
+                    <InputLabel htmlFor="search-input">CEP</InputLabel>
                     <InputMask
                       mask="99999-999"
                       value={state.address.postal_code}
@@ -644,7 +644,7 @@ export default function CustomerForm(props: RouteComponentProps<IPageParams>) {
                       {(inputProps: Props) => (
                         <OutlinedInputFiled
                         disabled={!canEdit}
-                        error={!fieldsValidation.postal_code}
+                        error={customerState.errorCep}
                           id="input-postal-code"
                           label="CEP"
                           placeholder="00000-000"
@@ -656,11 +656,11 @@ export default function CustomerForm(props: RouteComponentProps<IPageParams>) {
                         />
                         )}
                     </InputMask>
-                    {/* {customerState.errorCep && (
+                    {customerState.errorCep && (
                       <p style={{ color: '#f44336', margin: '4px 4px' }}>
                         CEP inválido
                       </p>
-                    )} */}
+                    )}
                   </FormControl>
                 </Grid>
 
@@ -844,7 +844,7 @@ export default function CustomerForm(props: RouteComponentProps<IPageParams>) {
                   error={!fieldsValidation.email}
                   helperText={!fieldsValidation.email?"Por Favor insira um email válido":null}
                   onChange={(element) =>{ setState({ ...state, email: element.target.value })
-                  setFieldValidations((prevState: any) => ({ ...prevState, email: !validator.isEmpty(element.target.value) }));}}
+                  setFieldValidations((prevState: any) => ({ ...prevState, email: !validator.isEmail(element.target.value) }));}}
                   fullWidth
                   disabled={!canEdit}
                 />
