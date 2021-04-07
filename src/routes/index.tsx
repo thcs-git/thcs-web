@@ -80,9 +80,9 @@ const Routes = () => (
 
       {/* Areas */}
       <PrivateRoute path="/area" component={AreaList} exact />
-      <PrivateRoute path="/area/:id/:mode/edit" component={AreaForm} />
+      <PrivateRoute path="/area/:id/edit" component={AreaForm}/>
       <PrivateRoute path="/area/create" component={AreaForm} />
-      <PrivateRoute path="/area/:id/:mode/view" component={AreaForm} />
+
 
       {/* Usuário */}
       <PrivateRoute path="/user" component={UserList} exact />
