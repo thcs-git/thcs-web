@@ -491,7 +491,8 @@ export default function AreaForm(props: RouteComponentProps<IPageParams>) {
 
 
    async function handleDeleteNeighborhood(neighborhood: NeighborhoodAreaInterface) {
-    let neighborhoodsSelected = [...state.neighborhoods];
+     if(canEdit){
+       let neighborhoodsSelected = [...state.neighborhoods];
 
     const neighborhoodFounded = neighborhoodsSelected.findIndex((item: any) => {
       return neighborhood._id === item._id
@@ -514,6 +515,8 @@ export default function AreaForm(props: RouteComponentProps<IPageParams>) {
       neighborhoods: [... neighborhoodsSelected]
     }))
     }
+     }
+
   }
 
   // Prestadores
@@ -556,10 +559,19 @@ export default function AreaForm(props: RouteComponentProps<IPageParams>) {
       }
       return profession;
   }
+  function countProfessions(){
+    let count = 0;
+
+    state.profession_users.map((profession)=>{
+        count = count + profession.users.length;
+    })
+
+    return count;
+  }
   //
   function handleDeleteUser(user: UserAreaInterface, profession:ProfessionAreaInterface) {
-
-    let professionSelected = [...state.profession_users];
+    if(canEdit){
+       let professionSelected = [...state.profession_users];
     const professionFounded = professionSelected.findIndex((item: any) => {
 
         return item.profession === profession.profession
@@ -582,6 +594,8 @@ export default function AreaForm(props: RouteComponentProps<IPageParams>) {
       ...prevState,
       profession_users:[ ...professionSelected ]
     }))
+    }
+
   }
 
   return (
@@ -591,7 +605,7 @@ export default function AreaForm(props: RouteComponentProps<IPageParams>) {
       {areaState.loading && <Loading />}
       {( params.mode === "edit"|| params.mode == null ) && (
         <Container>
-           <BoxCustom style={{  marginTop: 0 }} mt={5} paddingLeft={15} paddingRight={15} paddingTop={8}>
+
         <FormSection>
           <FormContent>
           <div style={{ display: 'flex', alignItems: 'center', flexDirection: 'row' }}>
@@ -615,7 +629,7 @@ export default function AreaForm(props: RouteComponentProps<IPageParams>) {
                   </Badge>
                 </TabNavItem>
                 <TabNavItem className={currentTab === 2 ? 'active' : ''} onClick={() => goToNextMenu(2)}>
-                  <Badge badgeContent={state.profession_users.length} max={99} color="primary">
+                  <Badge badgeContent={countProfessions()} max={99} color="primary">
                     {`Prestadores`}
                   </Badge>
                 </TabNavItem>
@@ -937,7 +951,7 @@ export default function AreaForm(props: RouteComponentProps<IPageParams>) {
           </ButtonsContent>
 
         </FormSection>
-        </BoxCustom>
+
       </Container >
       )}
       {params.mode === "view" && (
