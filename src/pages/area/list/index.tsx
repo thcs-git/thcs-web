@@ -133,7 +133,7 @@ export default function AreaList() {
               <TableRow key={`area_${index}`}>
                 <TableCell align="left">
                 <ItemTable>
-                  <ListLink key={index} to={`/area/${area._id}/edit/edit`}>{area.name}</ListLink>
+                  <ListLink key={index} to={`/area/${area._id}/view/edit`}>{area.name}</ListLink>
                 </ItemTable>
                 </TableCell>
                 <TableCell align="left">{area.supply_days}{area.supply_days <2?' dia':' dias'}</TableCell> {/* Socioambiental */}
@@ -157,7 +157,7 @@ export default function AreaList() {
                     onClose={handleCloseRowMenu}
                   >
                     <MenuItem onClick={() => history.push(`/area/${area._id}/edit/edit`)}>Editar</MenuItem>
-                    <MenuItem onClick={() => history.push(`/area/${area._id}/edit/edit`)}>Visualizar</MenuItem>
+                    <MenuItem onClick={() => history.push(`/area/${area._id}/view/edit`)}>Visualizar</MenuItem>
                   </Menu>
                 </TableCell>
               </TableRow>

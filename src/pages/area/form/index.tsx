@@ -218,9 +218,12 @@ export default function AreaForm(props: RouteComponentProps<IPageParams>) {
   const [openModalCancel, setOpenModalCancel] = useState(false);
 
   useEffect(() => {
-    console.log(params);
+
     if (params.id) {
-      setCanEdit(false)
+      if(params.mode === 'view'){
+          setCanEdit(false)
+      }
+
       dispatch(loadAreaById(params.id));
       const dayOfTheWeekSelected = daysOfTheWeek.find(day => day.id === areaState.data.week_day) || null;
 
@@ -236,7 +239,7 @@ export default function AreaForm(props: RouteComponentProps<IPageParams>) {
 
   // //////////////////////////  INITIAL STATE ///////////////////////////////
 
-  // //////////////////////////  RELOAD /////////////////////////////////////
+  // //////////////////////////  STATE   /////////////////////////////////////
   useEffect(() => {
     if(params.id){
         const dayOfTheWeekSelected = daysOfTheWeek.find(day => day.id === areaState.data.week_day) || null;
@@ -603,7 +606,7 @@ export default function AreaForm(props: RouteComponentProps<IPageParams>) {
     <Sidebar>
 
       {areaState.loading && <Loading />}
-      {( params.mode === "edit"|| params.mode == null ) && (
+
         <Container>
 
         <FormSection>
@@ -953,12 +956,8 @@ export default function AreaForm(props: RouteComponentProps<IPageParams>) {
         </FormSection>
 
       </Container >
-      )}
-      {params.mode === "view" && (
-        <Container>
-          <DivideTitle>Tela de View</DivideTitle>
-        </Container>
-      )}
+
+
         <Dialog
         open={openModalCancel}
         onClose={handleCloseModalCancel}

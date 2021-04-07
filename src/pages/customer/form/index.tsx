@@ -61,7 +61,8 @@ interface IFormFields extends CustomerInterface {
 }
 
 interface IPageParams {
-  id?: string;
+  id?: string,
+  mode?:string;
 }
 
 export default function CustomerForm(props: RouteComponentProps<IPageParams>) {
@@ -201,8 +202,10 @@ export default function CustomerForm(props: RouteComponentProps<IPageParams>) {
 
   useEffect(() => {
     if (params.id) {
+      if(params.mode === "view"){
+        setCanEdit(false)
+      }
 
-      setCanEdit(false)
         const uf = States.find(uf => uf.sigla === customerState.data.address.state) || null;
 
       setState(prevState =>({

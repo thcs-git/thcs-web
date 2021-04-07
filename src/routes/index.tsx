@@ -60,7 +60,7 @@ const Routes = () => (
 
       {/* Clientes */}
       <PrivateRoute path="/customer" component={CustomerList} exact />
-      <PrivateRoute path="/customer/:id/edit" component={CustomerForm} />
+      <PrivateRoute path="/customer/:id/:mode/edit" component={CustomerForm} />
       <PrivateRoute path="/customer/create" component={CustomerForm} />
 
       {/* Empresas */}
