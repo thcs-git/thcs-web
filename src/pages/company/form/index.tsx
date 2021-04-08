@@ -142,23 +142,25 @@ export default function CompanyForm(props: RouteComponentProps<IPageParams>) {
   }, [companyState, params.id]);
 
   useEffect(() => {
-    setState(prevState => ({
-      ...prevState,
-      address: {
-        ...companyState.data.address
-      }
-    }));
+    if (companyState?.data?.address) {
+      setState(prevState => ({
+        ...prevState,
+        address: {
+          ...companyState.data.address
+        }
+      }));
 
-    setFieldValidations((prevState: any) => ({
-      ...prevState,
-      postal_code: !validator.isEmpty(companyState.data.address.postal_code),
-      street: !validator.isEmpty(companyState.data.address.street),
-      number: !validator.isEmpty(companyState.data.address.number),
-      district: !validator.isEmpty(companyState.data.address.district),
-      city: !validator.isEmpty(companyState.data.address.city),
-      state: !validator.isEmpty(companyState.data.address.state),
-      complement: !validator.isEmpty(companyState.data.address.complement),
-    }));
+      setFieldValidations((prevState: any) => ({
+        ...prevState,
+        postal_code: !validator.isEmpty(companyState.data.address.postal_code),
+        street: !validator.isEmpty(companyState.data.address.street),
+        number: !validator.isEmpty(companyState.data.address.number),
+        district: !validator.isEmpty(companyState.data.address.district),
+        city: !validator.isEmpty(companyState.data.address.city),
+        state: !validator.isEmpty(companyState.data.address.state),
+        complement: !validator.isEmpty(companyState.data.address.complement),
+      }));
+    }
 
   }, [companyState.data?.address]);
 
