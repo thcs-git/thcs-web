@@ -14,6 +14,10 @@ export const ibge = axios.create({
   baseURL: process.env.REACT_APP_IBGE_API,
 });
 
+export const googleMaps = axios.create({
+  baseURL: process.env.REACT_APP_GOOGLE_MAPS_API,
+});
+
 apiSollar.interceptors.request.use(
   function (config) {
     // Do something before request is sent
@@ -54,3 +58,12 @@ apiSollar.interceptors.response.use(
     return Promise.reject(error);
   }
 );
+
+
+googleMaps.interceptors.request.use(function (config) {
+  config.params = { ...config.params, key: process.env.REACT_APP_GOOGLE_API_KEY };
+  return config;
+
+}, function (error) {
+  return Promise.reject(error);
+});

@@ -2,7 +2,7 @@ import { put, call } from "redux-saga/effects";
 import { toast } from "react-toastify";
 import { AxiosResponse } from "axios";
 
-import { apiSollar, viacep } from "../../../services/axios";
+import { apiSollar, viacep, googleMaps } from "../../../services/axios";
 
 import {
   loadSuccess,
@@ -15,7 +15,10 @@ import {
   loadUserTypesSuccess,
   errorGetAddress,
 } from "./actions";
+
 import { ViacepDataInterface } from "./types";
+
+import { getGeolocation } from '../__globalReducer/saga';
 
 const token = localStorage.getItem("token");
 
@@ -47,7 +50,8 @@ export function* getUserById({ payload: { id: _id } }: any) {
     yield put(loadFailure());
   }
 }
-export function* registerUser({ payload: { data } }: any) {
+
+export async function* registerUser({ payload: { data } }: any) {
   const phones = [];
 
   if (data.phone.length > 0) {
@@ -72,6 +76,23 @@ export function* registerUser({ payload: { data } }: any) {
   data.phones = phones;
 
   data.user_type_id = { _id: "5fc05d1803058800244bc41b" };
+
+  if (data.address.postal_code) {
+    let { street, number, district, city, state } = data.address;
+
+    try {
+      const { data: googleAddressData }: AxiosResponse = yield googleMaps.get(
+        `/geocode/json?address=${street},${number},${district},${city},${state}`
+      );
+
+      if (googleAddressData.results) {
+        const { lat: latitude, lng: longitude } = googleAddressData.results[0].geometry.location;
+        data.address.geolocation = { latitude, longitude }
+      }
+    } catch (e) {
+      console.error('Get google maps data', e.message);
+    }
+  }
 
   try {
     const response: AxiosResponse = yield call(
@@ -157,6 +178,23 @@ export function* updateUser({ payload: { data } }: any) {
 
   delete data.phone;
   delete data.cellphone;
+
+  if (data.address.postal_code) {
+    let { street, number, district, city, state } = data.address;
+
+    try {
+      const { data: googleAddressData }: AxiosResponse = yield googleMaps.get(
+        `/geocode/json?address=${street},${number},${district},${city},${state}`
+      );
+
+      if (googleAddressData.results) {
+        const { lat: latitude, lng: longitude } = googleAddressData.results[0].geometry.location;
+        data.address.geolocation = { latitude, longitude }
+      }
+    } catch (e) {
+      console.error('Get google maps data', e.message);
+    }
+  }
 
   try {
     const response: AxiosResponse = yield call(
