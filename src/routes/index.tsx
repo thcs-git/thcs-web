@@ -1,8 +1,10 @@
 import React from 'react';
-import { BrowserRouter, Switch } from 'react-router-dom';
+import { BrowserRouter, Switch, Route } from 'react-router-dom';
 
 import GuestRoute from './guest';
 import PrivateRoute from './private';
+
+import NotFound from '../pages/errors/not-found';
 
 import Dashboard from '../pages/dashboard';
 
@@ -52,8 +54,11 @@ import Register from '../pages/register';
 const Routes = () => (
   <BrowserRouter>
     <Switch>
-      <GuestRoute path="/login" component={Login} />
-      <GuestRoute path="/register" component={Register} />
+      {/* <GuestRoute path="/" component={Login} exact /> */}
+      {/* <GuestRoute path="/register" component={Register} /> */}
+      <Route path="/" component={Login} exact />
+      <Route path="/login" component={Login} />
+      <Route path="/register" component={Register} />
 
       <PrivateRoute path="/" component={Dashboard} exact />
       <PrivateRoute path="/dashboard" component={Dashboard} />
@@ -113,14 +118,16 @@ const Routes = () => (
       <PrivateRoute path="/care/:id/overview/schedule" component={CareSchedule} />
       <PrivateRoute path="/care/:id/medical-records/document/:documentId/print" component={PrintDocument} />
 
-      {/* Register */ }
-      <GuestRoute path="/register" component={RegisterForm}/>
+      {/* Register */}
+      <GuestRoute path="/register" component={RegisterForm} />
       {/* avaliation */}
       <PrivateRoute path="/avaliation" component={AvaliationList} exact />
       {/* qrcode */}
-      <PrivateRoute path='/qrcode' component ={QrCode} exact></PrivateRoute>
+      <PrivateRoute path='/qrcode' component={QrCode} exact></PrivateRoute>
       {/* <PrivateRoute path="/avaliation/:id/edit" component={CareForm} />
       <PrivateRoute path="/avaliation/create" component={CareForm} /> */}
+
+      <Route component={NotFound} />
     </Switch>
   </BrowserRouter>
 );

@@ -63,7 +63,7 @@ const itemsMenu = [
   { title: 'Área', route: '/area', icon: <LocationOncon style={{ color: '#fff' }} /> },
   { title: 'Pacientes', route: '/patient', icon: <GroupAddIcon style={{ color: '#fff' }} /> },
   { title: 'Avaliação', route: '/avaliation', icon: <StarRateIcon style={{ color: '#fff' }} /> },
-  { title: 'QrCode', route: '/qrcode',icon: <StarRateIcon style={{ color: '#fff' }} /> },
+  { title: 'QrCode', route: '/qrcode', icon: <StarRateIcon style={{ color: '#fff' }} /> },
   { title: 'Atendimento', route: '/care', icon: <LocalHospital style={{ color: '#fff' }} /> },
 ]
 
@@ -158,6 +158,13 @@ const Sibebar = (props: Props<any>) => {
 
   const handleLogout = useCallback(() => {
     localStorage.removeItem('@sollar_token');
+    localStorage.removeItem('@sollar_username');
+    localStorage.removeItem('@sollar_user_id');
+    localStorage.removeItem('@sollar_company_selected');
+    localStorage.removeItem('@sollar_company_name');
+    localStorage.removeItem('@sollar_customer');
+    localStorage.removeItem('@sollar_customer_name');
+
     window.location.reload();
   }, []);
 
@@ -208,7 +215,7 @@ const Sibebar = (props: Props<any>) => {
 
               <ListItem style={{ padding: 0 }} className={classes.logOutButton} onClick={() => setOpenModalConfig(true)}>
                 <h4 style={{ color: '#ffffff', marginLeft: 10 }}>{company.name}</h4>
-                <EditIcon style={{ color: '#fff', fontSize: '14px', marginLeft: '5px' }}  />
+                <EditIcon style={{ color: '#fff', fontSize: '14px', marginLeft: '5px' }} />
               </ListItem>
             </div>
           </div>

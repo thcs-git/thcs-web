@@ -23,7 +23,7 @@ import VisibilityOff from '@material-ui/icons/VisibilityOff';
 
 import { makeStyles } from '@material-ui/core/styles';
 
-import { ContainerLogin, WelcomeTextWrapper, HomeIconLogo, LogoText, TextGray,TextBlue } from './styles';
+import { ContainerLogin, WelcomeTextWrapper, HomeIconLogo, LogoText, TextGray, TextBlue } from './styles';
 
 import Button from '../../styles/components/Button';
 import Alert from '../../components/Alert';
@@ -87,17 +87,17 @@ const useStyles = makeStyles((theme) => ({
       transition: '300ms',
     }
   },
-  register:{
+  register: {
     margin: theme.spacing(1, 0, 2),
     padding: '10px',
     textTransform: 'capitalize',
     fontSize: '18px',
     '&:hover': {
       backgroundColor: 'var(--success-hover)',
-      borderColor:'var(--success-hover)',
+      borderColor: 'var(--success-hover)',
       color: 'white',
     },
-    borderColor:'var(--success-hover)',
+    borderColor: 'var(--success-hover)',
     contrastText: "#fff"
 
   }
@@ -118,11 +118,14 @@ export default function SignIn() {
 
   useEffect(() => {
     const expired = localStorage.getItem(LOCALSTORAGE.EXPIRED_SESSION);
+    const token = localStorage.getItem(LOCALSTORAGE.TOKEN);
 
     if (expired) {
       localStorage.removeItem(LOCALSTORAGE.EXPIRED_SESSION);
       toast.error('Sessão expirada');
     }
+
+    if (token) history.push('/dashboard');
   }, []);
 
   const handleClickShowPassword = useCallback(() => {
@@ -228,7 +231,7 @@ export default function SignIn() {
             >
               Entrar
           </Button>
-          <Button
+            <Button
               background="success_rounded"
               type="button"
               fullWidth
@@ -244,7 +247,7 @@ export default function SignIn() {
                   Esqueceu a senha? {' '}
                   <Link href="#">
                     <TextBlue>
-                        Clique aqui{' '}
+                      Clique aqui{' '}
                     </TextBlue>
                   </Link>
                   parar recuperar

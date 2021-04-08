@@ -93,6 +93,7 @@ export interface UserInterface {
     city: string;
     state: string;
     complement: string;
+    geolocation?: { latitude: number, longitude: number }
   };
   email: string; // email
   phone: string;
