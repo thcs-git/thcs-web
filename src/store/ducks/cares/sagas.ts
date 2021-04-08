@@ -47,15 +47,13 @@ export function* get({ payload }: any) {
     const { params } = payload;
 
     console.log(
-      `/attendance/getAttendance?limit=${params.limit ?? 10}&page=${
-        params.page || 1
+      `/attendance/getAttendance?limit=${params.limit ?? 10}&page=${params.page || 1
       }`
     );
 
     const response: AxiosResponse = yield call(
       apiSollar.get,
-      `/attendance/getAttendance?limit=${params.limit ?? 10}&page=${
-        params.page || 1
+      `/attendance/getAttendance?limit=${params.limit ?? 10}&page=${params.page || 1
       }${params.search ? "&search=" + params.search : ""}`
     );
 
@@ -76,8 +74,7 @@ export function* search({ payload }: any) {
 
     const response: AxiosResponse = yield call(
       apiSollar.get,
-      `/attendance/getAttendance?limit=${params.limit ?? 10}&page=${
-        params.page || 1
+      `/attendance/getAttendance?limit=${params.limit ?? 10}&page=${params.page || 1
       }`,
       { params: searchParams }
     );
@@ -166,9 +163,8 @@ export function* getDocumentGroupSocioAmbiental() {
 
 export function* getDocumentSocioAmbiental({ payload }: any) {
   try {
-    const { params } = payload;
     const searchParams = {
-      ...params,
+      ...payload,
       document_group_id: "5ffd79012f5d2b1d8ff6bea3",
     };
 
@@ -177,12 +173,12 @@ export function* getDocumentSocioAmbiental({ payload }: any) {
 
     const response: AxiosResponse = yield call(
       apiSollar.get,
-      `/documents?limit=${params?.limit || 10}&page=${params?.page || 1}`,
+      `/documents?limit=${payload?.limit || 10}&page=${payload?.page || 1}`,
       { params: searchParams }
     );
 
-    const data =
-      response.data.data.length > 0 ? response.data.data[0] : response.data;
+
+    const data = response.data?.data ? response.data.data[0] : response.data;
 
     yield put(actionDocumentSocioAmbiental(data));
   } catch (error) {
@@ -249,9 +245,8 @@ export function* getDocumentGroupAbemid() {
 
 export function* getDocumentAbemid({ payload }: any) {
   try {
-    const { params } = payload;
     const searchParams = {
-      ...params,
+      ...payload,
       document_group_id: "5ffd7acd2f5d2b1d8ff6bea4",
     };
 
@@ -260,12 +255,11 @@ export function* getDocumentAbemid({ payload }: any) {
 
     const response: AxiosResponse = yield call(
       apiSollar.get,
-      `/documents?limit=${params?.limit || 10}&page=${params?.page || 1}`,
+      `/documents?limit=${payload?.limit || 10}&page=${payload?.page || 1}`,
       { params: searchParams }
     );
 
-    const data =
-      response.data.data.length > 0 ? response.data.data[0] : response.data;
+    const data = response.data?.data ? response.data.data[0] : response.data;
 
     yield put(actionDocumentAbemid(data));
   } catch (error) {
@@ -332,9 +326,8 @@ export function* getDocumentGroupNead() {
 
 export function* getDocumentNead({ payload }: any) {
   try {
-    const { params } = payload;
     const searchParams = {
-      ...params,
+      ...payload,
       document_group_id: "5ff65469b4d4ac07d186e99f",
     };
 
@@ -343,12 +336,11 @@ export function* getDocumentNead({ payload }: any) {
 
     const response: AxiosResponse = yield call(
       apiSollar.get,
-      `/documents?limit=${params?.limit || 10}&page=${params?.page || 1}`,
+      `/documents?limit=${payload?.limit || 10}&page=${payload?.page || 1}`,
       { params: searchParams }
     );
 
-    const data =
-      response.data.data.length > 0 ? response.data.data[0] : response.data;
+    const data = response.data?.data ? response.data.data[0] : response.data;
 
     yield put(actionDocumentNead(data));
   } catch (error) {
