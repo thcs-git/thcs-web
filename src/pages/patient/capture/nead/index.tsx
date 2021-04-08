@@ -44,6 +44,7 @@ import {
   StepComponent,
   StepTitle,
 } from "../../../../styles/components/Step";
+import { handleUserSelectedId } from '../../../../helpers/localStorage';
 
 import { ButtonsContent, FormContent } from "./styles";
 
@@ -152,7 +153,7 @@ export default function Nead(props: RouteComponentProps<IPageParams>) {
 
   useEffect(() => {
     calculateScore();
-  }, [documentGroup]);
+  }, [currentStep]);
 
   const selectOption = useCallback(
     (field_id: string, option_id: string, multiple: boolean = false) => {
@@ -259,21 +260,8 @@ export default function Nead(props: RouteComponentProps<IPageParams>) {
       status: getStatus(partialScore),
     };
 
-    /*
-    KATZ
-
-    Classificação:
-    5 ou 6 - Independente
-    3 ou 4 - Dependente Parcial
-    < 2    - Dependente Total
-
-    Exibir junto a numeracao do score
-
-    Dependendo do valor, marcar o equivalente na pergunta: '3. KATZ (se pediatria, considerar dependência total)' do grupo 3
-    */
-
     setSteps(stepsCopy);
-  }, [documentGroup, steps]);
+  }, [documentGroup, steps, currentStep]);
 
   const handleFieldAnswer = useCallback(() => {
     let documentGroupCopy = { ...documentGroup };
@@ -348,15 +336,15 @@ export default function Nead(props: RouteComponentProps<IPageParams>) {
 
     if (care?.patient_id?._id && care?._id) {
       const createDocumentParams = {
-        pacient_id: care.patient_id?._id,
-        care_id: care._id,
+        patient_id: care.patient_id?._id,
+        care_id: care?._id,
         document_group_id: documentGroup._id,
         finished: true,
         canceled: false,
         fields: selecteds,
         complexity,
         status,
-        created_by: { _id: "5e8cfe7de9b6b8501c8033ac" },
+        created_by: { _id: handleUserSelectedId() || '' },
       };
 
       if (document?._id) {
