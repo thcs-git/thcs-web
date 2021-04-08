@@ -3,6 +3,7 @@ import { toast } from 'react-toastify';
 
 import { apiSollar } from '../../../services/axios';
 import history from '../../../routes/history';
+import { AxiosResponse } from "axios";
 
 import LOCALSTORAGE from '../../../helpers/constants/localStorage';
 
@@ -10,8 +11,7 @@ import { loadSuccess, loadFailure } from './actions';
 
 export function* doLogin({ payload }: any) {
   try {
-    console.log(payload);
-    const response = yield call(apiSollar.post, `/user/login`, payload.credentials)
+    const response: AxiosResponse = yield call(apiSollar.post, `/user/login`, payload.credentials)
 
     const { data } = response;
 
@@ -37,7 +37,7 @@ export function* doLogin({ payload }: any) {
 
     yield put(loadSuccess(data));
 
-    history.push('/');
+    history.push('/dashboard');
     location.reload();
 
   } catch (err) {

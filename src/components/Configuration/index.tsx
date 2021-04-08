@@ -40,6 +40,8 @@ export default function Configuration() {
   const changeCompany = useCallback((company: any) => {
     localStorage.setItem(LOCALSTORAGE.COMPANY_SELECTED, company._id);
     localStorage.setItem(LOCALSTORAGE.COMPANY_NAME, company.name);
+    localStorage.setItem(LOCALSTORAGE.CUSTOMER, company.customer_id._id);
+    localStorage.setItem(LOCALSTORAGE.CUSTOMER_NAME, company.customer_id.name);
 
     setUser(prevState => ({
       ...prevState,
