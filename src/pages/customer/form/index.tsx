@@ -267,18 +267,11 @@ export default function CustomerForm(props: RouteComponentProps<IPageParams>) {
 
   const handleValidateFields = useCallback(() => {
     let isValid: boolean = true;
-
-
     for (let key of Object.keys(fieldsValidation)) {
       if (fieldsValidation[key]) {
         isValid = false;
       }
     }
-
-    console.log('isValid', isValid);
-    console.log('fieldsValidation', fieldsValidation);
-
-
     return isValid;
 
   }, [fieldsValidation, state]);
@@ -383,7 +376,7 @@ export default function CustomerForm(props: RouteComponentProps<IPageParams>) {
   }
 
   function handleOpenModalCancel() {
-    console.log(ModifiCondition());
+
     if(ModifiCondition() && canEdit){
       setOpenModalCancel(true);
      }else{
@@ -785,7 +778,7 @@ export default function CustomerForm(props: RouteComponentProps<IPageParams>) {
                 {!canEdit && (<ButtonComponent variant="outlined" background="success_rounded" onClick={() => handleCancelForm()}>
               Voltar
             </ButtonComponent>)}
-            {canEdit && (<ButtonComponent variant="outlined"  className={classes.cancel} onClick={() => handleCancelForm()}>
+            {canEdit && (<ButtonComponent variant="outlined"  className={classes.cancel} onClick={() => handleOpenModalCancel()}>
               Cancelar
             </ButtonComponent>)}
             {canEdit &&(<ButtonComponent variant="contained" background="success" onClick={() => handleSaveFormCustomer()}>
