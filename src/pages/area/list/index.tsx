@@ -1,6 +1,8 @@
 import React, { useState, useEffect, useCallback, ChangeEvent } from 'react';
 import { useHistory } from 'react-router-dom';
-import { Container, FormControl, InputLabel, OutlinedInput, InputAdornment, IconButton, Checkbox, TableRow, TableCell, Menu, MenuItem, makeStyles } from '@material-ui/core';
+import { Container, FormControl, InputLabel, OutlinedInput,
+  InputAdornment, IconButton, Checkbox, TableRow, TableCell,
+  Menu, MenuItem, makeStyles } from '@material-ui/core';
 import { MoreVert, SearchOutlined } from '@material-ui/icons';
 import debounce from 'lodash.debounce';
 
@@ -48,7 +50,7 @@ export default function AreaList() {
     }
 
     }));
-    const classe = useStyles();
+  const classe = useStyles();
   const history = useHistory();
   const dispatch = useDispatch();
   const areaState = useSelector((state: ApplicationState) => state.areas);
@@ -116,6 +118,7 @@ export default function AreaList() {
           <SearchComponent
             handleButton={() => history.push('/area/create/')}
             buttonTitle="Nova Área"
+            inputPlaceholder="Descrição, Dia da semana, Dia de Abastecimento"
             onChangeInput={debounceSearchRequest}
           />
            <Table

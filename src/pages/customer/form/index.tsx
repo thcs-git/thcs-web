@@ -167,34 +167,6 @@ export default function CustomerForm(props: RouteComponentProps<IPageParams>) {
 
   });
 
-  // const [userData, setUserData] = useState<UserInterface>({
-  //   companies: [], //empresa que vai vir do login
-  //   name: '',
-  //   birthdate: '',
-  //   gender: '',
-  //   national_id: '',
-  //   issuing_organ: '',
-  //   fiscal_number: '',
-  //   mother_name: '',
-  //   nationality: '',
-  //   address: {
-  //     postal_code: '',
-  //     street: '',
-  //     number: '',
-  //     district: '',
-  //     city: '',
-  //     state: '',
-  //     complement: '',
-  //   },
-  //   email: '',
-  //   phone: '',
-  //   cellphone: '',
-  //   user_type_id: '',
-  //   specialties: [],
-  //   council_state: '',
-  //   council_number: '',
-  //   active: true,
-  // });
 
   useEffect(() => {
     dispatch(cleanAction());
@@ -293,94 +265,6 @@ export default function CustomerForm(props: RouteComponentProps<IPageParams>) {
     }
   }, [dispatch, params]);
 
-  // useEffect(() => {
-  //   if (!params.id && customerState.success && !customerState.error && !customerState.loading) {
-
-  //     if (customerState.data._id) {
-  //       dispatch(createUserAction({
-  //         ...userData,
-  //         customer_id: customerState.data._id,
-  //         name: state.name || ``,
-  //         fiscal_number: state.fiscal_number || ``,
-  //         birthdate: '',
-  //         gender: '',
-  //         national_id: '',
-  //         issuing_organ: '',
-  //         mother_name: '',
-  //         nationality: '',
-  //         address: state.address,
-  //         email: state.email || ``,
-  //         phone: state.cellphone || ``,
-  //         cellphone: state.cellphone || ``,
-  //         user_type_id: '6025b77d83576e461426786a',
-  //         council_state: '',
-  //         council_number: '',
-  //       }));
-  //     }
-  //   }
-  // }, [customerState.success]);
-
-  // useEffect(() => {
-  //   if (!params.id && userState.success && !userState.error && !userState.loading) {
-  //     history.push("/customer");
-  //   }
-  // }, [userState.success]);
-
-  // useEffect(() => {
-  //   const field = customerState.errorCep ? 'input-postal-code' : 'input-address-number';
-  //   customerState.errorCep && setState(prevState => ({
-  //     ...prevState,
-  //     address: {
-  //       ...prevState.address,
-  //       city: '',
-  //       complement: '',
-  //       district: '',
-  //       number: '',
-  //       state: '',
-  //       street: '',
-  //     }
-  //   }));
-  //   document.getElementById(field)?.focus();
-  // }, [customerState.errorCep]);
-
-  // useEffect(() => {
-
-  //   const field = customerState.errorCep ? 'input-postal-code' : 'input-address-number';
-  //   customerState.errorCep && setState(prevState => ({
-  //     ...prevState,
-  //     address: {
-  //       ...prevState.address,
-  //       city: '',
-  //       complement: '',
-  //       district: '',
-  //       number: '',
-  //       state: '',
-  //       street: '',
-  //     }
-  //   }));
-
-  //   document.getElementById(field)?.focus();
-  // }, [customerState.errorCep]);
-
-  // useEffect(() => {
-  //   const field = customerState.errorCep ? 'input-postal-code' : 'input-address-number';
-
-  //   customerState.errorCep && setState(prevState => ({
-  //     ...prevState,
-  //     address: {
-  //       ...prevState.address,
-  //       city: '',
-  //       complement: '',
-  //       district: '',
-  //       number: '',
-  //       state: '',
-  //       street: '',
-  //     }
-  //   }));
-  //   document.getElementById(field)?.focus();
-  // }, [customerState.errorCep]);
-
-
   const handleValidateFields = useCallback(() => {
     let isValid: boolean = true;
 
@@ -422,7 +306,7 @@ export default function CustomerForm(props: RouteComponentProps<IPageParams>) {
     console.log(fieldsValidation);
 
     if (!fieldsValidation.name || !fieldsValidation.social_name  || !fieldsValidation.fiscal_number || !fieldsValidation.responsible_user ||
-      !fieldsValidation.phone || !fieldsValidation.email || !fieldsValidation.postal_code  || !fieldsValidation.street ) {
+      !fieldsValidation.phone || !fieldsValidation.email || !fieldsValidation.phone || !fieldsValidation.postal_code  || !fieldsValidation.street ) {
       toast.error('Existem campos que precisam ser preenchidos para continuar');
       return;
     }

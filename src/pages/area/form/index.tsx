@@ -952,9 +952,7 @@ export default function AreaForm(props: RouteComponentProps<IPageParams>) {
                     )}
           </ButtonsContent>
           </ButtonsContent>
-
         </FormSection>
-
       </Container >
 
 
