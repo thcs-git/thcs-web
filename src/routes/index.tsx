@@ -91,7 +91,7 @@ const Routes = () => (
 
       {/* Patient */}
       <PrivateRoute path="/patient" component={PatientList} exact />
-      <PrivateRoute path="/patient/:id/edit" component={PatientForm} />
+      <PrivateRoute path="/patient/:id/:mode/edit" component={PatientForm} />
       <PrivateRoute path="/patient/create" component={PatientForm} />
       <PrivateRoute path="/patient/capture/create" component={PatientCaptureCreate} />
       <PrivateRoute path="/patient/capture/:id/overview" component={PatientCaptureOverview} />

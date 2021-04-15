@@ -75,7 +75,7 @@ export default function PatientList() {
             {patientState.list.data.map((patient, index) => (
               <TableRow key={`patient_${index}`}>
                 <TableCell align="left">
-                  <Link key={index} to={`/patient/${patient._id}/edit`}>{patient.social_name || patient.name}</Link>
+                  <Link key={index} to={`/patient/${patient._id}/view/edit`}>{patient.social_name || patient.name}</Link>
                 </TableCell>
                 <TableCell align="left">{patient.fiscal_number}</TableCell>
                 <TableCell align="left">{patient.mother_name}</TableCell>
@@ -91,8 +91,8 @@ export default function PatientList() {
                     open={anchorEl?.id === `btn_patient-menu${index}`}
                     onClose={handleCloseRowMenu}
                   >
-                    <MenuItem onClick={() => history.push(`/patient/${patient._id}/edit`)}>Editar</MenuItem>
-                    <MenuItem onClick={() => history.push(`/patient/${patient._id}/edit`)}>Visualizar</MenuItem>
+                    <MenuItem onClick={() => history.push(`/patient/${patient._id}/edit/edit`)}>Editar</MenuItem>
+                    <MenuItem onClick={() => history.push(`/patient/${patient._id}/view/edit`)}>Visualizar</MenuItem>
                     <MenuItem onClick={() => history.push(`/patient/capture/create?patient_id=${patient._id}`)}>Iniciar captação</MenuItem>
                   </Menu>
                 </TableCell>
