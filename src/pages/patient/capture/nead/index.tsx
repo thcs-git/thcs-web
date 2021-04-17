@@ -1,18 +1,11 @@
-import React, { useState, useEffect, useCallback } from "react";
-import { useHistory, RouteComponentProps } from "react-router-dom";
-import {
-  Container,
-  StepLabel,
-  Radio,
-  RadioGroup,
-  FormControlLabel,
-  IconButton,
-  Popover,
-} from "@material-ui/core";
-import { Help as HelpIcon } from "@material-ui/icons";
+import React, { useState, useEffect, useCallback, useRef } from 'react';
+import { useHistory, RouteComponentProps } from 'react-router-dom';
+import { Container, StepLabel, Radio, RadioGroup, FormControlLabel, IconButton, Popover, FormHelperText, FormControl } from '@material-ui/core';
+import { Help as HelpIcon } from '@material-ui/icons';
+import { toast } from 'react-toastify';
 
-import { useDispatch, useSelector } from "react-redux";
-import { ApplicationState } from "../../../../store";
+import { useDispatch, useSelector } from 'react-redux';
+import { ApplicationState } from '../../../../store';
 
 import {
   loadCareById,
@@ -58,7 +51,9 @@ export default function Nead(props: RouteComponentProps<IPageParams>) {
 
   const history = useHistory();
   const dispatch = useDispatch();
-
+  const [error, setError] = React.useState(false);
+  const [helperText, setHelperText] = React.useState('Selecione uma opção');
+  const formNeadRef = useRef<HTMLFormElement>(null);
   const careState = useSelector((state: ApplicationState) => state.cares);
   const {
     documentGroupNead: documentGroupState,
@@ -282,6 +277,10 @@ export default function Nead(props: RouteComponentProps<IPageParams>) {
   }, [documentGroup, document]);
 
   const handleSubmit = useCallback(() => {
+    const isError = checkAllCurrentQuestionsAnswered();
+
+    if (isError) return;
+
     let selecteds: any = [],
       complexitiesArray: any = [],
       statusArray: any = [];
@@ -360,9 +359,26 @@ export default function Nead(props: RouteComponentProps<IPageParams>) {
     }
   }, [documentGroup, care]);
 
+  const checkAllCurrentQuestionsAnswered = useCallback(() => {
+    const currentStepAnswer = documentGroup?.fields?.filter(field => field.step === currentStep);
+    const isAllQuestionAnswered = currentStepAnswer?.map(field => field?.options?.some(option => option.hasOwnProperty('selected')));
+    const isError = isAllQuestionAnswered?.some(answered => !answered);
+
+    if (isError) {
+      toast.error("Selecione ao menos uma alternativa por pergunta");
+    }
+
+    return isError;
+  }, [documentGroup, currentStep]);
+
+
   const handleNextStep = useCallback(() => {
+    const isError = checkAllCurrentQuestionsAnswered();
+
+    if (isError) return;
+
     setCurrentStep((prevState) => prevState + 1);
-  }, [currentStep]);
+  }, [currentStep, documentGroup]);
 
   const handleBackStep = useCallback(() => {
     setCurrentStep((prevState) => prevState - 1);
@@ -529,28 +545,31 @@ export default function Nead(props: RouteComponentProps<IPageParams>) {
               {documentGroup?.fields?.map((field: any, index: number) => {
                 if (field.step === 0) {
                   return (
-                    <QuestionSection key={`question_${field._id}_${index}`}>
-                      <QuestionTitle>{field.description}</QuestionTitle>
-                      <RadioGroup
-                        onChange={(e) =>
-                          selectOption(field._id, e.target.value)
-                        }
-                      >
-                        {field.options.map((option: any, index: number) => (
-                          <FormControlLabel
-                            key={`option_${field._id}_${index}`}
-                            value={option._id}
-                            control={
-                              <Radio
-                                color="primary"
-                                checked={option?.selected}
-                              />
-                            }
-                            label={option.text}
-                          />
-                        ))}
-                      </RadioGroup>
-                    </QuestionSection>
+                    <FormControl component="form" ref={formNeadRef} onSubmit={(e: any) => {
+                      e.preventDefault();
+                    }}>
+                      <QuestionSection key={`question_${field._id}_${index}`}>
+                        <QuestionTitle>{field.description}</QuestionTitle>
+                        <RadioGroup onChange={e => selectOption(field._id, e.target.value)}>
+                          {/* {() => handleSelectRadio(field)} */}
+                          {/* <FormHelperText>{(field.options.some((option: any) => option.selected)) ? '' : 'error'}</FormHelperText> */}
+                          {field.options.map((option: any, index: number) => (
+                            <FormControlLabel
+                              key={`option_${field._id}_${index}`}
+                              value={option._id}
+                              control={(
+                                <Radio
+                                  color="primary"
+                                  checked={option?.selected}
+
+                                />
+                              )}
+                              label={option.text}
+                            />
+                          ))}
+                        </RadioGroup>
+                      </QuestionSection>
+                      </FormControl>
                   );
                 }
               })}
@@ -582,6 +601,7 @@ export default function Nead(props: RouteComponentProps<IPageParams>) {
                       >
                         {field.options.map((option: any, index: number) => (
                           <FormControlLabel
+                            onError={() => alert('arro')}
                             key={`option_${field._id}_${index}`}
                             value={option._id}
                             control={
@@ -802,14 +822,15 @@ export default function Nead(props: RouteComponentProps<IPageParams>) {
                 )}
               </>
             ) : (
-              <Button
-                disabled={currentStep === steps.length - 1}
-                background="success"
-                onClick={handleNextStep}
-              >
-                Próximo
-              </Button>
-            )}
+                <Button
+                  disabled={currentStep === (steps.length - 1)}
+                  background="success"
+                  type="submit"
+                  onClick={handleNextStep}
+                >
+                  Próximo
+                </Button>
+              )}
           </ButtonsContent>
         </FormContent>
       </Container>
