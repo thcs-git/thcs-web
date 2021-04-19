@@ -27,6 +27,7 @@ import { handleUserSelectedId } from '../../../../helpers/localStorage';
 
 
 import { ButtonsContent, FormContent } from './styles';
+import { toast } from 'react-toastify';
 
 interface IPageParams {
   id: string;
@@ -71,6 +72,10 @@ export default function Abemid(props: RouteComponentProps<IPageParams>) {
   const openHelpPopover = Boolean(anchorHelpPopover);
 
   const handleNextStep = useCallback(() => {
+    const isError = checkAllCurrentQuestionsAnswered();
+
+    if (isError) return;
+
     setCurrentStep((prevState) => prevState + 1);
   }, [currentStep]);
 
@@ -139,6 +144,19 @@ export default function Abemid(props: RouteComponentProps<IPageParams>) {
   useEffect(() => {
     calculateScore();
   }, [currentStep]);
+
+
+  const checkAllCurrentQuestionsAnswered = useCallback(() => {
+    const currentStepAnswer = documentGroup?.fields?.filter(field => field.step === currentStep);
+    const isAllQuestionAnswered = currentStepAnswer?.map(field => field?.options?.some(option => option.hasOwnProperty('selected')));
+    const isError = isAllQuestionAnswered?.some(answered => !answered);
+
+    if (isError) {
+      toast.error("Selecione ao menos uma alternativa por pergunta");
+    }
+
+    return isError;
+  }, [documentGroup, currentStep]);
 
   const selectOption = useCallback((field_id: string, option_id: string, multiple: boolean = false) => {
     let documentGroupCopy = { ...documentGroup };
@@ -258,6 +276,10 @@ export default function Abemid(props: RouteComponentProps<IPageParams>) {
       statusArray: any = [];
     let complexity: string = "",
       status: string = "";
+
+    const isError = checkAllCurrentQuestionsAnswered();
+
+    if (isError) return;
 
     documentGroup?.fields?.map((field: any) => {
       field.options.map((option: any) => {

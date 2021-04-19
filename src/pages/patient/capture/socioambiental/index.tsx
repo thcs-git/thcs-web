@@ -17,6 +17,7 @@ import { FormTitle, QuestionSection, QuestionTitle, ScoreTotalContent, ScoreLabe
 import { handleUserSelectedId } from '../../../../helpers/localStorage';
 
 import { ButtonsContent, FormContent } from './styles';
+import { toast } from 'react-toastify';
 
 interface IPageParams {
   id: string;
@@ -170,6 +171,15 @@ export default function SocioAmbiental(props: RouteComponentProps<IPageParams>) 
 
   const handleSubmit = useCallback(() => {
     let selecteds: any = [];
+
+    const currentStepAnswer = documentGroup?.fields;
+    const isAllQuestionAnswered = currentStepAnswer?.map(field => field?.options?.some(option => option.hasOwnProperty('selected')));
+    const isError = isAllQuestionAnswered?.some(answered => !answered);
+
+    if (isError) {
+      toast.error("Selecione ao menos uma alternativa por pergunta");
+      return;
+    }
 
     documentGroup?.fields?.map((field: any) => {
       field.options.map((option: any) => {
