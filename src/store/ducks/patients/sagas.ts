@@ -2,7 +2,7 @@ import { put, call } from 'redux-saga/effects';
 import { toast } from 'react-toastify';
 import { AxiosResponse } from 'axios';
 
-import { apiSollar, viacep } from '../../../services/axios';
+import { apiSollar, googleMaps, viacep } from '../../../services/axios';
 
 import { loadSuccess, loadFailure, loadFailureCreatePatient, successGetAddress, createPatientSuccess, loadSuccessGetPatientById, updatePatientSuccess, setIfRegistrationCompleted } from './actions';
 import { PatientInterface, ViacepDataInterface, LoadRequestParams } from './types';
@@ -34,6 +34,24 @@ export function* getPatientById({ payload: { id: _id } }: any) {
 
 export function* createPatient({ payload: { data } }: any) {
   try {
+
+    if (data.address_id.postal_code) {
+      let { street, number, district, city, state } = data.address_id;
+
+      try {
+        const { data: googleAddressData }: AxiosResponse = yield googleMaps.get(
+          `/geocode/json?address=${street},${number},${district},${city},${state}`
+        );
+
+        if (googleAddressData.results) {
+          const { lat: latitude, lng: longitude } = googleAddressData.results[0].geometry.location;
+          data.address_id.geolocation = { latitude, longitude }
+        }
+      } catch (e) {
+        console.error('Get google maps data', e.message);
+      }
+    }
+
     const response: AxiosResponse = yield call(apiSollar.post, `/patient/store`, data, { headers: { token } })
     yield put(createPatientSuccess(response.data))
     yield put(setIfRegistrationCompleted(true, response.data._id));
@@ -48,6 +66,23 @@ export function* createPatient({ payload: { data } }: any) {
 
 export function* updatePatient({ payload: { data } }: any) {
   const { _id } = data;
+
+  if (data.address_id.postal_code) {
+    let { street, number, district, city, state } = data.address_id;
+
+    try {
+      const { data: googleAddressData }: AxiosResponse = yield googleMaps.get(
+        `/geocode/json?address=${street},${number},${district},${city},${state}`
+      );
+
+      if (googleAddressData.results) {
+        const { lat: latitude, lng: longitude } = googleAddressData.results[0].geometry.location;
+        data.address_id.geolocation = { latitude, longitude }
+      }
+    } catch (e) {
+      console.error('Get google maps data', e.message);
+    }
+  }
 
   try {
     const response: AxiosResponse = yield call(apiSollar.put, `/patient/${_id}/update`, { ...data }, { headers: { token } })

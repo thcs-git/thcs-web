@@ -4,7 +4,7 @@ import { useHistory, Link } from 'react-router-dom';
 import debounce from 'lodash.debounce';
 import { useDispatch, useSelector } from 'react-redux';
 import { ApplicationState } from '../../../store/';
-import { loadRequest, searchRequest } from '../../../store/ducks/companies/actions';
+import { loadRequest, searchRequest, cleanAction } from '../../../store/ducks/companies/actions';
 import { CompanyInterface } from '../../../store/ducks/companies/types';
 
 import { Container, Menu, MenuItem, TableRow, TableCell } from '@material-ui/core';
@@ -32,6 +32,7 @@ export default function CompanyList() {
   const [search, setSearch] = useState('');
 
   useEffect(() => {
+    dispatch(cleanAction());
     dispatch(loadRequest());
   }, []);
 

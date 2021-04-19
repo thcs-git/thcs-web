@@ -1,29 +1,52 @@
-import React, { useState, useEffect, useCallback } from 'react';
-import { useHistory, RouteComponentProps } from 'react-router-dom';
-import { Container, StepLabel, Radio, RadioGroup, FormControlLabel, IconButton, Popover } from '@material-ui/core';
-import { Help as HelpIcon } from '@material-ui/icons';
+import React, { useState, useEffect, useCallback } from "react";
+import { useHistory, RouteComponentProps } from "react-router-dom";
+import {
+  Container,
+  StepLabel,
+  Radio,
+  RadioGroup,
+  FormControlLabel,
+  IconButton,
+  Popover,
+} from "@material-ui/core";
+import { Help as HelpIcon } from "@material-ui/icons";
 
-import { useDispatch, useSelector } from 'react-redux';
-import { ApplicationState } from '../../../../store';
+import { useDispatch, useSelector } from "react-redux";
+import { ApplicationState } from "../../../../store";
 
 import {
   loadCareById,
   actionDocumentGroupNeadRequest,
   actionDocumentNeadRequest,
   actionDocumentNeadStoreRequest,
-  actionDocumentNeadUpdateRequest
-} from '../../../../store/ducks/cares/actions';
-import { CareInterface, DocumentGroupInterface } from '../../../../store/ducks/cares/types';
+  actionDocumentNeadUpdateRequest,
+} from "../../../../store/ducks/cares/actions";
+import {
+  CareInterface,
+  DocumentGroupInterface,
+} from "../../../../store/ducks/cares/types";
 
-import PatientCard from '../../../../components/Card/Patient';
-import Loading from '../../../../components/Loading';
-import Sidebar from '../../../../components/Sidebar';
+import PatientCard from "../../../../components/Card/Patient";
+import Loading from "../../../../components/Loading";
+import Sidebar from "../../../../components/Sidebar";
 
-import Button from '../../../../styles/components/Button';
-import { FormTitle, QuestionSection, QuestionTitle, ScoreTotalContent, ScoreLabel, ScoreTotal } from '../../../../styles/components/Form';
-import { StepperComponent, StepComponent, StepTitle } from '../../../../styles/components/Step';
+import Button from "../../../../styles/components/Button";
+import {
+  FormTitle,
+  QuestionSection,
+  QuestionTitle,
+  ScoreTotalContent,
+  ScoreLabel,
+  ScoreTotal,
+} from "../../../../styles/components/Form";
+import {
+  StepperComponent,
+  StepComponent,
+  StepTitle,
+} from "../../../../styles/components/Step";
+import { handleUserSelectedId } from '../../../../helpers/localStorage';
 
-import { ButtonsContent, FormContent } from './styles';
+import { ButtonsContent, FormContent } from "./styles";
 
 interface IPageParams {
   id: string;
@@ -37,29 +60,44 @@ export default function Nead(props: RouteComponentProps<IPageParams>) {
   const dispatch = useDispatch();
 
   const careState = useSelector((state: ApplicationState) => state.cares);
-  const { documentGroupNead: documentGroupState, documentNead: documentState } = careState;
+  const {
+    documentGroupNead: documentGroupState,
+    documentNead: documentState,
+  } = careState;
 
-  const [anchorHelpPopover, setHelpPopover] = React.useState<HTMLButtonElement | null>(null);
+  const [
+    anchorHelpPopover,
+    setHelpPopover,
+  ] = React.useState<HTMLButtonElement | null>(null);
   const openHelpPopover = Boolean(anchorHelpPopover);
 
+  const [
+    anchorHelpGroup3Popover,
+    setHelpGroup3Popover,
+  ] = React.useState<HTMLButtonElement | null>(null);
+  const openHelpGroup3Popover = Boolean(anchorHelpGroup3Popover);
+
   const [steps, setSteps] = useState([
-    { title: 'Escore de Katz', score: { total: 0, complexity: '', status: '' } },
-    { title: 'Grupo 1', score: { total: 0, complexity: '', status: '' } },
-    { title: 'Grupo 2', score: { total: 0, complexity: '', status: '' } },
-    { title: 'Grupo 3', score: { total: 0, complexity: '', status: '' } },
+    {
+      title: "Escore de Katz",
+      score: { total: 0, complexity: "", status: "" },
+    },
+    { title: "Grupo 1", score: { total: 0, complexity: "", status: "" } },
+    { title: "Grupo 2", score: { total: 0, complexity: "", status: "" } },
+    { title: "Grupo 3", score: { total: 0, complexity: "", status: "" } },
   ]);
   const [currentStep, setCurrentStep] = useState(0);
 
   const [care, setCare] = useState<CareInterface>();
   const [documentGroup, setDocumentGroup] = useState<DocumentGroupInterface>({
-    _id: '',
-    name: '',
-    description: '',
+    _id: "",
+    name: "",
+    description: "",
     fields: [],
-    created_at: '',
-    created_by: { _id: '' },
-    updated_at: '',
-    updated_by: { _id: '' },
+    created_at: "",
+    created_by: { _id: "" },
+    updated_at: "",
+    updated_by: { _id: "" },
   });
   const [document, setDocument] = useState<any>();
 
@@ -68,9 +106,13 @@ export default function Nead(props: RouteComponentProps<IPageParams>) {
     dispatch(loadCareById(params.id));
 
     if (params?.documentId) {
-      dispatch(actionDocumentNeadRequest({ _id: params.documentId, care_id: params.id }));
+      dispatch(
+        actionDocumentNeadRequest({
+          _id: params.documentId,
+          care_id: params.id,
+        })
+      );
     }
-
   }, []);
 
   useEffect(() => {
@@ -96,7 +138,9 @@ export default function Nead(props: RouteComponentProps<IPageParams>) {
       !documentState?.error
     ) {
       if (care?._id) {
-        history.push(`/patient/capture/${care._id}/overview/`, { success: true });
+        history.push(`/patient/capture/${care._id}/overview/`, {
+          success: true,
+        });
       }
     }
   }, [documentState]);
@@ -109,42 +153,47 @@ export default function Nead(props: RouteComponentProps<IPageParams>) {
 
   useEffect(() => {
     calculateScore();
-  }, [documentGroup]);
+  }, [currentStep]);
 
-  const selectOption = useCallback((field_id: string, option_id: string, multiple: boolean = false) => {
-    let documentGroupCopy = { ...documentGroup };
+  const selectOption = useCallback(
+    (field_id: string, option_id: string, multiple: boolean = false) => {
+      let documentGroupCopy = { ...documentGroup };
 
-    documentGroupCopy?.fields?.map((field: any) => {
-      if (field._id === field_id) {
-        field.options.map((option: any) => {
-          if (option._id === option_id) {
-            if (option?.selected) {
-              option.selected = !option.selected;
+      documentGroupCopy?.fields?.map((field: any) => {
+        if (field._id === field_id) {
+          field.options.map((option: any) => {
+            if (option._id === option_id) {
+              if (option?.selected) {
+                option.selected = !option.selected;
+              } else {
+                option.selected = true;
+              }
             } else {
-              option.selected = true;
+              if (!multiple) {
+                option.selected = false;
+              }
             }
-          } else {
-            if (!multiple) {
-              option.selected = false;
-            }
-          }
-        })
-      }
-    });
+          });
+        }
+      });
 
-    setDocumentGroup(documentGroupCopy);
-    calculateScore();
-
-  }, [documentGroup]);
+      setDocumentGroup(documentGroupCopy);
+      calculateScore();
+    },
+    [documentGroup]
+  );
 
   const calculateScore = useCallback(() => {
-    let partialScore = 0, countNoAnswers = 0, count24hours = 0, count12hours = 0;
+    let partialScore = 0,
+      countNoAnswers = 0,
+      count24hours = 0,
+      count12hours = 0;
 
     documentGroup?.fields?.map((field: any) => {
       if (field.step === currentStep) {
         field.options.map((option: any) => {
           if (option?.selected) {
-            if (option.value === 'Não') {
+            if (option.value === "Não") {
               countNoAnswers++;
             } else if (parseInt(option.value) === 24) {
               count24hours++;
@@ -162,67 +211,57 @@ export default function Nead(props: RouteComponentProps<IPageParams>) {
       // Critérios para indicação imediata de internação domiciliar (GRUPO 2)
       if (currentStep === 2) {
         if (count24hours > 0) {
-          return 'Alta Complexidade';
+          return "Alta Complexidade";
         } else if (count12hours > 0) {
-          return 'Média Complexidade';
+          return "Média Complexidade";
         } else {
-          return 'Sem Complexidade';
+          return "Sem Complexidade";
         }
       }
       // Atividades (GRUPO 3)
       else if (currentStep === 3) {
         if (partialScore >= 6 && partialScore <= 11) {
-          return 'Baixa Complexidade';
+          return "Baixa Complexidade";
         } else if (partialScore >= 12 && partialScore <= 17) {
-          return 'Média Complexidade';
+          return "Média Complexidade";
         } else if (partialScore >= 18) {
-          return 'Alta Complexidade';
+          return "Alta Complexidade";
         } else {
-          return 'Sem Complexidade';
+          return "Sem Complexidade";
         }
       }
       // KATZ
       else if (currentStep === 0) {
         if (score < 2) {
-          return 'Alta Complexidade';
+          return "Alta Complexidade";
         } else if (score >= 3 && score <= 4) {
-          return 'Média Complexidade';
+          return "Média Complexidade";
         } else {
-          return 'Baixa Complexidade';
+          return "Baixa Complexidade";
         }
       } else {
-        return 'Não Identificado';
+        return "Não Identificado";
       }
     };
 
     const getStatus = (score: number) => {
       // Elegibilidade (GRUPO 1)
       if (currentStep === 1) {
-        return (countNoAnswers > 0) ? 'Não Elegível' : 'Elegível';
+        return countNoAnswers > 0 ? "Não Elegível" : "Elegível";
       } else {
-        return 'Não Identificado';
+        return "Não Identificado";
       }
     };
 
     let stepsCopy = steps;
-    stepsCopy[currentStep].score = { total: partialScore, complexity: getComplexity(partialScore), status: getStatus(partialScore) };
-
-    /*
-    KATZ
-
-    Classificação:
-    5 ou 6 - Independente
-    3 ou 4 - Dependente Parcial
-    < 2    - Dependente Total
-
-    Exibir junto a numeracao do score
-
-    Dependendo do valor, marcar o equivalente na pergunta: '3. KATZ (se pediatria, considerar dependência total)' do grupo 3
-    */
-
+    stepsCopy[currentStep].score = {
+      total: partialScore,
+      complexity: getComplexity(partialScore),
+      status: getStatus(partialScore),
+    };
 
     setSteps(stepsCopy);
-  }, [documentGroup, steps]);
+  }, [documentGroup, steps, currentStep]);
 
   const handleFieldAnswer = useCallback(() => {
     let documentGroupCopy = { ...documentGroup };
@@ -230,10 +269,10 @@ export default function Nead(props: RouteComponentProps<IPageParams>) {
     documentGroupCopy?.fields?.map((field: any) => {
       field.options.map((option: any) => {
         const optionFounded = document.fields?.find((opt: any) => {
-          return opt.option_id === option._id
+          return opt.option_id === option._id;
         });
 
-        option.selected = (optionFounded) ? true : false;
+        option.selected = optionFounded ? true : false;
 
         return option;
       });
@@ -243,74 +282,102 @@ export default function Nead(props: RouteComponentProps<IPageParams>) {
   }, [documentGroup, document]);
 
   const handleSubmit = useCallback(() => {
-    let selecteds: any = [], complexitiesArray: any = [], statusArray: any = [];
-    let complexity: string = '', status: string = '';
+    let selecteds: any = [],
+      complexitiesArray: any = [],
+      statusArray: any = [];
+    let complexity: string = "",
+      status: string = "";
 
     documentGroup?.fields?.map((field: any) => {
       field.options.map((option: any) => {
         if (option?.selected) {
-          selecteds.push({ _id: field._id, description: field.description, option_id: option._id, value: option.value })
+          selecteds.push({
+            _id: field._id,
+            description: field.description,
+            option_id: option._id,
+            value: option.value,
+          });
         }
-      })
+      });
     });
 
-    steps.forEach(step => {
+    steps.forEach((step) => {
       complexitiesArray.push(step.score.complexity);
       statusArray.push(step.score.status);
     });
 
-    if (complexitiesArray.findIndex((item: string) => (item === 'Alta Complexidade')) > -1) {
-      complexity = 'Alta Complexidade';
-    } else if (complexitiesArray.findIndex((item: string) => (item === 'Média Complexidade')) > -1) {
-      complexity = 'Média Complexidade';
-    } else if (complexitiesArray.findIndex((item: string) => (item === 'Baixa Complexidade')) > -1) {
-      complexity = 'Baixa Complexidade';
+    if (
+      complexitiesArray.findIndex(
+        (item: string) => item === "Alta Complexidade"
+      ) > -1
+    ) {
+      complexity = "Alta Complexidade";
+    } else if (
+      complexitiesArray.findIndex(
+        (item: string) => item === "Média Complexidade"
+      ) > -1
+    ) {
+      complexity = "Média Complexidade";
+    } else if (
+      complexitiesArray.findIndex(
+        (item: string) => item === "Baixa Complexidade"
+      ) > -1
+    ) {
+      complexity = "Baixa Complexidade";
     } else {
-      complexity = 'Sem Complexidade';
+      complexity = "Sem Complexidade";
     }
 
-    if (statusArray.find((item: string) => (item === 'Não Elegível'))) {
-      status = 'Não Elegível';
+    if (statusArray.find((item: string) => item === "Não Elegível")) {
+      status = "Não Elegível";
     } else {
-      status = 'Elegível';
+      status = "Elegível";
     }
 
     if (care?.patient_id?._id && care?._id) {
       const createDocumentParams = {
-        pacient_id: care.patient_id?._id,
-        care_id: care._id,
+        patient_id: care.patient_id?._id,
+        care_id: care?._id,
         document_group_id: documentGroup._id,
         finished: true,
         canceled: false,
         fields: selecteds,
         complexity,
         status,
-        created_by: { _id: '5e8cfe7de9b6b8501c8033ac' },
+        created_by: { _id: handleUserSelectedId() || '' },
       };
 
       if (document?._id) {
-        dispatch(actionDocumentNeadUpdateRequest({ ...createDocumentParams, _id: document._id }));
+        dispatch(
+          actionDocumentNeadUpdateRequest({
+            ...createDocumentParams,
+            _id: document._id,
+          })
+        );
       } else {
         dispatch(actionDocumentNeadStoreRequest(createDocumentParams));
       }
     }
-
   }, [documentGroup, care]);
 
-
   const handleNextStep = useCallback(() => {
-    setCurrentStep(prevState => (prevState + 1))
+    setCurrentStep((prevState) => prevState + 1);
   }, [currentStep]);
 
   const handleBackStep = useCallback(() => {
-    setCurrentStep(prevState => (prevState - 1))
+    setCurrentStep((prevState) => prevState - 1);
   }, [currentStep]);
 
-  const handleNavigateStep = useCallback((step: number) => {
-    setCurrentStep(step)
-  }, [currentStep]);
+  const handleNavigateStep = useCallback(
+    (step: number) => {
+      setCurrentStep(step);
+    },
+    [currentStep]
+  );
 
-  const handleClickHelpPopover = (event: React.MouseEvent<HTMLButtonElement>) => {
+  const handleClickHelpPopover = (
+    event: React.MouseEvent<HTMLButtonElement>
+  ) => {
     setHelpPopover(event.currentTarget);
   };
 
@@ -318,101 +385,167 @@ export default function Nead(props: RouteComponentProps<IPageParams>) {
     setHelpPopover(null);
   };
 
+  const handleClickHelpGroup3Popover = (
+    event: React.MouseEvent<HTMLButtonElement>
+  ) => {
+    setHelpGroup3Popover(event.currentTarget);
+  };
+
+  const handleCloseHelpGroup3Popover = () => {
+    setHelpGroup3Popover(null);
+  };
+
   return (
     <Sidebar>
       {careState.loading && <Loading />}
       <Container>
-
         {care?.patient_id && (
           <>
             <h2>Paciente</h2>
             <PatientCard patient={care.patient_id} />
           </>
         )}
-        <div style={{ display: 'flex', alignItems: 'center', flexDirection: 'row', marginBottom: 40 }}>
-          <FormTitle style={{ margin: 0 }}>Tabela de avaliação para planejamento de atenção domiciliar</FormTitle>
-          <IconButton aria-describedby={'popover_help_abemid'} onClick={handleClickHelpPopover} style={{ marginLeft: 10 }}>
-              <HelpIcon style={{ color: "#ccc" }} />
-            </IconButton >
-            <Popover
-              id={'popover_help_abemid'}
-              open={openHelpPopover}
-              anchorEl={anchorHelpPopover}
-              onClose={handleCloseHelpPopover}
-              anchorOrigin={{
-                vertical: 'bottom',
-                horizontal: 'center',
-              }}
-              transformOrigin={{
-                vertical: 'top',
-                horizontal: 'left',
+        <div
+          style={{
+            display: "flex",
+            alignItems: "center",
+            flexDirection: "row",
+            marginBottom: 40,
+          }}
+        >
+          <FormTitle style={{ margin: 0 }}>
+            Tabela de avaliação para planejamento de atenção domiciliar
+          </FormTitle>
+          <IconButton
+            aria-describedby={"popover_help_abemid"}
+            onClick={handleClickHelpPopover}
+            style={{ marginLeft: 10 }}
+          >
+            <HelpIcon style={{ color: "#ccc" }} />
+          </IconButton>
+          <Popover
+            id={"popover_help_abemid"}
+            open={openHelpPopover}
+            anchorEl={anchorHelpPopover}
+            onClose={handleCloseHelpPopover}
+            anchorOrigin={{
+              vertical: "bottom",
+              horizontal: "center",
+            }}
+            transformOrigin={{
+              vertical: "top",
+              horizontal: "left",
+            }}
+          >
+            <div
+              style={{
+                paddingTop: 20,
+                paddingLeft: 30,
+                paddingBottom: 20,
+                paddingRight: 30,
+                maxWidth: 500,
+                listStylePosition: "inside",
+                textAlign: "justify",
               }}
             >
-              <div
-                style={{ paddingTop: 20, paddingLeft: 30, paddingBottom: 20, paddingRight: 30, maxWidth: 500, listStylePosition: 'inside', textAlign: 'justify' }}>
-                <p>Regra:</p>
+              <p>Regra:</p>
+              <br />
+              <ul>
+                <li>GRUPO 1 – ELEGIBILIDADE</li>
+                <p>
+                  Se responder <b>NÃO</b> a qualquer uma das questões,
+                  considerar contraindicar Atenção Domiciliar
+                </p>
                 <br />
-                <ul>
-                  <li>GRUPO 1 – ELEGIBILIDADE</li>
-                  <p>Se responder <b>NÃO</b> a qualquer uma das questões, considerar contraindicar Atenção Domiciliar</p>
-                  <br />
 
-                  <li>GRUPO 2 – CRITÉRIOS PARA INDICAÇÃO IMEDIATA DE INTERNAÇÃO DOMICILIAR</li>
-                  <p>Para indicação de Planejamento de Atenção Domiciliar (P.A.D.), considerar a maior complexidade assinalada, ainda que uma única vez.</p>
-                  <br />
+                <li>
+                  GRUPO 2 – CRITÉRIOS PARA INDICAÇÃO IMEDIATA DE INTERNAÇÃO
+                  DOMICILIAR
+                </li>
+                <p>
+                  Para indicação de Planejamento de Atenção Domiciliar (P.A.D.),
+                  considerar a maior complexidade assinalada, ainda que uma
+                  única vez.
+                </p>
+                <br />
 
-                  <li>GRUPO 3 – CRITÉRIOS DE APOIO PARA INDICAÇÃO DE PLANEJAMENTO DE ATENÇÃO DOMICILIAR</li>
-                  <p>A resposta da pergunta três deve vir preenchida conforme o resultado da classificação do KATZ</p>
-                  <br />
+                <li>
+                  GRUPO 3 – CRITÉRIOS DE APOIO PARA INDICAÇÃO DE PLANEJAMENTO DE
+                  ATENÇÃO DOMICILIAR
+                </li>
+                <p>
+                  A resposta da pergunta três deve vir preenchida conforme o
+                  resultado da classificação do KATZ
+                </p>
+                <br />
 
-                  <li>Até 5 Pontos - Considerar procedimentos pontuais exclusivos ou outros programas:</li>
-                  <p>( ) Curativos  ( ) Medicações Parenterais ( ) Outros Programas</p>
-                  <br />
+                <li>
+                  Até 5 Pontos - Considerar procedimentos pontuais exclusivos ou
+                  outros programas:
+                </li>
+                <p>
+                  ( ) Curativos ( ) Medicações Parenterais ( ) Outros Programas
+                </p>
+                <br />
 
-                  <li>De 6 a 11 Pontos - Considerar Atendimento Domiciliar Multiprofissional (inclui procedimentos pontuais, desde que não exclusivos)</li>
-                  <br />
+                <li>
+                  De 6 a 11 Pontos - Considerar Atendimento Domiciliar
+                  Multiprofissional (inclui procedimentos pontuais, desde que
+                  não exclusivos)
+                </li>
+                <br />
 
-                  <li>De 12 a 17 Pontos - Considerar Internação Domiciliar 12h</li>
-                  <br />
+                <li>
+                  De 12 a 17 Pontos - Considerar Internação Domiciliar 12h
+                </li>
+                <br />
 
-                  <li>18 ou mais Pontos - Considerar Internação Domiciliar 24h</li>
-                  <br />
-                </ul>
-              </div>
-            </Popover>
-
-          </div>
+                <li>
+                  18 ou mais Pontos - Considerar Internação Domiciliar 24h
+                </li>
+                <br />
+              </ul>
+            </div>
+          </Popover>
+        </div>
 
         <StepperComponent activeStep={currentStep} alternativeLabel>
           {steps.map((step, index) => (
-            <StepComponent key={`${step}_${index}`} onClick={() => handleNavigateStep(index)}>
+            <StepComponent
+              key={`${step}_${index}`}
+              onClick={() => handleNavigateStep(index)}
+            >
               <StepLabel>{step.title}</StepLabel>
             </StepComponent>
           ))}
         </StepperComponent>
 
         <FormContent>
-          {/* Grupo 1 */}
+          {/* Score de KATZ */}
           {currentStep === 0 && (
             <>
-              <StepTitle>Atividades</StepTitle>
+              <StepTitle>KATZ</StepTitle>
 
               {documentGroup?.fields?.map((field: any, index: number) => {
                 if (field.step === 0) {
                   return (
                     <QuestionSection key={`question_${field._id}_${index}`}>
                       <QuestionTitle>{field.description}</QuestionTitle>
-                      <RadioGroup onChange={e => selectOption(field._id, e.target.value)}>
+                      <RadioGroup
+                        onChange={(e) =>
+                          selectOption(field._id, e.target.value)
+                        }
+                      >
                         {field.options.map((option: any, index: number) => (
                           <FormControlLabel
                             key={`option_${field._id}_${index}`}
                             value={option._id}
-                            control={(
+                            control={
                               <Radio
                                 color="primary"
                                 checked={option?.selected}
                               />
-                            )}
+                            }
                             label={option.text}
                           />
                         ))}
@@ -424,12 +557,15 @@ export default function Nead(props: RouteComponentProps<IPageParams>) {
 
               <ScoreTotalContent>
                 <ScoreLabel>PONTUAÇÃO KATZ:</ScoreLabel>
-                <ScoreTotal>{steps[currentStep].score.total} - {steps[currentStep].score.complexity}</ScoreTotal>
+                <ScoreTotal>
+                  {steps[currentStep].score.total} -{" "}
+                  {steps[currentStep].score.complexity}
+                </ScoreTotal>
               </ScoreTotalContent>
             </>
           )}
 
-          {/* Grupo 2 */}
+          {/* Grupo 1 */}
           {currentStep === 1 && (
             <>
               <StepTitle>Elegibilidade</StepTitle>
@@ -439,17 +575,21 @@ export default function Nead(props: RouteComponentProps<IPageParams>) {
                   return (
                     <QuestionSection key={`question_${field._id}_${index}`}>
                       <QuestionTitle>{field.description}</QuestionTitle>
-                      <RadioGroup onChange={e => selectOption(field._id, e.target.value)}>
+                      <RadioGroup
+                        onChange={(e) =>
+                          selectOption(field._id, e.target.value)
+                        }
+                      >
                         {field.options.map((option: any, index: number) => (
                           <FormControlLabel
                             key={`option_${field._id}_${index}`}
                             value={option._id}
-                            control={(
+                            control={
                               <Radio
                                 color="primary"
                                 checked={option?.selected}
                               />
-                            )}
+                            }
                             label={option.text}
                           />
                         ))}
@@ -459,31 +599,42 @@ export default function Nead(props: RouteComponentProps<IPageParams>) {
                 }
               })}
 
-              <p><i>*Se responder "NÃO" a qualquer uma das questões acima, considerar contraindicar Atenção Domiciliar</i></p>
+              <p>
+                <i>
+                  *Se responder "NÃO" a qualquer uma das questões acima,
+                  considerar contraindicar Atenção Domiciliar
+                </i>
+              </p>
             </>
           )}
 
-          {/* Grupo 3 */}
+          {/* Grupo 2 */}
           {currentStep === 2 && (
             <>
-              <StepTitle>Critérios para indicação imediata de internação domiciliar</StepTitle>
+              <StepTitle>
+                Critérios para indicação imediata de internação domiciliar
+              </StepTitle>
 
               {documentGroup?.fields?.map((field: any, index: number) => {
                 if (field.step === 2) {
                   return (
                     <QuestionSection key={`question_${field._id}_${index}`}>
                       <QuestionTitle>{field.description}</QuestionTitle>
-                      <RadioGroup onChange={e => selectOption(field._id, e.target.value)}>
+                      <RadioGroup
+                        onChange={(e) =>
+                          selectOption(field._id, e.target.value)
+                        }
+                      >
                         {field.options.map((option: any, index: number) => (
                           <FormControlLabel
                             key={`option_${field._id}_${index}`}
                             value={option._id}
-                            control={(
+                            control={
                               <Radio
                                 color="primary"
                                 checked={option?.selected}
                               />
-                            )}
+                            }
                             label={option.text}
                           />
                         ))}
@@ -493,31 +644,118 @@ export default function Nead(props: RouteComponentProps<IPageParams>) {
                 }
               })}
 
-              <p><i>*Para indicação de Planejamento de Atenção (P.A.D.), considerar a maior complexidade assinalada, ainda que a única vez.</i></p>
+              <p>
+                <i>
+                  *Para indicação de Planejamento de Atenção (P.A.D.),
+                  considerar a maior complexidade assinalada, ainda que a única
+                  vez.
+                </i>
+              </p>
             </>
           )}
 
-          {/* Score de Katz */}
+          {/* Grupo 3 */}
           {currentStep === 3 && (
             <>
-              <StepTitle>Atividades</StepTitle>
+              <div
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  flexDirection: "row",
+                  marginBottom: 40,
+                }}
+              >
+                <StepTitle style={{ margin: 0 }}>
+                  Critérios de apoio para indicação de planejamento de atenção
+                  domiciliar
+                </StepTitle>
+
+                <IconButton
+                  aria-describedby={"popover_help_abemid_group_3"}
+                  onClick={handleClickHelpGroup3Popover}
+                  style={{ marginLeft: 10 }}
+                >
+                  <HelpIcon style={{ color: "#ccc" }} />
+                </IconButton>
+                <Popover
+                  id={"popover_help_abemid_group_3"}
+                  open={openHelpGroup3Popover}
+                  anchorEl={anchorHelpGroup3Popover}
+                  onClose={handleCloseHelpGroup3Popover}
+                  anchorOrigin={{
+                    vertical: "bottom",
+                    horizontal: "center",
+                  }}
+                  transformOrigin={{
+                    vertical: "top",
+                    horizontal: "left",
+                  }}
+                >
+                  <div
+                    style={{
+                      paddingTop: 20,
+                      paddingLeft: 30,
+                      paddingBottom: 20,
+                      paddingRight: 30,
+                      maxWidth: 500,
+                      listStylePosition: "inside",
+                      textAlign: "justify",
+                    }}
+                  >
+                    <p>Regra:</p>
+                    <br />
+                    <ul>
+                      <li>
+                        Até 5 Pontos - Considerar procedimentos pontuais
+                        exclusivos ou outros programas:
+                      </li>
+                      <p>
+                        ( ) Curativos ( ) Medicações Parenterais ( ) Outros
+                        Programas
+                      </p>
+                      <br />
+
+                      <li>
+                        De 6 a 11 Pontos - Considerar Atendimento Domiciliar
+                        Multiprofissional (inclui procedimentos pontuais, desde
+                        que não exclusivos)
+                      </li>
+                      <br />
+
+                      <li>
+                        De 12 a 17 Pontos - Considerar Internação Domiciliar 12h
+                      </li>
+                      <br />
+
+                      <li>
+                        18 ou mais Pontos - Considerar Internação Domiciliar 24h
+                      </li>
+                      <br />
+                    </ul>
+                  </div>
+                </Popover>
+              </div>
 
               {documentGroup?.fields?.map((field: any, index: number) => {
                 if (field.step === 3) {
                   return (
                     <QuestionSection key={`question_${field._id}_${index}`}>
                       <QuestionTitle>{field.description}</QuestionTitle>
-                      <RadioGroup onChange={e => { selectOption(field._id, e.target.value) }}>
+                      <RadioGroup
+                        onChange={(e) => {
+                          selectOption(field._id, e.target.value);
+                        }}
+                      >
                         {field.options.map((option: any, index: number) => (
                           <FormControlLabel
                             key={`option_${field._id}_${index}`}
                             value={option._id}
-                            control={(
+                            control={
                               <Radio
                                 color="primary"
                                 checked={option?.selected}
                               />
-                            )}
+                            }
                             label={option.text}
                             checked={option?.selected}
                           />
@@ -530,7 +768,10 @@ export default function Nead(props: RouteComponentProps<IPageParams>) {
 
               <ScoreTotalContent>
                 <ScoreLabel>PONTUAÇÃO FINAL:</ScoreLabel>
-                <ScoreTotal>{steps[currentStep].score.total} - {steps[currentStep].score.complexity}</ScoreTotal>
+                <ScoreTotal>
+                  {steps[currentStep].score.total} -{" "}
+                  {steps[currentStep].score.complexity}
+                </ScoreTotal>
               </ScoreTotalContent>
             </>
           )}
@@ -538,7 +779,9 @@ export default function Nead(props: RouteComponentProps<IPageParams>) {
           <ButtonsContent>
             <Button
               background="default"
-              onClick={() => history.push(`/patient/capture/${care?._id}/overview`)}
+              onClick={() =>
+                history.push(`/patient/capture/${care?._id}/overview`)
+              }
             >
               Cancelar
             </Button>
@@ -550,29 +793,25 @@ export default function Nead(props: RouteComponentProps<IPageParams>) {
               Anterior
             </Button>
 
-            {currentStep === (steps.length - 1) ? (
+            {currentStep === steps.length - 1 ? (
               <>
-                {careState.data.capture?.status === 'Em Andamento' && (
-                  <Button
-                    background="primary"
-                    onClick={handleSubmit}
-                  >
+                {careState.data.capture?.status === "Em Andamento" && (
+                  <Button background="primary" onClick={handleSubmit}>
                     Finalizar
                   </Button>
                 )}
               </>
             ) : (
-                <Button
-                  disabled={currentStep === (steps.length - 1)}
-                  background="success"
-                  onClick={handleNextStep}
-                >
-                  Próximo
-                </Button>
-              )}
+              <Button
+                disabled={currentStep === steps.length - 1}
+                background="success"
+                onClick={handleNextStep}
+              >
+                Próximo
+              </Button>
+            )}
           </ButtonsContent>
         </FormContent>
-
       </Container>
     </Sidebar>
   );

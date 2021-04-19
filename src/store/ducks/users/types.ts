@@ -15,6 +15,7 @@ export enum UserTypes {
 
   LOAD_REQUEST_ADDRESS = "@user/LOAD_REQUEST_ADDRESS",
   LOAD_RESPONSE_ADDRESS = "@user/LOAD_RESPONSE_ADDRESS",
+  ERROR_RESPONSE_ADDRESS = "@user/ERROR_RESPONSE_ADDRESS",
 
   LOAD_REQUEST_USER_BY_ID = "@user/LOAD_REQUEST_USER_BY_ID",
   LOAD_SUCCESS_USER_BY_ID = "@user/LOAD_SUCCESS_USER_BY_ID",
@@ -92,6 +93,7 @@ export interface UserInterface {
     city: string;
     state: string;
     complement: string;
+    geolocation?: { latitude: number, longitude: number }
   };
   email: string; // email
   phone: string;

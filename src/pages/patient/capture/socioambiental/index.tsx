@@ -14,6 +14,7 @@ import Sidebar from '../../../../components/Sidebar';
 
 import Button from '../../../../styles/components/Button';
 import { FormTitle, QuestionSection, QuestionTitle, ScoreTotalContent, ScoreLabel, ScoreTotal } from '../../../../styles/components/Form';
+import { handleUserSelectedId } from '../../../../helpers/localStorage';
 
 import { ButtonsContent, FormContent } from './styles';
 
@@ -181,13 +182,13 @@ export default function SocioAmbiental(props: RouteComponentProps<IPageParams>) 
     if (care?.patient_id?._id && care?._id) {
       const createDocumentParams = {
         ...score,
-        pacient_id: care.patient_id?._id,
+        patient_id: care.patient_id?._id,
         care_id: care?._id,
         document_group_id: documentGroup?._id || '',
         finished: true,
         canceled: false,
         fields: selecteds,
-        created_by: { _id: '5e8cfe7de9b6b8501c8033ac' },
+        created_by: { _id: handleUserSelectedId() || '' },
       };
 
       if (document?._id) {

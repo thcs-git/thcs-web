@@ -23,6 +23,7 @@ import Sidebar from '../../../../components/Sidebar';
 import Button from '../../../../styles/components/Button';
 import { FormTitle, QuestionSection, QuestionTitle, ScoreTotalContent, ScoreLabel, ScoreTotal } from '../../../../styles/components/Form';
 import { StepperComponent, StepComponent, StepTitle } from '../../../../styles/components/Step';
+import { handleUserSelectedId } from '../../../../helpers/localStorage';
 
 
 import { ButtonsContent, FormContent } from './styles';
@@ -60,15 +61,29 @@ export default function Abemid(props: RouteComponentProps<IPageParams>) {
     updated_by: { _id: '' },
   });
   const [document, setDocument] = useState<any>();
-  const [score, setScore] = useState<IScore>({ total: 0, complexity: 'Sem Complexidade', status: '' });
   const [steps, setSteps] = useState([
-    { title: 'KATZ', finished: (!!routeState.katzIsDone) },
-    { title: 'Abemid', finished: false },
+    { title: 'KATZ', finished: (!!routeState.katzIsDone), score: { total: 0, complexity: "", status: "" } },
+    { title: 'Abemid', finished: false, score: { total: 0, complexity: "", status: "" } },
   ]);
-
+  const [currentStep, setCurrentStep] = useState(0);
 
   const [anchorHelpPopover, setHelpPopover] = React.useState<HTMLButtonElement | null>(null);
   const openHelpPopover = Boolean(anchorHelpPopover);
+
+  const handleNextStep = useCallback(() => {
+    setCurrentStep((prevState) => prevState + 1);
+  }, [currentStep]);
+
+  const handleBackStep = useCallback(() => {
+    setCurrentStep((prevState) => prevState - 1);
+  }, [currentStep]);
+
+  const handleNavigateStep = useCallback(
+    (step: number) => {
+      setCurrentStep(step);
+    },
+    [currentStep]
+  );
 
   const handleClickHelpPopover = (event: React.MouseEvent<HTMLButtonElement>) => {
     setHelpPopover(event.currentTarget);
@@ -85,8 +100,6 @@ export default function Abemid(props: RouteComponentProps<IPageParams>) {
     if (params?.documentId) {
       dispatch(actionDocumentAbemidRequest({ _id: params.documentId, care_id: params.id }));
     }
-
-    console.log('routeState.katzIsDone', routeState.katzIsDone);
   }, []);
 
   useEffect(() => {
@@ -123,6 +136,10 @@ export default function Abemid(props: RouteComponentProps<IPageParams>) {
     }
   }, [document]);
 
+  useEffect(() => {
+    calculateScore();
+  }, [currentStep]);
+
   const selectOption = useCallback((field_id: string, option_id: string, multiple: boolean = false) => {
     let documentGroupCopy = { ...documentGroup };
 
@@ -153,30 +170,46 @@ export default function Abemid(props: RouteComponentProps<IPageParams>) {
     let partialScore = 0, countQuestionFive = 0;
 
     documentGroup?.fields?.map((field: any) => {
-      field.options.map((option: any) => {
-        if (option?.selected) {
-          if (option.value === 5) {
-            countQuestionFive++;
-          }
+      if (field.step === currentStep) {
+        field.options.map((option: any) => {
+          if (option?.selected) {
+            if (option.value === 5) {
+              countQuestionFive++;
+            }
 
-          partialScore += parseInt(option.value);
-        }
-      });
+            partialScore += parseInt(option.value);
+          }
+        });
+      }
     });
 
     const getComplexity = (score: number) => {
-      if (countQuestionFive === 1) {
-        return 'Média Complexidade';
-      } else if (countQuestionFive > 1) {
-        return 'Alta Complexidade';
-      } else if (score >= 8 && score <= 12) {
-        return 'Baixa Complexidade';
-      } else if (score >= 13 && score <= 18) {
-        return 'Média Complexidade';
-      } else if (score >= 19) {
-        return 'Alta Complexidade';
+      if (currentStep === 1) {
+        if (countQuestionFive === 1) {
+          return 'Média Complexidade';
+        } else if (countQuestionFive > 1) {
+          return 'Alta Complexidade';
+        } else if (score >= 8 && score <= 12) {
+          return 'Baixa Complexidade';
+        } else if (score >= 13 && score <= 18) {
+          return 'Média Complexidade';
+        } else if (score >= 19) {
+          return 'Alta Complexidade';
+        } else {
+          return 'Complexidade Não Detectada';
+        }
+      }
+      // KATZ
+      else if (currentStep === 0) {
+        if (score < 2) {
+          return "Alta Complexidade";
+        } else if (score >= 3 && score <= 4) {
+          return "Média Complexidade";
+        } else {
+          return "Baixa Complexidade";
+        }
       } else {
-        return 'Complexidade Não Detectada';
+        return "Não Identificado";
       }
     };
 
@@ -188,9 +221,17 @@ export default function Abemid(props: RouteComponentProps<IPageParams>) {
       }
     };
 
-    setScore({ total: partialScore, complexity: getComplexity(partialScore), status: getStatus(partialScore) });
+    let stepsCopy = steps;
 
-  }, [documentGroup]);
+    stepsCopy[currentStep].score = {
+      total: partialScore,
+      complexity: getComplexity(partialScore),
+      status: getStatus(partialScore),
+    };
+
+    setSteps(stepsCopy);
+
+  }, [documentGroup, currentStep]);
 
   const handleFieldAnswer = useCallback(() => {
     let documentGroupCopy = { ...documentGroup };
@@ -212,26 +253,69 @@ export default function Abemid(props: RouteComponentProps<IPageParams>) {
   }, [documentGroup, document]);
 
   const handleSubmit = useCallback(() => {
-    let selecteds: any = [];
+    let selecteds: any = [],
+      complexitiesArray: any = [],
+      statusArray: any = [];
+    let complexity: string = "",
+      status: string = "";
 
     documentGroup?.fields?.map((field: any) => {
       field.options.map((option: any) => {
         if (option?.selected) {
-          selecteds.push({ _id: field._id, description: field.description, option_id: option._id, value: option.value })
+          selecteds.push({
+            _id: field._id,
+            description: field.description,
+            option_id: option._id,
+            value: option.value
+          })
         }
       })
     });
 
+    steps.forEach((step) => {
+      complexitiesArray.push(step.score.complexity);
+      statusArray.push(step.score.status);
+    });
+
+    if (
+      complexitiesArray.findIndex(
+        (item: string) => item === "Alta Complexidade"
+      ) > -1
+    ) {
+      complexity = "Alta Complexidade";
+    } else if (
+      complexitiesArray.findIndex(
+        (item: string) => item === "Média Complexidade"
+      ) > -1
+    ) {
+      complexity = "Média Complexidade";
+    } else if (
+      complexitiesArray.findIndex(
+        (item: string) => item === "Baixa Complexidade"
+      ) > -1
+    ) {
+      complexity = "Baixa Complexidade";
+    } else {
+      complexity = "Sem Complexidade";
+    }
+
+    if (statusArray.find((item: string) => item === "Não Elegível")) {
+      status = "Não Elegível";
+    } else {
+      status = "Elegível";
+    }
+
     if (care?.patient_id?._id && care?._id) {
       const createDocumentParams = {
-        ...score,
-        pacient_id: care.patient_id?._id,
+        patient_id: care.patient_id?._id,
         care_id: care?._id,
         document_group_id: documentGroup?._id || '',
         finished: true,
         canceled: false,
         fields: selecteds,
-        created_by: { _id: '5e8cfe7de9b6b8501c8033ac' },
+        complexity,
+        status,
+        created_by: { _id: handleUserSelectedId() || '' },
       };
 
       if (document?._id) {
@@ -299,84 +383,170 @@ export default function Abemid(props: RouteComponentProps<IPageParams>) {
 
         </div>
 
-        <Grid container>
-          <Grid item md={4} sm={4}>
-            <StepperComponent nonLinear activeStep={1}>
-              {steps.map((step, index) => (
-                <StepComponent key={`step_${index}`}>
-                  <StepButton completed={step.finished}>
-                    {step.title}
-                  </StepButton>
-                </StepComponent>
-              ))}
-            </StepperComponent>
-          </Grid>
-        </Grid>
+        <StepperComponent activeStep={currentStep} alternativeLabel>
+          {steps.map((step, index) => (
+            <StepComponent
+              key={`${step}_${index}`}
+              onClick={() => handleNavigateStep(index)}
+            >
+              <StepLabel>{step.title}</StepLabel>
+            </StepComponent>
+          ))}
+        </StepperComponent>
 
         <FormContent>
-          {documentGroup?.fields?.map((field: any, index: number) => (
-            <QuestionSection key={`question_${field._id}_${index}`}>
-              <QuestionTitle>{field.description}</QuestionTitle>
+          {/* Score de KATZ */}
+          {currentStep === 0 && (
+            <>
+              <StepTitle>KATZ</StepTitle>
 
-              {field.type === 'radio' && (
-                <RadioGroup onChange={e => selectOption(field._id, e.target.value)}>
-                  {field.options.map((option: any, index: number) => (
-                    <FormControlLabel
-                      key={`option_${field._id}_${index}`}
-                      value={option._id}
-                      control={<Radio color="primary" />}
-                      label={option.text}
-                      checked={option?.selected}
-                    />
-                  ))}
-                </RadioGroup>
-              )}
+              {documentGroup?.fields?.map((field: any, index: number) => {
+                if (field.step === 0) {
+                  return (
+                    <QuestionSection key={`question_${field._id}_${index}`}>
+                      <QuestionTitle>{field.description}</QuestionTitle>
+                      <RadioGroup
+                        onChange={(e) =>
+                          selectOption(field._id, e.target.value)
+                        }
+                      >
+                        {field.options.map((option: any, index: number) => (
+                          <FormControlLabel
+                            key={`option_${field._id}_${index}`}
+                            value={option._id}
+                            control={
+                              <Radio
+                                color="primary"
+                                checked={option?.selected}
+                              />
+                            }
+                            label={option.text}
+                          />
+                        ))}
+                      </RadioGroup>
+                    </QuestionSection>
+                  );
+                }
+              })}
 
-              {field.type === 'check' && (
-                <FormGroup>
-                  {field.options.map((option: any, index: number) => (
-                    <FormControlLabel
-                      key={`option_${field._id}_${index}`}
-                      value={option._id}
-                      onChange={e => selectOption(field._id, option._id, true)}
-                      control={(
-                        <Checkbox color="primary"
-                          checked={option?.selected ?? false}
-                        />
+              <ScoreTotalContent>
+                <ScoreLabel>PONTUAÇÃO KATZ:</ScoreLabel>
+                <ScoreTotal>
+                  {
+                    steps[currentStep].score.total ?
+                      `${steps[currentStep].score.total} - ${steps[currentStep].score.complexity}`
+                      :
+                      '0'
+                  }
+                </ScoreTotal>
+              </ScoreTotalContent>
+            </>
+          )}
+
+        </FormContent>
+        <FormContent>
+
+          {/* Grupo 1 */}
+          {currentStep === 1 && (
+            <>
+              <StepTitle>Elegibilidade</StepTitle>
+
+              {documentGroup?.fields?.map((field: any, index: number) => {
+                if (field.step === 1) {
+                  return (
+                    <QuestionSection key={`question_${field._id}_${index}`}>
+                      <QuestionTitle>{field.description}</QuestionTitle>
+
+                      {field.type === 'radio' && (
+                        <RadioGroup onChange={e => selectOption(field._id, e.target.value)}>
+                          {field.options.map((option: any, index: number) => (
+                            <FormControlLabel
+                              key={`option_${field._id}_${index}`}
+                              value={option._id}
+                              control={<Radio color="primary" />}
+                              label={option.text}
+                              checked={option?.selected}
+                            />
+                          ))}
+                        </RadioGroup>
                       )}
-                      label={option.text}
-                    />
-                  ))}
-                </FormGroup>
-              )}
-            </QuestionSection>
-          ))}
 
-          <ScoreTotalContent>
-            <ScoreLabel>TOTAL DE PONTOS:</ScoreLabel>
-            <ScoreTotal>{score.total}</ScoreTotal>
-          </ScoreTotalContent>
+                      {field.type === 'check' && (
+                        <FormGroup>
+                          {field.options.map((option: any, index: number) => (
+                            <FormControlLabel
+                              key={`option_${field._id}_${index}`}
+                              value={option._id}
+                              onChange={e => selectOption(field._id, option._id, true)}
+                              control={(
+                                <Checkbox color="primary"
+                                  checked={option?.selected ?? false}
+                                />
+                              )}
+                              label={option.text}
+                            />
+                          ))}
+                        </FormGroup>
+                      )}
+                    </QuestionSection>
+                  );
+                }
+              })}
 
+              <ScoreTotalContent>
+                <ScoreLabel>TOTAL DE PONTOS:</ScoreLabel>
+                <ScoreTotal>
+                  {
+                    steps[currentStep].score.total ?
+                      `${steps[currentStep].score.total} - ${steps[currentStep].score.complexity}`
+                      :
+                      '0'
+                  }
+                </ScoreTotal>
+              </ScoreTotalContent>
+            </>
+          )}
+        </FormContent>
+
+        <FormContent>
           <ButtonsContent>
             <Button
               background="default"
-              onClick={() => history.push(`/patient/capture/${care?._id}/overview`)}
+              onClick={() =>
+                history.push(`/patient/capture/${care?._id}/overview`)
+              }
             >
               Cancelar
             </Button>
+            <Button
+              disabled={currentStep === 0}
+              background="default"
+              onClick={handleBackStep}
+            >
+              Anterior
+            </Button>
 
-            {careState.data.capture?.status === 'Em Andamento' && (
+            {currentStep === steps.length - 1 ? (
+              <>
+                {careState.data.capture?.status === "Em Andamento" && (
+                  <Button background="primary" onClick={handleSubmit}>
+                    Finalizar
+                  </Button>
+                )}
+              </>
+            ) : (
               <Button
-                background="primary"
-                onClick={handleSubmit}
+                disabled={currentStep === steps.length - 1}
+                background="success"
+                onClick={handleNextStep}
               >
-                Finalizar
+                Próximo
               </Button>
             )}
           </ButtonsContent>
         </FormContent>
 
       </Container>
-    </Sidebar >
+    </Sidebar>
   );
 }

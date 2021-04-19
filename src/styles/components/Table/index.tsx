@@ -1,7 +1,7 @@
-import styled from 'styled-components';
+import styled from "styled-components";
 
 interface ITableCellInterface {
-  center?: boolean
+  center?: boolean;
 }
 
 interface IComplexityStatus {
@@ -15,24 +15,25 @@ export const Table = styled.table`
   border-spacing: 0;
   margin-bottom: 40px;
 
-  & td, & th {
+  & td,
+  & th {
     padding: 10px;
   }
 `;
 
 export const Td = styled.td<ITableCellInterface>`
-  text-align: ${props => props.center ? 'center' : 'left'};
+  text-align: ${(props) => (props.center ? "center" : "left")};
   border-top: 1px solid #ccc;
 `;
 
 export const ComplexityStatus = styled.div<IComplexityStatus>`
   color: ${(props) => {
     switch (props.status) {
-      case 'Baixa Complexidade':
+      case "Baixa Complexidade":
         return `var(--success)`;
-      case 'Alta Complexidade':
+      case "Alta Complexidade":
         return `var(--danger)`;
-      case 'Média Complexidade':
+      case "Média Complexidade":
         return `var(--yellow)`;
       default:
         return `var(--black)`;
@@ -45,7 +46,7 @@ export const ComplexityStatus = styled.div<IComplexityStatus>`
 `;
 
 export const Th = styled.td<ITableCellInterface>`
-    font-weight: normal;
-    color: #666;
-    text-align: ${props => props.center ? 'center' : 'left'}
+  font-weight: normal;
+  color: #666;
+  text-align: ${(props) => (props.center ? "center" : "left")};
 `;

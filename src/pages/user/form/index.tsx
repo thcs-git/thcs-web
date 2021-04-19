@@ -1,5 +1,5 @@
-import React, { useState, useEffect, useCallback } from 'react';
-import { useHistory, RouteComponentProps } from 'react-router-dom';
+import React, { useState, useEffect, useCallback } from "react";
+import { useHistory, RouteComponentProps } from "react-router-dom";
 import {
   Button,
   Container,
@@ -18,7 +18,7 @@ import InputMask, { Props } from 'react-input-mask';
 import validator from 'validator';
 import { toast } from 'react-toastify';
 
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch, useSelector } from "react-redux";
 import {
   createUserRequest,
   updateUserRequest,
@@ -26,35 +26,47 @@ import {
   loadUserById,
   loadProfessionsRequest as getProfessionsAction,
   loadUserTypesRequest as getUserTypesAction,
-  cleanAction
-} from '../../../store/ducks/users/actions';
-import { UserInterface, ProfessionUserInterface } from '../../../store/ducks/users/types';
+  cleanAction,
+} from "../../../store/ducks/users/actions";
+import {
+  UserInterface,
+  ProfessionUserInterface,
+} from "../../../store/ducks/users/types";
 
-import { loadRequest as getSpecialtiesAction } from '../../../store/ducks/specialties/actions';
-import { SpecialtyInterface } from '../../../store/ducks/specialties/types';
+import { loadRequest as getSpecialtiesAction } from "../../../store/ducks/specialties/actions";
+import { SpecialtyInterface } from "../../../store/ducks/specialties/types";
 
-import { loadRequest as getCouncilsAction } from '../../../store/ducks/councils/actions';
-import { CouncilInterface } from '../../../store/ducks/councils/types';
+import { loadRequest as getCouncilsAction } from "../../../store/ducks/councils/actions";
+import { CouncilInterface } from "../../../store/ducks/councils/types";
 
-import { loadRequest as getCompaniesAction } from '../../../store/ducks/companies/actions';
-import { CompanyInterface } from '../../../store/ducks/companies/types';
+import { loadRequest as getCompaniesAction } from "../../../store/ducks/companies/actions";
+import { CompanyInterface } from "../../../store/ducks/companies/types";
 
-import { ApplicationState } from '../../../store';
+import { ApplicationState } from "../../../store";
 
-import { ufs } from '../../../helpers/constants/address';
-import Loading from '../../../components/Loading';
+import { ufs } from "../../../helpers/constants/address";
+import Loading from "../../../components/Loading";
 
-import Sidebar from '../../../components/Sidebar';
-import { FormTitle, SelectComponent as Select } from '../../../styles/components/Form';
-import { SwitchComponent as Switch } from '../../../styles/components/Switch';
-import { ChipComponent as Chip } from '../../../styles/components/Chip';
+import Sidebar from "../../../components/Sidebar";
+import {
+  FormTitle,
+  SelectComponent as Select,
+} from "../../../styles/components/Form";
+import { SwitchComponent as Switch } from "../../../styles/components/Switch";
+import { ChipComponent as Chip } from "../../../styles/components/Chip";
 
-import { formatDate, age } from '../../../helpers/date';
-import LOCALSTORAGE from '../../../helpers/constants/localStorage';
+import { formatDate, age } from "../../../helpers/date";
+import LOCALSTORAGE from "../../../helpers/constants/localStorage";
 
-import DatePicker from '../../../styles/components/DatePicker';
-import { TabContent, TabNav, TabNavItem, TabBody, TabBodyItem } from '../../../styles/components/Tabs';
-import ButtonComponent from '../../../styles/components/Button';
+import DatePicker from "../../../styles/components/DatePicker";
+import {
+  TabContent,
+  TabNav,
+  TabNavItem,
+  TabBody,
+  TabBodyItem,
+} from "../../../styles/components/Tabs";
+import ButtonComponent from "../../../styles/components/Button";
 
 import {
   ButtonsContent,
@@ -70,8 +82,8 @@ import FeedbackComponent from '../../../components/Feedback';
 import { Edit } from '@material-ui/icons';
 
 interface IFormFields {
-  userType: { id: string, description: string } | null,
-  council: CouncilInterface | null,
+  userType: { id: string; description: string } | null;
+  council: CouncilInterface | null;
 }
 
 interface IPageParams {
@@ -84,7 +96,9 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
   const dispatch = useDispatch();
 
   const userState = useSelector((state: ApplicationState) => state.users);
-  const specialtyState = useSelector((state: ApplicationState) => state.specialties);
+  const specialtyState = useSelector(
+    (state: ApplicationState) => state.specialties
+  );
   const councilState = useSelector((state: ApplicationState) => state.councils);
   const companyState = useSelector((state: ApplicationState) => state.companies);
   const [canEdit, setCanEdit] = useState(true);
@@ -95,30 +109,30 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
 
   const [state, setState] = useState<UserInterface>({
     companies: [],
-    name: '',
-    birthdate: '',
-    gender: '',
-    national_id: '',
-    issuing_organ: '',
-    fiscal_number: '',
-    mother_name: '',
-    nationality: '',
+    name: "",
+    birthdate: "",
+    gender: "",
+    national_id: "",
+    issuing_organ: "",
+    fiscal_number: "",
+    mother_name: "",
+    nationality: "",
     address: {
-      postal_code: '',
-      street: '',
-      number: '',
-      district: '',
-      city: '',
-      state: '',
-      complement: '',
+      postal_code: "",
+      street: "",
+      number: "",
+      district: "",
+      city: "",
+      state: "",
+      complement: "",
     },
-    email: '',
-    phone: '',
-    cellphone: '',
-    user_type_id: '',
+    email: "",
+    phone: "",
+    cellphone: "",
+    user_type_id: "",
     specialties: [],
-    council_state: '',
-    council_number: '',
+    council_state: "",
+    council_number: "",
     active: true,
   });
   const [specialties, setSpecialties] = useState<any[]>([]);
@@ -158,7 +172,7 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
     council: null,
   });
 
-  const genders = ['Masculino', 'Feminino', 'Indefinido'];
+  const genders = ["Masculino", "Feminino", "Indefinido"];
 
   const [openModalCancel, setOpenModalCancel] = useState(false);
 
@@ -191,7 +205,7 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
 
   useEffect(() => {
     if (params.id) {
-      dispatch(loadUserById(params.id))
+      dispatch(loadUserById(params.id));
     } else {
       dispatch(cleanAction());
     }
@@ -207,10 +221,13 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
 
   useEffect(() => {
     if (userState.data._id) {
-      setState(prevState => ({
+      setState((prevState) => ({
         ...prevState,
         ...userState.data,
-        user_type_id: (typeof userState.data.user_type_id === 'object') ? userState.data.user_type_id._id : userState.data.user_type_id
+        user_type_id:
+          typeof userState.data.user_type_id === "object"
+            ? userState.data.user_type_id._id
+            : userState.data.user_type_id,
       }));
     }
 
@@ -248,17 +265,16 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
         active: true,
       });
     }
-
   }, [userState]);
 
   useEffect(() => {
-    setState(prevState => {
+    setState((prevState) => {
       return {
         ...prevState,
         address: {
-          ...userState.data.address
-        }
-      }
+          ...userState.data.address,
+        },
+      };
     });
 
     if (userState.data.address.postal_code) {
@@ -267,7 +283,7 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
         address: {
           postal_code: true,
           street: true,
-          number: !!(userState.data.address.number),
+          number: !!userState.data.address.number,
           district: true,
           city: true,
           state: true,
@@ -277,19 +293,21 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
     }
 
     if (userState.error) {
-      setState(prevState => {
+      document.getElementById("input-postal-code")?.focus();
+      setState((prevState) => {
         return {
           ...prevState,
           address: {
             ...prevState.address,
-            street: '',
-            number: '',
-            district: '',
-            city: '',
-            state: '',
-            complement: '',
+            postal_code: "",
+            street: "",
+            number: "",
+            district: "",
+            city: "",
+            state: "",
+            complement: "",
           },
-        }
+        };
       });
 
       setFieldValidations((prevState: any) => ({
@@ -306,6 +324,8 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
       }));
 
       return;
+    } else {
+      document.getElementById("input-address-number")?.focus();
     }
   }, [userState.data.address]);
 
@@ -319,39 +339,63 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
     }
 
     return isValid;
-
   }, [fieldsValidation, state]);
 
-  const selectTab = useCallback((index: number) => {
-    setCurrentTab(index);
-  }, [currentTab]);
+  const selectTab = useCallback(
+    (index: number) => {
+      setCurrentTab(index);
+    },
+    [currentTab]
+  );
 
-  const handleUserType = useCallback((event: any, newValue: any) => {
-    setState(prevState => ({
-      ...prevState,
-      user_type_id: newValue._id,
-    }));
-  }, [state.user_type_id]);
+  const handleUserType = useCallback(
+    (event: any, newValue: any) => {
+      setState((prevState) => ({
+        ...prevState,
+        user_type_id: newValue._id,
+      }));
+    },
+    [state.user_type_id]
+  );
 
-  const handleCouncil = useCallback((event: any, newValue: any) => {
-    setState(prevState => ({
-      ...prevState,
-      council_id: newValue
-    }));
+  const handleCouncil = useCallback(
+    (event: any, newValue: any) => {
+      setState((prevState) => ({
+        ...prevState,
+        council_id: newValue,
+      }));
+    },
+    [state.council_id]
+  );
 
-  }, [state.council_id]);
-
-  const handleCouncilState = useCallback((event: any, newValue: any) => {
-    setState(prevState => ({
-      ...prevState,
-      council_state: newValue.initials
-    }));
-
-  }, [state.council_state]);
+  const handleCouncilState = useCallback(
+    (event: any, newValue: any) => {
+      setState((prevState) => ({
+        ...prevState,
+        council_state: newValue.initials,
+      }));
+    },
+    [state.council_state]
+  );
 
   const getAddress = useCallback(() => {
+    if (state.address.postal_code.includes(' ')) {
+      setFieldValidations((prevState: any) => ({
+        ...prevState,
+        address: {
+          postal_code: false,
+          street: false,
+          number: false,
+          district: false,
+          city: false,
+          state: false,
+          complement: false,
+        },
+      }));
+      return;
+    }
+
     dispatch(getAddressAction(state.address.postal_code));
-    document.getElementById('input-address-number')?.focus();
   }, [state.address?.postal_code]);
 
   function handleOpenModalCancel() {
@@ -368,9 +412,9 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
   }
 
   function handleSelectProfession(value: ProfessionUserInterface) {
-    setState(prevState => ({
+    setState((prevState) => ({
       ...prevState,
-      profession_id: value._id
+      profession_id: value._id,
     }));
   }
 
@@ -379,33 +423,34 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
       return null;
     }
 
-    const selected = userState.data.professions.filter(item => {
-      if (typeof state.profession_id === 'object') {
+    const selected = userState.data.professions.filter((item) => {
+      if (typeof state.profession_id === "object") {
         return item._id === state?.profession_id?._id;
       }
     });
 
-    return (selected[0]) ? selected[0] : null;
-
+    return selected[0] ? selected[0] : null;
   }, [state.profession_id, state.professions]);
 
   // Especialides
   function handleSelectMainSpecialty(value: SpecialtyInterface) {
-    setState(prevState => ({
+    setState((prevState) => ({
       ...prevState,
-      main_specialty_id: value._id
+      main_specialty_id: value._id,
     }));
   }
 
   function handleSelectEspecialty(value: SpecialtyInterface) {
-    setState(prevState => ({
+    setState((prevState) => ({
       ...prevState,
-      specialties: [...prevState.specialties, value]
+      specialties: [...prevState.specialties, value],
     }));
 
     let specialtiesCopy: SpecialtyInterface[] = [...specialties];
 
-    const specialtyIndex = specialtiesCopy.findIndex(item => item._id === value._id);
+    const specialtyIndex = specialtiesCopy.findIndex(
+      (item) => item._id === value._id
+    );
 
     if (specialtyIndex > -1) {
       specialtiesCopy.splice(specialtyIndex, 1);
@@ -421,17 +466,16 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
       return especialty._id === item._id
     });
 
-    if (especialtyFounded > -1) {
-      const specialtyData = specialtiesSelected.find((item: any) => {
-        return especialty._id === item._id
-      });
 
-      let specialtiesCopy = [...specialties];
+      if (especialtyFounded > -1) {
+        const specialtyData = specialtiesSelected.find((item: any) => {
+          return especialty._id === item._id;
+        });
 
-      specialtiesCopy.push(specialtyData);
-      setSpecialties(specialtiesCopy);
+        let specialtiesCopy = [...specialties];
 
-      specialtiesSelected.splice(especialtyFounded, 1);
+        specialtiesCopy.push(specialtyData);
+        setSpecialties(specialtiesCopy);
 
       setState(prevState => ({
         ...prevState,
@@ -443,21 +487,27 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
   }, [state.specialties]);
 
   const selectMainSpecialty = useCallback(() => {
-    const selected = specialtyState.list.data.filter(item => item._id === state.main_specialty_id);
+    const selected = specialtyState.list.data.filter(
+      (item) => item._id === state.main_specialty_id
+    );
 
-    return (selected[0]) ? selected[0] : null;
+    return selected[0] ? selected[0] : null;
   }, [state.main_specialty_id]);
 
   const selectCouncil = useCallback(() => {
-    const selected = councilState.list.data.filter(item => item._id === state.council_id?._id);
+    const selected = councilState.list.data.filter(
+      (item) => item._id === state.council_id?._id
+    );
 
-    return (selected[0]) ? selected[0] : null;
+    return selected[0] ? selected[0] : null;
   }, [state.council_id]);
 
   const selectCouncilState = useCallback(() => {
-    const selected = ufs.filter(item => item.initials === state.council_state);
+    const selected = ufs.filter(
+      (item) => item.initials === state.council_state
+    );
 
-    return (selected[0]) ? selected[0] : null;
+    return selected[0] ? selected[0] : null;
   }, [state.council_state]);
 
   const selectUserType = useCallback(() => {
@@ -465,62 +515,68 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
       return null;
     }
 
-    const selected = userState.data.user_types.filter(item => item._id === state.user_type_id);
+    const selected = userState.data.user_types.filter(
+      (item) => item._id === state.user_type_id
+    );
 
-    return (selected[0]) ? selected[0] : null;
+    return selected[0] ? selected[0] : null;
   }, [state.user_type_id, state.user_types]);
 
   //Empresas
   function handleSelectCompany(value: CompanyInterface) {
-    setState(prevState => ({
+    setState((prevState) => ({
       ...prevState,
-      companies: [...prevState.companies, value]
+      companies: [...prevState.companies, value],
     }));
 
     let companiesCopy: CompanyInterface[] = [...companies];
 
-    const companiesIndex = companiesCopy.findIndex(item => item._id === value._id);
+    const companiesIndex = companiesCopy.findIndex(
+      (item) => item._id === value._id
+    );
 
     if (companiesIndex > -1) {
       companiesCopy.splice(companiesIndex, 1);
 
-      setFieldValidations((prevState: any) => ({ ...prevState, companies: (companiesCopy.length > 0) }));
+      setFieldValidations((prevState: any) => ({
+        ...prevState,
+        companies: companiesCopy.length > 0,
+      }));
 
       setCompanies(companiesCopy);
     }
   }
 
   const handleDeleteCompany = useCallback((company: CompanyInterface) => {
-    if(canEdit){
+     if(canEdit){
        let companiesSelected = [...state.companies];
-    const companyFounded = companiesSelected.findIndex((item: any) => {
-      return company._id === item._id
-    })
+       const companyFounded = companiesSelected.findIndex((item: any) => {
+         return company._id === item._id
+       })
 
-    if (companyFounded > -1) {
-      const companyData = companiesSelected.find((item: any) => {
-        return company._id === item._id
-      });
+     if (companyFounded > -1) {
+       const companyData = companiesSelected.find((item: any) => {
+         return company._id === item._id
+       });
 
-      let companiesCopy = [...companies];
 
-      companiesCopy.push(companyData);
-      setCompanies(companiesCopy);
+         let companiesCopy = [...companies];
 
-      companiesSelected.splice(companyFounded, 1);
+        companiesCopy.push(companyData);
+         setCompanies(companiesCopy);
 
-      setState(prevState => ({
-        ...prevState,
-        companies: companiesSelected
-      }))
-    }
-    }
+       setState(prevState => ({
+         ...prevState,
+         companies: companiesSelected
+       }))
+       }
+     }
 
   }, [state.companies]);
 
   const handleSaveFormUser = useCallback(() => {
     if (!handleValidateFields()) {
-      toast.error('Existem campos que precisam ser preenchidos para continuar');
+      toast.error("Existem campos que precisam ser preenchidos para continuar");
       return;
     }
 
@@ -534,7 +590,6 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
   return (
     <Sidebar>
       {userState.loading && <Loading />}
-
       <Container>
         {userState.success ? (
           <FeedbackComponent
@@ -544,11 +599,11 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
             buttons
             successAction={() => {
               dispatch(cleanAction());
-              history.push('/user/create');
+              history.push("/user/create");
             }}
             defaultAction={() => {
               dispatch(cleanAction());
-              history.push('/user');
+              history.push("/user");
             }}
           />
         ) : (
@@ -568,15 +623,21 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
 
               <TabContent>
                 <TabNav>
-                  <TabNavItem className={currentTab === 0 ? 'active' : ''} onClick={() => selectTab(0)}>
+                  <TabNavItem
+                    className={currentTab === 0 ? "active" : ""}
+                    onClick={() => selectTab(0)}
+                  >
                     Dados Pessoais
                   </TabNavItem>
-                  <TabNavItem className={currentTab === 1 ? 'active' : ''} onClick={() => selectTab(1)}>
+                  <TabNavItem
+                    className={currentTab === 1 ? "active" : ""}
+                    onClick={() => selectTab(1)}
+                  >
                     Dados Profissionais
                   </TabNavItem>
                 </TabNav>
                 <TabBody>
-                  <TabBodyItem className={currentTab === 0 ? 'show' : ''}>
+                  <TabBodyItem className={currentTab === 0 ? "show" : ""}>
                     <Grid container>
                       <Grid item md={12} xs={12}>
                         <TextField
@@ -588,10 +649,17 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
                           value={state.name}
                           onChange={(element) => {
                             setState({ ...state, name: element.target.value });
-                            setFieldValidations((prevState: any) => ({ ...prevState, name: !validator.isEmpty(element.target.value) }));
+                            setFieldValidations((prevState: any) => ({
+                              ...prevState,
+                              name: !validator.isEmpty(element.target.value),
+                            }));
                           }}
                           error={!fieldsValidation.name}
-                          helperText={!fieldsValidation.name ? `Por favor, insira um nome para o usuário.` : null}
+                          helperText={
+                            !fieldsValidation.name
+                              ? `Por favor, insira um nome para o usuário.`
+                              : null
+                          }
                           fullWidth
                         />
                       </Grid>
@@ -604,11 +672,23 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
                           size="small"
                           value={state.mother_name}
                           onChange={(element) => {
-                            setState({ ...state, mother_name: element.target.value });
-                            setFieldValidations((prevState: any) => ({ ...prevState, mother_name: !validator.isEmpty(element.target.value) }));
+                            setState({
+                              ...state,
+                              mother_name: element.target.value,
+                            });
+                            setFieldValidations((prevState: any) => ({
+                              ...prevState,
+                              mother_name: !validator.isEmpty(
+                                element.target.value
+                              ),
+                            }));
                           }}
                           error={!fieldsValidation.mother_name}
-                          helperText={!fieldsValidation.mother_name ? `Por favor, insira o nome da mãe do usuário.` : null}
+                          helperText={
+                            !fieldsValidation.mother_name
+                              ? `Por favor, insira o nome da mãe do usuário.`
+                              : null
+                          }
                           fullWidth
                         />
                       </Grid>
@@ -620,14 +700,26 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
                           disabled={!canEdit}
                           value={state?.birthdate?.length > 10 ? formatDate(state.birthdate, 'YYYY-MM-DD') : state.birthdate}
                           onChange={(element) => {
-                            setState({ ...state, birthdate: element.target.value });
-                            setFieldValidations((prevState: any) => ({ ...prevState, birthdate: !validator.isEmpty(element.target.value) }));
+                            setState({
+                              ...state,
+                              birthdate: element.target.value,
+                            });
+                            setFieldValidations((prevState: any) => ({
+                              ...prevState,
+                              birthdate: !validator.isEmpty(
+                                element.target.value
+                              ),
+                            }));
                           }}
                           InputLabelProps={{
                             shrink: true,
                           }}
                           error={!fieldsValidation.birthdate}
-                          helperText={!fieldsValidation.birthdate ? `Por favor, insira a data de nascimento.` : null}
+                          helperText={
+                            !fieldsValidation.birthdate
+                              ? `Por favor, insira a data de nascimento.`
+                              : null
+                          }
                           fullWidth
                         />
                       </Grid>
@@ -646,14 +738,21 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
                     </Grid>
                     <Grid container>
                       <Grid item md={4} xs={12}>
-
                         <InputMask
                           mask="999.999.999-99"
                           disabled={!canEdit}
                           value={state.fiscal_number}
                           onChange={(element) => {
-                            setState({ ...state, fiscal_number: element.target.value });
-                            setFieldValidations((prevState: any) => ({ ...prevState, fiscal_number: !validator.isEmpty(element.target.value) }));
+                            setState({
+                              ...state,
+                              fiscal_number: element.target.value,
+                            });
+                            setFieldValidations((prevState: any) => ({
+                              ...prevState,
+                              fiscal_number: !validator.isEmpty(
+                                element.target.value
+                              ),
+                            }));
                           }}
                         >
                           {(inputProps: any) => (
@@ -666,9 +765,14 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
                               size="small"
                               placeholder="000.000.000-00"
                               error={!fieldsValidation.fiscal_number}
-                              helperText={!fieldsValidation.fiscal_number ? `Por favor, insira o CPF.` : null}
+                              helperText={
+                                !fieldsValidation.fiscal_number
+                                  ? `Por favor, insira o CPF.`
+                                  : null
+                              }
                               fullWidth
-                            />)}
+                            />
+                          )}
                         </InputMask>
                       </Grid>
                       <Grid item md={3} xs={12}>
@@ -677,8 +781,16 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
                           disabled={!canEdit}
                           value={state.national_id}
                           onChange={(element) => {
-                            setState({ ...state, national_id: element.target.value });
-                            setFieldValidations((prevState: any) => ({ ...prevState, national_id: !validator.isEmpty(element.target.value) }));
+                            setState({
+                              ...state,
+                              national_id: element.target.value,
+                            });
+                            setFieldValidations((prevState: any) => ({
+                              ...prevState,
+                              national_id: !validator.isEmpty(
+                                element.target.value
+                              ),
+                            }));
                           }}
                         >
                           {(inputProps: any) => (
@@ -691,9 +803,14 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
                               size="small"
                               placeholder="0.000-000"
                               error={!fieldsValidation.national_id}
-                              helperText={!fieldsValidation.national_id ? `Por favor, insira o RG.` : null}
+                              helperText={
+                                !fieldsValidation.national_id
+                                  ? `Por favor, insira o RG.`
+                                  : null
+                              }
                               fullWidth
-                            />)}
+                            />
+                          )}
                         </InputMask>
                       </Grid>
 
@@ -706,11 +823,23 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
                           value={state.issuing_organ}
                           disabled={!canEdit}
                           onChange={(element) => {
-                            setState({ ...state, issuing_organ: element.target.value });
-                            setFieldValidations((prevState: any) => ({ ...prevState, issuing_organ: !validator.isEmpty(element.target.value) }));
+                            setState({
+                              ...state,
+                              issuing_organ: element.target.value,
+                            });
+                            setFieldValidations((prevState: any) => ({
+                              ...prevState,
+                              issuing_organ: !validator.isEmpty(
+                                element.target.value
+                              ),
+                            }));
                           }}
                           error={!fieldsValidation.issuing_organ}
-                          helperText={!fieldsValidation.issuing_organ ? `Por favor, insira o orgão emissor.` : null}
+                          helperText={
+                            !fieldsValidation.issuing_organ
+                              ? `Por favor, insira o orgão emissor.`
+                              : null
+                          }
                           fullWidth
                         />
                       </Grid>
@@ -724,11 +853,23 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
                           value={state.nationality}
                           disabled={!canEdit}
                           onChange={(element) => {
-                            setState({ ...state, nationality: element.target.value });
-                            setFieldValidations((prevState: any) => ({ ...prevState, nationality: !validator.isEmpty(element.target.value) }));
+                            setState({
+                              ...state,
+                              nationality: element.target.value,
+                            });
+                            setFieldValidations((prevState: any) => ({
+                              ...prevState,
+                              nationality: !validator.isEmpty(
+                                element.target.value
+                              ),
+                            }));
                           }}
                           error={!fieldsValidation.nationality}
-                          helperText={!fieldsValidation.nationality ? `Por favor, insira a nacionalidade.` : null}
+                          helperText={
+                            !fieldsValidation.nationality
+                              ? `Por favor, insira a nacionalidade.`
+                              : null
+                          }
                           fullWidth
                         />
                       </Grid>
@@ -748,13 +889,23 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
                                 label="Sexo"
                                 variant="outlined"
                                 error={!fieldsValidation.gender}
-                                helperText={!fieldsValidation.gender ? 'Selecione o sexo' : null}
+                                helperText={
+                                  !fieldsValidation.gender
+                                    ? "Selecione o sexo"
+                                    : null
+                                }
                               />
                             )}
                             value={state.gender}
                             onChange={(element, value) => {
-                              setState({ ...state, gender: value ? value : '' });
-                              setFieldValidations((prevState: any) => ({ ...prevState, gender: !validator.isEmpty(value ? value : '') }));
+                              setState({
+                                ...state,
+                                gender: value ? value : "",
+                              });
+                              setFieldValidations((prevState: any) => ({
+                                ...prevState,
+                                gender: !validator.isEmpty(value ? value : ""),
+                              }));
                             }}
                             noOptionsText="Nenhum resultado encontrado"
                             fullWidth
@@ -774,8 +925,22 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
                             disabled={!canEdit}
                             value={state.address?.postal_code}
                             onChange={(element) => {
-                              setState({ ...state, address: { ...state.address, postal_code: element.target.value } });
-                              setFieldValidations((prevState: any) => ({ ...prevState, address: { ...prevState.address, postal_code: !validator.isEmpty(element.target.value) } }));
+                              setState({
+                                ...state,
+                                address: {
+                                  ...state.address,
+                                  postal_code: element.target.value,
+                                },
+                              });
+                              setFieldValidations((prevState: any) => ({
+                                ...prevState,
+                                address: {
+                                  ...prevState.address,
+                                  postal_code: !validator.isEmpty(
+                                    element.target.value
+                                  ),
+                                },
+                              }));
                             }}
                             onBlur={getAddress}
                           >
@@ -789,9 +954,14 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
                                 size="small"
                                 variant="outlined"
                                 error={!fieldsValidation.address.postal_code}
-                                helperText={!fieldsValidation.address.postal_code ? `Por favor, insira o RG.` : null}
+                                helperText={
+                                  !fieldsValidation.address.postal_code
+                                    ? `Por favor, insira o CEP.`
+                                    : null
+                                }
                                 fullWidth
-                              />)}
+                              />
+                            )}
                           </InputMask>
                         </Grid>
 
@@ -803,11 +973,29 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
                             size="small"
                             value={state.address?.street}
                             onChange={(element) => {
-                              setState({ ...state, address: { ...state.address, street: element.target.value } });
-                              setFieldValidations((prevState: any) => ({ ...prevState, address: { ...prevState.address, street: !validator.isEmpty(element.target.value) } }));
+                              setState({
+                                ...state,
+                                address: {
+                                  ...state.address,
+                                  street: element.target.value,
+                                },
+                              });
+                              setFieldValidations((prevState: any) => ({
+                                ...prevState,
+                                address: {
+                                  ...prevState.address,
+                                  street: !validator.isEmpty(
+                                    element.target.value
+                                  ),
+                                },
+                              }));
                             }}
                             error={!fieldsValidation.address.street}
-                            helperText={!fieldsValidation.address.street ? `Por favor, insira o nome da rua.` : null}
+                            helperText={
+                              !fieldsValidation.address.street
+                                ? `Por favor, insira o nome da rua.`
+                                : null
+                            }
                             fullWidth
                             disabled={!canEdit}
                           />
@@ -820,11 +1008,29 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
                             size="small"
                             value={state.address?.number}
                             onChange={(element) => {
-                              setState({ ...state, address: { ...state.address, number: element.target.value } });
-                              setFieldValidations((prevState: any) => ({ ...prevState, address: { ...prevState.address, number: !validator.isEmpty(element.target.value) } }));
+                              setState({
+                                ...state,
+                                address: {
+                                  ...state.address,
+                                  number: element.target.value,
+                                },
+                              });
+                              setFieldValidations((prevState: any) => ({
+                                ...prevState,
+                                address: {
+                                  ...prevState.address,
+                                  number: !validator.isEmpty(
+                                    element.target.value
+                                  ),
+                                },
+                              }));
                             }}
                             error={!fieldsValidation.address.number}
-                            helperText={!fieldsValidation.address.number ? `Por favor, insira o número da residência.` : null}
+                            helperText={
+                              !fieldsValidation.address.number
+                                ? `Por favor, insira o número da residência.`
+                                : null
+                            }
                             fullWidth
                             disabled={!canEdit}
                           />
@@ -838,8 +1044,22 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
                             size="small"
                             value={state.address?.complement}
                             onChange={(element) => {
-                              setState({ ...state, address: { ...state.address, complement: element.target.value } });
-                              setFieldValidations((prevState: any) => ({ ...prevState, address: { ...prevState.address, complement: !validator.isEmpty(element.target.value) } }));
+                              setState({
+                                ...state,
+                                address: {
+                                  ...state.address,
+                                  complement: element.target.value,
+                                },
+                              });
+                              setFieldValidations((prevState: any) => ({
+                                ...prevState,
+                                address: {
+                                  ...prevState.address,
+                                  complement: !validator.isEmpty(
+                                    element.target.value
+                                  ),
+                                },
+                              }));
                             }}
                             fullWidth
                             disabled={!canEdit}
@@ -854,11 +1074,29 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
                             size="small"
                             value={state.address?.district}
                             onChange={(element) => {
-                              setState({ ...state, address: { ...state.address, district: element.target.value } });
-                              setFieldValidations((prevState: any) => ({ ...prevState, address: { ...prevState.address, district: !validator.isEmpty(element.target.value) } }));
+                              setState({
+                                ...state,
+                                address: {
+                                  ...state.address,
+                                  district: element.target.value,
+                                },
+                              });
+                              setFieldValidations((prevState: any) => ({
+                                ...prevState,
+                                address: {
+                                  ...prevState.address,
+                                  district: !validator.isEmpty(
+                                    element.target.value
+                                  ),
+                                },
+                              }));
                             }}
                             error={!fieldsValidation.address.district}
-                            helperText={!fieldsValidation.address.district ? `Por favor, insira o bairro.` : null}
+                            helperText={
+                              !fieldsValidation.address.district
+                                ? `Por favor, insira o bairro.`
+                                : null
+                            }
                             fullWidth
                             disabled={!canEdit}
                           />
@@ -872,11 +1110,29 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
                             size="small"
                             value={state.address?.city}
                             onChange={(element) => {
-                              setState({ ...state, address: { ...state.address, city: element.target.value } });
-                              setFieldValidations((prevState: any) => ({ ...prevState, address: { ...prevState.address, city: !validator.isEmpty(element.target.value) } }));
+                              setState({
+                                ...state,
+                                address: {
+                                  ...state.address,
+                                  city: element.target.value,
+                                },
+                              });
+                              setFieldValidations((prevState: any) => ({
+                                ...prevState,
+                                address: {
+                                  ...prevState.address,
+                                  city: !validator.isEmpty(
+                                    element.target.value
+                                  ),
+                                },
+                              }));
                             }}
                             error={!fieldsValidation.address.city}
-                            helperText={!fieldsValidation.address.city ? `Por favor, insira a cidade.` : null}
+                            helperText={
+                              !fieldsValidation.address.city
+                                ? `Por favor, insira a cidade.`
+                                : null
+                            }
                             fullWidth
                             disabled={!canEdit}
                           />
@@ -890,11 +1146,29 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
                             size="small"
                             value={state.address?.state}
                             onChange={(element) => {
-                              setState({ ...state, address: { ...state.address, state: element.target.value } });
-                              setFieldValidations((prevState: any) => ({ ...prevState, address: { ...prevState.address, state: !validator.isEmpty(element.target.value) } }));
+                              setState({
+                                ...state,
+                                address: {
+                                  ...state.address,
+                                  state: element.target.value,
+                                },
+                              });
+                              setFieldValidations((prevState: any) => ({
+                                ...prevState,
+                                address: {
+                                  ...prevState.address,
+                                  state: !validator.isEmpty(
+                                    element.target.value
+                                  ),
+                                },
+                              }));
                             }}
                             error={!fieldsValidation.address.state}
-                            helperText={!fieldsValidation.address.state ? `Por favor, insira o estado.` : null}
+                            helperText={
+                              !fieldsValidation.address.state
+                                ? `Por favor, insira o estado.`
+                                : null
+                            }
                             fullWidth
                             disabled={!canEdit}
                           />
@@ -912,10 +1186,17 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
                           value={state.email}
                           onChange={(element) => {
                             setState({ ...state, email: element.target.value });
-                            setFieldValidations((prevState: any) => ({ ...prevState, email: validator.isEmail(element.target.value) }));
+                            setFieldValidations((prevState: any) => ({
+                              ...prevState,
+                              email: validator.isEmail(element.target.value),
+                            }));
                           }}
                           error={!fieldsValidation.email}
-                          helperText={!fieldsValidation.email ? `Por favor, insira o email do usuário.` : null}
+                          helperText={
+                            !fieldsValidation.email
+                              ? `Por favor, insira o email do usuário.`
+                              : null
+                          }
                           fullWidth
                           disabled={!canEdit}
                         />
@@ -927,7 +1208,10 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
                           value={state.phone}
                           onChange={(element) => {
                             setState({ ...state, phone: element.target.value });
-                            setFieldValidations((prevState: any) => ({ ...prevState, phone: !validator.isEmpty(element.target.value) }));
+                            setFieldValidations((prevState: any) => ({
+                              ...prevState,
+                              phone: !validator.isEmpty(element.target.value),
+                            }));
                           }}
                         >
                           {(inputProps: any) => (
@@ -940,7 +1224,11 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
                               size="small"
                               placeholder="0000-0000"
                               error={!fieldsValidation.phone}
-                              helperText={!fieldsValidation.phone ? `Por favor, insira o telefone.` : null}
+                              helperText={
+                                !fieldsValidation.phone
+                                  ? `Por favor, insira o telefone.`
+                                  : null
+                              }
                               fullWidth
                             />
                           )}
@@ -952,8 +1240,17 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
                           disabled={!canEdit}
                           value={state.cellphone}
                           onChange={(element) => {
-                            setState({ ...state, cellphone: element.target.value });
-                            setFieldValidations((prevState: any) => ({ ...prevState, cellphone: validator.isMobilePhone(element.target.value, 'pt-BR') }));
+                            setState({
+                              ...state,
+                              cellphone: element.target.value,
+                            });
+                            setFieldValidations((prevState: any) => ({
+                              ...prevState,
+                              cellphone: validator.isMobilePhone(
+                                element.target.value,
+                                "pt-BR"
+                              ),
+                            }));
                           }}
                         >
                           {(inputProps: any) => (
@@ -966,7 +1263,11 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
                               size="small"
                               placeholder="(00) 0 0000-0000"
                               error={!fieldsValidation.cellphone}
-                              helperText={!fieldsValidation.cellphone ? `Por favor, insira o celular.` : null}
+                              helperText={
+                                !fieldsValidation.cellphone
+                                  ? `Por favor, insira o celular.`
+                                  : null
+                              }
                               fullWidth
                             />
                           )}
@@ -987,14 +1288,23 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
                                 label="Tipo do Usuário"
                                 variant="outlined"
                                 error={!fieldsValidation.user_type_id}
-                                helperText={!fieldsValidation.user_type_id ? `Selecione um tipo do usuário.` : null}
+                                helperText={
+                                  !fieldsValidation.user_type_id
+                                    ? `Selecione um tipo do usuário.`
+                                    : null
+                                }
                               />
                             )}
                             value={selectUserType()}
-                            getOptionSelected={(option, value) => option._id === state.user_type_id}
+                            getOptionSelected={(option, value) =>
+                              option._id === state.user_type_id
+                            }
                             onChange={(event: any, newValue) => {
                               handleUserType(event, newValue);
-                              setFieldValidations((prevState: any) => ({ ...prevState, user_type_id: (newValue !== null) }));
+                              setFieldValidations((prevState: any) => ({
+                                ...prevState,
+                                user_type_id: newValue !== null,
+                              }));
                             }}
                             size="small"
                             fullWidth
@@ -1004,17 +1314,25 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
 
                       {state?._id && (
                         <Grid item xs={12} md={12}>
-                          <FormControlLabel control={<Switch disabled={!canEdit} checked={state.active} onChange={(event) => {
-                            setState(prevState => ({
-                              ...prevState,
-                              active: event.target.checked
-                            }))
-                          }} />} label="Ativo?" />
+                          <FormControlLabel
+                            control={
+                              <Switch
+                                checked={state.active}
+                                onChange={(event) => {
+                                  setState((prevState) => ({
+                                    ...prevState,
+                                    active: event.target.checked,
+                                  }));
+                                }}
+                              />
+                            }
+                            label="Ativo?"
+                          />
                         </Grid>
                       )}
                     </Grid>
                   </TabBodyItem>
-                  <TabBodyItem className={currentTab === 1 ? 'show' : ''}>
+                  <TabBodyItem className={currentTab === 1 ? "show" : ""}>
                     <Grid container>
                       <Grid item md={5} xs={12}>
                         <FormGroupSection fullWidth error>
@@ -1028,7 +1346,7 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
                             value={selectProfession()}
                             onChange={(event, value) => {
                               if (value) {
-                                handleSelectProfession(value)
+                                handleSelectProfession(value);
                               }
                             }}
                             size="small"
@@ -1045,10 +1363,15 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
                             getOptionLabel={(option) => `${option.initials} - ${option.name}`}
                             renderInput={(params) => <TextField {...params}  disabled={!canEdit} label="Conselho" variant="outlined" />}
                             value={selectCouncil()}
-                            getOptionSelected={(option, value) => option._id === state?.council_id?._id}
+                            getOptionSelected={(option, value) =>
+                              option._id === state?.council_id?._id
+                            }
                             onChange={(event: any, newValue) => {
                               handleCouncil(event, newValue);
-                              setFieldValidations((prevState: any) => ({ ...prevState, council_id: (newValue !== null) }));
+                              setFieldValidations((prevState: any) => ({
+                                ...prevState,
+                                council_id: newValue !== null,
+                              }));
                             }}
                             size="small"
                             autoComplete={false}
@@ -1066,10 +1389,15 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
                             getOptionLabel={(option) => option.initials}
                             renderInput={(params) => <TextField {...params} disabled={!canEdit} label="UF" variant="outlined" />}
                             value={selectCouncilState()}
-                            getOptionSelected={(option, value) => option.initials === state.council_state}
+                            getOptionSelected={(option, value) =>
+                              option.initials === state.council_state
+                            }
                             onChange={(event: any, newValue) => {
                               handleCouncilState(event, newValue);
-                              setFieldValidations((prevState: any) => ({ ...prevState, council_state: (newValue !== null) }));
+                              setFieldValidations((prevState: any) => ({
+                                ...prevState,
+                                council_state: newValue !== null,
+                              }));
                             }}
                             size="small"
                             autoComplete={false}
@@ -1088,8 +1416,16 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
                             value={state.council_number}
                             disabled={!canEdit}
                             onChange={(element) => {
-                              setState({ ...state, council_number: element.target.value });
-                              setFieldValidations((prevState: any) => ({ ...prevState, council_number: !validator.isEmpty(element.target.value) }));
+                              setState({
+                                ...state,
+                                council_number: element.target.value,
+                              });
+                              setFieldValidations((prevState: any) => ({
+                                ...prevState,
+                                council_number: !validator.isEmpty(
+                                  element.target.value
+                                ),
+                              }));
                             }}
                             placeholder="00000-0000"
                             autoComplete="off"
@@ -1104,12 +1440,20 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
                             disabled={!canEdit}
                             options={specialtyState.list.data}
                             getOptionLabel={(option) => option.name}
-                            renderInput={(params) => <TextField {...params} label="Especialidade Principal" variant="outlined" />}
-                            getOptionSelected={(option, value) => option._id === state?.main_specialty_id}
+                            renderInput={(params) => (
+                              <TextField
+                                {...params}
+                                label="Especialidade Principal"
+                                variant="outlined"
+                              />
+                            )}
+                            getOptionSelected={(option, value) =>
+                              option._id === state?.main_specialty_id
+                            }
                             value={selectMainSpecialty()}
                             onChange={(event, value) => {
                               if (value) {
-                                handleSelectMainSpecialty(value)
+                                handleSelectMainSpecialty(value);
                               }
                             }}
                             size="small"
@@ -1119,8 +1463,7 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
                           />
                         </FormGroupSection>
                       </Grid>
-                      <Grid item md={6} xs={12}>
-                      </Grid>
+                      <Grid item md={6} xs={12}></Grid>
                       <Grid item md={6} xs={12}>
                         <FormGroupSection fullWidth error>
                           <Autocomplete
@@ -1129,13 +1472,19 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
                             disabled={!canEdit}
                             getOptionLabel={(option) => option.name}
                             renderInput={(params: any) => {
-                              params.inputProps.value = '';
-                              return <TextField {...params} label="Especialidade" variant="outlined" />
+                              params.inputProps.value = "";
+                              return (
+                                <TextField
+                                  {...params}
+                                  label="Especialidade"
+                                  variant="outlined"
+                                />
+                              );
                             }}
                             size="small"
                             onChange={(event, value) => {
                               if (value) {
-                                handleSelectEspecialty(value)
+                                handleSelectEspecialty(value);
                               }
                             }}
                             autoComplete={false}
@@ -1150,7 +1499,7 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
                             <Chip
                               key={`especialty_selected_${index}`}
                               label={item.name}
-                              onDelete={event => handleDeleteEspecialty(item)}
+                              onDelete={(event) => handleDeleteEspecialty(item)}
                             />
                           ))}
                         </ChipList>
@@ -1162,11 +1511,18 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
                             options={companies}
                             disabled={!canEdit}
                             getOptionLabel={(option) => option.name}
-                            renderInput={(params) => <TextField {...params} label="Empresa" variant="outlined" autoComplete="off" />}
+                            renderInput={(params) => (
+                              <TextField
+                                {...params}
+                                label="Empresa"
+                                variant="outlined"
+                                autoComplete="off"
+                              />
+                            )}
                             size="small"
                             onChange={(event, value) => {
                               if (value) {
-                                handleSelectCompany(value)
+                                handleSelectCompany(value);
                               }
                             }}
                             autoComplete={false}
@@ -1181,7 +1537,7 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
                             <Chip
                               key={`company_selected_${index}`}
                               label={item.name}
-                              onDelete={event => handleDeleteCompany(item)}
+                              onDelete={(event) => handleDeleteCompany(item)}
                             />
                           ))}
                         </ChipList>
@@ -1201,7 +1557,10 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
                   </ButtonComponent>) }
 
               {currentTab === 0 ? (
-                <ButtonComponent background="primary" onClick={() => selectTab(1)}>
+                <ButtonComponent
+                  background="primary"
+                  onClick={() => selectTab(1)}
+                >
                   Próximo
                 </ButtonComponent>
               ) : (
@@ -1230,15 +1589,15 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
         <DialogContent>
           <DialogContentText id="alert-dialog-description">
             Tem certeza que deseja cancelar este cadastro?
-            </DialogContentText>
+          </DialogContentText>
         </DialogContent>
         <DialogActions>
           <Button onClick={handleCloseModalCancel} color="primary">
             Não
-            </Button>
+          </Button>
           <Button onClick={handleCancelForm} color="primary" autoFocus>
             Sim
-            </Button>
+          </Button>
         </DialogActions>
       </Dialog>
     </Sidebar>
