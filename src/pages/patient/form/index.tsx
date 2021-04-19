@@ -69,6 +69,7 @@ interface IFormFields {
 
 interface IPageParams {
   id?: string;
+  mode?:string;
 }
 
 interface TabPanelProps {
@@ -178,7 +179,10 @@ export default function PatientForm(props: RouteComponentProps<IPageParams>) {
   useEffect(() => {
     if (params.id) {
       setState(patientState.data);
-      setCanEdit(false);
+      if(params.mode && params.mode ==='view'){
+         setCanEdit(false);
+      }
+
     }
   }, [patientState.data]);
 

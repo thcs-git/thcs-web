@@ -288,7 +288,8 @@ const Sibebar = (props: Props<any>) => {
         <DialogActions>
           <Button onClick={() => {
             setOpenModalConfig(false)
-            location.reload()
+            history.push(`/dashboard`);
+           // location.reload()
           }}
             color="primary"
           >
