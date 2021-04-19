@@ -420,16 +420,18 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
 
   const selectProfession = useCallback(() => {
     if (!userState.data.professions) {
-      return null;
-    }
-
-    const selected = userState.data.professions.filter((item) => {
+     // return null;
+    }else{
+       const selected = userState.data.professions.filter((item) => {
       if (typeof state.profession_id === "object") {
         return item._id === state?.profession_id?._id;
       }
     });
 
     return selected[0] ? selected[0] : null;
+    }
+
+
   }, [state.profession_id, state.professions]);
 
   // Especialides
