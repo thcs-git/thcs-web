@@ -904,7 +904,7 @@ export default function PatientForm(props: RouteComponentProps<IPageParams>) {
                                 ...prevState,
                                 phones: [
                                   {
-                                    ...prevState.phones[1],
+                                    ...prevState.phones[0],
                                     cellnumber: element.target.value
                                   }
                                 ]

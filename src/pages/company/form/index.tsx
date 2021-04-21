@@ -335,8 +335,6 @@ export default function CompanyForm(props: RouteComponentProps<IPageParams>) {
                       setState({ ...state, name: element.target.value })
                       setFieldValidations((prevState: any) => ({ ...prevState, name: !validator.isEmpty(element.target.value) }));
                     }}
-                    error={!fieldsValidation.name}
-                    helperText={!fieldsValidation.name ? `Por favor, insira um nome para a empresa.` : null}
                     fullWidth
                   />
                 </Grid>
@@ -351,8 +349,7 @@ export default function CompanyForm(props: RouteComponentProps<IPageParams>) {
                       setState({ ...state, fantasy_name: element.target.value })
                       setFieldValidations((prevState: any) => ({ ...prevState, fantasy_name: !validator.isEmpty(element.target.value) }));
                     }}
-                    error={!fieldsValidation.fantasy_name}
-                    helperText={!fieldsValidation.fantasy_name ? `Por favor, insira o nome fantasia da empresa.` : null}
+
                     fullWidth
                   />
                 </Grid>
@@ -374,8 +371,6 @@ export default function CompanyForm(props: RouteComponentProps<IPageParams>) {
                         variant="outlined"
                         size="small"
                         placeholder="00.000.000/0000-00"
-                        error={!fieldsValidation.fiscal_number}
-                        helperText={!fieldsValidation.fiscal_number ? `Por favor, insira o nome fantasia da empresa.` : null}
                         fullWidth
                       />)}
                   </InputMask>

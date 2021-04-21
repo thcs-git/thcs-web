@@ -182,8 +182,7 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
   var formValid : any;
 
   var cepError = false;
-
-  if (companyState.error && state.address.postal_code != ''){
+  if (userState.error && state.address.postal_code != ''){
     cepError = true;
   }
 
@@ -334,13 +333,13 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
     }
 
     if (userState.error) {
-      document.getElementById("input-postal-code")?.focus();
+      cepError = true;
+
       setState((prevState) => {
         return {
           ...prevState,
           address: {
             ...prevState.address,
-            postal_code: "",
             street: "",
             number: "",
             district: "",
@@ -354,7 +353,6 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
       setFieldValidations((prevState: any) => ({
         ...prevState,
         address: {
-          postal_code: false,
           street: false,
           number: false,
           district: false,
@@ -366,7 +364,7 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
 
       return;
     } else {
-      document.getElementById("input-address-number")?.focus();
+
     }
   }, [userState.data.address]);
 
@@ -420,24 +418,8 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
   );
 
   const getAddress = useCallback(() => {
-    if (state.address.postal_code.includes(' ')) {
-      setFieldValidations((prevState: any) => ({
-        ...prevState,
-        address: {
-          postal_code: false,
-          street: false,
-          number: false,
-          district: false,
-          city: false,
-          state: false,
-          complement: false,
-        },
-      }));
-      return;
-    }
-
     dispatch(getAddressAction(state.address.postal_code));
-  }, [state.address?.postal_code]);
+  }, [state.address.postal_code]);
 
   function handleOpenModalCancel() {
     setOpenModalCancel(true);
@@ -697,12 +679,6 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
                               name: !validator.isEmpty(element.target.value),
                             }));
                           }}
-                          error={!fieldsValidation.name}
-                          helperText={
-                            !fieldsValidation.name
-                              ? `Por favor, insira um nome para o usuário.`
-                              : null
-                          }
                           fullWidth
                         />
                       </Grid>
@@ -726,12 +702,7 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
                               ),
                             }));
                           }}
-                          error={!fieldsValidation.mother_name}
-                          helperText={
-                            !fieldsValidation.mother_name
-                              ? `Por favor, insira o nome da mãe do usuário.`
-                              : null
-                          }
+
                           fullWidth
                         />
                       </Grid>
@@ -757,12 +728,7 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
                           InputLabelProps={{
                             shrink: true,
                           }}
-                          error={!fieldsValidation.birthdate}
-                          helperText={
-                            !fieldsValidation.birthdate
-                              ? `Por favor, insira a data de nascimento.`
-                              : null
-                          }
+
                           fullWidth
                         />
                       </Grid>
@@ -807,12 +773,7 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
                               variant="outlined"
                               size="small"
                               placeholder="000.000.000-00"
-                              error={!fieldsValidation.fiscal_number}
-                              helperText={
-                                !fieldsValidation.fiscal_number
-                                  ? `Por favor, insira o CPF.`
-                                  : null
-                              }
+
                               fullWidth
                             />
                           )}
@@ -845,12 +806,7 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
                               variant="outlined"
                               size="small"
                               placeholder="0.000-000"
-                              error={!fieldsValidation.national_id}
-                              helperText={
-                                !fieldsValidation.national_id
-                                  ? `Por favor, insira o RG.`
-                                  : null
-                              }
+
                               fullWidth
                             />
                           )}
@@ -877,12 +833,7 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
                               ),
                             }));
                           }}
-                          error={!fieldsValidation.issuing_organ}
-                          helperText={
-                            !fieldsValidation.issuing_organ
-                              ? `Por favor, insira o orgão emissor.`
-                              : null
-                          }
+
                           fullWidth
                         />
                       </Grid>
@@ -907,12 +858,6 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
                               ),
                             }));
                           }}
-                          error={!fieldsValidation.nationality}
-                          helperText={
-                            !fieldsValidation.nationality
-                              ? `Por favor, insira a nacionalidade.`
-                              : null
-                          }
                           fullWidth
                         />
                       </Grid>
@@ -931,12 +876,6 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
                                 disabled={!canEdit}
                                 label="Sexo"
                                 variant="outlined"
-                                error={!fieldsValidation.gender}
-                                helperText={
-                                  !fieldsValidation.gender
-                                    ? "Selecione o sexo"
-                                    : null
-                                }
                               />
                             )}
                             value={state.gender}
@@ -996,7 +935,7 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
                                 placeholder="00000-000"
                                 size="small"
                                 variant="outlined"
-                                error={!fieldsValidation.address.postal_code}
+                                error={userState.error && !fieldsValidation.postal_code}
 
                                 fullWidth
                               />
@@ -1034,12 +973,6 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
                                 },
                               }));
                             }}
-                            error={!fieldsValidation.address.street}
-                            helperText={
-                              !fieldsValidation.address.street
-                                ? `Por favor, insira o nome da rua.`
-                                : null
-                            }
                             fullWidth
                             disabled={!canEdit}
                           />
@@ -1069,12 +1002,7 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
                                 },
                               }));
                             }}
-                            error={!fieldsValidation.address.number}
-                            helperText={
-                              !fieldsValidation.address.number
-                                ? `Por favor, insira o número da residência.`
-                                : null
-                            }
+
                             fullWidth
                             disabled={!canEdit}
                           />
@@ -1135,12 +1063,6 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
                                 },
                               }));
                             }}
-                            error={!fieldsValidation.address.district}
-                            helperText={
-                              !fieldsValidation.address.district
-                                ? `Por favor, insira o bairro.`
-                                : null
-                            }
                             fullWidth
                             disabled={!canEdit}
                           />
@@ -1171,12 +1093,6 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
                                 },
                               }));
                             }}
-                            error={!fieldsValidation.address.city}
-                            helperText={
-                              !fieldsValidation.address.city
-                                ? `Por favor, insira a cidade.`
-                                : null
-                            }
                             fullWidth
                             disabled={!canEdit}
                           />
@@ -1207,12 +1123,6 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
                                 },
                               }));
                             }}
-                            error={!fieldsValidation.address.state}
-                            helperText={
-                              !fieldsValidation.address.state
-                                ? `Por favor, insira o estado.`
-                                : null
-                            }
                             fullWidth
                             disabled={!canEdit}
                           />
@@ -1235,12 +1145,6 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
                               email: validator.isEmail(element.target.value),
                             }));
                           }}
-                          error={!fieldsValidation.email}
-                          helperText={
-                            !fieldsValidation.email
-                              ? `Por favor, insira o email do usuário.`
-                              : null
-                          }
                           fullWidth
                           disabled={!canEdit}
                         />
@@ -1333,12 +1237,6 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
                               disabled={!canEdit}
                                 label="Tipo do Usuário"
                                 variant="outlined"
-                                error={!fieldsValidation.user_type_id}
-                                helperText={
-                                  !fieldsValidation.user_type_id
-                                    ? `Selecione um tipo do usuário.`
-                                    : null
-                                }
                               />
                             )}
                             value={selectUserType()}
