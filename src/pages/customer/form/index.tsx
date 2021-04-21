@@ -796,7 +796,7 @@ export default function CustomerForm(props: RouteComponentProps<IPageParams>) {
                         variant="outlined"
                         size="small"
                         placeholder="(00) 0 0000-0000"
-                        error ={!validatePhone() && state.cellphone != ''}
+                        error ={!validateCellPhone() && state.cellphone != ''}
                         fullWidth
 
                       />
