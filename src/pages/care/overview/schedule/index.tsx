@@ -355,7 +355,7 @@ export default function SchedulePage(props: RouteComponentProps<IPageParams>) {
   const renderEventStatus = (event: any) => {
     const today = dayjs();
     const eventDate = dayjs(event.start);
-    const diffDate = eventDate.diff(today, 'minutes');
+    const diffDate = eventDate.diff(today, 'm');
     const { extendedProps: eventData } = event;
 
     if (diffDate < 0 && (!eventData.checkin || eventData.checkin.length === 0)) {
