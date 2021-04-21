@@ -176,6 +176,46 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
 
   const [openModalCancel, setOpenModalCancel] = useState(false);
 
+  //////////////// validacao do campos ///////////////////////
+  var isValidPhoneNumber: any;
+  var isValidCellPhoneNumber: any;
+  var formValid : any;
+
+  var cepError = false;
+
+  if (companyState.error && state.address.postal_code != ''){
+    cepError = true;
+  }
+
+  const validatePhone = () => {
+
+    if ( state.phone){
+      const landline =  state.phone.replace('(','').replace(')','9').replace(' ','').replace(' ','').replace('-','');
+
+     isValidPhoneNumber = validator.isMobilePhone(landline, 'pt-BR');
+
+      return (isValidPhoneNumber)}
+
+
+   }
+
+
+
+  const validateCellPhone = () => {
+    var cellphone =  state.cellphone.replace('(','').replace(')','').replace(' ','').replace(' ','').replace('-','');
+   isValidCellPhoneNumber = validator.isMobilePhone(cellphone, 'pt-BR');
+
+    return (isValidCellPhoneNumber)
+
+   }
+
+   if( validatePhone() == true && validateCellPhone()==true){
+
+    formValid = true;
+
+  }
+//////////////////////////////////////////////////////////////////
+
   const useStyles = makeStyles((theme) => ({
     cancel:{
       textTransform: 'capitalize',
@@ -956,15 +996,16 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
                                 size="small"
                                 variant="outlined"
                                 error={!fieldsValidation.address.postal_code}
-                                helperText={
-                                  !fieldsValidation.address.postal_code
-                                    ? `Por favor, insira o CEP.`
-                                    : null
-                                }
+
                                 fullWidth
                               />
                             )}
                           </InputMask>
+                          {userState.error && !fieldsValidation.address.postal_code &&(
+                      <p style={{ color: '#f44336', margin:'-2px 5px 10px' }}>
+                        CEP inválido
+                      </p>
+                    )}
                         </Grid>
 
                         <Grid item md={10} xs={12}>
@@ -1215,6 +1256,7 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
                               phone: !validator.isEmpty(element.target.value),
                             }));
                           }}
+                          onBlur={validatePhone}
                         >
                           {(inputProps: any) => (
                             <TextField
@@ -1226,15 +1268,16 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
                               size="small"
                               placeholder="0000-0000"
                               error={!fieldsValidation.phone}
-                              helperText={
-                                !fieldsValidation.phone
-                                  ? `Por favor, insira o telefone.`
-                                  : null
-                              }
+
                               fullWidth
                             />
                           )}
                         </InputMask>
+                        {!validatePhone() &&(
+                      <p style={{ color: '#f44336', margin:'-10px 5px 10px'}}>
+                       Por favor insira um número válido
+                      </p>
+                    )}
                       </Grid>
                       <Grid item md={3} xs={12}>
                         <InputMask
@@ -1248,12 +1291,11 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
                             });
                             setFieldValidations((prevState: any) => ({
                               ...prevState,
-                              cellphone: validator.isMobilePhone(
-                                element.target.value,
-                                "pt-BR"
-                              ),
+                              cellphone: !validator.isEmpty(element.target.value),
+
                             }));
                           }}
+                          onBlur={validateCellPhone}
                         >
                           {(inputProps: any) => (
                             <TextField
@@ -1265,15 +1307,16 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
                               size="small"
                               placeholder="(00) 0 0000-0000"
                               error={!fieldsValidation.cellphone}
-                              helperText={
-                                !fieldsValidation.cellphone
-                                  ? `Por favor, insira o celular.`
-                                  : null
-                              }
+
                               fullWidth
                             />
                           )}
                         </InputMask>
+                        {!validateCellPhone() &&(
+                      <p style={{ color: '#f44336', margin:'-10px 5px 10px' }}>
+                       Por favor insira um número válido
+                      </p>
+                    )}
                       </Grid>
                     </Grid>
                     <Grid container>
@@ -1562,6 +1605,7 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
                 <ButtonComponent
                   background="primary"
                   onClick={() => selectTab(1)}
+                  disabled={!formValid}
                 >
                   Próximo
                 </ButtonComponent>
@@ -1570,7 +1614,7 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
                   <ButtonComponent background="success_rounded" onClick={() => selectTab(0)}>
                     Voltar
                   </ButtonComponent>
-                  {canEdit &&(  <ButtonComponent background="success" onClick={handleSaveFormUser}>
+                  {canEdit &&(  <ButtonComponent  background="success" onClick={handleSaveFormUser}>
                     Salvar
                   </ButtonComponent>)}
 
