@@ -75,6 +75,7 @@ export default function CustomerList() {
           <SearchComponent
             handleButton={() => history.push('/customer/create/')}
             buttonTitle="Novo"
+            inputPlaceholder = "Pesquise por nome fantasia, CNPJ, status, etc..."
             onChangeInput={debounceSearchRequest}
           />
           <Table

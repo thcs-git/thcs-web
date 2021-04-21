@@ -17,7 +17,7 @@ const Search = ({ value, onChangeInput, buttonTitle, handleButton, inputPlacehol
     <div>
       <FormSearch noValidate autoComplete="off">
         <FormControl variant="outlined" size="small" >
-          <InputLabel htmlFor="search-input">{inputPlaceholder ?? "Digite para pesquisar"}</InputLabel>
+          <InputLabel htmlFor="search-input">{inputPlaceholder = inputPlaceholder}</InputLabel>
           <OutlinedInput
             id="search-input"
             value={value}
