@@ -361,7 +361,7 @@ export default function PatientForm(props: RouteComponentProps<IPageParams>) {
 
   useEffect(() => {
     if (patientState.error) {
-      console.log("entrou foi aqui ta ligado?")
+
       setState(prev => ({
         ...prev,
         address: {

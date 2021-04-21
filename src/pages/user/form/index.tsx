@@ -214,7 +214,7 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
     formValid = true;
 
   }
-//////////////////////////////////////////////////////////////////
+
 
   const useStyles = makeStyles((theme) => ({
     cancel:{
@@ -306,6 +306,7 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
       });
     }
   }, [userState]);
+
 
   useEffect(() => {
     setState((prevState) => {
@@ -1267,13 +1268,13 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
                               variant="outlined"
                               size="small"
                               placeholder="0000-0000"
-                              error={!fieldsValidation.phone}
+                              error ={!validateCellPhone() && state.cellphone != ''}
 
                               fullWidth
                             />
                           )}
                         </InputMask>
-                        {!validatePhone() &&(
+                        {!validatePhone() && state.phone &&(
                       <p style={{ color: '#f44336', margin:'-10px 5px 10px'}}>
                        Por favor insira um número válido
                       </p>
@@ -1306,13 +1307,13 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
                               variant="outlined"
                               size="small"
                               placeholder="(00) 0 0000-0000"
-                              error={!fieldsValidation.cellphone}
+                              error ={!validateCellPhone() && state.cellphone != ''}
 
                               fullWidth
                             />
                           )}
                         </InputMask>
-                        {!validateCellPhone() &&(
+                        {!validateCellPhone() &&  state.cellphone &&(
                       <p style={{ color: '#f44336', margin:'-10px 5px 10px' }}>
                        Por favor insira um número válido
                       </p>

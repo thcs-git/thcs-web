@@ -185,27 +185,44 @@ export default function CompanyForm(props: RouteComponentProps<IPageParams>) {
   }, [companyState, params.id]);
 
   useEffect(() => {
-    if (companyState?.data?.address) {
-      setState(prevState => ({
+    if (companyState.error) {
+
+      setState(prev => ({
+        ...prev,
+        address: {
+          ...prev.address,
+          street: '',
+          number: '',
+          district: '',
+          city: '',
+          state: '',
+          complement: '',
+        },
+      }))
+    }
+
+    setState(prevState => {
+      return {
         ...prevState,
         address: {
           ...companyState.data.address
         }
-      }));
-
-      setFieldValidations((prevState: any) => ({
-        ...prevState,
-        postal_code: !validator.isEmpty(companyState.data.address.postal_code),
-        street: !validator.isEmpty(companyState.data.address.street),
-        number: !validator.isEmpty(companyState.data.address.number),
-        district: !validator.isEmpty(companyState.data.address.district),
-        city: !validator.isEmpty(companyState.data.address.city),
-        state: !validator.isEmpty(companyState.data.address.state),
-        complement: !validator.isEmpty(companyState.data.address.complement),
-      }));
-    }
-
+      }
+    });
+    setFieldValidations((prevState: any) => ({
+      ...prevState,
+      postal_code: !validator.isEmpty(companyState.data.address.postal_code),
+      street: !validator.isEmpty(companyState.data.address.street),
+      number: !validator.isEmpty(companyState.data.address.number),
+      district: !validator.isEmpty(companyState.data.address.district),
+      city: !validator.isEmpty(companyState.data.address.city),
+      state: !validator.isEmpty(companyState.data.address.state),
+      complement: !validator.isEmpty(companyState.data.address.complement),
+    }));
   }, [companyState.data?.address]);
+
+
+
 
   useEffect(() => {
     if (companyState.success && companyState.data?._id) history.push('/company');
@@ -578,7 +595,7 @@ export default function CompanyForm(props: RouteComponentProps<IPageParams>) {
                       // value={state.cellphone}
                       // onChange={(element) => setState({ ...state, cellphone: element.target.value })}
                       placeholder="00000-0000"
-                      error ={!validatePhone() && state.cellphone != ''}
+                      error ={!validateCellPhone() && state.cellphone != ''}
 
                       fullWidth
                     />
