@@ -100,6 +100,49 @@ export default function CompanyForm(props: RouteComponentProps<IPageParams>) {
 
   const [openModalCancel, setOpenModalCancel] = useState(false);
 
+  //////////////// validacao do campos ///////////////////////
+  var isValidPhoneNumber: any;
+  var isValidCellPhoneNumber: any;
+  var formValid : any;
+
+
+
+  var cepError = false;
+
+  if (companyState.error && state.address.postal_code != ''){
+    cepError = true;
+  }
+
+  const validatePhone = () => {
+
+    if ( state.phone){
+      const landline =  state.phone.replace('(','').replace(')','9').replace(' ','').replace(' ','').replace('-','');
+
+     isValidPhoneNumber = validator.isMobilePhone(landline, 'pt-BR');
+
+      return (isValidPhoneNumber)}
+
+
+   }
+
+
+
+
+  const validateCellPhone = () => {
+    var cellphone =  state.cellphone.replace('(','').replace(')','').replace(' ','').replace(' ','').replace('-','');
+   isValidCellPhoneNumber = validator.isMobilePhone(cellphone, 'pt-BR');
+
+    return (isValidCellPhoneNumber)
+
+   }
+
+   if( validatePhone() == true && validateCellPhone()==true){
+
+    formValid = true;
+
+  }
+///////////////////////////////
+
   useEffect(() => {
     dispatch(cleanAction());
   }, []);
@@ -204,6 +247,12 @@ export default function CompanyForm(props: RouteComponentProps<IPageParams>) {
     setOpenModalCancel(false);
   }
 
+  const validCEP = () => {
+       if ( state.address){
+         console.log("true")
+       }
+  }
+
   function handleCancelForm() {
     setOpenModalCancel(false);
     history.push(`/company`);
@@ -212,6 +261,8 @@ export default function CompanyForm(props: RouteComponentProps<IPageParams>) {
   const getAddress = useCallback(() => {
     dispatch(getAddressAction(state.address.postal_code));
     document.getElementById('input-address-number')?.focus();
+    validCEP();
+
   }, [state.address.postal_code]);
 
   const selectCustomer = useCallback(() => {
@@ -334,6 +385,7 @@ export default function CompanyForm(props: RouteComponentProps<IPageParams>) {
                     >
                       {(inputProps: any) => (
                         <OutlinedInputFiled
+                          error={cepError}
                           id="input-postal-code"
                           label="CEP"
                           placeholder="00000-000"
@@ -348,6 +400,11 @@ export default function CompanyForm(props: RouteComponentProps<IPageParams>) {
                       )}
                     </InputMask>
                   </FormControl>
+                  {companyState.error && state.address.postal_code != '' &&(
+                      <p style={{ color: '#f44336', margin:'-2px 5px 10px' }}>
+                        CEP inválido
+                      </p>
+                    )}
                 </Grid>
 
                 <Grid item md={9} xs={12}>
@@ -465,21 +522,28 @@ export default function CompanyForm(props: RouteComponentProps<IPageParams>) {
                     setState({ ...state, phone: element.target.value });
                     setFieldValidations((prevState: any) => ({ ...prevState, phone: !validator.isEmpty(element.target.value) }));
                   }}
+                  onBlur={validatePhone}
                 >
                   {(inputProps: any) => (
                     <TextField
                       {...inputProps}
+                      error ={!validatePhone() && state.phone != ''}
                       id="input-phone"
                       label="Telefone"
                       variant="outlined"
                       size="small"
                       placeholder="(00) 0000-0000"
-                      error={!fieldsValidation.phone}
-                      helperText={!fieldsValidation.phone ? `Por favor, insira um telefone válido.` : null}
+
+
                       fullWidth
                     />
                   )}
                 </InputMask>
+                {!validatePhone() && state.phone &&(
+                      <p style={{ color: '#f44336', margin:'-10px 5px 10px' }}>
+                       Por favor insira um número válido
+                      </p>
+                    )}
               </Grid>
               <Grid item md={9} xs={12}>
                 <TextField
@@ -503,6 +567,7 @@ export default function CompanyForm(props: RouteComponentProps<IPageParams>) {
                     setState({ ...state, cellphone: element.target.value });
                     setFieldValidations((prevState: any) => ({ ...prevState, cellphone: !validator.isMobilePhone(element.target.value, 'pt-BR') }));
                   }}
+                  onBlur={validateCellPhone}
                 >
                   {(inputProps: any) => (
                     <TextField
@@ -513,12 +578,17 @@ export default function CompanyForm(props: RouteComponentProps<IPageParams>) {
                       // value={state.cellphone}
                       // onChange={(element) => setState({ ...state, cellphone: element.target.value })}
                       placeholder="00000-0000"
-                      error={!fieldsValidation.cellphone}
-                      helperText={!fieldsValidation.cellphone ? `Por favor, insira um celular válido.` : null}
+                      error ={!validatePhone() && state.cellphone != ''}
+
                       fullWidth
                     />
                   )}
                 </InputMask>
+                {!validateCellPhone() && state.cellphone &&(
+                      <p style={{ color: '#f44336', margin:'-10px 5px 10px' }}>
+                       Por favor insira um número válido
+                      </p>
+                    )}
               </Grid>
 
               {params.id && (
@@ -545,7 +615,7 @@ export default function CompanyForm(props: RouteComponentProps<IPageParams>) {
             <ButtonComponent background="default" onClick={handleOpenModalCancel}>
               Voltar
 					  </ButtonComponent>
-            <ButtonComponent background="success" onClick={handleSaveFormCustomer}>
+            <ButtonComponent disabled={!formValid} background="success" onClick={handleSaveFormCustomer}>
               Salvar
 					  </ButtonComponent>
           </ButtonsContent>
