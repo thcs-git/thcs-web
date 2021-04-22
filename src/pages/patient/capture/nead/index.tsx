@@ -148,7 +148,7 @@ export default function Nead(props: RouteComponentProps<IPageParams>) {
 
   useEffect(() => {
     calculateScore();
-  }, [currentStep]);
+  }, [currentStep, document, documentGroup]);
 
   const selectOption = useCallback(
     (field_id: string, option_id: string, multiple: boolean = false) => {
@@ -384,12 +384,9 @@ export default function Nead(props: RouteComponentProps<IPageParams>) {
     setCurrentStep((prevState) => prevState - 1);
   }, [currentStep]);
 
-  const handleNavigateStep = useCallback(
-    (step: number) => {
-      setCurrentStep(step);
-    },
-    [currentStep]
-  );
+  const handleNavigateStep = useCallback((step: number) => {
+    setCurrentStep(step);
+  }, [currentStep]);
 
   const handleClickHelpPopover = (
     event: React.MouseEvent<HTMLButtonElement>
@@ -569,7 +566,7 @@ export default function Nead(props: RouteComponentProps<IPageParams>) {
                           ))}
                         </RadioGroup>
                       </QuestionSection>
-                      </FormControl>
+                    </FormControl>
                   );
                 }
               })}
@@ -822,15 +819,15 @@ export default function Nead(props: RouteComponentProps<IPageParams>) {
                 )}
               </>
             ) : (
-                <Button
-                  disabled={currentStep === (steps.length - 1)}
-                  background="success"
-                  type="submit"
-                  onClick={handleNextStep}
-                >
-                  Próximo
-                </Button>
-              )}
+              <Button
+                disabled={currentStep === (steps.length - 1)}
+                background="success"
+                type="submit"
+                onClick={handleNextStep}
+              >
+                Próximo
+              </Button>
+            )}
           </ButtonsContent>
         </FormContent>
       </Container>
