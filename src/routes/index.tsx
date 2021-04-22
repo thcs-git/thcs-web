@@ -65,7 +65,7 @@ const Routes = () => (
 
       {/* Clientes */}
       <PrivateRoute path="/customer" component={CustomerList} exact />
-      <PrivateRoute path="/customer/:id/edit" component={CustomerForm} />
+      <PrivateRoute path="/customer/:id/:mode/edit" component={CustomerForm} />
       <PrivateRoute path="/customer/create" component={CustomerForm} />
 
       {/* Empresas */}
@@ -85,18 +85,18 @@ const Routes = () => (
 
       {/* Areas */}
       <PrivateRoute path="/area" component={AreaList} exact />
-      <PrivateRoute path="/area/:id/edit" component={AreaForm}/>
+      <PrivateRoute path="/area/:id/:mode/edit" component={AreaForm}/>
       <PrivateRoute path="/area/create" component={AreaForm} />
 
 
       {/* Usuário */}
       <PrivateRoute path="/user" component={UserList} exact />
-      <PrivateRoute path="/user/:id/edit" component={UserForm} />
+      <PrivateRoute path="/user/:id/:mode/edit" component={UserForm} />
       <PrivateRoute path="/user/create" component={UserForm} />
 
       {/* Patient */}
       <PrivateRoute path="/patient" component={PatientList} exact />
-      <PrivateRoute path="/patient/:id/edit" component={PatientForm} />
+      <PrivateRoute path="/patient/:id/:mode/edit" component={PatientForm} />
       <PrivateRoute path="/patient/create" component={PatientForm} />
       <PrivateRoute path="/patient/capture/create" component={PatientCaptureCreate} />
       <PrivateRoute path="/patient/capture/:id/overview" component={PatientCaptureOverview} />

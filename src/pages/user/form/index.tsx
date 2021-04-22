@@ -11,11 +11,12 @@ import {
   Divider,
   Grid,
   FormControlLabel,
-} from "@material-ui/core";
-import Autocomplete from "@material-ui/lab/Autocomplete";
-import InputMask, { Props } from "react-input-mask";
-import validator from "validator";
-import { toast } from "react-toastify";
+  makeStyles,
+} from '@material-ui/core';
+import Autocomplete from '@material-ui/lab/Autocomplete';
+import InputMask, { Props } from 'react-input-mask';
+import validator from 'validator';
+import { toast } from 'react-toastify';
 
 import { useDispatch, useSelector } from "react-redux";
 import {
@@ -75,9 +76,10 @@ import {
   InputFiled as TextField,
   OutlinedInputFiled,
   FormGroupSection,
-  ChipList,
-} from "./styles";
-import FeedbackComponent from "../../../components/Feedback";
+  ChipList
+} from './styles';
+import FeedbackComponent from '../../../components/Feedback';
+import { Edit } from '@material-ui/icons';
 
 interface IFormFields {
   userType: { id: string; description: string } | null;
@@ -86,6 +88,7 @@ interface IFormFields {
 
 interface IPageParams {
   id?: string;
+  mode?:string;
 }
 
 export default function UserForm(props: RouteComponentProps<IPageParams>) {
@@ -97,10 +100,8 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
     (state: ApplicationState) => state.specialties
   );
   const councilState = useSelector((state: ApplicationState) => state.councils);
-  const companyState = useSelector(
-    (state: ApplicationState) => state.companies
-  );
-
+  const companyState = useSelector((state: ApplicationState) => state.companies);
+  const [canEdit, setCanEdit] = useState(true);
   const { params } = props.match;
 
   const currentCompany = localStorage.getItem(LOCALSTORAGE.COMPANY_SELECTED);
@@ -175,6 +176,23 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
 
   const [openModalCancel, setOpenModalCancel] = useState(false);
 
+  const useStyles = makeStyles((theme) => ({
+    cancel:{
+      textTransform: 'capitalize',
+      fontSize: '18px',
+      '&:hover': {
+        backgroundColor: 'var(--danger-hover)',
+        color:'var(--danger)',
+        borderColor:'var(--danger-hover)',
+
+      },
+      maxHeight:'38px',
+      borderColor:'var(--danger-hover)',
+      color:'var(--danger-hover)',
+      contrastText: "#fff"
+    },
+  }));
+  const classes = useStyles();
   useEffect(() => {
     dispatch(cleanAction());
     dispatch(getSpecialtiesAction());
@@ -182,8 +200,7 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
     dispatch(getProfessionsAction());
     dispatch(getCompaniesAction());
     dispatch(getUserTypesAction());
-    console.log(userState);
-    console.log(specialtyState);
+
   }, []);
 
   useEffect(() => {
@@ -216,6 +233,9 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
 
     // Força o validador em 'true' quando entrar na tela para editar
     if (params?.id) {
+      if(params.mode === "view"){
+        setCanEdit(false)
+      }
       setFieldValidations({
         companies: true,
         name: true,
@@ -400,16 +420,18 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
 
   const selectProfession = useCallback(() => {
     if (!userState.data.professions) {
-      return null;
-    }
-
-    const selected = userState.data.professions.filter((item) => {
+     // return null;
+    }else{
+       const selected = userState.data.professions.filter((item) => {
       if (typeof state.profession_id === "object") {
         return item._id === state?.profession_id?._id;
       }
     });
 
     return selected[0] ? selected[0] : null;
+    }
+
+
   }, [state.profession_id, state.professions]);
 
   // Especialides
@@ -438,13 +460,14 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
     }
   }
 
-  const handleDeleteEspecialty = useCallback(
-    (especialty: SpecialtyInterface) => {
-      let specialtiesSelected = [...state.specialties];
+  const handleDeleteEspecialty = useCallback((especialty: SpecialtyInterface) => {
+    if(canEdit){
+        let specialtiesSelected = [...state.specialties];
 
-      const especialtyFounded = specialtiesSelected.findIndex((item: any) => {
-        return especialty._id === item._id;
-      });
+    const especialtyFounded = specialtiesSelected.findIndex((item: any) => {
+      return especialty._id === item._id
+    });
+
 
       if (especialtyFounded > -1) {
         const specialtyData = specialtiesSelected.find((item: any) => {
@@ -456,16 +479,14 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
         specialtiesCopy.push(specialtyData);
         setSpecialties(specialtiesCopy);
 
-        specialtiesSelected.splice(especialtyFounded, 1);
+      setState(prevState => ({
+        ...prevState,
+        specialties: specialtiesSelected
+      }))
+    };
+    }
 
-        setState((prevState) => ({
-          ...prevState,
-          specialties: specialtiesSelected,
-        }));
-      }
-    },
-    [state.specialties]
-  );
+  }, [state.specialties]);
 
   const selectMainSpecialty = useCallback(() => {
     const selected = specialtyState.list.data.filter(
@@ -528,33 +549,32 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
     }
   }
 
-  const handleDeleteCompany = useCallback(
-    (company: CompanyInterface) => {
-      let companiesSelected = [...state.companies];
-      const companyFounded = companiesSelected.findIndex((item: any) => {
-        return company._id === item._id;
-      });
+  const handleDeleteCompany = useCallback((company: CompanyInterface) => {
+     if(canEdit){
+       let companiesSelected = [...state.companies];
+       const companyFounded = companiesSelected.findIndex((item: any) => {
+         return company._id === item._id
+       })
 
-      if (companyFounded > -1) {
-        const companyData = companiesSelected.find((item: any) => {
-          return company._id === item._id;
-        });
+     if (companyFounded > -1) {
+       const companyData = companiesSelected.find((item: any) => {
+         return company._id === item._id
+       });
 
-        let companiesCopy = [...companies];
+
+         let companiesCopy = [...companies];
 
         companiesCopy.push(companyData);
-        setCompanies(companiesCopy);
+         setCompanies(companiesCopy);
 
-        companiesSelected.splice(companyFounded, 1);
+       setState(prevState => ({
+         ...prevState,
+         companies: companiesSelected
+       }))
+       }
+     }
 
-        setState((prevState) => ({
-          ...prevState,
-          companies: companiesSelected,
-        }));
-      }
-    },
-    [state.companies]
-  );
+  }, [state.companies]);
 
   const handleSaveFormUser = useCallback(() => {
     if (!handleValidateFields()) {
@@ -589,9 +609,19 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
             }}
           />
         ) : (
+
           <FormSection>
             <FormContent>
-              <FormTitle>Cadastro de Usuário</FormTitle>
+               <div style={{ display: 'flex', alignItems: 'center', flexDirection: 'row' }}>
+            <FormTitle>Cadastro de Usuario</FormTitle>
+
+            {params.id && (
+              <Button style={{ marginTop: -20, marginLeft: 15, color: '#0899BA' }} onClick={() => setCanEdit(!canEdit)}>
+                <Edit style={{ marginRight: 5, width: 18 }} />
+              Editar
+              </Button>
+            )}
+          </div>
 
               <TabContent>
                 <TabNav>
@@ -613,6 +643,7 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
                     <Grid container>
                       <Grid item md={12} xs={12}>
                         <TextField
+                        disabled={!canEdit}
                           id="input-social-name"
                           label="Nome do usuário"
                           variant="outlined"
@@ -636,6 +667,7 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
                       </Grid>
                       <Grid item md={7} xs={12}>
                         <TextField
+                        disabled={!canEdit}
                           id="input-mother-name"
                           label="Nome da mãe"
                           variant="outlined"
@@ -667,11 +699,8 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
                         <DatePicker
                           id="input-fiscal-birthdate"
                           label="Data de Nascimento"
-                          value={
-                            state?.birthdate?.length > 10
-                              ? formatDate(state.birthdate, "YYYY-MM-DD")
-                              : state.birthdate
-                          }
+                          disabled={!canEdit}
+                          value={state?.birthdate?.length > 10 ? formatDate(state.birthdate, 'YYYY-MM-DD') : state.birthdate}
                           onChange={(element) => {
                             setState({
                               ...state,
@@ -713,6 +742,7 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
                       <Grid item md={4} xs={12}>
                         <InputMask
                           mask="999.999.999-99"
+                          disabled={!canEdit}
                           value={state.fiscal_number}
                           onChange={(element) => {
                             setState({
@@ -730,6 +760,7 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
                           {(inputProps: any) => (
                             <TextField
                               {...inputProps}
+                              disabled={!canEdit}
                               id="input-fiscal-number"
                               label="CPF"
                               variant="outlined"
@@ -749,6 +780,7 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
                       <Grid item md={3} xs={12}>
                         <InputMask
                           mask="9.999-999"
+                          disabled={!canEdit}
                           value={state.national_id}
                           onChange={(element) => {
                             setState({
@@ -766,6 +798,7 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
                           {(inputProps: any) => (
                             <TextField
                               {...inputProps}
+                              disabled={!canEdit}
                               id="input-nation-id"
                               label="RG"
                               variant="outlined"
@@ -790,6 +823,7 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
                           variant="outlined"
                           size="small"
                           value={state.issuing_organ}
+                          disabled={!canEdit}
                           onChange={(element) => {
                             setState({
                               ...state,
@@ -819,6 +853,7 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
                           variant="outlined"
                           size="small"
                           value={state.nationality}
+                          disabled={!canEdit}
                           onChange={(element) => {
                             setState({
                               ...state,
@@ -846,11 +881,13 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
                           <Autocomplete
                             id="combo-box-gender"
                             size="small"
+                            disabled={!canEdit}
                             options={genders}
                             getOptionLabel={(option) => option}
                             renderInput={(params) => (
                               <TextField
                                 {...params}
+                                disabled={!canEdit}
                                 label="Sexo"
                                 variant="outlined"
                                 error={!fieldsValidation.gender}
@@ -887,6 +924,7 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
                         <Grid item md={2} xs={12}>
                           <InputMask
                             mask="99999-999"
+                            disabled={!canEdit}
                             value={state.address?.postal_code}
                             onChange={(element) => {
                               setState({
@@ -911,6 +949,7 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
                             {(inputProps: any) => (
                               <TextField
                                 {...inputProps}
+                                disabled={!canEdit}
                                 id="input-postal-code"
                                 label="CEP"
                                 placeholder="00000-000"
@@ -960,6 +999,7 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
                                 : null
                             }
                             fullWidth
+                            disabled={!canEdit}
                           />
                         </Grid>
                         <Grid item md={2} xs={12}>
@@ -994,6 +1034,7 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
                                 : null
                             }
                             fullWidth
+                            disabled={!canEdit}
                           />
                         </Grid>
 
@@ -1023,6 +1064,7 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
                               }));
                             }}
                             fullWidth
+                            disabled={!canEdit}
                           />
                         </Grid>
 
@@ -1058,6 +1100,7 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
                                 : null
                             }
                             fullWidth
+                            disabled={!canEdit}
                           />
                         </Grid>
 
@@ -1093,6 +1136,7 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
                                 : null
                             }
                             fullWidth
+                            disabled={!canEdit}
                           />
                         </Grid>
 
@@ -1128,6 +1172,7 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
                                 : null
                             }
                             fullWidth
+                            disabled={!canEdit}
                           />
                         </Grid>
                       </Grid>
@@ -1155,11 +1200,13 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
                               : null
                           }
                           fullWidth
+                          disabled={!canEdit}
                         />
                       </Grid>
                       <Grid item md={3} xs={12}>
                         <InputMask
                           mask="(99) 9999-9999"
+                          disabled={!canEdit}
                           value={state.phone}
                           onChange={(element) => {
                             setState({ ...state, phone: element.target.value });
@@ -1172,6 +1219,7 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
                           {(inputProps: any) => (
                             <TextField
                               {...inputProps}
+                              disabled={!canEdit}
                               id="input-phone"
                               label="Telefone"
                               variant="outlined"
@@ -1191,6 +1239,7 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
                       <Grid item md={3} xs={12}>
                         <InputMask
                           mask="(99) 99999-9999"
+                          disabled={!canEdit}
                           value={state.cellphone}
                           onChange={(element) => {
                             setState({
@@ -1209,6 +1258,7 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
                           {(inputProps: any) => (
                             <TextField
                               {...inputProps}
+                              disabled={!canEdit}
                               id="input-cellphone"
                               label="Celular"
                               variant="outlined"
@@ -1233,9 +1283,10 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
                             id="combo-box-user-type"
                             options={userState.data.user_types || []}
                             getOptionLabel={(option) => option.name}
+                            disabled={!canEdit}
                             renderInput={(params) => (
-                              <TextField
-                                {...params}
+                              <TextField {...params}
+                              disabled={!canEdit}
                                 label="Tipo do Usuário"
                                 variant="outlined"
                                 error={!fieldsValidation.user_type_id}
@@ -1289,18 +1340,11 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
                         <FormGroupSection fullWidth error>
                           <Autocomplete
                             id="combo-box-profession"
+                            disabled={!canEdit}
                             options={userState.data.professions || []}
                             getOptionLabel={(option) => option.name}
-                            renderInput={(params) => (
-                              <TextField
-                                {...params}
-                                label="Função"
-                                variant="outlined"
-                              />
-                            )}
-                            getOptionSelected={(option, value) =>
-                              option._id === state?.profession_id
-                            }
+                            renderInput={(params) => <TextField {...params} disabled={!canEdit} label="Função" variant="outlined" />}
+                            getOptionSelected={(option, value) => option._id === state?.profession_id}
                             value={selectProfession()}
                             onChange={(event, value) => {
                               if (value) {
@@ -1316,17 +1360,10 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
                         <FormGroupSection fullWidth error>
                           <Autocomplete
                             id="combo-box-council"
+                            disabled={!canEdit}
                             options={councilState.list.data}
-                            getOptionLabel={(option) =>
-                              `${option.initials} - ${option.name}`
-                            }
-                            renderInput={(params) => (
-                              <TextField
-                                {...params}
-                                label="Conselho"
-                                variant="outlined"
-                              />
-                            )}
+                            getOptionLabel={(option) => `${option.initials} - ${option.name}`}
+                            renderInput={(params) => <TextField {...params}  disabled={!canEdit} label="Conselho" variant="outlined" />}
                             value={selectCouncil()}
                             getOptionSelected={(option, value) =>
                               option._id === state?.council_id?._id
@@ -1350,14 +1387,9 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
                           <Autocomplete
                             id="combo-box-council-state"
                             options={ufs}
+                            disabled={!canEdit}
                             getOptionLabel={(option) => option.initials}
-                            renderInput={(params) => (
-                              <TextField
-                                {...params}
-                                label="UF"
-                                variant="outlined"
-                              />
-                            )}
+                            renderInput={(params) => <TextField {...params} disabled={!canEdit} label="UF" variant="outlined" />}
                             value={selectCouncilState()}
                             getOptionSelected={(option, value) =>
                               option.initials === state.council_state
@@ -1384,6 +1416,7 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
                             variant="outlined"
                             size="small"
                             value={state.council_number}
+                            disabled={!canEdit}
                             onChange={(element) => {
                               setState({
                                 ...state,
@@ -1406,6 +1439,7 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
                         <FormGroupSection fullWidth error>
                           <Autocomplete
                             id="combo-box-main-especialty"
+                            disabled={!canEdit}
                             options={specialtyState.list.data}
                             getOptionLabel={(option) => option.name}
                             renderInput={(params) => (
@@ -1437,6 +1471,7 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
                           <Autocomplete
                             id="combo-box-especialty"
                             options={specialties}
+                            disabled={!canEdit}
                             getOptionLabel={(option) => option.name}
                             renderInput={(params: any) => {
                               params.inputProps.value = "";
@@ -1476,6 +1511,7 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
                           <Autocomplete
                             id="combo-box-company"
                             options={companies}
+                            disabled={!canEdit}
                             getOptionLabel={(option) => option.name}
                             renderInput={(params) => (
                               <TextField
@@ -1514,16 +1550,14 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
               </TabContent>
             </FormContent>
             <ButtonsContent>
-              <ButtonComponent
-                background="default"
-                onClick={() =>
-                  userState.success
-                    ? history.push("/user")
-                    : handleOpenModalCancel()
-                }
-              >
+
+              {canEdit && (<ButtonComponent variant="outlined"  className={classes.cancel}  onClick={() => userState.success ? history.push('/user') : handleOpenModalCancel()}>
                 Cancelar
-              </ButtonComponent>
+              </ButtonComponent>)}
+              {(!canEdit && currentTab === 0) &&(<ButtonComponent background="success_rounded" onClick={() => history.push('/user')}>
+                    Voltar
+                  </ButtonComponent>) }
+
               {currentTab === 0 ? (
                 <ButtonComponent
                   background="primary"
@@ -1533,18 +1567,13 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
                 </ButtonComponent>
               ) : (
                 <>
-                  <ButtonComponent
-                    background="default"
-                    onClick={() => selectTab(0)}
-                  >
+                  <ButtonComponent background="success_rounded" onClick={() => selectTab(0)}>
                     Voltar
                   </ButtonComponent>
-                  <ButtonComponent
-                    background="success"
-                    onClick={handleSaveFormUser}
-                  >
+                  {canEdit &&(  <ButtonComponent background="success" onClick={handleSaveFormUser}>
                     Salvar
-                  </ButtonComponent>
+                  </ButtonComponent>)}
+
                 </>
               )}
             </ButtonsContent>

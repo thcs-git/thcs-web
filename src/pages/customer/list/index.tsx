@@ -89,7 +89,7 @@ export default function CustomerList() {
                 <TableRow key={`patient_${index}`}>
                   <TableCell align="left">
                     <ItemTable>
-                      <ListLink key={customer._id} to={`/customer/${customer._id}/edit`}>
+                      <ListLink key={customer._id} to={`/customer/${customer._id}/view/edit`}>
                         {customer.name}
                       </ListLink>
                     </ItemTable>
@@ -108,8 +108,8 @@ export default function CustomerList() {
                     open={anchorEl?.id === `btn_patient-menu${index}`}
                     onClose={handleCloseRowMenu}
                   >
-                    <MenuItem onClick={() => history.push(`/customer/${customer._id}/edit`)}>Editar</MenuItem>
-                    <MenuItem onClick={() => history.push(`/customer/${customer._id}/edit`)}>Visualizar</MenuItem>
+                    <MenuItem onClick={() => history.push(`/customer/${customer._id}/edit/edit`)}>Editar</MenuItem>
+                    <MenuItem onClick={() => history.push(`/customer/${customer._id}/view/edit`)}>Visualizar</MenuItem>
                   </Menu>
                   </TableCell>
                 </TableRow>
