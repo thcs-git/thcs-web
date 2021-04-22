@@ -83,12 +83,9 @@ export default function Abemid(props: RouteComponentProps<IPageParams>) {
     setCurrentStep((prevState) => prevState - 1);
   }, [currentStep]);
 
-  const handleNavigateStep = useCallback(
-    (step: number) => {
-      setCurrentStep(step);
-    },
-    [currentStep]
-  );
+  const handleNavigateStep = useCallback((step: number) => {
+    setCurrentStep(step);
+  }, [currentStep]);
 
   const handleClickHelpPopover = (event: React.MouseEvent<HTMLButtonElement>) => {
     setHelpPopover(event.currentTarget);
@@ -143,7 +140,7 @@ export default function Abemid(props: RouteComponentProps<IPageParams>) {
 
   useEffect(() => {
     calculateScore();
-  }, [currentStep]);
+  }, [currentStep, document, documentGroup]);
 
 
   const checkAllCurrentQuestionsAnswered = useCallback(() => {

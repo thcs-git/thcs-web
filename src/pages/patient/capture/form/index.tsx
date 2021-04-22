@@ -18,6 +18,7 @@ import {
 } from '@material-ui/core';
 import { Create as CreateIcon, Search as SearchIcon, AccountCircle, Visibility, Check as CheckIcon, Error } from '@material-ui/icons';
 import { Alert, AlertTitle } from '@material-ui/lab';
+import InputMask from 'react-input-mask';
 
 import { useDispatch, useSelector } from 'react-redux';
 import { ApplicationState } from '../../../../store';
@@ -46,7 +47,8 @@ import {
   PatientData,
   SearchContent,
   NoDataIcon,
-  PatientNotFound
+  PatientNotFound,
+  OutlinedInputFiled
 } from './styles';
 
 export default function PatientCaptureForm(props: RouteComponentProps) {
@@ -107,9 +109,7 @@ export default function PatientCaptureForm(props: RouteComponentProps) {
   const searchPatient = useCallback((value: string) => {
     setPatient({});
 
-    if (value.length > 0) {
-      dispatch(searchPatientAction({ fiscal_number: value }));
-    }
+    (value.length > 0) ? dispatch(searchPatientAction({ fiscal_number: value })) : dispatch(searchPatientAction({ active: true }));
   }, []);
 
   const toggleModalConfirm = useCallback((open?: boolean) => {
@@ -223,18 +223,25 @@ export default function PatientCaptureForm(props: RouteComponentProps) {
           <Grid container>
             <Grid item md={4} sm={4} xs={12}>
               <SearchContent>
-                <TextField
-                  id="input-search-fiscal-number"
-                  label="Paciente"
-                  variant="outlined"
-                  size="small"
+                <InputMask
+                  mask="999.999.999-99"
                   value={patientSearch}
-                  placeholder="Buscar por CPF"
                   onChange={element => setPatientSearch(element.target.value)}
                   onBlur={(element) => searchPatient(element.target.value)}
-                  fullWidth
-                  autoFocus
-                />
+                >
+                  {(inputProps: any) => (
+                    <TextField
+                      id="input-search-fiscal-number"
+                      label="Paciente"
+                      variant="outlined"
+                      size="small"
+                      value={patientSearch}
+                      placeholder="Buscar por CPF"
+                      fullWidth
+                      autoFocus
+                    />
+                  )}
+                </InputMask>
                 <Button
                   background="success"
                   size="large"
