@@ -129,11 +129,12 @@ export default function CompanyForm(props: RouteComponentProps<IPageParams>) {
 
 
   const validateCellPhone = () => {
+    if ( state.cellphone){
     var cellphone =  state.cellphone.replace('(','').replace(')','').replace(' ','').replace(' ','').replace('-','');
    isValidCellPhoneNumber = validator.isMobilePhone(cellphone, 'pt-BR');
 
     return (isValidCellPhoneNumber)
-
+}
    }
 
    if( validatePhone() == true && validateCellPhone()==true){
@@ -178,48 +179,11 @@ export default function CompanyForm(props: RouteComponentProps<IPageParams>) {
         complement: true,
         responsable_name: true,
         email: true,
-        phone: !!companyState.data.phone,
-        cellphone: !!companyState.data.cellphone,
+        phone: true,
+        cellphone: true,
       })
     }
   }, [companyState, params.id]);
-
-  useEffect(() => {
-    if (companyState.error) {
-
-      setState(prev => ({
-        ...prev,
-        address: {
-          ...prev.address,
-          street: '',
-          number: '',
-          district: '',
-          city: '',
-          state: '',
-          complement: '',
-        },
-      }))
-    }
-
-    setState(prevState => {
-      return {
-        ...prevState,
-        address: {
-          ...companyState.data.address
-        }
-      }
-    });
-    setFieldValidations((prevState: any) => ({
-      ...prevState,
-      postal_code: !validator.isEmpty(companyState.data.address.postal_code),
-      street: !validator.isEmpty(companyState.data.address.street),
-      number: !validator.isEmpty(companyState.data.address.number),
-      district: !validator.isEmpty(companyState.data.address.district),
-      city: !validator.isEmpty(companyState.data.address.city),
-      state: !validator.isEmpty(companyState.data.address.state),
-      complement: !validator.isEmpty(companyState.data.address.complement),
-    }));
-  }, [companyState.data?.address]);
 
 
 
