@@ -48,7 +48,6 @@ import {
   SearchContent,
   NoDataIcon,
   PatientNotFound,
-  OutlinedInputFiled
 } from './styles';
 
 export default function PatientCaptureForm(props: RouteComponentProps) {
