@@ -13,8 +13,9 @@ import {
   FormControlLabel,
   makeStyles,
 } from '@material-ui/core';
+import { Edit } from '@material-ui/icons';
 import Autocomplete from '@material-ui/lab/Autocomplete';
-import InputMask, { Props } from 'react-input-mask';
+import InputMask from 'react-input-mask';
 import validator from 'validator';
 import { toast } from 'react-toastify';
 
@@ -48,15 +49,9 @@ import { ufs } from "../../../helpers/constants/address";
 import Loading from "../../../components/Loading";
 
 import Sidebar from "../../../components/Sidebar";
-import {
-  FormTitle,
-  SelectComponent as Select,
-} from "../../../styles/components/Form";
+import { FormTitle } from "../../../styles/components/Form";
 import { SwitchComponent as Switch } from "../../../styles/components/Switch";
 import { ChipComponent as Chip } from "../../../styles/components/Chip";
-
-import { formatDate, age } from "../../../helpers/date";
-import LOCALSTORAGE from "../../../helpers/constants/localStorage";
 
 import DatePicker from "../../../styles/components/DatePicker";
 import {
@@ -67,19 +62,19 @@ import {
   TabBodyItem,
 } from "../../../styles/components/Tabs";
 import ButtonComponent from "../../../styles/components/Button";
+import FeedbackComponent from '../../../components/Feedback';
+
+import { formatDate, age } from "../../../helpers/date";
+import LOCALSTORAGE from "../../../helpers/constants/localStorage";
 
 import {
   ButtonsContent,
-  ButtonPrimary,
   FormSection,
   FormContent,
   InputFiled as TextField,
-  OutlinedInputFiled,
   FormGroupSection,
   ChipList
 } from './styles';
-import FeedbackComponent from '../../../components/Feedback';
-import { Edit } from '@material-ui/icons';
 
 interface IFormFields {
   userType: { id: string; description: string } | null;
@@ -88,7 +83,7 @@ interface IFormFields {
 
 interface IPageParams {
   id?: string;
-  mode?:string;
+  mode?: string;
 }
 
 export default function UserForm(props: RouteComponentProps<IPageParams>) {
@@ -177,18 +172,18 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
   const [openModalCancel, setOpenModalCancel] = useState(false);
 
   const useStyles = makeStyles((theme) => ({
-    cancel:{
+    cancel: {
       textTransform: 'capitalize',
       fontSize: '18px',
       '&:hover': {
         backgroundColor: 'var(--danger-hover)',
-        color:'var(--danger)',
-        borderColor:'var(--danger-hover)',
+        color: 'var(--danger)',
+        borderColor: 'var(--danger-hover)',
 
       },
-      maxHeight:'38px',
-      borderColor:'var(--danger-hover)',
-      color:'var(--danger-hover)',
+      maxHeight: '38px',
+      borderColor: 'var(--danger-hover)',
+      color: 'var(--danger-hover)',
       contrastText: "#fff"
     },
   }));
@@ -233,7 +228,7 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
 
     // Força o validador em 'true' quando entrar na tela para editar
     if (params?.id) {
-      if(params.mode === "view"){
+      if (params.mode === "view") {
         setCanEdit(false)
       }
       setFieldValidations({
@@ -420,15 +415,15 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
 
   const selectProfession = useCallback(() => {
     if (!userState.data.professions) {
-     // return null;
-    }else{
-       const selected = userState.data.professions.filter((item) => {
-      if (typeof state.profession_id === "object") {
-        return item._id === state?.profession_id?._id;
-      }
-    });
+      // return null;
+    } else {
+      const selected = userState.data.professions.filter((item) => {
+        if (typeof state.profession_id === "object") {
+          return item._id === state?.profession_id?._id;
+        }
+      });
 
-    return selected[0] ? selected[0] : null;
+      return selected[0] ? selected[0] : null;
     }
 
 
@@ -461,12 +456,12 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
   }
 
   const handleDeleteEspecialty = useCallback((especialty: SpecialtyInterface) => {
-    if(canEdit){
-        let specialtiesSelected = [...state.specialties];
+    if (canEdit) {
+      let specialtiesSelected = [...state.specialties];
 
-    const especialtyFounded = specialtiesSelected.findIndex((item: any) => {
-      return especialty._id === item._id
-    });
+      const especialtyFounded = specialtiesSelected.findIndex((item: any) => {
+        return especialty._id === item._id
+      });
 
 
       if (especialtyFounded > -1) {
@@ -479,11 +474,11 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
         specialtiesCopy.push(specialtyData);
         setSpecialties(specialtiesCopy);
 
-      setState(prevState => ({
-        ...prevState,
-        specialties: specialtiesSelected
-      }))
-    };
+        setState(prevState => ({
+          ...prevState,
+          specialties: specialtiesSelected
+        }))
+      };
     }
 
   }, [state.specialties]);
@@ -550,29 +545,29 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
   }
 
   const handleDeleteCompany = useCallback((company: CompanyInterface) => {
-     if(canEdit){
-       let companiesSelected = [...state.companies];
-       const companyFounded = companiesSelected.findIndex((item: any) => {
-         return company._id === item._id
-       })
+    if (canEdit) {
+      let companiesSelected = [...state.companies];
+      const companyFounded = companiesSelected.findIndex((item: any) => {
+        return company._id === item._id
+      })
 
-     if (companyFounded > -1) {
-       const companyData = companiesSelected.find((item: any) => {
-         return company._id === item._id
-       });
+      if (companyFounded > -1) {
+        const companyData = companiesSelected.find((item: any) => {
+          return company._id === item._id
+        });
 
 
-         let companiesCopy = [...companies];
+        let companiesCopy = [...companies];
 
         companiesCopy.push(companyData);
-         setCompanies(companiesCopy);
+        setCompanies(companiesCopy);
 
-       setState(prevState => ({
-         ...prevState,
-         companies: companiesSelected
-       }))
-       }
-     }
+        setState(prevState => ({
+          ...prevState,
+          companies: companiesSelected
+        }))
+      }
+    }
 
   }, [state.companies]);
 
@@ -612,16 +607,16 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
 
           <FormSection>
             <FormContent>
-               <div style={{ display: 'flex', alignItems: 'center', flexDirection: 'row' }}>
-            <FormTitle>Cadastro de Usuario</FormTitle>
+              <div style={{ display: 'flex', alignItems: 'center', flexDirection: 'row' }}>
+                <FormTitle>Cadastro de Usuario</FormTitle>
 
-            {params.id && (
-              <Button style={{ marginTop: -20, marginLeft: 15, color: '#0899BA' }} onClick={() => setCanEdit(!canEdit)}>
-                <Edit style={{ marginRight: 5, width: 18 }} />
+                {params.id && (
+                  <Button style={{ marginTop: -20, marginLeft: 15, color: '#0899BA' }} onClick={() => setCanEdit(!canEdit)}>
+                    <Edit style={{ marginRight: 5, width: 18 }} />
               Editar
-              </Button>
-            )}
-          </div>
+                  </Button>
+                )}
+              </div>
 
               <TabContent>
                 <TabNav>
@@ -643,7 +638,7 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
                     <Grid container>
                       <Grid item md={12} xs={12}>
                         <TextField
-                        disabled={!canEdit}
+                          disabled={!canEdit}
                           id="input-social-name"
                           label="Nome do usuário"
                           variant="outlined"
@@ -667,7 +662,7 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
                       </Grid>
                       <Grid item md={7} xs={12}>
                         <TextField
-                        disabled={!canEdit}
+                          disabled={!canEdit}
                           id="input-mother-name"
                           label="Nome da mãe"
                           variant="outlined"
@@ -697,7 +692,7 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
 
                       <Grid item md={3} xs={12}>
                         <DatePicker
-                          id="input-fiscal-birthdate"
+                          id="input-birthdate"
                           label="Data de Nascimento"
                           disabled={!canEdit}
                           value={state?.birthdate?.length > 10 ? formatDate(state.birthdate, 'YYYY-MM-DD') : state.birthdate}
@@ -715,6 +710,7 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
                           }}
                           InputLabelProps={{
                             shrink: true,
+                            style: { paddingBottom: 12 }
                           }}
                           error={!fieldsValidation.birthdate}
                           helperText={
@@ -1286,7 +1282,7 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
                             disabled={!canEdit}
                             renderInput={(params) => (
                               <TextField {...params}
-                              disabled={!canEdit}
+                                disabled={!canEdit}
                                 label="Tipo do Usuário"
                                 variant="outlined"
                                 error={!fieldsValidation.user_type_id}
@@ -1363,7 +1359,7 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
                             disabled={!canEdit}
                             options={councilState.list.data}
                             getOptionLabel={(option) => `${option.initials} - ${option.name}`}
-                            renderInput={(params) => <TextField {...params}  disabled={!canEdit} label="Conselho" variant="outlined" />}
+                            renderInput={(params) => <TextField {...params} disabled={!canEdit} label="Conselho" variant="outlined" />}
                             value={selectCouncil()}
                             getOptionSelected={(option, value) =>
                               option._id === state?.council_id?._id
@@ -1551,12 +1547,12 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
             </FormContent>
             <ButtonsContent>
 
-              {canEdit && (<ButtonComponent variant="outlined"  className={classes.cancel}  onClick={() => userState.success ? history.push('/user') : handleOpenModalCancel()}>
+              {canEdit && (<ButtonComponent variant="outlined" className={classes.cancel} onClick={() => userState.success ? history.push('/user') : handleOpenModalCancel()}>
                 Cancelar
               </ButtonComponent>)}
-              {(!canEdit && currentTab === 0) &&(<ButtonComponent background="success_rounded" onClick={() => history.push('/user')}>
-                    Voltar
-                  </ButtonComponent>) }
+              {(!canEdit && currentTab === 0) && (<ButtonComponent background="success_rounded" onClick={() => history.push('/user')}>
+                Voltar
+              </ButtonComponent>)}
 
               {currentTab === 0 ? (
                 <ButtonComponent
@@ -1570,7 +1566,7 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
                   <ButtonComponent background="success_rounded" onClick={() => selectTab(0)}>
                     Voltar
                   </ButtonComponent>
-                  {canEdit &&(  <ButtonComponent background="success" onClick={handleSaveFormUser}>
+                  {canEdit && (<ButtonComponent background="success" onClick={handleSaveFormUser}>
                     Salvar
                   </ButtonComponent>)}
 
