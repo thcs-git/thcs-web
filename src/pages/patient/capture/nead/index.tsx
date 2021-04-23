@@ -464,6 +464,14 @@ export default function Nead(props: RouteComponentProps<IPageParams>) {
               <p>Regra:</p>
               <br />
               <ul>
+                <li>KATZ</li>
+                <p>Classificação:</p>
+                <p>
+                  5 ou 6 - Independente<br />
+                  3 ou 4 - Dependente Parcial<br />
+                  {`< 2 - Dependente Total`}</p>
+                <br />
+
                 <li>GRUPO 1 – ELEGIBILIDADE</li>
                 <p>
                   Se responder <b>NÃO</b> a qualquer uma das questões,

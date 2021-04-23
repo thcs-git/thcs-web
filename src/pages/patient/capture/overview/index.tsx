@@ -96,6 +96,10 @@ export default function PatientCaptureForm(props: RouteComponentProps<IPageParam
     handleValidadeFinishEnable();
   }, [captureData]);
 
+  useEffect(() => {
+    setDocumentGroups(documentGroupsState.list);
+  }, [documentGroupsState.list]);
+
   const getCare = useCallback((id: string) => {
     if (id.length > 0) {
       dispatch(loadCareById(id));
