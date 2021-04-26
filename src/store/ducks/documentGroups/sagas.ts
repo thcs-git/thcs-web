@@ -10,7 +10,7 @@ import { apiSollar } from '../../../services/axios';
 export function* get({ payload }: any) {
   try {
     const { params } = payload;
-    const searchParams = {...params};
+    const searchParams = { ...params };
 
     delete searchParams.limit;
     delete searchParams.page;
@@ -39,11 +39,7 @@ export function* getByIds({ payload }: any) {
 
 export function* getCaptureList({ payload }: any) {
   try {
-    const { care_id } = payload;
-
     const response: AxiosResponse = yield call(apiSollar.get, `/documentsgroup/getDocumentsGroupByArrayIds`, { params: { ids: '5ffd7acd2f5d2b1d8ff6bea4,5ffd79012f5d2b1d8ff6bea3,5ff65469b4d4ac07d186e99f' } });
-
-
 
     yield put(loadSuccessByIds(response.data))
   } catch (error) {
