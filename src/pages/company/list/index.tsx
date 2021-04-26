@@ -98,6 +98,7 @@ export default function CompanyList() {
                     onClose={handleCloseRowMenu}
                   >
                     <MenuItem onClick={() => history.push(`/company/${company._id}/edit`)}>Editar</MenuItem>
+                    <MenuItem onClick={() => history.push(`/company/${company._id}/edit`)}>Visualizar</MenuItem>
                   </Menu>
                 </TableCell>
               </TableRow>

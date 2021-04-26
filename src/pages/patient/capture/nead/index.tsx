@@ -148,7 +148,7 @@ export default function Nead(props: RouteComponentProps<IPageParams>) {
 
   useEffect(() => {
     calculateScore();
-  }, [currentStep]);
+  }, [currentStep, document, documentGroup]);
 
   const selectOption = useCallback(
     (field_id: string, option_id: string, multiple: boolean = false) => {
@@ -384,12 +384,9 @@ export default function Nead(props: RouteComponentProps<IPageParams>) {
     setCurrentStep((prevState) => prevState - 1);
   }, [currentStep]);
 
-  const handleNavigateStep = useCallback(
-    (step: number) => {
-      setCurrentStep(step);
-    },
-    [currentStep]
-  );
+  const handleNavigateStep = useCallback((step: number) => {
+    setCurrentStep(step);
+  }, [currentStep]);
 
   const handleClickHelpPopover = (
     event: React.MouseEvent<HTMLButtonElement>
@@ -467,6 +464,14 @@ export default function Nead(props: RouteComponentProps<IPageParams>) {
               <p>Regra:</p>
               <br />
               <ul>
+                <li>KATZ</li>
+                <p>Classificação:</p>
+                <p>
+                  5 ou 6 - Independente<br />
+                  3 ou 4 - Dependente Parcial<br />
+                  {`< 2 - Dependente Total`}</p>
+                <br />
+
                 <li>GRUPO 1 – ELEGIBILIDADE</li>
                 <p>
                   Se responder <b>NÃO</b> a qualquer uma das questões,
@@ -569,7 +574,7 @@ export default function Nead(props: RouteComponentProps<IPageParams>) {
                           ))}
                         </RadioGroup>
                       </QuestionSection>
-                      </FormControl>
+                    </FormControl>
                   );
                 }
               })}
@@ -822,15 +827,15 @@ export default function Nead(props: RouteComponentProps<IPageParams>) {
                 )}
               </>
             ) : (
-                <Button
-                  disabled={currentStep === (steps.length - 1)}
-                  background="success"
-                  type="submit"
-                  onClick={handleNextStep}
-                >
-                  Próximo
-                </Button>
-              )}
+              <Button
+                disabled={currentStep === (steps.length - 1)}
+                background="success"
+                type="submit"
+                onClick={handleNextStep}
+              >
+                Próximo
+              </Button>
+            )}
           </ButtonsContent>
         </FormContent>
       </Container>
