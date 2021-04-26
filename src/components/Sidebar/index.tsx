@@ -274,7 +274,7 @@ const Sibebar = (props: Props<any>) => {
       </Dialog>
 
       <Dialog
-        fullScreen
+
         open={openModalConfig}
         // onClose={handleToggleModalConfig}
         aria-labelledby="alert-dialog-title"

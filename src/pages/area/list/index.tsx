@@ -118,7 +118,7 @@ export default function AreaList() {
           <SearchComponent
             handleButton={() => history.push('/area/create/')}
             buttonTitle="Nova Área"
-            inputPlaceholder="Descrição, Dia da semana, Dia de Abastecimento"
+            inputPlaceholder = "Pesquise por área, abastecimento, status, etc..."
             onChangeInput={debounceSearchRequest}
           />
            <Table

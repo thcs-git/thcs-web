@@ -60,6 +60,7 @@ export default function CompanyList() {
 
           <SearchComponent
             handleButton={() => history.push('/company/create/')}
+            inputPlaceholder = "Pesquise por nome fantasia, CNPJ, status, etc..."
             buttonTitle="Novo"
             onChangeInput={debounceSearchRequest}
           />
