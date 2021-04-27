@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import Tab from '@material-ui/core/Tab';
 import InputMask,{ Props }  from 'react-input-mask';
+import { cpf } from 'cpf-cnpj-validator';
 import validator from 'validator';
 import { useHistory, RouteComponentProps } from 'react-router-dom';
 import _ from 'lodash';
@@ -108,6 +109,7 @@ export default function PatientForm(props: RouteComponentProps<IPageParams>) {
   const patientState = useSelector((state: ApplicationState) => state.patients);
   const areaState = useSelector((state: ApplicationState) => state.areas);
   const [inputPhone,setInputPhone] = useState({value:"",error:false});
+
   const [inputCellPhone, setInputCellPhone] = useState({value:"",error:false});
 
   const { params } = props.match;
@@ -243,6 +245,10 @@ export default function PatientForm(props: RouteComponentProps<IPageParams>) {
 
 
    }
+
+  const checkIsCpfValid = useCallback(() => {
+    return !!cpf.isValid(state.fiscal_number);
+  }, [state.fiscal_number]);
 
 
 
@@ -461,7 +467,6 @@ export default function PatientForm(props: RouteComponentProps<IPageParams>) {
 
 
 
-
   return (
     <Sidebar>
       {patientState.loading && <Loading />}
@@ -602,9 +607,15 @@ export default function PatientForm(props: RouteComponentProps<IPageParams>) {
                                 placeholder="000.000.000-00"
                                 labelWidth={80}
                                 style={{ marginRight: 12 }}
+                                error={!checkIsCpfValid()}
                               />
                             )}
                           </InputMask>
+                          {!checkIsCpfValid() && (
+                              <p style={{ color: '#f44336', margin:'1px 5px 20px' }}>
+                              Por favor insira um cpf válido
+                              </p>
+                            )}
                         </FormControl>
                       </Grid>
                       <Grid item md={4} xs={12}>
