@@ -360,9 +360,13 @@ export default function Nead(props: RouteComponentProps<IPageParams>) {
   }, [documentGroup, care]);
 
   const checkAllCurrentQuestionsAnswered = useCallback(() => {
-    const currentStepAnswer = documentGroup?.fields?.filter(field => field.step === currentStep);
+    const localDocumentGroup = (!!documentGroup?.fields?.length) ? documentGroup : documentGroupState;
+
+    const currentStepAnswer = localDocumentGroup?.fields?.filter(field => field.step === currentStep);
     const isAllQuestionAnswered = currentStepAnswer?.map(field => field?.options?.some(option => option.hasOwnProperty('selected')));
     const isError = isAllQuestionAnswered?.some(answered => !answered);
+
+    console.log(localDocumentGroup?.fields, currentStepAnswer, isAllQuestionAnswered, isError)
 
     if (isError) {
       toast.error("Selecione ao menos uma alternativa por pergunta");
