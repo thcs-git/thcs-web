@@ -117,6 +117,7 @@ export default function PatientForm(props: RouteComponentProps<IPageParams>) {
     name:false,
     social_name:false,
     fiscal_number: false,
+    national_id: true,
     responsible_user:false,
     postal_code: false,
     street: false,
@@ -625,6 +626,10 @@ export default function PatientForm(props: RouteComponentProps<IPageParams>) {
                             mask="9.999-999"
                             value={state.national_id}
                             onChange={(element) => setState({ ...state, national_id: element.target.value })}
+                            onBlur={(element) => setFieldValidations((prevState: any) => ({
+                              ...prevState,
+                              national_id: !!validator.isEmpty(element.target.value),
+                            }))}
                           >
                             {(inputProps: any) => (
                               <OutlinedInputFiled
@@ -632,6 +637,7 @@ export default function PatientForm(props: RouteComponentProps<IPageParams>) {
                                 placeholder="000.000.000-00"
                                 labelWidth={80}
                                 style={{ marginRight: 12 }}
+                                error={fieldsValidation.national_id}
                               />
                             )}
                           </InputMask>
