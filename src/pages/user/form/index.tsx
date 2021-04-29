@@ -139,7 +139,7 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
     name: false,
     birthdate: false,
     gender: false,
-    national_id: false,
+    national_id: true,
     issuing_organ: false,
     fiscal_number: false,
     mother_name: false,
@@ -794,13 +794,11 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
                               ...state,
                               national_id: element.target.value,
                             });
-                            setFieldValidations((prevState: any) => ({
-                              ...prevState,
-                              national_id: !validator.isEmpty(
-                                element.target.value
-                              ),
-                            }));
                           }}
+                          onBlur={(element) => setFieldValidations((prevState: any) => ({
+                            ...prevState,
+                            national_id: !!validator.isEmpty(element.target.value),
+                          }))}
                         >
                           {(inputProps: any) => (
                             <TextField
@@ -811,7 +809,7 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
                               variant="outlined"
                               size="small"
                               placeholder="0.000-000"
-
+                              error={fieldsValidation.national_id}
                               fullWidth
                             />
                           )}
