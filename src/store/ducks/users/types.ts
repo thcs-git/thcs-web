@@ -20,6 +20,11 @@ export enum UserTypes {
   LOAD_REQUEST_USER_BY_ID = "@user/LOAD_REQUEST_USER_BY_ID",
   LOAD_SUCCESS_USER_BY_ID = "@user/LOAD_SUCCESS_USER_BY_ID",
 
+  LOAD_REQUEST_USER_DISENGAGED = "@user/lOAD_REQUEST_USER_DISENGAGED",
+  LOAD_RESPONSE_USER_DISENGAGED = "@user/LOAD_RESPONSE_USER_DISENGAGED",
+
+  SEARCH_REQUEST_USER_DISENGAGED = "@user/SEARCH_REQUEST_USER_DISENGAGED",
+
   SEARCH_REQUEST = "@user/SEARCH_REQUEST",
 
   LOAD_REQUEST_PROFESSION = "@user/LOAD_REQUEST_PROFESSION",
@@ -48,6 +53,7 @@ export interface ProfessionUserInterface {
   _id: string;
   name: string;
 }
+
 export interface UserTypesInterface {
   _id: string;
   name: string;
@@ -68,7 +74,18 @@ export interface UserListItems {
   name: string;
   email: string;
   profession_id: ProfessionUserInterface;
+  main_specialty_id?: string;
   created_at: string;
+  address: {
+    postal_code: string;
+    street: string;
+    number: string;
+    district: string;
+    city: string;
+    state: string;
+    complement: string;
+    geolocation?: { latitude: number; longitude: number };
+  };
   specialties: SpecialtiesUserInterface[];
   active: boolean;
 }
@@ -93,7 +110,7 @@ export interface UserInterface {
     city: string;
     state: string;
     complement: string;
-    geolocation?: { latitude: number, longitude: number }
+    geolocation?: { latitude: number; longitude: number };
   };
   email: string; // email
   phone: string;

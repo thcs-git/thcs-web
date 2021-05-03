@@ -267,7 +267,7 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
 
     // Força o validador em 'true' quando entrar na tela para editar
     if (params?.id) {
-      if (params.mode === "view") {
+      if (params.mode === "view" || params.mode === "link" ) {
         setCanEdit(false)
       }
       setFieldValidations({
@@ -1481,7 +1481,15 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
                             />
                           ))}
                         </ChipList>
-                      </Grid>
+                     </Grid>
+                      {params.mode === 'link' && (
+
+                         <Grid>
+                          <ButtonComponent  background="success_rounded">
+                            Vincular este prestador a minha empresa
+                            </ButtonComponent>
+                          </Grid>
+                      )}
                     </Grid>
                   </TabBodyItem>
                 </TabBody>

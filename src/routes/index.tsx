@@ -31,6 +31,8 @@ import AreaForm from '../pages/area/form';
 import UserList from '../pages/user/list';
 import UserForm from '../pages/user/form';
 
+import UserDisengaged from '../pages/user_disengaged/list/index';
+
 import PatientList from '../pages/patient/list';
 import PatientForm from '../pages/patient/form';
 import PatientCaptureCreate from '../pages/patient/capture/form';
@@ -93,6 +95,7 @@ const Routes = () => (
       <PrivateRoute path="/user" component={UserList} exact />
       <PrivateRoute path="/user/:id/:mode/edit" component={UserForm} />
       <PrivateRoute path="/user/create" component={UserForm} />
+      <PrivateRoute path="/userdesengaged" component={UserDisengaged} />
 
       {/* Patient */}
       <PrivateRoute path="/patient" component={PatientList} exact />

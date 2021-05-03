@@ -23,6 +23,9 @@ import AccountCircle from '@material-ui/icons/AccountCircle';
 import SettingsIcon from '@material-ui/icons/Settings';
 import Slide from '@material-ui/core/Slide';
 import { TransitionProps } from '@material-ui/core/transitions';
+import ExpansionPanel from '@material-ui/core/ExpansionPanel';
+import ExpansionPanelSummary from '@material-ui/core/ExpansionPanelSummary';
+import ExpansionPanelDetails from '@material-ui/core/ExpansionPanelDetails';
 
 import {
   Button,
@@ -31,6 +34,8 @@ import {
   DialogContent,
   DialogContentText,
   DialogTitle,
+  MenuItem,
+  Typography,
 } from '@material-ui/core';
 
 import { useHistory } from "react-router-dom";
@@ -56,15 +61,15 @@ import ConfigComponent from '../Configuration';
 const drawerWidth = 220;
 
 const itemsMenu = [
-  { title: 'Dashboard', route: '/', icon: <DashboardIcon style={{ color: '#fff' }} /> },
-  { title: 'Clientes', route: '/customer', icon: <AssignmentIndIcon style={{ color: '#fff' }} /> },
-  { title: 'Empresas', route: '/company', icon: <BusinessIcon style={{ color: '#fff' }} /> },
-  { title: 'Usuários', route: '/user', icon: <PersonIcon style={{ color: '#fff' }} /> },
-  { title: 'Área', route: '/area', icon: <LocationOncon style={{ color: '#fff' }} /> },
-  { title: 'Pacientes', route: '/patient', icon: <GroupAddIcon style={{ color: '#fff' }} /> },
-  { title: 'Avaliação', route: '/avaliation', icon: <StarRateIcon style={{ color: '#fff' }} /> },
-  { title: 'QrCode', route: '/qrcode', icon: <StarRateIcon style={{ color: '#fff' }} /> },
-  { title: 'Atendimento', route: '/care', icon: <LocalHospital style={{ color: '#fff' }} /> },
+  { title: 'Dashboard', route: '/',subtitle:[{title:"teste", route:"/"}], icon: <DashboardIcon style={{ color: '#fff' }} /> },
+  { title: 'Clientes', route: '/customer',subtitle:[{title:"teste", route:"/"}], icon: <AssignmentIndIcon style={{ color: '#fff' }} /> },
+  { title: 'Empresas', route: '/company',subtitle:[{title:"teste", route:"/"}], icon: <BusinessIcon style={{ color: '#fff' }} /> },
+  { title: 'Profissionais', route: '/user',subtitle:[{title:"Meus Profissionais", route:"/user"}], icon: <PersonIcon style={{ color: '#fff' }} /> },
+  { title: 'Área', route: '/area',subtitle:[{title:"teste", route:"/"}], icon: <LocationOncon style={{ color: '#fff' }} /> },
+  { title: 'Pacientes', route: '/patient',subtitle:[{title:"teste", route:"/"}], icon: <GroupAddIcon style={{ color: '#fff' }} /> },
+  { title: 'Avaliação', route: '/avaliation',subtitle:[{title:"teste", route:"/"}], icon: <StarRateIcon style={{ color: '#fff' }} /> },
+  { title: 'QrCode', route: '/qrcode',subtitle:[{title:"teste", route:"/"}], icon: <StarRateIcon style={{ color: '#fff' }} />},
+  { title: 'Atendimento', route: '/care',subtitle:[{title:"teste", route:"/"}], icon: <LocalHospital style={{ color: '#fff' }} />},
 ]
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -223,11 +228,34 @@ const Sibebar = (props: Props<any>) => {
 
         <List disablePadding={true}>
           {itemsMenu.map((item, index) => (
-            <ListItem key={index} component="button" button onClick={() => history.push(item.route)}>
+            <ListItem key={index} component="button" button
+            //onClick={() => history.push(item.route)}
+            >
               <ListItemIcon>
                 {item.icon}
               </ListItemIcon>
-              <ListItemText primary={item.title} />
+              <ListItemText  />
+              {item.subtitle && (
+                  <div style={{display: 'flex', flexDirection: 'column', alignItems: 'left', justifyContent: 'left',}}>
+                  <ExpansionPanel  style={{backgroundColor:"transparent", boxShadow:"none",}}>
+                    <ExpansionPanelSummary
+                      aria-controls="panel1a-content"
+                      id="panel1a-header"
+
+                    >
+                    <Typography style={{color:"#ffff"}}   >{item.title} </Typography>
+                    </ExpansionPanelSummary>
+                  <ExpansionPanelDetails>
+                    {item.subtitle.map((item, index)=>(
+                      <ListItem key={index} component ="button" button onClick={() => history.push(item.route)}>
+                        <ListItemText primary={item.title} style={{color:"#ffff"}}></ListItemText>
+                      </ListItem>
+                    ))}
+                  </ExpansionPanelDetails>
+                </ExpansionPanel>
+                  </div>
+
+              )}
             </ListItem>
           ))}
         </List>
