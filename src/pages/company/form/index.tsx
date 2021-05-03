@@ -28,6 +28,7 @@ import {
   FormControlLabel,
 } from '@material-ui/core';
 import { SearchOutlined } from '@material-ui/icons';
+import { validateCNPJ as validateCNPJHelper } from '../../../helpers/validateCNPJ';
 
 import LOCALSTORAGE from '../../../helpers/constants/localStorage';
 
@@ -264,6 +265,16 @@ export default function CompanyForm(props: RouteComponentProps<IPageParams>) {
     }
   }, [state]);
 
+  const validateCNPJField = useCallback((element) => {
+
+    const isValidField = validateCNPJHelper(element.target.value) || false;
+      setFieldValidations((prevState: any) => ({
+        ...prevState,
+        fiscal_number: isValidField
+      }));
+    }, []);
+
+
   return (
     <Sidebar>
       {companyState.loading && <Loading />}
@@ -322,6 +333,7 @@ export default function CompanyForm(props: RouteComponentProps<IPageParams>) {
                   <InputMask
                     mask="99.999.999/9999-99"
                     value={state.fiscal_number}
+                    onBlur={validateCNPJField}
                     onChange={(element) => {
                       setState({ ...state, fiscal_number: element.target.value })
                       setFieldValidations((prevState: any) => ({ ...prevState, fiscal_number: !validator.isEmpty(element.target.value) }));
@@ -336,8 +348,14 @@ export default function CompanyForm(props: RouteComponentProps<IPageParams>) {
                         size="small"
                         placeholder="00.000.000/0000-00"
                         fullWidth
+                        error={!fieldsValidation.fiscal_number && state.fiscal_number != ''}
                       />)}
                   </InputMask>
+                  {!fieldsValidation.fiscal_number && state.fiscal_number && (
+                      <p style={{ color: '#f44336', margin:'-2px 5px 10px' }}>
+                        CNPJ Inválido ou inexistente
+                      </p>
+                    )}
                 </Grid>
 
                 <Grid item md={10} />
