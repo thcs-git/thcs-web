@@ -55,7 +55,7 @@ export default function UserDisengaged(){
           <SearchComponent
             handleButton={() => history.push('/company/create/')}
             inputPlaceholder = "Pesquise por nome, estado,função ou especialidade"
-            buttonTitle="Novo"
+            buttonTitle=""
             onChangeInput={debounceSearchRequest}
           />
           <Table
@@ -103,7 +103,7 @@ export default function UserDisengaged(){
                     onClose={handleCloseRowMenu}
                   >
                     <MenuItem onClick={() => history.push(`/user/${user._id}/edit/edit`)}>Vincular a Empresa</MenuItem>
-                    <MenuItem onClick={() => history.push(`/user/${user._id}/view/edit`)}>Visualizar</MenuItem>
+                    <MenuItem onClick={() => history.push(`/user/${user._id}/link/edit`)}>Visualizar</MenuItem>
                   </Menu>
                 </TableCell>
             </TableRow>

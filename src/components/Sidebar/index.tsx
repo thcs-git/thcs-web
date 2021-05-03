@@ -28,6 +28,9 @@ import ExpansionPanelSummary from '@material-ui/core/ExpansionPanelSummary';
 import ExpansionPanelDetails from '@material-ui/core/ExpansionPanelDetails';
 
 import {
+  Accordion,
+  AccordionDetails,
+  AccordionSummary,
   Button,
   Dialog,
   DialogActions,
@@ -58,18 +61,18 @@ import LOCALSTORAGE from '../../helpers/constants/localStorage';
 // Components
 import ConfigComponent from '../Configuration';
 
-const drawerWidth = 220;
+const drawerWidth = 270;
 
 const itemsMenu = [
-  { title: 'Dashboard', route: '/',subtitle:[{title:"teste", route:"/"}], icon: <DashboardIcon style={{ color: '#fff' }} /> },
-  { title: 'Clientes', route: '/customer',subtitle:[{title:"teste", route:"/"}], icon: <AssignmentIndIcon style={{ color: '#fff' }} /> },
-  { title: 'Empresas', route: '/company',subtitle:[{title:"teste", route:"/"}], icon: <BusinessIcon style={{ color: '#fff' }} /> },
-  { title: 'Profissionais', route: '/user',subtitle:[{title:"Meus Profissionais", route:"/user"}], icon: <PersonIcon style={{ color: '#fff' }} /> },
-  { title: 'Área', route: '/area',subtitle:[{title:"teste", route:"/"}], icon: <LocationOncon style={{ color: '#fff' }} /> },
-  { title: 'Pacientes', route: '/patient',subtitle:[{title:"teste", route:"/"}], icon: <GroupAddIcon style={{ color: '#fff' }} /> },
-  { title: 'Avaliação', route: '/avaliation',subtitle:[{title:"teste", route:"/"}], icon: <StarRateIcon style={{ color: '#fff' }} /> },
-  { title: 'QrCode', route: '/qrcode',subtitle:[{title:"teste", route:"/"}], icon: <StarRateIcon style={{ color: '#fff' }} />},
-  { title: 'Atendimento', route: '/care',subtitle:[{title:"teste", route:"/"}], icon: <LocalHospital style={{ color: '#fff' }} />},
+  { title: 'Dashboard', route: '/', icon: <DashboardIcon style={{ color: '#fff' }} /> },
+  { title: 'Clientes', route: '/customer', icon: <AssignmentIndIcon style={{ color: '#fff' }} /> },
+  { title: 'Empresas', route: '/company', icon: <BusinessIcon style={{ color: '#fff' }} /> },
+  { title: 'Profissionais', route: '/user',subtitle:[{title:"Meus Profissionais", route:"/user"},{title:"Banco de Talentos", route:"/userdesengaged"}], icon: <PersonIcon style={{ color: '#fff' }} /> },
+  { title: 'Área', route: '/area', icon: <LocationOncon style={{ color: '#fff' }} /> },
+  { title: 'Pacientes', route: '/patient', icon: <GroupAddIcon style={{ color: '#fff' }} /> },
+  { title: 'Avaliação', route: '/avaliation', icon: <StarRateIcon style={{ color: '#fff' }} /> },
+  { title: 'QrCode', route: '/qrcode', icon: <StarRateIcon style={{ color: '#fff' }} />},
+  { title: 'Atendimento', route: '/care', icon: <LocalHospital style={{ color: '#fff' }} />},
 ]
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -225,40 +228,45 @@ const Sibebar = (props: Props<any>) => {
             </div>
           </div>
         </UserContent>
+        <List>
+          {itemsMenu.map((item,index)=>(
+            <>
 
-        <List disablePadding={true}>
-          {itemsMenu.map((item, index) => (
-            <ListItem key={index} component="button" button
-            //onClick={() => history.push(item.route)}
-            >
-              <ListItemIcon>
-                {item.icon}
-              </ListItemIcon>
-              <ListItemText  />
-              {item.subtitle && (
-                  <div style={{display: 'flex', flexDirection: 'column', alignItems: 'left', justifyContent: 'left',}}>
-                  <ExpansionPanel  style={{backgroundColor:"transparent", boxShadow:"none",}}>
-                    <ExpansionPanelSummary
-                      aria-controls="panel1a-content"
-                      id="panel1a-header"
+            {item.subtitle?(
 
-                    >
-                    <Typography style={{color:"#ffff"}}   >{item.title} </Typography>
-                    </ExpansionPanelSummary>
-                  <ExpansionPanelDetails>
-                    {item.subtitle.map((item, index)=>(
+               <Accordion style={{backgroundColor:"transparent", boxShadow:"none",}}>
+                  <AccordionSummary >
+                    <ListItemIcon>
+                      {item.icon}
+                    </ListItemIcon>
+                    <ListItemText primary={item.title} style={{color:"#ffff"}}  />
+                  </AccordionSummary>
+
+                  <AccordionDetails>
+                    <List>
+                      {item.subtitle.map((item, index)=>(
                       <ListItem key={index} component ="button" button onClick={() => history.push(item.route)}>
-                        <ListItemText primary={item.title} style={{color:"#ffff"}}></ListItemText>
+                        <ListItemText primary={item.title} style={{color:"#ffff",paddingLeft:'60px'}}></ListItemText>
                       </ListItem>
                     ))}
-                  </ExpansionPanelDetails>
-                </ExpansionPanel>
-                  </div>
+                    </List>
 
-              )}
-            </ListItem>
+              </AccordionDetails>
+
+            </Accordion>
+           ):(
+              <ListItem onClick={() => history.push(item.route)}>
+                  <ListItemIcon>
+                      {item.icon}
+                    </ListItemIcon>
+                    <ListItemText primary={item.title} style={{color:"#ffff"}}  />
+              </ListItem>
+
+            )}
+            </>
+
           ))}
-        </List>
+          </List>
         <Divider />
         <List disablePadding={true}>
           <ListItem className={classes.logOutButton} onClick={() => setOpenModalConfig(true)}>

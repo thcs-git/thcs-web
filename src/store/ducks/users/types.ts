@@ -1,3 +1,4 @@
+import { CompanyInterface } from "./../companies/types";
 /**
  * Action types
  */

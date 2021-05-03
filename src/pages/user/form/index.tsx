@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback } from "react";
-import { useHistory, RouteComponentProps } from "react-router-dom";
+import { useHistory, RouteComponentProps, Link } from "react-router-dom";
 import {
   Button,
   Container,
@@ -32,6 +32,7 @@ import {
 import {
   UserInterface,
   ProfessionUserInterface,
+  CompanyUserInterface,
 } from "../../../store/ducks/users/types";
 
 import { loadRequest as getSpecialtiesAction } from "../../../store/ducks/specialties/actions";
@@ -40,7 +41,7 @@ import { SpecialtyInterface } from "../../../store/ducks/specialties/types";
 import { loadRequest as getCouncilsAction } from "../../../store/ducks/councils/actions";
 import { CouncilInterface } from "../../../store/ducks/councils/types";
 
-import { loadRequest as getCompaniesAction } from "../../../store/ducks/companies/actions";
+import { loadCompanyById, loadRequest as getCompaniesAction } from "../../../store/ducks/companies/actions";
 import { CompanyInterface } from "../../../store/ducks/companies/types";
 
 import { ApplicationState } from "../../../store";
@@ -84,6 +85,7 @@ interface IFormFields {
 interface IPageParams {
   id?: string;
   mode?: string;
+
 }
 
 export default function UserForm(props: RouteComponentProps<IPageParams>) {
@@ -96,12 +98,12 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
   );
   const councilState = useSelector((state: ApplicationState) => state.councils);
   const companyState = useSelector((state: ApplicationState) => state.companies);
-  const [canEdit, setCanEdit] = useState(true);
+  const [canEdit, setCanEdit] = useState(false);
   const { params } = props.match;
 
-  const currentCompany = localStorage.getItem(LOCALSTORAGE.COMPANY_SELECTED);
+  const currentCompany = localStorage.getItem(LOCALSTORAGE.COMPANY_SELECTED) || '';
   const [currentTab, setCurrentTab] = useState(0);
-
+  const [engaged, setEngaged] = useState(false);
   const [state, setState] = useState<UserInterface>({
     companies: [],
     name: "",
@@ -132,6 +134,26 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
   });
   const [specialties, setSpecialties] = useState<any[]>([]);
   const [companies, setCompanies] = useState<any[]>([]);
+  const [company, setCompany] = useState<CompanyInterface>({_id: params.id || '',
+  customer_id: localStorage.getItem(LOCALSTORAGE.CUSTOMER) || '',
+  name: '',
+  fantasy_name: '',
+  fiscal_number: '',
+  address: {
+    postal_code: '',
+    street: '',
+    number: '',
+    district: '',
+    city: '',
+    state: '',
+    complement: '',
+  },
+  responsable_name: '',
+  email: '',
+  phone: '',
+  cellphone: '',
+  active: true,
+  created_by: { _id: localStorage.getItem(LOCALSTORAGE.USER_ID) || '' }});
 
   const [fieldsValidation, setFieldValidations] = useState<any>({
     companies: false,
@@ -168,7 +190,7 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
   });
 
   const genders = ["Masculino", "Feminino", "Indefinido"];
-
+  const [checkCompany, setCheckCompany] = useState(false);
   const [openModalCancel, setOpenModalCancel] = useState(false);
 
   //////////////// validacao do campos ///////////////////////
@@ -193,8 +215,6 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
 
    }
 
-
-
   const validateCellPhone = () => {
     var cellphone =  state.cellphone.replace('(','').replace(')','').replace(' ','').replace(' ','').replace('-','');
    isValidCellPhoneNumber = validator.isMobilePhone(cellphone, 'pt-BR');
@@ -204,23 +224,21 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
    }
 
    if( validatePhone() == true && validateCellPhone()==true){
-
     formValid = true;
 
   }
-
-
   const useStyles = makeStyles((theme) => ({
     cancel: {
       textTransform: 'capitalize',
       fontSize: '18px',
       '&:hover': {
-        backgroundColor: 'var(--danger-hover)',
+        backgroundColor: '#f1d4d4',
         color: 'var(--danger)',
         borderColor: 'var(--danger-hover)',
 
       },
       maxHeight: '38px',
+
       borderColor: 'var(--danger-hover)',
       color: 'var(--danger-hover)',
       contrastText: "#fff"
@@ -234,6 +252,7 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
     dispatch(getProfessionsAction());
     dispatch(getCompaniesAction());
     dispatch(getUserTypesAction());
+    dispatch(loadCompanyById(currentCompany));
 
   }, []);
 
@@ -248,11 +267,16 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
   useEffect(() => {
     setSpecialties(specialtyState.list.data);
   }, [specialtyState.list.data]);
+  useEffect(()=>{
+    setCompany(companyState.data);
+  },[companyState])
 
   useEffect(() => {
     setCompanies(companyState.list.data);
   }, [companyState.list.data]);
-
+  useEffect(()=>{
+    checkUserPerfilCompany(company)
+  },[state,companyState])
   useEffect(() => {
     if (userState.data._id) {
       setState((prevState) => ({
@@ -270,6 +294,7 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
       if (params.mode === "view" || params.mode === "link" ) {
         setCanEdit(false)
       }
+      console.log(canEdit);
       setFieldValidations({
         companies: true,
         name: true,
@@ -424,9 +449,66 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
     setOpenModalCancel(false);
   }
 
+  function checkUserPerfilCompany(company:CompanyInterface){
+    let companiesSelected = [...state.companies];
+    const companyFounded = companiesSelected.findIndex((item: any) => {
+      return company._id === item._id
+    })
+    if (companyFounded > -1) {
+      setCheckCompany(true);
+    }
+  }
+
   function handleCancelForm() {
     setOpenModalCancel(false);
     history.push(`/user`);
+  }
+
+  function engagedUser(){
+    if(company){
+
+      setState((prevState) => ({
+          ...prevState,
+          companies: [...prevState.companies,company],
+          customer_id:company.customer_id
+        }));
+    }
+    setEngaged(true);
+  }
+const dengagedUser=useCallback((company:CompanyInterface)=>{
+  let companiesSelected = [...state.companies];
+  const companyFounded = companiesSelected.findIndex((item: any) => {
+    return company._id === item._id
+  })
+  console.log(companyFounded);
+  if (companyFounded > -1) {
+    const companyData = companiesSelected.find((item: any) => {
+      return company._id === item._id
+    });
+    companiesSelected.splice(companyFounded,1);
+
+    setState(prevState => ({
+      ...prevState,
+      companies: companiesSelected
+    }))
+    setEngaged(true);
+
+  }
+},[state.companies]);
+
+
+
+
+
+  function handlerReturn(){
+    if(params.mode == 'link'){
+      history.push('/userdesengaged');
+    }else{
+      history.push('/user');
+    }
+  }
+  function handleEdit(){
+    setCanEdit(!canEdit);
   }
 
   function handleSelectProfession(value: ProfessionUserInterface) {
@@ -544,6 +626,8 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
 
   //Empresas
   function handleSelectCompany(value: CompanyInterface) {
+    console.log(value);
+
     setState((prevState) => ({
       ...prevState,
       companies: [...prevState.companies, value],
@@ -568,7 +652,8 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
   }
 
   const handleDeleteCompany = useCallback((company: CompanyInterface) => {
-    if (canEdit) {
+    console.log(canEdit);
+    if (!canEdit) {
       let companiesSelected = [...state.companies];
       const companyFounded = companiesSelected.findIndex((item: any) => {
         return company._id === item._id
@@ -578,11 +663,11 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
         const companyData = companiesSelected.find((item: any) => {
           return company._id === item._id
         });
-
+        companiesSelected.splice(companyFounded,1);
 
         let companiesCopy = [...companies];
 
-        companiesCopy.push(companyData);
+        //companiesCopy.push(companyData);
         setCompanies(companiesCopy);
 
         setState(prevState => ({
@@ -602,6 +687,9 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
 
     if (state?._id) {
       dispatch(updateUserRequest(state));
+      if(params.mode == 'link'){
+        history.push('/userdesengaged');
+      }
     } else {
       dispatch(createUserRequest(state));
     }
@@ -633,10 +721,10 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
               <div style={{ display: 'flex', alignItems: 'center', flexDirection: 'row' }}>
                 <FormTitle>Cadastro de Usuario</FormTitle>
 
-                {params.id && (
-                  <Button style={{ marginTop: -20, marginLeft: 15, color: '#0899BA' }} onClick={() => setCanEdit(!canEdit)}>
+                {(params.id && params.mode != 'link') && (
+                  <Button style={{ marginTop: -20, marginLeft: 15, color: '#0899BA' }} onClick={() => handleEdit()}>
                     <Edit style={{ marginRight: 5, width: 18 }} />
-              Editar
+              Editar {canEdit}
                   </Button>
                 )}
               </div>
@@ -1482,13 +1570,27 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
                           ))}
                         </ChipList>
                      </Grid>
-                      {params.mode === 'link' && (
+                      {(params.mode === 'link' && !checkCompany) && (
 
                          <Grid>
-                          <ButtonComponent  background="success_rounded">
+                          <ButtonComponent  background="success_rounded" onClick={()=> engagedUser()}>
                             Vincular este prestador a minha empresa
                             </ButtonComponent>
                           </Grid>
+                      )}
+                       {(params.mode === 'link' && checkCompany) && (
+
+                            <Grid>
+                           Este prestador já está vinculado a sua empresa com este perfil profissional,
+                           caso queira desvinculá-lo <Link to='/user'> clique aqui</Link>.
+                            </Grid>
+                        )}
+                      {params.mode === 'view' && (
+                        <Grid>
+                        <ButtonComponent  className={classes.cancel} onClick={()=> dengagedUser(company)}>
+                          Desvincular este prestador da minha empresa
+                          </ButtonComponent>
+                        </Grid>
                       )}
                     </Grid>
                   </TabBodyItem>
@@ -1500,7 +1602,7 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
               {canEdit && (<ButtonComponent variant="outlined" className={classes.cancel} onClick={() => userState.success ? history.push('/user') : handleOpenModalCancel()}>
                 Cancelar
               </ButtonComponent>)}
-              {(!canEdit && currentTab === 0) && (<ButtonComponent background="success_rounded" onClick={() => history.push('/user')}>
+              {(!canEdit && currentTab === 0) && (<ButtonComponent background="success_rounded" onClick={() => handlerReturn()}>
                 Voltar
               </ButtonComponent>)}
 
@@ -1517,7 +1619,7 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
                   <ButtonComponent background="success_rounded" onClick={() => selectTab(0)}>
                     Voltar
                   </ButtonComponent>
-                  {canEdit && (<ButtonComponent background="success" onClick={handleSaveFormUser}>
+                  {(canEdit || engaged) && (<ButtonComponent background="success" onClick={handleSaveFormUser}>
                     Salvar
                   </ButtonComponent>)}
 
