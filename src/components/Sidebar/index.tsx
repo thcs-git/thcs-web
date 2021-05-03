@@ -234,12 +234,13 @@ const Sibebar = (props: Props<any>) => {
 
             {item.subtitle?(
 
-               <Accordion style={{backgroundColor:"transparent", boxShadow:"none",}}>
+               <Accordion style={{backgroundColor:"transparent", boxShadow:"none"}}>
                   <AccordionSummary >
                     <ListItemIcon>
                       {item.icon}
                     </ListItemIcon>
-                    <ListItemText primary={item.title} style={{color:"#ffff"}}  />
+                    { open && (<ListItemText primary={item.title} style={{color:"#ffff"}}  />) }
+
                   </AccordionSummary>
 
                   <AccordionDetails>
