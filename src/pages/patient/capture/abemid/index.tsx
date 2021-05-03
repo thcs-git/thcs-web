@@ -72,12 +72,12 @@ export default function Abemid(props: RouteComponentProps<IPageParams>) {
   const openHelpPopover = Boolean(anchorHelpPopover);
 
   const handleNextStep = useCallback(() => {
-    const isError = checkAllCurrentQuestionsAnswered();
+    const isError = checkAllCurrentQuestionsAnswered(documentGroup, currentStep);
 
     if (isError) return;
 
     setCurrentStep((prevState) => prevState + 1);
-  }, [currentStep]);
+  }, [currentStep, documentGroup]);
 
   const handleBackStep = useCallback(() => {
     setCurrentStep((prevState) => prevState - 1);
@@ -143,8 +143,9 @@ export default function Abemid(props: RouteComponentProps<IPageParams>) {
   }, [currentStep, document, documentGroup]);
 
 
-  const checkAllCurrentQuestionsAnswered = useCallback(() => {
-    const currentStepAnswer = documentGroup?.fields?.filter(field => field.step === currentStep);
+  const checkAllCurrentQuestionsAnswered = useCallback((localDocumentGroup: DocumentGroupInterface, localCurrentStep: number) => {
+
+    const currentStepAnswer = localDocumentGroup?.fields?.filter(field => field.step === localCurrentStep);
     const isAllQuestionAnswered = currentStepAnswer?.map(field => field?.options?.some(option => option.hasOwnProperty('selected')));
     const isError = isAllQuestionAnswered?.some(answered => !answered);
 
@@ -153,7 +154,7 @@ export default function Abemid(props: RouteComponentProps<IPageParams>) {
     }
 
     return isError;
-  }, [documentGroup, currentStep]);
+  }, [documentGroup, currentStep, documentGroupState]);
 
   const selectOption = useCallback((field_id: string, option_id: string, multiple: boolean = false) => {
     let documentGroupCopy = { ...documentGroup };
@@ -274,7 +275,7 @@ export default function Abemid(props: RouteComponentProps<IPageParams>) {
     let complexity: string = "",
       status: string = "";
 
-    const isError = checkAllCurrentQuestionsAnswered();
+    const isError = checkAllCurrentQuestionsAnswered(documentGroup, currentStep);
 
     if (isError) return;
 
@@ -344,7 +345,7 @@ export default function Abemid(props: RouteComponentProps<IPageParams>) {
       }
     }
 
-  }, [documentGroup, care]);
+  }, [documentGroup, care, currentStep]);
 
   return (
     <Sidebar>

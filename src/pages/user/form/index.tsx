@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useCallback } from "react";
 import { useHistory, RouteComponentProps, Link } from "react-router-dom";
+import { cpf } from 'cpf-cnpj-validator';
 import {
   Button,
   Container,
@@ -160,7 +161,7 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
     name: false,
     birthdate: false,
     gender: false,
-    national_id: false,
+    national_id: true,
     issuing_organ: false,
     fiscal_number: false,
     mother_name: false,
@@ -215,6 +216,11 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
 
    }
 
+  const checkIsCpfValid = useCallback(() => {
+    return !!cpf.isValid(state.fiscal_number);
+  }, [state.fiscal_number]);
+
+
   const validateCellPhone = () => {
     var cellphone =  state.cellphone.replace('(','').replace(')','').replace(' ','').replace(' ','').replace('-','');
    isValidCellPhoneNumber = validator.isMobilePhone(cellphone, 'pt-BR');
@@ -224,9 +230,12 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
    }
 
    if( validatePhone() == true && validateCellPhone()==true){
+
     formValid = true;
 
   }
+
+
   const useStyles = makeStyles((theme) => ({
     cancel: {
       textTransform: 'capitalize',
@@ -857,11 +866,16 @@ const dengagedUser=useCallback((company:CompanyInterface)=>{
                               variant="outlined"
                               size="small"
                               placeholder="000.000.000-00"
-
+                              error={!checkIsCpfValid()}
                               fullWidth
                             />
                           )}
                         </InputMask>
+                        {!checkIsCpfValid() && (
+                              <p style={{ color: '#f44336', margin:'1px 5px 20px' }}>
+                              Por favor insira um cpf válido
+                              </p>
+                            )}
                       </Grid>
                       <Grid item md={3} xs={12}>
                         <InputMask
@@ -873,13 +887,11 @@ const dengagedUser=useCallback((company:CompanyInterface)=>{
                               ...state,
                               national_id: element.target.value,
                             });
-                            setFieldValidations((prevState: any) => ({
-                              ...prevState,
-                              national_id: !validator.isEmpty(
-                                element.target.value
-                              ),
-                            }));
                           }}
+                          onBlur={(element) => setFieldValidations((prevState: any) => ({
+                            ...prevState,
+                            national_id: !!validator.isEmpty(element.target.value),
+                          }))}
                         >
                           {(inputProps: any) => (
                             <TextField
@@ -890,7 +902,7 @@ const dengagedUser=useCallback((company:CompanyInterface)=>{
                               variant="outlined"
                               size="small"
                               placeholder="0.000-000"
-
+                              error={fieldsValidation.national_id}
                               fullWidth
                             />
                           )}
