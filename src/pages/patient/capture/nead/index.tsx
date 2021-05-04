@@ -81,6 +81,7 @@ export default function Nead(props: RouteComponentProps<IPageParams>) {
     { title: "Grupo 2", score: { total: 0, complexity: "", status: "" } },
     { title: "Grupo 3", score: { total: 0, complexity: "", status: "" } },
   ]);
+
   const [currentStep, setCurrentStep] = useState(0);
 
   const [care, setCare] = useState<CareInterface>();
@@ -228,11 +229,11 @@ export default function Nead(props: RouteComponentProps<IPageParams>) {
       // KATZ
       else if (currentStep === 0) {
         if (score < 2) {
-          return "Alta Complexidade";
+          return "Dependente Total";
         } else if (score >= 3 && score <= 4) {
-          return "Média Complexidade";
+          return "Dependente Parcial";
         } else {
-          return "Baixa Complexidade";
+          return "Independente";
         }
       } else {
         return "Não Identificado";
@@ -248,14 +249,14 @@ export default function Nead(props: RouteComponentProps<IPageParams>) {
       }
     };
 
-    let stepsCopy = steps;
+    let stepsCopy = [...steps];
     stepsCopy[currentStep].score = {
       total: partialScore,
       complexity: getComplexity(partialScore),
       status: getStatus(partialScore),
     };
 
-    setSteps(stepsCopy);
+    setSteps(prevState => stepsCopy);
   }, [documentGroup, steps, currentStep]);
 
   const handleFieldAnswer = useCallback(() => {
@@ -365,8 +366,6 @@ export default function Nead(props: RouteComponentProps<IPageParams>) {
     const currentStepAnswer = localDocumentGroup?.fields?.filter(field => field.step === currentStep);
     const isAllQuestionAnswered = currentStepAnswer?.map(field => field?.options?.some(option => option.hasOwnProperty('selected')));
     const isError = isAllQuestionAnswered?.some(answered => !answered);
-
-    console.log(localDocumentGroup?.fields, currentStepAnswer, isAllQuestionAnswered, isError)
 
     if (isError) {
       toast.error("Selecione ao menos uma alternativa por pergunta");
