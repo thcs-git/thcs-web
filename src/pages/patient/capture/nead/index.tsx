@@ -559,7 +559,7 @@ export default function Nead(props: RouteComponentProps<IPageParams>) {
                     }}>
                       <QuestionSection key={`question_${field._id}_${index}`}>
                         <QuestionTitle>{field.description}</QuestionTitle>
-                        <RadioGroup onChange={e => selectOption(field._id, e.target.value)}>
+                        <RadioGroup  style={{ width: 'fit-content' }} onChange={e => selectOption(field._id, e.target.value)}>
                           {/* {() => handleSelectRadio(field)} */}
                           {/* <FormHelperText>{(field.options.some((option: any) => option.selected)) ? '' : 'error'}</FormHelperText> */}
                           {field.options.map((option: any, index: number) => (
