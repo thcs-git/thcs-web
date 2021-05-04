@@ -429,6 +429,7 @@ export default function Abemid(props: RouteComponentProps<IPageParams>) {
                         onChange={(e) =>
                           selectOption(field._id, e.target.value)
                         }
+                        style={{ width: 'fit-content' }}
                       >
                         {field.options.map((option: any, index: number) => (
                           <FormControlLabel

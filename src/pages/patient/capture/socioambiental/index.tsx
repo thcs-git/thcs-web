@@ -230,7 +230,7 @@ export default function SocioAmbiental(props: RouteComponentProps<IPageParams>) 
               <QuestionTitle>{field.description}</QuestionTitle>
 
               {field.type === 'radio' && (
-                <RadioGroup onChange={e => selectOption(field._id, e.target.value)}>
+                <RadioGroup  style={{ width: 'fit-content' }} onChange={e => selectOption(field._id, e.target.value)}>
                   {field.options.map((option: any, index: number) => (
                     <FormControlLabel
                       key={`option_${field._id}_${index}`}
