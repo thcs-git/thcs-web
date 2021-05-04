@@ -89,6 +89,8 @@ import {
   searchUser,
   getProfessions,
   getUserTypes,
+  loadGetUserDisengaged,
+  searchUserDisengaged,
 } from "./users/sagas";
 
 import { CareTypes } from "./cares/types";
@@ -255,9 +257,11 @@ export default function* rootSaga() {
     takeLatest(UserTypes.SEARCH_REQUEST, searchUser),
     takeLatest(UserTypes.LOAD_REQUEST_PROFESSION, getProfessions),
     takeLatest(UserTypes.LOAD_REQUEST_USER_TYPES, getUserTypes),
+    takeLatest(UserTypes.LOAD_REQUEST_USER_DISENGAGED, loadGetUserDisengaged),
+    takeLatest(UserTypes.SEARCH_REQUEST_USER_DISENGAGED, searchUserDisengaged),
 
     /** Profession */
-    takeLatest(UserTypes.LOAD_REQUEST, getProfession),
+    // takeLatest(UserTypes.LOAD_REQUEST, getProfession),
 
     /** UnconfirmedUsers */
     //  takeLatest(UnconfirmedUserTypes.LOAD_REQUEST, getUnconfirmedUsers),
