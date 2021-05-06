@@ -170,10 +170,7 @@ export default function AreaForm(props: RouteComponentProps<IPageParams>) {
   }, [currentStep]);
 
   const handleBackStep = useCallback(() => {
-    if (currentStep === 0){
-      handleCancelForm();
-    }else{
-    setCurrentStep((prevState) => prevState - 1);}
+    setCurrentStep((prevState) => prevState - 1);
   }, [currentStep]);
 
   const searchPatient = useCallback((value: string) => {
@@ -205,7 +202,6 @@ export default function AreaForm(props: RouteComponentProps<IPageParams>) {
       cid_id: value._id,
     }));
   }
-
 
   function handleSelectArea(value: any) {
     setState((prevState) => ({
@@ -937,7 +933,7 @@ export default function AreaForm(props: RouteComponentProps<IPageParams>) {
 
           <ButtonsContent>
             <Button
-
+              disabled={currentStep === 0}
               background="default"
               onClick={handleBackStep}
             >
