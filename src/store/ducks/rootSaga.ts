@@ -75,6 +75,7 @@ import {
   getPatientById,
   updatePatient,
   searchPatient,
+  getPatientCapture,
 } from "./patients/sagas";
 
 import { UserTypes } from "./users/types";
@@ -246,6 +247,7 @@ export default function* rootSaga() {
     takeLatest(PatientTypes.LOAD_REQUEST_PATIENT_BY_ID, getPatientById),
     takeLatest(PatientTypes.UPDATE_PATIENT_REQUEST, updatePatient),
     takeLatest(PatientTypes.SEARCH_REQUEST, searchPatient),
+    takeLatest(PatientTypes.LOAD_PATIENT_CAPTURE, getPatientCapture),
 
     /** Users */
     takeLatest(UserTypes.LOAD_REQUEST, getUsers),

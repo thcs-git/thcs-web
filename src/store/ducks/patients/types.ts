@@ -24,7 +24,8 @@ export enum PatientTypes {
   SEARCH_REQUEST = "@patient/SEARCH_REQUEST",
 
   REGISTRAION_COMPLETED = "@patient/REGISTRAION_COMPLETED",
-
+  LOAD_PATIENT_CAPTURE = "@patient/LOAD_PATIENT_CAPTURE",
+  LOAD_PATIENT_CAPTURE_SUCCESS = "@patient/LOAD_PATIENT_CAPTURE_SUCCESS",
 }
 
 /**
@@ -33,8 +34,8 @@ export enum PatientTypes {
 
 export interface PatientAddressInterface {
   postal_code: string;
-  street: string,
-  number: string,
+  street: string;
+  number: string;
   district: string;
   city: string;
   state: string;
@@ -46,7 +47,7 @@ export interface PatientPhonesInterface {
   telegram?: boolean;
   cellnumber?: string;
   number?: string;
-};
+}
 
 export interface PatientInterface {
   _id?: string;
@@ -71,10 +72,10 @@ export interface PatientInterface {
   blood_type: string;
   organ_donor: boolean;
   responsable: {
-    name: string,
-    phone: string,
-    cellphone: string,
-    relationship: string
+    name: string;
+    phone: string;
+    cellphone: string;
+    relationship: string;
   };
   active: boolean;
   hospital?: string;
@@ -85,7 +86,6 @@ export interface PatientInterface {
   convenio?: string;
   health_insurance?: string;
   sub_health_insurance?: string;
-
 }
 
 export interface PatientList {
@@ -108,13 +108,13 @@ export interface PatientDataItems {
 }
 
 export interface ViacepDataInterface {
-  cep: string,
-  logradouro: string,
-  complemento: string,
-  bairro: string,
-  localidade: string,
-  uf: string,
-  erro?: boolean,
+  cep: string;
+  logradouro: string;
+  complemento: string;
+  bairro: string;
+  localidade: string;
+  uf: string;
+  erro?: boolean;
 }
 
 /**
@@ -129,4 +129,4 @@ export interface PatientState {
   isRegistrationCompleted?: boolean;
 }
 
-export type LoadRequestParams = Partial<Omit<PatientList, 'data'>>
+export type LoadRequestParams = Partial<Omit<PatientList, "data">>;

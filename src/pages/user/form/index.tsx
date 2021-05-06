@@ -752,6 +752,12 @@ const dengagedUser=useCallback((company:CompanyInterface)=>{
                   >
                     Dados Profissionais
                   </TabNavItem>
+                  <TabNavItem
+                    className={currentTab === 2 ? "active" : ""}
+                    onClick={() => selectTab(2)}
+                  >
+                    Selecione Empresa
+                  </TabNavItem>
                 </TabNav>
                 <TabBody>
                   <TabBodyItem className={currentTab === 0 ? "show" : ""}>
