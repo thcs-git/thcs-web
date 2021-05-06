@@ -773,12 +773,12 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
                               variant="outlined"
                               size="small"
                               placeholder="000.000.000-00"
-                              error={!checkIsCpfValid() && state.fiscal_number != ''}
+                              error={!checkIsCpfValid()}
                               fullWidth
                             />
                           )}
                         </InputMask>
-                        {!checkIsCpfValid() && state.fiscal_number != '' &&(
+                        {!checkIsCpfValid() && (
                               <p style={{ color: '#f44336', margin:'1px 5px 20px' }}>
                               Por favor insira um cpf válido
                               </p>
@@ -809,7 +809,7 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
                               variant="outlined"
                               size="small"
                               placeholder="0.000-000"
-                              error={fieldsValidation.national_id && state.national_id != ''}
+                              error={fieldsValidation.national_id}
                               fullWidth
                             />
                           )}
