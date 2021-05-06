@@ -82,6 +82,7 @@ export default function CouncilList() {
             handleButton={() => history.push("/care/create/")}
             buttonTitle="Novo Atendimento"
             onChangeInput={debounceSearchRequest}
+            inputPlaceholder = "Pesquise por paciente, CPF, complexidade, etc..."
           />
 
           <Table
