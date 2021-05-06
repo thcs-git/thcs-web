@@ -1,4 +1,4 @@
-import { PatientInterface } from '../patients/types';
+import { PatientInterface } from "../patients/types";
 /**
  * Action types
  */
@@ -63,7 +63,6 @@ export enum CareTypes {
   DOCUMENT_NEAD_UPDATE_REQUEST = "@care/DOCUMENT_NEAD_UPDATE_REQUEST",
   DOCUMENT_NEAD_UPDATE = "@care/DOCUMENT_NEAD_UPDATE",
 
-
   // Health Care
   HEALTH_INSURANCE_REQUEST = "@care/HEALTH_INSURANCE_REQUEST",
   HEALTH_INSURANCE_SUCCESS = "@care/HEALTH_INSURANCE_SUCCESS",
@@ -127,8 +126,8 @@ export interface CareInterface {
   cid_id?: string | CidPopulateInterface;
   area_id?: string;
   user_id?: string; // *
-  status?: string, // * Pre-Atendimento, Em atendimento, Cancelado, Finalizado
-  complexity?: string,
+  status?: string; // * Pre-Atendimento, Em atendimento, Cancelado, Finalizado
+  complexity?: string;
   started_at?: string;
   created_at?: string;
   created_by?: { _id: string };
@@ -136,19 +135,19 @@ export interface CareInterface {
   updated_by?: { _id: string };
   documents_id?: Array<any>;
   capture?: {
-    type?: string,
-    order_number?: string,
-    status?: string,
-    estimate?: string,
-    inpatient?: boolean,
-    complexity?: string,
-    hospital?: string,
-    unity?: string,
-    doctor?: string,
-    assistant_doctor?: string,
-    sector?: string,
-    bed?: string,
-  }
+    type?: string;
+    order_number?: string;
+    status?: string;
+    estimate?: string;
+    inpatient?: boolean;
+    complexity?: string;
+    hospital?: string;
+    unity?: string;
+    doctor?: string;
+    assistant_doctor?: string;
+    sector?: string;
+    bed?: string;
+  };
 }
 
 export interface CareList {
@@ -203,7 +202,7 @@ export interface ScheduleInterface {
     vacation_end?: string;
     created_at?: string;
     created_by?: string | UserSimpleDataInterface;
-  },
+  };
   description?: string;
   active?: boolean;
   created_at?: string;
@@ -351,4 +350,4 @@ export interface ICaptureData {
   status: string;
 }
 
-export type LoadRequestParams = Partial<Omit<CareList, 'data'>>
+export type LoadRequestParams = Partial<Omit<CareList, "data">>;

@@ -142,3 +142,26 @@ export const ResumeList = styled(List)`
     color: var(--secondary);
   }
 `;
+
+export const TabsMenuWrapper = styled.div`
+  margin-bottom: 24px;
+
+  .Mui-selected {
+    background-color: var(--primary);
+    color: var(--white) !important;
+  }
+
+  button:first-of-type {
+    margin-right: 10px;
+  }
+
+  button {
+    border-radius: 35px;
+    color: #333 !important;
+    background-color: var(--gray-light);
+  }
+
+  span {
+    background-color: unset !important;
+  }
+`;

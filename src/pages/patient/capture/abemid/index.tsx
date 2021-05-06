@@ -218,11 +218,11 @@ export default function Abemid(props: RouteComponentProps<IPageParams>) {
       // KATZ
       else if (currentStep === 0) {
         if (score < 2) {
-          return "Alta Complexidade";
+          return "Dependente Total";
         } else if (score >= 3 && score <= 4) {
-          return "Média Complexidade";
+          return "Dependente Parcial";
         } else {
-          return "Baixa Complexidade";
+          return "Independente";
         }
       } else {
         return "Não Identificado";
@@ -245,7 +245,7 @@ export default function Abemid(props: RouteComponentProps<IPageParams>) {
       status: getStatus(partialScore),
     };
 
-    setSteps(stepsCopy);
+    setSteps(prevState => stepsCopy);
 
   }, [documentGroup, currentStep]);
 
@@ -429,6 +429,7 @@ export default function Abemid(props: RouteComponentProps<IPageParams>) {
                         onChange={(e) =>
                           selectOption(field._id, e.target.value)
                         }
+                        style={{ width: 'fit-content' }}
                       >
                         {field.options.map((option: any, index: number) => (
                           <FormControlLabel

@@ -54,7 +54,7 @@ export default createGlobalStyle`
     --primary-hover: #16679A99;
     --secondary: #0899BA;
     --gray: #CCCCCC;
-    --gray-light: #F2F2F2;
+    --gray-light: #EBEBEB;
     --gray-dark: #666666;
     --outline: #2F3336;
     --success: #4FC66A;

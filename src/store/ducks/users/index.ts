@@ -54,6 +54,16 @@ const reducer: Reducer<UserState> = (state = INITIAL_STATE, action) => {
         success: false,
         error: false,
       };
+    case UserTypes.LOAD_REQUEST_USER_DISENGAGED:
+      return { ...state, loading: true, success: false };
+    case UserTypes.LOAD_RESPONSE_USER_DISENGAGED:
+      return {
+        ...state,
+        list: action.payload.data,
+        loading: false,
+        success: false,
+        error: false,
+      };
     case UserTypes.LOAD_REQUEST_USER_BY_ID:
       return {
         ...state,

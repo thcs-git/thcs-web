@@ -1,7 +1,8 @@
 import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { RouteComponentProps, useHistory } from 'react-router-dom';
-import { Dialog, DialogContent, DialogTitle, Grid, Card, CardContent, TextField, FormGroup, FormControlLabel, RadioGroup, DialogActions, Button, List, ListItem, Typography, ListItemIcon, ListItemText, IconButton, Divider } from '@material-ui/core';
+import { Help as HelpIcon } from '@material-ui/icons';
+import { Dialog, DialogContent, DialogTitle, Grid, Card, CardContent, TextField, FormGroup, FormControlLabel, RadioGroup, DialogActions, Button, List, ListItem, Typography, ListItemIcon, ListItemText, IconButton, Divider, Box, Tabs, Tab, Paper, AppBar, FormControl, FormLabel, Popover } from '@material-ui/core';
 import { Autocomplete } from '@material-ui/lab';
 import { AccountCircle, SupervisorAccountRounded, ReportProblemOutlined, Event as EventIcon, Cached as RefreshIcon, Schedule as ScheduleIcon, CommentRounded as CommentRoundedIcon, AccountBox as AccountBoxIcon, SwapHoriz as SwapHorizIcon, Edit as EditIcon, Delete as DeleteIcon, WarningRounded as WarningRoundedIcon } from '@material-ui/icons';
 import dayjs from 'dayjs';
@@ -32,7 +33,7 @@ import ButtonComponent from '../../../../styles/components/Button';
 import { ComplexityStatus } from '../../../../styles/components/Table';
 import DatePicker from '../../../../styles/components/DatePicker';
 
-import { ScheduleItem, CardTitle, CalendarContent, ScheduleEventStatus, HeaderContent, ResumeList } from './styles';
+import { ScheduleItem, CardTitle, CalendarContent, ScheduleEventStatus, HeaderContent, ResumeList, TabsMenuWrapper } from './styles';
 
 interface IDay {
   allDay: boolean;
@@ -55,6 +56,12 @@ interface ISchedule extends ScheduleInterface {
   data?: any;
 }
 
+interface ITabPanelProps {
+  children?: React.ReactNode;
+  index: any;
+  value: number | string;
+}
+
 export default function SchedulePage(props: RouteComponentProps<IPageParams>) {
   const history = useHistory();
   const dispatch = useDispatch();
@@ -66,6 +73,13 @@ export default function SchedulePage(props: RouteComponentProps<IPageParams>) {
 
   let eventGuid = 0
   let todayStr = new Date().toISOString().replace(/T.*$/, '') // YYYY-MM-DD of today
+
+
+  const [currentTabValue, setCurrentTabValue] = React.useState(0);
+  const [professionalTypeValue, setProfessionalTypeValue] = React.useState<string>('diarista');
+  const [workInDaysValue, setWorkInDaysValue] = React.useState(0);
+  const [anchorHelpPopover, setHelpPopover] = React.useState<HTMLButtonElement | null>(null);
+  const openHelpPopover = Boolean(anchorHelpPopover);
 
   const [weekendsVisible, setWeekendsVisible] = useState(true);
   const [currentEvents, setCurrentEvents] = useState<EventApi[]>();
@@ -162,10 +176,6 @@ export default function SchedulePage(props: RouteComponentProps<IPageParams>) {
       handleTeam();
     }
   }, [careState.schedule]);
-
-  // useEffect(() => {
-  //   console.log(events)
-  // }, [events]);
 
   const handleEvents = (events: EventApi[]) => {
     setCurrentEvents(events)
@@ -488,6 +498,49 @@ export default function SchedulePage(props: RouteComponentProps<IPageParams>) {
 
   }, [schedule]);
 
+  const TabPanel =  useCallback((props: ITabPanelProps) => {
+    const { children, value, index, ...other } = props;
+
+    return (
+      <div
+        role="tabpanel"
+        hidden={value !== index}
+        id={`calendar-tabpanel-${index}`}
+        aria-labelledby={`calendar-tab-${index}`}
+        {...other}
+      >
+        {value === index && children}
+      </div>
+    );
+  }, []);
+
+  const handleChange = useCallback((event: React.ChangeEvent<{}>, newValue: number) => {
+    setCurrentTabValue(newValue);
+  }, [currentTabValue]);
+
+  const handleWorkDaysValues = useCallback((event: React.ChangeEvent<{}>, newValue: number) => {
+    setWorkInDaysValue(newValue);
+  }, [workInDaysValue]);
+
+  const a11yProps = useCallback((index) => {
+    return {
+      id: `calendar-tab-${index}`,
+      'aria-controls': `calendar-tabpanel-${index}`,
+    };
+  }, []);
+
+  const handleProfessionalChange = useCallback((event: React.ChangeEvent<HTMLInputElement>) => {
+    setProfessionalTypeValue(event.target.value);
+  }, [professionalTypeValue]);
+
+  const handleClickHelpPopover = useCallback((event: React.MouseEvent<HTMLButtonElement>) => {
+    setHelpPopover(event.currentTarget);
+  }, [anchorHelpPopover]);
+
+  const handleCloseHelpPopover = useCallback(() => {
+    setHelpPopover(null);
+  }, []);
+
   return (
     <>
       <Sidebar>
@@ -678,65 +731,110 @@ export default function SchedulePage(props: RouteComponentProps<IPageParams>) {
               <p>Para iniciar o agendamento de um evento, selecione a categoria:</p>
               <br />
 
-              <FieldContent>
-                <Autocomplete
-                  id="combo-box-profession"
-                  options={userState.data.professions || []}
-                  getOptionLabel={(option) => option.name}
-                  renderInput={(params) => <TextField {...params} label="Selecione a função do profissional" variant="outlined" />}
-                  size="small"
-                  // onChange={(element, value) => setSchedule(prevState => ({ ...prevState, user_id: value?._id }))}
-                  noOptionsText="Nenhum resultado encontrado"
-                  value={selectProfession()}
-                  onChange={(event, value) => {
-                    if (value) {
-                      handleSelectProfession(value)
-                    }
-                  }}
-                  fullWidth
-                />
-              </FieldContent>
+              {/* <AppBar position="static" color="default"> */}
+              <TabsMenuWrapper>
+                <Tabs
+                  value={currentTabValue}
+                  indicatorColor="primary"
+                  textColor="primary"
+                  onChange={handleChange}
+                  aria-label="disabled tabs example"
+                >
+                  <Tab label="Assistência" {...a11yProps(0)} />
+                  <Tab label="Plantão" {...a11yProps(1)} />
+                </Tabs>
+              </TabsMenuWrapper>
+              {/* </AppBar> */}
 
-              <FieldContent>
-                <Autocomplete
-                  id="combo-box-user"
-                  options={userState.list.data}
-                  getOptionLabel={(option) => option.name}
-                  renderInput={(params) => <TextField {...params} label="Agora, selecione o profissional" variant="outlined" />}
-                  size="small"
-                  onChange={(element, value) => setSchedule(prevState => ({ ...prevState, user_id: `${value?._id}` }))}
-                  value={selectUser()}
-                  noOptionsText="Nenhum resultado encontrado"
-                  fullWidth
-                />
-              </FieldContent>
+              <TabPanel value={currentTabValue} index={0}>
+                <FieldContent>
+                  <Autocomplete
+                    id="combo-box-profession"
+                    options={userState.data.professions || []}
+                    getOptionLabel={(option) => option.name}
+                    renderInput={(params) => <TextField {...params} label="Selecione a função do profissional" variant="outlined" />}
+                    size="small"
+                    // onChange={(element, value) => setSchedule(prevState => ({ ...prevState, user_id: value?._id }))}
+                    noOptionsText="Nenhum resultado encontrado"
+                    value={selectProfession()}
+                    onChange={(event, value) => {
+                      if (value) {
+                        handleSelectProfession(value)
+                      }
+                    }}
+                    fullWidth
+                  />
+                </FieldContent>
 
-              <Grid container>
-                <Grid item md={6}>
-                  <FieldContent>
-                    <TextField
-                      id="event-date"
-                      type="date"
-                      size="small"
-                      label="Data início do evento:"
-                      variant="outlined"
-                      InputLabelProps={{
-                        shrink: true,
-                      }}
-                      onChange={e => setSchedule(prevState => ({ ...prevState, start_at: e.target.value }))}
-                      value={formatDate(schedule.day, 'YYYY-MM-DD')}
-                      fullWidth
-                      disabled
-                    />
-                  </FieldContent>
+                <FieldContent>
+                  <Autocomplete
+                    id="combo-box-user"
+                    options={userState.list.data}
+                    getOptionLabel={(option) => option.name}
+                    renderInput={(params) => <TextField {...params} label="Agora, selecione o profissional" variant="outlined" />}
+                    size="small"
+                    onChange={(element, value) => setSchedule(prevState => ({ ...prevState, user_id: `${value?._id}` }))}
+                    value={selectUser()}
+                    noOptionsText="Nenhum resultado encontrado"
+                    fullWidth
+                  />
+                </FieldContent>
+
+                <Grid container>
+                  <Grid item md={6}>
+
+                  <div style={{ display: 'flex', alignItems: 'center', flexDirection: 'row' }}>
+                      <p>
+                        Data início do evento:
+                      </p>
+                      <IconButton aria-describedby={'popover_help_abemid'} onClick={handleClickHelpPopover} style={{ marginLeft: 10 }}>
+                        <HelpIcon style={{ color: "#ccc" }} />
+                      </IconButton >
+                      <Popover
+                        id={'popover_help_abemid'}
+                        open={openHelpPopover}
+                        anchorEl={anchorHelpPopover}
+                        onClose={handleCloseHelpPopover}
+                        anchorOrigin={{
+                          vertical: 'bottom',
+                          horizontal: 'center',
+                        }}
+                        transformOrigin={{
+                          vertical: 'top',
+                          horizontal: 'left',
+                        }}
+                      >
+                    <div
+                        style={{ paddingTop: 20, paddingLeft: 30, paddingBottom: 20, paddingRight: 30, maxWidth: 500, listStylePosition: 'inside', textAlign: 'justify' }}>
+                        <p>Para contratos temporários, defina data de início e fim do contrato. Para eventos sem limitações, basta definir data de início do evento.</p>
+                      </div>
+                    </Popover>
+
+                  </div>
+                    <FieldContent>
+                      <TextField
+                        id="event-date"
+                        type="date"
+                        size="small"
+                        label=""
+                        variant="outlined"
+                        InputLabelProps={{
+                          shrink: true,
+                        }}
+                        onChange={e => setSchedule(prevState => ({ ...prevState, start_at: e.target.value }))}
+                        value={formatDate(schedule.day, 'YYYY-MM-DD')}
+                        fullWidth
+                        disabled
+                      />
+                    </FieldContent>
+                  </Grid>
                 </Grid>
-              </Grid>
 
 
-              <p>Defina o horário do atendimento:</p>
-              <br />
+                <p>Defina o horário do atendimento:</p>
+                <br />
 
-              <Grid container>
+                <Grid container>
                 <Grid item md={3} style={{ paddingRight: 10 }}>
 
                   <FieldContent>
@@ -838,7 +936,7 @@ export default function SchedulePage(props: RouteComponentProps<IPageParams>) {
                 )}
               </Grid>
 
-              <FieldContent>
+                <FieldContent>
                 <TextField
                   id="input-description"
                   variant="outlined"
@@ -853,7 +951,201 @@ export default function SchedulePage(props: RouteComponentProps<IPageParams>) {
                   multiline
                 />
               </FieldContent>
+              </TabPanel>
 
+              <TabPanel value={currentTabValue} index={1}>
+                <div style={{ display: 'flex', alignItems: 'center', flexDirection: 'row' }}>
+                  <p>
+                    Data de início e fim do evento:
+                  </p>
+                  <IconButton aria-describedby={'popover_help_abemid'} onClick={handleClickHelpPopover} style={{ marginLeft: 10 }}>
+                    <HelpIcon style={{ color: "#ccc" }} />
+                  </IconButton >
+                  <Popover
+                    id={'popover_help_abemid'}
+                    open={openHelpPopover}
+                    anchorEl={anchorHelpPopover}
+                    onClose={handleCloseHelpPopover}
+                    anchorOrigin={{
+                      vertical: 'bottom',
+                      horizontal: 'center',
+                    }}
+                    transformOrigin={{
+                      vertical: 'top',
+                      horizontal: 'left',
+                    }}
+                  >
+                    <div
+                      style={{ paddingTop: 20, paddingLeft: 30, paddingBottom: 20, paddingRight: 30, maxWidth: 500, listStylePosition: 'inside', textAlign: 'justify' }}>
+                      <p>Para contratos temporários, defina data de início e fim do contrato. Para eventos sem limitações, basta definir data de início do evento.</p>
+                    </div>
+                  </Popover>
+
+                </div>
+                <br />
+
+                <Grid container>
+                  <Grid item md={3} style={{ paddingRight: 10 }}>
+                    <FieldContent>
+                      <TextField
+                        // id="start-time"
+                        type="date"
+                        size="small"
+                        label="Início"
+                        variant="outlined"
+                        InputLabelProps={{
+                          shrink: true,
+                        }}
+                        onChange={e => setSchedule(prevState => ({ ...prevState, start_at: e.target.value }))}
+                        value={schedule.start_at}
+                        fullWidth
+                      />
+
+                    </FieldContent>
+
+                    </Grid>
+
+                    <Grid item md={3} style={{ paddingLeft: 10 }}>
+
+                    <FieldContent>
+
+                      <TextField
+                        // id="end-time"
+                        type="date"
+                        size="small"
+                        label="Fim"
+                        variant="outlined"
+                        // defaultValue="07:30"
+                        InputLabelProps={{
+                          shrink: true,
+                        }}
+                        onChange={e => setSchedule(prevState => ({ ...prevState, end_at: e.target.value }))}
+                        // value={schedule.end_at}
+                        fullWidth
+                      />
+
+                    </FieldContent>
+                  </Grid>
+                </Grid>
+
+                <FormControl component="fieldset" margin="dense">
+                  <FormLabel component="legend" color="primary">O profissional é:</FormLabel>
+                  <RadioGroup aria-label="professional" name="professional_type" value={professionalTypeValue} onChange={handleProfessionalChange}>
+                    <FormControlLabel value="diarista" control={<Radio />} label="Diarista" />
+                    <FormControlLabel value="plantonista" control={<Radio />} label="Plantonista" />
+                  </RadioGroup>
+                </FormControl>
+
+                <br />
+                <p>Selecione a função do profissional:</p>
+                <br />
+
+                <FieldContent>
+                  <Autocomplete
+                    id="combo-box-profession"
+                    options={userState.data.professions || []}
+                    getOptionLabel={(option) => option.name}
+                    renderInput={(params) => <TextField {...params} label="" variant="outlined" />}
+                    size="small"
+                    // onChange={(element, value) => setSchedule(prevState => ({ ...prevState, user_id: value?._id }))}
+                    noOptionsText="Nenhum resultado encontrado"
+                    value={selectProfession()}
+                    onChange={(event, value) => {
+                      if (value) {
+                        handleSelectProfession(value)
+                      }
+                    }}
+                    fullWidth
+                  />
+                </FieldContent>
+
+
+                <p>Agora, selecione o profissional:</p>
+                <br />
+                <FieldContent>
+                  <Autocomplete
+                    id="combo-box-user"
+                    options={userState.list.data}
+                    getOptionLabel={(option) => option.name}
+                    renderInput={(params) => <TextField {...params} label="" variant="outlined" />}
+                    size="small"
+                    onChange={(element, value) => setSchedule(prevState => ({ ...prevState, user_id: `${value?._id}` }))}
+                    value={selectUser()}
+                    noOptionsText="Nenhum resultado encontrado"
+                    fullWidth
+                  />
+                </FieldContent>
+
+                <p>Este profissional irá trabalhar em dias:</p>
+                <br />
+
+                <TabsMenuWrapper>
+                  <Tabs
+                    value={workInDaysValue}
+                    indicatorColor="primary"
+                    textColor="primary"
+                    onChange={handleWorkDaysValues}
+                  >
+                    <Tab label="Pares" />
+                    <Tab label="Ímpares" />
+                  </Tabs>
+                </TabsMenuWrapper>
+
+                <p>Defina os horários de início e fim do turno:</p>
+                <br />
+
+                <Grid container>
+                  <Grid item md={3} style={{ paddingRight: 10 }}>
+
+                    <FieldContent>
+
+                      <TextField
+                        id="start-time"
+                        type="time"
+                        size="small"
+                        label="Início"
+                        variant="outlined"
+                        InputLabelProps={{
+                          shrink: true,
+                        }}
+                        inputProps={{
+                          step: 300, // 5 min
+                        }}
+                        onChange={e => setSchedule(prevState => ({ ...prevState, start_at: e.target.value }))}
+                        value={schedule.start_at}
+                        fullWidth
+                      />
+
+                    </FieldContent>
+
+                  </Grid>
+
+                  <Grid item md={3} style={{ paddingLeft: 10 }}>
+
+                    <FieldContent>
+
+                      <TextField
+                        id="end-time"
+                        type="time"
+                        size="small"
+                        label="Fim"
+                        variant="outlined"
+                        // defaultValue="07:30"
+                        InputLabelProps={{
+                          shrink: true,
+                        }}
+                        inputProps={{
+                          step: 300, // 5 min
+                        }}
+                        onChange={e => setSchedule(prevState => ({ ...prevState, end_at: e.target.value }))}
+                        value={schedule.end_at}
+                        fullWidth
+                      />
+
+                    </FieldContent>
+                  </Grid>
+                </Grid>
+              </TabPanel>
             </DialogContent>
 
             <DialogActions>

@@ -468,6 +468,7 @@ export default function PatientForm(props: RouteComponentProps<IPageParams>) {
 
 
 
+
   return (
     <Sidebar>
       {patientState.loading && <Loading />}

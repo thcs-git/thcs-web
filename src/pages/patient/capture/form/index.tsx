@@ -23,9 +23,9 @@ import InputMask from 'react-input-mask';
 import { useDispatch, useSelector } from 'react-redux';
 import { ApplicationState } from '../../../../store';
 
-import { searchRequest as searchPatientAction } from '../../../../store/ducks/patients/actions';
+import { getPatientCapture,loadRequest, searchRequest as searchPatientAction } from '../../../../store/ducks/patients/actions';
 
-import { createCareRequest as createCareAction, searchCareRequest as getCares } from '../../../../store/ducks/cares/actions';
+import {  createCareRequest as createCareAction, searchCareRequest as getCares } from '../../../../store/ducks/cares/actions';
 import { CareInterface, ICaptureData } from '../../../../store/ducks/cares/types';
 
 import Loading from '../../../../components/Loading';
@@ -49,6 +49,7 @@ import {
   NoDataIcon,
   PatientNotFound,
 } from './styles';
+
 
 export default function PatientCaptureForm(props: RouteComponentProps) {
   const dispatch = useDispatch();
@@ -80,36 +81,36 @@ export default function PatientCaptureForm(props: RouteComponentProps) {
   });
 
   useEffect(() => {
-    dispatch(searchPatientAction({ active: true }));
+  dispatch(getPatientCapture());
   }, []);
 
-  useEffect(() => {
-    if (patientState.list.total === 1) {
-      setPatient(patientState.list.data[0]);
-      setPatientSearch(patientState.list.data[0].fiscal_number);
-    }
+  // useEffect(() => {
+  //   if (patientState.list.total === 1) {
+  //     setPatient(patientState.list.data[0]);
+  //     setPatientSearch(patientState.list.data[0].fiscal_number);
+  //   }
 
-    validatePatientParam();
+  //   validatePatientParam();
 
-  }, [patientState]);
+  // }, [patientState]);
 
-  useEffect(() => {
-    if (patient?._id) {
-      dispatch(getCares({ status: 'Pre-Atendimento', 'capture.status': 'Em Andamento', 'patient_id.fiscal_number': patient.fiscal_number, 'patient_id.active': true }));
-    }
-  }, [patient]);
+  // useEffect(() => {
+  //   if (patient?._id) {
+  //     dispatch(getCares({ status: 'Pre-Atendimento', 'capture.status': 'Em Andamento', 'patient_id.fiscal_number': patient.fiscal_number, 'patient_id.active': true }));
+  //   }
+  // }, [patient]);
 
-  useEffect(() => {
-    if (careState.success && !careState.error && careState.data._id) {
-      history.push(`/patient/capture/${careState.data._id}/overview`);
-    }
-  }, [careState])
+  // useEffect(() => {
+  //   if (careState.success && !careState.error && careState.data._id) {
+  //     history.push(`/patient/capture/${careState.data._id}/overview`);
+  //   }
+  // }, [careState])
 
-  const searchPatient = useCallback((value: string) => {
-    setPatient({});
+  // const searchPatient = useCallback((value: string) => {
+  //   setPatient({});
 
-    (value.length > 0) ? dispatch(searchPatientAction({ fiscal_number: value })) : dispatch(searchPatientAction({ active: true }));
-  }, []);
+  //  // (value.length > 0) ? dispatch(searchPatientAction({ fiscal_number: value })) : dispatch(searchPatientAction({ active: true }));
+  // }, []);
 
   const toggleModalConfirm = useCallback((open?: boolean) => {
     open ? setOpenModalConfirm(open) : setOpenModalConfirm(!openModalConfirm);
@@ -197,7 +198,7 @@ export default function PatientCaptureForm(props: RouteComponentProps) {
       company_id: localStorage.getItem(LOCALSTORAGE.COMPANY_SELECTED) || ``,
     };
 
-    dispatch(createCareAction(careParams));
+   // dispatch(createCareAction(careParams));
   };
 
   const handleSubmitPatientCapture = useCallback(() => {
@@ -205,7 +206,7 @@ export default function PatientCaptureForm(props: RouteComponentProps) {
 
     const params = { ...care, patient_id: selectedPatient._id || patient._id };
 
-    dispatch(createCareAction(params))
+    //dispatch(createCareAction(params))
 
   }, [dispatch, care, patient, selectedPatient]);
 
@@ -226,7 +227,7 @@ export default function PatientCaptureForm(props: RouteComponentProps) {
                   mask="999.999.999-99"
                   value={patientSearch}
                   onChange={element => setPatientSearch(element.target.value)}
-                  onBlur={(element) => searchPatient(element.target.value)}
+                //  onBlur={(element) => searchPatient(element.target.value)}
                 >
                   {(inputProps: any) => (
                     <TextField
