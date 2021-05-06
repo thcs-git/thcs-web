@@ -112,7 +112,7 @@ export default function AreaList() {
           <Sidebar>
 
         <Container>
-        <BoxCustom style={{  marginTop: 0 }} mt={5} paddingLeft={15} paddingRight={15} paddingTop={8}>
+        {/* <BoxCustom style={{  marginTop: 0 }} mt={5} paddingLeft={15} paddingRight={15} paddingTop={8}> */}
           <FormTitle>Lista de Áreas</FormTitle>
 
           <SearchComponent
@@ -206,7 +206,7 @@ export default function AreaList() {
               search,
             }))}
           />
-          </BoxCustom>
+          {/* </BoxCustom> */}
         </Container>
       </Sidebar>
     </>

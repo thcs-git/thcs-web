@@ -517,9 +517,7 @@ const dengagedUser=useCallback((company:CompanyInterface)=>{
       history.push('/user');
     }
   }
-  function handleEdit(){
-    setCanEdit(!canEdit);
-  }
+
 
   function handleSelectProfession(value: ProfessionUserInterface) {
     setState((prevState) => ({
@@ -570,7 +568,7 @@ const dengagedUser=useCallback((company:CompanyInterface)=>{
     }
   }
 
-  const handleDeleteEspecialty = useCallback((especialty: SpecialtyInterface) => {
+  function handleDeleteEspecialty(especialty: SpecialtyInterface){
     if (canEdit) {
       let specialtiesSelected = [...state.specialties];
 
@@ -595,8 +593,7 @@ const dengagedUser=useCallback((company:CompanyInterface)=>{
         }))
       };
     }
-
-  }, [state.specialties]);
+  };
 
   const selectMainSpecialty = useCallback(() => {
     const selected = specialtyState.list.data.filter(
@@ -661,9 +658,9 @@ const dengagedUser=useCallback((company:CompanyInterface)=>{
     }
   }
 
-  const handleDeleteCompany = useCallback((company: CompanyInterface) => {
+  async function handleDeleteCompany(company: CompanyInterface)  {
     console.log(canEdit);
-    if (!canEdit) {
+    if (canEdit) {
       let companiesSelected = [...state.companies];
       const companyFounded = companiesSelected.findIndex((item: any) => {
         return company._id === item._id
@@ -677,7 +674,7 @@ const dengagedUser=useCallback((company:CompanyInterface)=>{
 
         let companiesCopy = [...companies];
 
-        //companiesCopy.push(companyData);
+        companiesCopy.push(companyData);
         setCompanies(companiesCopy);
 
         setState(prevState => ({
@@ -687,7 +684,7 @@ const dengagedUser=useCallback((company:CompanyInterface)=>{
       }
     }
 
-  }, [state.companies]);
+  };
 
   const handleSaveFormUser = useCallback(() => {
     if (!handleValidateFields()) {
@@ -731,8 +728,8 @@ const dengagedUser=useCallback((company:CompanyInterface)=>{
               <div style={{ display: 'flex', alignItems: 'center', flexDirection: 'row' }}>
                 <FormTitle>Cadastro de Usuario</FormTitle>
 
-                {(params.id && params.mode != 'link') && (
-                  <Button style={{ marginTop: -20, marginLeft: 15, color: '#0899BA' }} onClick={() => handleEdit()}>
+                {(params.id && params.mode == 'view' && !canEdit) && (
+                  <Button style={{ marginTop: -20, marginLeft: 15, color: '#0899BA' }} onClick={() => setCanEdit(!canEdit)}>
                     <Edit style={{ marginRight: 5, width: 18 }} />
               Editar {canEdit}
                   </Button>
@@ -753,12 +750,12 @@ const dengagedUser=useCallback((company:CompanyInterface)=>{
                   >
                     Dados Profissionais
                   </TabNavItem>
-                  <TabNavItem
+                  {/* <TabNavItem
                     className={currentTab === 2 ? "active" : ""}
                     onClick={() => selectTab(2)}
                   >
                     Selecione Empresa
-                  </TabNavItem>
+                  </TabNavItem> */}
                 </TabNav>
                 <TabBody>
                   <TabBodyItem className={currentTab === 0 ? "show" : ""}>
@@ -1613,7 +1610,7 @@ const dengagedUser=useCallback((company:CompanyInterface)=>{
                       )}
                     </Grid>
                   </TabBodyItem>
-                  <TabBodyItem className={currentTab === 2 ? "show" : ""} >
+                  {/* <TabBodyItem className={currentTab === 2 ? "show" : ""} >
                   <Grid container>
                     <Grid item md={6} xs={12}>
                       <UserContent>
@@ -1629,7 +1626,7 @@ const dengagedUser=useCallback((company:CompanyInterface)=>{
                     </Grid>
                   <Divider></Divider>
                   </Grid>
-                  </TabBodyItem>
+                  </TabBodyItem> */}
                 </TabBody>
               </TabContent>
             </FormContent>

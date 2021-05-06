@@ -467,8 +467,6 @@ export default function CustomerForm(props: RouteComponentProps<IPageParams>) {
           </div>
           <FormSection>
           <FormContent>
-
-
             <FormGroupSection>
               <Grid container>
                 <Grid item md={12} xs={12}>
