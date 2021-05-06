@@ -14,7 +14,7 @@ import {
   FormControlLabel,
   makeStyles,
 } from '@material-ui/core';
-import { Edit } from '@material-ui/icons';
+import { AccountCircle, Edit } from '@material-ui/icons';
 import Autocomplete from '@material-ui/lab/Autocomplete';
 import InputMask from 'react-input-mask';
 import validator from 'validator';
@@ -77,6 +77,7 @@ import {
   FormGroupSection,
   ChipList
 } from './styles';
+import { UserContent } from "../../../components/Sidebar/styles";
 
 interface IFormFields {
   userType: { id: string; description: string } | null;
@@ -1611,6 +1612,23 @@ const dengagedUser=useCallback((company:CompanyInterface)=>{
                         </Grid>
                       )}
                     </Grid>
+                  </TabBodyItem>
+                  <TabBodyItem className={currentTab === 2 ? "show" : ""} >
+                  <Grid container>
+                    <Grid item md={6} xs={12}>
+                      <UserContent>
+                        <AccountCircle />
+                      </UserContent>
+                    </Grid>
+                    <Grid item  md={6} xs={12}>
+                      <UserContent>
+                        Jean Gray
+                        <br />
+                        06565464545-54
+                      </UserContent>
+                    </Grid>
+                  <Divider></Divider>
+                  </Grid>
                   </TabBodyItem>
                 </TabBody>
               </TabContent>
