@@ -78,6 +78,7 @@ import {
   ChipList
 } from './styles';
 import { UserContent } from "../../../components/Sidebar/styles";
+import AddIcon from '@material-ui/icons/Add';
 
 interface IFormFields {
   userType: { id: string; description: string } | null;
@@ -750,12 +751,12 @@ const dengagedUser=useCallback((company:CompanyInterface)=>{
                   >
                     Dados Profissionais
                   </TabNavItem>
-                  {/* <TabNavItem
+                  <TabNavItem
                     className={currentTab === 2 ? "active" : ""}
                     onClick={() => selectTab(2)}
                   >
                     Selecione Empresa
-                  </TabNavItem> */}
+                  </TabNavItem>
                 </TabNav>
                 <TabBody>
                   <TabBodyItem className={currentTab === 0 ? "show" : ""}>
@@ -1610,23 +1611,31 @@ const dengagedUser=useCallback((company:CompanyInterface)=>{
                       )}
                     </Grid>
                   </TabBodyItem>
-                  {/* <TabBodyItem className={currentTab === 2 ? "show" : ""} >
+                  <TabBodyItem className={currentTab === 2 ? "show" : ""} >
                   <Grid container>
-                    <Grid item md={6} xs={12}>
+                    <Grid item >
                       <UserContent>
                         <AccountCircle />
                       </UserContent>
                     </Grid>
-                    <Grid item  md={6} xs={12}>
-                      <UserContent>
+                    <Grid item >
+                      <UserContent style={{marginTop:"30px"}}>
                         Jean Gray
                         <br />
                         06565464545-54
                       </UserContent>
                     </Grid>
-                  <Divider></Divider>
+                    <Grid item md={12}>
+                    <Divider></Divider>
+                    </Grid>
+                    <Grid item>
+                        <AddIcon fontSize={'large'} color={'primary'} ></AddIcon>
+                    </Grid>
+                    <Grid item>
+                      Enfermeira
+                    </Grid>
                   </Grid>
-                  </TabBodyItem> */}
+                  </TabBodyItem>
                 </TabBody>
               </TabContent>
             </FormContent>

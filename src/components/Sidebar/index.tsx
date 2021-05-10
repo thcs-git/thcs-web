@@ -261,7 +261,7 @@ const Sibebar = (props: Props<any>) => {
                   <ListItemIcon>
                       {item.icon}
                     </ListItemIcon>
-                    <ListItemText primary={item.title} style={{color:"#ffff"}}  />
+                    <ListItemText primary={item.title} style={{color:"#ffff",cursor:"pointer"}}  />
               </ListItem>
 
             {/* )} */}
