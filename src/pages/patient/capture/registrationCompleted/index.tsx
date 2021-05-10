@@ -113,7 +113,7 @@ const registrationCompleted: React.FC<any> = (props) => {
         <ButtonsContainer>
           <Button variant="outlined" background="success_rounded" onClick={() => {
             dispatch(setIfRegistrationCompleted(false));
-            history.push(`/patient/${params.id}/edit`);
+            history.push(`/patient/${params.id}/edit/edit`);
           }}>
             Editar
             </Button>
