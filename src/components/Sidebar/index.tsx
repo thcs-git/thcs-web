@@ -54,7 +54,6 @@ import PersonIcon from '@material-ui/icons/Person';
 import GroupAddIcon from '@material-ui/icons/GroupAdd';
 import LocalHospital from '@material-ui/icons/LocalHospital';
 import StarRateIcon from '@material-ui/icons/StarRate';
-import FavoriteIcon from '@material-ui/icons/Favorite';
 
 import { Logo, UserContent } from './styles';
 import LOCALSTORAGE from '../../helpers/constants/localStorage';
@@ -68,11 +67,11 @@ const itemsMenu = [
   { title: 'Dashboard', route: '/', icon: <DashboardIcon style={{ color: '#fff' }} /> },
   { title: 'Clientes', route: '/customer', icon: <AssignmentIndIcon style={{ color: '#fff' }} /> },
   { title: 'Empresas', route: '/company', icon: <BusinessIcon style={{ color: '#fff' }} /> },
-  { title: 'Meus Profissionais', route: "/user", icon: <PersonIcon style={{ color: '#fff' }} /> },
-  { title: 'Banco de Talentos', route: "/userdesengaged", icon: <StarRateIcon style={{ color: '#fff' }} /> },
+  { title: 'Profissionais', route: '/user',subtitle:[{title:"Meus Profissionais", route:"/user"},{title:"Banco de Talentos", route:"/userdesengaged"}], icon: <PersonIcon style={{ color: '#fff' }} /> },
   { title: 'Área', route: '/area', icon: <LocationOncon style={{ color: '#fff' }} /> },
   { title: 'Pacientes', route: '/patient', icon: <GroupAddIcon style={{ color: '#fff' }} /> },
-  { title: 'Avaliação', route: '/avaliation', icon: <FavoriteIcon style={{ color: '#fff' }} /> },
+  { title: 'Avaliação', route: '/avaliation', icon: <StarRateIcon style={{ color: '#fff' }} /> },
+  { title: 'QrCode', route: '/qrcode', icon: <StarRateIcon style={{ color: '#fff' }} />},
   { title: 'Atendimento', route: '/care', icon: <LocalHospital style={{ color: '#fff' }} />},
 ]
 
@@ -233,7 +232,7 @@ const Sibebar = (props: Props<any>) => {
           {itemsMenu.map((item,index)=>(
             <>
 
-            {/* {item.subtitle?(
+            {item.subtitle?(
 
                <Accordion style={{backgroundColor:"transparent", boxShadow:"none"}}>
                   <AccordionSummary >
@@ -256,15 +255,15 @@ const Sibebar = (props: Props<any>) => {
               </AccordionDetails>
 
             </Accordion>
-           ):( */}
+           ):(
               <ListItem onClick={() => history.push(item.route)}>
                   <ListItemIcon>
                       {item.icon}
                     </ListItemIcon>
-                    <ListItemText primary={item.title} style={{color:"#ffff",cursor:"pointer"}}  />
+                    <ListItemText primary={item.title} style={{color:"#ffff"}}  />
               </ListItem>
 
-            {/* )} */}
+            )}
             </>
 
           ))}

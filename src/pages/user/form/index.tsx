@@ -14,7 +14,7 @@ import {
   FormControlLabel,
   makeStyles,
 } from '@material-ui/core';
-import { AccountCircle, Edit } from '@material-ui/icons';
+import { Edit } from '@material-ui/icons';
 import Autocomplete from '@material-ui/lab/Autocomplete';
 import InputMask from 'react-input-mask';
 import validator from 'validator';
@@ -77,8 +77,6 @@ import {
   FormGroupSection,
   ChipList
 } from './styles';
-import { UserContent } from "../../../components/Sidebar/styles";
-import AddIcon from '@material-ui/icons/Add';
 
 interface IFormFields {
   userType: { id: string; description: string } | null;
@@ -518,7 +516,9 @@ const dengagedUser=useCallback((company:CompanyInterface)=>{
       history.push('/user');
     }
   }
-
+  function handleEdit(){
+    setCanEdit(!canEdit);
+  }
 
   function handleSelectProfession(value: ProfessionUserInterface) {
     setState((prevState) => ({
@@ -569,7 +569,7 @@ const dengagedUser=useCallback((company:CompanyInterface)=>{
     }
   }
 
-  function handleDeleteEspecialty(especialty: SpecialtyInterface){
+  const handleDeleteEspecialty = useCallback((especialty: SpecialtyInterface) => {
     if (canEdit) {
       let specialtiesSelected = [...state.specialties];
 
@@ -594,7 +594,8 @@ const dengagedUser=useCallback((company:CompanyInterface)=>{
         }))
       };
     }
-  };
+
+  }, [state.specialties]);
 
   const selectMainSpecialty = useCallback(() => {
     const selected = specialtyState.list.data.filter(
@@ -659,9 +660,9 @@ const dengagedUser=useCallback((company:CompanyInterface)=>{
     }
   }
 
-  async function handleDeleteCompany(company: CompanyInterface)  {
+  const handleDeleteCompany = useCallback((company: CompanyInterface) => {
     console.log(canEdit);
-    if (canEdit) {
+    if (!canEdit) {
       let companiesSelected = [...state.companies];
       const companyFounded = companiesSelected.findIndex((item: any) => {
         return company._id === item._id
@@ -675,7 +676,7 @@ const dengagedUser=useCallback((company:CompanyInterface)=>{
 
         let companiesCopy = [...companies];
 
-        companiesCopy.push(companyData);
+        //companiesCopy.push(companyData);
         setCompanies(companiesCopy);
 
         setState(prevState => ({
@@ -685,7 +686,7 @@ const dengagedUser=useCallback((company:CompanyInterface)=>{
       }
     }
 
-  };
+  }, [state.companies]);
 
   const handleSaveFormUser = useCallback(() => {
     if (!handleValidateFields()) {
@@ -729,8 +730,8 @@ const dengagedUser=useCallback((company:CompanyInterface)=>{
               <div style={{ display: 'flex', alignItems: 'center', flexDirection: 'row' }}>
                 <FormTitle>Cadastro de Usuario</FormTitle>
 
-                {(params.id && params.mode == 'view' && !canEdit) && (
-                  <Button style={{ marginTop: -20, marginLeft: 15, color: '#0899BA' }} onClick={() => setCanEdit(!canEdit)}>
+                {(params.id && params.mode != 'link') && (
+                  <Button style={{ marginTop: -20, marginLeft: 15, color: '#0899BA' }} onClick={() => handleEdit()}>
                     <Edit style={{ marginRight: 5, width: 18 }} />
               Editar {canEdit}
                   </Button>
@@ -1610,31 +1611,6 @@ const dengagedUser=useCallback((company:CompanyInterface)=>{
                         </Grid>
                       )}
                     </Grid>
-                  </TabBodyItem>
-                  <TabBodyItem className={currentTab === 2 ? "show" : ""} >
-                  <Grid container>
-                    <Grid item >
-                      <UserContent>
-                        <AccountCircle />
-                      </UserContent>
-                    </Grid>
-                    <Grid item >
-                      <UserContent style={{marginTop:"30px"}}>
-                        Jean Gray
-                        <br />
-                        06565464545-54
-                      </UserContent>
-                    </Grid>
-                    <Grid item md={12}>
-                    <Divider></Divider>
-                    </Grid>
-                    <Grid item>
-                        <AddIcon fontSize={'large'} color={'primary'} ></AddIcon>
-                    </Grid>
-                    <Grid item>
-                      Enfermeira
-                    </Grid>
-                  </Grid>
                   </TabBodyItem>
                 </TabBody>
               </TabContent>
