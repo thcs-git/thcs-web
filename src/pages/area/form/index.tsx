@@ -236,7 +236,6 @@ export default function AreaForm(props: RouteComponentProps<IPageParams>) {
       }
       dispatch(loadRequest());
       dispatch(getUsersAction());
-      dispatch(loadProfessionsRequest());
   }, [dispatch]);
 
   // //////////////////////////  INITIAL STATE ///////////////////////////////
@@ -851,9 +850,17 @@ export default function AreaForm(props: RouteComponentProps<IPageParams>) {
                         <Autocomplete
                           id="combo-box-profession"
                           disabled= {!canEdit}
-                          options={userState.data.professions ||[]}
+                          options={professionState.list.data}
                           getOptionLabel={(option) => option.name}
-                          renderInput={(params) => <TextField {...params} label="Funções" variant="outlined" />}
+                          renderInput={(params) => <TextField {...params} label="Funções" variant="outlined" InputProps={{
+                            ...params.InputProps,
+                            endAdornment: (
+                              <React.Fragment>
+                                {professionState.list.data[0] ? null:<CircularProgress color="inherit" size={20} />}
+                                {params.InputProps.endAdornment}
+                              </React.Fragment>
+                            ),
+                          }}/>}
                           size="small"
                           onChange={(event, value) => {
                             if (value) {
