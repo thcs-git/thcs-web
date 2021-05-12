@@ -61,14 +61,12 @@ export interface UserTypesInterface {
   name: string;
 }
 export interface CustomerUserInterface {
-  email: string;
-  fiscal_number: string;
   name: string;
   _id: string;
 }
 
 export interface CompanyUserInterface {
-  id: string;
+  _id: string;
   name: string;
   customer_id: CustomerUserInterface;
 }

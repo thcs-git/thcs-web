@@ -324,7 +324,7 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
       if (params.mode === "view" || params.mode === "link" ) {
         setCanEdit(false)
       }
-      console.log(canEdit);
+
       setFieldValidations({
         companies: true,
         name: true,
@@ -495,18 +495,15 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
   }
 
   function engagedUser(){
-    console.log(customer);
-    console.log(company);
-    let com:CompanyUserInterface;
+
+
     if(customer &&customer._id){
-       com = {
-      id:company._id?company._id:'',
+      var com:CompanyUserInterface = {
+      _id:company._id?company._id:'',
       name:company.name,
       customer_id:{
-        email:customer.email,
-        fiscal_number:customer.fiscal_number,
-        name:customer.name,
-        _id:customer._id
+        _id:customer._id,
+        name:customer.name
       }
     }
 
@@ -582,7 +579,7 @@ const dengagedUser=useCallback((company:CompanyInterface)=>{
           return item._id === state?.profession_id?._id;
         }
       });
-      console.log(selected);
+
       return selected[0] ? selected[0].name : null;
     }
 
@@ -691,7 +688,7 @@ const dengagedUser=useCallback((company:CompanyInterface)=>{
 
   //Empresas
   function handleSelectCompany(value: CompanyUserInterface) {
-    console.log(value);
+
 
     setState((prevState) => ({
       ...prevState,
@@ -701,7 +698,7 @@ const dengagedUser=useCallback((company:CompanyInterface)=>{
     let companiesCopy: CompanyInterface[] = [...companies];
 
     const companiesIndex = companiesCopy.findIndex(
-      (item) => item._id === value.id
+      (item) => item._id === value._id
     );
 
     if (companiesIndex > -1) {
@@ -717,7 +714,7 @@ const dengagedUser=useCallback((company:CompanyInterface)=>{
   }
 
   async function handleDeleteCompany(company: CompanyInterface)  {
-    console.log(canEdit);
+
     if (canEdit) {
       let companiesSelected = [...state.companies];
       const companyFounded = companiesSelected.findIndex((item: any) => {
@@ -745,15 +742,15 @@ const dengagedUser=useCallback((company:CompanyInterface)=>{
   };
   function mycompanys(){
     const customer = localStorage.getItem(LOCALSTORAGE.CUSTOMER) ;
-    console.log(customer);
+
     let mycompanies:CompanyUserInterface[] = [];
     state.companies.map((value, index)=>{
-      console.log(value.customer_id._id);
+
       if(value.customer_id._id === customer){
         mycompanies.push(value);
       }
     })
-    console.log(mycompanies);
+
     return mycompanies;
   }
   const handleSaveFormUser = useCallback(() => {
@@ -1688,7 +1685,7 @@ const dengagedUser=useCallback((company:CompanyInterface)=>{
                         </ButtonComponent>
                       </Grid>
                       <Grid item>
-                        <Grid container style={{flexDirection: 'column', paddingLeft:'10px', paddingTop:'10px'}}>
+                        <Grid container style={{flexDirection: 'column', paddingLeft:'10px', paddingTop:'20px'}}>
                           <Grid item>
                             <h3>{viewProfession()}</h3>
                           </Grid>
@@ -1763,19 +1760,30 @@ const dengagedUser=useCallback((company:CompanyInterface)=>{
                             </ButtonComponent>
                           </Grid>
                           )}
-                          {(params.mode === 'link' && checkCompany) && (
+                          {(params.mode === 'link' && checkCompany && !engaged) && (
 
                             <Grid item md={12} xs={12}>
                             Este prestador já está vinculado a sua empresa com este perfil profissional,
                             caso queira desvinculá-lo <Link to='/user'> clique aqui</Link>.
                             </Grid>
                           )}
-                          {params.mode === 'view' && (
+                           {(params.mode === 'link' && checkCompany && engaged) && (
+
+                            <Grid item md={12} xs={12}>
+                            Agora este prestador foi vinculado a sua empresa, para confirmar esta operação click em salva.
+                            </Grid>
+                          )}
+                          {(params.mode === 'view' && !engaged) && (
                           <Grid item md={12} xs={12}>
-                          <ButtonComponent  className={classes.cancel} onClick={()=> dengagedUser(company)}>
-                          Desvincular este prestador da minha empresa
-                          </ButtonComponent>
+                            <ButtonComponent  className={classes.cancel} onClick={()=> dengagedUser(company)}>
+                              Desvincular este prestador da minha empresa
+                            </ButtonComponent>
                           </Grid>
+                          )}
+                          {(params.mode === 'view' && engaged) && (
+                              <Grid>
+                                Prestador disvinculado de sua empresa, para confirmar esta  operação click em salva.
+                              </Grid>
                           )}
                         </Grid>
                      </Collapse>
