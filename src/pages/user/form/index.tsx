@@ -13,7 +13,6 @@ import {
   Grid,
   FormControlLabel,
   makeStyles,
-  Paper,
   Collapse,
 } from '@material-ui/core';
 import { AccountCircle, Edit } from '@material-ui/icons';
@@ -21,7 +20,8 @@ import Autocomplete from '@material-ui/lab/Autocomplete';
 import InputMask from 'react-input-mask';
 import validator from 'validator';
 import { toast } from 'react-toastify';
-
+import { loadCustomerById } from "../../../store/ducks/customers/actions";
+import { CustomerInterface } from "../../../store/ducks/customers/types";
 import { useDispatch, useSelector } from "react-redux";
 import {
   createUserRequest,
@@ -77,15 +77,15 @@ import {
   FormContent,
   InputFiled as TextField,
   FormGroupSection,
-  ChipList
+  ChipList,
+  DivideTitle
 } from './styles';
 import { UserContent } from "../../../components/Sidebar/styles";
 import AddIcon from '@material-ui/icons/Add';
 import CheckCircleRoundedIcon from '@material-ui/icons/CheckCircleRounded';
 import { BoxCustom } from "../../customer/form/styles";
 import _ from "lodash";
-import { type } from "os";
-import { yellow } from "@material-ui/core/colors";
+
 
 interface IFormFields {
   userType: { id: string; description: string } | null;
@@ -108,10 +108,13 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
   );
   const councilState = useSelector((state: ApplicationState) => state.councils);
   const companyState = useSelector((state: ApplicationState) => state.companies);
+  const customerState = useSelector((state: ApplicationState) => state.customers);
   const [canEdit, setCanEdit] = useState(false);
   const { params } = props.match;
 
   const currentCompany = localStorage.getItem(LOCALSTORAGE.COMPANY_SELECTED) || '';
+  const currentCustomer = localStorage.getItem(LOCALSTORAGE.CUSTOMER) || '';
+
   const [currentTab, setCurrentTab] = useState(0);
   const [engaged, setEngaged] = useState(false);
   const [add,setAdd] = useState(false);
@@ -143,6 +146,7 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
     council_number: "",
     active: true,
   });
+
   const [specialties, setSpecialties] = useState<any[]>([]);
   const [companies, setCompanies] = useState<any[]>([]);
   const [company, setCompany] = useState<CompanyInterface>(
@@ -167,6 +171,7 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
   active: true,
   created_by: { _id: localStorage.getItem(LOCALSTORAGE.USER_ID) || '' }});
 
+  const[customer, setCustomer] = useState<CustomerInterface>();
   const [fieldsValidation, setFieldValidations] = useState<any>({
     companies: false,
     name: false,
@@ -273,6 +278,7 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
     dispatch(getCompaniesAction());
     dispatch(getUserTypesAction());
     dispatch(loadCompanyById(currentCompany));
+    dispatch(loadCustomerById(currentCustomer));
 
   }, []);
 
@@ -294,9 +300,14 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
   useEffect(() => {
     setCompanies(companyState.list.data);
   }, [companyState.list.data]);
+
   useEffect(()=>{
     checkUserPerfilCompany(company)
   },[state,companyState])
+
+  useEffect(()=>{
+      setCustomer(customerState.data);
+  },[customerState])
   useEffect(() => {
     if (userState.data._id) {
       setState((prevState) => ({
@@ -484,16 +495,21 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
   }
 
   function engagedUser(){
+    console.log(customer);
     console.log(company);
-    let com:CompanyUserInterface = {
+    let com:CompanyUserInterface;
+    if(customer &&customer._id){
+       com = {
       id:company._id?company._id:'',
       name:company.name,
       customer_id:{
-        email:'',
-        fiscal_number:',',
-        name:'',
-        _id:''
+        email:customer.email,
+        fiscal_number:customer.fiscal_number,
+        name:customer.name,
+        _id:customer._id
       }
+    }
+
     }
     if(company){
       setState((prevState) => ({
@@ -1602,7 +1618,7 @@ const dengagedUser=useCallback((company:CompanyInterface)=>{
                           ))}
                         </ChipList>
                       </Grid>
-                      <Grid item md={6} xs={12}>
+                      {/* <Grid item md={6} xs={12}>
                         <FormGroupSection fullWidth error>
                           <Autocomplete
                             id="combo-box-company"
@@ -1628,7 +1644,10 @@ const dengagedUser=useCallback((company:CompanyInterface)=>{
                             fullWidth
                           />
                         </FormGroupSection>
-                      </Grid>
+                          </Grid>*/}
+
+                      <DivideTitle>Empresas onde o prestador trabalha:</DivideTitle>
+
                       <Grid item md={12} xs={12}>
                         <ChipList>
                           {state.companies?.map((item: any, index) => (
@@ -1645,24 +1664,23 @@ const dengagedUser=useCallback((company:CompanyInterface)=>{
                   </TabBodyItem>
                   <TabBodyItem className={currentTab === 2 ? "show" : ""} >
                     <BoxCustom>
-                      <Grid container>
-                    <Grid item >
-                      <UserContent>
-                        <AccountCircle />
-                      </UserContent>
-                    </Grid>
-                    <Grid item >
-                      <UserContent style={{marginTop:"30px", color:'primary'}}>
-                        {state.name}
-                        <br />
-                        {state.fiscal_number}
-                      </UserContent>
-                    </Grid>
-                    <Grid item md={12}>
-                    <Divider></Divider>
-                    </Grid>
-                    <Grid container style={{paddingTop:'20px'}}>
-                      <Grid item>
+                      <Grid container justify="flex-start"
+                          alignItems="flex-start" style={{paddingLeft:"10px"}}>
+                            <Grid item>
+                              <UserContent>
+                              <AccountCircle />
+                             </UserContent>
+                            </Grid>
+                            <Grid item style={{paddingTop:"40px"}}>
+                            <h3>{state.name}</h3>
+                            {state.fiscal_number}
+                            </Grid>
+                      </Grid>
+                      <Grid container >
+                      <Grid item md={12} xs={12}>
+                        <Divider></Divider>
+                      </Grid>
+                      <Grid item style={{paddingTop:'20px'}}>
                         <ButtonComponent style={{maxWidth:'10px'}} onClick={()=>setAdd(!add)}>
                           {add? (<CheckCircleRoundedIcon fontSize={'large'} style={{ color: '#4FC66A' }}></CheckCircleRoundedIcon>):(
                             <AddIcon fontSize={'large'} color={'primary'} ></AddIcon>
@@ -1686,11 +1704,22 @@ const dengagedUser=useCallback((company:CompanyInterface)=>{
                           <Grid item>
                             Outras especialidades: {viewSpecialtes()}
                           </Grid>
+                          <Grid item md={12} xs={12} style={{paddingTop:"10px"}}>
+                            <ChipList>
+                              {mycompanys()?.map((item: any, index) => (
+                                <Chip
+                                  key={`company_selected_${index}`}
+                                  label={item.name}
+                                  onDelete={(event) => handleDeleteCompany(item)}
+                                />
+                              ))}
+                            </ChipList>
+                          </Grid>
 
                       <Collapse in={add}>
-                         <Grid item style={{paddingTop:"20px"}} md={6} xs={12}>
+                         <Grid item style={{paddingTop:"20px"}} md={12} xs={12}>
                             <Grid item md={12} xs={12}>
-                              <FormGroupSection fullWidth error>
+                              {/* <FormGroupSection fullWidth error>
                                 <Autocomplete
                                   id="combo-box-company"
                                   options={companies}
@@ -1713,9 +1742,9 @@ const dengagedUser=useCallback((company:CompanyInterface)=>{
                                 autoHighlight={false}
                                 fullWidth
                               />
-                            </FormGroupSection>
+                            </FormGroupSection> */}
                             </Grid>
-                          <Grid item md={12} xs={12}>
+                          {/* <Grid item md={12} xs={12}>
                             <ChipList>
                               {mycompanys()?.map((item: any, index) => (
                                 <Chip
@@ -1725,24 +1754,24 @@ const dengagedUser=useCallback((company:CompanyInterface)=>{
                                 />
                               ))}
                             </ChipList>
-                          </Grid>
+                          </Grid> */}
                           {(params.mode === 'link' && !checkCompany) && (
 
-                        <Grid>
-                            <ButtonComponent  background="success_rounded" onClick={()=> engagedUser()}>
-                            Vincular este prestador a minha empresa
+                        <Grid item md={12} xs={12}>
+                          <ButtonComponent  background="success_rounded" onClick={()=> engagedUser()}>
+                              Vincular este prestador a minha empresa
                             </ButtonComponent>
                           </Grid>
                           )}
                           {(params.mode === 'link' && checkCompany) && (
 
-                            <Grid>
+                            <Grid item md={12} xs={12}>
                             Este prestador já está vinculado a sua empresa com este perfil profissional,
                             caso queira desvinculá-lo <Link to='/user'> clique aqui</Link>.
                             </Grid>
                           )}
                           {params.mode === 'view' && (
-                          <Grid>
+                          <Grid item md={12} xs={12}>
                           <ButtonComponent  className={classes.cancel} onClick={()=> dengagedUser(company)}>
                           Desvincular este prestador da minha empresa
                           </ButtonComponent>
@@ -1752,7 +1781,7 @@ const dengagedUser=useCallback((company:CompanyInterface)=>{
                      </Collapse>
                   </Grid>
                 </Grid>
-              </Grid>
+
 
 
             </Grid>

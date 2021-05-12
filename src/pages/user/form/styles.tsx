@@ -19,6 +19,10 @@ export const FormSection = styled.div`
 
   height: calc(100vh - 96px);
 `;
+export const DivideTitle = styled.h3`
+  color: var(--primary);
+  margin-bottom: 20px;
+`;
 
 export const FormGroupSection = styled(FormControl)`
   margin-bottom: 20px;
