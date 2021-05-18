@@ -109,7 +109,7 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
   const councilState = useSelector((state: ApplicationState) => state.councils);
   const companyState = useSelector((state: ApplicationState) => state.companies);
   const customerState = useSelector((state: ApplicationState) => state.customers);
-  const [canEdit, setCanEdit] = useState(false);
+  const [canEdit, setCanEdit] = useState(true);
   const { params } = props.match;
 
   const currentCompany = localStorage.getItem(LOCALSTORAGE.COMPANY_SELECTED) || '';
@@ -817,12 +817,15 @@ const dengagedUser=useCallback((company:CompanyInterface)=>{
                   >
                     Dados Profissionais
                   </TabNavItem>
-                  <TabNavItem
+                  {state.professions && (
+                    <TabNavItem
                     className={currentTab === 2 ? "active" : ""}
                     onClick={() => selectTab(2)}
                   >
                     Selecione Empresa
                   </TabNavItem>
+                  )}
+
                 </TabNav>
                 <TabBody>
                   <TabBodyItem className={currentTab === 0 ? "show" : ""}>
@@ -1643,7 +1646,9 @@ const dengagedUser=useCallback((company:CompanyInterface)=>{
                         </FormGroupSection>
                           </Grid>*/}
 
-                      <DivideTitle>Empresas onde o prestador trabalha:</DivideTitle>
+                          {state.companies.length>0 && (
+                            <div>
+                               <DivideTitle>Empresas onde o prestador trabalha:</DivideTitle>
 
                       <Grid item md={12} xs={12}>
                         <ChipList>
@@ -1656,7 +1661,9 @@ const dengagedUser=useCallback((company:CompanyInterface)=>{
                           ))}
                         </ChipList>
                      </Grid>
+                            </div>
 
+                          )}
                     </Grid>
                   </TabBodyItem>
                   <TabBodyItem className={currentTab === 2 ? "show" : ""} >
