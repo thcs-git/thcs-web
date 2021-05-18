@@ -69,7 +69,7 @@ export default function UserList() {
           <FormTitle>Lista de Usuários</FormTitle>
 
           <SearchComponent
-            handleButton={() => history.push('/user/create/')}
+            handleButton={() => history.push('/user/edit/create/')}
             buttonTitle="Novo"
             inputPlaceholder = "Pesquise por prestador, especialidades, status, etc..."
             onChangeInput={debounceSearchRequest}

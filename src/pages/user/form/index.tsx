@@ -321,7 +321,7 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
     }
     // Força o validador em 'true' quando entrar na tela para editar
     if (params?.id) {
-      if (params.mode === "view" || params.mode === "link" ) {
+      if (params.mode === "view" || params.mode === "link"  ) {
         setCanEdit(false)
       }
 
