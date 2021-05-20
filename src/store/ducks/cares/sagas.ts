@@ -47,13 +47,15 @@ export function* get({ payload }: any) {
     const { params } = payload;
 
     console.log(
-      `/attendance/getAttendance?limit=${params.limit ?? 10}&page=${params.page || 1
+      `/attendance/getAttendance?limit=${params.limit ?? 10}&page=${
+        params.page || 1
       }`
     );
 
     const response: AxiosResponse = yield call(
       apiSollar.get,
-      `/attendance/getAttendance?limit=${params.limit ?? 10}&page=${params.page || 1
+      `/attendance/getAttendance?limit=${params.limit ?? 10}&page=${
+        params.page || 1
       }${params.search ? "&search=" + params.search : ""}`
     );
 
@@ -74,7 +76,8 @@ export function* search({ payload }: any) {
 
     const response: AxiosResponse = yield call(
       apiSollar.get,
-      `/attendance/getAttendance?limit=${params.limit ?? 10}&page=${params.page || 1
+      `/attendance/getAttendance?limit=${params.limit ?? 10}&page=${
+        params.page || 1
       }`,
       { params: searchParams }
     );
@@ -176,7 +179,6 @@ export function* getDocumentSocioAmbiental({ payload }: any) {
       `/documents?limit=${payload?.limit || 10}&page=${payload?.page || 1}`,
       { params: searchParams }
     );
-
 
     const data = response.data?.data ? response.data.data[0] : response.data;
 

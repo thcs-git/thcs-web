@@ -72,6 +72,7 @@ export default function PatientCaptureForm(props: RouteComponentProps<IPageParam
   const [captureFinishModalOpen, setCaptureFinishModalOpen] = useState(false);
   const [finishEnable, setFinishEnable] = useState(false);
   const [modalPrint, setModalPrint] = useState(false);
+  const [documentHistory, setDocumentHistory] = useState<any[]>([]);
 
   const [captureData, setCaptureData] = useState<ICaptureData | any>({
   });
@@ -199,8 +200,16 @@ export default function PatientCaptureForm(props: RouteComponentProps<IPageParam
     (document_id) ? history.push(`${routes[id]}/${document_id}`, { katzIsDone }) : history.push((routes[id]), { katzIsDone });
   }, [care]);
 
-  const toggleHistoryModal = () => {
+  const toggleHistoryModal = (document_group_id: string) => {
     handleCloseRowMenu();
+
+    if (care?.documents_id) {
+      const filtredDocuments = care?.documents_id.filter(doc => doc.document_group_id._id === document_group_id);
+
+      setDocumentHistory(filtredDocuments);
+    }
+
+
     setHistoryModalOpen(!historyModalOpen);
   };
 
@@ -382,7 +391,7 @@ export default function PatientCaptureForm(props: RouteComponentProps<IPageParam
                                 ) : (
                                   <MenuItem onClick={() => handleScoreRoute(documentGroup?._id || '', care?._id || '')}>Adicionar novo</MenuItem>
                                 )}
-                                <MenuItem onClick={() => toggleHistoryModal()}>Ver histórico</MenuItem>
+                                <MenuItem onClick={() => toggleHistoryModal(documentGroup._id)}>Ver histórico</MenuItem>
                               </Menu>
                             </>
                           ) : (
@@ -459,24 +468,30 @@ export default function PatientCaptureForm(props: RouteComponentProps<IPageParam
               id="scroll-dialog-description"
               tabIndex={-1}
             >
-              <Table>
-                <thead>
-                  <tr>
-                    <Th>Tipo do Score</Th>
-                    <Th>Complexidade</Th>
-                    <Th>Adicionado em</Th>
-                    <Th>Status</Th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr>
-                    <Td>Score de Manutenção</Td>
-                    <Td>Baixa</Td>
-                    <Td>00/00/0000 00:00</Td>
-                    <Td>{scoreStatusLabel('Reprovado')}</Td>
-                  </tr>
-                </tbody>
-              </Table>
+              {documentHistory.length > 0 ? (
+                <Table>
+                  <thead>
+                    <tr>
+                      <Th>Tipo do Score</Th>
+                      <Th>Complexidade</Th>
+                      <Th>Adicionado em</Th>
+                      <Th>Status</Th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {documentHistory.map((doc: any) => (
+                      <tr>
+                        <Td>{doc.document_group_id.name}</Td>
+                        <Td>{doc.complexity}</Td>
+                        <Td>{formatDate(doc.created_at, 'DD/MM/YYYY HH:mm:ss')}</Td>
+                        <Td>{doc.status}</Td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </Table>
+              ) : (
+                <p>Nenhum documento para exibir</p>
+              )}
 
             </DialogContentText>
           </DialogContent>
