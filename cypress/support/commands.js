@@ -23,3 +23,11 @@
 //
 // -- This will overwrite an existing command --
 // Cypress.Commands.overwrite("visit", (originalFn, url, options) => { ... })
+
+import loc from './locators'
+
+Cypress.Commands.add('login',(email,password) => {
+  cy.get(loc.LOGIN.EMAIL).type(email)
+  cy.get(loc.LOGIN.PASSWORD).type(password)
+  cy.xpath(loc.LOGIN.XP_BTN_ENTRAR).click()
+})
