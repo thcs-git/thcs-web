@@ -470,7 +470,7 @@ export default function AreaForm(props: RouteComponentProps<IPageParams>) {
         value:value.name
       }))
 
-      dispatch(loadGetDistricts_({city:value.name}));
+      dispatch(loadGetDistricts_({city:value.name,state:value.state}));
     }
   }
   const  handleSelectNeighborhood= useCallback((event:any,value1: any)=> {

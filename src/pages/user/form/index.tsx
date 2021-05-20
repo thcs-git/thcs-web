@@ -1618,7 +1618,9 @@ const dengagedUser=useCallback((company:CompanyInterface)=>{
                           ))}
                         </ChipList>
                       </Grid>
-                      {/* <Grid item md={6} xs={12}>
+                      {/* {(!params.id && canEdit ) && (
+                        <DivideTitle> Incluir</DivideTitle>
+                         <Grid item md={6} xs={12}>
                         <FormGroupSection fullWidth error>
                           <Autocomplete
                             id="combo-box-company"
@@ -1644,7 +1646,9 @@ const dengagedUser=useCallback((company:CompanyInterface)=>{
                             fullWidth
                           />
                         </FormGroupSection>
-                          </Grid>*/}
+                          </Grid>
+                      ) } */}
+
 
                           {state.companies.length>0 && (
                             <div>

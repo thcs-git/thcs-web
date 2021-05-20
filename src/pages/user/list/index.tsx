@@ -66,15 +66,14 @@ export default function UserList() {
       {userState.loading && <Loading />}
       <Sidebar>
         <Container>
-          <FormTitle>Lista de Usuários</FormTitle>
+          <FormTitle>Meus Profissionais</FormTitle>
 
           <SearchComponent
             handleButton={() => history.push('/user/edit/create/')}
-            buttonTitle="Novo"
+            buttonTitle=""
             inputPlaceholder = "Pesquise por prestador, especialidades, status, etc..."
             onChangeInput={debounceSearchRequest}
           />
-
           <Table
             tableCells={[
               { name: 'Prestador', align: 'left', },
