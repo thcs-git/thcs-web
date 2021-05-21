@@ -453,7 +453,7 @@ export default function AreaForm(props: RouteComponentProps<IPageParams>) {
 
   // Bairros
   function handleStates (value:any){
-
+    console.log(value);
     if(value){
       setInputState(prev =>({
       ...prev,
@@ -464,6 +464,7 @@ export default function AreaForm(props: RouteComponentProps<IPageParams>) {
 
 };
   function handleSelectDistricts(value:any){
+    console.log(value);
     if(value){
       setInpuCity(prev=>({
         ...prev,
@@ -474,6 +475,7 @@ export default function AreaForm(props: RouteComponentProps<IPageParams>) {
     }
   }
   const  handleSelectNeighborhood= useCallback((event:any,value1: any)=> {
+    console.log(value1);
     const found  = state.neighborhoods.findIndex((item:any)=>{
           return item._id === value1._id;
         });
@@ -823,7 +825,7 @@ export default function AreaForm(props: RouteComponentProps<IPageParams>) {
                           size="small"
                           onChange={(event, value) => {
                             if (value) {
-                              handleSelectNeighborhood(event, {...value,state:inputState.value})
+                              handleSelectNeighborhood(event, {...value})
                             }
                           }}
                           fullWidth
