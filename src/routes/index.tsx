@@ -51,7 +51,7 @@ import QrCode from '../pages/qrcode/';
 import ProfessionForm from '../pages/profession/form/index';
 
 import Login from '../pages/login';
-import Register from '../pages/register';
+//import Register from '../pages/register';
 
 const Routes = () => (
   <BrowserRouter>
@@ -60,7 +60,7 @@ const Routes = () => (
       {/* <GuestRoute path="/register" component={Register} /> */}
       <Route path="/" component={Login} exact />
       <Route path="/login" component={Login} />
-      <Route path="/register" component={Register} />
+      <Route path="/register" component={RegisterForm} />
 
       <PrivateRoute path="/" component={Dashboard} exact />
       <PrivateRoute path="/dashboard" component={Dashboard} />

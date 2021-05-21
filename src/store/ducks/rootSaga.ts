@@ -127,6 +127,7 @@ import {
 } from "./cares/sagas";
 
 import { get as getProfession } from "./professions/sagas";
+import { ProfessionTypes } from "./professions/types";
 export default function* rootSaga() {
   return yield all([
     takeLatest(LoginTypes.LOAD_REQUEST, doLogin),
@@ -263,7 +264,7 @@ export default function* rootSaga() {
     takeLatest(UserTypes.SEARCH_REQUEST_USER_DISENGAGED, searchUserDisengaged),
 
     /** Profession */
-    // takeLatest(UserTypes.LOAD_REQUEST, getProfession),
+    takeLatest(ProfessionTypes.LOAD_REQUEST, getProfession),
 
     /** UnconfirmedUsers */
     //  takeLatest(UnconfirmedUserTypes.LOAD_REQUEST, getUnconfirmedUsers),
