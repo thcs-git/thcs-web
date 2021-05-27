@@ -42,6 +42,8 @@ import PatientCaptureSocioAmbiental from '../pages/patient/capture/socioambienta
 import PatientCaptureAbemid from '../pages/patient/capture/abemid';
 import PrintDocument from '../pages/care/medical-records/documents/print';
 
+import ConfirmEmail from '../pages/confirmEmail/form/index';
+import VerifyEmail from '../pages/confirmEmail/verifyEmail/index';
 import RegisterForm from '../pages/register/form';
 import AvaliationList from '../pages/avaliation/list';
 import QrCode from '../pages/qrcode/';
@@ -61,6 +63,8 @@ const Routes = () => (
       <Route path="/" component={Login} exact />
       <Route path="/login" component={Login} />
       <Route path="/register" component={RegisterForm} />
+      <Route path="/:email/confirmemail" component={ConfirmEmail} />
+      <Route path="/confirmemail/" component={VerifyEmail} />
 
       <PrivateRoute path="/" component={Dashboard} exact />
       <PrivateRoute path="/dashboard" component={Dashboard} />
@@ -96,6 +100,7 @@ const Routes = () => (
       <PrivateRoute path="/user/:id/:mode/edit" component={UserForm} />
       <PrivateRoute path="/user/:mode/create" component={UserForm} />
       <PrivateRoute path="/userdesengaged" component={UserDisengaged} />
+
 
       {/* Patient */}
       <PrivateRoute path="/patient" component={PatientList} exact />

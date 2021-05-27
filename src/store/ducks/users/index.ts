@@ -28,6 +28,8 @@ export const INITIAL_STATE: UserState = {
     specialties: [],
     council_state: "",
     council_number: "",
+    verified: "",
+    customer_id: "",
     active: true,
   },
   list: {
@@ -122,7 +124,7 @@ const reducer: Reducer<UserState> = (state = INITIAL_STATE, action) => {
         data: {
           ...action.payload.data,
           phone: action.payload.data.phones[0].number,
-          cellphone: action.payload.data.phones[1].number,
+          cellphone: action.payload.data.phones[1]?.number,
         },
         loading: false,
         error: false,

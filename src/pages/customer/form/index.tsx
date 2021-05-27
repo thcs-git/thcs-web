@@ -26,10 +26,6 @@ import {
 
 } from '@material-ui/core';
 import { SwitchComponent as Switch } from '../../../styles/components/Switch';
-
-
-
-
 import Sidebar from '../../../components/Sidebar';
 import { FormTitle } from '../../../styles/components/Form';
 import ButtonComponent from '../../../styles/components/Button';
@@ -70,7 +66,6 @@ export default function CustomerForm(props: RouteComponentProps<IPageParams>) {
   const history = useHistory();
   const dispatch = useDispatch();
   const useStyles = makeStyles((theme) => ({
-
     cancel:{
       textTransform: 'capitalize',
       fontSize: '18px',
@@ -87,7 +82,6 @@ export default function CustomerForm(props: RouteComponentProps<IPageParams>) {
     },
 
   }))
-
 
   const classes = useStyles();
   const customerState = useSelector((state: ApplicationState) => state.customers);

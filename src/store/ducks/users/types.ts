@@ -136,6 +136,7 @@ export interface UserInterface {
   };
   council_state: string;
   council_number: string;
+  verified: string;
   username?: string;
   password?: string;
   active: boolean; // active

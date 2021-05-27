@@ -19,9 +19,13 @@ import {
   DialogContentText,
   DialogTitle,
   FormLabel,
+  IconButton,
+  InputAdornment,
   MenuItem,
+  OutlinedInput,
   Radio,
   RadioGroup,
+  Switch,
 } from '@material-ui/core';
 import Visibility from '@material-ui/icons/Visibility';
 import VisibilityOff from '@material-ui/icons/VisibilityOff';
@@ -35,19 +39,24 @@ import Alert from '../../../components/Alert';
 import Loading from '../../../components/Loading';
 import validateEmail from '../../../utils/validateEmail';
 import validateName from '../../../utils/validateName';
-import validateCpf from '../../../utils/validateCpf';
+//import validateCpf from '../../../utils/validateCpf';
 import validatePhone from '../../../utils/validatePhone';
+import validateEmpty from '../../../utils/validateEmpty';
 import LOCALSTORAGE from '../../../helpers/constants/localStorage';
 import { toast } from 'react-toastify';
-import { UserInterface } from '../../../store/ducks/users/types';
+import { ProfessionUserInterface, UserInterface } from '../../../store/ducks/users/types';
 import { loadRequest as getCouncilsAction } from "../../../store/ducks/councils/actions";
-import { CouncilInterface } from "../../../store/ducks/councils/types";
 import { loadRequest as getSpecialtiesAction } from "../../../store/ducks/specialties/actions";
-import { SpecialtyInterface } from "../../../store/ducks/specialties/types";
 import { createUnconfirmedUserRequest, registerUnconfirmedUserRequest } from '../../../store/ducks/unconfirmeduser/actions';
 import InputBase from "@material-ui/core/InputBase";
 import { UnconfirmedUserInterface } from '../../../store/ducks/unconfirmeduser/types';
 import Autocomplete from '@material-ui/lab/Autocomplete';
+import { validateCPF  } from '../../../helpers/validateCNPJ';
+import { validate } from '@material-ui/pickers';
+import id from 'date-fns/esm/locale/id/index.js';
+import { createUserRequest,cleanAction } from '../../../store/ducks/users/actions';
+import FeedbackComponent from '../../../components/Feedback';
+import { useHistory } from 'react-router-dom';
 function Copyright() {
   return (
     <Typography variant="body2" color="textSecondary" align="center">
@@ -163,6 +172,7 @@ const States = [
 export default function RegisterForm() {
   const dispatch = useDispatch();
   const classes = useStyles();
+  const history = useHistory();
 
 ////////// initial states //////////////
   const userState = useSelector((state: ApplicationState) => state.users);
@@ -184,17 +194,40 @@ export default function RegisterForm() {
   const [inputPassword, setInputPassword] = useState({ value: '', error: false });
   const [inputPasswordConfirm, setInputPasswordConfirm] = useState({value:'', error:false});
   const [showPassword, setShowPassword] = useState(false);
-  const [rememberMe, setRememberMe] = useState(false);
+  const [userType, setUserType] = useState({value:''});
+
+
 ////////// form verify variables //////////////
 
-  let [state, setState] = useState<UnconfirmedUserInterface>({
-    name: '',
-    email: '',
-    phone: '',
-    user_type: '',
+  const [state, setState] = useState<UserInterface>({
+    companies: [],
+    name: "",
+    birthdate: "",
+    gender: "",
+    national_id: "",
+    issuing_organ: "",
+    fiscal_number: "",
+    mother_name: "",
+    nationality: "",
+    address: {
+      postal_code: "",
+      street: "",
+      number: "",
+      district: "",
+      city: "",
+      state: "",
+      complement: "",
+    },
+    email: "",
+    phone: "",
+    cellphone: "",
+    user_type_id: "",
     specialties: [],
-    council_number: '',
-    unit_federative:'',
+    council_state: "",
+    council_number: "",
+    verified:"false",
+    customer_id:'',
+    password:"",
     active: true,
   });
 
@@ -209,24 +242,6 @@ export default function RegisterForm() {
 
 ///////// initial requests ////////////
 
-  function  handleFormUser(){
-    state.name = inputName.value;
-    state.email = inputEmail.value;
-    state.phone = inputPhone.value;
-    state.password = inputPassword.value;
-    dispatch(createUnconfirmedUserRequest(state));
-  }
-  // const handleFormUser = useCallback(()=>{
-
-   // event.preventDefault();
-
-    // if (inputEmail.error || inputPassword.error || inputCpf.error || inputName.error || inputPhone.error ) return;
-        // state.name = inputName.value;
-        // state.email = inputEmail.value;
-        // state.phone = inputPhone.value;
-        // state.password = inputPassword.value;
-        // dispatch(createUnconfirmedUserRequest(state));
-  // },[state]);
 
   const handleClickShowPassword = useCallback(() => {
     setShowPassword(prev => !prev);
@@ -241,7 +256,9 @@ export default function RegisterForm() {
   ////////// form verify functions /////////////////
 
   const handleNameValidator = useCallback(()=>{
+    console.log("rodei");
     if(!validateName(inputName.value)){
+
       setInputName(prev=>({
         ...prev,
         error:true
@@ -251,24 +268,35 @@ export default function RegisterForm() {
         ...prev,
         error:false
       }))
-    }
-  },[inputName,state]);
-  const handleCpfValidator = useCallback(()=>{
-    if(!validateCpf(inputCpf.value)){
-      setInputCpf(prev=>({
+      setState(prev=>({
         ...prev,
-        error:true
+        name:inputName.value
       }))
 
-    }else{
+    }
+  },[inputName,state]);
+
+  const handleCpfValidator = useCallback(()=>{
+    console.log("rodei");
+    if(validateCPF(inputCpf.value)){
       setInputCpf(prev=>({
         ...prev,
         error:false
+      }))
+      setState(prev=>({
+        ...prev,
+        fiscal_number:inputCpf.value
+      }))
+    }else{
+      setInputCpf(prev=>({
+        ...prev,
+        error:true
       }))
     }
   },[inputCpf]);
 
   const handlePhoneValidator = useCallback(()=>{
+    console.log("rodei");
     if(!validatePhone(inputPhone.value)){
       setInputPhone(prev=>({
         ...prev,
@@ -279,21 +307,27 @@ export default function RegisterForm() {
         ...prev,
         error:false
       }))
+      setState(prev=>({
+        ...prev,
+        phone:inputPhone.value
+      }))
     }
   },[inputPhone]);
 
   const handleProfessionValidator = useCallback(() => {
-    if (!inputProfession.value)) {
-      setInputProf(prev => ({
+      if(validateEmpty(inputProfession.value)){
+         setInputProf(prev =>({
         ...prev,
-        error: true
+        error:true
       }))
-    } else {
-      setInputProf(prev => ({
+      }else{
+           setInputProf(prev=>({
         ...prev,
-        error: false
+        error:false
       }))
-    }
+      }
+
+
   }, [inputProfession]);
 
   const handleEmailValidator = useCallback(() => {
@@ -307,63 +341,145 @@ export default function RegisterForm() {
         ...prev,
         error: false
       }))
-    }
-  }, [inputEmail]);
-  const handleEmailValidator = useCallback(() => {
-    if (!validateEmail(inputEmail.value)) {
-      setInputEmail(prev => ({
+      setState(prev=>({
         ...prev,
-        error: true
-      }))
-    } else {
-      setInputEmail(prev => ({
-        ...prev,
-        error: false
-      }))
-    }
-  }, [inputEmail]);
-  const handleEmailValidator = useCallback(() => {
-    if (!validateEmail(inputEmail.value)) {
-      setInputEmail(prev => ({
-        ...prev,
-        error: true
-      }))
-    } else {
-      setInputEmail(prev => ({
-        ...prev,
-        error: false
-      }))
-    }
-  }, [inputEmail]);
-  const handleEmailValidator = useCallback(() => {
-    if (!validateEmail(inputEmail.value)) {
-      setInputEmail(prev => ({
-        ...prev,
-        error: true
-      }))
-    } else {
-      setInputEmail(prev => ({
-        ...prev,
-        error: false
-      }))
-    }
-  }, [inputEmail]);
-  const handleEmailValidator = useCallback(() => {
-    if (!validateEmail(inputEmail.value)) {
-      setInputEmail(prev => ({
-        ...prev,
-        error: true
-      }))
-    } else {
-      setInputEmail(prev => ({
-        ...prev,
-        error: false
+        email:inputEmail.value
       }))
     }
   }, [inputEmail]);
 
+  const handleSpecialtyValidator = useCallback(() => {
+    if (validateEmpty(inputSpecialty.value)) {
+      setInputSpecialty(prev => ({
+        ...prev,
+        error: true
+      }))
+    } else {
+      setInputSpecialty(prev => ({
+        ...prev,
+        error: false
+      }))
+    }
+  }, [inputSpecialty]);
+
+  const handleConcilValidator = useCallback(() => {
+    console.log(validateEmpty(inputConcil.value))
+    if (!validateEmpty(inputConcil.value)) {
+      setInputConcil(prev => ({
+        ...prev,
+        error: false
+      }))
+    } else {
+      setInputConcil(prev => ({
+        ...prev,
+        error: true
+      }))
+    }
+  }, [inputConcil]);
+
+  const handleNumberConcilValidator = useCallback(() => {
+    if (validateEmpty(inputNumberConcil.value)) {
+      setInputNumberConcil(prev => ({
+        ...prev,
+        error: true
+      }))
+    } else {
+      setInputNumberConcil(prev => ({
+        ...prev,
+        error: false
+      }))
+      setState(prev=>({
+        ...prev,
+        council_number:inputNumberConcil.value
+      }))
+    }
+  }, [inputNumberConcil]);
+
+  const handleStateValidator = useCallback(() => {
+    if (validateEmpty(inputUf.value)) {
+      setInputUf(prev => ({
+        ...prev,
+        error: true
+      }))
+    } else {
+      setInputUf(prev => ({
+        ...prev,
+        error: false
+      }))
+    }
+  }, [inputUf]);
+
+  function handleSelectProfession(value: ProfessionUserInterface){
+    if(value){
+       setState((prevState)=>({
+      ...prevState,
+      profession_id: value._id
+    }));
+    setInputProf(prev=>({
+      ...prev,
+      value:value.name
+    }))
+    }else{
+        setInputProf(prev=>({
+      ...prev,
+      value:''
+    }))
+    }
+  }
+
+  function handleSelectSpecialty(value:any){
+    if(value){
+      setState((prevState)=>({
+        ...prevState,
+        specialties:[...state.specialties,value._id]
+      }));
+      setInputSpecialty(prev=>({
+        ...prev,
+        value:value.name
+      }));
+    }
+  }
+
+  function handleSelectConcil(value:any){
+    if(value){
+      setState((prevState)=>({
+        ...prevState,
+        council_id:value._id
+      }));
+      setInputConcil(prev=>({
+        ...prev,
+        value:value.name
+      }))
+    }else{
+      setInputConcil(prev=>({
+        ...prev,
+        value:''
+      }))
+    }
+  }
+
+  function handleSelectUf(value:any){
+    console.log(value)
+    if(value){
+      setState((prevState)=>({
+        ...prevState,
+        council_state:value.sigla
+      }));
+      setInputUf(prev=>({
+        ...prev,
+        value:value.sigla
+      }))
+    }else{
+      setInputUf(prev=>({
+        ...prev,
+        value:''
+      }))
+    }
+  }
+
+
   const handlePasswordConfirm = useCallback(()=>{
-    if(inputPasswordConfirm.value){
+    if(inputPasswordConfirm.value && inputPassword.value == inputPasswordConfirm.value){
       setInputPasswordConfirm(prev=>({
         ...prev,
         error:true
@@ -374,20 +490,80 @@ export default function RegisterForm() {
         error:false
       }))
     }
-  },[inputPasswordConfirm]);
+  },[inputPasswordConfirm, inputPassword]);
 
   const handlePasswordValitor = useCallback(() => {
-    setInputPassword(prev => ({ ...prev, error: !((inputPassword.value.length >= SIZE_INPUT_PASSWORD) && (inputPasswordConfirm.value && inputPassword.value === inputPasswordConfirm.value))}));
+    setInputPassword(prev => ({ ...prev,
+      error: !((inputPassword.value.length >= SIZE_INPUT_PASSWORD) && (inputPasswordConfirm.value && inputPassword.value === inputPasswordConfirm.value))}));
+
+
   }, [inputPassword,inputPasswordConfirm]);
 
 ////////// form verify functions /////////////////
+const  handleFormUser = useCallback(()=>{
+
+  handleNameValidator();
+  handleEmailValidator();
+  handlePhoneValidator();
+  handleProfessionValidator();
+  handlePasswordValitor();
+  handleConcilValidator();
+  handleCpfValidator();
+  handleSpecialtyValidator();
+  handleStateValidator();
+  handleNumberConcilValidator();
+
+  console.log("cheguei");
+  console.log(userType.value);
+  console.log(inputName,inputEmail);
+  switch(userType.value){
+
+  case "Administrativo":
+
+    if(inputName.error || inputEmail.error || inputCpf.error || inputPhone.error || inputProfession.error){
+      return;
+    }else{
+         console.log(state);
+         dispatch(createUserRequest(state));
+        // history.push(`/${state.email}/confirmEmail`);
+
+      }
+
+    break;
+
+  case "Saúde":
+    if(inputEmail.error || inputPassword.error || inputCpf.error || inputName.error || inputPhone.error || inputProfession.error
+      || inputConcil.error || inputNumberConcil.error || inputSpecialty.error || inputUf.error){
+        console.log(state);
+        return;
+    }else{
+      dispatch(createUserRequest(state));
+    }
+
+    break;
+  case "Outros":
+      if(inputEmail.error || inputPassword.error || inputCpf.error || inputName.error || inputPhone.error){
+          console.log(state);
+          return;
+      }else{
+        dispatch(createUserRequest(state));
+      }
+
+      break;
+}
+},[state]);
 
 
   return (
+
     <>
+
       {userState.loading && <Loading />}
       <Container className={classes.container} maxWidth="xs">
-        <FormGroupSection>
+         {userState.success ? (
+           history.push(`/${userState.data.email}/confirmEmail`)
+
+      ) : (    <FormGroupSection>
           <div className={classes.paper}>
           <Box display="flex" width={150} height={165} justifyContent="center" alignItems="center">
             <HomeIconLogo />
@@ -405,7 +581,7 @@ export default function RegisterForm() {
               <InputLabel id="select-patient-gender">Eu sou</InputLabel>
                 <Select
                   labelId="select-user-type"
-                  onChange={(element)=>setState({...state,user_type:`${element.target.value}`})}
+                  onChange={(element)=>setUserType({...userType,value:`${element.target.value}`})}
                   labelWidth={60}
                     >
 
@@ -416,8 +592,9 @@ export default function RegisterForm() {
           <Grid container item md={12} xs={12} className={classes.form}>
             <FormControl variant="outlined" size="small" fullWidth>
               <TextField
-              error={inputName.error}
+                error={inputName.error}
                 id="input-social-name"
+                autoFocus
                 label="Nome do usuário"
                 variant="outlined"
                 size="small"
@@ -429,9 +606,7 @@ export default function RegisterForm() {
                     ...prev,
                     value:inputName.target.value
                   }))
-
                 }
-
                 onBlur={handleNameValidator}
                 />
             </FormControl>
@@ -440,18 +615,19 @@ export default function RegisterForm() {
               <Grid item md={6} xs={12} className={classes.form}>
                 <FormControl variant="outlined" fullWidth>
                 <TextField
-                error={inputCpf.error}
+                  error={inputCpf.error}
                   id="input-fiscal-number"
                   label="CPF"
+
                   variant="outlined"
                   size="small"
                   required
                   placeholder="000.000.000-00"
                   fullWidth
                   onChange={
-                    inputCpf=>setInputCpf(prev=>({
+                    element=>setInputCpf(prev=>({
                       ...prev,
-                      value:inputCpf.target.value
+                      value:element.target.value
                     }))
                   }
                   onBlur={handleCpfValidator}
@@ -462,18 +638,19 @@ export default function RegisterForm() {
               <Grid item md={6} xs={12}  className={classes.form}>
               <FormControl variant="outlined" fullWidth>
                 <TextField
-                error={inputPhone.error}
+                  error={inputPhone.error}
                   id="input-phone-number"
                   label="Telefone"
                   variant="outlined"
+
                   size="small"
                   required
                   placeholder="(00) 0000-0000"
                   fullWidth
                   onChange={
-                    inputPhone=>setInputPhone(prev=>({
+                    element=>setInputPhone(prev=>({
                       ...prev,
-                      value:inputPhone.target.value
+                      value:element.target.value
                     }))
                   }
                   onBlur={handlePhoneValidator}
@@ -484,35 +661,44 @@ export default function RegisterForm() {
 
             <Grid container item md={12} xs={12} className={classes.form}>
               <TextField
-              error={inputEmail.error}
+                error={inputEmail.error}
                 id="input-email"
                 label="Email"
+
                 variant="outlined"
                 size="small"
                 required
                 fullWidth
                 onChange={
-                  inputEmail=>setInputEmail(prev=>({
+                  element=>setInputEmail(prev=>({
                     ...prev,
-                    value:inputEmail.target.value
+                    value:element.target.value
                   }))
                 }
                 onBlur={handleEmailValidator}
                 />
             </Grid >
-                <Collapse in={(state.user_type == "Administrativo" || state.user_type == "Saúde")}>
+                <Collapse in={(userType.value == "Administrativo" || userType.value == "Saúde")}>
                   <Grid container item md={12} xs={12} className={classes.form}>
                     <Autocomplete
                       id="combo-box-profession"
                       options={professions.list.data || []}
                       getOptionLabel={(option) => option.name}
-                      renderInput={(params) => <TextField {...params}  label="Função" variant="outlined" />}
+                      renderInput={(params) => <TextField {...params} error={inputProfession.error} label="Função" variant="outlined"
+                      onBlur={handleProfessionValidator}
+                    />}
                    // getOptionSelected={(option, value) => option._id === state?.profession_id}
-                   // value={selectProfession()}
+                      //value={selectProfession()}
                       onChange={(event, value) => {
-                        if (value) {
-                      //    handleSelectProfession(value);
-                          }
+                        if(value){
+                          handleSelectProfession(value)
+                        }else{
+                          setInputProf(prev=>({
+                            ...prev,
+                            value:''
+                          }))
+                        }
+                        handleProfessionValidator();
                       }}
                       size="small"
                       fullWidth
@@ -520,7 +706,7 @@ export default function RegisterForm() {
 
                   </Grid>
                 </Collapse>
-                <Collapse in={state.user_type == 'Saúde'}>
+                <Collapse in={userType.value == 'Saúde'}>
                   <Grid item md={12} xs={12} className={classes.form}>
                     <FormControl variant="outlined" size="small" fullWidth>
                       <Autocomplete
@@ -528,18 +714,24 @@ export default function RegisterForm() {
                         options={specialtyState.list.data}
                         getOptionLabel={(option) => `${option.name}`}
                         renderInput={(params) =>
-                        <TextField {...params} label="Especialidade" variant="outlined" />}
-                     // value={selectCouncil()}
+                        <TextField {...params} label="Especialidade" variant="outlined"
+                        error={inputSpecialty.error}
+                        onBlur={handleSpecialtyValidator}/>}
                         getOptionSelected={(option, value) =>
                         option._id === state?.council_id?._id
                         }
-                      // onChange={(event: any, newValue) => {
-                      //   handleCouncil(event, newValue);
-                      //   setFieldValidations((prevState: any) => ({
-                      //     ...prevState,
-                      //     council_id: newValue !== null,
-                      //   }));
-                      // }}
+                        onChange={(event, value:any) => {
+                          if(value){
+                            handleSelectSpecialty(value);
+                          }else{
+                            setInputSpecialty(prev=>({
+                              ...prev,
+                              value:''
+                            }));
+
+                          }
+                          handleSpecialtyValidator();
+                        }}
                       size="small"
                       autoComplete={false}
                       autoHighlight={false}
@@ -553,18 +745,24 @@ export default function RegisterForm() {
                       id="combo-box-council"
                       options={councilState.list.data}
                       getOptionLabel={(option) => `${option.initials} - ${option.name}`}
-                      renderInput={(params) => <TextField {...params} label="Conselho" variant="outlined" />}
-                     // value={selectCouncil()}
+                      renderInput={(params) => <TextField {...params} label="Conselho" variant="outlined"
+                      error={inputConcil.error}
+                      onBlur={handleConcilValidator} />}
                       getOptionSelected={(option, value) =>
                         option._id === state?.council_id?._id
                       }
-                      // onChange={(event: any, newValue) => {
-                      //   handleCouncil(event, newValue);
-                      //   setFieldValidations((prevState: any) => ({
-                      //     ...prevState,
-                      //     council_id: newValue !== null,
-                      //   }));
-                      // }}
+                      onChange={(event: any, value:any) => {
+                        if(value){
+                          handleSelectConcil(value);
+                        }else{
+                          setInputConcil(prev=>({
+                            ...prev,
+                            value:''
+                          }));
+
+                        }
+                        handleConcilValidator();
+                       }}
                       size="small"
                       autoComplete={false}
                       autoHighlight={false}
@@ -580,6 +778,15 @@ export default function RegisterForm() {
                         label="Nº do Conselho"
                         variant="outlined"
                         size="small"
+                        value={inputNumberConcil.value}
+                        error={inputNumberConcil.error}
+                        onChange={element=>
+                           setInputNumberConcil(prev =>({
+                             ...prev,
+                             value:element.target.value
+                           }))
+                        }
+                        onBlur={handleNumberConcilValidator}
                         fullWidth />
                     </FormControl>
                   </Grid>
@@ -589,21 +796,22 @@ export default function RegisterForm() {
                         id="combo-box-neigthborhoods-states"
                         options={States || []}
                         getOptionLabel={(option) => option.sigla}
-                        renderInput={(params) => <TextField   {...params}  autoFocus  label="UF" variant="outlined"
-                      //onBlur={handleStateValidator}
+                        renderInput={(params) => <TextField   {...params} error={inputUf.error} autoFocus  label="UF" variant="outlined"
+                        onBlur={handleStateValidator}
                       //helperText={inputState.error && "Selecione um estado válido"}
                         />}
                         onChange={(event,value:any) => {
                           if(value){
-                            //handleStates(value);
-                            // load = true;
+                            handleSelectUf(value);
+
                           }else{
-                            // setInputState(prev=>({
-                            //   ...prev,
-                            //   value:''
-                            // }));
-                          // handleStateValidator
+                             setInputUf(prev=>({
+                               ...prev,
+                               value:''
+                             }));
+
                               }
+                            handleStateValidator();
                             }}
                         size="small"
                         fullWidth
@@ -612,31 +820,42 @@ export default function RegisterForm() {
                   </Grid>
                 </Grid>
             </Collapse>
-
-
-
             <Grid container item md={12} xs={12} className={classes.form}>
               <TextField
                 error={inputPassword.error}
+                type={showPassword ? 'text' : 'password'}
                 id="input-password"
                 label="Senha"
                 variant="outlined"
                 size="small"
                 required
-                 // value={state.name}
-                //  onChange={(element) => setState({ ...state, name: element.target.value })}
-                fullWidth
+                InputProps={{
+                  endAdornment: (
+                    <InputAdornment position="start">
+                      <IconButton
+                        aria-label="toggle password visibility"
+                        onClick={handleClickShowPassword}
+                        // onMouseDown={handleMouseDownPassword}
+                        edge="end"
+                      >
+                      {showPassword ? <Visibility /> : <VisibilityOff />}
+                    </IconButton>
+                    </InputAdornment>
+                  ),
+                }}
                 onChange={
-                  inputPassword=>setInputPassword(prev=>({
+                  element=>setInputPassword(prev=>({
                     ...prev,
-                    value:inputPassword.target.value
+                    value:element.target.value
                   }))
                 }
                 onBlur={handlePasswordValitor}
+                fullWidth
                 />
             </Grid>
             <Grid container item md={12} xs={12} className={classes.form}>
               <TextField
+                type={showPassword ? 'text' : 'password'}
                 id="input-password-confirm"
                 label="Confirmar Senha"
                 variant="outlined"
@@ -648,10 +867,22 @@ export default function RegisterForm() {
                     value:inputPasswordConfirm.target.value
                   }))
                 }
-                 // value={state.name}
-                //  onChange={(element) => setState({ ...state, name: element.target.value })}
                 fullWidth
                 onBlur={handlePasswordValitor}
+                InputProps={{
+                  endAdornment: (
+                    <InputAdornment position="start">
+                      <IconButton
+                        aria-label="toggle password visibility"
+                        onClick={handleClickShowPassword}
+                        // onMouseDown={handleMouseDownPassword}
+                        edge="end"
+                      >
+                      {showPassword ? <Visibility /> : <VisibilityOff />}
+                    </IconButton>
+                    </InputAdornment>
+                  ),
+                }}
                 />
             </Grid>
 
@@ -690,6 +921,8 @@ export default function RegisterForm() {
           </form>
         </div>
         </FormGroupSection>
+)}
+
 
         <Box mt={8}>
           <Copyright />
