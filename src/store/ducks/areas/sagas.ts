@@ -136,7 +136,7 @@ export function* getDistricts() {
 
     yield put(loadSuccessGetDistricts(data));
   } catch (error) {
-    toast.error("Não foi possível obter os dados do endereço");
+
     yield put(loadFailure());
   }
 }

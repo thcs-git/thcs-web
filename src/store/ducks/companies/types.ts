@@ -105,6 +105,7 @@ export interface CompanyState {
   list: CompanyList;
   loading: boolean;
   error: boolean;
+  errorCep?: boolean;
   success: boolean;
 }
 
