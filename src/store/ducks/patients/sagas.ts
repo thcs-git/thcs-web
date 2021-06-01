@@ -200,3 +200,17 @@ export function* getPatientCapture({ payload }: any) {
     yield put(loadFailure());
   }
 }
+
+export function* getLastMeasurement({ payload }: any) {
+  try {
+    const { params } = payload;
+
+    const response: AxiosResponse = yield call(
+      apiSollar.get,
+      `/measurement/lastEntries?&patient_id=${params.patient_id}`,
+      {
+        headers: { token },
+      }
+    );
+  } catch (error) {}
+}

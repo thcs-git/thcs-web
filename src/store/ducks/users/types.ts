@@ -1,3 +1,4 @@
+import { CustomerInterface } from "./../customers/types";
 import { CompanyInterface } from "./../companies/types";
 /**
  * Action types
@@ -59,10 +60,15 @@ export interface UserTypesInterface {
   _id: string;
   name: string;
 }
+export interface CustomerUserInterface {
+  name: string;
+  _id: string;
+}
 
 export interface CompanyUserInterface {
-  id: string;
+  _id: string;
   name: string;
+  customer_id: CustomerUserInterface;
 }
 
 export interface UserTypeInterface {
@@ -93,7 +99,7 @@ export interface UserListItems {
 
 export interface UserInterface {
   _id?: string;
-  companies: (CompanyUserInterface | {})[];
+  companies: CompanyUserInterface[];
   customer_id?: string;
   name: string; // name
   birthdate: string;
