@@ -7,9 +7,11 @@ import { RouteComponentProps, useHistory } from "react-router-dom";
 import { ReactComponent as SuccessImage } from "../../../assets/img/ilustracao-avaliacao-concluida.svg";
 import { FeedbackContent, FeedbackImage, FeedbackTitle,FeedbackButtonsContent, FeedbackDescription } from "./style";
 
+
 interface IPageParams {
   id?: string;
-  email?:string
+  email?:string;
+  token?:string;
 }
 
 export default function ConfirmEmailForm(props: RouteComponentProps<IPageParams>) {

@@ -44,6 +44,8 @@ import PrintDocument from '../pages/care/medical-records/documents/print';
 
 import ConfirmEmail from '../pages/confirmEmail/form/index';
 import VerifyEmail from '../pages/confirmEmail/verifyEmail/index';
+import RecoveryPassword from '../pages/recoverypassword/form/index';
+import ForgotPassword from "../pages/forgotpassword/form/index";
 import RegisterForm from '../pages/register/form';
 import AvaliationList from '../pages/avaliation/list';
 import QrCode from '../pages/qrcode/';
@@ -64,7 +66,10 @@ const Routes = () => (
       <Route path="/login" component={Login} />
       <Route path="/register" component={RegisterForm} />
       <Route path="/:email/confirmemail" component={ConfirmEmail} />
-      <Route path="/confirmemail/" component={VerifyEmail} />
+      <Route path="/confirmemail/:token" component={VerifyEmail} />
+      <Route path="/:token/recoverypass" component={RecoveryPassword}/>
+      <Route path="/forgotpassword" component={ForgotPassword}/>
+
 
       <PrivateRoute path="/" component={Dashboard} exact />
       <PrivateRoute path="/dashboard" component={Dashboard} />

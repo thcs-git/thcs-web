@@ -3,7 +3,7 @@ import { toast } from "react-toastify";
 import { AxiosResponse } from "axios";
 
 import { apiSollar, viacep, googleMaps } from "../../../services/axios";
-
+import LOCALSTORAGE from "../../../helpers/constants/localStorage";
 import {
   loadSuccess,
   loadFailure,
@@ -15,6 +15,10 @@ import {
   loadUserTypesSuccess,
   loadSuccessGetUserDisengaged,
   errorGetAddress,
+  loadCheckSuccess,
+  loadSuccessGetUserByEmail,
+  loadRecoverySuccess,
+  loadSuccessConfirm,
 } from "./actions";
 
 import { ViacepDataInterface } from "./types";
@@ -48,6 +52,22 @@ export function* getUserById({ payload: { id: _id } }: any) {
     });
 
     yield put(loadSuccessGetUserById(response.data));
+  } catch (error) {
+    yield put(loadFailure());
+  }
+}
+
+export function* getUserByEmail({ payload: { email: email } }: any) {
+  try {
+    const response: AxiosResponse = yield call(
+      apiSollar.get,
+      `/user/confirmUserbyEmail`,
+      {
+        params: { email },
+      }
+    );
+
+    yield put(loadSuccessGetUserByEmail(response.data));
   } catch (error) {
     yield put(loadFailure());
   }
@@ -152,11 +172,14 @@ export function* createUser({ payload: { data } }: any) {
   }
 
   data.username = data.email;
+  data.fiscal_number = data.fiscal_number
+    .replaceAll(".", "")
+    .replaceAll("/", "")
+    .replaceAll("-", "");
   data.password = data.fiscal_number
     .replaceAll(".", "")
     .replaceAll("/", "")
     .replaceAll("-", "");
-
   data.phones = phones;
 
   try {
@@ -305,10 +328,55 @@ export function* getUserTypes({ payload: { value } }: any) {
       apiSollar.get,
       `/usertype/?limit=10&page=1${!!value ? "&search=" + value : ""}`
     );
-
     yield put(loadUserTypesSuccess(response.data));
   } catch (error) {
     toast.info("Não foi possível buscar os dados do usuário");
+    yield put(loadFailure());
+  }
+}
+
+export function* checkEmail({ payload: { token } }: any) {
+  try {
+    const response: AxiosResponse = yield call(
+      apiSollar.get,
+      `/email?token=${token}`
+    );
+    console.log(response.data);
+    yield put(loadCheckSuccess(response.data));
+  } catch (error) {
+    yield put(loadFailure());
+  }
+}
+export function* recoveryPassword({ payload: { data } }: any) {
+  localStorage.removeItem(LOCALSTORAGE.TOKEN);
+  localStorage.removeItem(LOCALSTORAGE.USERNAME);
+  localStorage.removeItem(LOCALSTORAGE.USER_ID);
+  localStorage.removeItem(LOCALSTORAGE.COMPANY_SELECTED);
+  localStorage.removeItem(LOCALSTORAGE.COMPANY_NAME);
+  localStorage.removeItem(LOCALSTORAGE.CUSTOMER);
+  localStorage.removeItem(LOCALSTORAGE.CUSTOMER_NAME);
+  console.log(data);
+  try {
+    const response: AxiosResponse = yield call(
+      apiSollar.post,
+      `/users/recoverypassword`,
+      { ...data }
+    );
+    console.log(response.data);
+    yield put(loadRecoverySuccess(response.data));
+  } catch (error) {
+    yield put(loadFailure());
+  }
+}
+export function* loadConfirmUser({ payload: { token } }: any) {
+  try {
+    const response: AxiosResponse = yield call(
+      apiSollar.get,
+      `/user/confirm?token=${token}`
+    );
+    console.log(response.data);
+    yield put(loadSuccessConfirm(response.data));
+  } catch (error) {
     yield put(loadFailure());
   }
 }

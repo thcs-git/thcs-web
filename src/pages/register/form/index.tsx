@@ -194,7 +194,7 @@ export default function RegisterForm() {
   const [inputPassword, setInputPassword] = useState({ value: '', error: false });
   const [inputPasswordConfirm, setInputPasswordConfirm] = useState({value:'', error:false});
   const [showPassword, setShowPassword] = useState(false);
-  const [userType, setUserType] = useState({value:''});
+  const [userSelectType, setUserSelectType] = useState({value:'Outros'});
 
 
 ////////// form verify variables //////////////
@@ -513,10 +513,7 @@ const  handleFormUser = useCallback(()=>{
   handleStateValidator();
   handleNumberConcilValidator();
 
-  console.log("cheguei");
-  console.log(userType.value);
-  console.log(inputName,inputEmail);
-  switch(userType.value){
+  switch(userSelectType.value){
 
   case "Administrativo":
 
@@ -537,7 +534,8 @@ const  handleFormUser = useCallback(()=>{
         console.log(state);
         return;
     }else{
-      dispatch(createUserRequest(state));
+      console.log(state);
+     // dispatch(createUserRequest(state));
     }
 
     break;
@@ -546,6 +544,7 @@ const  handleFormUser = useCallback(()=>{
           console.log(state);
           return;
       }else{
+        console.log(state);
         dispatch(createUserRequest(state));
       }
 
@@ -581,7 +580,7 @@ const  handleFormUser = useCallback(()=>{
               <InputLabel id="select-patient-gender">Eu sou</InputLabel>
                 <Select
                   labelId="select-user-type"
-                  onChange={(element)=>setUserType({...userType,value:`${element.target.value}`})}
+                  onChange={(element)=>setUserSelectType({value:`${element.target.value}`})}
                   labelWidth={60}
                     >
 
@@ -678,7 +677,7 @@ const  handleFormUser = useCallback(()=>{
                 onBlur={handleEmailValidator}
                 />
             </Grid >
-                <Collapse in={(userType.value == "Administrativo" || userType.value == "Saúde")}>
+                <Collapse in={(userSelectType.value == "Administrativo" || userSelectType.value == "Saúde")}>
                   <Grid container item md={12} xs={12} className={classes.form}>
                     <Autocomplete
                       id="combo-box-profession"
@@ -706,7 +705,7 @@ const  handleFormUser = useCallback(()=>{
 
                   </Grid>
                 </Collapse>
-                <Collapse in={userType.value == 'Saúde'}>
+                <Collapse in={userSelectType.value == 'Saúde'}>
                   <Grid item md={12} xs={12} className={classes.form}>
                     <FormControl variant="outlined" size="small" fullWidth>
                       <Autocomplete

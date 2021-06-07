@@ -4,6 +4,7 @@ import {
   UserInterface,
   ViacepDataInterface,
   LoadRequestParams,
+  UserRecoveryPassword,
 } from "./types";
 
 export const loadRequest = (params: LoadRequestParams = {}) =>
@@ -36,11 +37,19 @@ export const createUserSuccess = (data: UserInterface) =>
 
 export const updateUserRequest = (data: UserInterface) =>
   action(UserTypes.UPDATE_USER_REQUEST, { data });
+
 export const updateUserSuccess = (data: UserInterface) =>
   action(UserTypes.UPDATE_USER_SUCCESS, { data });
 
 export const loadUserById = (id: string) =>
   action(UserTypes.LOAD_REQUEST_USER_BY_ID, { id });
+
+export const loadUserByEmail = (email: string) =>
+  action(UserTypes.LOAD_REQUEST_USER_BY_EMAIL, { email });
+
+export const loadSuccessGetUserByEmail = (data: UserInterface) =>
+  action(UserTypes.LOAD_SUCCESS_USER_BY_EMAIL, { data });
+
 export const loadSuccessGetUserById = (data: UserInterface) =>
   action(UserTypes.LOAD_SUCCESS_USER_BY_ID, { data });
 
@@ -51,7 +60,24 @@ export const searchRequest = (data: any) =>
 
 export const loadUserTypesRequest = (value?: string) =>
   action(UserTypes.LOAD_REQUEST_USER_TYPES, { value });
+
 export const loadUserTypesSuccess = (value: any) =>
   action(UserTypes.LOAD_RESPONSE_USER_TYPES, { ...value });
 
+export const loadCheckEmail = (token: any) =>
+  action(UserTypes.LOAD_REQUEST_CHECK_EMAIL, { token });
+
+export const loadCheckSuccess = (data: UserInterface) =>
+  action(UserTypes.LOAD_RESPONSE_CHECK_EMAIL, { data });
+
+export const loadRecoveryPassword = (data: UserRecoveryPassword) =>
+  action(UserTypes.LOAD_REQUEST_RECOVERY_PASSWORD, { data });
+
+export const loadRecoverySuccess = (data: UserRecoveryPassword) =>
+  action(UserTypes.LOAD_SUCCESS_RECOVERY_PASSWORD, { data });
+
+export const loadConfirmUser = (data: any) =>
+  action(UserTypes.LOAD_CONFIRM_USER, { data });
+export const loadSuccessConfirm = (data: any) =>
+  action(UserTypes.LOAD_SUCCESS_CONFIRM, { data });
 export const cleanAction = () => action(UserTypes.CLEAN);

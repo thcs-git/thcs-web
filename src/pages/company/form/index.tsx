@@ -126,13 +126,10 @@ export default function CompanyForm(props: RouteComponentProps<IPageParams>) {
 
    }
 
-
-
-
   const validateCellPhone = () => {
     if ( state.cellphone){
-    var cellphone =  state.cellphone.replace('(','').replace(')','').replace(' ','').replace(' ','').replace('-','');
-   isValidCellPhoneNumber = validator.isMobilePhone(cellphone, 'pt-BR');
+      var cellphone =  state.cellphone.replace('(','').replace(')','').replace(' ','').replace(' ','').replace('-','');
+      isValidCellPhoneNumber = validator.isMobilePhone(cellphone, 'pt-BR');
 
     return (isValidCellPhoneNumber)
 }
@@ -186,11 +183,6 @@ export default function CompanyForm(props: RouteComponentProps<IPageParams>) {
     }
   }, [companyState, params.id]);
 
-
-
-
-
-
   useEffect(() => {
     if (companyState.success && companyState.data?._id) history.push('/company');
   }, [companyState.success])
@@ -215,10 +207,6 @@ export default function CompanyForm(props: RouteComponentProps<IPageParams>) {
       }
     }
 
-    console.log('isValid', isValid);
-    console.log('fieldsValidation', fieldsValidation);
-
-
     return isValid;
 
   }, [fieldsValidation, state]);
@@ -232,9 +220,9 @@ export default function CompanyForm(props: RouteComponentProps<IPageParams>) {
   }
 
   const validCEP = () => {
-       if ( state.address){
-         console.log("true")
-       }
+    if ( state.address){
+      console.log("true")
+    }
   }
 
   function handleCancelForm() {

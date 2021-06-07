@@ -92,6 +92,9 @@ import {
   getUserTypes,
   loadGetUserDisengaged,
   searchUserDisengaged,
+  checkEmail,
+  getUserByEmail,
+  recoveryPassword,
 } from "./users/sagas";
 
 import { CareTypes } from "./cares/types";
@@ -253,13 +256,15 @@ export default function* rootSaga() {
     /** Users */
     takeLatest(UserTypes.LOAD_REQUEST, getUsers),
     takeLatest(UserTypes.CREATE_USER_REQUEST, createUser),
-    // takeLatest(UserTypes.REGISTER_USER_REQUEST, registerUser),
+    takeLatest(UserTypes.LOAD_REQUEST_CHECK_EMAIL, checkEmail),
     takeLatest(UserTypes.LOAD_REQUEST_ADDRESS, getAddressUser),
     takeLatest(UserTypes.LOAD_REQUEST_USER_BY_ID, getUserById),
+    takeLatest(UserTypes.LOAD_REQUEST_USER_BY_EMAIL, getUserByEmail),
     takeLatest(UserTypes.UPDATE_USER_REQUEST, updateUser),
     takeLatest(UserTypes.SEARCH_REQUEST, searchUser),
     takeLatest(UserTypes.LOAD_REQUEST_PROFESSION, getProfessions),
     takeLatest(UserTypes.LOAD_REQUEST_USER_TYPES, getUserTypes),
+    takeLatest(UserTypes.LOAD_REQUEST_RECOVERY_PASSWORD, recoveryPassword),
     takeLatest(UserTypes.LOAD_REQUEST_USER_DISENGAGED, loadGetUserDisengaged),
     takeLatest(UserTypes.SEARCH_REQUEST_USER_DISENGAGED, searchUserDisengaged),
 

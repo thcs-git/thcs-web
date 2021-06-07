@@ -106,7 +106,6 @@ export default function Register(props: any) {
   const [inputEmail, setInputEmail] = useState({ value: '', error: false });
   const [inputPassword, setInputPassword] = useState({ value: '', error: false });
   const [showPassword, setShowPassword] = useState(false);
-  const [rememberMe, setRememberMe] = useState(false);
   const classes = useStyles();
 
   const [state, setState] = useState<SpecialtyInterface>({
