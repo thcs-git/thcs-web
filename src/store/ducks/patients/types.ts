@@ -126,6 +126,7 @@ export interface PatientState {
   loading: boolean;
   error: boolean;
   success: boolean;
+  errorCep?: boolean;
   isRegistrationCompleted?: boolean;
 }
 

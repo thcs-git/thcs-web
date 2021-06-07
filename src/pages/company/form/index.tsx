@@ -108,11 +108,63 @@ export default function CompanyForm(props: RouteComponentProps<IPageParams>) {
 
 
 
-  var cepError = false;
+  useEffect(() => {
+    const field = companyState.errorCep ? 'input-postal-code' : 'input-address-number';
+    console.log(companyState.errorCep);
 
-  if (companyState.error && state.address.postal_code != ''){
-    cepError = true;
-  }
+
+    companyState.errorCep && setState(prevState => ({
+      ...prevState,
+      address: {
+        ...prevState.address,
+        city: '',
+        complement: '',
+        district: '',
+        number: '',
+        state: '',
+        street: '',
+      }
+    }));
+
+    document.getElementById('input-social-client')?.focus();
+  }, [companyState.errorCep]);
+
+  useEffect(() => {
+    if (companyState.error) {
+      setState(prev => ({
+        ...prev,
+        address: {
+          ...prev.address,
+          street: '',
+          number: '',
+          district: '',
+          city: '',
+          state: '',
+          complement: '',
+        },
+      }))
+    }
+
+    setState(prevState => {
+      return {
+        ...prevState,
+        address: {
+          ...companyState.data.address
+        }
+      }
+    });
+    setFieldValidations((prevState: any) => ({
+      ...prevState,
+      postal_code: !validator.isEmpty(companyState.data.address.postal_code),
+      street: !validator.isEmpty(companyState.data.address.street),
+      number: !validator.isEmpty(companyState.data.address.number),
+      district: !validator.isEmpty(companyState.data.address.district),
+      city: !validator.isEmpty(companyState.data.address.city),
+      state: !validator.isEmpty(companyState.data.address.state),
+      complement: !validator.isEmpty(companyState.data.address.complement),
+    }));
+  }, [companyState.data?.address]);
+
 
   const validatePhone = () => {
 
@@ -219,11 +271,6 @@ export default function CompanyForm(props: RouteComponentProps<IPageParams>) {
     setOpenModalCancel(false);
   }
 
-  const validCEP = () => {
-    if ( state.address){
-      console.log("true")
-    }
-  }
 
   function handleCancelForm() {
     setOpenModalCancel(false);
@@ -232,9 +279,6 @@ export default function CompanyForm(props: RouteComponentProps<IPageParams>) {
 
   const getAddress = useCallback(() => {
     dispatch(getAddressAction(state.address.postal_code));
-    document.getElementById('input-address-number')?.focus();
-    validCEP();
-
   }, [state.address.postal_code]);
 
   const selectCustomer = useCallback(() => {
@@ -369,7 +413,7 @@ export default function CompanyForm(props: RouteComponentProps<IPageParams>) {
                     >
                       {(inputProps: any) => (
                         <OutlinedInputFiled
-                          error={cepError}
+                          error={companyState.errorCep}
                           id="input-postal-code"
                           label="CEP"
                           placeholder="00000-000"

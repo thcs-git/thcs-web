@@ -941,12 +941,12 @@ const dengagedUser=useCallback((company:CompanyInterface)=>{
                               variant="outlined"
                               size="small"
                               placeholder="000.000.000-00"
-                              error={!checkIsCpfValid()}
+                              error={!checkIsCpfValid() && state.fiscal_number != ''}
                               fullWidth
                             />
                           )}
                         </InputMask>
-                        {!checkIsCpfValid() && (
+                        {!checkIsCpfValid() && state.fiscal_number != '' &&(
                               <p style={{ color: '#f44336', margin:'1px 5px 20px' }}>
                               Por favor insira um cpf válido
                               </p>
@@ -977,7 +977,7 @@ const dengagedUser=useCallback((company:CompanyInterface)=>{
                               variant="outlined"
                               size="small"
                               placeholder="0.000-000"
-                              error={fieldsValidation.national_id}
+                              error={fieldsValidation.national_id && state.national_id != ''}
                               fullWidth
                             />
                           )}

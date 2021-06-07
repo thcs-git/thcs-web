@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react';
+ import React, { useState, useEffect, useCallback } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import InputMask, { Props } from 'react-input-mask';
 import { ApplicationState } from '../../../store';
@@ -49,7 +49,7 @@ import FeedbackComponent from '../../../components/Feedback';
 import validator from 'validator';
 import { Autocomplete } from '@material-ui/lab';
 import { toast } from 'react-toastify';
-import validatePhone from '../../../utils/validatePhone';
+
 
 interface IFormFields extends CustomerInterface {
   form?: {
@@ -171,6 +171,18 @@ export default function CustomerForm(props: RouteComponentProps<IPageParams>) {
   }, []);
 
   useEffect(() => {
+    setState(prevState => {
+      return {
+        ...prevState,
+        address: {
+          ...prevState.address,
+          ...customerState.data.address
+        }
+      }
+    });
+  }, [customerState.data.address]);
+
+  useEffect(() => {
     if (params.id) {
       if(params.mode === "view"){
         setCanEdit(false)
@@ -204,7 +216,6 @@ export default function CustomerForm(props: RouteComponentProps<IPageParams>) {
         responsible_user:true,
         postal_code: true,
         street: true,
-        number: true,
         district:true,
         city:true,
         state:true,
@@ -222,7 +233,6 @@ export default function CustomerForm(props: RouteComponentProps<IPageParams>) {
         address: {
           ...prev.address,
           street: '',
-          number: '',
           district: '',
           city: '',
           state: '',
@@ -235,7 +245,8 @@ export default function CustomerForm(props: RouteComponentProps<IPageParams>) {
       return {
         ...prevState,
         address: {
-          ...customerState.data.address
+          ...customerState.data.address,
+
         }
       }
     });
@@ -243,7 +254,6 @@ export default function CustomerForm(props: RouteComponentProps<IPageParams>) {
       ...prevState,
       postal_code: !validator.isEmpty(customerState.data.address.postal_code),
       street: !validator.isEmpty(customerState.data.address.street),
-      number: !validator.isEmpty(customerState.data.address.number),
       district: !validator.isEmpty(customerState.data.address.district),
       city: !validator.isEmpty(customerState.data.address.city),
       state: !validator.isEmpty(customerState.data.address.state),
@@ -276,6 +286,8 @@ export default function CustomerForm(props: RouteComponentProps<IPageParams>) {
 
   }, [fieldsValidation, state]);
 
+
+
   useEffect(() => {
     const field = customerState.errorCep ? 'input-postal-code' : 'input-address-number';
     console.log(customerState.errorCep);
@@ -288,13 +300,12 @@ export default function CustomerForm(props: RouteComponentProps<IPageParams>) {
         city: '',
         complement: '',
         district: '',
-        number: '',
         state: '',
-        street: '',
+        street: ''
       }
     }));
 
-    document.getElementById(field)?.focus();
+    document.getElementById('input-social-client')?.focus();
   }, [customerState.errorCep]);
 
   const handleSaveFormCustomer = useCallback(() => {
@@ -306,10 +317,12 @@ export default function CustomerForm(props: RouteComponentProps<IPageParams>) {
       return;
     }
     else if (params.id && ModifiCondition() ) {
+
       dispatch(updateCustomerRequest(state));
 
     }else{
-       dispatch(createCustomerRequest(state));
+      dispatch(createCustomerRequest(state));
+
     }
   }, [state]);
 
@@ -342,7 +355,11 @@ export default function CustomerForm(props: RouteComponentProps<IPageParams>) {
 
      isValidPhoneNumber = validator.isMobilePhone(landline, 'pt-BR');
 
-      return (isValidPhoneNumber)}
+      return (isValidPhoneNumber)
+
+    }
+
+
 
 
    }
@@ -469,7 +486,7 @@ export default function CustomerForm(props: RouteComponentProps<IPageParams>) {
                       label="Nome"
                       variant="outlined"
                       size="small"
-                      autoFocus
+
                       value={state.name}
                       onChange={(element) =>{
                          setFieldValidations((prevState: any) => ({ ...prevState, name: !validator.isEmpty(element.target.value) }));
@@ -638,7 +655,7 @@ export default function CustomerForm(props: RouteComponentProps<IPageParams>) {
                     label="Bairro"
                     variant="outlined"
                     size="small"
-                    autoFocus
+
                     value={state.address.district}
                    // onBlur={validationDistrictField}
 
@@ -668,28 +685,18 @@ export default function CustomerForm(props: RouteComponentProps<IPageParams>) {
                     disabled={!canEdit}
                   />
                 </Grid>
-                <Grid item md={2} xs={12}>
-                  <Autocomplete
-                    id="combo-box-neigthborhoods-states"
-                    options={States || []}
-                    getOptionLabel={(option) => option.sigla}
-                    fullWidth
-
-                    getOptionSelected={(option)=>option.sigla === state.address.state}
-                    value={state.form?.uf ?? null}
-                    onChange={(event:any, value) =>{
-                      handlerState(event,value);
-                      setFieldValidations((prevState: any) => ({ ...prevState, state: !validator.isEmpty(value?value.name:'') }))
-                    }}
-                    renderInput={(params) =>
-                      <TextField {...params}  label="UF" variant="outlined" size="small"
-
-                      disabled={!canEdit}
-  />
-                    }
-                //  onBlur={handleStateValidator} helperText={inputState.error && "Selecione um estado válido"} />}
-                  />
-                </Grid>
+                <Grid item md={1} xs={12}>
+                        <TextField
+                          id="input-address-uf"
+                          label="UF"
+                          variant="outlined"
+                          size="small"
+                          value={state.address.state}
+                          onChange={(element) => setState({ ...state, address: { ...state.address, state: element.target.value } })}
+                          fullWidth
+                          disabled={!canEdit}
+                        />
+                      </Grid>
 
 
             <Grid item md={12} xs={12}>
@@ -770,13 +777,9 @@ export default function CustomerForm(props: RouteComponentProps<IPageParams>) {
                   <InputMask
                     mask="(99) 9 9999-9999"
                     disabled={!canEdit}
-                    value={state.cellphone}
+                    value={inputCellPhone.value}
                     onBlur={validateCellPhone}
-                    onChange={(element) =>{
-                      setState({...state,cellphone:element.target.value})
-                      setFieldValidations((prevState: any) => ({ ...prevState, cellphone: !validator.isEmpty(element.target.value) }));
-                    }
-                    }
+                    onChange={(element) => setInputCellPhone({ ...inputCellPhone, value: element.target.value })}
 
                   >
                     {(inputProps: any) => (
@@ -828,7 +831,7 @@ export default function CustomerForm(props: RouteComponentProps<IPageParams>) {
             {canEdit && (<ButtonComponent variant="outlined"  className={classes.cancel} onClick={() => handleOpenModalCancel()}>
               Cancelar
             </ButtonComponent>)}
-            {canEdit &&(<ButtonComponent disabled={!formValid}  variant="contained" background="success" onClick={() => handleSaveFormCustomer()}>
+            {canEdit &&(<ButtonComponent  variant="contained" background="success" onClick={() => handleSaveFormCustomer()}>
               Salvar
             </ButtonComponent>)}
 
