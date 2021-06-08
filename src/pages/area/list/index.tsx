@@ -1,18 +1,14 @@
 import React, { useState, useEffect, useCallback, ChangeEvent } from 'react';
 import { useHistory } from 'react-router-dom';
-import { Container, FormControl, InputLabel, OutlinedInput,
-  InputAdornment, IconButton, Checkbox, TableRow, TableCell,
+import { Container, TableRow, TableCell,
   Menu, MenuItem, makeStyles } from '@material-ui/core';
-import { MoreVert, SearchOutlined } from '@material-ui/icons';
+import { MoreVert} from '@material-ui/icons';
 import debounce from 'lodash.debounce';
-
-
 import Table from '../../../components/Table';
-import { formatDate, getDayOfTheWeekName } from '../../../helpers/date';
+import { formatDate } from '../../../helpers/date';
 import { useDispatch, useSelector } from 'react-redux';
 import { ApplicationState } from '../../../store/';
 import { loadRequest, searchRequest } from '../../../store/ducks/areas/actions';
-
 import SearchComponent from '../../../components/List/Search';
 import Loading from '../../../components/Loading';
 import PaginationComponent from '../../../components/Pagination';
@@ -22,19 +18,11 @@ import Sidebar from '../../../components/Sidebar';
 import { FormTitle } from '../../../styles/components/Form';
 import Button from '../../../styles/components/Button';
 import {
-  List,
   ListLink,
-  ListItem,
-  ListItemContent,
   ListItemStatus,
-  ListItemTitle,
-  ListItemSubTitle,
-  FormSearch,
-  ButtonsContent,
   ItemTable
 } from './styles';
-import classes from '*.module.css';
-import { BoxCustom } from '../../customer/form/styles';
+
 
 
 export default function AreaList() {
@@ -118,7 +106,7 @@ export default function AreaList() {
           <SearchComponent
             handleButton={() => history.push('/area/create/')}
             buttonTitle="Nova Área"
-            inputPlaceholder = "Pesquise por área, abastecimento, status, etc..."
+            inputPlaceholder = "Pesquise  por área, abastecimento, status e etc.."
             onChangeInput={debounceSearchRequest}
           />
            <Table

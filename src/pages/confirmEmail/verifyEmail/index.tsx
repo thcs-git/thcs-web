@@ -73,7 +73,6 @@ export default function VerifyEmailForm(props: RouteComponentProps<IPageParams>)
         <FeedbackTitle>
           Seja bem-vindo ao Sollar!!
         </FeedbackTitle>
-
         <FeedbackDescription>
           Você logo será redirecionado para a página de login, ou pode clicar no botão aqui em baixo.
         </FeedbackDescription>
