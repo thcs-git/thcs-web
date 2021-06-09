@@ -110,7 +110,7 @@ export function* getDistrict({ payload: { value } }: any) {
   try {
     const response: AxiosResponse = yield call(
       apiSollar.get,
-      `/districts?&city=${value.city}`,
+      `/districts?&city=${value.city}&state=${value.state}`,
       {
         headers: { token },
       }
@@ -136,7 +136,7 @@ export function* getDistricts() {
 
     yield put(loadSuccessGetDistricts(data));
   } catch (error) {
-    toast.error("Não foi possível obter os dados do endereço");
+
     yield put(loadFailure());
   }
 }

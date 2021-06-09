@@ -214,6 +214,7 @@ export interface ScheduleInterface {
 export interface UserSimpleDataInterface {
   _id: string;
   name: string;
+  profession_id?: string;
 }
 
 export interface HealthInsuranceInterface {
