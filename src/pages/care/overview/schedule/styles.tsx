@@ -20,6 +20,25 @@ const statusColor: any = {
   `,
 };
 
+export const ContainerSearch = styled.div`
+  form > div {
+    width: 100%;
+  }
+
+  ::-webkit-input-placeholder { /* Chrome/Opera/Safari */
+    font-size: 8px;
+  }
+  ::-moz-placeholder { /* Firefox 19+ */
+    font-size: 8px;
+  }
+  :-ms-input-placeholder { /* IE 10+ */
+    font-size: 8px;
+  }
+  :-moz-placeholder { /* Firefox 18- */
+    font-size: 8px;
+  }
+`;
+
 export const ScheduleItem = styled.div`
 
   display: flex;
