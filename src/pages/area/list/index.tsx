@@ -112,7 +112,7 @@ export default function AreaList() {
             buttonTitle="Nova Área"
             inputPlaceholder = "Pesquise  por área, abastecimento, status e etc.."
             onChangeInput={debounceSearchRequest}
-            error = {erro}
+        //s    error = {erro}
           />
            <Table
             tableCells={[

@@ -82,7 +82,7 @@ export default function VerifyEmailForm(props: RouteComponentProps<IPageParams>)
         </FeedbackButtonsContent>
 
       </FeedbackContent>
-    )}
+     )}
 
     </>
   )
