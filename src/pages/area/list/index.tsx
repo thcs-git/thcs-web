@@ -13,8 +13,6 @@ import SearchComponent from '../../../components/List/Search';
 import Loading from '../../../components/Loading';
 import PaginationComponent from '../../../components/Pagination';
 import Sidebar from '../../../components/Sidebar';
-
-
 import { FormTitle } from '../../../styles/components/Form';
 import Button from '../../../styles/components/Button';
 import {
@@ -41,6 +39,7 @@ export default function AreaList() {
   const classe = useStyles();
   const history = useHistory();
   const dispatch = useDispatch();
+  const [errorSearch,setErrorSearch] = useState({value:false});
   const areaState = useSelector((state: ApplicationState) => state.areas);
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   useEffect(() => {
@@ -55,18 +54,23 @@ export default function AreaList() {
   const handleCloseRowMenu = useCallback(() => {
     setAnchorEl(null);
   }, [anchorEl]);
+  const erro = useCallback(()=>{
+    return errorSearch.value;
+  },[])
 
-
-  const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
-    setAnchorEl(event.currentTarget);
-  };
-
-  const handleClose = () => {
-    setAnchorEl(null);
-  };
 
   const handleChangeInput = useCallback((event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-    setSearch(event.target.value)
+    if(event.target.value.length>3){
+      setErrorSearch(prev=>({
+        ...prev,
+        value:false}));
+    }else{
+      setErrorSearch(prev=>({
+        ...prev,
+        value:true
+      }));
+    }
+    setSearch(event.target.value);
     dispatch(searchRequest(event.target.value));
   }, []);
   const mapDays = (week_day:Number)=>{
@@ -108,6 +112,7 @@ export default function AreaList() {
             buttonTitle="Nova Área"
             inputPlaceholder = "Pesquise  por área, abastecimento, status e etc.."
             onChangeInput={debounceSearchRequest}
+            error = {erro}
           />
            <Table
             tableCells={[
