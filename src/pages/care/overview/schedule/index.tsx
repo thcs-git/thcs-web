@@ -83,7 +83,7 @@ export default function SchedulePage(props: RouteComponentProps<IPageParams>) {
   let eventGuid = 0
   let todayStr = new Date().toISOString().replace(/T.*$/, '') // YYYY-MM-DD of today
 
-
+  const [searchInputName, setSearchInputName] = useState('');
   const [currentTabValue, setCurrentTabValue] = React.useState(0);
   const [professionalTypeValue, setProfessionalTypeValue] = React.useState<string>('diarista');
   const [workInDaysValue, setWorkInDaysValue] = React.useState(0);
@@ -193,10 +193,10 @@ export default function SchedulePage(props: RouteComponentProps<IPageParams>) {
   }, [careState.data._id]);
 
   useEffect(() => {
-    if (careState.schedule?.length) {
+    // if (careState.schedule?.length) {
       translateSchedule();
       handleTeam();
-    }
+    // }
 
     // getAllProfessinalFilter();
   }, [careState.schedule, userState.data]);
@@ -617,7 +617,7 @@ export default function SchedulePage(props: RouteComponentProps<IPageParams>) {
     setHelpPopover(null);
   }, []);
 
-  const handleProfessionalCheck = useCallback((professionalID) => {
+  const handleProfessionalCheck = useCallback((professionalID, event) => {
     const hasProfessionalID = professionalChecks.some(prof => prof === professionalID);
 
     if (hasProfessionalID) {
@@ -628,19 +628,47 @@ export default function SchedulePage(props: RouteComponentProps<IPageParams>) {
         professionalID
       ]))
     }
+    const checked = event.target.checked;
 
-    dispatch(loadScheduleRequest({ attendance_id: params.id, profession_id: professionalID }));
-  }, [professionalChecks]);
+    dispatch(loadScheduleRequest({
+      attendance_id: params.id,
+      profession_id: checked ? professionalID : null,
+      user_name: searchInputName
+    }));
+  }, [professionalChecks, searchInputName]);
 
-  const handleCheckPlantonista = useCallback(() => {
+  const handleCheckPlantonista = useCallback((event: any) => {
     setCheckPlantonista(prev => !prev);
-  }, [checkPlantonista]);
 
-  const handleCheckDiarista = useCallback(() => {
+    const checked = event.target.checked;
+
+    dispatch(loadScheduleRequest({
+      attendance_id: params.id,
+      professional_type: checked ? event.target.name : null,
+      user_name: searchInputName
+    }));
+
+  }, [checkPlantonista, searchInputName]);
+
+  const handleCheckDiarista = useCallback((event: any) => {
     setCheckDiarista(prev => !prev);
-  }, [checkDiarista]);
 
-  const debounceSearchRequest = debounce(() => {}, 900);
+    const checked = event.target.checked;
+
+    dispatch(loadScheduleRequest({
+      attendance_id: params.id,
+      professional_type: checked ? event.target.name : null,
+      user_name: searchInputName
+    }));
+  }, [checkDiarista, searchInputName]);
+
+  const handleInputSearch = useCallback((event: any) => {
+    setSearchInputName(event.target.value )
+
+    dispatch(loadScheduleRequest({ attendance_id: params.id, user_name: event.target.value }));
+  }, []);
+
+  const debounceSearchRequest = debounce(handleInputSearch, 900);
 
   const handleClickButton = useCallback(() => {
     // dispatch(setIfRegistrationCompleted(false))
@@ -709,7 +737,7 @@ export default function SchedulePage(props: RouteComponentProps<IPageParams>) {
                       {professionScheduled?.map(profession => (
                         <FormControlLabel
                           control={<Checkbox color="primary" checked={professionalChecks.some(prof => prof === profession._id)}
-                          onClick={(() => handleProfessionalCheck(profession._id))}
+                          onClick={((event: any) => handleProfessionalCheck(profession._id, event))}
                           name={profession.name}  />}
                           label={profession.name}
                         />
@@ -723,11 +751,11 @@ export default function SchedulePage(props: RouteComponentProps<IPageParams>) {
                   <FormControl component="fieldset">
                     <FormGroup>
                       <FormControlLabel
-                        control={<Checkbox color="primary"  checked={checkPlantonista} onChange={handleCheckPlantonista} name="Plantonista" />}
+                        control={<Checkbox color="primary"  checked={checkPlantonista} onChange={handleCheckPlantonista} name="plantonista" />}
                         label="Plantonista"
                       />
                       <FormControlLabel
-                        control={<Checkbox color="primary"  checked={checkDiarista} onChange={handleCheckDiarista} name="Diarista" />}
+                        control={<Checkbox color="primary"  checked={checkDiarista} onChange={handleCheckDiarista} name="diarista" />}
                         label="Diarista"
                       />
                     </FormGroup>
@@ -869,7 +897,7 @@ export default function SchedulePage(props: RouteComponentProps<IPageParams>) {
           <>
             <DialogTitle id="scroll-dialog-title">
               <strong>
-                Agendamento - {formatDate(schedule.day, 'DD/MM/YYYY')} ({formatDate(schedule.day, 'dddd')})
+                Agendamento - {formatDate(schedule.day || new Date, 'DD/MM/YYYY')} ({formatDate(schedule.day || new Date, 'dddd')})
               </strong>
             </DialogTitle>
 
