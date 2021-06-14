@@ -194,12 +194,8 @@ export default function* rootSaga() {
 
     takeLatest(CareTypes.LOAD_SCHEDULE_REQUEST, getSchedule),
     takeLatest(CareTypes.CREATE_SCHEDULE_REQUEST, storeSchedule),
-    takeLatest(CareTypes.UPDATE_SCHEDULE_REQUEST, updateSchedule),
     takeLatest(CareTypes.DELETE_SCHEDULE_REQUEST, deleteSchedule),
-
-    takeLatest(CareTypes.LOAD_SCHEDULE_REQUEST, getSchedule),
     takeLatest(CareTypes.UPDATE_SCHEDULE_REQUEST, updateSchedule),
-    takeLatest(CareTypes.DELETE_SCHEDULE_REQUEST, deleteSchedule),
 
     // Council
     takeLatest(CouncilTypes.LOAD_REQUEST, getCouncils),
