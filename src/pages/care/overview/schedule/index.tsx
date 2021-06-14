@@ -2,10 +2,12 @@ import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { RouteComponentProps, useHistory } from 'react-router-dom';
 import { Help as HelpIcon } from '@material-ui/icons';
+import Checkbox from '@material-ui/core/Checkbox';
 import { Dialog, DialogContent, DialogTitle, Grid, Card, CardContent, TextField, FormGroup, FormControlLabel, RadioGroup, DialogActions, Button, List, ListItem, Typography, ListItemIcon, ListItemText, IconButton, Divider, Box, Tabs, Tab, Paper, AppBar, FormControl, FormLabel, Popover } from '@material-ui/core';
 import { Autocomplete } from '@material-ui/lab';
 import { AccountCircle, SupervisorAccountRounded, ReportProblemOutlined, Event as EventIcon, Cached as RefreshIcon, Schedule as ScheduleIcon, CommentRounded as CommentRoundedIcon, AccountBox as AccountBoxIcon, SwapHoriz as SwapHorizIcon, Edit as EditIcon, Delete as DeleteIcon, WarningRounded as WarningRoundedIcon } from '@material-ui/icons';
 import dayjs from 'dayjs';
+import debounce from 'lodash.debounce';
 
 import FullCalendar, { EventClickArg, EventApi, EventInput, EventAddArg } from '@fullcalendar/react';
 import dayGridPlugin from '@fullcalendar/daygrid';
@@ -13,6 +15,7 @@ import timeGridPlugin from '@fullcalendar/timegrid';
 import interactionPlugin from '@fullcalendar/interaction';
 import ptBrLocale from '@fullcalendar/core/locales/pt-br';
 
+import SearchComponent from '../../../../components/List/Search';
 import { ApplicationState } from '../../../../store';
 import { loadCareById, loadScheduleRequest, createScheduleRequest as storeScheduleAction, deleteScheduleRequest as deleteScheduleAction, updateScheduleRequest as updateScheduleAction } from '../../../../store/ducks/cares/actions';
 import { ScheduleInterface } from '../../../../store/ducks/cares/types';
@@ -33,7 +36,7 @@ import ButtonComponent from '../../../../styles/components/Button';
 import { ComplexityStatus } from '../../../../styles/components/Table';
 import DatePicker from '../../../../styles/components/DatePicker';
 
-import { ScheduleItem, CardTitle, CalendarContent, ScheduleEventStatus, HeaderContent, ResumeList, TabsMenuWrapper } from './styles';
+import { ScheduleItem, CardTitle, CalendarContent, ScheduleEventStatus, HeaderContent, ResumeList, TabsMenuWrapper, ContainerSearch } from './styles';
 
 interface IDay {
   allDay: boolean;
@@ -54,6 +57,12 @@ interface ISchedule extends ScheduleInterface {
   profession_id?: string;
   duration?: string;
   data?: any;
+  start_plantao?: string;
+  end_plantao?: string;
+  start_hour_plantao?: string;
+  end_hour_plantao?: string;
+  duty_day?: any;
+  professional_type?: string;
 }
 
 interface ITabPanelProps {
@@ -74,17 +83,21 @@ export default function SchedulePage(props: RouteComponentProps<IPageParams>) {
   let eventGuid = 0
   let todayStr = new Date().toISOString().replace(/T.*$/, '') // YYYY-MM-DD of today
 
-
+  const [searchInputName, setSearchInputName] = useState('');
   const [currentTabValue, setCurrentTabValue] = React.useState(0);
   const [professionalTypeValue, setProfessionalTypeValue] = React.useState<string>('diarista');
   const [workInDaysValue, setWorkInDaysValue] = React.useState(0);
   const [anchorHelpPopover, setHelpPopover] = React.useState<HTMLButtonElement | null>(null);
+  const [professionalChecks, setProfessionalChecks] = React.useState<string[]>([]);
   const openHelpPopover = Boolean(anchorHelpPopover);
 
+  const [checkDiarista, setCheckDiarista] = useState(false);
+  const [checkPlantonista, setCheckPlantonista] = useState(false);
   const [weekendsVisible, setWeekendsVisible] = useState(true);
   const [currentEvents, setCurrentEvents] = useState<EventApi[]>();
   const [dayOptionsModalOpen, setDayOptionsModalOpen] = useState(false);
   const [removeEventsModalOpen, setRemoveEventsModalOpen] = useState(false);
+  const [professionScheduled, setProfessionScheduled] = useState<ProfessionUserInterface[] | undefined>([]);
   const [daySelected, setDaySelected] = useState<IDay>({
     allDay: true,
     end: null,
@@ -101,7 +114,11 @@ export default function SchedulePage(props: RouteComponentProps<IPageParams>) {
     duration: '',
     data: '',
     type: '',
-    start_at: '',
+    start_plantao: '',
+    end_plantao: '',
+    start_hour_plantao: '',
+    end_hour_plantao: '',
+    professional_type: '',
     end_at: '',
     days_interval_repeat: 0,
     repeat_stop_at: '',
@@ -142,7 +159,13 @@ export default function SchedulePage(props: RouteComponentProps<IPageParams>) {
       data: '',
       type: '',
       start_at: '',
+      start_plantao: '',
+      end_plantao: '',
+      start_hour_plantao: '',
+      end_hour_plantao: '',
       end_at: '',
+      duty_day: 0,
+      professional_type: '',
       days_interval_repeat: 0,
       repeat_stop_at: '',
       exchange: {
@@ -163,7 +186,6 @@ export default function SchedulePage(props: RouteComponentProps<IPageParams>) {
 
     dispatch(searchUserAction({}));
     dispatch(getProfessionsAction());
-
   }, [dispatch]);
 
   useEffect(() => {
@@ -171,11 +193,13 @@ export default function SchedulePage(props: RouteComponentProps<IPageParams>) {
   }, [careState.data._id]);
 
   useEffect(() => {
-    if (careState.schedule?.length) {
+    // if (careState.schedule?.length) {
       translateSchedule();
       handleTeam();
-    }
-  }, [careState.schedule]);
+    // }
+
+    // getAllProfessinalFilter();
+  }, [careState.schedule, userState.data]);
 
   const handleEvents = (events: EventApi[]) => {
     setCurrentEvents(events)
@@ -190,6 +214,7 @@ export default function SchedulePage(props: RouteComponentProps<IPageParams>) {
 
     setSchedule({
       day: date.start,
+      start_plantao: formatDate(date.start, 'YYYY-MM-DD'),
       user_id: '',
       profession_id: '',
       duration: '',
@@ -238,19 +263,50 @@ export default function SchedulePage(props: RouteComponentProps<IPageParams>) {
     // }
   }
 
+  const savePlantaoEvent = useCallback(() => {
+    // console.log('agora sim');
+
+    // professionalTypeValue
+    // schedule?.start_at && schedule?.end_at
+    // selectProfession()
+    // selectUser()
+    // workInDaysValue
+
+    const startDateAt = dayjs(`${schedule.start_plantao} ${schedule.start_hour_plantao}`).format();
+    const endDateAt = dayjs(`${schedule.end_plantao} ${schedule.end_hour_plantao}`).format();
+
+    console.log({
+      professionalTypeValue,
+      startDateAt,
+      endDateAt,
+      'selectProfession': selectProfession(),
+      'selectUser': selectUser(),
+      workInDaysValue
+    });
+  }, [professionalTypeValue, schedule, userState, workInDaysValue]);
+
   const handleAddEvent = useCallback((event: any) => {
-    console.log(event);
-    if (schedule.day && schedule?.start_at && schedule?.end_at) {
-          console.log(schedule.day);
-          console.log(schedule.start_at);
-      const startAt = dayjs(schedule.day).startOf('day').format('YYYY-MM-DD');
-      console.log(startAt);
-      const endAt = dayjs(schedule.day).startOf('day').format('YYYY-MM-DD');
+    // if (schedule.day && schedule?.start_at && schedule?.end_at) {
+      let startAt: string;
+      let endAt: string;
+      schedule.duty_day = (schedule.duty_day === 0) ? 'par' : 'impar';
+      schedule.professional_type = professionalTypeValue;
+      schedule.type = currentTabValue === 0 ? 'assistencia' : 'plantao';
+
+      if (currentTabValue === 0 && schedule.day) {
+        startAt = dayjs(`${formatDate(schedule.day, 'YYYY-MM-DD')} ${schedule.start_at}`).format();
+        endAt = dayjs(`${formatDate(schedule.day, 'YYYY-MM-DD')} ${schedule.end_at}`).format();
+        // startAt = dayjs(schedule.day).startOf('day').format();
+        // endAt = dayjs(schedule.day).startOf('day').format();
+      } else {
+        schedule.days_interval_repeat = professionalTypeValue === 'plantonista' ? 2 : 1;
+        startAt = dayjs(`${schedule.start_plantao} ${schedule.start_hour_plantao}`).format()
+        endAt = dayjs(`${schedule.end_plantao} ${schedule.end_hour_plantao}`).format()
+      }
+
 
       if (schedule?.data?._id) {
           console.log(schedule.day);
-        const startAt = dayjs(schedule.day).startOf('day').format('YYYY-MM-DD');
-        const endAt = dayjs(schedule.day).startOf('day').format('YYYY-MM-DD');
 
         setDayOptionsModalOpen(false);
 
@@ -262,12 +318,11 @@ export default function SchedulePage(props: RouteComponentProps<IPageParams>) {
             eventCopy[key] = {
               ...eventCopy[key],
               title: selectUser()?.name,
-              start: `${startAt}T${schedule.start_at}:00`,
-              end: `${endAt}T${schedule.end_at}:00`,
+              start: startAt,
+              end: endAt,
             };
             console.log(eventCopy[key]);
           }
-
         });
 
         setEvents(eventCopy);
@@ -276,8 +331,8 @@ export default function SchedulePage(props: RouteComponentProps<IPageParams>) {
          ...prevState,
          _id: data._id,
          attendance_id: params.id,
-         start_at: `${startAt}T${schedule.start_at}:00`,
-         end_at: `${endAt}T${schedule.end_at}:00`,
+         start_at: startAt,
+         end_at: endAt,
         }));
 
         console.log(schedule);
@@ -285,18 +340,17 @@ export default function SchedulePage(props: RouteComponentProps<IPageParams>) {
           ...schedule,
           _id: data._id,
           attendance_id: params.id,
-          start_at: `${startAt}T${schedule.start_at}:00`,
-          end_at: `${endAt}T${schedule.end_at}:00`,
+          start_at: startAt,
+          end_at: endAt,
         }));
 
       } else {
-
         const newEvent: EventInput = {
           id: createEventId(),
           title: selectUser()?.name,
           // start: todayStr,
-          start: `${startAt}T${schedule.start_at}:00`,
-          end: `${endAt}T${schedule.end_at}:00`,
+          start: startAt,
+          end: endAt,
           backgroundColor: '#0899BA',
           textColor: '#ffffff',
         };
@@ -309,8 +363,8 @@ export default function SchedulePage(props: RouteComponentProps<IPageParams>) {
         dispatch(storeScheduleAction({
           ...schedule,
           attendance_id: params.id,
-          start_at: `${startAt}T${schedule.start_at}:00`,
-          end_at: `${endAt}T${schedule.end_at}:00`,
+          start_at: startAt,
+          end_at: endAt,
         }));
       }
 
@@ -319,9 +373,7 @@ export default function SchedulePage(props: RouteComponentProps<IPageParams>) {
       setTimeout(() => {
         dispatch(loadScheduleRequest({ attendance_id: params.id }))
       }, 2000);
-
-    }
-
+    // }
   }, [schedule, events]);
 
   const handleRemoveEvent = useCallback(() => {
@@ -410,6 +462,26 @@ export default function SchedulePage(props: RouteComponentProps<IPageParams>) {
     </ScheduleItem>
   );
 
+  // const getAllProfessinalFilter = useCallback(() => {
+  useEffect(() => {
+    const { professions } = userState?.data;
+
+    const allProfessionalScheduled = professions?.filter(profession => {
+      const filtered = events.filter(schedule => {
+        if (typeof schedule.user_id === 'object') {
+          if (profession._id === schedule.user_id.profession_id) {
+            return profession.name;
+          }
+        }
+      }).length;
+
+      // @ts-ignore: Unreachable code error
+      if (filtered > 0) return profession;
+    });
+
+    setProfessionScheduled(allProfessionalScheduled)
+  }, [dispatch, userState.data, events]);
+
   const translateSchedule = useCallback(() => {
     const schedules = careState.schedule;
     let scheduleArray: EventInput[] = [];
@@ -432,7 +504,8 @@ export default function SchedulePage(props: RouteComponentProps<IPageParams>) {
           end: item.end_at,
           backgroundColor: '#0899BA',
           textColor: '#ffffff',
-          extendedProps: item
+          extendedProps: item,
+          user_id: item.user_id
         });
       });
     }
@@ -519,8 +592,11 @@ export default function SchedulePage(props: RouteComponentProps<IPageParams>) {
   }, [currentTabValue]);
 
   const handleWorkDaysValues = useCallback((event: React.ChangeEvent<{}>, newValue: number) => {
-    setWorkInDaysValue(newValue);
-  }, [workInDaysValue]);
+    setSchedule(prevState => ({
+      ...prevState,
+      duty_day: newValue,
+    }));
+  }, [schedule]);
 
   const a11yProps = useCallback((index) => {
     return {
@@ -541,6 +617,63 @@ export default function SchedulePage(props: RouteComponentProps<IPageParams>) {
     setHelpPopover(null);
   }, []);
 
+  const handleProfessionalCheck = useCallback((professionalID, event) => {
+    const hasProfessionalID = professionalChecks.some(prof => prof === professionalID);
+
+    if (hasProfessionalID) {
+      setProfessionalChecks(professionalChecks.filter(prof => prof !== professionalID))
+    } else {
+      setProfessionalChecks(prev => ([
+        ...prev,
+        professionalID
+      ]))
+    }
+    const checked = event.target.checked;
+
+    dispatch(loadScheduleRequest({
+      attendance_id: params.id,
+      profession_id: checked ? professionalID : null,
+      user_name: searchInputName
+    }));
+  }, [professionalChecks, searchInputName]);
+
+  const handleCheckPlantonista = useCallback((event: any) => {
+    setCheckPlantonista(prev => !prev);
+
+    const checked = event.target.checked;
+
+    dispatch(loadScheduleRequest({
+      attendance_id: params.id,
+      professional_type: checked ? event.target.name : null,
+      user_name: searchInputName
+    }));
+
+  }, [checkPlantonista, searchInputName]);
+
+  const handleCheckDiarista = useCallback((event: any) => {
+    setCheckDiarista(prev => !prev);
+
+    const checked = event.target.checked;
+
+    dispatch(loadScheduleRequest({
+      attendance_id: params.id,
+      professional_type: checked ? event.target.name : null,
+      user_name: searchInputName
+    }));
+  }, [checkDiarista, searchInputName]);
+
+  const handleInputSearch = useCallback((event: any) => {
+    setSearchInputName(event.target.value )
+
+    dispatch(loadScheduleRequest({ attendance_id: params.id, user_name: event.target.value }));
+  }, []);
+
+  const debounceSearchRequest = debounce(handleInputSearch, 900);
+
+  const handleClickButton = useCallback(() => {
+    // dispatch(setIfRegistrationCompleted(false))
+    // history.push('/patient/create/')
+  }, [])
   return (
     <>
       <Sidebar>
@@ -551,7 +684,7 @@ export default function SchedulePage(props: RouteComponentProps<IPageParams>) {
           <div>
             <ButtonComponent onClick={() => {
               setSchedule({
-                day: new Date,
+                day: '',
                 start_at: '',
                 end_at: '',
                 user_id: '',
@@ -587,6 +720,47 @@ export default function SchedulePage(props: RouteComponentProps<IPageParams>) {
                 </CardContent>
               </Card>
 
+              <ContainerSearch>
+                <SearchComponent
+                  handleButton={handleClickButton}
+                  inputPlaceholder = "Nome do profissional"
+                  // buttonTitle="Novo"
+                  onChangeInput={debounceSearchRequest}
+                />
+              </ContainerSearch>
+
+
+              <div style={{ margin: '10px 0' }}>
+                <p><strong>Filtrar por profissional:</strong></p>
+                  <FormControl component="fieldset" >
+                    <FormGroup>
+                      {professionScheduled?.map(profession => (
+                        <FormControlLabel
+                          control={<Checkbox color="primary" checked={professionalChecks.some(prof => prof === profession._id)}
+                          onClick={((event: any) => handleProfessionalCheck(profession._id, event))}
+                          name={profession.name}  />}
+                          label={profession.name}
+                        />
+                      ))}
+                    </FormGroup>
+                  </FormControl>
+              </div>
+
+              <div style={{ margin: '10px 0' }}>
+                <p><strong>Filtro por categoria:</strong></p>
+                  <FormControl component="fieldset">
+                    <FormGroup>
+                      <FormControlLabel
+                        control={<Checkbox color="primary"  checked={checkPlantonista} onChange={handleCheckPlantonista} name="plantonista" />}
+                        label="Plantonista"
+                      />
+                      <FormControlLabel
+                        control={<Checkbox color="primary"  checked={checkDiarista} onChange={handleCheckDiarista} name="diarista" />}
+                        label="Diarista"
+                      />
+                    </FormGroup>
+                  </FormControl>
+              </div>
               <div>
                 <p><strong>Legendas:</strong></p>
 
@@ -599,6 +773,7 @@ export default function SchedulePage(props: RouteComponentProps<IPageParams>) {
               </div>
             </div>
           </Grid>
+
           <Grid item md={9}>
             <Card>
               <CardContent>
@@ -722,7 +897,7 @@ export default function SchedulePage(props: RouteComponentProps<IPageParams>) {
           <>
             <DialogTitle id="scroll-dialog-title">
               <strong>
-                Agendamento - {formatDate(schedule.day, 'DD/MM/YYYY')} ({formatDate(schedule.day, 'dddd')})
+                Agendamento - {formatDate(schedule.day || new Date, 'DD/MM/YYYY')} ({formatDate(schedule.day || new Date, 'dddd')})
               </strong>
             </DialogTitle>
 
@@ -821,10 +996,9 @@ export default function SchedulePage(props: RouteComponentProps<IPageParams>) {
                         InputLabelProps={{
                           shrink: true,
                         }}
-                        onChange={e => setSchedule(prevState => ({ ...prevState, start_at: e.target.value }))}
+                        onChange={e => setSchedule(prevState => ({ ...prevState, day: e.target.value }))}
                         value={formatDate(schedule.day, 'YYYY-MM-DD')}
                         fullWidth
-                        disabled
                       />
                     </FieldContent>
                   </Grid>
@@ -996,8 +1170,8 @@ export default function SchedulePage(props: RouteComponentProps<IPageParams>) {
                         InputLabelProps={{
                           shrink: true,
                         }}
-                        onChange={e => setSchedule(prevState => ({ ...prevState, start_at: e.target.value }))}
-                        value={schedule.start_at}
+                        onChange={e => setSchedule(prevState => ({ ...prevState, start_plantao: e.target.value }))}
+                        value={schedule.start_plantao}
                         fullWidth
                       />
 
@@ -1019,8 +1193,8 @@ export default function SchedulePage(props: RouteComponentProps<IPageParams>) {
                         InputLabelProps={{
                           shrink: true,
                         }}
-                        onChange={e => setSchedule(prevState => ({ ...prevState, end_at: e.target.value }))}
-                        // value={schedule.end_at}
+                        onChange={e => setSchedule(prevState => ({ ...prevState, end_plantao: e.target.value }))}
+                        value={schedule.end_plantao}
                         fullWidth
                       />
 
@@ -1032,7 +1206,7 @@ export default function SchedulePage(props: RouteComponentProps<IPageParams>) {
                   <FormLabel component="legend" color="primary">O profissional é:</FormLabel>
                   <RadioGroup aria-label="professional" name="professional_type" value={professionalTypeValue} onChange={handleProfessionalChange}>
                     <FormControlLabel value="diarista" control={<Radio />} label="Diarista" />
-                    <FormControlLabel value="plantonista" control={<Radio />} label="Plantonista" />
+                    <FormControlLabel value="plantonista" control={<Radio />} label="Plantonista (regime 12x36h)" />
                   </RadioGroup>
                 </FormControl>
 
@@ -1076,12 +1250,12 @@ export default function SchedulePage(props: RouteComponentProps<IPageParams>) {
                   />
                 </FieldContent>
 
-                <p>Este profissional irá trabalhar em dias:</p>
+                {/* <p>Este profissional irá trabalhar em dias:</p>
                 <br />
 
                 <TabsMenuWrapper>
                   <Tabs
-                    value={workInDaysValue}
+                    value={schedule.duty_day}
                     indicatorColor="primary"
                     textColor="primary"
                     onChange={handleWorkDaysValues}
@@ -1089,7 +1263,7 @@ export default function SchedulePage(props: RouteComponentProps<IPageParams>) {
                     <Tab label="Pares" />
                     <Tab label="Ímpares" />
                   </Tabs>
-                </TabsMenuWrapper>
+                </TabsMenuWrapper> */}
 
                 <p>Defina os horários de início e fim do turno:</p>
                 <br />
@@ -1111,8 +1285,22 @@ export default function SchedulePage(props: RouteComponentProps<IPageParams>) {
                         inputProps={{
                           step: 300, // 5 min
                         }}
-                        onChange={e => setSchedule(prevState => ({ ...prevState, start_at: e.target.value }))}
-                        value={schedule.start_at}
+                        onChange={e => {
+                          const WORK_HOURS = 12;
+
+                          const value = e.target.value;
+                          const [hourOfValue, minuteOfValue] = value.split(':');
+                          let currentDate = new Date();
+
+                          currentDate.setHours(parseInt(hourOfValue) + WORK_HOURS, parseInt(minuteOfValue));
+
+                          setSchedule(prevState => ({
+                            ...prevState,
+                            start_hour_plantao: value,
+                            end_hour_plantao: `${currentDate.getHours()}:${currentDate.getMinutes() === 0 ? '00' : currentDate.getMinutes()}`
+                          }))
+                        }}
+                        value={schedule.start_hour_plantao}
                         fullWidth
                       />
 
@@ -1130,6 +1318,7 @@ export default function SchedulePage(props: RouteComponentProps<IPageParams>) {
                         size="small"
                         label="Fim"
                         variant="outlined"
+                        disabled
                         // defaultValue="07:30"
                         InputLabelProps={{
                           shrink: true,
@@ -1137,8 +1326,8 @@ export default function SchedulePage(props: RouteComponentProps<IPageParams>) {
                         inputProps={{
                           step: 300, // 5 min
                         }}
-                        onChange={e => setSchedule(prevState => ({ ...prevState, end_at: e.target.value }))}
-                        value={schedule.end_at}
+                        // onChange={e => setSchedule(prevState => ({ ...prevState, end_hour_plantao: e.target.value }))}
+                        value={schedule.end_hour_plantao}
                         fullWidth
                       />
 
