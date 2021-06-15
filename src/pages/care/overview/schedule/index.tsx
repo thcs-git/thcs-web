@@ -1318,7 +1318,7 @@ export default function SchedulePage(props: RouteComponentProps<IPageParams>) {
                         size="small"
                         label="Fim"
                         variant="outlined"
-                        disabled
+                        disabled={!!(professionalTypeValue === 'plantonista')}
                         // defaultValue="07:30"
                         InputLabelProps={{
                           shrink: true,
