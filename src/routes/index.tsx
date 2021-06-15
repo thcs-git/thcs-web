@@ -32,7 +32,7 @@ import UserList from '../pages/user/list';
 import UserForm from '../pages/user/form';
 
 import UserDisengaged from '../pages/user_disengaged/list/index';
-
+import UserConfiguration from '../pages/userconfiguration/form/index';
 import PatientList from '../pages/patient/list';
 import PatientForm from '../pages/patient/form';
 import PatientCaptureCreate from '../pages/patient/capture/form';
@@ -70,9 +70,11 @@ const Routes = () => (
       <Route path="/:token/recoverypass" component={RecoveryPassword}/>
       <Route path="/forgotpassword" component={ForgotPassword}/>
 
+      <PrivateRoute path="/userconfiguration" component={UserConfiguration} />
 
       <PrivateRoute path="/" component={Dashboard} exact />
       <PrivateRoute path="/dashboard" component={Dashboard} />
+
 
       {/* Clientes */}
       <PrivateRoute path="/customer" component={CustomerList} exact />
