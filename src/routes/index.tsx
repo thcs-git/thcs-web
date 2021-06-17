@@ -48,6 +48,7 @@ import RecoveryPassword from '../pages/recoverypassword/form/index';
 import ForgotPassword from "../pages/forgotpassword/form/index";
 import RegisterForm from '../pages/register/form';
 import AvaliationList from '../pages/avaliation/list';
+import RecoveryPassMenu from '../pages/recoverypassmenu';
 import QrCode from '../pages/qrcode/';
 // import PatientForm from '../pages/patient/form';
 // import CareOverview from '../pages/patient/overview';
@@ -71,7 +72,7 @@ const Routes = () => (
       <Route path="/forgotpassword" component={ForgotPassword}/>
 
       <PrivateRoute path="/userconfiguration" component={UserConfiguration} />
-
+      <PrivateRoute path="/recoverypassmenu" component={RecoveryPassMenu} />
       <PrivateRoute path="/" component={Dashboard} exact />
       <PrivateRoute path="/dashboard" component={Dashboard} />
 
