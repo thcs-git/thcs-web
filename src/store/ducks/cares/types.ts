@@ -209,6 +209,7 @@ export interface ScheduleInterface {
   created_by?: string | UserSimpleDataInterface;
   canceled_at?: string;
   canceled_by?: string | UserSimpleDataInterface;
+  professional_type?: string;
 }
 
 export interface UserSimpleDataInterface {

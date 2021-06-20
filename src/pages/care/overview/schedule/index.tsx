@@ -25,7 +25,11 @@ import { ProfessionUserInterface } from '../../../../store/ducks/users/types';
 import { formatDate, translate as translateDateHelper, getDayOfTheWeekName } from "../../../../helpers/date";
 import { exchangeTypes as exchageTypesHelper } from '../../../../helpers/schedule';
 
+import { ReactComponent as IconPermuta } from '../../../../assets/img/icon-permuta.svg';
+import { ReactComponent as IconNoturno } from '../../../../assets/img/icon-noturno.svg';
+import { ReactComponent as IconDiurno } from '../../../../assets/img/icon-diurno.svg';
 import { ReactComponent as IconPlantao } from '../../../../assets/img/icon-plantao.svg';
+import { ReactComponent as IconPlantaoTransparent } from '../../../../assets/img/icon-plantao-transparent.svg';
 
 import Sidebar from '../../../../components/Sidebar';
 import Loading from '../../../../components/Loading';
@@ -36,7 +40,7 @@ import ButtonComponent from '../../../../styles/components/Button';
 import { ComplexityStatus } from '../../../../styles/components/Table';
 import DatePicker from '../../../../styles/components/DatePicker';
 
-import { ScheduleItem, CardTitle, CalendarContent, ScheduleEventStatus, HeaderContent, ResumeList, TabsMenuWrapper, ContainerSearch } from './styles';
+import { ScheduleItem, CardTitle, CalendarContent, ScheduleEventStatus, HeaderContent, ResumeList, TabsMenuWrapper, ContainerSearch, CardPlantonistas } from './styles';
 
 interface IDay {
   allDay: boolean;
@@ -441,6 +445,34 @@ export default function SchedulePage(props: RouteComponentProps<IPageParams>) {
     }
   };
 
+  const renderOnlyPlantonistas = useCallback(() => {
+    let uniqPlanotinista: any = [];
+    const { schedule } = careState;
+
+    schedule?.forEach(plantonista => {
+      if (plantonista.professional_type === 'plantonista' && (typeof plantonista.user_id === 'object')) {
+        let hasPlantonista = uniqPlanotinista.some((uniq: any) => (typeof plantonista.user_id === 'object') && uniq.user_id.name === plantonista.user_id.name)
+
+        if (!hasPlantonista) uniqPlanotinista.push(plantonista)
+      }
+    })
+
+    return (
+      <>
+        {uniqPlanotinista.map((planto: any) => (
+          <>
+            {dayjs(planto.start_at).hour() >= 6 && dayjs(planto.end_at).hour() <= 21 ? (
+              <IconDiurno />
+            ): (
+              <IconNoturno />
+            )}
+            <p>{planto.user_id.name}, {dayjs(planto.start_at).hour() >= 6 && dayjs(planto.end_at).hour() <= 21 ? 'diurno' : 'noturno'}</p>
+          </>
+        ))}
+      </>
+    );
+  }, [careState.schedule]);
+
   const renderComplexityList = useCallback(() => {
     const complexity = companyState.data.settings?.complexity?.find(item => item.title === (careState.data?.complexity || careState.data?.capture?.complexity || 'Sem Complexidade'));
 
@@ -813,15 +845,19 @@ export default function SchedulePage(props: RouteComponentProps<IPageParams>) {
                   <Card style={{ marginRight: 10 }}>
                     <CardContent>
                       <CardTitle>
-                        <AccountCircle />
-                        <h4>Informações do Paciente</h4>
+                        <IconPermuta className="permuta-icon"  />
+                        <h4>Permutas</h4>
                       </CardTitle>
 
-                      <p>DN: {formatDate(careState.data?.patient_id?.birthdate, 'DD/MM/YYYY')}</p>
-                      <p>Mãe: {careState.data?.patient_id?.mother_name}</p>
-                      <p>CPF: {careState.data?.patient_id?.fiscal_number}</p>
-                      <p>CID: {(typeof careState.data?.cid_id === 'object') ? careState.data?.cid_id.name : ''}</p>
-                      <p>Médico Assistente: {careState.data?.capture?.assistant_doctor}</p>
+                      <div>
+                        {events.map(({ user_id, start, extendedProps: { exchange } }) => (
+                          <>
+                            {!!exchange.exchanged_to && (
+                              <p><b>{dayjs(start).format('DD/MM')}</b> - {user_id.name} <b>por</b> {exchange?.exchanged_to?.name}</p>
+                            )}
+                          </>
+                        ))}
+                      </div>
                     </CardContent>
                   </Card>
                 </Grid>
@@ -830,19 +866,24 @@ export default function SchedulePage(props: RouteComponentProps<IPageParams>) {
                   <Card style={{ marginRight: 10 }}>
                     <CardContent>
                       <CardTitle>
-                        <SupervisorAccountRounded />
-                        <h4>Complexidade - Indicações</h4>
+                        <IconPlantaoTransparent className="duty-icon" />
+                        <h4>Plantonistas</h4>
                       </CardTitle>
 
-                      <TextCenter style={{ marginBottom: 20, fontWeight: 'bold' }}>
+                      {/* <TextCenter style={{ marginBottom: 20, fontWeight: 'bold' }}>
                         <ComplexityStatus status={careState.data?.complexity || careState.data?.capture?.complexity || 'Sem Complexidade'} style={{ justifyContent: 'center' }}>
                           {careState.data?.complexity || careState.data?.capture?.complexity || 'Sem Complexidade'}
                         </ComplexityStatus>
-                      </TextCenter>
+                      </TextCenter> */}
 
-                      <div>
-                        {renderComplexityList()}
-                      </div>
+                      <CardPlantonistas>
+                        {renderOnlyPlantonistas()}
+                        {/* {careState.schedule &&
+                          careState.schedule.map(event => event.professional_type === 'plantonista' && (typeof event.user_id === 'object') && <p>{event.user_id.name}</p>
+                        )} */}
+
+                        {/* {renderComplexityList()} */}
+                      </CardPlantonistas>
 
                     </CardContent>
                   </Card>
@@ -854,8 +895,10 @@ export default function SchedulePage(props: RouteComponentProps<IPageParams>) {
                       <CardTitle>
                         <SupervisorAccountRounded />
                         <h4>Equipe Multidisciplinar</h4>
+                        {console.log({ team })}
                       </CardTitle>
                       <div>
+
                         {team.length ? (
                           <>
                             {team.map(user => (
@@ -1445,6 +1488,7 @@ export default function SchedulePage(props: RouteComponentProps<IPageParams>) {
                   />
                 </ListItem>
               </ResumeList>
+
 
               {schedule.data.exchange.type ? (
                 <>
