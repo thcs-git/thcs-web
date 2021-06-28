@@ -2,16 +2,16 @@
 
 import loc from '../../support/locators';
 
-beforeEach(() =>{
-  cy.reload()
-  cy.visit(Cypress.env('host')+'/login')
-  cy.login('brunogcpereira@gmail.com','123456789')
-  cy.xpath(loc.MENU.XP_BTN_AREA).click()
-})
 
 describe('Validation Area', () => {
+  beforeEach(() =>{
+    cy.reload()
+    cy.visit(Cypress.env('host')+'/login')
+    cy.login('brunogcpereira@gmail.com','123456789')
+    cy.xpath(loc.MENU.XP_BTN_AREA).click()
+  })
 
-  it('Area - Elements', () =>{
+  it('Should to valid Area Elements', () =>{
     cy.xpath(loc.AREA.XP_LISTA).should('have.length',10)
     cy.get('.sc-iJuUWI').should('be.visible')
     cy.get('#search-input').should('be.visible')
@@ -21,7 +21,7 @@ describe('Validation Area', () => {
   })
 
 
-  it('Dados Area', () => {
+  it('Should to valid "Dados Area" Elements', () => {
     cy.xpath(loc.AREA.XP_BTN_NOVA_AREA).click()
     cy.xpath(`//div//h2[contains(.,'Cadastro de Área')]`).should('contain','Cadastro de Área')
     cy.xpath(loc.AREA.XP_BTN_DADOS_AREA).should('be.visible')
@@ -29,14 +29,14 @@ describe('Validation Area', () => {
     cy.xpath(loc.AREA.XP_BTN_PRESTADORES).should('be.visible')
     //Elements
     cy.get(loc.AREA.INPUT_NAME).should('be.visible')
-    cy.get(loc.AREA.SLIDE_ABASTECIMENTO).should('be.visible')
-    cy.get(loc.AREA.ABASTECIMENTO).should('be.visible')
+    cy.get('.MuiSlider-root').should('be.visible')
+    cy.get('.MuiSlider-thumb').should('be.visible')
     cy.xpath(loc.AREA.XP_BTN_CANCELAR).should('be.visible')
     cy.xpath(loc.AREA.XP_BTN_PROXIMO).should('be.visible')
 
   })
 
-  it('Bairros ', () => {
+  it('Should to valid "Bairros" Elements', () => {
     cy.wait(2000)
     cy.xpath(loc.AREA.XP_BTN_NOVA_AREA).click()
     cy.xpath(loc.AREA.XP_BTN_BAIRROS).click()
@@ -47,9 +47,9 @@ describe('Validation Area', () => {
     cy.xpath(loc.AREA.XP_BTN_PROXIMO).should('be.visible')
     cy.xpath(loc.AREA.XP_BTN_VOLTAR).should('be.visible')
 
-  });
+  })
 
-  it('Prestadores', () => {
+  it('Should to valid "Prestadores" Elements', () => {
     cy.wait(2000)
     cy.xpath(loc.AREA.XP_BTN_NOVA_AREA).click()
     cy.xpath(loc.AREA.XP_BTN_PRESTADORES).click()
@@ -61,7 +61,7 @@ describe('Validation Area', () => {
   })
 
 
-  it.only('Register - Fields ', () => {
+  it('Should to fill in All Fields ', () => {
     cy.xpath(loc.AREA.XP_BTN_NOVA_AREA).click()
     //DADOS DA AREA
     cy.get(loc.AREA.INPUT_NAME).type('Zona Test')
@@ -73,8 +73,7 @@ describe('Validation Area', () => {
 
     //BAIRROS
     cy.get(loc.AREA.ESTADOS).type('Pernambuco{downarrow}{enter}')
-    cy.get(loc.AREA.CIDADES).type('CARUARU')
-    cy.wait(500)
+    cy.get(loc.AREA.CIDADES).type('CARUARU').wait(1000)
     cy.get(loc.AREA.CIDADES).type('{downArrow}{downArrow}{enter}')
     cy.get(loc.AREA.BAIRROS).type('Universitário').wait(2000)
     cy.get(loc.AREA.BAIRROS).type('{downArrow}{enter}')
@@ -84,17 +83,17 @@ describe('Validation Area', () => {
 
     //PRESTADORES
     cy.get(loc.AREA.FUNCOES).type('Administrativo{downarrow}{enter}')
-    cy.get(loc.AREA.PRESTADOR).type('Bruno{downarrow}{enter}')
+    cy.get(loc.AREA.PRESTADOR).type('Heytor{downarrow}{enter}')
     cy.xpath(`//div//h3[contains(.,'Administrativo')]`).should('contain','Administrativo')
     cy.xpath(`//button//span[contains(.,'Bairros')]/span`).should('contain','1')//nº de Bairros adicionado
     cy.xpath(`//button//span[contains(.,'Prestadores')]/span`).should('contain','1')//nº de Prestadores adicionado
-    cy.xpath(`//div//span[contains(.,'Bruno')]`).should('have.text','Bruno Pereira')//Prestador adicionado
+    cy.xpath(`//div//span[contains(.,'HEYTOR')]`).should('have.text','HEYTOR CAVALCANTI DE MOURA')//Prestador adicionado
     cy.xpath(loc.AREA.XP_BTN_CANCELAR).should('be.visible')
     cy.xpath(loc.AREA.XP_BTN_SALVAR).should('be.visible')
     cy.xpath(loc.AREA.XP_BTN_VOLTAR).should('be.visible')
     })
 
-    it('Register (sem abastecimento/dias) - Fields ', () => {
+    it('Should to fill in All Fields (sem abastecimento/dias)', () => {
 
       cy.xpath(loc.AREA.XP_BTN_NOVA_AREA).click()
       //DADOS DA AREA
@@ -105,10 +104,9 @@ describe('Validation Area', () => {
 
       //BAIRROS
       cy.get(loc.AREA.ESTADOS).type('Pernambuco{downarrow}{enter}')
-      cy.get(loc.AREA.CIDADES).type('CARUARU')
-      cy.wait(500)
+      cy.get(loc.AREA.CIDADES).type('CARUARU').wait(1000)
       cy.get(loc.AREA.CIDADES).type('{downArrow}{downArrow}{enter}')
-      cy.get(loc.AREA.BAIRROS).type('Universitário').wait(2000)
+      cy.get(loc.AREA.BAIRROS).type('Universitário').wait(1000)
       cy.get(loc.AREA.BAIRROS).type('{downArrow}{enter}')
       cy.get('.MuiChip-label').should('be.visible')
       cy.get('.active > .MuiBadge-root > .MuiBadge-badge').should('be.visible')
@@ -116,46 +114,78 @@ describe('Validation Area', () => {
 
       //PRESTADORES
       cy.get(loc.AREA.FUNCOES).type('Administrativo{downarrow}{enter}')
-      cy.get(loc.AREA.PRESTADOR).type('Bruno{downarrow}{enter}')
+      cy.get(loc.AREA.PRESTADOR).type('Heytor{downarrow}{enter}')
       cy.xpath(`//div//h3[contains(.,'Administrativo')]`).should('contain','Administrativo')
       cy.xpath(`//button//span[contains(.,'Bairros')]/span`).should('contain','1')//nº de Bairros adicionado
       cy.xpath(`//button//span[contains(.,'Prestadores')]/span`).should('contain','1')//nº de Prestadores adicionado
-      cy.xpath(`//div//span[contains(.,'Bruno')]`).should('have.text','Bruno Pereira')//Prestador adicionado
+      cy.xpath(`//div//span[contains(.,'HEYTOR')]`).should('have.text','HEYTOR CAVALCANTI DE MOURA')//Prestador adicionado
       cy.xpath(loc.AREA.XP_BTN_CANCELAR).should('be.visible')
       cy.xpath(loc.AREA.XP_BTN_SALVAR).should('be.visible')
       cy.xpath(loc.AREA.XP_BTN_VOLTAR).should('be.visible')
       });
 
 
-    it.only('Edit - Area', () => {
-
+    it('Should to Edit an Area', () => {
         cy.xpath(loc.AREA.XP_BTN_MENU).click()
         cy.xpath(loc.AREA.XP_BTN_MENU_EDITAR).click()
-        cy.get(loc.AREA.INPUT_NAME).type('Edit')
+        cy.get(loc.AREA.INPUT_NAME).type('{backspace}Edit')
         // //Botão redundante "Editar" NÃO deve está visivel
-        cy.xpath(`//span[contains(.,'Editar')]`).should('be.visible')//ainda visivel(Para o teste passar)
-
+        cy.xpath(`//span[contains(.,'Editar')]`).should('not.be.visible')//ainda visivel(Para o teste passar)
         cy.get('[aria-hidden="true"][data-index="6"]').click()
-        cy.xpath(`//div//button[contains(.,'Salvar')]`).click()
-        cy.get('.Toastify__toast-body').should('contain','Area atualizado com sucesso!')
+        cy.xpath(loc.AREA.XP_BTN_SALVAR).click()
+        cy.get(loc.AREA.MSG).should('contain','Area atualizado com sucesso!')
         cy.url().should('eq','https://sollar-web.vercel.app/area')
     })
 
-    it('Ativo/Inativo - Area', () => {
-
-      cy.xpath(`/html/body/div[1]/div[1]/main/div/div/div[2]/table/tbody/tr[2]/td[7]/button/span[1]`).click()
-      cy.xpath(`//*[@id="area-menu1"]/div[3]/ul/li[2]`).click()
-      cy.xpath(`//*[@id="root"]/div[1]/main/div/div/div[1]/div[1]/button/span[1]`).click()
-      cy.xpath(`//*[@id="root"]/div[1]/main/div/div/div[1]/div[2]/div[2]/div[1]/div/div[3]/label/span[1]/span[1]/span[1]/input`).click()
-      cy.xpath(`//div//button[contains(.,'Salvar')]`).click()
-      cy.get('.Toastify__toast-body').should('contain','Area atualizado com sucesso!')
+    it('Should to change "Ativo/Inativo" an Area', () => {
+      cy.xpath(loc.AREA.XP_BTN_MENU).click()
+      cy.xpath(loc.AREA.XP_BTN_MENU_EDITAR).click()
+      cy.get(loc.AREA.INPUT_NAME).click()
+      cy.get('[type="checkbox"]').click()
+      cy.xpath(loc.AREA.XP_BTN_SALVAR).click()
+      cy.get(loc.AREA.MSG).should('contain','Area atualizado com sucesso!')
       cy.url().should('eq','https://sollar-web.vercel.app/area')
+    })
 
-    });
+    it('Should to show Popup confirmation in "Menu Editar"', () => {
+      cy.xpath(loc.AREA.XP_BTN_MENU).click()
+      cy.xpath(loc.AREA.XP_BTN_MENU_EDITAR).click()
+      cy.get(loc.AREA.INPUT_NAME).click()
+      cy.get(loc.AREA.INPUT_NAME).type('{backspace}Edit')
+      cy.xpath(loc.AREA.XP_BTN_CANCELAR).click()
+      cy.get(loc.AREA.POPUP_MENU).should('be.visible').and('contain','Atenção')
+    })
 
+    it.skip('Should to show Popup confirmation in "Nova Area"', () => {
+      //Teste ainda não funciona
+      cy.xpath(loc.AREA.XP_BTN_NOVA_AREA).click()
+      cy.get(loc.AREA.INPUT_NAME).click()
+      cy.get(loc.AREA.INPUT_NAME).type('Edit')
+      cy.xpath(loc.AREA.XP_BTN_CANCELAR).click()
+      //popup Não está Aparecendo (Popup Em desenvolvimento)
+      cy.get(loc.AREA.POPUP_MENU).should('be.visible').and('contain','Cancelar')
+    })
 
+    it('Should to search Ativo', () => {
+      cy.server()
+      cy.route('GET','**/patientarea/**').as('response')
+      cy.get(loc.AREA.SEARCH).type('ativo{enter}')
+      cy.wait('@response').then((xhr) => {
+        let total = xhr.response.body.total
+        expect(xhr.response.body.total).be.equal(total)
+        expect(xhr.status).be.equal(200)
+      })
+    })
 
-
-
+    it('Should to search Inativo', () => {
+      cy.server()
+      cy.route('GET','**/patientarea/**').as('response')
+      cy.get(loc.AREA.SEARCH).type('inativo{enter}')
+      cy.wait('@response').then((xhr) => {
+        let total = xhr.response.body.total
+        expect(xhr.response.body.total).be.equal(total)
+        expect(xhr.status).be.equal(200)
+      })
+    })
 })
 
