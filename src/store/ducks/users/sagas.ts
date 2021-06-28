@@ -46,7 +46,6 @@ export function* getUserById({ payload: { id: _id } }: any) {
       headers: { token },
       params: { _id },
     });
-
     yield put(loadSuccessGetUserById(response.data));
   } catch (error) {
     yield put(loadFailure());

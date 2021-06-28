@@ -27,9 +27,7 @@ export default function Configuration() {
 
   useEffect(() => {
     const { companies: userCompanies } = userState.data
-
     setCompanies(userCompanies);
-
   }, [userState]);
 
   const selectCompany = useCallback(() => {
@@ -38,15 +36,17 @@ export default function Configuration() {
   }, [companies, user]);
 
   const changeCompany = useCallback((company: any) => {
-    localStorage.setItem(LOCALSTORAGE.COMPANY_SELECTED, company._id);
-    localStorage.setItem(LOCALSTORAGE.COMPANY_NAME, company.name);
-    localStorage.setItem(LOCALSTORAGE.CUSTOMER, company.customer_id._id);
-    localStorage.setItem(LOCALSTORAGE.CUSTOMER_NAME, company.customer_id.name);
+    if (company != null) {
+      localStorage.setItem(LOCALSTORAGE.COMPANY_SELECTED, company._id);
+      localStorage.setItem(LOCALSTORAGE.COMPANY_NAME, company.name + "   -   " + company.customer_id.name);
+      localStorage.setItem(LOCALSTORAGE.CUSTOMER, company.customer_id._id);
+      localStorage.setItem(LOCALSTORAGE.CUSTOMER_NAME, company.customer_id.name);
 
-    setUser(prevState => ({
-      ...prevState,
-      companySelected: company._id
-    }))
+      setUser(prevState => ({
+        ...prevState,
+        companySelected: company._id
+      }))
+    }
   }, [user]);
 
   return (
@@ -61,11 +61,11 @@ export default function Configuration() {
         <br />
 
         <Grid container>
-          <Grid item sm={4} md={4} lg={4}>
+          <Grid item sm={10} md={10} lg={10}>
             <Autocomplete
               id="combo-box-change-company"
               options={companies}
-              getOptionLabel={(option: any) => option.name}
+              getOptionLabel={(option: any) => option.name + "   -   " + option.customer_id.name}
               getOptionSelected={(option, value) => option._id === user.companySelected}
               value={selectCompany()}
               renderInput={(params) => <TextField {...params} label="Empresa" variant="outlined" autoComplete="off" />}

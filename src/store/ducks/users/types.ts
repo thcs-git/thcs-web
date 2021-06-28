@@ -60,9 +60,15 @@ export interface UserTypesInterface {
   name: string;
 }
 
+export interface CustomerUserInterface {
+  id: string;
+  name: string;
+}
+
 export interface CompanyUserInterface {
   id: string;
   name: string;
+  customer_id: CustomerUserInterface | {};
 }
 
 export interface UserTypeInterface {
