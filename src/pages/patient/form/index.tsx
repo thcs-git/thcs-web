@@ -229,11 +229,7 @@ export default function PatientForm(props: RouteComponentProps<IPageParams>) {
   var isValidResponsableCellPhoneNumber: any;
   var formValid : any;
 
-  var cepError = false;
 
-  if (patientState.error && state.address_id.postal_code != ''){
-    cepError = true;
-  }
 
   const validatePhone = () => {
 
@@ -246,9 +242,11 @@ export default function PatientForm(props: RouteComponentProps<IPageParams>) {
 
 
    }
-
+   var cpfIsValid : any;
   const checkIsCpfValid = useCallback(() => {
-    return !!cpf.isValid(state.fiscal_number);
+
+    return !!cpf.isValid(state.fiscal_number) ;
+
   }, [state.fiscal_number]);
 
 
@@ -277,6 +275,28 @@ export default function PatientForm(props: RouteComponentProps<IPageParams>) {
     formValid = true;
 
   }
+
+  useEffect(() => {
+    const field = patientState.errorCep ? 'input-postal-code' : 'input-address-number';
+    console.log(patientState.errorCep);
+
+
+    patientState.errorCep && setState(prevState => ({
+      ...prevState,
+      address_id: {
+        ...prevState.address_id,
+        city: '',
+        complement: '',
+        district: '',
+
+        state: '',
+        street: '',
+      }
+    }));
+
+    document.getElementById('input-social-client')?.focus();
+  }, [patientState.errorCep]);
+
 
 
   useEffect(() => {
@@ -371,7 +391,7 @@ export default function PatientForm(props: RouteComponentProps<IPageParams>) {
 
       setState(prev => ({
         ...prev,
-        address: {
+        address_id: {
           ...prev.address_id,
           street: '',
           number: '',
@@ -386,7 +406,7 @@ export default function PatientForm(props: RouteComponentProps<IPageParams>) {
     setState(prevState => {
       return {
         ...prevState,
-        address: {
+        address_id: {
           ...patientState.data.address_id
         }
       }
@@ -602,6 +622,7 @@ export default function PatientForm(props: RouteComponentProps<IPageParams>) {
                             mask="999.999.999-99"
                             value={state.fiscal_number}
                             onChange={(element) => setState({ ...state, fiscal_number: element.target.value })}
+                            onBlur = {checkIsCpfValid}
                           >
                             {(inputProps: any) => (
                               <OutlinedInputFiled
@@ -609,11 +630,11 @@ export default function PatientForm(props: RouteComponentProps<IPageParams>) {
                                 placeholder="000.000.000-00"
                                 labelWidth={80}
                                 style={{ marginRight: 12 }}
-                                error={!checkIsCpfValid()}
+                                error={!!cpf.isValid(state.fiscal_number) == false && state.fiscal_number != "___.___.___-__" && !!state.fiscal_number}
                               />
                             )}
                           </InputMask>
-                          {!checkIsCpfValid() && (
+                          {!!cpf.isValid(state.fiscal_number) == false && state.fiscal_number != "___.___.___-__" && !!state.fiscal_number &&(
                               <p style={{ color: '#f44336', margin:'1px 5px 20px' }}>
                               Por favor insira um cpf válido
                               </p>
@@ -638,7 +659,7 @@ export default function PatientForm(props: RouteComponentProps<IPageParams>) {
                                 placeholder="000.000.000-00"
                                 labelWidth={80}
                                 style={{ marginRight: 12 }}
-                                error={fieldsValidation.national_id}
+
                               />
                             )}
                           </InputMask>
@@ -740,7 +761,7 @@ export default function PatientForm(props: RouteComponentProps<IPageParams>) {
                             {(inputProps: Props) => (
                               <OutlinedInputFiled
 
-                              error={cepError}
+                              error={patientState.errorCep}
                                 id="input-postal-code"
                                 label="CEP"
                                 placeholder="00000-000"
@@ -755,7 +776,7 @@ export default function PatientForm(props: RouteComponentProps<IPageParams>) {
                             )}
                           </InputMask>
                         </FormControl>
-                        {patientState.error && state.address_id.postal_code != '' &&(
+                        {patientState.errorCep && state.address_id.postal_code != '' &&(
                       <p style={{ color: '#f44336', margin:'-2px 5px 10px' }}>
                         Digite um CEP válido
                       </p>

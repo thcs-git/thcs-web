@@ -453,7 +453,7 @@ export default function AreaForm(props: RouteComponentProps<IPageParams>) {
 
   // Bairros
   function handleStates (value:any){
-
+    console.log(value);
     if(value){
       setInputState(prev =>({
       ...prev,
@@ -464,16 +464,18 @@ export default function AreaForm(props: RouteComponentProps<IPageParams>) {
 
 };
   function handleSelectDistricts(value:any){
+    console.log(value);
     if(value){
       setInpuCity(prev=>({
         ...prev,
         value:value.name
       }))
 
-      dispatch(loadGetDistricts_({city:value.name}));
+      dispatch(loadGetDistricts_({city:value.name,state:value.state}));
     }
   }
   const  handleSelectNeighborhood= useCallback((event:any,value1: any)=> {
+    console.log(value1);
     const found  = state.neighborhoods.findIndex((item:any)=>{
           return item._id === value1._id;
         });
@@ -616,7 +618,7 @@ export default function AreaForm(props: RouteComponentProps<IPageParams>) {
           <div style={{ display: 'flex', alignItems: 'center', flexDirection: 'row' }}>
             <FormTitle>Cadastro de Área</FormTitle>
 
-            {params.id && (
+            {((params.id && params.mode == 'view' && !canEdit)||(params.id && params.mode == 'create' && !canEdit))&&(
               <Button style={{ marginTop: -20, marginLeft: 15, color: '#0899BA' }} onClick={() => setCanEdit(!canEdit)}>
                 <Edit style={{ marginRight: 5, width: 18 }} />
               Editar
@@ -823,7 +825,7 @@ export default function AreaForm(props: RouteComponentProps<IPageParams>) {
                           size="small"
                           onChange={(event, value) => {
                             if (value) {
-                              handleSelectNeighborhood(event, {...value,state:inputState.value})
+                              handleSelectNeighborhood(event, {...value})
                             }
                           }}
                           fullWidth

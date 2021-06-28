@@ -153,7 +153,7 @@ export default function AvaliationList() {
     }else{
         if(files && files?.length >0){
           console.log(files[0]);
-           if(files[0].type == 'application/pdf' && files[0].size < 10000000 ){
+           if(files[0].type == 'application/pdf' && files[0].size < 5000000){
             setFile(prevState=>({
               ...prevState,
               error:false
@@ -363,7 +363,7 @@ export default function AvaliationList() {
               </FieldContent> */}
               <FieldContent>
               <DialogContentText tabIndex={-1}>Anexar Guia de Autorização</DialogContentText>
-              <DialogContentText>Arquivos .pdf e menores que 1 gigabytes.</DialogContentText>
+              <DialogContentText>Arquivos .pdf e menores que 5 megabytes.</DialogContentText>
                 <TextField
                 error={file.error}
                 onChange={handleChangeFiles}

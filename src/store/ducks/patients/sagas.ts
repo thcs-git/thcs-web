@@ -146,7 +146,7 @@ export function* getAddress({ payload }: any) {
 
     yield put(successGetAddress(data));
   } catch (error) {
-    toast.error("Não foi possível obter os dados do endereço");
+
     yield put(loadFailure());
   }
 }
@@ -199,4 +199,18 @@ export function* getPatientCapture({ payload }: any) {
     toast.error("Error ao buscar a lista de paciente para captura");
     yield put(loadFailure());
   }
+}
+
+export function* getLastMeasurement({ payload }: any) {
+  try {
+    const { params } = payload;
+
+    const response: AxiosResponse = yield call(
+      apiSollar.get,
+      `/measurement/lastEntries?&patient_id=${params.patient_id}`,
+      {
+        headers: { token },
+      }
+    );
+  } catch (error) {}
 }
