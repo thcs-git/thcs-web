@@ -127,7 +127,7 @@ export default function UserConfiguration(){
       <Sidebar>
         <BoxCustom>
            <Grid container direction="column">
-              <Grid item md={7}>
+              <Grid item md={5}>
                 <FeedbackTitle>
                   Configurações
                 </FeedbackTitle>
@@ -144,9 +144,9 @@ export default function UserConfiguration(){
                       <Grid item md={4}>
                         <Button>Atualizar Dados</Button>
                       </Grid>
-                      </Grid>
-
-                    <Grid item style={{paddingLeft:"2rem"}}>
+                    </Grid>
+                    <Grid container direction="column" >
+                        <Grid item style={{paddingLeft:"2rem"}}>
                       cpf:{userState.data.fiscal_number}
                     </Grid>
                     <Grid item style={{paddingLeft:"2rem"}}>
@@ -155,21 +155,23 @@ export default function UserConfiguration(){
                     <Grid item style={{paddingLeft:"2rem"}}>
                       telefone:{userState.data.phone}
                     </Grid>
+                    </Grid>
+
+
                   </CardContent>
                 </Card>
               </Grid>
               <Grid item md={6} style={{paddingTop:"1rem"}} >
                 <Grid container>
-                  <Card style={{borderRadius:"20px", padding:"0.5rem", display:"flex",justifyContent:"center",alignItems:"center", height:"40px", background:"#16679A;"}}>
-                      <HomeRoundedIcon style={{ fontSize: 30,backgroundColor:"#16679A;" }} />
+                  <Card style={{borderRadius:"20px",  display:"flex",justifyContent:"center",alignItems:"center", height:"40px"}}>
+                    <CardContent style={{backgroundColor: "#0899BA",borderRadius:"20px", padding:"0.5rem", display:"flex",justifyContent:"center",alignItems:"center", height:"40px"}}>
+                      <HomeRoundedIcon style={{color:"#ffffff"}} />
+                    </CardContent>
                   </Card>
                   <FeedbackTitle style={{paddingLeft:"1rem",paddingTop:"0.5rem"}}>
                   Minhas Empresas
                 </FeedbackTitle>
                 </Grid>
-
-
-
               <Autocomplete
               style={{paddingTop:"1rem", paddingLeft:"4rem"}}
               id="combo-box-change-company"
@@ -185,12 +187,19 @@ export default function UserConfiguration(){
             />
             </Grid>
             <Grid item md={12} style={{paddingTop:"1rem"}}>
-              <FeedbackTitle>
+            <Grid container>
+              <Card style={{borderRadius:"20px",  display:"flex",justifyContent:"center",alignItems:"center", height:"40px"}}>
+                <CardContent style={{backgroundColor: "#0899BA",borderRadius:"20px", padding:"0.5rem", display:"flex",justifyContent:"center",alignItems:"center", height:"40px"}}>
+                  <FindReplaceRoundedIcon style={{color:"#ffffff"}} />
+                </CardContent>
+              </Card>
+              <FeedbackTitle style={{paddingLeft:"1rem",paddingTop:"0.5rem"}}>
                 Auditoria
               </FeedbackTitle>
+            </Grid>
               <List>
-                <ListItem>
-                  <Grid item md={7} xs={12}>
+                <ListItem style={{paddingLeft:"3.5rem"}}>
+                  <Grid item md={6} xs={11}>
                     <FormGroupSection>
                       <p>Abastecimento/dias</p>
                         <div style={{ paddingLeft: 10 }}>
@@ -214,17 +223,22 @@ export default function UserConfiguration(){
                       </FormGroupSection>
                   </Grid>
                 </ListItem>
-                <ListItem>
 
-                </ListItem>
               </List>
             </Grid>
             <Grid item md={12}>
-              <FeedbackTitle>
+            <Grid container>
+              <Card style={{borderRadius:"20px",  display:"flex",justifyContent:"center",alignItems:"center", height:"40px"}}>
+                <CardContent style={{backgroundColor: "#0899BA",borderRadius:"20px", padding:"0.5rem", display:"flex",justifyContent:"center",alignItems:"center", height:"40px"}}>
+                  <LockRoundedIcon style={{color:"#ffffff"}} />
+                </CardContent>
+              </Card>
+              <FeedbackTitle style={{paddingLeft:"1rem",paddingTop:"0.5rem"}}>
                 Segurança
               </FeedbackTitle>
+            </Grid>
               <List>
-                <ListItem>
+                <ListItem style={{paddingLeft:"4rem"}}>
                    <FeedbackDescription>
                      <Link to="/recoverypassmenu">Alterar minha senha
                      </Link>
@@ -235,10 +249,17 @@ export default function UserConfiguration(){
             </Grid>
 
             <Grid item md={12}>
-              <FeedbackTitle>
+            <Grid container>
+              <Card style={{borderRadius:"20px",  display:"flex",justifyContent:"center",alignItems:"center", height:"40px"}}>
+                <CardContent style={{backgroundColor: "#0899BA",borderRadius:"20px", padding:"0.5rem", display:"flex",justifyContent:"center",alignItems:"center", height:"40px"}}>
+                  <LockRoundedIcon style={{color:"#ffffff"}} />
+                </CardContent>
+              </Card>
+              <FeedbackTitle style={{paddingLeft:"1rem",paddingTop:"0.5rem"}}>
                 Acessibilidade
               </FeedbackTitle>
-              <List>
+            </Grid>
+              <List style={{paddingLeft:"3rem"}}>
                 <ListItem>
                   Fontes Grande <Switch />
                 </ListItem>
@@ -248,10 +269,17 @@ export default function UserConfiguration(){
               </List>
             </Grid>
             <Grid item md={12}>
-              <FeedbackTitle>
+            <Grid container>
+              <Card style={{borderRadius:"20px",  display:"flex",justifyContent:"center",alignItems:"center", height:"40px"}}>
+                <CardContent style={{backgroundColor: "#0899BA",borderRadius:"20px", padding:"0.5rem", display:"flex",justifyContent:"center",alignItems:"center", height:"40px"}}>
+                  <InfoRoundedIcon style={{color:"#ffffff"}} />
+                </CardContent>
+              </Card>
+              <FeedbackTitle style={{paddingLeft:"1rem",paddingTop:"0.5rem"}}>
                 Sobre o Sollar
               </FeedbackTitle>
-              <BoxCustomFoot>
+            </Grid>
+              <BoxCustomFoot style={{paddingLeft:"3rem"}}>
               Sollar 2021 <br />
               Versao 1.02 <br />
               Powered by TASCOM informática
