@@ -352,14 +352,25 @@ export function* recoveryPassword({ payload: { data } }: any) {
   localStorage.removeItem(LOCALSTORAGE.USERNAME);
   localStorage.removeItem(LOCALSTORAGE.USER_ID);
   localStorage.removeItem(LOCALSTORAGE.COMPANY_SELECTED);
-  localStorage.removeItem(LOCALSTORAGE.COMPANY_NAME);
   localStorage.removeItem(LOCALSTORAGE.CUSTOMER);
   localStorage.removeItem(LOCALSTORAGE.CUSTOMER_NAME);
-  console.log(data);
   try {
     const response: AxiosResponse = yield call(
       apiSollar.post,
       `/users/recoverypassword`,
+      { ...data }
+    );
+    console.log(response.data);
+    yield put(loadRecoverySuccess(response.data));
+  } catch (error) {
+    yield put(loadFailure());
+  }
+}
+export function* recoverypasswordiftoken({ payload: { data } }: any) {
+  try {
+    const response: AxiosResponse = yield call(
+      apiSollar.post,
+      `/users/recoverypasswordiftoken`,
       { ...data }
     );
     console.log(response.data);

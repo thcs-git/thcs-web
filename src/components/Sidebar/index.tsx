@@ -172,7 +172,7 @@ const Sibebar = (props: Props<any>) => {
     localStorage.removeItem('@sollar_company_selected');
     localStorage.removeItem('@sollar_company_name');
     localStorage.removeItem('@sollar_customer');
-    localStorage.removeItem('@sollar_customer_name');
+
 
     window.location.reload();
   }, []);
@@ -221,9 +221,8 @@ const Sibebar = (props: Props<any>) => {
             <br />
             <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', }}>
               <BusinessIcon />
-
-              <ListItem style={{ padding: 0 }} className={classes.logOutButton} onClick={() => setOpenModalConfig(true)}>
-                <h4 style={{ color: '#ffffff', marginLeft: 10 }}>{company.name}</h4>
+              <ListItem style={{ padding: 0 }} className={classes.logOutButton} onClick={() => history.push("/userconfiguration")}>
+                <h6 style={{ color: '#ffffff', marginLeft: 10 }}>{company.name}</h6>
                 <EditIcon style={{ color: '#fff', fontSize: '14px', marginLeft: '5px' }} />
               </ListItem>
             </div>
@@ -271,7 +270,7 @@ const Sibebar = (props: Props<any>) => {
           </List>
         <Divider />
         <List disablePadding={true}>
-          <ListItem className={classes.logOutButton} onClick={() => setOpenModalConfig(true)}>
+          <ListItem className={classes.logOutButton} onClick={() => history.push("/userconfiguration")}>
             <ListItemIcon>
               <SettingsIcon style={{ color: '#fff' }} />
             </ListItemIcon>

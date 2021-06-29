@@ -73,6 +73,9 @@ export const loadCheckSuccess = (data: UserInterface) =>
 export const loadRecoveryPassword = (data: UserRecoveryPassword) =>
   action(UserTypes.LOAD_REQUEST_RECOVERY_PASSWORD, { data });
 
+export const loadRecoveryPasswordiftoken = (data: UserRecoveryPassword) =>
+  action(UserTypes.LOAD_REQUEST_RECOVERY_PASSWORD_TOKEN, { data });
+
 export const loadRecoverySuccess = (data: UserRecoveryPassword) =>
   action(UserTypes.LOAD_SUCCESS_RECOVERY_PASSWORD, { data });
 

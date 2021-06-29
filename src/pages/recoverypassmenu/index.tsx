@@ -9,8 +9,8 @@ import FeedbackComponent from "../../components/Feedback";
 import { ButtonDefault,ButtonsContent } from "./style";
 import { Visibility, VisibilityOff } from "@material-ui/icons";
 import { useDispatch, useSelector } from "react-redux";
-import { loadCheckEmail, cleanAction,loadRecoveryPassword, loadUserByEmail, loadRequest,loadUserTypesRequest} from "../../store/ducks/users/actions";
-
+import { loadCheckEmail, cleanAction, loadRecoveryPasswordiftoken, loadUserByEmail, loadRequest,loadUserTypesRequest} from "../../store/ducks/users/actions";
+import LOCALSTORAGE from "../../helpers/constants/localStorage";
 export default function RecoveryPassMenu(){
   const history = useHistory();
   const dispatch = useDispatch();
@@ -24,34 +24,45 @@ export default function RecoveryPassMenu(){
     password:""
 
   })
-  const currentUser = localStorage.getItem(localStorage.USER_ID);
+  const currentUser = window.localStorage.getItem(LOCALSTORAGE.USER_ID);
+
 
   useEffect(()=>{
-    setUserecovery(prev=>({
+    console.log(currentUser);
+    if(currentUser){
+        setUserecovery(prev=>({
       ...prev,
-      id:currentUser
+      _id:currentUser
     }))
-  },[currentUser])
+    }
+  },[currentUser]);
+
   const handleClickShowPassword = useCallback(() => {
     setShowPassword(prev => !prev);
   }, []);
+
   const  handleValidatePassword = useCallback(()=>{
-    setNewPassword(prev => ({ ...prev, error: !(newPassword.value.length >= SIZE_INPUT_PASSWORD
-      && newPassword.value == newConfirmPassword.value) }));
+    console.log(userecovery);
+    setNewPassword(prev => ({
+      ...prev,
+      error: !((newPassword.value.length >= SIZE_INPUT_PASSWORD) && (newPassword.value  && newPassword.value == newConfirmPassword.value))
+    }));
+
       setUserecovery(prev=>({
         ...prev,
         password:newPassword.value
-      }))
+      }));
       }
-  ,[newPassword])
+  ,[newPassword]);
 
   const  recoveryPassword= useCallback(()=>{
     if(!newPassword.error){
         console.log(userecovery);
-    dispatch(loadRecoveryPassword(userecovery));
+    dispatch(loadRecoveryPasswordiftoken(userecovery));
     setOk(true);
     }
-  },[newPassword])
+  },[newPassword]);
+
   return (
     <>
       <Sidebar>
@@ -125,6 +136,7 @@ export default function RecoveryPassMenu(){
                               </IconButton>
                             </InputAdornment>
                           }
+                          onBlur={handleValidatePassword}
                         />
                       </FormControl>
                 </Grid>

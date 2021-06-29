@@ -13,7 +13,7 @@ import ListItemSecondaryAction from '@material-ui/core/ListItemSecondaryAction';
 import FolderIcon from '@material-ui/icons/Folder';
 import Avatar from '@material-ui/core/Avatar';
 import ListItemText from '@material-ui/core/ListItemText';
-import { Chip, FormControlLabel, Grid, IconButton, Slider, Switch, TextField } from '@material-ui/core';
+import { Chip,Button, FormControlLabel, Grid, IconButton, Slider, Switch, TextField } from '@material-ui/core';
 import { BoxCustom, BoxCustomFoot, FeedbackTitle } from '../form/style';
 import {
   createUserRequest,
@@ -36,6 +36,11 @@ import { FeedbackDescription } from '../../../components/Feedback/styles';
 import { FormGroupSection } from '../../area/form/styles';
 import Autocomplete from '@material-ui/lab/Autocomplete';
 import { handleCompanySelected } from '../../../helpers/localStorage';
+import { AccountCircle } from '@material-ui/icons';
+import HomeRoundedIcon from '@material-ui/icons/HomeRounded';
+import InfoRoundedIcon from '@material-ui/icons/InfoRounded';
+import LockRoundedIcon from '@material-ui/icons/LockRounded';
+import FindReplaceRoundedIcon from '@material-ui/icons/FindReplaceRounded';
 export default function UserConfiguration(){
   const history = useHistory();
   const dispatch = useDispatch();
@@ -87,10 +92,12 @@ export default function UserConfiguration(){
     name: localStorage.getItem(LOCALSTORAGE.USERNAME),
     companySelected: handleCompanySelected()
   });
-  const currentUser = localStorage.getItem(LOCALSTORAGE.USER_ID);
+  const currentUser = window.localStorage.getItem(LOCALSTORAGE.USER_ID);
+
   let currentCompany = localStorage.getItem(LOCALSTORAGE.COMPANY_SELECTED);
   useEffect(()=>{
     dispatch(cleanAction());
+    console.log(currentUser);
     if(currentUser){
        dispatch(loadUserById(currentUser));
     }
@@ -120,41 +127,51 @@ export default function UserConfiguration(){
       <Sidebar>
         <BoxCustom>
            <Grid container direction="column">
-              <Grid item md={6}>
+              <Grid item md={7}>
                 <FeedbackTitle>
                   Configurações
                 </FeedbackTitle>
                 <Card>
                   <CardContent style={{display:"flex", flexDirection:"column", justifyContent:"space-between"}}>
                     <Grid container>
-                      <Grid item md={1}>
-                        avatar
-                      </Grid>
-                      <Grid item md={9}>
-                        nome
-                      </Grid>
                       <Grid item md={2}>
-                        botão de editar
+                      <AccountCircle style={{ fontSize: 70 }} />
+                      </Grid>
+                      <Grid item md={6} style={{paddingTop:"1.5rem"}}>
+                        <h3>{userState.data.name}</h3>
+
+                      </Grid>
+                      <Grid item md={4}>
+                        <Button>Atualizar Dados</Button>
                       </Grid>
                       </Grid>
-                    <Grid item>
-                      cpf:
+
+                    <Grid item style={{paddingLeft:"2rem"}}>
+                      cpf:{userState.data.fiscal_number}
                     </Grid>
-                    <Grid item>
-                      email
+                    <Grid item style={{paddingLeft:"2rem"}}>
+                      email:{userState.data.email}
                     </Grid>
-                    <Grid item>
-                      telefone
+                    <Grid item style={{paddingLeft:"2rem"}}>
+                      telefone:{userState.data.phone}
                     </Grid>
                   </CardContent>
                 </Card>
               </Grid>
-              <Grid item md={6}>
-                <FeedbackTitle>
+              <Grid item md={6} style={{paddingTop:"1rem"}} >
+                <Grid container>
+                  <Card style={{borderRadius:"20px", padding:"0.5rem", display:"flex",justifyContent:"center",alignItems:"center", height:"40px", background:"#16679A;"}}>
+                      <HomeRoundedIcon style={{ fontSize: 30,backgroundColor:"#16679A;" }} />
+                  </Card>
+                  <FeedbackTitle style={{paddingLeft:"1rem",paddingTop:"0.5rem"}}>
                   Minhas Empresas
                 </FeedbackTitle>
+                </Grid>
+
+
 
               <Autocomplete
+              style={{paddingTop:"1rem", paddingLeft:"4rem"}}
               id="combo-box-change-company"
               options={userState.data.companies}
               getOptionLabel={(option: any) => option.name}
@@ -167,7 +184,7 @@ export default function UserConfiguration(){
               autoComplete={false}
             />
             </Grid>
-            <Grid item md={12}>
+            <Grid item md={12} style={{paddingTop:"1rem"}}>
               <FeedbackTitle>
                 Auditoria
               </FeedbackTitle>

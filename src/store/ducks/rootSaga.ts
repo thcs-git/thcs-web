@@ -95,6 +95,7 @@ import {
   checkEmail,
   getUserByEmail,
   recoveryPassword,
+  recoverypasswordiftoken,
 } from "./users/sagas";
 
 import { CareTypes } from "./cares/types";
@@ -262,6 +263,10 @@ export default function* rootSaga() {
     takeLatest(UserTypes.LOAD_REQUEST_RECOVERY_PASSWORD, recoveryPassword),
     takeLatest(UserTypes.LOAD_REQUEST_USER_DISENGAGED, loadGetUserDisengaged),
     takeLatest(UserTypes.SEARCH_REQUEST_USER_DISENGAGED, searchUserDisengaged),
+    takeLatest(
+      UserTypes.LOAD_REQUEST_RECOVERY_PASSWORD_TOKEN,
+      recoverypasswordiftoken
+    ),
 
     /** Profession */
     takeLatest(ProfessionTypes.LOAD_REQUEST, getProfession),
