@@ -36,17 +36,18 @@ export default function Configuration() {
   }, [companies, user]);
 
   const changeCompany = useCallback((company: any) => {
-    if (company != null) {
-      localStorage.setItem(LOCALSTORAGE.COMPANY_SELECTED, company._id);
-      localStorage.setItem(LOCALSTORAGE.COMPANY_NAME, company.name + "   -   " + company.customer_id.name);
-      localStorage.setItem(LOCALSTORAGE.CUSTOMER, company.customer_id._id);
-      localStorage.setItem(LOCALSTORAGE.CUSTOMER_NAME, company.customer_id.name);
+    // if (company != null) {
+    //
+    // }
+    localStorage.setItem(LOCALSTORAGE.COMPANY_SELECTED, company._id);
+    localStorage.setItem(LOCALSTORAGE.COMPANY_NAME, company.name);
+    localStorage.setItem(LOCALSTORAGE.CUSTOMER, company.customer_id._id);
+    localStorage.setItem(LOCALSTORAGE.CUSTOMER_NAME, company.customer_id.name);
 
-      setUser(prevState => ({
-        ...prevState,
-        companySelected: company._id
-      }))
-    }
+    setUser(prevState => ({
+      ...prevState,
+      companySelected: company._id
+    }))
   }, [user]);
 
   return (

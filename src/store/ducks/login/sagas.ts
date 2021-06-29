@@ -19,7 +19,7 @@ export function* doLogin({ payload }: any) {
     localStorage.removeItem(LOCALSTORAGE.USERNAME);
     localStorage.removeItem(LOCALSTORAGE.USER_ID);
     localStorage.removeItem(LOCALSTORAGE.COMPANY_SELECTED);
-    localStorage.removeItem(LOCALSTORAGE.COMPANY_NAME);
+    // localStorage.removeItem(LOCALSTORAGE.COMPANY_NAME);
     localStorage.removeItem(LOCALSTORAGE.CUSTOMER);
     localStorage.removeItem(LOCALSTORAGE.CUSTOMER_NAME);
 
@@ -31,7 +31,12 @@ export function* doLogin({ payload }: any) {
 
     if (data.companies.length > 0) {
       localStorage.setItem(LOCALSTORAGE.COMPANY_SELECTED, data.companies[0]._id || null)
-      localStorage.setItem(LOCALSTORAGE.COMPANY_NAME, data.companies[0].name || null)
+
+      // const company = localStorage.getItem(LOCALSTORAGE.COMPANY_NAME)
+
+      const company = data.companies[0].name + '   -   Client'
+
+      localStorage.setItem(LOCALSTORAGE.COMPANY_NAME, company || '')
     }
 
 
