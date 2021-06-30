@@ -27,7 +27,7 @@ import {
   Container,
   FormControlLabel,
 } from '@material-ui/core';
-import { SearchOutlined } from '@material-ui/icons';
+import { Edit, SearchOutlined } from '@material-ui/icons';
 import { validateCNPJ as validateCNPJHelper } from '../../../helpers/validateCNPJ';
 
 import LOCALSTORAGE from '../../../helpers/constants/localStorage';
@@ -47,9 +47,11 @@ import {
   OutlinedInputFiled,
   FormGroupSection
 } from './styles';
+import _ from "lodash";
 
 interface IPageParams {
   id?: string;
+  mode?:string;
 }
 
 export default function CompanyForm(props: RouteComponentProps<IPageParams>) {
@@ -59,6 +61,8 @@ export default function CompanyForm(props: RouteComponentProps<IPageParams>) {
   const companyState = useSelector((state: ApplicationState) => state.companies);
 
   const { params } = props.match;
+
+  const [canEdit, setCanEdit] = useState(true);
 
   const [state, setState] = useState<CompanyInterface>({
     _id: params.id || '',
@@ -208,6 +212,11 @@ export default function CompanyForm(props: RouteComponentProps<IPageParams>) {
 
   useEffect(() => {
     if (params.id) {
+
+      if(params.mode === "view"){
+        setCanEdit(false)
+      }
+
       setState(prevState => {
         return {
           ...prevState,
@@ -263,8 +272,25 @@ export default function CompanyForm(props: RouteComponentProps<IPageParams>) {
 
   }, [fieldsValidation, state]);
 
+  function isEquals(){
+
+    return _.isEqual(state,customerState.data);
+  }
+
+  function ModifiCondition(){
+    if(!isEquals()){
+      return true;
+    }else{
+      return false;
+    }
+  }
+
   function handleOpenModalCancel() {
-    setOpenModalCancel(true);
+    if(ModifiCondition() && canEdit){
+      setOpenModalCancel(true);
+    }else{
+      handleCancelForm();
+    }
   }
 
   function handleCloseModalCancel() {
@@ -273,6 +299,7 @@ export default function CompanyForm(props: RouteComponentProps<IPageParams>) {
 
 
   function handleCancelForm() {
+    dispatch(cleanAction());
     setOpenModalCancel(false);
     history.push(`/company`);
   }
@@ -315,7 +342,16 @@ export default function CompanyForm(props: RouteComponentProps<IPageParams>) {
       <Container>
         <FormSection>
           <FormContent>
+            <div style={{ display: 'flex', alignItems: 'center', flexDirection: 'row' }}>
             <FormTitle>Cadastro de Empresas</FormTitle>
+
+              {(params.id && params.mode == 'view' && !canEdit)&& (
+                <Button style={{ marginTop: -20, marginLeft: 15, color: '#0899BA' }} onClick={() => setCanEdit(!canEdit)}>
+                  <Edit style={{ marginRight: 5, width: 18 }} />
+                  Editar
+                </Button>
+              )}
+            </div>
 
             <FormGroupSection>
               <Grid container>
@@ -327,7 +363,7 @@ export default function CompanyForm(props: RouteComponentProps<IPageParams>) {
                     size="small"
                     value={localStorage.getItem(LOCALSTORAGE.CUSTOMER_NAME)}
                     fullWidth
-
+                    disabled={!canEdit}
                   />
                 </Grid>
               </Grid>
@@ -345,6 +381,7 @@ export default function CompanyForm(props: RouteComponentProps<IPageParams>) {
                       setFieldValidations((prevState: any) => ({ ...prevState, name: !validator.isEmpty(element.target.value) }));
                     }}
                     fullWidth
+                    disabled={!canEdit}
                   />
                 </Grid>
                 <Grid item md={6} xs={12}>
@@ -360,11 +397,13 @@ export default function CompanyForm(props: RouteComponentProps<IPageParams>) {
                     }}
 
                     fullWidth
+                    disabled={!canEdit}
                   />
                 </Grid>
 
                 <Grid item md={6} xs={12}>
                   <InputMask
+                    disabled={!canEdit}
                     mask="99.999.999/9999-99"
                     value={state.fiscal_number}
                     onBlur={validateCNPJField}
@@ -375,6 +414,7 @@ export default function CompanyForm(props: RouteComponentProps<IPageParams>) {
                   >
                     {(inputProps: any) => (
                       <TextField
+                        disabled={!canEdit}
                         {...inputProps}
                         id="input-fiscal-number"
                         label="CNPJ"
@@ -405,6 +445,7 @@ export default function CompanyForm(props: RouteComponentProps<IPageParams>) {
                   <FormControl variant="outlined" size="small" fullWidth>
                     <InputLabel htmlFor="search-input">CEP</InputLabel>
                     <InputMask
+                      disabled={!canEdit}
                       mask="99999-999"
                       value={state.address.postal_code}
                       onChange={(element) => setState({ ...state, address: { ...state.address, postal_code: element.target.value } })}
@@ -413,6 +454,7 @@ export default function CompanyForm(props: RouteComponentProps<IPageParams>) {
                     >
                       {(inputProps: any) => (
                         <OutlinedInputFiled
+                          disabled={!canEdit}
                           error={companyState.errorCep}
                           id="input-postal-code"
                           label="CEP"
@@ -447,6 +489,7 @@ export default function CompanyForm(props: RouteComponentProps<IPageParams>) {
                       setFieldValidations((prevState: any) => ({ ...prevState, street: !validator.isEmpty(element.target.value) }));
                     }}
                     fullWidth
+                    disabled={!canEdit}
                   />
                 </Grid>
 
@@ -462,6 +505,7 @@ export default function CompanyForm(props: RouteComponentProps<IPageParams>) {
                       setFieldValidations((prevState: any) => ({ ...prevState, number: !validator.isEmpty(element.target.value) }));
                     }}
                     fullWidth
+                    disabled={!canEdit}
                   />
                 </Grid>
 
@@ -477,6 +521,7 @@ export default function CompanyForm(props: RouteComponentProps<IPageParams>) {
                       setFieldValidations((prevState: any) => ({ ...prevState, complement: !validator.isEmpty(element.target.value) }));
                     }}
                     fullWidth
+                    disabled={!canEdit}
                   />
                 </Grid>
 
@@ -492,6 +537,7 @@ export default function CompanyForm(props: RouteComponentProps<IPageParams>) {
                       setFieldValidations((prevState: any) => ({ ...prevState, district: !validator.isEmpty(element.target.value) }));
                     }}
                     fullWidth
+                    disabled={!canEdit}
                   />
                 </Grid>
 
@@ -507,6 +553,7 @@ export default function CompanyForm(props: RouteComponentProps<IPageParams>) {
                       setFieldValidations((prevState: any) => ({ ...prevState, city: !validator.isEmpty(element.target.value) }));
                     }}
                     fullWidth
+                    disabled={!canEdit}
                   />
                 </Grid>
 
@@ -522,6 +569,7 @@ export default function CompanyForm(props: RouteComponentProps<IPageParams>) {
                       setFieldValidations((prevState: any) => ({ ...prevState, state: !validator.isEmpty(element.target.value) }));
                     }}
                     fullWidth
+                    disabled={!canEdit}
                   />
                 </Grid>
               </Grid>
@@ -540,10 +588,12 @@ export default function CompanyForm(props: RouteComponentProps<IPageParams>) {
                     setFieldValidations((prevState: any) => ({ ...prevState, responsable_name: !validator.isEmpty(element.target.value) }));
                   }}
                   fullWidth
+                  disabled={!canEdit}
                 />
               </Grid>
               <Grid item md={3} xs={12}>
                 <InputMask
+                  disabled={!canEdit}
                   mask="(99) 9999-9999"
                   value={state.phone}
                   onChange={(element) => {
@@ -564,6 +614,7 @@ export default function CompanyForm(props: RouteComponentProps<IPageParams>) {
 
 
                       fullWidth
+                      disabled={!canEdit}
                     />
                   )}
                 </InputMask>
@@ -585,10 +636,12 @@ export default function CompanyForm(props: RouteComponentProps<IPageParams>) {
                     setFieldValidations((prevState: any) => ({ ...prevState, email: validator.isEmail(element.target.value) }));
                   }}
                   fullWidth
+                  disabled={!canEdit}
                 />
               </Grid>
               <Grid item md={3} xs={12}>
                 <InputMask
+                  disabled={!canEdit}
                   mask="(99) 9 9999-9999"
                   value={state.cellphone}
                   onChange={(element) => {
@@ -609,6 +662,7 @@ export default function CompanyForm(props: RouteComponentProps<IPageParams>) {
                       error ={!validateCellPhone() && state.cellphone != ''}
 
                       fullWidth
+                      disabled={!canEdit}
                     />
                   )}
                 </InputMask>
@@ -624,6 +678,7 @@ export default function CompanyForm(props: RouteComponentProps<IPageParams>) {
                   <FormControlLabel
                     control={(
                       <Switch
+                        disabled={!canEdit}
                         checked={state.active}
                         onChange={(event) => {
                           setState(prevState => ({
