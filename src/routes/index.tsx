@@ -32,7 +32,7 @@ import UserList from '../pages/user/list';
 import UserForm from '../pages/user/form';
 
 import UserDisengaged from '../pages/user_disengaged/list/index';
-
+import UserConfiguration from '../pages/userconfiguration/form/index';
 import PatientList from '../pages/patient/list';
 import PatientForm from '../pages/patient/form';
 import PatientCaptureCreate from '../pages/patient/capture/form';
@@ -42,8 +42,13 @@ import PatientCaptureSocioAmbiental from '../pages/patient/capture/socioambienta
 import PatientCaptureAbemid from '../pages/patient/capture/abemid';
 import PrintDocument from '../pages/care/medical-records/documents/print';
 
+import ConfirmEmail from '../pages/confirmEmail/form/index';
+import VerifyEmail from '../pages/confirmEmail/verifyEmail/index';
+import RecoveryPassword from '../pages/recoverypassword/form/index';
+import ForgotPassword from "../pages/forgotpassword/form/index";
 import RegisterForm from '../pages/register/form';
 import AvaliationList from '../pages/avaliation/list';
+import RecoveryPassMenu from '../pages/recoverypassmenu';
 import QrCode from '../pages/qrcode/';
 // import PatientForm from '../pages/patient/form';
 // import CareOverview from '../pages/patient/overview';
@@ -51,7 +56,7 @@ import QrCode from '../pages/qrcode/';
 import ProfessionForm from '../pages/profession/form/index';
 
 import Login from '../pages/login';
-import Register from '../pages/register';
+//import Register from '../pages/register';
 
 const Routes = () => (
   <BrowserRouter>
@@ -60,10 +65,17 @@ const Routes = () => (
       {/* <GuestRoute path="/register" component={Register} /> */}
       <Route path="/" component={Login} exact />
       <Route path="/login" component={Login} />
-      <Route path="/register" component={Register} />
+      <Route path="/register" component={RegisterForm} />
+      <Route path="/:email/confirmemail" component={ConfirmEmail} />
+      <Route path="/confirmemail/:token" component={VerifyEmail} />
+      <Route path="/:token/recoverypass" component={RecoveryPassword}/>
+      <Route path="/forgotpassword" component={ForgotPassword}/>
 
+      <PrivateRoute path="/userconfiguration" component={UserConfiguration} />
+      <PrivateRoute path="/recoverypassmenu" component={RecoveryPassMenu} />
       <PrivateRoute path="/" component={Dashboard} exact />
       <PrivateRoute path="/dashboard" component={Dashboard} />
+
 
       {/* Clientes */}
       <PrivateRoute path="/customer" component={CustomerList} exact />
@@ -96,6 +108,7 @@ const Routes = () => (
       <PrivateRoute path="/user/:id/:mode/edit" component={UserForm} />
       <PrivateRoute path="/user/:mode/create" component={UserForm} />
       <PrivateRoute path="/userdesengaged" component={UserDisengaged} />
+
 
       {/* Patient */}
       <PrivateRoute path="/patient" component={PatientList} exact />

@@ -144,6 +144,7 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
     specialties: [],
     council_state: "",
     council_number: "",
+    verified: "",
     active: true,
   });
 
