@@ -352,7 +352,7 @@ export function* recoveryPassword({ payload: { data } }: any) {
   localStorage.removeItem(LOCALSTORAGE.USER_ID);
   localStorage.removeItem(LOCALSTORAGE.COMPANY_SELECTED);
   localStorage.removeItem(LOCALSTORAGE.CUSTOMER);
-  localStorage.removeItem(LOCALSTORAGE.CUSTOMER_NAME);
+  // localStorage.removeItem(LOCALSTORAGE.CUSTOMER_NAME);
   try {
     const response: AxiosResponse = yield call(
       apiSollar.post,

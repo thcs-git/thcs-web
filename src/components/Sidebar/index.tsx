@@ -175,7 +175,7 @@ const Sibebar = (props: Props<any>) => {
     localStorage.removeItem('@sollar_username');
     localStorage.removeItem('@sollar_user_id');
     localStorage.removeItem('@sollar_company_selected');
-    localStorage.removeItem('@sollar_company_name');
+    // localStorage.removeItem('@sollar_company_name');
     localStorage.removeItem('@sollar_customer');
 
 
