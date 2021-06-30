@@ -13,13 +13,15 @@ import {
   Grid,
   FormControlLabel,
   makeStyles,
+  Collapse,
 } from '@material-ui/core';
 import { AccountCircle, Edit } from '@material-ui/icons';
 import Autocomplete from '@material-ui/lab/Autocomplete';
 import InputMask from 'react-input-mask';
 import validator from 'validator';
 import { toast } from 'react-toastify';
-
+import { loadCustomerById } from "../../../store/ducks/customers/actions";
+import { CustomerInterface } from "../../../store/ducks/customers/types";
 import { useDispatch, useSelector } from "react-redux";
 import {
   createUserRequest,
@@ -75,10 +77,15 @@ import {
   FormContent,
   InputFiled as TextField,
   FormGroupSection,
-  ChipList
+  ChipList,
+  DivideTitle
 } from './styles';
 import { UserContent } from "../../../components/Sidebar/styles";
 import AddIcon from '@material-ui/icons/Add';
+import CheckCircleRoundedIcon from '@material-ui/icons/CheckCircleRounded';
+import { BoxCustom } from "../../customer/form/styles";
+import _ from "lodash";
+
 
 interface IFormFields {
   userType: { id: string; description: string } | null;
@@ -101,12 +108,16 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
   );
   const councilState = useSelector((state: ApplicationState) => state.councils);
   const companyState = useSelector((state: ApplicationState) => state.companies);
-  const [canEdit, setCanEdit] = useState(false);
+  const customerState = useSelector((state: ApplicationState) => state.customers);
+  const [canEdit, setCanEdit] = useState(true);
   const { params } = props.match;
 
   const currentCompany = localStorage.getItem(LOCALSTORAGE.COMPANY_SELECTED) || '';
+  const currentCustomer = localStorage.getItem(LOCALSTORAGE.CUSTOMER) || '';
+
   const [currentTab, setCurrentTab] = useState(0);
   const [engaged, setEngaged] = useState(false);
+  const [add,setAdd] = useState(false);
   const [state, setState] = useState<UserInterface>({
     companies: [],
     name: "",
@@ -133,11 +144,14 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
     specialties: [],
     council_state: "",
     council_number: "",
+    verified: "",
     active: true,
   });
+
   const [specialties, setSpecialties] = useState<any[]>([]);
   const [companies, setCompanies] = useState<any[]>([]);
-  const [company, setCompany] = useState<CompanyInterface>({_id: params.id || '',
+  const [company, setCompany] = useState<CompanyInterface>(
+  {_id: params.id || '',
   customer_id: localStorage.getItem(LOCALSTORAGE.CUSTOMER) || '',
   name: '',
   fantasy_name: '',
@@ -158,6 +172,7 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
   active: true,
   created_by: { _id: localStorage.getItem(LOCALSTORAGE.USER_ID) || '' }});
 
+  const[customer, setCustomer] = useState<CustomerInterface>();
   const [fieldsValidation, setFieldValidations] = useState<any>({
     companies: false,
     name: false,
@@ -264,6 +279,7 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
     dispatch(getCompaniesAction());
     dispatch(getUserTypesAction());
     dispatch(loadCompanyById(currentCompany));
+    dispatch(loadCustomerById(currentCustomer));
 
   }, []);
 
@@ -285,9 +301,14 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
   useEffect(() => {
     setCompanies(companyState.list.data);
   }, [companyState.list.data]);
+
   useEffect(()=>{
     checkUserPerfilCompany(company)
   },[state,companyState])
+
+  useEffect(()=>{
+      setCustomer(customerState.data);
+  },[customerState])
   useEffect(() => {
     if (userState.data._id) {
       setState((prevState) => ({
@@ -299,13 +320,12 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
             : userState.data.user_type_id,
       }));
     }
-
     // Força o validador em 'true' quando entrar na tela para editar
     if (params?.id) {
-      if (params.mode === "view" || params.mode === "link" ) {
+      if (params.mode === "view" || params.mode === "link"  ) {
         setCanEdit(false)
       }
-      console.log(canEdit);
+
       setFieldValidations({
         companies: true,
         name: true,
@@ -476,11 +496,23 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
   }
 
   function engagedUser(){
-    if(company){
 
+
+    if(customer &&customer._id){
+      var com:CompanyUserInterface = {
+      _id:company._id?company._id:'',
+      name:company.name,
+      customer_id:{
+        _id:customer._id,
+        name:customer.name
+      }
+    }
+
+    }
+    if(company){
       setState((prevState) => ({
           ...prevState,
-          companies: [...prevState.companies,company],
+          companies: [...prevState.companies,com],
           customer_id:company.customer_id
         }));
     }
@@ -491,7 +523,6 @@ const dengagedUser=useCallback((company:CompanyInterface)=>{
   const companyFounded = companiesSelected.findIndex((item: any) => {
     return company._id === item._id
   })
-  console.log(companyFounded);
   if (companyFounded > -1) {
     const companyData = companiesSelected.find((item: any) => {
       return company._id === item._id
@@ -506,10 +537,6 @@ const dengagedUser=useCallback((company:CompanyInterface)=>{
 
   }
 },[state.companies]);
-
-
-
-
 
   function handlerReturn(){
     if(params.mode == 'link'){
@@ -542,6 +569,34 @@ const dengagedUser=useCallback((company:CompanyInterface)=>{
 
 
   }, [state.profession_id, state.professions]);
+
+
+  function viewProfession(){
+    if (!userState.data.professions) {
+      // return null;
+    } else {
+      const selected = userState.data.professions.filter((item) => {
+        if (typeof state.profession_id === "object") {
+          return item._id === state?.profession_id?._id;
+        }
+      });
+
+      return selected[0] ? selected[0].name : null;
+    }
+
+  }
+  function viewSpecialtes(){
+    let especialidades = "";
+    if(_.isEmpty(state.specialties)){
+
+    }else{
+      state.specialties.map((specialty,index)=>{
+        especialidades = especialidades +','
+      });
+      return especialidades;
+    }
+
+  }
 
   // Especialides
   function handleSelectMainSpecialty(value: SpecialtyInterface) {
@@ -633,8 +688,8 @@ const dengagedUser=useCallback((company:CompanyInterface)=>{
   }, [state.user_type_id, state.user_types]);
 
   //Empresas
-  function handleSelectCompany(value: CompanyInterface) {
-    console.log(value);
+  function handleSelectCompany(value: CompanyUserInterface) {
+
 
     setState((prevState) => ({
       ...prevState,
@@ -660,7 +715,7 @@ const dengagedUser=useCallback((company:CompanyInterface)=>{
   }
 
   async function handleDeleteCompany(company: CompanyInterface)  {
-    console.log(canEdit);
+
     if (canEdit) {
       let companiesSelected = [...state.companies];
       const companyFounded = companiesSelected.findIndex((item: any) => {
@@ -686,7 +741,19 @@ const dengagedUser=useCallback((company:CompanyInterface)=>{
     }
 
   };
+  function mycompanys(){
+    const customer = localStorage.getItem(LOCALSTORAGE.CUSTOMER) ;
 
+    let mycompanies:CompanyUserInterface[] = [];
+    state.companies.map((value, index)=>{
+
+      if(value.customer_id._id === customer){
+        mycompanies.push(value);
+      }
+    })
+
+    return mycompanies;
+  }
   const handleSaveFormUser = useCallback(() => {
     if (!handleValidateFields()) {
       toast.error("Existem campos que precisam ser preenchidos para continuar");
@@ -751,12 +818,15 @@ const dengagedUser=useCallback((company:CompanyInterface)=>{
                   >
                     Dados Profissionais
                   </TabNavItem>
-                  <TabNavItem
+                  {state.professions && (
+                    <TabNavItem
                     className={currentTab === 2 ? "active" : ""}
                     onClick={() => selectTab(2)}
                   >
                     Selecione Empresa
                   </TabNavItem>
+                  )}
+
                 </TabNav>
                 <TabBody>
                   <TabBodyItem className={currentTab === 0 ? "show" : ""}>
@@ -871,12 +941,12 @@ const dengagedUser=useCallback((company:CompanyInterface)=>{
                               variant="outlined"
                               size="small"
                               placeholder="000.000.000-00"
-                              error={!checkIsCpfValid()}
+                              error={!checkIsCpfValid() && state.fiscal_number != ''}
                               fullWidth
                             />
                           )}
                         </InputMask>
-                        {!checkIsCpfValid() && (
+                        {!checkIsCpfValid() && state.fiscal_number != '' &&(
                               <p style={{ color: '#f44336', margin:'1px 5px 20px' }}>
                               Por favor insira um cpf válido
                               </p>
@@ -907,7 +977,7 @@ const dengagedUser=useCallback((company:CompanyInterface)=>{
                               variant="outlined"
                               size="small"
                               placeholder="0.000-000"
-                              error={fieldsValidation.national_id}
+                              error={fieldsValidation.national_id && state.national_id != ''}
                               fullWidth
                             />
                           )}
@@ -1549,7 +1619,9 @@ const dengagedUser=useCallback((company:CompanyInterface)=>{
                           ))}
                         </ChipList>
                       </Grid>
-                      <Grid item md={6} xs={12}>
+                      {/* {(!params.id && canEdit ) && (
+                        <DivideTitle> Incluir</DivideTitle>
+                         <Grid item md={6} xs={12}>
                         <FormGroupSection fullWidth error>
                           <Autocomplete
                             id="combo-box-company"
@@ -1575,7 +1647,14 @@ const dengagedUser=useCallback((company:CompanyInterface)=>{
                             fullWidth
                           />
                         </FormGroupSection>
-                      </Grid>
+                          </Grid>
+                      ) } */}
+
+
+                          {state.companies.length>0 && (
+                            <div>
+                               <DivideTitle>Empresas onde o prestador trabalha:</DivideTitle>
+
                       <Grid item md={12} xs={12}>
                         <ChipList>
                           {state.companies?.map((item: any, index) => (
@@ -1587,54 +1666,147 @@ const dengagedUser=useCallback((company:CompanyInterface)=>{
                           ))}
                         </ChipList>
                      </Grid>
-                      {(params.mode === 'link' && !checkCompany) && (
+                            </div>
 
-                         <Grid>
-                          <ButtonComponent  background="success_rounded" onClick={()=> engagedUser()}>
-                            Vincular este prestador a minha empresa
-                            </ButtonComponent>
-                          </Grid>
-                      )}
-                       {(params.mode === 'link' && checkCompany) && (
-
-                            <Grid>
-                           Este prestador já está vinculado a sua empresa com este perfil profissional,
-                           caso queira desvinculá-lo <Link to='/user'> clique aqui</Link>.
-                            </Grid>
-                        )}
-                      {params.mode === 'view' && (
-                        <Grid>
-                        <ButtonComponent  className={classes.cancel} onClick={()=> dengagedUser(company)}>
-                          Desvincular este prestador da minha empresa
-                          </ButtonComponent>
-                        </Grid>
-                      )}
+                          )}
                     </Grid>
                   </TabBodyItem>
                   <TabBodyItem className={currentTab === 2 ? "show" : ""} >
-                  <Grid container>
-                    <Grid item >
-                      <UserContent>
-                        <AccountCircle />
-                      </UserContent>
-                    </Grid>
-                    <Grid item >
-                      <UserContent style={{marginTop:"30px"}}>
-                        Jean Gray
-                        <br />
-                        06565464545-54
-                      </UserContent>
-                    </Grid>
-                    <Grid item md={12}>
-                    <Divider></Divider>
-                    </Grid>
-                    <Grid item>
-                        <AddIcon fontSize={'large'} color={'primary'} ></AddIcon>
-                    </Grid>
-                    <Grid item>
-                      Enfermeira
-                    </Grid>
+                    <BoxCustom>
+                      <Grid container justify="flex-start"
+                          alignItems="flex-start" style={{paddingLeft:"10px"}}>
+                            <Grid item>
+                              <UserContent>
+                              <AccountCircle />
+                             </UserContent>
+                            </Grid>
+                            <Grid item style={{paddingTop:"40px"}}>
+                            <h3>{state.name}</h3>
+                            {state.fiscal_number}
+                            </Grid>
+                      </Grid>
+                      <Grid container >
+                      <Grid item md={12} xs={12}>
+                        <Divider></Divider>
+                      </Grid>
+                      <Grid item style={{paddingTop:'20px'}}>
+                        <ButtonComponent style={{maxWidth:'10px'}} onClick={()=>setAdd(!add)}>
+                          {add? (<CheckCircleRoundedIcon fontSize={'large'} style={{ color: '#4FC66A' }}></CheckCircleRoundedIcon>):(
+                            <AddIcon fontSize={'large'} color={'primary'} ></AddIcon>
+                          )}
+                        </ButtonComponent>
+                      </Grid>
+                      <Grid item>
+                        <Grid container style={{flexDirection: 'column', paddingLeft:'10px', paddingTop:'20px'}}>
+                          <Grid item>
+                            <h3>{viewProfession()}</h3>
+                          </Grid>
+                          <Grid item style={{paddingTop:'10px'}}>
+                            Função:{viewProfession()}
+                          </Grid>
+                          <Grid item>
+                            Conselho: {state.council_state}
+                          </Grid>
+                          <Grid item>
+                            Especialidade Principal: {viewProfession()}
+                          </Grid>
+                          <Grid item>
+                            Outras especialidades: {viewSpecialtes()}
+                          </Grid>
+                          <Grid item md={12} xs={12} style={{paddingTop:"10px"}}>
+                            <ChipList>
+                              {mycompanys()?.map((item: any, index) => (
+                                <Chip
+                                  key={`company_selected_${index}`}
+                                  label={item.name}
+                                  onDelete={(event) => handleDeleteCompany(item)}
+                                />
+                              ))}
+                            </ChipList>
+                          </Grid>
+
+                      <Collapse in={add}>
+                         <Grid item style={{paddingTop:"20px"}} md={12} xs={12}>
+                            <Grid item md={12} xs={12}>
+                              {/* <FormGroupSection fullWidth error>
+                                <Autocomplete
+                                  id="combo-box-company"
+                                  options={companies}
+                                  getOptionLabel={(option) => option.name}
+                                  renderInput={(params) => (
+                                  <TextField
+                                  {...params}
+                                  label="Empresa"
+                                  variant="outlined"
+                                  autoComplete="off"
+                                />
+                                )}
+                                size="small"
+                                onChange={(event, value) => {
+                                if (value) {
+                                handleSelectCompany(value);
+                                }
+                                }}
+                                autoComplete={false}
+                                autoHighlight={false}
+                                fullWidth
+                              />
+                            </FormGroupSection> */}
+                            </Grid>
+                          {/* <Grid item md={12} xs={12}>
+                            <ChipList>
+                              {mycompanys()?.map((item: any, index) => (
+                                <Chip
+                                  key={`company_selected_${index}`}
+                                  label={item.name}
+                                  onDelete={(event) => handleDeleteCompany(item)}
+                                />
+                              ))}
+                            </ChipList>
+                          </Grid> */}
+                          {(params.mode === 'link' && !checkCompany) && (
+
+                        <Grid item md={12} xs={12}>
+                          <ButtonComponent  background="success_rounded" onClick={()=> engagedUser()}>
+                              Vincular este prestador a minha empresa
+                            </ButtonComponent>
+                          </Grid>
+                          )}
+                          {(params.mode === 'link' && checkCompany && !engaged) && (
+
+                            <Grid item md={12} xs={12}>
+                            Este prestador já está vinculado a sua empresa com este perfil profissional,
+                            caso queira desvinculá-lo <Link to='/user'> clique aqui</Link>.
+                            </Grid>
+                          )}
+                           {(params.mode === 'link' && checkCompany && engaged) && (
+
+                            <Grid item md={12} xs={12}>
+                            Agora este prestador foi vinculado a sua empresa, para confirmar esta operação click em salva.
+                            </Grid>
+                          )}
+                          {(params.mode === 'view' && !engaged) && (
+                          <Grid item md={12} xs={12}>
+                            <ButtonComponent  className={classes.cancel} onClick={()=> dengagedUser(company)}>
+                              Desvincular este prestador da minha empresa
+                            </ButtonComponent>
+                          </Grid>
+                          )}
+                          {(params.mode === 'view' && engaged) && (
+                              <Grid>
+                                Prestador disvinculado de sua empresa, para confirmar esta  operação click em salva.
+                              </Grid>
+                          )}
+                        </Grid>
+                     </Collapse>
                   </Grid>
+                </Grid>
+
+
+
+            </Grid>
+          </BoxCustom>
+
                   </TabBodyItem>
                 </TabBody>
               </TabContent>

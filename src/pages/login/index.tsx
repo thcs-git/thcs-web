@@ -245,7 +245,7 @@ export default function SignIn() {
               <Box textAlign="center" width="100%">
                 <TextGray>
                   Esqueceu a senha? {' '}
-                  <Link href="#">
+                  <Link href="/forgotpassword">
                     <TextBlue>
                       Clique aqui{' '}
                     </TextBlue>

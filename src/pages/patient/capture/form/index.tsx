@@ -100,11 +100,11 @@ export default function PatientCaptureForm(props: RouteComponentProps) {
   //   }
   // }, [patient]);
 
-  // useEffect(() => {
-  //   if (careState.success && !careState.error && careState.data._id) {
-  //     history.push(`/patient/capture/${careState.data._id}/overview`);
-  //   }
-  // }, [careState])
+  useEffect(() => {
+    if (careState.success && !careState.error && careState.data._id) {
+      history.push(`/patient/capture/${careState.data._id}/overview`);
+    }
+  }, [careState])
 
   // const searchPatient = useCallback((value: string) => {
   //   setPatient({});
@@ -198,7 +198,7 @@ export default function PatientCaptureForm(props: RouteComponentProps) {
       company_id: localStorage.getItem(LOCALSTORAGE.COMPANY_SELECTED) || ``,
     };
 
-   // dispatch(createCareAction(careParams));
+   dispatch(createCareAction(careParams));
   };
 
   const handleSubmitPatientCapture = useCallback(() => {
@@ -206,7 +206,7 @@ export default function PatientCaptureForm(props: RouteComponentProps) {
 
     const params = { ...care, patient_id: selectedPatient._id || patient._id };
 
-    //dispatch(createCareAction(params))
+    dispatch(createCareAction(params))
 
   }, [dispatch, care, patient, selectedPatient]);
 

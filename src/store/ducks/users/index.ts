@@ -28,6 +28,8 @@ export const INITIAL_STATE: UserState = {
     specialties: [],
     council_state: "",
     council_number: "",
+    verified: "",
+    customer_id: "",
     active: true,
   },
   list: {
@@ -40,6 +42,7 @@ export const INITIAL_STATE: UserState = {
   success: false,
   error: false,
   loading: false,
+  successRecovery: false,
 };
 
 const reducer: Reducer<UserState> = (state = INITIAL_STATE, action) => {
@@ -122,7 +125,7 @@ const reducer: Reducer<UserState> = (state = INITIAL_STATE, action) => {
         data: {
           ...action.payload.data,
           phone: action.payload.data.phones[0].number,
-          cellphone: action.payload.data.phones[1].number,
+          cellphone: action.payload.data.phones[1]?.number,
         },
         loading: false,
         error: false,
@@ -187,6 +190,7 @@ const reducer: Reducer<UserState> = (state = INITIAL_STATE, action) => {
         loading: false,
         error: false,
         success: false,
+        successRecovery: false,
       };
 
     case UserTypes.LOAD_RESPONSE_PROFESSION:
@@ -200,6 +204,7 @@ const reducer: Reducer<UserState> = (state = INITIAL_STATE, action) => {
         loading: false,
         error: false,
         success: false,
+        successRecovery: false,
       };
     case UserTypes.LOAD_RESPONSE_USER_TYPES:
       return {
@@ -211,8 +216,43 @@ const reducer: Reducer<UserState> = (state = INITIAL_STATE, action) => {
         loading: false,
         error: false,
         success: false,
+        successRecovery: false,
+      };
+    case UserTypes.LOAD_SUCCESS_USER_BY_EMAIL:
+      return {
+        ...state,
+        loading: false,
+        error: false,
+        success: true,
+        successRecovery: false,
+      };
+    case UserTypes.LOAD_REQUEST_CHECK_EMAIL:
+      return {
+        ...state,
+        loading: true,
+        error: false,
+        success: false,
+        successRecovery: false,
       };
 
+    case UserTypes.LOAD_RESPONSE_CHECK_EMAIL:
+      return {
+        ...state,
+        data: {
+          ...state.data,
+          ...action.payload.data,
+        },
+        loading: false,
+        error: false,
+        success: true,
+      };
+    case UserTypes.LOAD_SUCCESS_RECOVERY_PASSWORD:
+      return {
+        ...state,
+        loading: false,
+        error: false,
+        success: true,
+      };
     case UserTypes.CLEAN:
       return INITIAL_STATE;
 

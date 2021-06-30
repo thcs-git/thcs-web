@@ -92,6 +92,10 @@ import {
   getUserTypes,
   loadGetUserDisengaged,
   searchUserDisengaged,
+  checkEmail,
+  getUserByEmail,
+  recoveryPassword,
+  recoverypasswordiftoken,
 } from "./users/sagas";
 
 import { CareTypes } from "./cares/types";
@@ -127,6 +131,7 @@ import {
 } from "./cares/sagas";
 
 import { get as getProfession } from "./professions/sagas";
+import { ProfessionTypes } from "./professions/types";
 export default function* rootSaga() {
   return yield all([
     takeLatest(LoginTypes.LOAD_REQUEST, doLogin),
@@ -190,13 +195,8 @@ export default function* rootSaga() {
 
     takeLatest(CareTypes.LOAD_SCHEDULE_REQUEST, getSchedule),
     takeLatest(CareTypes.CREATE_SCHEDULE_REQUEST, storeSchedule),
-    takeLatest(CareTypes.UPDATE_SCHEDULE_REQUEST, updateSchedule),
     takeLatest(CareTypes.DELETE_SCHEDULE_REQUEST, deleteSchedule),
-
-    takeLatest(CareTypes.LOAD_SCHEDULE_REQUEST, getSchedule),
-    takeLatest(CareTypes.CREATE_SCHEDULE_REQUEST, storeSchedule),
     takeLatest(CareTypes.UPDATE_SCHEDULE_REQUEST, updateSchedule),
-    takeLatest(CareTypes.DELETE_SCHEDULE_REQUEST, deleteSchedule),
 
     // Council
     takeLatest(CouncilTypes.LOAD_REQUEST, getCouncils),
@@ -252,18 +252,24 @@ export default function* rootSaga() {
     /** Users */
     takeLatest(UserTypes.LOAD_REQUEST, getUsers),
     takeLatest(UserTypes.CREATE_USER_REQUEST, createUser),
-    // takeLatest(UserTypes.REGISTER_USER_REQUEST, registerUser),
+    takeLatest(UserTypes.LOAD_REQUEST_CHECK_EMAIL, checkEmail),
     takeLatest(UserTypes.LOAD_REQUEST_ADDRESS, getAddressUser),
     takeLatest(UserTypes.LOAD_REQUEST_USER_BY_ID, getUserById),
+    takeLatest(UserTypes.LOAD_REQUEST_USER_BY_EMAIL, getUserByEmail),
     takeLatest(UserTypes.UPDATE_USER_REQUEST, updateUser),
     takeLatest(UserTypes.SEARCH_REQUEST, searchUser),
     takeLatest(UserTypes.LOAD_REQUEST_PROFESSION, getProfessions),
     takeLatest(UserTypes.LOAD_REQUEST_USER_TYPES, getUserTypes),
+    takeLatest(UserTypes.LOAD_REQUEST_RECOVERY_PASSWORD, recoveryPassword),
     takeLatest(UserTypes.LOAD_REQUEST_USER_DISENGAGED, loadGetUserDisengaged),
     takeLatest(UserTypes.SEARCH_REQUEST_USER_DISENGAGED, searchUserDisengaged),
+    takeLatest(
+      UserTypes.LOAD_REQUEST_RECOVERY_PASSWORD_TOKEN,
+      recoverypasswordiftoken
+    ),
 
     /** Profession */
-    // takeLatest(UserTypes.LOAD_REQUEST, getProfession),
+    takeLatest(ProfessionTypes.LOAD_REQUEST, getProfession),
 
     /** UnconfirmedUsers */
     //  takeLatest(UnconfirmedUserTypes.LOAD_REQUEST, getUnconfirmedUsers),

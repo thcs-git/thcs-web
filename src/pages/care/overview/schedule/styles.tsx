@@ -20,6 +20,34 @@ const statusColor: any = {
   `,
 };
 
+export const CardPlantonistas = styled.div`
+  display: flex;
+  align-items: center;
+
+  > svg {
+    margin-right: 4px;
+  }
+`;
+
+export const ContainerSearch = styled.div`
+  form > div {
+    width: 100%;
+  }
+
+  ::-webkit-input-placeholder { /* Chrome/Opera/Safari */
+    font-size: 8px;
+  }
+  ::-moz-placeholder { /* Firefox 19+ */
+    font-size: 8px;
+  }
+  :-ms-input-placeholder { /* IE 10+ */
+    font-size: 8px;
+  }
+  :-moz-placeholder { /* Firefox 18- */
+    font-size: 8px;
+  }
+`;
+
 export const ScheduleItem = styled.div`
 
   display: flex;
@@ -89,6 +117,19 @@ export const CardTitle = styled.div`
   display: flex;
   align-items: center;
   margin-bottom: 20px;
+
+  .duty-icon {
+    background: var(--secondary);
+    border-radius: 50%;
+    padding: 3px;
+  }
+  .permuta-icon {
+    width: 21px;
+    height: 21px;
+    background: var(--secondary);
+    border-radius: 50%;
+    padding: 3px;
+  }
 
   & > svg {
     margin-right: 10px;

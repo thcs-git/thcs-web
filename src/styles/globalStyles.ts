@@ -53,6 +53,7 @@ export default createGlobalStyle`
     --primary-foccus:#7AC7D8;
     --primary-hover: #16679A99;
     --secondary: #0899BA;
+    --action:#4FC66A;
     --gray: #CCCCCC;
     --gray-light: #EBEBEB;
     --gray-dark: #666666;
