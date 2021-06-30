@@ -13,6 +13,7 @@ const locators = {
     XP_BTN_CLIENTES: `//*[@id="root"]/div[1]/div/div/ul[1]/li[2]`,
     XP_BTN_EMPRESAS: `//*[@id="root"]/div[1]/div/div/ul[1]/li[3]`,
     XP_BTN_PACIENTES: `//*[@id="root"]/div[1]/div/div/ul[1]/li[7]`,
+    XP_BTN_CONFIGURACOES: `//*[@id="root"]/div[1]/div/div/ul[2]/li[1]`,
   },
 
   AREA: {
