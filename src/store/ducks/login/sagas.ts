@@ -50,6 +50,8 @@ export function* doLogin({ payload }: any) {
       );
     }
 
+    console.log(data)
+
     yield put(loadSuccess(data));
 
     history.push("/dashboard");
