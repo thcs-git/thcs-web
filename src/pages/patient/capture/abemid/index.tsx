@@ -470,7 +470,7 @@ export default function Abemid(props: RouteComponentProps<IPageParams>) {
           {/* Grupo 1 */}
           {currentStep === 1 && (
             <>
-              <StepTitle>Elegibilidade</StepTitle>
+              {/*<StepTitle>Elegibilidade</StepTitle>*/}
 
               {documentGroup?.fields?.map((field: any, index: number) => {
                 if (field.step === 1) {

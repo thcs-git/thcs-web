@@ -100,7 +100,7 @@ export default function CustomerList() {
                   <TableCell align="left">{formatDate(customer.created_at, 'DD/MM/YYYY HH:mm:ss')}</TableCell>
                   <TableCell align='center' style={{width:'10px'}}>
                   <Button   aria-controls={`patient-menu${index}`} id={`btn_patient-menu${index}`} aria-haspopup="true" onClick={handleOpenRowMenu}>
-                    <MoreVert  style={{ color: '#0899BA' }}/>
+                    <MoreVert  style={{ color: '#0899ba' }}/>
                   </Button>
                   <Menu
                     id={`patient-menu${index}`}

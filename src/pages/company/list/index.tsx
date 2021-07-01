@@ -77,7 +77,7 @@ export default function CompanyList() {
             {companyState.list.data.map((company: CompanyInterface, index: number) => (
               <TableRow key={`patient_${index}`}>
                 <TableCell align="left">
-                  <Link key={index} to={`/company/${company._id}/edit`}>{company.fantasy_name}</Link>
+                  <Link key={index} to={`/company/${company._id}/view`}>{company.fantasy_name}</Link>
                 </TableCell>
                 <TableCell>
                   {company.fiscal_number}
@@ -98,7 +98,7 @@ export default function CompanyList() {
                     onClose={handleCloseRowMenu}
                   >
                     <MenuItem onClick={() => history.push(`/company/${company._id}/edit`)}>Editar</MenuItem>
-                    <MenuItem onClick={() => history.push(`/company/${company._id}/edit`)}>Visualizar</MenuItem>
+                    <MenuItem onClick={() => history.push(`/company/${company._id}/view`)}>Visualizar</MenuItem>
                   </Menu>
                 </TableCell>
               </TableRow>
