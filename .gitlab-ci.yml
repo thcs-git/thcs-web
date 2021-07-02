@@ -14,7 +14,8 @@ production:
     image: node:13.10.1-alpine3.10
 
     variables:
-        PREVIEW_URL: $CI_PROJECT_NAME-master.vercel.app
+        #PREVIEW_URL: $CI_PROJECT_NAME-master.vercel.app
+        PREVIEW_URL: sollar.app
 
     script:
         - DEPLOYMENT_URL=$(vercel -t $VERCEL_TOKEN --confirm --prod)
@@ -34,7 +35,8 @@ staging:
     image: node:13.10.1-alpine3.10
 
     variables:
-        PREVIEW_URL: $CI_PROJECT_NAME-staging.vercel.app
+        #PREVIEW_URL: $CI_PROJECT_NAME-master.vercel.app
+        PREVIEW_URL: staging.sollar.app
 
     script:
         - DEPLOYMENT_URL=$(vercel -t $VERCEL_TOKEN --confirm)
@@ -54,7 +56,8 @@ dev:
     image: node:13.10.1-alpine3.10
 
     variables:
-        PREVIEW_URL: $CI_PROJECT_NAME-dev.vercel.app
+        #PREVIEW_URL: $CI_PROJECT_NAME-master.vercel.app
+        PREVIEW_URL: dev.sollar.app
 
     script:
         - DEPLOYMENT_URL=$(vercel -t $VERCEL_TOKEN --confirm)
