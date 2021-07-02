@@ -13,8 +13,8 @@ production:
     stage: production
     image: node:13.10.1-alpine3.10
 
-    environment:
-            PREVIEW_URL:https://$CI_PROJECT_NAME-master.vercel.app
+    variables:
+        PREVIEW_URL: https://$CI_PROJECT_NAME-master.vercel.app
 
     script:
         - DEPLOYMENT_URL=$(vercel -t $VERCEL_TOKEN --confirm --prod)
@@ -33,8 +33,8 @@ staging:
     stage: staging
     image: node:13.10.1-alpine3.10
 
-    environment:
-        PREVIEW_URL:https://$CI_PROJECT_NAME-staging.vercel.app
+    variables:
+        PREVIEW_URL: https://$CI_PROJECT_NAME-staging.vercel.app
 
     script:
         - DEPLOYMENT_URL=$(vercel -t $VERCEL_TOKEN --confirm)
@@ -53,8 +53,8 @@ dev:
     stage: dev
     image: node:13.10.1-alpine3.10
 
-    environment:
-        PREVIEW_URL:https://$CI_PROJECT_NAME-dev.vercel.app
+    variables:
+        PREVIEW_URL: https://$CI_PROJECT_NAME-dev.vercel.app
 
     script:
         - DEPLOYMENT_URL=$(vercel -t $VERCEL_TOKEN --confirm)
