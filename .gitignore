@@ -13,7 +13,6 @@ logs
 node_modules
 bower_components
 build
-.firebase
 
 *.sublime*
 
@@ -23,3 +22,5 @@ sketch
 
 # End of https://www.toptal.com/developers/gitignore/api/react
 .idea
+.vscode
+.firebase
