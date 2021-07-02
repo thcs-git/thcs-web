@@ -1,0 +1,58 @@
+image: node:13.10.1-alpine3.10
+
+before_script:
+    - npm i -g vercel
+
+stages:
+    - staging
+    - production
+    - dev
+    #- test
+
+production:
+    stage: production
+    image: node:13.10.1-alpine3.10
+
+    script:
+        - DEPLOYMENT_URL=$(vercel -t $VERCEL_TOKEN --confirm)
+        - echo $DEPLOYMENT_URL >vercel_deployment_url.txt
+    
+    artifacts:
+        when: on_success
+        paths:
+            - vercel_deployment_url.txt
+    
+    only:
+        - master
+
+staging:
+    stage: staging
+    image: node:13.10.1-alpine3.10
+
+    script:
+        - DEPLOYMENT_URL=$(vercel -t $VERCEL_TOKEN --confirm)
+        - echo $DEPLOYMENT_URL >vercel_deployment_url.txt
+    
+    artifacts:
+        when: on_success
+        paths:
+            - vercel_deployment_url.txt
+    
+    only:
+        - staging
+
+dev:
+    stage: dev
+    image: node:13.10.1-alpine3.10
+
+    script:
+        - DEPLOYMENT_URL=$(vercel -t $VERCEL_TOKEN --confirm)
+        - echo $DEPLOYMENT_URL >vercel_deployment_url.txt
+    
+    artifacts:
+        when: on_success
+        paths:
+            - vercel_deployment_url.txt
+    
+    only:
+        - dev
