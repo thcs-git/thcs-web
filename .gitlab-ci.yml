@@ -14,7 +14,7 @@ production:
     image: node:13.10.1-alpine3.10
 
     script:
-        - DEPLOYMENT_URL=$(vercel -t $VERCEL_TOKEN --confirm)
+        - DEPLOYMENT_URL=$(vercel -t $VERCEL_TOKEN --confirm --prod)
         - echo $DEPLOYMENT_URL >vercel_deployment_url.txt
     
     artifacts:
