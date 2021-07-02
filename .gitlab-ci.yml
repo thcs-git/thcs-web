@@ -1,0 +1,19 @@
+stages:
+    #- staging
+    - production
+    #- dev
+    #- test
+
+deploy-to-vercel:
+    stage: deploy
+    image: node:13.10.1-alpine3.10
+
+    script:
+        - npm i -g vercel
+        - DEPLOYMENT_URL=$(vercel -t $VERCEL_TOKEN --confirm)
+        - echo $DEPLOYMENT_URL >vercel_deployment_url.txt
+    
+    artifacts:
+        when: on_success
+        paths:
+            - vercel_deployment_url.txt
