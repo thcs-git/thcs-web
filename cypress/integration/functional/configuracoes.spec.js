@@ -8,6 +8,7 @@ describe('Validade Configuration Test',()=>{
     cy.reload()
     cy.visit(Cypress.env('host')+'/login')
     cy.login('brunogcpereira@gmail.com','123456789')
+    cy.changeCompany()
     cy.xpath(loc.MENU.XP_BTN_CONFIGURACOES).click()
   })
 

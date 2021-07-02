@@ -8,7 +8,7 @@ describe('Validate Company Module', ()=>{
     cy.reload()
     cy.visit(Cypress.env('host')+'/login')
     cy.login('brunogcpereira@gmail.com','123456789')
-    cy.xpath(loc.MENU.XP_BTN_SIDEBAR).click()
+    cy.changeCompany()
     cy.xpath(loc.MENU.XP_BTN_EMPRESAS).click()
   })
 
@@ -112,7 +112,7 @@ describe('Validate Company Module', ()=>{
   })
 
   //Teste de Filtro não está funcionando (Correçaõ de Bug)
-  it.skip('Must to search Company Name', () => {
+  it.skip('Teste ainda não funciona - Must to search Company Name', () => {
     cy.server()
     cy.route('GET','**/companies/**').as('res')
     cy.get('#search-input').type('Tascom')
