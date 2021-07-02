@@ -93,7 +93,7 @@ export default function CouncilList() {
               { name: "Tipo", align: "left" },
               { name: "Complexidade", align: "left" },
               { name: "Último Atendimento", align: "left" },
-              //{ name: " ", align: "left" },
+              { name: " ", align: "left" },
             ]}
           >
             {careState.list.data.map((care, index) => (
