@@ -120,7 +120,7 @@ export default function CouncilList() {
                 <TableCell>
                   {formatDate(care?.created_at ?? "", "DD/MM/YYYY HH:mm:ss")}
                 </TableCell>
-                {/* <TableCell>
+                <TableCell>
                   <Button
                     aria-controls={`simple-menu${index}`}
                     id={`btn_simple-menu${index}`}
@@ -140,7 +140,7 @@ export default function CouncilList() {
                     <MenuItem onClick={handleCloseRowMenu}>My account</MenuItem>
                     <MenuItem onClick={handleCloseRowMenu}>Logout</MenuItem>
                   </Menu>
-                </TableCell> */}
+                </TableCell>
               </TableRow>
             ))}
           </Table>
