@@ -1,6 +1,6 @@
 /// <reference types="cypress" />
 
-describe('',() => {
+describe('Test API Areas',() => {
 
   it('Should search status - Ativo', () =>{
 

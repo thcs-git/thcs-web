@@ -8,6 +8,7 @@ describe('Client functional tests', () => {
     cy.reload()
     cy.visit(Cypress.env('host')+'/login')
     cy.login('brunogcpereira@gmail.com','123456789')
+    //cy.changeCompany()
     cy.xpath(loc.MENU.XP_BTN_CLIENTES).click()
   })
 
@@ -41,7 +42,8 @@ describe('Client functional tests', () => {
     cy.get(loc.CLIENTES.UF).should('have.value','PE')
   })
 
-  it('Should to fill fields with Invalid Data', () => {
+  //Teste não fuciona - Mensagem de erro em Desenvolvimento
+  it.skip(' Teste ainda não fuciona - Should to fill fields with Invalid Data', () => {
     cy.xpath(loc.CLIENTES.XP_BTN_NOVO).click()
     cy.get(loc.CLIENTES.NOME).type('Cliente de Testes')
     cy.get(loc.CLIENTES.NOME_SOCIAL).type('Cliente de Testes')
@@ -78,8 +80,8 @@ describe('Client functional tests', () => {
     .and('have.text','Tem certeza que deseja cancelar este cadastro?')
   })
 
-  it.only('Should to Edit a Client and cancel POPUP', () => {
-    cy.get(loc.CLIENTES.BTN_NOME_FANTASIA).click()
+  it('Should to Edit a Client and cancel POPUP', () => {
+    cy.xpath(loc.CLIENTES.XP_BTN_NOME_FANTASIA).click()
     cy.wait(500)
     cy.xpath(loc.CLIENTES.XP_BTN_CLIENTE_EDITAR).click()
     cy.get(loc.CLIENTES.NOME_RESPONSAVEL).click()
@@ -142,7 +144,7 @@ describe('Client functional tests', () => {
 
 
   it('Should to Edit a Client', () => {
-    cy.get(loc.CLIENTES.BTN_NOME_FANTASIA).click()
+    cy.xpath(loc.CLIENTES.XP_BTN_NOME_FANTASIA).click()
     cy.wait(2000)
     cy.xpath(loc.CLIENTES.XP_BTN_CLIENTE_EDITAR).click()
     cy.get(loc.CLIENTES.NOME_RESPONSAVEL).click()

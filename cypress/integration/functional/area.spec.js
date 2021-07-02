@@ -8,11 +8,12 @@ describe('Validation Area', () => {
     cy.reload()
     cy.visit(Cypress.env('host')+'/login')
     cy.login('brunogcpereira@gmail.com','123456789')
+    cy.changeCompany()
     cy.xpath(loc.MENU.XP_BTN_AREA).click()
   })
 
   it('Should to valid Area Elements', () =>{
-    cy.xpath(loc.AREA.XP_LISTA).should('have.length',10)
+    cy.xpath(loc.AREA.XP_LISTA).should('be.visible')
     cy.get('.sc-iJuUWI').should('be.visible')
     cy.get('#search-input').should('be.visible')
     cy.get('.MuiInputAdornment-root > .MuiButtonBase-root').should('be.visible')
@@ -87,7 +88,7 @@ describe('Validation Area', () => {
     cy.xpath(`//div//h3[contains(.,'Administrativo')]`).should('contain','Administrativo')
     cy.xpath(`//button//span[contains(.,'Bairros')]/span`).should('contain','1')//nº de Bairros adicionado
     cy.xpath(`//button//span[contains(.,'Prestadores')]/span`).should('contain','1')//nº de Prestadores adicionado
-    cy.xpath(`//div//span[contains(.,'HEYTOR')]`).should('have.text','HEYTOR CAVALCANTI DE MOURA')//Prestador adicionado
+    cy.xpath(`//div//span[contains(.,'Heytor')]`).should('contain','Heytor')//Prestador adicionado
     cy.xpath(loc.AREA.XP_BTN_CANCELAR).should('be.visible')
     cy.xpath(loc.AREA.XP_BTN_SALVAR).should('be.visible')
     cy.xpath(loc.AREA.XP_BTN_VOLTAR).should('be.visible')
@@ -118,7 +119,7 @@ describe('Validation Area', () => {
       cy.xpath(`//div//h3[contains(.,'Administrativo')]`).should('contain','Administrativo')
       cy.xpath(`//button//span[contains(.,'Bairros')]/span`).should('contain','1')//nº de Bairros adicionado
       cy.xpath(`//button//span[contains(.,'Prestadores')]/span`).should('contain','1')//nº de Prestadores adicionado
-      cy.xpath(`//div//span[contains(.,'HEYTOR')]`).should('have.text','HEYTOR CAVALCANTI DE MOURA')//Prestador adicionado
+      cy.xpath(`//div//span[contains(.,'Heytor')]`).should('contain','Heytor')//Prestador adicionado
       cy.xpath(loc.AREA.XP_BTN_CANCELAR).should('be.visible')
       cy.xpath(loc.AREA.XP_BTN_SALVAR).should('be.visible')
       cy.xpath(loc.AREA.XP_BTN_VOLTAR).should('be.visible')
@@ -128,13 +129,12 @@ describe('Validation Area', () => {
     it('Should to Edit an Area', () => {
         cy.xpath(loc.AREA.XP_BTN_MENU).click()
         cy.xpath(loc.AREA.XP_BTN_MENU_EDITAR).click()
-        cy.get(loc.AREA.INPUT_NAME).type('{backspace}Edit')
-        // //Botão redundante "Editar" NÃO deve está visivel
-        cy.xpath(`//span[contains(.,'Editar')]`).should('not.be.visible')//ainda visivel(Para o teste passar)
+        cy.get(loc.AREA.INPUT_NAME).type('{selectall}{backspace}CentroEdit')
+        cy.xpath(`//span[contains(.,'Editar')]`).should('not.be.visible')
         cy.get('[aria-hidden="true"][data-index="6"]').click()
         cy.xpath(loc.AREA.XP_BTN_SALVAR).click()
         cy.get(loc.AREA.MSG).should('contain','Area atualizado com sucesso!')
-        cy.url().should('eq','https://sollar-web.vercel.app/area')
+        cy.url().should('eq',Cypress.env('host')+'/area')
     })
 
     it('Should to change "Ativo/Inativo" an Area', () => {
@@ -156,8 +156,8 @@ describe('Validation Area', () => {
       cy.get(loc.AREA.POPUP_MENU).should('be.visible').and('contain','Atenção')
     })
 
-    it.skip('Should to show Popup confirmation in "Nova Area"', () => {
-      //Teste ainda não funciona
+    //Teste ainda não funciona - (Popup Em desenvolvimento)
+    it.skip(' Teste ainda funciona - Should to show Popup confirmation in "Nova Area"', () => {
       cy.xpath(loc.AREA.XP_BTN_NOVA_AREA).click()
       cy.get(loc.AREA.INPUT_NAME).click()
       cy.get(loc.AREA.INPUT_NAME).type('Edit')

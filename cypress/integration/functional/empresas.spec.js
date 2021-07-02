@@ -8,6 +8,7 @@ describe('Validate Company Module', ()=>{
     cy.reload()
     cy.visit(Cypress.env('host')+'/login')
     cy.login('brunogcpereira@gmail.com','123456789')
+    cy.xpath(loc.MENU.XP_BTN_SIDEBAR).click()
     cy.xpath(loc.MENU.XP_BTN_EMPRESAS).click()
   })
 

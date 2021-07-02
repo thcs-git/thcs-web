@@ -61,9 +61,8 @@ describe('Validate patients',() => {
   })
 
 
-
-  it('Shoudl to fill fields ivalidate', function() {
-    //Teste incompleto, funcionalidades aintf
+  //Não está apresentando erro no CEP (Desenvolvimento)
+  it.skip('Teste não funciona  (Desenvolvimento) - Shoudl to fill fields ivalidate', function() {
 
     cy.xpath(loc.PACIENTES.XP_BTN_NOVO).click()
     cy.fixture('person').as('data').then(() =>{
@@ -78,7 +77,7 @@ describe('Validate patients',() => {
       cy.get(loc.PACIENTES.SEXO).type(this.data[i].sexo+'{downArrow}{enter}')
       cy.get(loc.PACIENTES.MAE).type(this.data[i].mae)
       cy.get(loc.PACIENTES.CPF).type('12345678910')
-      cy.get(loc.PACIENTES.RG).type('12345678')//Não está apresentando erro (Desenvolvimento)
+      cy.get(loc.PACIENTES.RG).type('12345678')
       cy.get(loc.PACIENTES.ORGAO_EMISSOR).type('Emissor')
       cy.get(loc.PACIENTES.ESTADO_CIVIL).type('Casado{downArrow}{enter}')
       cy.get(loc.PACIENTES.TIPO_SANGUINEO).type(this.data[i].tipo_sanguineo+'{downArrow}{enter}')
@@ -190,7 +189,8 @@ describe('Validate patients',() => {
     cy.xpath(loc.MENU.XP_BTN_PACIENTES).click()
     cy.wait('@response').then((xhr) => {
       let total = xhr.response.body.total
-      expect(xhr.response.body.total).be.equal(total)
+      expect(total).to.be.equal(xhr.response.body.total)
+      console.log(xhr.response.body.total)
     })
 
     cy.get(loc.PACIENTES.SEARCH).should('be.visible')

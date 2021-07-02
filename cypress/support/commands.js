@@ -127,4 +127,15 @@ Cypress.Commands.add('getEmail', (cyget) =>{
   cy.get(cyget).type(nome+'@mail.com.br')
 })
 
+Cypress.Commands.add('changeCompany', ()=>{
+  cy.xpath(loc.MENU.XP_BTN_SIDEBAR).click()
+  cy.xpath(loc.MENU.XP_BTN_CONFIGURACOES).click()
+  cy.get('.MuiAutocomplete-popupIndicator > .MuiIconButton-label > .MuiSvgIcon-root').click()
+  cy.wait(1000)
+  cy.get('#combo-box-change-company').type('{downArrow}')
+  cy.get('#combo-box-change-company').type('{enter}')
+  cy.xpath(`//span[contains(.,'Fechar')]`).click()
+  cy.get('.MuiList-padding > :nth-child(3)').click()
+})
+
 
