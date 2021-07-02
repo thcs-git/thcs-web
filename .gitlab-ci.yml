@@ -13,9 +13,13 @@ production:
     stage: production
     image: node:13.10.1-alpine3.10
 
+    variables:
+        PREVIEW_URL: $CI_PROJECT_NAME-master.vercel.app
+
     script:
         - DEPLOYMENT_URL=$(vercel -t $VERCEL_TOKEN --confirm --prod)
         - echo $DEPLOYMENT_URL >vercel_deployment_url.txt
+        - vercel alias set $DEPLOYMENT_URL $PREVIEW_URL -t $VERCEL_TOKEN
     
     artifacts:
         when: on_success
@@ -29,9 +33,13 @@ staging:
     stage: staging
     image: node:13.10.1-alpine3.10
 
+    variables:
+        PREVIEW_URL: $CI_PROJECT_NAME-staging.vercel.app
+
     script:
         - DEPLOYMENT_URL=$(vercel -t $VERCEL_TOKEN --confirm)
         - echo $DEPLOYMENT_URL >vercel_deployment_url.txt
+        - vercel alias set $DEPLOYMENT_URL $PREVIEW_URL -t $VERCEL_TOKEN
     
     artifacts:
         when: on_success
@@ -45,9 +53,13 @@ dev:
     stage: dev
     image: node:13.10.1-alpine3.10
 
+    variables:
+        PREVIEW_URL: $CI_PROJECT_NAME-dev.vercel.app
+
     script:
         - DEPLOYMENT_URL=$(vercel -t $VERCEL_TOKEN --confirm)
         - echo $DEPLOYMENT_URL >vercel_deployment_url.txt
+        - vercel alias set $DEPLOYMENT_URL $PREVIEW_URL -t $VERCEL_TOKEN
     
     artifacts:
         when: on_success
