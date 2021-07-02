@@ -24,3 +24,7 @@ sketch
 .idea
 .vscode
 .firebase
+
+### cypress ###
+cypress/screenshots
+cypress/videos
