@@ -21,12 +21,8 @@ merge:
         PREVIEW_URL: dev-$CI_MERGE_REQUEST_IID-$CI_MERGE_REQUEST_SOURCE_BRANCH_NAME-$CI_MERGE_REQUEST_TARGET_BRANCH_NAME.sollar.app
 
     script:
-        - curl -X GET -H "Authorization:Bearer cQQp4g7QaYvCXCA-pVqB" https://gitlab.com/api/v4/projects/$CI_PROJECT_ID/merge_requests/$CI_MERGE_REQUEST_IID/notes -o output.txt
+        - curl -X POST -H "Authorization:Bearer cQQp4g7QaYvCXCA-pVqB" -H "Content-Type:application/json" https://gitlab.com/api/v4/projects/$CI_PROJECT_ID/merge_requests/$CI_MERGE_REQUEST_IID/notes -d '{"id":$CI_PROJECT_ID, "merge_request_iid":$CI_MERGE_REQUEST_IID, "body":"This merge request is being automatically deployed with Vercel ([learn more](https://vercel.link/gitlab-learn-more)).  \nTo see the url of your deployment, click on the status icon below.\n\n:white_check_mark:Preview:$PREVIEW_URL}' -o output.txt
         - cat output.txt
-        #- DEPLOYMENT_URL=$(vercel -t $VERCEL_TOKEN --confirm)
-        #- echo $DEPLOYMENT_URL >vercel_deployment_url.txt
-        #- vercel alias set $DEPLOYMENT_URL $PREVIEW_URL -t $VERCEL_TOKEN
-        #- curl -X POST -H "Authorization:Bearer cQQp4g7QaYvCXCA-pVqB" -H "Content-Type:application/json" https://gitlab.com/api/v4/projects/27836716/merge_requests/7/notes -d '{"id":27836716, "merge_request_iid":7, "body":"This merge request is being automatically deployed with Vercel ([learn more](https://vercel.link/gitlab-learn-more)).  \nTo see the url of your deployment, click on the status icon below.\n\n:white_check_mark:Preview:$PREVIEW_URL}'
     
     only:
         - merge_requests
