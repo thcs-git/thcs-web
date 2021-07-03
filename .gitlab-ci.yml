@@ -8,7 +8,30 @@ stages:
     - production
     - dev
     - presentation
+    - merge
     #- test
+
+merge:
+    stage: merge
+    image: node:13.10.1-alpine3.10
+
+    variables:
+        #PREVIEW_URL: $CI_PROJECT_NAME-master.vercel.app
+        PREVIEW_URL: dev-$CI_MERGE_REQUEST_IID-$CI_MERGE_REQUEST_SOURCE_BRANCH_NAME-$CI_MERGE_REQUEST_TARGET_BRANCH_NAME.sollar.app
+
+    script:
+        - DEPLOYMENT_URL=$(vercel -t $VERCEL_TOKEN --confirm)
+        - echo $DEPLOYMENT_URL >vercel_deployment_url.txt
+        - vercel alias set $DEPLOYMENT_URL $PREVIEW_URL -t $VERCEL_TOKEN
+        - echo teste
+    
+    artifacts:
+        when: on_success
+        paths:
+            - vercel_deployment_url.txt
+    
+    only:
+        - merge_requests
 
 production:
     stage: production
