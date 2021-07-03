@@ -1,6 +1,7 @@
 image: node:13.10.1-alpine3.10
 
 before_script:
+    - apk add curl
     - npm i -g vercel
 
 stages:
