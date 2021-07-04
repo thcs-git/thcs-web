@@ -70,7 +70,7 @@ dev:
         PREVIEW_URL: dev.sollar.app
 
     script:
-        - DEPLOYMENT_URL=$(vercel -t $VERCEL_TOKEN --env REACT_APP_BASE_API=https://sollar-backend-dev.herokuapp.com/api --confirm)
+        - DEPLOYMENT_URL=$(vercel -t $VERCEL_TOKEN --build-env REACT_APP_BASE_API=https://sollar-backend-dev.herokuapp.com/api --confirm)
         - echo $DEPLOYMENT_URL >vercel_deployment_url.txt
         - vercel alias set $DEPLOYMENT_URL $PREVIEW_URL -t $VERCEL_TOKEN
 
