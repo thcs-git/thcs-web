@@ -1,6 +1,7 @@
 image: node:13.10.1-alpine3.10
 
 before_script:
+    - apk add curl
     - npm i -g vercel
 
 stages:
@@ -15,23 +16,21 @@ merge:
     stage: merge
     image: node:13.10.1-alpine3.10
 
+    rules:
+      #- if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
+      - if: '$CI_MERGE_REQUEST_TARGET_BRANCH_NAME == "dev"'
+
     variables:
         #PREVIEW_URL: $CI_PROJECT_NAME-master.vercel.app
         PREVIEW_URL: dev-$CI_MERGE_REQUEST_IID-$CI_MERGE_REQUEST_SOURCE_BRANCH_NAME-$CI_MERGE_REQUEST_TARGET_BRANCH_NAME.sollar.app
 
     script:
-        - DEPLOYMENT_URL=$(vercel -t $VERCEL_TOKEN --confirm)
+        - DEPLOYMENT_URL=$(vercel -t $VERCEL_TOKEN --build-env REACT_APP_BASE_API=https://sollar-backend-dev.herokuapp.com/api --confirm)
         - echo $DEPLOYMENT_URL >vercel_deployment_url.txt
         - vercel alias set $DEPLOYMENT_URL $PREVIEW_URL -t $VERCEL_TOKEN
-        - echo teste
-    
-    artifacts:
-        when: on_success
-        paths:
-            - vercel_deployment_url.txt
-    
-    only:
-        - merge_requests
+        - curl -X POST -H "Authorization:Bearer $GITLAB_API_TOKEN" -H "Content-Type:application/json" https://gitlab.com/api/v4/projects/$CI_PROJECT_ID/merge_requests/$CI_MERGE_REQUEST_IID/notes -d '{"body":"'"This merge request is being automatically deployed with Vercel ([learn more](https://vercel.link/gitlab-learn-more)).  \nTo see the url of your deployment, click on the status icon below.\n\n ":white_check_mark:" Preview":" https://$PREVIEW_URL"'"}'
+
+    interruptible: true
 
 production:
     stage: production
@@ -42,17 +41,14 @@ production:
         PREVIEW_URL: sollar.app
 
     script:
-        - DEPLOYMENT_URL=$(vercel -t $VERCEL_TOKEN --confirm --prod)
+        - DEPLOYMENT_URL=$(vercel -t $VERCEL_TOKEN --build-env REACT_APP_BASE_API=https://sollar-backend-master.herokuapp.com/api --confirm --prod)
         - echo $DEPLOYMENT_URL >vercel_deployment_url.txt
         - vercel alias set $DEPLOYMENT_URL $PREVIEW_URL -t $VERCEL_TOKEN
-    
-    artifacts:
-        when: on_success
-        paths:
-            - vercel_deployment_url.txt
-    
+
     only:
         - master
+
+    interruptible: true
 
 staging:
     stage: staging
@@ -63,17 +59,14 @@ staging:
         PREVIEW_URL: staging.sollar.app
 
     script:
-        - DEPLOYMENT_URL=$(vercel -t $VERCEL_TOKEN --confirm)
+        - DEPLOYMENT_URL=$(vercel -t $VERCEL_TOKEN --build-env REACT_APP_BASE_API=https://sollar-backend-staging.herokuapp.com/api --confirm)
         - echo $DEPLOYMENT_URL >vercel_deployment_url.txt
         - vercel alias set $DEPLOYMENT_URL $PREVIEW_URL -t $VERCEL_TOKEN
-    
-    artifacts:
-        when: on_success
-        paths:
-            - vercel_deployment_url.txt
-    
+
     only:
         - staging
+
+    interruptible: true
 
 dev:
     stage: dev
@@ -84,17 +77,14 @@ dev:
         PREVIEW_URL: dev.sollar.app
 
     script:
-        - DEPLOYMENT_URL=$(vercel -t $VERCEL_TOKEN --confirm)
+        - DEPLOYMENT_URL=$(vercel -t $VERCEL_TOKEN --build-env REACT_APP_BASE_API=https://sollar-backend-dev.herokuapp.com/api --confirm)
         - echo $DEPLOYMENT_URL >vercel_deployment_url.txt
         - vercel alias set $DEPLOYMENT_URL $PREVIEW_URL -t $VERCEL_TOKEN
-    
-    artifacts:
-        when: on_success
-        paths:
-            - vercel_deployment_url.txt
-    
+
     only:
         - dev
+
+    interruptible: true
 
 presentation:
     stage: presentation
@@ -105,14 +95,11 @@ presentation:
         PREVIEW_URL: presentation.sollar.app
 
     script:
-        - DEPLOYMENT_URL=$(vercel -t $VERCEL_TOKEN --confirm)
+        - DEPLOYMENT_URL=$(vercel -t $VERCEL_TOKEN --build-env REACT_APP_BASE_API=https://sollar-backend-presentation.herokuapp.com/api --confirm)
         - echo $DEPLOYMENT_URL >vercel_deployment_url.txt
         - vercel alias set $DEPLOYMENT_URL $PREVIEW_URL -t $VERCEL_TOKEN
-    
-    artifacts:
-        when: on_success
-        paths:
-            - vercel_deployment_url.txt
-    
+
     only:
         - presentation
+
+    interruptible: true
