@@ -17,6 +17,7 @@ merge:
     image: node:13.10.1-alpine3.10
 
     rules:
+      - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
       - if: '$CI_MERGE_REQUEST_TARGET_BRANCH_NAME == "dev"'
 
     variables:
@@ -28,9 +29,6 @@ merge:
         - echo $DEPLOYMENT_URL >vercel_deployment_url.txt
         - vercel alias set $DEPLOYMENT_URL $PREVIEW_URL -t $VERCEL_TOKEN
         - curl -X POST -H "Authorization:Bearer $GITLAB_API_TOKEN" -H "Content-Type:application/json" https://gitlab.com/api/v4/projects/$CI_PROJECT_ID/merge_requests/$CI_MERGE_REQUEST_IID/notes -d '{"body":"'"This merge request is being automatically deployed with Vercel ([learn more](https://vercel.link/gitlab-learn-more)).  \nTo see the url of your deployment, click on the status icon below.\n\n ":white_check_mark:" Preview":" https://$PREVIEW_URL"'"}'
-
-    only:
-        - merge_requests
 
     interruptible: true
 
