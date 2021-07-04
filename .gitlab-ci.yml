@@ -17,7 +17,7 @@ merge:
     image: node:13.10.1-alpine3.10
 
     rules:
-      - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
+      #- if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
       - if: '$CI_MERGE_REQUEST_TARGET_BRANCH_NAME == "dev"'
 
     variables:
