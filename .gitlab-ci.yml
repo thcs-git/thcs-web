@@ -16,6 +16,9 @@ merge:
     stage: merge
     image: node:13.10.1-alpine3.10
 
+    rules:
+      - if: '$CI_MERGE_REQUEST_TARGET_BRANCH_NAME == "dev"'
+
     variables:
         #PREVIEW_URL: $CI_PROJECT_NAME-master.vercel.app
         PREVIEW_URL: dev-$CI_MERGE_REQUEST_IID-$CI_MERGE_REQUEST_SOURCE_BRANCH_NAME-$CI_MERGE_REQUEST_TARGET_BRANCH_NAME.sollar.app
@@ -28,6 +31,8 @@ merge:
 
     only:
         - merge_requests
+
+    interruptible: true
 
 production:
     stage: production
@@ -45,6 +50,8 @@ production:
     only:
         - master
 
+    interruptible: true
+
 staging:
     stage: staging
     image: node:13.10.1-alpine3.10
@@ -60,6 +67,8 @@ staging:
 
     only:
         - staging
+
+    interruptible: true
 
 dev:
     stage: dev
@@ -77,6 +86,8 @@ dev:
     only:
         - dev
 
+    interruptible: true
+
 presentation:
     stage: presentation
     image: node:13.10.1-alpine3.10
@@ -92,3 +103,5 @@ presentation:
 
     only:
         - presentation
+
+    interruptible: true
