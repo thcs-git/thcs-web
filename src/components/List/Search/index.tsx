@@ -34,9 +34,9 @@ const Search = ({ value, onChangeInput, buttonTitle, handleButton, inputPlacehol
             labelWidth={390}
           />
         </FormControl>
-      {buttonTitle && (
-        <ButtonStyle onClick={handleButton}>{buttonTitle}</ButtonStyle>
-      )}
+        {buttonTitle && (
+          <ButtonStyle onClick={handleButton}>{buttonTitle}</ButtonStyle>
+        )}
 
       </FormSearch>
     </div>

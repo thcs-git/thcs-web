@@ -50,3 +50,5 @@ export const getPatientCapture = (params: LoadRequestParams = {}) =>
 
 export const loadGetPatientCaptureSucess = (data: PatientInterface) =>
   action(PatientTypes.LOAD_PATIENT_CAPTURE_SUCCESS, { data });
+
+export const cleanAction = () => action(PatientTypes.CLEAN);
