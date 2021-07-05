@@ -160,10 +160,46 @@ export default function PatientForm(props: RouteComponentProps<IPageParams>) {
     {id:27,name:'Espírito Santo',sigla:'ES'}
   ];
 
-
+  const [modifi, setModifi] = useState<any>({
+    companies: [],
+    name: "",
+    social_name: "",
+    birthdate: "",
+    gender: "",
+    mother_name: "",
+    profession: "FIELD_NOT_EXISTS_IN_PATIENT_REGISTRATION",
+    nationality: "",
+    naturalness: "FIELD_NOT_EXISTS_IN_PATIENT_REGISTRATION",
+    marital_status: "",
+    fiscal_number: "",
+    national_id: "",
+    issuing_organ: "",
+    address_id: {
+      postal_code: "",
+      street: "",
+      number: "",
+      district: "",
+      city: "",
+      state: "",
+      complement: "",
+    },
+    area_id: "",
+    phones: [],
+    email: "",
+    sus_card: "FIELD_NOT_EXISTS_IN_PATIENT_REGISTRATION",
+    blood_type: "",
+    organ_donor: false,
+    responsable: {
+      name: "",
+      phone: "",
+      cellphone: "",
+      relationship: "",
+    },
+    active: true,
+  })
 
   const [state, setState] = useState<PatientInterface>({
-    companies: ['5ee65a9b1a550217e4a8c0f4'], //empresa que vai vir do login
+    companies: [], //empresa que vai vir do login
     name: '',
     social_name: '',
     birthdate: '',
@@ -202,15 +238,16 @@ export default function PatientForm(props: RouteComponentProps<IPageParams>) {
     blood_type: '',
     organ_donor: false,
 
-    assistent_doctor: '',
-    convenio: '',
-    health_insurance: '',
+
+    health_inassistent_doctor: '',
+    convenio: '',surance: '',
     hospital: '',
     hospital_bed: '',
     sector: '',
     sub_health_insurance: '',
-    unit_health: ''
+    unit_health: '',
   });
+
   const [canEdit, setCanEdit] = useState(true);
 
   const [form, setForm] = useState<IFormFields>({
@@ -337,8 +374,46 @@ export default function PatientForm(props: RouteComponentProps<IPageParams>) {
   }, [state.address_id.postal_code]);
 
   function isEquals(){
+    setModifi((prev)=>({
+      ...prev,
+      name:state.name,
+      social_name: state.social_name,
+      birthdate: state.birthdate,
+      gender: state.gender,
+      mother_name: state.mother_name,
+      profession: "FIELD_NOT_EXISTS_IN_PATIENT_REGISTRATION",
+      nationality: state.nationality,
+      naturalness: "FIELD_NOT_EXISTS_IN_PATIENT_REGISTRATION",
+      marital_status: state.marital_status,
+      fiscal_number: state.fiscal_number,
+      national_id: state.national_id,
+      issuing_organ: state.issuing_organ,
+      address_id: {
+        postal_code: state.postal_code,
+        street: state.street,
+        number: state.number,
+        district: state.district,
+        city: state.city,
+        state: state.state,
+        complement: state.complement,
+      },
+      area_id: state.area_id,
+      phones: [],
+      email: state.email,
+      sus_card: "FIELD_NOT_EXISTS_IN_PATIENT_REGISTRATION",
+      blood_type: state.blood_type,
+      organ_donor: false,
+      responsable: {
+        name: state.name,
+        phone: state.phones,
+        cellphone: state.cellphone,
+        relationship: state.relationship,
+      },
+    }
+    ));
 
-    return _.isEqual(state,patientState.data);
+
+    return _.isEqual(modifi, patientState.data);
   }
 
   useEffect(() => {
@@ -436,7 +511,6 @@ export default function PatientForm(props: RouteComponentProps<IPageParams>) {
   }, [state.blood_type]);
 
 
-
   const selectPatientArea = useCallback(() => {
     if(canEdit){
 
@@ -453,7 +527,14 @@ export default function PatientForm(props: RouteComponentProps<IPageParams>) {
   }, [state.area_id, areaState]);
 
   function handleOpenModalCancel() {
-    setOpenModalCancel(true);
+    if(isEquals()){
+      handleCancelForm()
+      console.log(isEquals());
+    }else{
+      setOpenModalCancel(true);
+        console.log(isEquals());
+    }
+
   }
 
   function handleCloseModalCancel() {
@@ -1044,7 +1125,7 @@ export default function PatientForm(props: RouteComponentProps<IPageParams>) {
               </FormSection>
             </BoxCustom>
             <ButtonsContent>
-              <ButtonComponent background="secondary" variant="outlined" onClick={() => (patientState.success || !canEdit) ? history.push('/patient') : handleOpenModalCancel()}>
+              <ButtonComponent background="secondary" variant="outlined" onClick={() => handleOpenModalCancel()}>
                 Voltar
                 </ButtonComponent>
               {canEdit && (
