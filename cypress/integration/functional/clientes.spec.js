@@ -2,12 +2,14 @@
 
 import loc from '../../support/locators'
 
-describe('Client functional tests', () => {
+describe('Validation Client', () => {
 
   beforeEach(() =>{
     cy.reload()
     cy.visit(Cypress.env('host')+'/login')
+    cy.wait(1000)
     cy.login('brunogcpereira@gmail.com','123456789')
+    cy.wait(1000)
     cy.changeCompany()
     cy.xpath(loc.MENU.XP_BTN_CLIENTES).click()
   })
@@ -83,9 +85,10 @@ describe('Client functional tests', () => {
   it('Should to Edit a Client and cancel POPUP', () => {
 
     cy.xpath(loc.CLIENTES.XP_BTN_NOME_FANTASIA).click()
+    cy.wait(1000)
     cy.xpath(loc.CLIENTES.XP_BTN_CLIENTE_EDITAR).click()
     cy.get(loc.CLIENTES.NOME_RESPONSAVEL).click()
-    cy.get(loc.CLIENTES.NOME_RESPONSAVEL).type('{backspace}s')
+    cy.get(loc.CLIENTES.NOME_RESPONSAVEL).type('{backspace}')
     cy.xpath(loc.CLIENTES.XP_BTN_CANCELAR).click()
     cy.get('#alert-dialog-title').should('be.visible')
     .and('contain','Cancelar')

@@ -3,11 +3,13 @@
 import loc from '../../support/locators';
 
 
-describe('Validation Area', () => {
+describe('Validation of the Area Module', () => {
   beforeEach(() =>{
     cy.reload()
     cy.visit(Cypress.env('host')+'/login')
+    cy.wait(1000)
     cy.login('brunogcpereira@gmail.com','123456789')
+    cy.wait(1000)
     cy.changeCompany()
     cy.xpath(loc.MENU.XP_BTN_AREA).click()
   })

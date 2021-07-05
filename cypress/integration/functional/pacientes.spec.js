@@ -2,11 +2,13 @@
 
 import loc from '../../support/locators'
 
-describe('Validate patients',() => {
+describe('Validation Patients Module',() => {
   beforeEach(() =>{
     cy.reload()
     cy.visit(Cypress.env('host')+'/login')
+    cy.wait(1000)
     cy.login('brunogcpereira@gmail.com','123456789')
+    cy.wait(1000)
     cy.xpath(loc.MENU.XP_BTN_PACIENTES).click()
   })
 

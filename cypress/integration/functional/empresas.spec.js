@@ -2,12 +2,14 @@
 
 import loc from '../../support/locators';
 
-describe('Validate Company Module', ()=>{
+describe('Validation of the Company Module', ()=>{
 
   beforeEach(() =>{
     cy.reload()
     cy.visit(Cypress.env('host')+'/login')
+    cy.wait(1000)
     cy.login('brunogcpereira@gmail.com','123456789')
+    cy.wait(1000)
     cy.changeCompany()
     cy.xpath(loc.MENU.XP_BTN_EMPRESAS).click()
   })
@@ -35,9 +37,11 @@ describe('Validate Company Module', ()=>{
       cy.get(loc.EMPRESAS.NOME_FANTASIA).type("Tascom consultoria tecnologia me")
       cy.get(loc.EMPRESAS.CNPJ).type(this.data[i].cnpj)
       cy.get(loc.EMPRESAS.CEP).type(this.data[i].cep)
+      cy.wait(1000)
       cy.get(loc.EMPRESAS.ENDERECO).click()
       cy.get(loc.EMPRESAS.NOME_RESPONSAVEL).type("Tascom consultoria tecnologia me")
       cy.get(loc.EMPRESAS.TELEFONE).type(this.data[i].telefone)
+      cy.wait(1000)
       cy.get(loc.EMPRESAS.EMAIL).type(this.data[i].email)
       cy.get(loc.EMPRESAS.CELULAR).type(this.data[i].celular)
       cy.get(loc.EMPRESAS.NUMERO).type(this.data[i].numero)

@@ -2,7 +2,7 @@
 
 import loc from '../../support/locators';
 
-describe('Login validation', () => {
+describe('Validation Login', () => {
 
   beforeEach('', () => {
     cy.reload()
