@@ -1,5 +1,5 @@
 import styled from "styled-components";
-
+import { ReactComponent as HomeIcon } from "../../../assets/img/marca-sollar-azul.svg";
 export const FeedbackContent = styled.div`
   display: flex;
   flex-direction: column;
@@ -17,10 +17,27 @@ export const FeedbackImage = styled.h1`
     height: 20rem;
   }
 `;
+
+export const TextGray = styled.p`
+  font-size: 14px;
+  color: #666;
+`;
+
+export const TextBlue = styled.a`
+  font-size: 14px;
+  color: #0899BA;
+`;
+
 export const FeedbackTitle = styled.h1`
   color: var(--primary);
   margin-bottom: 1.063rem;
   font-size: 2.125rem;
+`;
+
+export const HomeIconLogo = styled(HomeIcon)`
+  margin-bottom: 8px;
+  height: 300px;
+  width: 300px;
 `;
 
 export const FeedbackDescription = styled.p`
