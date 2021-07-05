@@ -1,5 +1,7 @@
 import React, { useState } from 'react'
 import { GoogleMap, InfoWindow, LoadScript, Marker } from '@react-google-maps/api';
+import { AreaPoints } from '../../store/ducks/areas/types';
+import { useEffect } from 'react';
 
 const containerStyle = {
   width: '1000px',
@@ -15,8 +17,23 @@ const position = {
   lng: -41.4583
 }
 
+const points =[
+  {
+    lat: -8.0235849,
+    lng: -34.9040313
+  },
+  {
+    lat: -7.993208099999999,
+    lng: -34.9097491
 
-export default function MyComponent() {
+  }
+]
+
+interface IMapsProps {
+  points: any[]
+}
+export default function MyComponent(props: IMapsProps) {
+
 
 const [mouse,setMouse]= useState({showInfoWindow:false});
   const handleMouseOver = ()=> {
@@ -30,6 +47,8 @@ const handleMouseExit = () => {
     });
 };
 
+
+
   return (
     <LoadScript
       googleMapsApiKey="AIzaSyA5ynBs1BxZYrCebESiQloFSZIiALVBGzg"
@@ -39,9 +58,21 @@ const handleMouseExit = () => {
         center={center}
         zoom={12}
       >
-        { /* Child components, such as markers, info windows, etc. */ }
+        {props.points?.map((point, index) => (
+   <Marker key={index} position={{lat:parseFloat(point.geolocation.latitude),lng:parseFloat(point.geolocation.longitude)}}
+    onMouseOver={handleMouseOver}
+    onMouseOut={handleMouseExit}>
+      {mouse.showInfoWindow && (
+        <InfoWindow>
+            <h4>{point.street}</h4>
+        </InfoWindow>
+      )}
+   </Marker>
+  ))}
 
-    <Marker
+
+
+    {/* <Marker
       position={position}
       onMouseOver={handleMouseOver}
       onMouseOut={handleMouseExit}
@@ -49,7 +80,7 @@ const handleMouseExit = () => {
         <InfoWindow>
             <h4>teste</h4>
         </InfoWindow>
-  )}</Marker>
+  )}</Marker> */}
 
       </GoogleMap>
     </LoadScript>
