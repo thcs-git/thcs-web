@@ -34,7 +34,7 @@ export default function AvaliationList() {
   const careState = useSelector((state: ApplicationState) => state.cares);
 
   const [search, setSearch] = useState('');
-  const [file,setFile] = useState({error:false});
+  const [file, setFile] = useState({ error: false });
   const [captureStatus, setCaptureStatus] = useState<ICaptureStatus>({
     care: {},
     approved: '',
@@ -145,35 +145,35 @@ export default function AvaliationList() {
     const files = element.target.files;
 
     if (!element) {
-      setFile(prevState=>({
+      setFile(prevState => ({
         ...prevState,
-        error:false
+        error: false
       }))
       return;
-    }else{
-        if(files && files?.length >0){
-          console.log(files[0]);
-           if(files[0].type == 'application/pdf' && files[0].size < 5000000){
-            setFile(prevState=>({
-              ...prevState,
-              error:false
-            }))
-          }else{
-             setFile(prevState=>({
-          ...prevState,
-          error:true
-        }))
-          }
+    } else {
+      if (files && files?.length > 0) {
+        console.log(files[0]);
+        if (files[0].type == 'application/pdf' && files[0].size < 5000000) {
+          setFile(prevState => ({
+            ...prevState,
+            error: false
+          }))
+        } else {
+          setFile(prevState => ({
+            ...prevState,
+            error: true
+          }))
         }
+      }
     }
 
     if (files && files?.length > 0) {
       const fileData: any = await readFile(files[0]);
-      if(!file.error){
-           setCaptureStatus(prevState => ({
-        ...prevState,
-        attachment: fileData
-      }));
+      if (!file.error) {
+        setCaptureStatus(prevState => ({
+          ...prevState,
+          attachment: fileData
+        }));
       }
     }
   };
@@ -215,7 +215,7 @@ export default function AvaliationList() {
           <Table
             tableCells={[
               { name: 'Paciente', align: 'left' },
-              { name: 'Pedido', align: 'left' },
+              { name: 'Tipo', align: 'left' },
               { name: 'Socioambiental', align: 'center' },
               { name: 'NEAD', align: 'center' },
               { name: 'ABEMID', align: 'center' },
@@ -362,13 +362,13 @@ export default function AvaliationList() {
                 <input type="file" accept="application/pdf" onChange={handleChangeFiles} />
               </FieldContent> */}
               <FieldContent>
-              <DialogContentText tabIndex={-1}>Anexar Guia de Autorização</DialogContentText>
-              <DialogContentText>Arquivos .pdf e menores que 5 megabytes.</DialogContentText>
+                <DialogContentText tabIndex={-1}>Anexar Guia de Autorização</DialogContentText>
+                <DialogContentText>Arquivos .pdf e menores que 5 megabytes.</DialogContentText>
                 <TextField
-                error={file.error}
-                onChange={handleChangeFiles}
-                helperText={file.error?"Aquivo não compatível ou muito grande":null}
-                type='file'>
+                  error={file.error}
+                  onChange={handleChangeFiles}
+                  helperText={file.error ? "Aquivo não compatível ou muito grande" : null}
+                  type='file'>
                 </TextField>
               </FieldContent>
 
@@ -407,15 +407,15 @@ export default function AvaliationList() {
             <DialogContent>
               <DialogContentText id="alert-dialog-description">
                 Ao alterar o status dessa captação você iniciará o atendimento do paciente. Tem certeza que deseja prosseguir?
-                </DialogContentText>
+              </DialogContentText>
             </DialogContent>
             <DialogActions>
               <Button onClick={() => setModalConfirmUpdateStatus(false)} color="primary">
                 Não
-          </Button>
+              </Button>
               <Button onClick={handleUpdateCaptureStatus} color="primary" autoFocus>
                 Sim
-          </Button>
+              </Button>
             </DialogActions>
           </Dialog>
 
