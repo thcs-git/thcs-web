@@ -230,7 +230,6 @@ export default function PatientCaptureForm(props: RouteComponentProps) {
   }
 
   function handleOpenModalCancel() {
-    //Fazer aqui!
     if(canEdit){
      setOpenModalCancel(true);
      }else{
@@ -512,7 +511,7 @@ export default function PatientCaptureForm(props: RouteComponentProps) {
         <DialogTitle id="alert-dialog-title">Atenção</DialogTitle>
         <DialogContent>
           <DialogContentText id="alert-dialog-description">
-            Você editou alguns campos neste cadastro. Deseja realmente descartar as alterações?
+            Você selecionou um paciente neste cadastro. Deseja realmente descartar as alterações?
 					</DialogContentText>
         </DialogContent>
         <DialogActions>
