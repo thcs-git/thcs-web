@@ -7,6 +7,7 @@ import { loadRequest, loadAreaById, updateAreaRequest, createAreaRequest, loadGe
 import { loadRequest as getUsersAction, loadProfessionsRequest } from '../../../store/ducks/users/actions';
 import { toast } from 'react-toastify';
 import { useHistory, RouteComponentProps } from 'react-router-dom';
+import { GoogleMap, Marker } from "react-google-maps";
 import {
   Badge,
   CircularProgress,
@@ -34,6 +35,7 @@ import { SliderComponent as Slider } from '../../../styles/components/Slider';
 import { SwitchComponent as Switch } from '../../../styles/components/Switch';
 import { TabContent, TabNav, TabNavItem, TabBody, TabBodyItem } from '../../../styles/components/Tabs';
 
+import MyComponent from '../../../components/Maps';
 import {
   ButtonsContent,
   FormSection,
@@ -66,6 +68,7 @@ interface TabPanelProps {
   index: any;
   value: any;
 }
+
 
 export default function AreaForm(props: RouteComponentProps<IPageParams>) {
   const history = useHistory();
@@ -210,6 +213,8 @@ export default function AreaForm(props: RouteComponentProps<IPageParams>) {
     created_at: "",
     profession_users:[]
   });
+
+
 
   const [currentTab, setCurrentTab] = useState(0);
   let load = false;
@@ -640,6 +645,11 @@ export default function AreaForm(props: RouteComponentProps<IPageParams>) {
                     {`Prestadores`}
                   </Badge>
                 </TabNavItem>
+                <TabNavItem className={currentTab === 3 ? 'active' : ''} onClick={() => goToNextMenu(3)}>
+                  <Badge badgeContent={countProfessions()} max={99} color="primary">
+                    {`Pacientes`}
+                  </Badge>
+                </TabNavItem>
               </TabNav>
               <TabBody>
                 <TabBodyItem className={currentTab === 0 ? 'show' : ''}>
@@ -908,6 +918,20 @@ export default function AreaForm(props: RouteComponentProps<IPageParams>) {
                            </Grid>
                         ))}
                       </ChipList>
+                    </Grid>
+                  </Grid>
+                </TabBodyItem>
+                <TabBodyItem className={currentTab === 3 ? 'show' : ''}>
+                  <Grid container>
+                  <Grid item md={7} xs={12}>
+
+                    </Grid>
+                    <Grid item md={12} xs={12}>
+
+
+                    </Grid>
+                    <Grid item md={12} xs={12}>
+                                <MyComponent></MyComponent>
                     </Grid>
                   </Grid>
                 </TabBodyItem>
