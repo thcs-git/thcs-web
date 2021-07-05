@@ -152,6 +152,7 @@ export async function* registerUser({ payload: { data } }: any) {
 }
 
 export function* createUser({ payload: { data } }: any) {
+  console.log(data);
   const phones = [];
 
   if (data.phone.length > 0) {
@@ -175,10 +176,12 @@ export function* createUser({ payload: { data } }: any) {
     .replaceAll(".", "")
     .replaceAll("/", "")
     .replaceAll("-", "");
-  data.password = data.fiscal_number
-    .replaceAll(".", "")
-    .replaceAll("/", "")
-    .replaceAll("-", "");
+  // data.password = data.fiscal_number
+  //   .replaceAll(".", "")
+  //   .replaceAll("/", "")
+  //   .replaceAll("-", "");
+
+  data.password = data.password;
   data.phones = phones;
 
   try {

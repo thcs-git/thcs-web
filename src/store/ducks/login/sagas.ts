@@ -32,25 +32,25 @@ export function* doLogin({ payload }: any) {
     localStorage.setItem(LOCALSTORAGE.USER_ID, data._id);
     localStorage.setItem(
       LOCALSTORAGE.CUSTOMER,
-      data.companies[0].customer_id?._id || null
+      data.companies[0]?.customer_id?._id || null
     );
     localStorage.setItem(
       LOCALSTORAGE.CUSTOMER_NAME,
-      data.companies[0].customer_id?.name || 'Cliente'
+      data.companies[0]?.customer_id?.name || "Cliente"
     );
 
     if (data.companies.length > 0) {
       localStorage.setItem(
         LOCALSTORAGE.COMPANY_SELECTED,
-        data.companies[0]._id || null
+        data.companies[0]?._id || null
       );
       localStorage.setItem(
         LOCALSTORAGE.COMPANY_NAME,
-        data.companies[0].name || 'Empresa'
+        data.companies[0]?.name || "Empresa"
       );
     }
 
-    console.log(data)
+    console.log(data);
 
     yield put(loadSuccess(data));
 
