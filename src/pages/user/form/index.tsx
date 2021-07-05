@@ -82,6 +82,8 @@ import {
 } from './styles';
 import { UserContent } from "../../../components/Sidebar/styles";
 import AddIcon from '@material-ui/icons/Add';
+import RemoveIcon from '@material-ui/icons/Remove';
+import LocationOnIcon from '@material-ui/icons/LocationOn'
 import CheckCircleRoundedIcon from '@material-ui/icons/CheckCircleRounded';
 import { BoxCustom } from "../../customer/form/styles";
 import _ from "lodash";
@@ -144,6 +146,7 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
     specialties: [],
     council_state: "",
     council_number: "",
+    verified: "",
     active: true,
   });
 
@@ -1691,7 +1694,10 @@ const dengagedUser=useCallback((company:CompanyInterface)=>{
                       <Grid item style={{paddingTop:'20px'}}>
                         <ButtonComponent style={{maxWidth:'10px'}} onClick={()=>setAdd(!add)}>
                           {add? (<CheckCircleRoundedIcon fontSize={'large'} style={{ color: '#4FC66A' }}></CheckCircleRoundedIcon>):(
-                            <AddIcon fontSize={'large'} color={'primary'} ></AddIcon>
+                            <>
+                            {params.mode === 'view'?(<RemoveIcon fontSize={'large'} color={'primary'} ></RemoveIcon>):(<AddIcon fontSize={'large'} color={'primary'} ></AddIcon>)}
+                            </>
+
                           )}
                         </ButtonComponent>
                       </Grid>

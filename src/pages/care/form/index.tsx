@@ -2,7 +2,9 @@ import React, { useState, useEffect, useCallback, ReactNode } from "react";
 import Checkbox from "@material-ui/core/Checkbox";
 import Divider from "@material-ui/core/Divider";
 import debounce from "lodash.debounce";
-
+import { cpf } from 'cpf-cnpj-validator';
+import InputMask,{ Props }  from 'react-input-mask';
+import { bloodTypes, maritalStatus } from '../../../helpers/patient';
 import {
   Create as CreateIcon,
   Check as CheckIcon,
@@ -14,6 +16,7 @@ import {
   LocalHospitalSharp as LocalHospitalSharpIcon,
 } from "@material-ui/icons";
 
+import DatePicker from '../../../styles/components/DatePicker';
 import { useDispatch, useSelector } from "react-redux";
 import { ApplicationState } from "../../../store";
 import { CareInterface } from "../../../store/ducks/cares/types";
@@ -28,16 +31,20 @@ import {
   careTypeRequest,
   cidRequest,
 } from "../../../store/ducks/cares/actions";
+import { loadPatientById } from "../../../store/ducks/patients/actions";
 import { loadRequest as getAreasAction } from "../../../store/ducks/areas/actions";
 import { loadRequest as getUsersAction } from "../../../store/ducks/users/actions";
 
-import { Table, Th, Td } from "../../../styles/components/Table";
+import { Table, Th, Td, } from "../../../styles/components/Table";
 import { searchRequest as searchPatientAction } from "../../../store/ducks/patients/actions";
 
 import { useHistory, RouteComponentProps } from "react-router-dom";
 import {
   Box,
   Container,
+  FormControl,
+  FormControlLabel,
+  InputLabel,
   Dialog,
   DialogActions,
   DialogContent,
@@ -47,6 +54,7 @@ import {
   StepLabel,
   Typography,
   Tooltip,
+  Switch,
 } from "@material-ui/core";
 
 import { Autocomplete } from "@material-ui/lab";
@@ -73,6 +81,9 @@ import {
   NoDataIcon,
   PatientNotFound,
   Profile,
+  BoxCustom,
+  FormGroupSection,
+  OutlinedInputFiled
 } from "./styles";
 
 interface IFormFields extends CareInterface {
@@ -91,14 +102,14 @@ interface TabPanelProps {
   value: any;
 }
 
-export default function AreaForm(props: RouteComponentProps<IPageParams>) {
+export default function CareForm(props: RouteComponentProps<IPageParams>) {
   const history = useHistory();
   const dispatch = useDispatch();
   const careState = useSelector((state: ApplicationState) => state.cares);
   const areaState = useSelector((state: ApplicationState) => state.areas);
   const userState = useSelector((state: ApplicationState) => state.users);
   const patientState = useSelector((state: ApplicationState) => state.patients);
-
+  const [startStep,setStartStep] = useState(true);
   const { params } = props.match;
 
   const [state, setState] = useState<IFormFields>({
@@ -115,7 +126,7 @@ export default function AreaForm(props: RouteComponentProps<IPageParams>) {
     cid_id: "5ebf162559ba0b646c900240",
     user_id: "",
     area_id: "",
-    status: "", // Pre-Atendimento, Em atendimento, Cancelado, Finalizad,
+    status: "", // Pre-Atendimento, Em atendimento, Cancelado, Finalizado,
     created_at: "",
     updated_at: "",
   });
@@ -124,20 +135,55 @@ export default function AreaForm(props: RouteComponentProps<IPageParams>) {
     Partial<CareInterface>
   >();
 
-  const [patientSearch, setPatientSearch] = useState<string>("");
-  const [patient, setPatient] = useState<any>();
 
+  const [patient, setPatient] = useState<any>();
   const [currentTab, setCurrentTab] = useState(0);
   const [currentStep, setCurrentStep] = useState(0);
   const [openModalCancel, setOpenModalCancel] = useState(false);
 
+
+  const States = [
+    {id:1,name:"São Paulo",sigla:'SP'},
+    {id:2,name:'Paraná',sigla:'PR'},
+    {id:3,name:'Santa Catarina',sigla:'SC'},
+    {id:4,name:'Rio Garnde do Sul',sigla:'RS'},
+    {id:5,name:'Mato Grosso do Sul',sigla:'MS'},
+    {id:6,name:'Rondônia',sigla:'RO'},
+    {id:7,name:'Acre',sigla:'AC'},
+    {id:8,name:'Amazonas',sigla:'AM'},
+    {id:9,name:'Roraima',sigla:'RR'},
+    {id:10,name:'Pará',sigla:'PA'},
+    {id:11,name:'Amapá',sigla:'AP'},
+    {id:12,name:'Tocantins',sigla:'TO'},
+    {id:13,name:'Maranhão',sigla:'MA'},
+    {id:14,name:'Rio Grande do Norte',sigla:'RN'},
+    {id:15,name:'Paraíba',sigla:'PB'},
+    {id:16,name:'Pernambuco',sigla:'PE'},
+    {id:17,name:'Alagoas',sigla:'AL'},
+    {id:18,name:'Sergipe',sigla:'SE'},
+    {id:19,name:'Bahia',sigla:'BA'},
+    {id:20,name:'Minas Gerais',sigla:'MG'},
+    {id:21,name:'Rio de Janeiro',sigla:'RJ'},
+    {id:22,name:'Mato Grosso',sigla:'MT'},
+    {id:23,name:'Goiás',sigla:'GO'},
+    {id:24,name:'Distrito Federal',sigla:'DF'},
+    {id:25,name:'Piauí',sigla:'PI'},
+    {id:26,name:'Ceará',sigla:'CE'},
+    {id:27,name:'Espírito Santo',sigla:'ES'}
+  ];
+
+  const [canEdit, setCanEdit] = useState(true);
+
   const steps = ["Paciente", "Atendimento", "Confirmação"];
 
+  var isValidPhoneNumber: any;
+  var isValidCellPhoneNumber: any;
+  var isValidResponsableCellPhoneNumber: any;
+  var formValid : any;
   useEffect(() => {
     if (params.id) {
       dispatch(loadCareById(params.id));
     }
-
     dispatch(getAreasAction());
     dispatch(getUsersAction());
     dispatch(healthInsuranceRequest());
@@ -164,6 +210,24 @@ export default function AreaForm(props: RouteComponentProps<IPageParams>) {
     },
     [currentTab]
   );
+  function selectPatient(element:any) {
+    careState.list.data.map((care)=>{
+      if(care._id === element){
+        console.log("match");
+        if(care.patient_id._id){
+          dispatch(loadPatientById(care.patient_id._id));
+        }
+      }
+    })
+    console.log(careState);
+    console.log(element);
+    console.log(selectCheckbox?._id);
+    if(selectCheckbox?._id){
+      dispatch(loadPatientById(selectCheckbox?._id))
+    }
+    setStartStep(!startStep);
+
+  }
 
   const handleNextStep = useCallback(() => {
     setCurrentStep((prevState) => prevState + 1);
@@ -175,14 +239,6 @@ export default function AreaForm(props: RouteComponentProps<IPageParams>) {
     }else{
     setCurrentStep((prevState) => prevState - 1);}
   }, [currentStep]);
-
-
-  const searchPatient = useCallback((value: string) => {
-    if (value.length > 0) {
-      setPatient({});
-      dispatch(searchPatientAction(value));
-    }
-  }, []);
 
   const searchCidData = useCallback(
     (event) => {
@@ -208,6 +264,7 @@ export default function AreaForm(props: RouteComponentProps<IPageParams>) {
   }
 
   function handleSelectArea(value: any) {
+
     setState((prevState) => ({
       ...prevState,
       area_id: value._id,
@@ -357,29 +414,21 @@ export default function AreaForm(props: RouteComponentProps<IPageParams>) {
 
         <FormSection>
           <FormContent>
-            <StepperComponent activeStep={currentStep} alternativeLabel>
-              {steps.map((label) => (
-                <StepComponent key={label}>
-                  <StepLabel>{label}</StepLabel>
-                </StepComponent>
-              ))}
-            </StepperComponent>
+          {startStep && (
+             <BoxCustom>
 
-            {/* Step 1 */}
-            {currentStep === 0 && (
-              <>
-                {careState.list.data.length > 0 ? (
-                  <Table>
-                    <thead>
-                      <tr>
-                        <Th></Th>
-                        <Th>Paciente</Th>
-                        <Th>Pedido</Th>
-                        <Th>Socioambiental</Th>
-                        <Th>NEAD</Th>
-                        <Th>ABEMID</Th>
-                        <Th>Última captação</Th>
-                      </tr>
+
+          <Table>
+              <thead>
+                <tr>
+                <Th></Th>
+                <Th>Paciente</Th>
+                <Th>Pedido</Th>
+                <Th>Socioambiental</Th>
+                <Th>NEAD</Th>
+                <Th>ABEMID</Th>
+                <Th>Última captação</Th>
+                </tr>
                     </thead>
                     <tbody>
                       {careState.list.data.map((care, index) => (
@@ -388,9 +437,14 @@ export default function AreaForm(props: RouteComponentProps<IPageParams>) {
                             <Checkbox
                               checked={selectCheckbox?._id === care?._id}
                               onChange={(element) => {
-                                if (care._id && care._id === element.target.value)
-                                  setSelectCheckbox({});
-                                else setSelectCheckbox(care);
+                                selectPatient(element.target.value);
+                                if (care._id && care._id === element.target.value){
+                                   setSelectCheckbox({});
+                                }else{
+
+                                  setSelectCheckbox(care);
+
+                                }
                               }}
                               inputProps={{ "aria-label": "primary checkbox" }}
                             />
@@ -425,12 +479,344 @@ export default function AreaForm(props: RouteComponentProps<IPageParams>) {
                       ))}
                     </tbody>
                   </Table>
-                ) : (
-                    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', width: '100%', height: 150, paddingBottom: 20 }}>
-                      <IconNoData style={{ width: 50 }} />
-                      <p>Nenhum paciente com captação aprovada para iniciar um atendimento</p>
-                    </div>
+                  </BoxCustom>
                   )}
+
+
+          {!startStep &&(
+            <>
+            <StepperComponent activeStep={currentStep} alternativeLabel>
+                {steps.map((label) => (
+                  <StepComponent key={label}>
+                    <StepLabel>{label}</StepLabel>
+                  </StepComponent>
+                ))}
+            </StepperComponent>
+              {/* Step 1 */}
+            {currentStep === 0 && (
+              <>
+               <BoxCustom style={{ background: '#fff', marginTop: 3 }} mt={5} padding={4}>
+              <FormSection>
+                <FormContent>
+                  <FormGroupSection>
+                    <Grid container>
+                      <Grid item md={12} xs={12} style={{marginTop:"1rem"}}>
+                        <TextField
+                          id="input-name"
+                          label="Nome do paciente"
+                          variant="outlined"
+                          size="small"
+                          value={patientState.data.name}
+                          fullWidth
+                          disabled={!canEdit}
+                        />
+                      </Grid>
+
+
+                      <Grid item md={9} xs={12}>
+                        <TextField
+                          id="input-social-name"
+                          label="Nome social"
+                          variant="outlined"
+                          size="small"
+                          value={patientState.data.social_name}
+                          fullWidth
+                          disabled={!canEdit}
+                        />
+                      </Grid>
+
+                      <Grid item md={3} xs={12}>
+                        <Autocomplete
+                          id="combo-box-gender"
+                          options={['Masculino', 'Feminino', 'Indefinido']}
+                          getOptionLabel={(option) => option}
+                          renderInput={(params) => <TextField {...params} label="Sexo" variant="outlined" />}
+                          size="small"
+                          value={patientState.data.gender}
+                          noOptionsText="Nenhum resultado encontrado"
+                          fullWidth
+                          disabled={!canEdit}
+                        />
+                      </Grid>
+                      <Grid item md={8} xs={12}>
+                        <TextField
+                          id="input-mother-name"
+                          label="Nome da mãe"
+                          variant="outlined"
+                          size="small"
+                          value={patientState.data.mother_name}
+
+                          fullWidth
+                          disabled={!canEdit}
+                        />
+                      </Grid>
+                      <Grid item md={4} xs={12}>
+                        <TextField
+                          id="input-nationality"
+                          label="Nacionalidade"
+                          variant="outlined"
+                          size="small"
+                          value={patientState.data.nationality}
+                          fullWidth
+                          disabled={!canEdit}
+                        />
+                      </Grid>
+
+                    </Grid>
+                    <Grid container>
+
+                      <Grid item md={3} xs={12}>
+                        <FormControl variant="outlined" size="small"
+                          disabled={!canEdit}
+                        fullWidth>
+                          <InputLabel htmlFor="search-input">CPF</InputLabel>
+                          <InputMask
+                            mask="999.999.999-99"
+                           value={patientState.data.fiscal_number}
+
+
+                          >
+                            {(inputProps: any) => (
+                              <OutlinedInputFiled
+                                id="input-fiscal-number"
+                                placeholder="000.000.000-00"
+                                labelWidth={80}
+                                style={{ marginRight: 12 }}
+                               // error={!!cpf.isValid(state.fiscal_number) == false && state.fiscal_number != "___.___.___-__" && !!state.fiscal_number}
+                              />
+                            )}
+                          </InputMask>
+                          {!!cpf.isValid(patientState.data.fiscal_number) == false && patientState.data.fiscal_number != "___.___.___-__" && !!patientState.data.fiscal_number &&(
+                              <p style={{ color: '#f44336', margin:'1px 5px 20px' }}>
+                              Por favor insira um cpf válido
+                              </p>
+                            )}
+                        </FormControl>
+                      </Grid>
+                      <Grid item md={4} xs={12}>
+                        <FormControl variant="outlined" size="small" disabled={!canEdit} fullWidth>
+                          <InputLabel htmlFor="search-input">RG</InputLabel>
+                          <InputMask
+                            mask="9.999-999"
+                            value={patientState.data.national_id}
+                          >
+                            {(inputProps: any) => (
+                              <OutlinedInputFiled
+                                id="input-nation-id"
+                                placeholder="000.000.000-00"
+                                labelWidth={80}
+                                style={{ marginRight: 12 }}
+
+                              />
+                            )}
+                          </InputMask>
+                        </FormControl>
+                      </Grid>
+
+                      <Grid item md={5} xs={12}>
+                        <TextField
+                          id="input-emitting-organ"
+                          label="Órgão Emissor"
+                          variant="outlined"
+                          size="small"
+                          value={patientState.data.issuing_organ}
+
+                          fullWidth
+                          disabled={!canEdit}
+                          autoComplete="off"
+                        />
+                      </Grid>
+                      <Grid item md={3} xs={12}>
+                        <FormGroupSection>
+                          <Autocomplete
+                            id="combo-box-marital-status"
+                            options={maritalStatus}
+                            getOptionLabel={(option) => option}
+                            renderInput={(params) => <TextField {...params} label="Estado Civil" variant="outlined" autoComplete="off" />}
+                            value={patientState.data?.marital_status}
+                            getOptionSelected={(option, value) => option === patientState.data?.marital_status}
+                            onChange={(event: any, newValue) => {
+                              setState(prevState => ({
+                                ...prevState,
+                                marital_status: newValue || '',
+                              }));
+                            }}
+                            size="small"
+                            noOptionsText="Nenhum resultado encontrado"
+                            fullWidth
+                           // disabled={!canEdit}
+                            autoComplete={false}
+                            autoHighlight={false}
+                          />
+                        </FormGroupSection>
+                      </Grid>
+
+                      <Grid item md={3} xs={12}>
+                        <FormGroupSection>
+                          <Autocomplete
+                            id="combo-box-blood-type"
+                            options={bloodTypes}
+                            getOptionLabel={(option) => option}
+                            renderInput={(params) => <TextField {...params} label="Tipo sanguíneo" variant="outlined" />}
+                            value={patientState.data?.blood_type}
+                            getOptionSelected={(option, value) => value === patientState.data?.blood_type}
+                            size="small"
+                            noOptionsText="Nenhum resultado encontrado"
+                            fullWidth
+                            disabled={!canEdit}
+                          />
+                        </FormGroupSection>
+                      </Grid>
+
+
+
+                      <Grid item md={10} />
+                    </Grid>
+                  </FormGroupSection>
+
+                  {/*  */}
+                  <FormGroupSection>
+                    <Grid container>
+
+
+                      <Grid item md={9} xs={12}>
+                        <TextField
+                          id="input-address"
+                          label="Endereço"
+                          variant="outlined"
+                          size="small"
+                        //  value={state.address_id.street}
+                        //  onChange={(element) => setState({ ...state, address_id: { ...state.address_id, street: element.target.value } })}
+                          fullWidth
+                        //  disabled={!canEdit}
+                        />
+                      </Grid>
+                      <Grid item md={2} xs={12}>
+                        <TextField
+                          id="input-address-number"
+                          label="Número"
+
+                          variant="outlined"
+                          size="small"
+                        //  value={state.address_id.number}
+                        //  onChange={(element) => setState({ ...state, address_id: { ...state.address_id, number: element.target.value } })}
+                          fullWidth
+                        //  disabled={!canEdit}
+                        />
+                      </Grid>
+
+                      <Grid item md={7} xs={12}>
+                        <TextField
+                          id="input-address-complement"
+                          label="Complemento"
+                          variant="outlined"
+                          size="small"
+                        //  value={state.address_id.complement}
+                        //  onChange={(element) => setState({ ...state, address_id: { ...state.address_id, complement: element.target.value } })}
+                          fullWidth
+                        //  disabled={!canEdit}
+                        />
+                      </Grid>
+
+                      <Grid item md={3} xs={12}>
+                        <TextField
+                          id="input-neighborhood"
+                          label="Bairro"
+
+                          variant="outlined"
+                          size="small"
+                         // value={state.address_id.district}
+                         // onChange={(element) => setState({ ...state, address_id: { ...state.address_id, district: element.target.value } })}
+                          fullWidth
+                         // disabled={!canEdit}
+                        />
+                      </Grid>
+
+                      <Grid item md={4} xs={12}>
+                        <TextField
+                          id="input-city"
+                          label="Cidade"
+                          variant="outlined"
+
+                          size="small"
+                         // value={state.address_id.city}
+                         // onChange={(element) => setState({ ...state, address_id: { ...state.address_id, city: element.target.value } })}
+                          fullWidth
+                        //  disabled={!canEdit}
+                        />
+                      </Grid>
+
+                      <Grid item md={1} xs={12}>
+                        <TextField
+                          id="input-address-uf"
+                          label="UF"
+                          variant="outlined"
+                          size="small"
+                        //  value={patientState.data.address_id.state}
+                          fullWidth
+                          disabled={!canEdit}
+                        />
+                      </Grid>
+
+                      <Grid item md={7} xs={12}>
+                        <Autocomplete
+                          id="combo-box-areas"
+                          options={areaState.list.data}
+                          getOptionLabel={(option) => option.name}
+                          renderInput={(params) => <TextField {...params} label="Área" variant="outlined" />}
+                          size="small"
+                         // value={selectPatientArea()}
+                          onChange={(element, value) => setState({ ...state, area_id: value?._id })}
+                          getOptionSelected={(option, value) => option._id === state?.area_id}
+                          noOptionsText="Nenhum resultado encontrado"
+                          fullWidth
+                        //  disabled={!canEdit}
+                        />
+                      </Grid>
+                    </Grid>
+                    <Grid container>
+
+
+
+
+
+                    </Grid>
+                  </FormGroupSection>
+                  <FormGroupSection>
+                    <Grid container>
+                      <Grid item md={8} xs={12}>
+                        <TextField
+                          id="input-responsible-name"
+                          label="Nome do responsável"
+                          variant="outlined"
+                          size="small"
+                         // value={state.responsable?.name}
+                         // onChange={(element) => setState({ ...state, responsable: { ...state.responsable, name: element.target.value } })}
+                          placeholder=""
+                          fullWidth
+                         // disabled={!canEdit}
+                        />
+                      </Grid>
+
+                      <Grid item md={4} xs={6}>
+                        <TextField
+                          id="input-responsible"
+                          label="Parentesco"
+                          variant="outlined"
+                          size="small"
+                        //  value={state.responsable?.relationship}
+                        //  onChange={(element) => setState({ ...state, responsable: { ...state.responsable, relationship: element.target.value } })}
+                          placeholder=""
+                          fullWidth
+                       //   disabled={!canEdit}
+                        />
+                      </Grid>
+                    </Grid>
+                  </FormGroupSection>
+
+                </FormContent>
+              </FormSection>
+            </BoxCustom>
 
                 {patient?._id && (
                   <Grid container>
@@ -482,9 +868,9 @@ export default function AreaForm(props: RouteComponentProps<IPageParams>) {
                 )}
               </>
             )}
-
             {/* Step 2 */}
             {currentStep === 1 && (
+
               <Grid container style={{ marginBottom: "40px" }}>
                 <Grid item md={4} xs={12}>
                   <Autocomplete
@@ -792,9 +1178,13 @@ export default function AreaForm(props: RouteComponentProps<IPageParams>) {
                   />
                 </Grid>
               </Grid>
+
             )}
 
+
+
             {/* Step 3 */}
+
             {currentStep === 2 && (
               <Grid container direction="column">
                 <Box mb={2} paddingLeft={5}>
@@ -933,30 +1323,50 @@ export default function AreaForm(props: RouteComponentProps<IPageParams>) {
                 </Box>
               </Grid>
             )}
-          </FormContent>
+            </>
+
+                  )}
+
+    </FormContent>
+
+
 
           <ButtonsContent>
-            <Button
+            {!startStep && ( <Button
+            background="default"
+            onClick={()=>{
+              setStartStep(!startStep);
+              setCurrentStep(0)}}
+          >
+            Voltar
+          </Button>)}
+             {!startStep && (
+              <Button
+                background="default"
+                onClick={handleBackStep}
+              >
+                Anterior
+          </Button>
+             )}
 
-              background="default"
-              onClick={handleBackStep}
-            >
-              Anterior
-            </Button>
-
-            {currentStep === steps.length - 1 ? (
+            {(currentStep === steps.length - 1 && !startStep) &&(
               <Button background="primary" onClick={handleSaveFormCare}>
                 Finalizar
               </Button>
-            ) : (
-                <Button
+            ) }
+            {(currentStep !== steps.length - 1 && !startStep) && (
+               <Button
                   disabled={currentStep === (steps.length - 1) || !selectCheckbox?._id}
                   background="primary"
                   onClick={handleNextStep}
+
                 >
                   Próximo
                 </Button>
-              )}
+            )}
+
+
+
           </ButtonsContent>
         </FormSection>
       </Container>

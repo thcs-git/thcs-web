@@ -28,8 +28,11 @@ export default function Configuration() {
   useEffect(() => {
     const { companies: userCompanies } = userState.data
 
-    setCompanies(userCompanies);
+    userCompanies.forEach(function (item) {
+      Object.assign(item, {customer: item['customer_id']['name'] + ' - ' + item['name']});
+    })
 
+    setCompanies(userCompanies);
   }, [userState]);
 
   const selectCompany = useCallback(() => {
@@ -61,11 +64,11 @@ export default function Configuration() {
         <br />
 
         <Grid container>
-          <Grid item sm={4} md={4} lg={4}>
+          <Grid item sm={4} md={4} lg={10}>
             <Autocomplete
               id="combo-box-change-company"
               options={companies}
-              getOptionLabel={(option: any) => option.name}
+              getOptionLabel={(option: any) => option.customer}
               getOptionSelected={(option, value) => option._id === user.companySelected}
               value={selectCompany()}
               renderInput={(params) => <TextField {...params} label="Empresa" variant="outlined" autoComplete="off" />}

@@ -39,6 +39,8 @@ import Button from '../../../../styles/components/Button';
 import { FormTitle } from '../../../../styles/components/Form';
 import CaptureDataDialog from '../../../../components/Dialogs/CaptureData';
 
+import {loadPatientById, getAddress as getAddressAction, updatePatientRequest, createPatientRequest, cleanAction}  from '../../../../store/ducks/patients/actions';
+import _ from 'lodash';
 import {
   ButtonsContent,
   InputFiled as TextField,
@@ -74,6 +76,7 @@ export default function PatientCaptureForm(props: RouteComponentProps) {
     }
   });
 
+
   const [openModalConfirm, setOpenModalConfirm] = useState<boolean>(false);
   const [openModalCare, setOpenModalCare] = useState<boolean>(false);
   const [captureOptionsModalOpen, setCaptureModalModalOpen] = useState<boolean>(false);
@@ -100,11 +103,11 @@ export default function PatientCaptureForm(props: RouteComponentProps) {
   //   }
   // }, [patient]);
 
-  // useEffect(() => {
-  //   if (careState.success && !careState.error && careState.data._id) {
-  //     history.push(`/patient/capture/${careState.data._id}/overview`);
-  //   }
-  // }, [careState])
+  useEffect(() => {
+    if (careState.success && !careState.error && careState.data._id) {
+      history.push(`/patient/capture/${careState.data._id}/overview`);
+    }
+  }, [careState])
 
   // const searchPatient = useCallback((value: string) => {
   //   setPatient({});
@@ -198,7 +201,7 @@ export default function PatientCaptureForm(props: RouteComponentProps) {
       company_id: localStorage.getItem(LOCALSTORAGE.COMPANY_SELECTED) || ``,
     };
 
-   // dispatch(createCareAction(careParams));
+   dispatch(createCareAction(careParams));
   };
 
   const handleSubmitPatientCapture = useCallback(() => {
@@ -206,9 +209,47 @@ export default function PatientCaptureForm(props: RouteComponentProps) {
 
     const params = { ...care, patient_id: selectedPatient._id || patient._id };
 
-    //dispatch(createCareAction(params))
+    dispatch(createCareAction(params))
 
   }, [dispatch, care, patient, selectedPatient]);
+
+  //
+  const [openModalCancel, setOpenModalCancel] = useState(false);
+  const [canEdit, setCanEdit] = useState(false)
+
+  function isEqual(){
+    return _.isEqual('', patientState.data);
+  }
+
+  function ModifiCondition(){
+    if(!isEqual()){
+      return true;
+    }else{
+      return false;
+    }
+  }
+
+  function handleOpenModalCancel() {
+    if(canEdit){
+     setOpenModalCancel(true);
+     }else{
+      setOpenModalCancel(false);
+      history.push('/avaliation');
+     }
+  }
+
+  function handleCloseModalCancel() {
+    setOpenModalCancel(false);
+  }
+
+  function handleCancelForm() {
+    dispatch(cleanAction());
+    setOpenModalCancel(false);
+    history.push('/avaliation');
+  }
+
+
+
 
   return (
     <>
@@ -307,6 +348,7 @@ export default function PatientCaptureForm(props: RouteComponentProps) {
 
               <Grid item md={12} xs={12}>
                 <ButtonsContent>
+
                   <Button
                     background="success"
                     onClick={() => setCaptureModalModalOpen(true)}
@@ -341,8 +383,13 @@ export default function PatientCaptureForm(props: RouteComponentProps) {
                           onChange={(element) => {
                             if (item._id && (item._id === element.target.value || item._id === selectedPatient?._id)) {
                               setSelectedPatient({});
+                              console.log('nao');
+                              setCanEdit(false)
+
                             } else {
                               setSelectedPatient(item);
+                              console.log('sim');
+                              setCanEdit(true)
                             }
                           }}
                           inputProps={{ "aria-label": "primary checkbox" }}
@@ -358,11 +405,14 @@ export default function PatientCaptureForm(props: RouteComponentProps) {
 
               {selectedPatient && (
                 <ButtonsContent>
+                  <Button background="default"  onClick={() => handleOpenModalCancel()}>
+                    Voltar
+                  </Button>
                   <Button
                     background="success"
                     onClick={() => setCaptureModalModalOpen(true)}
                   >
-                    Selecionar Paciente
+                     Selecionar Paciente
                     </Button>
                 </ButtonsContent>
               )}
@@ -451,6 +501,29 @@ export default function PatientCaptureForm(props: RouteComponentProps) {
             </DialogActions>
           </Dialog>
         </Container>
+
+        <Dialog
+        open={openModalCancel}
+        onClose={handleCloseModalCancel}
+        aria-labelledby="alert-dialog-title"
+        aria-namedby="alert-dialog-description"
+      >
+        <DialogTitle id="alert-dialog-title">Atenção</DialogTitle>
+        <DialogContent>
+          <DialogContentText id="alert-dialog-description">
+            Você selecionou um paciente neste cadastro. Deseja realmente descartar as alterações?
+					</DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleCloseModalCancel} color="primary">
+            Não
+					</Button>
+          <Button onClick={handleCancelForm} color="secondary" autoFocus>
+            Sim
+					</Button>
+        </DialogActions>
+      </Dialog>
+
       </Sidebar>
     </>
   );

@@ -155,6 +155,11 @@ const Sibebar = (props: Props<any>) => {
     name: localStorage.getItem(LOCALSTORAGE.COMPANY_NAME) || '',
   });
 
+  const [customer, setCustomer] = useState({
+    _id: localStorage.getItem(LOCALSTORAGE.CUSTOMER) || '',
+    name: localStorage.getItem(LOCALSTORAGE.CUSTOMER_NAME) || '',
+  });
+
   const [openModalLogout, setOpenModalLogout] = useState(false);
   const [openModalConfig, setOpenModalConfig] = useState(false);
 
@@ -170,9 +175,9 @@ const Sibebar = (props: Props<any>) => {
     localStorage.removeItem('@sollar_username');
     localStorage.removeItem('@sollar_user_id');
     localStorage.removeItem('@sollar_company_selected');
-    localStorage.removeItem('@sollar_company_name');
+    // localStorage.removeItem('@sollar_company_name');
     localStorage.removeItem('@sollar_customer');
-    localStorage.removeItem('@sollar_customer_name');
+
 
     window.location.reload();
   }, []);
@@ -220,11 +225,15 @@ const Sibebar = (props: Props<any>) => {
             <h3>{username}</h3>
             <br />
             <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', }}>
-              <BusinessIcon />
-
               <ListItem style={{ padding: 0 }} className={classes.logOutButton} onClick={() => setOpenModalConfig(true)}>
-                <h4 style={{ color: '#ffffff', marginLeft: 10 }}>{company.name}</h4>
-                <EditIcon style={{ color: '#fff', fontSize: '14px', marginLeft: '5px' }} />
+                <BusinessIcon />
+                <ListItemText style={{color:"#ffff",cursor:"pointer"}}>
+                  <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', }}>
+                    <h4 style={{ color: '#ffffff', marginLeft: 10 }}>{customer.name}</h4>
+                    <h4 style={{ color: '#ffffff', marginLeft: 10 }}>{company.name}</h4>
+                  </div>
+                </ListItemText>
+                <EditIcon style={{ color: '#fff', fontSize: '14px', marginLeft: '10px' }} />
               </ListItem>
             </div>
           </div>
@@ -271,7 +280,7 @@ const Sibebar = (props: Props<any>) => {
           </List>
         <Divider />
         <List disablePadding={true}>
-          <ListItem className={classes.logOutButton} onClick={() => setOpenModalConfig(true)}>
+          <ListItem className={classes.logOutButton} onClick={() => history.push("/userconfiguration")}>
             <ListItemIcon>
               <SettingsIcon style={{ color: '#fff' }} />
             </ListItemIcon>

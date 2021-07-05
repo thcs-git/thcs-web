@@ -22,6 +22,9 @@ export enum UserTypes {
   LOAD_REQUEST_USER_BY_ID = "@user/LOAD_REQUEST_USER_BY_ID",
   LOAD_SUCCESS_USER_BY_ID = "@user/LOAD_SUCCESS_USER_BY_ID",
 
+  LOAD_REQUEST_USER_BY_EMAIL = "@user/LOAD_REQUEST_USER_BY_EMAIL",
+  LOAD_SUCCESS_USER_BY_EMAIL = "@user/LOAD_SUCCESS_USER_BY_EMAIL",
+
   LOAD_REQUEST_USER_DISENGAGED = "@user/lOAD_REQUEST_USER_DISENGAGED",
   LOAD_RESPONSE_USER_DISENGAGED = "@user/LOAD_RESPONSE_USER_DISENGAGED",
 
@@ -34,6 +37,16 @@ export enum UserTypes {
 
   LOAD_REQUEST_USER_TYPES = "@user/LOAD_REQUEST_USER_TYPES",
   LOAD_RESPONSE_USER_TYPES = "@user/LOAD_RESPONSE_USER_TYPES",
+  LOAD_REQUEST_CHECK_EMAIL = "@user/LOAD_REQUEST_CHECK_EMAIL",
+  LOAD_RESPONSE_CHECK_EMAIL = "@user/LOAD_RESPONSE_CHECK_EMAIL",
+
+  LOAD_REQUEST_RECOVERY_PASSWORD = "@user/LOAD_REQUEST_RECOVERY_PASSWORD",
+  LOAD_REQUEST_RECOVERY_PASSWORD_TOKEN = "@user/LOAD_REQUEST_RECOVERY_PASSWORD_TOKEN",
+
+  LOAD_SUCCESS_RECOVERY_PASSWORD = "@user/LOAD_SUCCESS_RECOVERY_PASSWORD",
+
+  LOAD_CONFIRM_USER = "@user/LOAD_CONFIRM_USER",
+  LOAD_SUCCESS_CONFIRM = "@user/LOAD_SUCCESS_CONFIRM",
 
   CLEAN = "@user/CLEAN",
 }
@@ -50,6 +63,11 @@ export interface Phones {
 export interface SpecialtiesUserInterface {
   _id: string;
   name: string;
+}
+
+export interface UserRecoveryPassword {
+  _id: string;
+  password: string;
 }
 export interface ProfessionUserInterface {
   _id: string;
@@ -136,6 +154,7 @@ export interface UserInterface {
   };
   council_state: string;
   council_number: string;
+  verified: string;
   username?: string;
   password?: string;
   active: boolean; // active
@@ -171,6 +190,7 @@ export interface UserState {
   loading: boolean;
   error: boolean;
   success: boolean;
+  successRecovery: boolean;
 }
 
 export type LoadRequestParams = Partial<Omit<UserList, "data">>;
