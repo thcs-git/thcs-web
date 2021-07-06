@@ -159,7 +159,10 @@ export default function UserConfiguration(){
                         <h3>{userState.data.name}</h3>
                       </Grid>
                       <Grid item md={4}>
-                        <Button onClick={handlePushUser}>Atualizar Dados</Button>
+                        <ButtonComponent variant="outlined" >
+                          <Button onClick={handlePushUser}>Atualizar Dados</Button>
+                        </ButtonComponent>
+
                       </Grid>
                     </Grid>
                     <Grid container direction="column" >

@@ -866,7 +866,7 @@ export default function AreaForm(props: RouteComponentProps<IPageParams>) {
                   </Grid>
                 </TabBodyItem>
                 <TabBodyItem className={currentTab === 2 ? 'show' : ''}>
-                  <Grid container>
+                  <Grid container >
                   <Grid item md={7} xs={12}>
                       <FormGroupSection>
                         <Autocomplete
@@ -930,13 +930,13 @@ export default function AreaForm(props: RouteComponentProps<IPageParams>) {
                     </Grid>
                   </Grid>
                 </TabBodyItem>
-                <TabBodyItem className={currentTab === 3 ? 'show' : ''}>
-                  <Grid container>
+                <TabBodyItem className={currentTab === 3 ? 'show' : ''} >
+                  <Grid container  >
                   <Grid item md={7} xs={12}>
                     </Grid>
                     <Grid item md={12} xs={12}>
                     </Grid>
-                    <Grid item md={12} xs={12}>
+                    <Grid item md={12} xs={12} style={{display:"flex", flexDirection:"row", justifyContent:"center"}}>
                       <MyComponent points={areaState.points}></MyComponent>
                     </Grid>
                   </Grid>
