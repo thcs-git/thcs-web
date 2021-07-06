@@ -41,6 +41,7 @@ import HomeRoundedIcon from '@material-ui/icons/HomeRounded';
 import InfoRoundedIcon from '@material-ui/icons/InfoRounded';
 import LockRoundedIcon from '@material-ui/icons/LockRounded';
 import FindReplaceRoundedIcon from '@material-ui/icons/FindReplaceRounded';
+import ButtonComponent from '../../../components/Button';
 export default function UserConfiguration(){
   const history = useHistory();
   const dispatch = useDispatch();
@@ -93,11 +94,11 @@ export default function UserConfiguration(){
     companySelected: handleCompanySelected()
   });
   const currentUser = window.localStorage.getItem(LOCALSTORAGE.USER_ID);
+  const [companies, setCompanies] = useState<any>([]);
 
   let currentCompany = localStorage.getItem(LOCALSTORAGE.COMPANY_SELECTED);
   useEffect(()=>{
     dispatch(cleanAction());
-    console.log(currentUser);
     if(currentUser){
        dispatch(loadUserById(currentUser));
     }
@@ -122,42 +123,53 @@ export default function UserConfiguration(){
     selectCompany();
   }, [userState.data]);
 
+  useEffect(() => {
+    const { companies: userCompanies } = userState.data
+
+    userCompanies.forEach(function (item) {
+      console.log(item);
+      Object.assign(item, {customer: item['customer_id']['name'] + ' - ' + item['name']});
+    })
+    console.log(userCompanies);
+    setCompanies(userCompanies);
+
+  }, [userState.data]);
+
   return (
     <>
       <Sidebar>
         <BoxCustom>
            <Grid container direction="column">
-              <Grid item md={5}>
+              <Grid item md={6}>
                 <FeedbackTitle>
                   Configurações
                 </FeedbackTitle>
                 <Card>
-                  <CardContent style={{display:"flex", flexDirection:"column", justifyContent:"space-between"}}>
-                    <Grid container>
-                      <Grid item md={2}>
-                      <AccountCircle style={{ fontSize: 70 }} />
+                  <CardContent style={{display:"flex", flexDirection:"column"}}>
+                    <Grid container style={{display:"flex", flexDirection:"row", justifyContent:"space-between"}}>
+                      <Grid item md={1} style={{padding:"0"}}>
+                      <AccountCircle style={{ fontSize: 60 }} />
                       </Grid>
-                      <Grid item md={6} style={{paddingTop:"1.5rem"}}>
+                      <Grid item md={5} style={{paddingLeft:"0px",paddingTop:"1.5rem"}}>
                         <h3>{userState.data.name}</h3>
-
                       </Grid>
-                      <Grid item md={4}>
-                        <Button>Atualizar Dados</Button>
+                      <Grid item md={4}  style={{padding:"0px"}}>
+
+                          <Button>Atualizar Dados</Button>
+
                       </Grid>
                     </Grid>
                     <Grid container direction="column" >
-                        <Grid item style={{paddingLeft:"2rem"}}>
+                        <Grid item style={{paddingLeft:"5rem"}}>
                       cpf:{userState.data.fiscal_number}
                     </Grid>
-                    <Grid item style={{paddingLeft:"2rem"}}>
+                    <Grid item style={{paddingLeft:"5rem"}}>
                       email:{userState.data.email}
                     </Grid>
-                    <Grid item style={{paddingLeft:"2rem"}}>
+                    <Grid item style={{paddingLeft:"5rem"}}>
                       telefone:{userState.data.phone}
                     </Grid>
                     </Grid>
-
-
                   </CardContent>
                 </Card>
               </Grid>
@@ -175,8 +187,8 @@ export default function UserConfiguration(){
               <Autocomplete
               style={{paddingTop:"1rem", paddingLeft:"4rem"}}
               id="combo-box-change-company"
-              options={userState.data.companies}
-              getOptionLabel={(option: any) => option.name}
+              options={companies}
+              getOptionLabel={(option: any) => option.customer}
               getOptionSelected={(option, value) => option._id === currentCompany}
               value={selectCompany()}
               renderInput={(params) => <TextField {...params} label="Empresa" variant="outlined" autoComplete="off" />}
@@ -187,7 +199,7 @@ export default function UserConfiguration(){
             />
             </Grid>
             <Grid item md={12} style={{paddingTop:"1rem"}}>
-            <Grid container>
+            {/* <Grid container>
               <Card style={{borderRadius:"20px",  display:"flex",justifyContent:"center",alignItems:"center", height:"40px"}}>
                 <CardContent style={{backgroundColor: "#0899BA",borderRadius:"20px", padding:"0.5rem", display:"flex",justifyContent:"center",alignItems:"center", height:"40px"}}>
                   <FindReplaceRoundedIcon style={{color:"#ffffff"}} />
@@ -196,8 +208,8 @@ export default function UserConfiguration(){
               <FeedbackTitle style={{paddingLeft:"1rem",paddingTop:"0.5rem"}}>
                 Auditoria
               </FeedbackTitle>
-            </Grid>
-              <List>
+            </Grid> */}
+              {/* <List>
                 <ListItem style={{paddingLeft:"3.5rem"}}>
                   <Grid item md={6} xs={11}>
                     <FormGroupSection>
@@ -223,8 +235,7 @@ export default function UserConfiguration(){
                       </FormGroupSection>
                   </Grid>
                 </ListItem>
-
-              </List>
+              </List> */}
             </Grid>
             <Grid item md={12}>
             <Grid container>

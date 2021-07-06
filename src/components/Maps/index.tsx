@@ -2,6 +2,7 @@ import React, { useState } from 'react'
 import { GoogleMap, InfoWindow, LoadScript, Marker } from '@react-google-maps/api';
 import { AreaPoints } from '../../store/ducks/areas/types';
 import { useEffect } from 'react';
+import { Button } from '@material-ui/core';
 
 const containerStyle = {
   width: '1000px',
@@ -34,6 +35,12 @@ interface IMapsProps {
 }
 export default function MyComponent(props: IMapsProps) {
 
+  useEffect(()=>{
+     console.log(props.points);
+  },[])
+  const [shownInfo, setShownInfo] = useState({});
+  const [info, setInfo] = useState({});
+
 
 const [mouse,setMouse]= useState({showInfoWindow:false});
   const handleMouseOver = ()=> {
@@ -48,43 +55,53 @@ const handleMouseExit = () => {
 };
 
 
+  const [commentShown, setCommentShown] = useState({});
+
+  const toggleComment = (id:any) => {
+    setCommentShown((prev:any) => Boolean(!prev[id]) ? {...prev, [id]: true} : {...prev, [id]: false});
+  };
 
   return (
-    <LoadScript
-      googleMapsApiKey="AIzaSyA5ynBs1BxZYrCebESiQloFSZIiALVBGzg"
-    >
-      <GoogleMap
-        mapContainerStyle={containerStyle}
-        center={center}
-        zoom={12}
-      >
-        {props.points?.map((point, index) => (
-   <Marker key={index} position={{lat:parseFloat(point.geolocation.latitude),lng:parseFloat(point.geolocation.longitude)}}
-    onMouseOver={handleMouseOver}
-    onMouseOut={handleMouseExit}>
-      {mouse.showInfoWindow && (
-        <InfoWindow>
-            <h4>{point.street}</h4>
-        </InfoWindow>
+    <>
+      {props.points?.map(obj =>
+        <Button key={obj._id}>
+          { obj.name ? <img onClick={() => toggleComment(obj._id)}/> : null }
+          <div>{obj.name}</div>
+          {/* { commentShown[obj._id] ? <p>{obj.street}</p> : null } */}
+        </Button>
       )}
-   </Marker>
-  ))}
+    </>
+  );
 
 
-
-    {/* <Marker
-      position={position}
-      onMouseOver={handleMouseOver}
-      onMouseOut={handleMouseExit}
-    > {mouse.showInfoWindow && (
-        <InfoWindow>
-            <h4>teste</h4>
-        </InfoWindow>
-  )}</Marker> */}
-
-      </GoogleMap>
-    </LoadScript>
-  )
+  // return (
+  //   <LoadScript
+  //     googleMapsApiKey="AIzaSyA5ynBs1BxZYrCebESiQloFSZIiALVBGzg"
+  //   >
+  //     <GoogleMap
+  //       mapContainerStyle={containerStyle}
+  //       center={center}
+  //       zoom={12}
+  //     >
+  //       {props.points?.map((point, index) => (
+  //       <Marker key={index}  position={{lat:parseFloat(point.address.geolocation.latitude),lng:parseFloat(point.address.geolocation.longitude)}}
+  //         onMouseOver={handleMouseOver}
+  //         onMouseOut={handleMouseExit}>
+  //         {shownInfo[index] && (
+  //           <InfoWindow>
+  //           <>
+  //             <h4>{point.name}</h4>
+  //             <h5>{point.address.street} - {point.address.number}</h5>
+  //             <h5>{point.address.district}</h5>
+  //             <h5>{point.address.city}</h5>
+  //           </>
+  //           </InfoWindow>
+  //         )}
+  //       </Marker>
+  //       ))}
+  //     </GoogleMap>
+  //   </LoadScript>
+  // )
 }
 
 

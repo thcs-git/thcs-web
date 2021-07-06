@@ -67,7 +67,7 @@ export default function CompanyList() {
 
           <Table
             tableCells={[
-              { name: 'Nome fantasia', align: 'left', },
+              { name: 'Empresa', align: 'left', },
               { name: 'CNPJ', align: 'left' },
               { name: 'Status', align: 'left' },
               { name: 'Adicionado em', align: 'left' },
