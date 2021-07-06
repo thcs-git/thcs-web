@@ -735,7 +735,8 @@ export default function PatientForm(props: RouteComponentProps<IPageParams>) {
                           <InputMask
                             mask="9.999-999"
                             value={state.national_id}
-                            onChange={(element) => setState({ ...state, national_id: element.target.value })}
+                            onChange={(element) => {setState({ ...state, national_id: element.target.value })
+                            setModifi({...modifi,national_id:element.target.value})}}
                             onBlur={(element) => setFieldValidations((prevState: any) => ({
                               ...prevState,
                               national_id: !!validator.isEmpty(element.target.value),
