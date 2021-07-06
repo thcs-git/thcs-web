@@ -1,6 +1,6 @@
-import React, { useState, useEffect, useCallback } from "react";
-import { useHistory, RouteComponentProps, Link } from "react-router-dom";
-import { cpf } from 'cpf-cnpj-validator';
+import React, {useState, useEffect, useCallback} from "react";
+import {useHistory, RouteComponentProps, Link} from "react-router-dom";
+import {cpf} from 'cpf-cnpj-validator';
 import {
   Button,
   Container,
@@ -15,14 +15,14 @@ import {
   makeStyles,
   Collapse,
 } from '@material-ui/core';
-import { AccountCircle, Edit } from '@material-ui/icons';
+import {AccountCircle, Edit} from '@material-ui/icons';
 import Autocomplete from '@material-ui/lab/Autocomplete';
 import InputMask from 'react-input-mask';
 import validator from 'validator';
-import { toast } from 'react-toastify';
-import { loadCustomerById } from "../../../store/ducks/customers/actions";
-import { CustomerInterface } from "../../../store/ducks/customers/types";
-import { useDispatch, useSelector } from "react-redux";
+import {toast} from 'react-toastify';
+import {loadCustomerById} from "../../../store/ducks/customers/actions";
+import {CustomerInterface} from "../../../store/ducks/customers/types";
+import {useDispatch, useSelector} from "react-redux";
 import {
   createUserRequest,
   updateUserRequest,
@@ -38,24 +38,24 @@ import {
   CompanyUserInterface,
 } from "../../../store/ducks/users/types";
 
-import { loadRequest as getSpecialtiesAction } from "../../../store/ducks/specialties/actions";
-import { SpecialtyInterface } from "../../../store/ducks/specialties/types";
+import {loadRequest as getSpecialtiesAction} from "../../../store/ducks/specialties/actions";
+import {SpecialtyInterface} from "../../../store/ducks/specialties/types";
 
-import { loadRequest as getCouncilsAction } from "../../../store/ducks/councils/actions";
-import { CouncilInterface } from "../../../store/ducks/councils/types";
+import {loadRequest as getCouncilsAction} from "../../../store/ducks/councils/actions";
+import {CouncilInterface} from "../../../store/ducks/councils/types";
 
-import { loadCompanyById, loadRequest as getCompaniesAction } from "../../../store/ducks/companies/actions";
-import { CompanyInterface } from "../../../store/ducks/companies/types";
+import {loadCompanyById, loadRequest as getCompaniesAction} from "../../../store/ducks/companies/actions";
+import {CompanyInterface} from "../../../store/ducks/companies/types";
 
-import { ApplicationState } from "../../../store";
+import {ApplicationState} from "../../../store";
 
-import { ufs } from "../../../helpers/constants/address";
+import {ufs} from "../../../helpers/constants/address";
 import Loading from "../../../components/Loading";
 
 import Sidebar from "../../../components/Sidebar";
-import { FormTitle } from "../../../styles/components/Form";
-import { SwitchComponent as Switch } from "../../../styles/components/Switch";
-import { ChipComponent as Chip } from "../../../styles/components/Chip";
+import {FormTitle} from "../../../styles/components/Form";
+import {SwitchComponent as Switch} from "../../../styles/components/Switch";
+import {ChipComponent as Chip} from "../../../styles/components/Chip";
 
 import DatePicker from "../../../styles/components/DatePicker";
 import {
@@ -68,7 +68,7 @@ import {
 import ButtonComponent from "../../../styles/components/Button";
 import FeedbackComponent from '../../../components/Feedback';
 
-import { formatDate, age } from "../../../helpers/date";
+import {formatDate, age} from "../../../helpers/date";
 import LOCALSTORAGE from "../../../helpers/constants/localStorage";
 
 import {
@@ -80,10 +80,12 @@ import {
   ChipList,
   DivideTitle
 } from './styles';
-import { UserContent } from "../../../components/Sidebar/styles";
+import {UserContent} from "../../../components/Sidebar/styles";
 import AddIcon from '@material-ui/icons/Add';
+import RemoveIcon from '@material-ui/icons/Remove';
+import LocationOnIcon from '@material-ui/icons/LocationOn'
 import CheckCircleRoundedIcon from '@material-ui/icons/CheckCircleRounded';
-import { BoxCustom } from "../../customer/form/styles";
+import {BoxCustom} from "../../customer/form/styles";
 import _ from "lodash";
 
 
@@ -110,14 +112,14 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
   const companyState = useSelector((state: ApplicationState) => state.companies);
   const customerState = useSelector((state: ApplicationState) => state.customers);
   const [canEdit, setCanEdit] = useState(true);
-  const { params } = props.match;
+  const {params} = props.match;
 
   const currentCompany = localStorage.getItem(LOCALSTORAGE.COMPANY_SELECTED) || '';
   const currentCustomer = localStorage.getItem(LOCALSTORAGE.CUSTOMER) || '';
 
   const [currentTab, setCurrentTab] = useState(0);
   const [engaged, setEngaged] = useState(false);
-  const [add,setAdd] = useState(false);
+  const [add, setAdd] = useState(false);
   const [state, setState] = useState<UserInterface>({
     companies: [],
     name: "",
@@ -151,34 +153,36 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
   const [specialties, setSpecialties] = useState<any[]>([]);
   const [companies, setCompanies] = useState<any[]>([]);
   const [company, setCompany] = useState<CompanyInterface>(
-  {_id: params.id || '',
-  customer_id: localStorage.getItem(LOCALSTORAGE.CUSTOMER) || '',
-  name: '',
-  fantasy_name: '',
-  fiscal_number: '',
-  address: {
-    postal_code: '',
-    street: '',
-    number: '',
-    district: '',
-    city: '',
-    state: '',
-    complement: '',
-  },
-  responsable_name: '',
-  email: '',
-  phone: '',
-  cellphone: '',
-  active: true,
-  created_by: { _id: localStorage.getItem(LOCALSTORAGE.USER_ID) || '' }});
+    {
+      _id: params.id || '',
+      customer_id: localStorage.getItem(LOCALSTORAGE.CUSTOMER) || '',
+      name: '',
+      fantasy_name: '',
+      fiscal_number: '',
+      address: {
+        postal_code: '',
+        street: '',
+        number: '',
+        district: '',
+        city: '',
+        state: '',
+        complement: '',
+      },
+      responsable_name: '',
+      email: '',
+      phone: '',
+      cellphone: '',
+      active: true,
+      created_by: {_id: localStorage.getItem(LOCALSTORAGE.USER_ID) || ''}
+    });
 
-  const[customer, setCustomer] = useState<CustomerInterface>();
+  const [customer, setCustomer] = useState<CustomerInterface>();
   const [fieldsValidation, setFieldValidations] = useState<any>({
     companies: false,
     name: false,
     birthdate: false,
     gender: false,
-    national_id: true,
+    national_id: false,
     issuing_organ: false,
     fiscal_number: false,
     mother_name: false,
@@ -211,27 +215,30 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
   const [checkCompany, setCheckCompany] = useState(false);
   const [openModalCancel, setOpenModalCancel] = useState(false);
 
+  const [firstCall, setFirstcall] = useState(false);
+
   //////////////// validacao do campos ///////////////////////
   var isValidPhoneNumber: any;
   var isValidCellPhoneNumber: any;
-  var formValid : any;
+  var formValid: any;
 
   var cepError = false;
-  if (userState.error && state.address.postal_code != ''){
+  if (userState.error && state.address.postal_code != '') {
     cepError = true;
   }
 
   const validatePhone = () => {
 
-    if ( state.phone){
-      const landline =  state.phone.replace('(','').replace(')','9').replace(' ','').replace(' ','').replace('-','');
+    if (state.phone) {
+      const landline = state.phone.replace('(', '').replace(')', '9').replace(' ', '').replace(' ', '').replace('-', '');
 
-     isValidPhoneNumber = validator.isMobilePhone(landline, 'pt-BR');
+      isValidPhoneNumber = validator.isMobilePhone(landline, 'pt-BR');
 
-      return (isValidPhoneNumber)}
+      return (isValidPhoneNumber)
+    }
 
 
-   }
+  }
 
   const checkIsCpfValid = useCallback(() => {
     return !!cpf.isValid(state.fiscal_number);
@@ -239,14 +246,14 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
 
 
   const validateCellPhone = () => {
-    var cellphone =  state.cellphone.replace('(','').replace(')','').replace(' ','').replace(' ','').replace('-','');
-   isValidCellPhoneNumber = validator.isMobilePhone(cellphone, 'pt-BR');
+    var cellphone = state.cellphone.replace('(', '').replace(')', '').replace(' ', '').replace(' ', '').replace('-', '');
+    isValidCellPhoneNumber = validator.isMobilePhone(cellphone, 'pt-BR');
 
     return (isValidCellPhoneNumber)
 
-   }
+  }
 
-   if( validatePhone() == true && validateCellPhone()==true){
+  if (validatePhone() == true && validateCellPhone() == true) {
 
     formValid = true;
 
@@ -294,35 +301,37 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
   useEffect(() => {
     setSpecialties(specialtyState.list.data);
   }, [specialtyState.list.data]);
-  useEffect(()=>{
+  useEffect(() => {
     setCompany(companyState.data);
-  },[companyState])
+  }, [companyState])
 
   useEffect(() => {
     setCompanies(companyState.list.data);
   }, [companyState.list.data]);
 
-  useEffect(()=>{
+  useEffect(() => {
     checkUserPerfilCompany(company)
-  },[state,companyState])
+  }, [state, companyState])
 
-  useEffect(()=>{
-      setCustomer(customerState.data);
-  },[customerState])
+  useEffect(() => {
+    setCustomer(customerState.data);
+  }, [customerState])
   useEffect(() => {
     if (userState.data._id) {
+      let joinState = [state, userState.data];
+
       setState((prevState) => ({
-        ...prevState,
-        ...userState.data,
-        user_type_id:
-          typeof userState.data.user_type_id === "object"
-            ? userState.data.user_type_id._id
-            : userState.data.user_type_id,
+        ...joinState[firstCall ? 0 : 1],
+        // user_type_id:
+        //   typeof userState.data.user_type_id === "object"
+        //     ? userState.data.user_type_id._id
+        //     : userState.data.user_type_id,
       }));
+      setFirstcall(true)
     }
     // Força o validador em 'true' quando entrar na tela para editar
     if (params?.id) {
-      if (params.mode === "view" || params.mode === "link"  ) {
+      if (params.mode === "view" || params.mode === "link") {
         setCanEdit(false)
       }
 
@@ -380,6 +389,7 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
           state: true,
           complement: true,
         },
+        national_id:false
       }));
     }
 
@@ -421,6 +431,8 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
 
   const handleValidateFields = useCallback(() => {
     let isValid: boolean = true;
+
+    delete fieldsValidation.national_id
 
     for (let key of Object.keys(fieldsValidation)) {
       if (!fieldsValidation[key]) {
@@ -480,7 +492,7 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
     setOpenModalCancel(false);
   }
 
-  function checkUserPerfilCompany(company:CompanyInterface){
+  function checkUserPerfilCompany(company: CompanyInterface) {
     let companiesSelected = [...state.companies];
     const companyFounded = companiesSelected.findIndex((item: any) => {
       return company._id === item._id
@@ -495,53 +507,54 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
     history.push(`/user`);
   }
 
-  function engagedUser(){
+  function engagedUser() {
 
 
-    if(customer &&customer._id){
-      var com:CompanyUserInterface = {
-      _id:company._id?company._id:'',
-      name:company.name,
-      customer_id:{
-        _id:customer._id,
-        name:customer.name
+    if (customer && customer._id) {
+      var com: CompanyUserInterface = {
+        _id: company._id ? company._id : '',
+        name: company.name,
+        customer_id: {
+          _id: customer._id,
+          name: customer.name
+        }
       }
-    }
 
     }
-    if(company){
+    if (company) {
       setState((prevState) => ({
-          ...prevState,
-          companies: [...prevState.companies,com],
-          customer_id:company.customer_id
-        }));
+        ...prevState,
+        companies: [...prevState.companies, com],
+        customer_id: company.customer_id
+      }));
     }
     setEngaged(true);
   }
-const dengagedUser=useCallback((company:CompanyInterface)=>{
-  let companiesSelected = [...state.companies];
-  const companyFounded = companiesSelected.findIndex((item: any) => {
-    return company._id === item._id
-  })
-  if (companyFounded > -1) {
-    const companyData = companiesSelected.find((item: any) => {
+
+  const dengagedUser = useCallback((company: CompanyInterface) => {
+    let companiesSelected = [...state.companies];
+    const companyFounded = companiesSelected.findIndex((item: any) => {
       return company._id === item._id
-    });
-    companiesSelected.splice(companyFounded,1);
+    })
+    if (companyFounded > -1) {
+      const companyData = companiesSelected.find((item: any) => {
+        return company._id === item._id
+      });
+      companiesSelected.splice(companyFounded, 1);
 
-    setState(prevState => ({
-      ...prevState,
-      companies: companiesSelected
-    }))
-    setEngaged(true);
+      setState(prevState => ({
+        ...prevState,
+        companies: companiesSelected
+      }))
+      setEngaged(true);
 
-  }
-},[state.companies]);
+    }
+  }, [state.companies]);
 
-  function handlerReturn(){
-    if(params.mode == 'link'){
+  function handlerReturn() {
+    if (params.mode == 'link') {
       history.push('/userdesengaged');
-    }else{
+    } else {
       history.push('/user');
     }
   }
@@ -571,7 +584,7 @@ const dengagedUser=useCallback((company:CompanyInterface)=>{
   }, [state.profession_id, state.professions]);
 
 
-  function viewProfession(){
+  function viewProfession() {
     if (!userState.data.professions) {
       // return null;
     } else {
@@ -585,13 +598,14 @@ const dengagedUser=useCallback((company:CompanyInterface)=>{
     }
 
   }
-  function viewSpecialtes(){
-    let especialidades = "";
-    if(_.isEmpty(state.specialties)){
 
-    }else{
-      state.specialties.map((specialty,index)=>{
-        especialidades = especialidades +','
+  function viewSpecialtes() {
+    let especialidades = "";
+    if (_.isEmpty(state.specialties)) {
+
+    } else {
+      state.specialties.map((specialty, index) => {
+        especialidades = especialidades + ','
       });
       return especialidades;
     }
@@ -624,7 +638,7 @@ const dengagedUser=useCallback((company:CompanyInterface)=>{
     }
   }
 
-  function handleDeleteEspecialty(especialty: SpecialtyInterface){
+  function handleDeleteEspecialty(especialty: SpecialtyInterface) {
     if (canEdit) {
       let specialtiesSelected = [...state.specialties];
 
@@ -647,7 +661,8 @@ const dengagedUser=useCallback((company:CompanyInterface)=>{
           ...prevState,
           specialties: specialtiesSelected
         }))
-      };
+      }
+      ;
     }
   };
 
@@ -714,7 +729,7 @@ const dengagedUser=useCallback((company:CompanyInterface)=>{
     }
   }
 
-  async function handleDeleteCompany(company: CompanyInterface)  {
+  async function handleDeleteCompany(company: CompanyInterface) {
 
     if (canEdit) {
       let companiesSelected = [...state.companies];
@@ -726,7 +741,7 @@ const dengagedUser=useCallback((company:CompanyInterface)=>{
         const companyData = companiesSelected.find((item: any) => {
           return company._id === item._id
         });
-        companiesSelected.splice(companyFounded,1);
+        companiesSelected.splice(companyFounded, 1);
 
         let companiesCopy = [...companies];
 
@@ -741,19 +756,21 @@ const dengagedUser=useCallback((company:CompanyInterface)=>{
     }
 
   };
-  function mycompanys(){
-    const customer = localStorage.getItem(LOCALSTORAGE.CUSTOMER) ;
 
-    let mycompanies:CompanyUserInterface[] = [];
-    state.companies.map((value, index)=>{
+  function mycompanys() {
+    const customer = localStorage.getItem(LOCALSTORAGE.CUSTOMER);
 
-      if(value.customer_id._id === customer){
+    let mycompanies: CompanyUserInterface[] = [];
+    state.companies.map((value, index) => {
+
+      if (value.customer_id._id === customer) {
         mycompanies.push(value);
       }
     })
 
     return mycompanies;
   }
+
   const handleSaveFormUser = useCallback(() => {
     if (!handleValidateFields()) {
       toast.error("Existem campos que precisam ser preenchidos para continuar");
@@ -762,7 +779,7 @@ const dengagedUser=useCallback((company:CompanyInterface)=>{
 
     if (state?._id) {
       dispatch(updateUserRequest(state));
-      if(params.mode == 'link'){
+      if (params.mode == 'link') {
         history.push('/userdesengaged');
       }
     } else {
@@ -772,7 +789,7 @@ const dengagedUser=useCallback((company:CompanyInterface)=>{
 
   return (
     <Sidebar>
-      {userState.loading && <Loading />}
+      {userState.loading && <Loading/>}
       <Container>
         {userState.success ? (
           <FeedbackComponent
@@ -793,13 +810,14 @@ const dengagedUser=useCallback((company:CompanyInterface)=>{
 
           <FormSection>
             <FormContent>
-              <div style={{ display: 'flex', alignItems: 'center', flexDirection: 'row' }}>
+              <div style={{display: 'flex', alignItems: 'center', flexDirection: 'row'}}>
                 <FormTitle>Cadastro de Usuario</FormTitle>
 
                 {(params.id && params.mode == 'view' && !canEdit) && (
-                  <Button style={{ marginTop: -20, marginLeft: 15, color: '#0899BA' }} onClick={() => setCanEdit(!canEdit)}>
-                    <Edit style={{ marginRight: 5, width: 18 }} />
-              Editar {canEdit}
+                  <Button style={{marginTop: -20, marginLeft: 15, color: '#0899BA'}}
+                          onClick={() => setCanEdit(!canEdit)}>
+                    <Edit style={{marginRight: 5, width: 18}}/>
+                    Editar {canEdit}
                   </Button>
                 )}
               </div>
@@ -818,13 +836,13 @@ const dengagedUser=useCallback((company:CompanyInterface)=>{
                   >
                     Dados Profissionais
                   </TabNavItem>
-                  {state.professions && (
+                  {state.professions &&  !(params.mode === 'config') &&(
                     <TabNavItem
-                    className={currentTab === 2 ? "active" : ""}
-                    onClick={() => selectTab(2)}
-                  >
-                    Selecione Empresa
-                  </TabNavItem>
+                      className={currentTab === 2 ? "active" : ""}
+                      onClick={() => selectTab(2)}
+                    >
+                      Selecione Empresa
+                    </TabNavItem>
                   )}
 
                 </TabNav>
@@ -840,7 +858,7 @@ const dengagedUser=useCallback((company:CompanyInterface)=>{
                           size="small"
                           value={state.name}
                           onChange={(element) => {
-                            setState({ ...state, name: element.target.value });
+                            setState({...state, name: element.target.value});
                             setFieldValidations((prevState: any) => ({
                               ...prevState,
                               name: !validator.isEmpty(element.target.value),
@@ -894,7 +912,7 @@ const dengagedUser=useCallback((company:CompanyInterface)=>{
                           }}
                           InputLabelProps={{
                             shrink: true,
-                            style: { paddingBottom: 12 }
+                            style: {paddingBottom: 12}
                           }}
 
                           fullWidth
@@ -946,11 +964,11 @@ const dengagedUser=useCallback((company:CompanyInterface)=>{
                             />
                           )}
                         </InputMask>
-                        {!checkIsCpfValid() && state.fiscal_number != '' &&(
-                              <p style={{ color: '#f44336', margin:'1px 5px 20px' }}>
-                              Por favor insira um cpf válido
-                              </p>
-                            )}
+                        {!checkIsCpfValid() && state.fiscal_number != '' && (
+                          <p style={{color: '#f44336', margin: '1px 5px 20px'}}>
+                            Por favor insira um cpf válido
+                          </p>
+                        )}
                       </Grid>
                       <Grid item md={3} xs={12}>
                         <InputMask
@@ -965,7 +983,7 @@ const dengagedUser=useCallback((company:CompanyInterface)=>{
                           }}
                           onBlur={(element) => setFieldValidations((prevState: any) => ({
                             ...prevState,
-                            national_id: !!validator.isEmpty(element.target.value),
+                            national_id: false,
                           }))}
                         >
                           {(inputProps: any) => (
@@ -1067,7 +1085,7 @@ const dengagedUser=useCallback((company:CompanyInterface)=>{
                       </Grid>
                     </Grid>
 
-                    <Divider style={{ marginBottom: 30 }} />
+                    <Divider style={{marginBottom: 30}}/>
 
                     {/*  */}
                     <FormGroupSection>
@@ -1112,11 +1130,11 @@ const dengagedUser=useCallback((company:CompanyInterface)=>{
                               />
                             )}
                           </InputMask>
-                          {userState.error && !fieldsValidation.address.postal_code &&(
-                      <p style={{ color: '#f44336', margin:'-2px 5px 10px' }}>
-                        CEP inválido
-                      </p>
-                    )}
+                          {userState.error && !fieldsValidation.address.postal_code && (
+                            <p style={{color: '#f44336', margin: '-2px 5px 10px'}}>
+                              CEP inválido
+                            </p>
+                          )}
                         </Grid>
 
                         <Grid item md={10} xs={12}>
@@ -1310,7 +1328,7 @@ const dengagedUser=useCallback((company:CompanyInterface)=>{
                           size="small"
                           value={state.email}
                           onChange={(element) => {
-                            setState({ ...state, email: element.target.value });
+                            setState({...state, email: element.target.value});
                             setFieldValidations((prevState: any) => ({
                               ...prevState,
                               email: validator.isEmail(element.target.value),
@@ -1326,7 +1344,7 @@ const dengagedUser=useCallback((company:CompanyInterface)=>{
                           disabled={!canEdit}
                           value={state.phone}
                           onChange={(element) => {
-                            setState({ ...state, phone: element.target.value });
+                            setState({...state, phone: element.target.value});
                             setFieldValidations((prevState: any) => ({
                               ...prevState,
                               phone: !validator.isEmpty(element.target.value),
@@ -1343,17 +1361,17 @@ const dengagedUser=useCallback((company:CompanyInterface)=>{
                               variant="outlined"
                               size="small"
                               placeholder="0000-0000"
-                              error ={!validateCellPhone() && state.cellphone != ''}
+                              error={!validateCellPhone() && state.cellphone != ''}
 
                               fullWidth
                             />
                           )}
                         </InputMask>
-                        {!validatePhone() && state.phone &&(
-                      <p style={{ color: '#f44336', margin:'-10px 5px 10px'}}>
-                       Por favor insira um número válido
-                      </p>
-                    )}
+                        {!validatePhone() && state.phone && (
+                          <p style={{color: '#f44336', margin: '-10px 5px 10px'}}>
+                            Por favor insira um número válido
+                          </p>
+                        )}
                       </Grid>
                       <Grid item md={3} xs={12}>
                         <InputMask
@@ -1382,52 +1400,52 @@ const dengagedUser=useCallback((company:CompanyInterface)=>{
                               variant="outlined"
                               size="small"
                               placeholder="(00) 0 0000-0000"
-                              error ={!validateCellPhone() && state.cellphone != ''}
+                              error={!validateCellPhone() && state.cellphone != ''}
 
                               fullWidth
                             />
                           )}
                         </InputMask>
-                        {!validateCellPhone() &&  state.cellphone &&(
-                      <p style={{ color: '#f44336', margin:'-10px 5px 10px' }}>
-                       Por favor insira um número válido
-                      </p>
-                    )}
+                        {!validateCellPhone() && state.cellphone && (
+                          <p style={{color: '#f44336', margin: '-10px 5px 10px'}}>
+                            Por favor insira um número válido
+                          </p>
+                        )}
                       </Grid>
                     </Grid>
                     <Grid container>
-                      <Grid item md={4} xs={12}>
-                        <FormGroupSection fullWidth error>
-                          <Autocomplete
-                            id="combo-box-user-type"
-                            options={userState.data.user_types || []}
-                            getOptionLabel={(option) => option.name}
-                            disabled={!canEdit}
-                            renderInput={(params) => (
-                              <TextField {...params}
-                                disabled={!canEdit}
-                                label="Tipo do Usuário"
-                                variant="outlined"
-                              />
-                            )}
-                            value={selectUserType()}
-                            getOptionSelected={(option, value) =>
-                              option._id === state.user_type_id
-                            }
-                            onChange={(event: any, newValue) => {
-                              handleUserType(event, newValue);
-                              setFieldValidations((prevState: any) => ({
-                                ...prevState,
-                                user_type_id: newValue !== null,
-                              }));
-                            }}
-                            size="small"
-                            fullWidth
-                          />
-                        </FormGroupSection>
-                      </Grid>
+                    {/*  <Grid item md={4} xs={12}>*/}
+                    {/*    <FormGroupSection fullWidth error>*/}
+                    {/*      <Autocomplete*/}
+                    {/*        id="combo-box-user-type"*/}
+                    {/*        options={userState.data.user_types || []}*/}
+                    {/*        getOptionLabel={(option) => option.name}*/}
+                    {/*        disabled={!canEdit}*/}
+                    {/*        renderInput={(params) => (*/}
+                    {/*          <TextField {...params}*/}
+                    {/*                     disabled={!canEdit}*/}
+                    {/*                     label="Tipo do Usuário"*/}
+                    {/*                     variant="outlined"*/}
+                    {/*          />*/}
+                    {/*        )}*/}
+                    {/*        value={selectUserType()}*/}
+                    {/*        getOptionSelected={(option, value) =>*/}
+                    {/*          option._id === state.user_type_id*/}
+                    {/*        }*/}
+                    {/*        onChange={(event: any, newValue) => {*/}
+                    {/*          handleUserType(event, newValue);*/}
+                    {/*          setFieldValidations((prevState: any) => ({*/}
+                    {/*            ...prevState,*/}
+                    {/*            user_type_id: newValue !== null,*/}
+                    {/*          }));*/}
+                    {/*        }}*/}
+                    {/*        size="small"*/}
+                    {/*        fullWidth*/}
+                    {/*      />*/}
+                    {/*    </FormGroupSection>*/}
+                    {/*  </Grid>*/}
 
-                      {state?._id && (
+                      {state?._id && !(params.mode === 'config') &&(
                         <Grid item xs={12} md={12}>
                           <FormControlLabel
                             control={
@@ -1456,7 +1474,8 @@ const dengagedUser=useCallback((company:CompanyInterface)=>{
                             disabled={!canEdit}
                             options={userState.data.professions || []}
                             getOptionLabel={(option) => option.name}
-                            renderInput={(params) => <TextField {...params} disabled={!canEdit} label="Função" variant="outlined" />}
+                            renderInput={(params) => <TextField {...params} disabled={!canEdit} label="Função"
+                                                                variant="outlined"/>}
                             getOptionSelected={(option, value) => option._id === state?.profession_id}
                             value={selectProfession()}
                             onChange={(event, value) => {
@@ -1476,7 +1495,8 @@ const dengagedUser=useCallback((company:CompanyInterface)=>{
                             disabled={!canEdit}
                             options={councilState.list.data}
                             getOptionLabel={(option) => `${option.initials} - ${option.name}`}
-                            renderInput={(params) => <TextField {...params} disabled={!canEdit} label="Conselho" variant="outlined" />}
+                            renderInput={(params) => <TextField {...params} disabled={!canEdit} label="Conselho"
+                                                                variant="outlined"/>}
                             value={selectCouncil()}
                             getOptionSelected={(option, value) =>
                               option._id === state?.council_id?._id
@@ -1502,7 +1522,8 @@ const dengagedUser=useCallback((company:CompanyInterface)=>{
                             options={ufs}
                             disabled={!canEdit}
                             getOptionLabel={(option) => option.initials}
-                            renderInput={(params) => <TextField {...params} disabled={!canEdit} label="UF" variant="outlined" />}
+                            renderInput={(params) => <TextField {...params} disabled={!canEdit} label="UF"
+                                                                variant="outlined"/>}
                             value={selectCouncilState()}
                             getOptionSelected={(option, value) =>
                               option.initials === state.council_state
@@ -1651,71 +1672,13 @@ const dengagedUser=useCallback((company:CompanyInterface)=>{
                       ) } */}
 
 
-                          {state.companies.length>0 && (
-                            <div>
-                               <DivideTitle>Empresas onde o prestador trabalha:</DivideTitle>
+                      {state.companies.length > 0 && !(params.mode === 'config') &&(
+                        <div>
+                          <DivideTitle>Empresas onde o prestador trabalha:</DivideTitle>
 
-                      <Grid item md={12} xs={12}>
-                        <ChipList>
-                          {state.companies?.map((item: any, index) => (
-                            <Chip
-                              key={`company_selected_${index}`}
-                              label={item.name}
-                              onDelete={(event) => handleDeleteCompany(item)}
-                            />
-                          ))}
-                        </ChipList>
-                     </Grid>
-                            </div>
-
-                          )}
-                    </Grid>
-                  </TabBodyItem>
-                  <TabBodyItem className={currentTab === 2 ? "show" : ""} >
-                    <BoxCustom>
-                      <Grid container justify="flex-start"
-                          alignItems="flex-start" style={{paddingLeft:"10px"}}>
-                            <Grid item>
-                              <UserContent>
-                              <AccountCircle />
-                             </UserContent>
-                            </Grid>
-                            <Grid item style={{paddingTop:"40px"}}>
-                            <h3>{state.name}</h3>
-                            {state.fiscal_number}
-                            </Grid>
-                      </Grid>
-                      <Grid container >
-                      <Grid item md={12} xs={12}>
-                        <Divider></Divider>
-                      </Grid>
-                      <Grid item style={{paddingTop:'20px'}}>
-                        <ButtonComponent style={{maxWidth:'10px'}} onClick={()=>setAdd(!add)}>
-                          {add? (<CheckCircleRoundedIcon fontSize={'large'} style={{ color: '#4FC66A' }}></CheckCircleRoundedIcon>):(
-                            <AddIcon fontSize={'large'} color={'primary'} ></AddIcon>
-                          )}
-                        </ButtonComponent>
-                      </Grid>
-                      <Grid item>
-                        <Grid container style={{flexDirection: 'column', paddingLeft:'10px', paddingTop:'20px'}}>
-                          <Grid item>
-                            <h3>{viewProfession()}</h3>
-                          </Grid>
-                          <Grid item style={{paddingTop:'10px'}}>
-                            Função:{viewProfession()}
-                          </Grid>
-                          <Grid item>
-                            Conselho: {state.council_state}
-                          </Grid>
-                          <Grid item>
-                            Especialidade Principal: {viewProfession()}
-                          </Grid>
-                          <Grid item>
-                            Outras especialidades: {viewSpecialtes()}
-                          </Grid>
-                          <Grid item md={12} xs={12} style={{paddingTop:"10px"}}>
+                          <Grid item md={12} xs={12}>
                             <ChipList>
-                              {mycompanys()?.map((item: any, index) => (
+                              {state.companies?.map((item: any, index) => (
                                 <Chip
                                   key={`company_selected_${index}`}
                                   label={item.name}
@@ -1724,11 +1687,75 @@ const dengagedUser=useCallback((company:CompanyInterface)=>{
                               ))}
                             </ChipList>
                           </Grid>
+                        </div>
 
-                      <Collapse in={add}>
-                         <Grid item style={{paddingTop:"20px"}} md={12} xs={12}>
-                            <Grid item md={12} xs={12}>
-                              {/* <FormGroupSection fullWidth error>
+                      )}
+                    </Grid>
+                  </TabBodyItem>
+                  <TabBodyItem className={currentTab === 2 ? "show" : ""}>
+                    <BoxCustom>
+                      <Grid container justify="flex-start"
+                            alignItems="flex-start" style={{paddingLeft: "10px"}}>
+                        <Grid item>
+                          <UserContent>
+                            <AccountCircle/>
+                          </UserContent>
+                        </Grid>
+                        <Grid item style={{paddingTop: "40px"}}>
+                          <h3>{state.name}</h3>
+                          {state.fiscal_number}
+                        </Grid>
+                      </Grid>
+                      <Grid container>
+                        <Grid item md={12} xs={12}>
+                          <Divider></Divider>
+                        </Grid>
+                        <Grid item style={{paddingTop: '20px'}}>
+                          <ButtonComponent style={{maxWidth: '10px'}} onClick={() => setAdd(!add)}>
+                            {add ? (<CheckCircleRoundedIcon fontSize={'large'}
+                                                            style={{color: '#4FC66A'}}></CheckCircleRoundedIcon>) : (
+                              <>
+                                {params.mode === 'view' ? (
+                                  <RemoveIcon fontSize={'large'} color={'primary'}></RemoveIcon>) : (
+                                  <AddIcon fontSize={'large'} color={'primary'}></AddIcon>)}
+                              </>
+
+                            )}
+                          </ButtonComponent>
+                        </Grid>
+                        <Grid item>
+                          <Grid container style={{flexDirection: 'column', paddingLeft: '10px', paddingTop: '20px'}}>
+                            <Grid item>
+                              <h3>{viewProfession()}</h3>
+                            </Grid>
+                            <Grid item style={{paddingTop: '10px'}}>
+                              Função:{viewProfession()}
+                            </Grid>
+                            <Grid item>
+                              Conselho: {state.council_state}
+                            </Grid>
+                            <Grid item>
+                              Especialidade Principal: {viewProfession()}
+                            </Grid>
+                            <Grid item>
+                              Outras especialidades: {viewSpecialtes()}
+                            </Grid>
+                            <Grid item md={12} xs={12} style={{paddingTop: "10px"}}>
+                              <ChipList>
+                                {mycompanys()?.map((item: any, index) => (
+                                  <Chip
+                                    key={`company_selected_${index}`}
+                                    label={item.name}
+                                    onDelete={(event) => handleDeleteCompany(item)}
+                                  />
+                                ))}
+                              </ChipList>
+                            </Grid>
+
+                            <Collapse in={add}>
+                              <Grid item style={{paddingTop: "20px"}} md={12} xs={12}>
+                                <Grid item md={12} xs={12}>
+                                  {/* <FormGroupSection fullWidth error>
                                 <Autocomplete
                                   id="combo-box-company"
                                   options={companies}
@@ -1752,8 +1779,8 @@ const dengagedUser=useCallback((company:CompanyInterface)=>{
                                 fullWidth
                               />
                             </FormGroupSection> */}
-                            </Grid>
-                          {/* <Grid item md={12} xs={12}>
+                                </Grid>
+                                {/* <Grid item md={12} xs={12}>
                             <ChipList>
                               {mycompanys()?.map((item: any, index) => (
                                 <Chip
@@ -1764,48 +1791,48 @@ const dengagedUser=useCallback((company:CompanyInterface)=>{
                               ))}
                             </ChipList>
                           </Grid> */}
-                          {(params.mode === 'link' && !checkCompany) && (
+                                {(params.mode === 'link' && !checkCompany) && (
 
-                        <Grid item md={12} xs={12}>
-                          <ButtonComponent  background="success_rounded" onClick={()=> engagedUser()}>
-                              Vincular este prestador a minha empresa
-                            </ButtonComponent>
-                          </Grid>
-                          )}
-                          {(params.mode === 'link' && checkCompany && !engaged) && (
+                                  <Grid item md={12} xs={12}>
+                                    <ButtonComponent background="success_rounded" onClick={() => engagedUser()}>
+                                      Vincular este prestador a minha empresa
+                                    </ButtonComponent>
+                                  </Grid>
+                                )}
+                                {(params.mode === 'link' && checkCompany && !engaged) && (
 
-                            <Grid item md={12} xs={12}>
-                            Este prestador já está vinculado a sua empresa com este perfil profissional,
-                            caso queira desvinculá-lo <Link to='/user'> clique aqui</Link>.
-                            </Grid>
-                          )}
-                           {(params.mode === 'link' && checkCompany && engaged) && (
+                                  <Grid item md={12} xs={12}>
+                                    Este prestador já está vinculado a sua empresa com este perfil profissional,
+                                    caso queira desvinculá-lo <Link to='/user'> clique aqui</Link>.
+                                  </Grid>
+                                )}
+                                {(params.mode === 'link' && checkCompany && engaged) && (
 
-                            <Grid item md={12} xs={12}>
-                            Agora este prestador foi vinculado a sua empresa, para confirmar esta operação click em salva.
-                            </Grid>
-                          )}
-                          {(params.mode === 'view' && !engaged) && (
-                          <Grid item md={12} xs={12}>
-                            <ButtonComponent  className={classes.cancel} onClick={()=> dengagedUser(company)}>
-                              Desvincular este prestador da minha empresa
-                            </ButtonComponent>
-                          </Grid>
-                          )}
-                          {(params.mode === 'view' && engaged) && (
-                              <Grid>
-                                Prestador disvinculado de sua empresa, para confirmar esta  operação click em salva.
+                                  <Grid item md={12} xs={12}>
+                                    Agora este prestador foi vinculado a sua empresa, para confirmar esta operação click
+                                    em salva.
+                                  </Grid>
+                                )}
+                                {(params.mode === 'view' && !engaged) && (
+                                  <Grid item md={12} xs={12}>
+                                    <ButtonComponent className={classes.cancel} onClick={() => dengagedUser(company)}>
+                                      Desvincular este prestador da minha empresa
+                                    </ButtonComponent>
+                                  </Grid>
+                                )}
+                                {(params.mode === 'view' && engaged) && (
+                                  <Grid>
+                                    Prestador disvinculado de sua empresa, para confirmar esta operação click em salva.
+                                  </Grid>
+                                )}
                               </Grid>
-                          )}
+                            </Collapse>
+                          </Grid>
                         </Grid>
-                     </Collapse>
-                  </Grid>
-                </Grid>
 
 
-
-            </Grid>
-          </BoxCustom>
+                      </Grid>
+                    </BoxCustom>
 
                   </TabBodyItem>
                 </TabBody>
@@ -1813,12 +1840,14 @@ const dengagedUser=useCallback((company:CompanyInterface)=>{
             </FormContent>
             <ButtonsContent>
 
-              {canEdit && (<ButtonComponent variant="outlined" className={classes.cancel} onClick={() => userState.success ? history.push('/user') : handleOpenModalCancel()}>
+              {canEdit && (<ButtonComponent variant="outlined" className={classes.cancel}
+                                            onClick={() => userState.success ? history.push('/user') : handleOpenModalCancel()}>
                 Cancelar
               </ButtonComponent>)}
-              {(!canEdit && currentTab === 0) && (<ButtonComponent background="success_rounded" onClick={() => handlerReturn()}>
-                Voltar
-              </ButtonComponent>)}
+              {(!canEdit && currentTab === 0) && (
+                <ButtonComponent background="success_rounded" onClick={() => handlerReturn()}>
+                  Voltar
+                </ButtonComponent>)}
 
               {currentTab === 0 ? (
                 <ButtonComponent
