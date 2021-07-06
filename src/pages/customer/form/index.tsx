@@ -358,14 +358,7 @@ export default function CustomerForm(props: RouteComponentProps<IPageParams>) {
       return (isValidPhoneNumber)
 
     }
-
-
-
-
    }
-
-
-
   const validateCellPhone = () => {
     if ( state.cellphone){
     var cellphone =  state.cellphone.replace('(','').replace(')','').replace(' ','').replace(' ','').replace('-','');

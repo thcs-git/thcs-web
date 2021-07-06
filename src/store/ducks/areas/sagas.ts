@@ -151,7 +151,7 @@ export function* getPoints({ payload: { value } }: any) {
         headers: { token },
       }
     );
-    console.log(response);
+
     yield put(loadPointSuccess(response.data));
   } catch (error) {
     yield put(loadFailure());

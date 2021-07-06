@@ -1,7 +1,8 @@
 import React, { useState } from 'react'
-import { GoogleMap, InfoWindow, LoadScript, Marker } from '@react-google-maps/api';
+import { GoogleMap, InfoWindow, LoadScript, Marker, MarkerProps } from '@react-google-maps/api';
 import { AreaPoints } from '../../store/ducks/areas/types';
 import { useEffect } from 'react';
+import { Button } from '@material-ui/core';
 
 const containerStyle = {
   width: '1000px',
@@ -30,24 +31,30 @@ const points =[
 ]
 
 interface IMapsProps {
-  points: any[]
+  points: any[];
 }
+
+interface PropsCheck {
+  [key: string]: any
+}
+
 export default function MyComponent(props: IMapsProps) {
 
-
-const [mouse,setMouse]= useState({showInfoWindow:false});
-  const handleMouseOver = ()=> {
-    setMouse({
-        showInfoWindow: true
-    });
+  const [commentShown, setCommentShown] = useState<PropsCheck>({});
+const [mouse,setMouse]= useState({showInfoWindow:true});
+  const handleMouseOver = (index:any) => {
+   console.log(index);
+   setCommentShown(prev => Boolean(!prev[index]) ? {...prev, [index]: true} : {...prev, [index]: false});
+    // setMouse({
+    //     showInfoWindow: true
+    // });
 };
-const handleMouseExit = () => {
-    setMouse({
+  const handleMouseExit = (index:any) => {
+    setCommentShown(prev => Boolean(!prev[index]) ? {...prev, [index]: true} : {...prev, [index]: false});
+      setMouse({
         showInfoWindow: false
-    });
-};
-
-
+      });
+    };
 
   return (
     <LoadScript
@@ -59,29 +66,21 @@ const handleMouseExit = () => {
         zoom={12}
       >
         {props.points?.map((point, index) => (
-   <Marker key={index} position={{lat:parseFloat(point.geolocation.latitude),lng:parseFloat(point.geolocation.longitude)}}
-    onMouseOver={handleMouseOver}
-    onMouseOut={handleMouseExit}>
-      {mouse.showInfoWindow && (
-        <InfoWindow>
-            <h4>{point.street}</h4>
-        </InfoWindow>
-      )}
-   </Marker>
-  ))}
-
-
-
-    {/* <Marker
-      position={position}
-      onMouseOver={handleMouseOver}
-      onMouseOut={handleMouseExit}
-    > {mouse.showInfoWindow && (
-        <InfoWindow>
-            <h4>teste</h4>
-        </InfoWindow>
-  )}</Marker> */}
-
+          <Marker position={{lat:parseFloat(point.address.geolocation.latitude),lng:parseFloat(point.address.geolocation.longitude)}}
+            onMouseOver={()=>{
+              handleMouseOver(index)}}
+            onMouseOut={()=>{handleMouseExit(index)}}>
+            {commentShown[index] && (
+              <InfoWindow>
+                <>
+                <h3>{point.name}</h3>
+                <h4>{point.address.street} - {point.address.number}</h4>
+                <h4>{point.address.district} - {point.address.state}</h4>
+                </>
+              </InfoWindow>
+            )}
+          </Marker>
+        ))}
       </GoogleMap>
     </LoadScript>
   )

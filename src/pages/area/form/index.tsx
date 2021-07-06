@@ -224,7 +224,6 @@ export default function AreaForm(props: RouteComponentProps<IPageParams>) {
   const [openModalCancel, setOpenModalCancel] = useState(false);
 
   useEffect(() => {
-
     if (params.id) {
       if(params.mode === 'view'){
           setCanEdit(false)
@@ -246,7 +245,6 @@ export default function AreaForm(props: RouteComponentProps<IPageParams>) {
 
   useEffect(()=>{
     if(params.id){
-
       dispatch(loadPointsArea(params.id));
     }
   },[dispatch])
@@ -270,8 +268,8 @@ export default function AreaForm(props: RouteComponentProps<IPageParams>) {
   }, [areaState,params.id]);
 
   useEffect(()=>{
-
     let usersIfProfession = null;
+    console.log(areaState);
     if(state.users.length>1){
       state.users.map((item)=>{
 
@@ -280,7 +278,7 @@ export default function AreaForm(props: RouteComponentProps<IPageParams>) {
     }
   },[state])
 
-  // //////////////////////////  RELOAD /////////////////////////////////////
+  /////////////////////////////  RELOAD /////////////////////////////////////
 
 
  //////////////////////////////  VALIDATION  //////////////////////////////////////
@@ -657,7 +655,7 @@ export default function AreaForm(props: RouteComponentProps<IPageParams>) {
                   </Badge>
                 </TabNavItem>
                 <TabNavItem className={currentTab === 3 ? 'active' : ''} onClick={() => goToNextMenu(3)}>
-                  <Badge badgeContent={countProfessions()} max={99} color="primary">
+                  <Badge badgeContent={areaState.points.length} max={99} color="primary">
                     {`Pacientes`}
                   </Badge>
                 </TabNavItem>
@@ -868,7 +866,7 @@ export default function AreaForm(props: RouteComponentProps<IPageParams>) {
                   </Grid>
                 </TabBodyItem>
                 <TabBodyItem className={currentTab === 2 ? 'show' : ''}>
-                  <Grid container>
+                  <Grid container >
                   <Grid item md={7} xs={12}>
                       <FormGroupSection>
                         <Autocomplete
@@ -932,16 +930,13 @@ export default function AreaForm(props: RouteComponentProps<IPageParams>) {
                     </Grid>
                   </Grid>
                 </TabBodyItem>
-                <TabBodyItem className={currentTab === 3 ? 'show' : ''}>
-                  <Grid container>
+                <TabBodyItem className={currentTab === 3 ? 'show' : ''} >
+                  <Grid container  >
                   <Grid item md={7} xs={12}>
-
                     </Grid>
                     <Grid item md={12} xs={12}>
-
-
                     </Grid>
-                    <Grid item md={12} xs={12}>
+                    <Grid item md={12} xs={12} style={{display:"flex", flexDirection:"row", justifyContent:"center"}}>
                       <MyComponent points={areaState.points}></MyComponent>
                     </Grid>
                   </Grid>
