@@ -25,7 +25,7 @@ export function* doLogin({ payload }: any) {
     localStorage.removeItem(LOCALSTORAGE.COMPANY_SELECTED);
     // localStorage.removeItem(LOCALSTORAGE.COMPANY_NAME);
     localStorage.removeItem(LOCALSTORAGE.CUSTOMER);
-    localStorage.removeItem(LOCALSTORAGE.CUSTOMER_NAME);
+    // localStorage.removeItem(LOCALSTORAGE.CUSTOMER_NAME);
 
     localStorage.setItem(LOCALSTORAGE.TOKEN, data.token);
     localStorage.setItem(LOCALSTORAGE.USERNAME, data.username);
@@ -39,18 +39,18 @@ export function* doLogin({ payload }: any) {
       data.companies[0]?.customer_id?.name || "Cliente"
     );
 
-    if (data.companies.length > 0) {
-      localStorage.setItem(
-        LOCALSTORAGE.COMPANY_SELECTED,
-        data.companies[0]?._id || null
-      );
-      localStorage.setItem(
-        LOCALSTORAGE.COMPANY_NAME,
-        data.companies[0]?.name || "Empresa"
-      );
-    }
+    localStorage.setItem(
+      LOCALSTORAGE.COMPANY_SELECTED,
+      data.companies[0]?._id || null
+    );
+    localStorage.setItem(
+      LOCALSTORAGE.COMPANY_NAME,
+      data.companies[0]?.name || "Empresa"
+    );
 
-    console.log(data);
+    // if (data.companies.length > 0) {
+    //
+    // }
 
     yield put(loadSuccess(data));
 
