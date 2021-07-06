@@ -77,6 +77,7 @@ export default function UserList() {
           <Table
             tableCells={[
               { name: 'Prestador', align: 'left', },
+              { name: 'Função', align: 'left' },
               { name: 'Especialidades', align: 'left' },
               { name: 'Adicionado em', align: 'left' },
               { name: 'Status', align: 'left' },
@@ -87,6 +88,9 @@ export default function UserList() {
               <TableRow key={`user_${index}`}>
                 <TableCell align="left">
                   <Link key={index} to={`/user/${user._id}/view/edit`}>{user.name}</Link>
+                </TableCell>
+                <TableCell>
+                  {user.profession_id.name}
                 </TableCell>
                 <TableCell>
                   {user.specialties.map((specialty, index) => (
