@@ -36,7 +36,7 @@ export function* doLogin({ payload }: any) {
     );
     localStorage.setItem(
       LOCALSTORAGE.CUSTOMER_NAME,
-      data.companies[0]?.customer_id?.name || "Cliente"
+      data.companies[0]?.customer_id?.name || "SEM"
     );
 
     localStorage.setItem(
@@ -45,7 +45,7 @@ export function* doLogin({ payload }: any) {
     );
     localStorage.setItem(
       LOCALSTORAGE.COMPANY_NAME,
-      data.companies[0]?.name || "Empresa"
+      data.companies[0]?.name || "VÍNCULO"
     );
 
     // if (data.companies.length > 0) {
