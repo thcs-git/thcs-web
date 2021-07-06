@@ -2,8 +2,8 @@ import React, { useState, useEffect, useCallback, ChangeEvent, ReactNode } from 
 import { handleUserSelectedId } from './../../../helpers/localStorage';
 import { useDispatch, useSelector } from 'react-redux';
 import { ApplicationState } from '../../../store';
-import { AreaInterface, UserAreaInterface, NeighborhoodAreaInterface, CityAreaInterface, AreaTypes, ProfessionAreaInterface } from '../../../store/ducks/areas/types';
-import { loadRequest, loadAreaById, updateAreaRequest, createAreaRequest, loadGetDistricts as getDistrictsAction, loadGetCitys as getStatesAction,loadGetDistricts_ } from '../../../store/ducks/areas/actions';
+import { AreaInterface, UserAreaInterface, NeighborhoodAreaInterface,  CityAreaInterface, AreaTypes, ProfessionAreaInterface } from '../../../store/ducks/areas/types';
+import { loadRequest, loadAreaById, updateAreaRequest, createAreaRequest, loadPointsArea, loadGetDistricts as getDistrictsAction, loadGetCitys as getStatesAction,loadGetDistricts_ } from '../../../store/ducks/areas/actions';
 import { loadRequest as getUsersAction, loadProfessionsRequest } from '../../../store/ducks/users/actions';
 import { toast } from 'react-toastify';
 import { useHistory, RouteComponentProps } from 'react-router-dom';
@@ -244,6 +244,13 @@ export default function AreaForm(props: RouteComponentProps<IPageParams>) {
       dispatch(loadProfessionsRequest());
   }, [dispatch]);
 
+  useEffect(()=>{
+    if(params.id){
+
+      dispatch(loadPointsArea(params.id));
+    }
+  },[dispatch])
+
   // //////////////////////////  INITIAL STATE ///////////////////////////////
 
   // //////////////////////////  STATE   /////////////////////////////////////
@@ -263,6 +270,7 @@ export default function AreaForm(props: RouteComponentProps<IPageParams>) {
   }, [areaState,params.id]);
 
   useEffect(()=>{
+
     let usersIfProfession = null;
     if(state.users.length>1){
       state.users.map((item)=>{
@@ -461,7 +469,7 @@ export default function AreaForm(props: RouteComponentProps<IPageParams>) {
 
   // Bairros
   function handleStates (value:any){
-    console.log(value);
+
     if(value){
       setInputState(prev =>({
       ...prev,
@@ -934,7 +942,7 @@ export default function AreaForm(props: RouteComponentProps<IPageParams>) {
 
                     </Grid>
                     <Grid item md={12} xs={12}>
-                                <MyComponent></MyComponent>
+                      <MyComponent points={areaState.points}></MyComponent>
                     </Grid>
                   </Grid>
                 </TabBodyItem>
