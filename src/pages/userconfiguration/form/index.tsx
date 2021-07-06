@@ -122,6 +122,12 @@ export default function UserConfiguration(){
     selectCompany();
   }, [userState.data]);
 
+  function handlePushUser() {
+    const user_id = localStorage.getItem(LOCALSTORAGE.USER_ID)
+    console.log(user_id)
+    history.push(`/user/${user_id}/config/edit`)
+  }
+
   return (
     <>
       <Sidebar>
@@ -142,7 +148,7 @@ export default function UserConfiguration(){
 
                       </Grid>
                       <Grid item md={4}>
-                        <Button>Atualizar Dados</Button>
+                        <Button onClick={handlePushUser}>Atualizar Dados</Button>
                       </Grid>
                     </Grid>
                     <Grid container direction="column" >
