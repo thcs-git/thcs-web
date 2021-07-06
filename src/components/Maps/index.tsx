@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { GoogleMap, InfoWindow, LoadScript, Marker } from '@react-google-maps/api';
+import { GoogleMap, InfoWindow, LoadScript, Marker, MarkerProps } from '@react-google-maps/api';
 import { AreaPoints } from '../../store/ducks/areas/types';
 import { useEffect } from 'react';
 import { Button } from '@material-ui/core';
@@ -31,77 +31,59 @@ const points =[
 ]
 
 interface IMapsProps {
-  points: any[]
+  points: any[];
 }
+
+interface PropsCheck {
+  [key: string]: any
+}
+
 export default function MyComponent(props: IMapsProps) {
 
-  useEffect(()=>{
-     console.log(props.points);
-  },[])
-  const [shownInfo, setShownInfo] = useState({});
-  const [info, setInfo] = useState({});
-
-
-const [mouse,setMouse]= useState({showInfoWindow:false});
-  const handleMouseOver = ()=> {
-    setMouse({
-        showInfoWindow: true
-    });
+  const [commentShown, setCommentShown] = useState<PropsCheck>({});
+const [mouse,setMouse]= useState({showInfoWindow:true});
+  const handleMouseOver = (index:any) => {
+   console.log(index);
+   setCommentShown(prev => Boolean(!prev[index]) ? {...prev, [index]: true} : {...prev, [index]: false});
+    // setMouse({
+    //     showInfoWindow: true
+    // });
 };
-const handleMouseExit = () => {
-    setMouse({
+  const handleMouseExit = (index:any) => {
+    setCommentShown(prev => Boolean(!prev[index]) ? {...prev, [index]: true} : {...prev, [index]: false});
+      setMouse({
         showInfoWindow: false
-    });
-};
-
-
-  const [commentShown, setCommentShown] = useState({});
-
-  const toggleComment = (id:any) => {
-    setCommentShown((prev:any) => Boolean(!prev[id]) ? {...prev, [id]: true} : {...prev, [id]: false});
-  };
+      });
+    };
 
   return (
-    <>
-      {props.points?.map(obj =>
-        <Button key={obj._id}>
-          { obj.name ? <img onClick={() => toggleComment(obj._id)}/> : null }
-          <div>{obj.name}</div>
-          {/* { commentShown[obj._id] ? <p>{obj.street}</p> : null } */}
-        </Button>
-      )}
-    </>
-  );
-
-
-  // return (
-  //   <LoadScript
-  //     googleMapsApiKey="AIzaSyA5ynBs1BxZYrCebESiQloFSZIiALVBGzg"
-  //   >
-  //     <GoogleMap
-  //       mapContainerStyle={containerStyle}
-  //       center={center}
-  //       zoom={12}
-  //     >
-  //       {props.points?.map((point, index) => (
-  //       <Marker key={index}  position={{lat:parseFloat(point.address.geolocation.latitude),lng:parseFloat(point.address.geolocation.longitude)}}
-  //         onMouseOver={handleMouseOver}
-  //         onMouseOut={handleMouseExit}>
-  //         {shownInfo[index] && (
-  //           <InfoWindow>
-  //           <>
-  //             <h4>{point.name}</h4>
-  //             <h5>{point.address.street} - {point.address.number}</h5>
-  //             <h5>{point.address.district}</h5>
-  //             <h5>{point.address.city}</h5>
-  //           </>
-  //           </InfoWindow>
-  //         )}
-  //       </Marker>
-  //       ))}
-  //     </GoogleMap>
-  //   </LoadScript>
-  // )
+    <LoadScript
+      googleMapsApiKey="AIzaSyA5ynBs1BxZYrCebESiQloFSZIiALVBGzg"
+    >
+      <GoogleMap
+        mapContainerStyle={containerStyle}
+        center={center}
+        zoom={12}
+      >
+        {props.points?.map((point, index) => (
+          <Marker position={{lat:parseFloat(point.address.geolocation.latitude),lng:parseFloat(point.address.geolocation.longitude)}}
+            onMouseOver={()=>{
+              handleMouseOver(index)}}
+            onMouseOut={()=>{handleMouseExit(index)}}>
+            {commentShown[index] && (
+              <InfoWindow>
+                <>
+                <h3>{point.name}</h3>
+                <h4>{point.address.street} - {point.address.number}</h4>
+                <h4>{point.address.district} - {point.address.state}</h4>
+                </>
+              </InfoWindow>
+            )}
+          </Marker>
+        ))}
+      </GoogleMap>
+    </LoadScript>
+  )
 }
 
 

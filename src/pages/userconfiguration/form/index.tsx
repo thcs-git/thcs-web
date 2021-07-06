@@ -188,17 +188,17 @@ export default function UserConfiguration(){
                 </FeedbackTitle>
                 </Grid>
               <Autocomplete
-              style={{paddingTop:"1rem", paddingLeft:"4rem"}}
-              id="combo-box-change-company"
-              options={companies}
-              getOptionLabel={(option: any) => option.customer}
-              getOptionSelected={(option, value) => option._id === currentCompany}
-              value={selectCompany()}
-              renderInput={(params) => <TextField {...params} label="Empresa" variant="outlined" autoComplete="off" />}
-              size="small"
-              onChange={(event, value) => changeCompany(value)}
-              noOptionsText="Nenhuma empresa encontrada"
-              autoComplete={false}
+                  style={{paddingTop:"1rem", paddingLeft:"4rem"}}
+                  id="combo-box-change-company"
+                  options={companies}
+                  getOptionLabel={(option: any) => option.customer}
+                  getOptionSelected={(option, value) => option._id === currentCompany}
+                  value={selectCompany()}
+                  renderInput={(params) => <TextField {...params} label="Empresa" variant="outlined" autoComplete="off" />}
+                  size="small"
+                  onChange={(event, value) => changeCompany(value)}
+                  noOptionsText="Nenhuma empresa encontrada"
+                  autoComplete={false}
             />
             </Grid>
             <Grid item md={12} style={{paddingTop:"1rem"}}>
