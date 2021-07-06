@@ -1,5 +1,6 @@
-import { CustomerInterface } from "./../customers/types";
-import { CompanyInterface } from "./../companies/types";
+import {CustomerInterface} from "./../customers/types";
+import {CompanyInterface} from "./../companies/types";
+
 /**
  * Action types
  */
@@ -60,6 +61,7 @@ export interface Phones {
   whatapp: string;
   telegram: string;
 }
+
 export interface SpecialtiesUserInterface {
   _id: string;
   name: string;
