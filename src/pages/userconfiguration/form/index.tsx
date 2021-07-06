@@ -134,6 +134,11 @@ export default function UserConfiguration(){
     setCompanies(userCompanies);
 
   }, [userState.data]);
+  function handlePushUser() {
+    const user_id = localStorage.getItem(LOCALSTORAGE.USER_ID)
+    console.log(user_id)
+    history.push(`/user/${user_id}/config/edit`)
+  }
 
   return (
     <>
@@ -153,10 +158,8 @@ export default function UserConfiguration(){
                       <Grid item md={5} style={{paddingLeft:"0px",paddingTop:"1.5rem"}}>
                         <h3>{userState.data.name}</h3>
                       </Grid>
-                      <Grid item md={4}  style={{padding:"0px"}}>
-
-                          <Button>Atualizar Dados</Button>
-
+                      <Grid item md={4}>
+                        <Button onClick={handlePushUser}>Atualizar Dados</Button>
                       </Grid>
                     </Grid>
                     <Grid container direction="column" >

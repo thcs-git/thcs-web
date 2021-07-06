@@ -332,11 +332,14 @@ export default function AreaForm(props: RouteComponentProps<IPageParams>) {
         ...prev,
         error:true
       }))
+      console.log('true')
     }else{
       setInpuCity(prev=>({
         ...prev,
         error:false
       }))
+      console.log('false')
+
     }
   },[inputCity]);
 
@@ -788,7 +791,7 @@ export default function AreaForm(props: RouteComponentProps<IPageParams>) {
                           onClose={() => {
                             load=false;
                           }}
-                          getOptionLabel={(option) => option.name}
+                          getOptionLabel={(option) => option.city}
                           renderInput={(params) => <TextField {...params} disabled= {!canEdit} error={inputCity.error} label="Cidades"  variant="outlined" onBlur={handleCityValidator} InputProps={{
                             ...params.InputProps,
                             endAdornment: (

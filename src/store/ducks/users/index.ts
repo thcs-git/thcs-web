@@ -139,6 +139,7 @@ const reducer: Reducer<UserState> = (state = INITIAL_STATE, action) => {
         success: false,
       };
     case UserTypes.ERROR_RESPONSE_ADDRESS:
+
       return {
         ...state,
         data: {
