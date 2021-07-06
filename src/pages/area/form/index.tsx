@@ -334,13 +334,13 @@ export default function AreaForm(props: RouteComponentProps<IPageParams>) {
         ...prev,
         error:true
       }))
-      console.log('true')
+      // console.log('true')
     }else{
       setInpuCity(prev=>({
         ...prev,
         error:false
       }))
-      console.log('false')
+      // console.log('false')
 
     }
   },[inputCity]);
@@ -480,18 +480,18 @@ export default function AreaForm(props: RouteComponentProps<IPageParams>) {
 
 };
   function handleSelectDistricts(value:any){
-    console.log(value);
+
     if(value){
       setInpuCity(prev=>({
         ...prev,
-        value:value.name
+        value:value.city
       }))
 
-      dispatch(loadGetDistricts_({city:value.name,state:value.state}));
+      dispatch(loadGetDistricts_({city:value.city,state:value.state}));
     }
   }
   const  handleSelectNeighborhood= useCallback((event:any,value1: any)=> {
-    console.log(value1);
+    // console.log(value1);
     const found  = state.neighborhoods.findIndex((item:any)=>{
           return item._id === value1._id;
         });
