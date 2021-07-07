@@ -236,8 +236,6 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
 
       return (isValidPhoneNumber)
     }
-
-
   }
 
   const checkIsCpfValid = useCallback(() => {
@@ -248,15 +246,11 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
   const validateCellPhone = () => {
     var cellphone = state.cellphone.replace('(', '').replace(')', '').replace(' ', '').replace(' ', '').replace('-', '');
     isValidCellPhoneNumber = validator.isMobilePhone(cellphone, 'pt-BR');
-
     return (isValidCellPhoneNumber)
-
   }
 
   if (validatePhone() == true && validateCellPhone() == true) {
-
     formValid = true;
-
   }
 
 
@@ -285,8 +279,11 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
     dispatch(getProfessionsAction());
     dispatch(getCompaniesAction());
     dispatch(getUserTypesAction());
-    dispatch(loadCompanyById(currentCompany));
-    dispatch(loadCustomerById(currentCustomer));
+    if(currentCompany && currentCustomer ){
+      dispatch(loadCompanyById(currentCompany));
+      dispatch(loadCustomerById(currentCustomer));
+    }
+
 
   }, []);
 
@@ -334,7 +331,6 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
       if (params.mode === "view" || params.mode === "link") {
         setCanEdit(false)
       }
-
       setFieldValidations({
         companies: true,
         name: true,
@@ -504,11 +500,16 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
 
   function handleCancelForm() {
     setOpenModalCancel(false);
-    history.push(`/user`);
+    if(params?.mode == 'config'){
+      history.push(`/userconfiguration`);
+    }else if(params?.mode == 'link'){
+      history.push(`/userdesengaged`)
+    }else{
+      history.push(`/user`);
+    }
   }
 
   function engagedUser() {
-
 
     if (customer && customer._id) {
       var com: CompanyUserInterface = {
@@ -519,7 +520,6 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
           name: customer.name
         }
       }
-
     }
     if (company) {
       setState((prevState) => ({
