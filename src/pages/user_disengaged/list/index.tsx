@@ -61,7 +61,7 @@ export default function UserDisengaged(){
           <Table
             tableCells={[
               { name: 'Profissional', align: 'left', },
-              { name: 'Email', align: 'left' },
+              // { name: 'Email', align: 'left' },
               { name: 'Estado', align: 'left' },
               { name: 'Função', align: 'left' },
               { name: 'Especialidade', align: 'left' },
@@ -74,11 +74,11 @@ export default function UserDisengaged(){
                <TableCell>
                 <Link to={`/user/${user._id}/link/edit`}>{user.name}</Link>
                </TableCell>
+               {/*<TableCell>*/}
+               {/*  {user.email}*/}
+               {/*</TableCell>*/}
                <TableCell>
-                 {user.email}
-               </TableCell>
-               <TableCell>
-                 {/* {user.address.state} */}
+                  {user.address?.state || 'BR'}
                </TableCell>
                <TableCell>
                   {user.profession_id.name}
