@@ -1942,7 +1942,7 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
             buttons
             successAction={() => {
               dispatch(cleanAction());
-              history.push("/user/create");
+              history.push("/dashboard_user");
             }}
             defaultAction={() => {
               dispatch(cleanAction());
