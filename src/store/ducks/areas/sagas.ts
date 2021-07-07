@@ -11,6 +11,7 @@ import {
   loadGetCitys,
   loadSuccessGetDistricts,
   loadSuccessGetCitys,
+  loadPointSuccess,
 } from "./actions";
 
 import { apiSollar, ibge } from "../../../services/axios";
@@ -136,7 +137,23 @@ export function* getDistricts() {
 
     yield put(loadSuccessGetDistricts(data));
   } catch (error) {
+    yield put(loadFailure());
+  }
+}
 
+export function* getPoints({ payload: { value } }: any) {
+  try {
+    console.log("value", value);
+    const response: AxiosResponse = yield call(
+      apiSollar.get,
+      `/points?patientarea_id=${value}`,
+      {
+        headers: { token },
+      }
+    );
+
+    yield put(loadPointSuccess(response.data));
+  } catch (error) {
     yield put(loadFailure());
   }
 }

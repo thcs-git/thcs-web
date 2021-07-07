@@ -47,3 +47,10 @@ To learn React, check out the [React documentation](https://reactjs.org/).
 
 <!-- Collection -->
 <!-- unconfirmedusers | location -->
+
+## Cypress
+
+CYPRESS_HOST=https://sollar-web.vercel.app (run tests in vercel ambient)
+CYPRESS_HOST=http://localhost:3000 (run tests in local development ambient)
+
+yarn run cypress run

@@ -2,11 +2,12 @@ import React, { useState, useEffect, useCallback, ChangeEvent, ReactNode } from 
 import { handleUserSelectedId } from './../../../helpers/localStorage';
 import { useDispatch, useSelector } from 'react-redux';
 import { ApplicationState } from '../../../store';
-import { AreaInterface, UserAreaInterface, NeighborhoodAreaInterface, CityAreaInterface, AreaTypes, ProfessionAreaInterface } from '../../../store/ducks/areas/types';
-import { loadRequest, loadAreaById, updateAreaRequest, createAreaRequest, loadGetDistricts as getDistrictsAction, loadGetCitys as getStatesAction,loadGetDistricts_ } from '../../../store/ducks/areas/actions';
+import { AreaInterface, UserAreaInterface, NeighborhoodAreaInterface,  CityAreaInterface, AreaTypes, ProfessionAreaInterface } from '../../../store/ducks/areas/types';
+import { loadRequest, loadAreaById, updateAreaRequest, createAreaRequest, loadPointsArea, loadGetDistricts as getDistrictsAction, loadGetCitys as getStatesAction,loadGetDistricts_ } from '../../../store/ducks/areas/actions';
 import { loadRequest as getUsersAction, loadProfessionsRequest } from '../../../store/ducks/users/actions';
 import { toast } from 'react-toastify';
 import { useHistory, RouteComponentProps } from 'react-router-dom';
+import { GoogleMap, Marker } from "react-google-maps";
 import {
   Badge,
   CircularProgress,
@@ -34,6 +35,7 @@ import { SliderComponent as Slider } from '../../../styles/components/Slider';
 import { SwitchComponent as Switch } from '../../../styles/components/Switch';
 import { TabContent, TabNav, TabNavItem, TabBody, TabBodyItem } from '../../../styles/components/Tabs';
 
+import MyComponent from '../../../components/Maps';
 import {
   ButtonsContent,
   FormSection,
@@ -66,6 +68,7 @@ interface TabPanelProps {
   index: any;
   value: any;
 }
+
 
 export default function AreaForm(props: RouteComponentProps<IPageParams>) {
   const history = useHistory();
@@ -211,6 +214,8 @@ export default function AreaForm(props: RouteComponentProps<IPageParams>) {
     profession_users:[]
   });
 
+
+
   const [currentTab, setCurrentTab] = useState(0);
   let load = false;
   const selectTab = useCallback((index: number) => {
@@ -219,7 +224,6 @@ export default function AreaForm(props: RouteComponentProps<IPageParams>) {
   const [openModalCancel, setOpenModalCancel] = useState(false);
 
   useEffect(() => {
-
     if (params.id) {
       if(params.mode === 'view'){
           setCanEdit(false)
@@ -238,6 +242,12 @@ export default function AreaForm(props: RouteComponentProps<IPageParams>) {
       dispatch(getUsersAction());
       dispatch(loadProfessionsRequest());
   }, [dispatch]);
+
+  useEffect(()=>{
+    if(params.id){
+      dispatch(loadPointsArea(params.id));
+    }
+  },[dispatch])
 
   // //////////////////////////  INITIAL STATE ///////////////////////////////
 
@@ -259,6 +269,7 @@ export default function AreaForm(props: RouteComponentProps<IPageParams>) {
 
   useEffect(()=>{
     let usersIfProfession = null;
+    console.log(areaState);
     if(state.users.length>1){
       state.users.map((item)=>{
 
@@ -267,7 +278,7 @@ export default function AreaForm(props: RouteComponentProps<IPageParams>) {
     }
   },[state])
 
-  // //////////////////////////  RELOAD /////////////////////////////////////
+  /////////////////////////////  RELOAD /////////////////////////////////////
 
 
  //////////////////////////////  VALIDATION  //////////////////////////////////////
@@ -321,11 +332,14 @@ export default function AreaForm(props: RouteComponentProps<IPageParams>) {
         ...prev,
         error:true
       }))
+      // console.log('true')
     }else{
       setInpuCity(prev=>({
         ...prev,
         error:false
       }))
+      // console.log('false')
+
     }
   },[inputCity]);
 
@@ -453,7 +467,7 @@ export default function AreaForm(props: RouteComponentProps<IPageParams>) {
 
   // Bairros
   function handleStates (value:any){
-    console.log(value);
+
     if(value){
       setInputState(prev =>({
       ...prev,
@@ -464,18 +478,18 @@ export default function AreaForm(props: RouteComponentProps<IPageParams>) {
 
 };
   function handleSelectDistricts(value:any){
-    console.log(value);
+
     if(value){
       setInpuCity(prev=>({
         ...prev,
-        value:value.name
+        value:value.city
       }))
 
-      dispatch(loadGetDistricts_({city:value.name,state:value.state}));
+      dispatch(loadGetDistricts_({city:value.city,state:value.state}));
     }
   }
   const  handleSelectNeighborhood= useCallback((event:any,value1: any)=> {
-    console.log(value1);
+    // console.log(value1);
     const found  = state.neighborhoods.findIndex((item:any)=>{
           return item._id === value1._id;
         });
@@ -640,6 +654,11 @@ export default function AreaForm(props: RouteComponentProps<IPageParams>) {
                     {`Prestadores`}
                   </Badge>
                 </TabNavItem>
+                <TabNavItem className={currentTab === 3 ? 'active' : ''} onClick={() => goToNextMenu(3)}>
+                  <Badge badgeContent={areaState.points.length} max={99} color="primary">
+                    {`Pacientes`}
+                  </Badge>
+                </TabNavItem>
               </TabNav>
               <TabBody>
                 <TabBodyItem className={currentTab === 0 ? 'show' : ''}>
@@ -772,7 +791,7 @@ export default function AreaForm(props: RouteComponentProps<IPageParams>) {
                           onClose={() => {
                             load=false;
                           }}
-                          getOptionLabel={(option) => option.name}
+                          getOptionLabel={(option) => option.city}
                           renderInput={(params) => <TextField {...params} disabled= {!canEdit} error={inputCity.error} label="Cidades"  variant="outlined" onBlur={handleCityValidator} InputProps={{
                             ...params.InputProps,
                             endAdornment: (
@@ -847,7 +866,7 @@ export default function AreaForm(props: RouteComponentProps<IPageParams>) {
                   </Grid>
                 </TabBodyItem>
                 <TabBodyItem className={currentTab === 2 ? 'show' : ''}>
-                  <Grid container>
+                  <Grid container >
                   <Grid item md={7} xs={12}>
                       <FormGroupSection>
                         <Autocomplete
@@ -908,6 +927,17 @@ export default function AreaForm(props: RouteComponentProps<IPageParams>) {
                            </Grid>
                         ))}
                       </ChipList>
+                    </Grid>
+                  </Grid>
+                </TabBodyItem>
+                <TabBodyItem className={currentTab === 3 ? 'show' : ''} >
+                  <Grid container  >
+                  <Grid item md={7} xs={12}>
+                    </Grid>
+                    <Grid item md={12} xs={12}>
+                    </Grid>
+                    <Grid item md={12} xs={12} style={{display:"flex", flexDirection:"row", justifyContent:"center"}}>
+                      <MyComponent points={areaState.points}></MyComponent>
                     </Grid>
                   </Grid>
                 </TabBodyItem>

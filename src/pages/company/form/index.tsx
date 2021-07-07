@@ -149,7 +149,7 @@ export default function CompanyForm(props: RouteComponentProps<IPageParams>) {
       }))
     }
 
-    setState(prevState => {
+    companyState.data && setState(prevState => {
       return {
         ...prevState,
         address: {
@@ -157,7 +157,7 @@ export default function CompanyForm(props: RouteComponentProps<IPageParams>) {
         }
       }
     });
-    setFieldValidations((prevState: any) => ({
+    companyState.data && setFieldValidations((prevState: any) => ({
       ...prevState,
       postal_code: !validator.isEmpty(companyState.data.address.postal_code),
       street: !validator.isEmpty(companyState.data.address.street),
@@ -193,7 +193,7 @@ export default function CompanyForm(props: RouteComponentProps<IPageParams>) {
 
    if( validatePhone() == true && validateCellPhone()==true){
 
-    formValid = true;
+   // formValid = true;
 
   }
 ///////////////////////////////
@@ -372,7 +372,7 @@ export default function CompanyForm(props: RouteComponentProps<IPageParams>) {
                 <Grid item md={12} xs={12}>
                   <TextField
                     id="input-social-name"
-                    label="Nome Social"
+                    label="Razão Social"
                     variant="outlined"
                     size="small"
                     value={state.name}
@@ -698,7 +698,7 @@ export default function CompanyForm(props: RouteComponentProps<IPageParams>) {
             <ButtonComponent background="default" onClick={handleOpenModalCancel}>
               Voltar
 					  </ButtonComponent>
-            <ButtonComponent disabled={!formValid} background="success" onClick={handleSaveFormCustomer}>
+            <ButtonComponent disabled={formValid} background="success" onClick={handleSaveFormCustomer}>
               Salvar
 					  </ButtonComponent>
           </ButtonsContent>
