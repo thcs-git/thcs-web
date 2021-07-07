@@ -22,11 +22,9 @@ export default function Dashboard() {
   ];
 
   return (
-    <Sidebar >
+     <Sidebar >
       <Container>
-
         <Title>Procurando algo?</Title>
-
         <InfoSection>
           <SearchInput label="Pesquisa por palavra-chave" />
         </InfoSection>
@@ -112,6 +110,6 @@ export default function Dashboard() {
         </InfoSection>
 
       </Container>
-    </Sidebar>
+     </Sidebar>
   );
 }

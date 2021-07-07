@@ -143,7 +143,7 @@ const Transition = React.forwardRef(function Transition(
 interface PropsSidebar{
   permission?:boolean
 }
-const Sibebar = (props: Props<any>) => {
+const Sibebar_menu = (props: Props<any>) => {
   const history = useHistory();
   const classes = useStyles();
   const dispatch = useDispatch();
@@ -229,58 +229,19 @@ const Sibebar = (props: Props<any>) => {
             <br />
             <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', }}>
               <ListItem style={{ padding: 0 }} className={classes.logOutButton} onClick={() => setOpenModalConfig(true)}>
-                <BusinessIcon />
-                <ListItemText style={{color:"#ffff",cursor:"pointer"}}>
+                {/* <BusinessIcon /> */}
+                {/* <ListItemText style={{color:"#ffff",cursor:"pointer"}}>
                   <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', }}>
                     <h4 style={{ color: '#ffffff', marginLeft: 10 }}>{customer.name}</h4>
                     <h4 style={{ color: '#ffffff', marginLeft: 10 }}>{company.name}</h4>
                   </div>
-                </ListItemText>
-                <EditIcon style={{ color: '#fff', fontSize: '14px', marginLeft: '10px' }} />
+                </ListItemText> */}
+                {/* <EditIcon style={{ color: '#fff', fontSize: '14px', marginLeft: '10px' }} /> */}
               </ListItem>
             </div>
           </div>
         </UserContent>
-        <List>
-          {itemsMenu.map((item,index)=>(
-            <>
 
-            {/* {item.subtitle?(
-
-               <Accordion style={{backgroundColor:"transparent", boxShadow:"none"}}>
-                  <AccordionSummary >
-                    <ListItemIcon>
-                      {item.icon}
-                    </ListItemIcon>
-                    { open && (<ListItemText primary={item.title} style={{color:"#ffff"}}  />) }
-
-                  </AccordionSummary>
-
-                  <AccordionDetails>
-                    <List>
-                      {item.subtitle.map((item, index)=>(
-                      <ListItem key={index} component ="button" button onClick={() => history.push(item.route)}>
-                        <ListItemText primary={item.title} style={{color:"#ffff",paddingLeft:'60px'}}></ListItemText>
-                      </ListItem>
-                    ))}
-                    </List>
-
-              </AccordionDetails>
-
-            </Accordion>
-           ):( */}
-              <ListItem key={index} onClick={() => history.push(item.route)}>
-                  <ListItemIcon>
-                      {item.icon}
-                    </ListItemIcon>
-                    <ListItemText primary={item.title} style={{color:"#ffff",cursor:"pointer"}}  />
-              </ListItem>
-
-            {/* )} */}
-            </>
-
-          ))}
-          </List>
         <Divider />
         <List disablePadding={true}>
           <ListItem className={classes.logOutButton} onClick={() => history.push("/userconfiguration")}>
@@ -338,7 +299,7 @@ const Sibebar = (props: Props<any>) => {
         <DialogActions>
           <Button onClick={() => {
             setOpenModalConfig(false)
-            history.push(`/dashboard`);
+            history.push(`/dashboard_user`);
            // location.reload()
           }}
             color="primary"
@@ -351,4 +312,4 @@ const Sibebar = (props: Props<any>) => {
   );
 }
 
-export default React.memo(Sibebar);
+export default React.memo(Sibebar_menu);
