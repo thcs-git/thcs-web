@@ -50,7 +50,7 @@ export default function UserDisengaged(){
         {userState.loading && <Loading />}
         <Container>
           <FormTitle>
-            Lista de Profissionais Disvinculados
+            Lista de Profissionais Desvinculados
           </FormTitle>
           <SearchComponent
             handleButton={() => history.push('/company/create/')}

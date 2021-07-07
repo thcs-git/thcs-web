@@ -32,7 +32,7 @@ import { RouteComponentProps } from 'react-router-dom';
 import { age, formatDate } from '../../../helpers/date';
 import mask from '../../../utils/mask';
 import Loading from '../../../components/Loading';
-
+import QRCode from "react-qr-code";
 interface IPageParams {
   id?: string;
 }
@@ -392,6 +392,21 @@ export default function PatientOverview(props: RouteComponentProps<IPageParams>)
                   <TodayRoundedIcon />
                   <p>Agenda</p>
                 </ButtonComponent>
+                {careState.data._id && (
+                  <Card  style={{display:"flex", flexDirection:"row", justifyContent:"center"}}>
+                   <p style={{paddingTop:"1.6rem"}}>
+                  <QRCode value={JSON.stringify(careState.data._id)}  />
+                </p>
+                </Card>
+                )}
+
+
+
+
+              </Grid>
+              <Grid item md={4}>
+
+
               </Grid>
             </Grid>
           </Grid>
