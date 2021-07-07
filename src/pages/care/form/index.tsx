@@ -276,6 +276,7 @@ export default function CareForm(props: RouteComponentProps<IPageParams>) {
       created_at: selectCheckbox?.created_at,
       start_at: new Date()
     };
+    console.log(assignSelectCheckbox);
 
     dispatch(updateCareRequest(assignSelectCheckbox));
   }
@@ -1071,6 +1072,7 @@ export default function CareForm(props: RouteComponentProps<IPageParams>) {
                     size="small"
                     onChange={(event, value) => {
                       if (value) {
+                        console.log(value);
                         setState((prevState) => ({
                           ...prevState,
                           care_type_id: value._id,
