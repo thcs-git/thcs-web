@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef, useCallback, ChangeEvent } from 're
 import { useHistory, Link } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import Loading from '../../../components/Loading';
-import { Container,Button, Menu, MenuItem, TableRow, TableCell } from '@material-ui/core';
+import { Container, Button, Menu, MenuItem, TableRow, TableCell } from '@material-ui/core';
 import { MoreVert } from '@material-ui/icons';
 import { UserInterface, UserListItems } from '../../../store/ducks/users/types';
 import { ApplicationState } from '../../../store';
@@ -15,8 +15,12 @@ import { loadGetUserDisengaged, searchRequest, cleanAction } from '../../../stor
 import debounce from 'lodash.debounce';
 import { formatDate } from '../../../helpers/date';
 import { searchUserDisengaged } from '../../../store/ducks/users/sagas';
+import ListItem from '@material-ui/core/ListItem';
+import ListItemIcon from '@material-ui/core/ListItemIcon';
+import ListItemText from '@material-ui/core/ListItemText';
+import AddIcon from '@material-ui/icons/Add';
 
-export default function UserDisengaged(){
+export default function UserDisengaged() {
   const history = useHistory();
   const dispatch = useDispatch();
   const [search, setSearch] = useState('');
@@ -29,7 +33,7 @@ export default function UserDisengaged(){
   }, []);
   const debounceSearchRequest = debounce(handleChangeInput, 900);
 
-  useEffect(() =>{
+  useEffect(() => {
     dispatch(cleanAction());
     dispatch(loadGetUserDisengaged());
   }, [])
@@ -54,7 +58,7 @@ export default function UserDisengaged(){
           </FormTitle>
           <SearchComponent
             handleButton={() => history.push('/company/create/')}
-            inputPlaceholder = "Pesquise por nome, estado,função ou especialidade"
+            inputPlaceholder="Pesquise por nome, estado,função ou especialidade"
             buttonTitle=""
             onChangeInput={debounceSearchRequest}
           />
@@ -69,29 +73,35 @@ export default function UserDisengaged(){
               { name: '', align: 'left' },
             ]}
           >
-            { userState.list.data.map((user:UserListItems, index:number) =>(
-             <TableRow key={`user_${index}`}>
-               <TableCell>
-                <Link to={`/user/${user._id}/link/edit`}>{user.name}</Link>
-               </TableCell>
-               <TableCell>
-                 {user.email}
-               </TableCell>
-               <TableCell>
-                 {/* {user.address.state} */}
-               </TableCell>
-               <TableCell>
+            {userState.list.data.map((user: UserListItems, index: number) => (
+              <TableRow key={`user_${index}`}>
+                <TableCell>
+                  <Link to={`/user/${user._id}/link/edit`}>{user.name}</Link>
+                </TableCell>
+                <TableCell>
+                  {user.email}
+                </TableCell>
+                <TableCell>
+                  {/* {user.address.state} */}
+                </TableCell>
+                <TableCell>
                   {user.profession_id.name}
-               </TableCell>
-               <TableCell>
-               {user.specialties.map((specialty, index) => (
+                </TableCell>
+                <TableCell>
+                  {/* {user.specialties.map((specialty, index) => (
                     `${specialty.name}${index < (user.specialties.length - 1) ? ',' : ''}`
-                  ))}
-               </TableCell>
-               <TableCell>
-               {formatDate(user.created_at, 'DD/MM/YYYY HH:mm:ss')}
-               </TableCell>
-               <TableCell align="center">
+                  ))} */}
+                  <ListItem >
+                    {user.main_specialty_id}
+                    <Button style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', }} onClick={handleOpenRowMenu}>
+                      <AddIcon style={{ color: '#0899BA', cursor: "pointer" }} />
+                    </Button>
+                  </ListItem>
+                </TableCell>
+                <TableCell>
+                  {formatDate(user.created_at, 'DD/MM/YYYY HH:mm:ss')}
+                </TableCell>
+                <TableCell align="center">
                   <Button aria-controls={`user-menu${index}`} id={`btn_user-menu${index}`} aria-haspopup="true" onClick={handleOpenRowMenu}>
                     <MoreVert style={{ color: '#0899BA' }} />
                   </Button>
@@ -106,7 +116,7 @@ export default function UserDisengaged(){
                     <MenuItem onClick={() => history.push(`/user/${user._id}/link/edit`)}>Visualizar</MenuItem>
                   </Menu>
                 </TableCell>
-            </TableRow>
+              </TableRow>
             ))}
           </Table>
           <PaginationComponent
