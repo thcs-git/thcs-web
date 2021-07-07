@@ -369,13 +369,12 @@ export default function PatientCaptureForm(props: RouteComponentProps<IPageParam
                           }
 
                         }}>{handleCheckDocument(documentGroup._id, care?.documents_id || [])}</Td>
+
                         {
                         (documentGroup.name != 'Tabela Socioambiental')? (
                             <Td>{documentGroup.name}<span style={{color:'red'}}> *</span></Td>
                         ):( <Td>{documentGroup.name}</Td>)
                         }
-                        <Td>{documentGroup.name}</Td>
-
                         <Td>{handleCareTypeLabel(document?.status)}</Td>
                         <Td>{handleComplexityLabel(document?.complexity)}</Td>
                         <Td>{document?.created_at ? formatDate(document.created_at, 'DD/MM/YYYY HH:mm:ss') : '-'}</Td>
