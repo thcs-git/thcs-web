@@ -78,7 +78,7 @@ export default function UserDisengaged(){
                {/*  {user.email}*/}
                {/*</TableCell>*/}
                <TableCell>
-                  {user.address.state}
+                  {user.address?.state || 'BR'}
                </TableCell>
                <TableCell>
                   {user.profession_id.name}
