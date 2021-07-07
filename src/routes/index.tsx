@@ -7,6 +7,7 @@ import PrivateRoute from './private';
 import NotFound from '../pages/errors/not-found';
 
 import Dashboard from '../pages/dashboard';
+import Dashboard_user from '../pages/dashboard_user';
 
 import CareList from '../pages/care/list';
 import CareForm from '../pages/care/form';
@@ -74,6 +75,7 @@ const Routes = () => (
       <PrivateRoute path="/userconfiguration" component={UserConfiguration} />
       <PrivateRoute path="/recoverypassmenu" component={RecoveryPassMenu} />
       <PrivateRoute path="/" component={Dashboard} exact />
+      <PrivateRoute path="/dashboard_user" component={Dashboard_user} exact />
       <PrivateRoute path="/dashboard" component={Dashboard} />
 
 

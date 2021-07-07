@@ -48,13 +48,14 @@ export function* doLogin({ payload }: any) {
       data.companies[0]?.name || "VÍNCULO"
     );
 
-    // if (data.companies.length > 0) {
-    //
-    // }
-
     yield put(loadSuccess(data));
 
-    history.push("/dashboard");
+    if (localStorage.getItem(LOCALSTORAGE.CUSTOMER_NAME) != "SEM") {
+      history.push("/dashboard");
+    } else {
+      history.push("/dashboard_user");
+    }
+
     location.reload();
   } catch (err) {
     console.log("err", err);

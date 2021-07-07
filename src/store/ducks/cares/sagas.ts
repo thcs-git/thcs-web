@@ -130,6 +130,7 @@ export function* updateCare({ payload: { data } }: any) {
   const { _id } = data;
 
   try {
+    console.log(data);
     const response: AxiosResponse = yield call(
       apiSollar.put,
       `/care/${_id}/update`,
