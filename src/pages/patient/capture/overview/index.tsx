@@ -365,7 +365,7 @@ export default function PatientCaptureForm(props: RouteComponentProps<IPageParam
                             handleScoreRoute(documentGroup?._id || '', care?._id || '');
                           }
                         }}>{handleCheckDocument(documentGroup._id, care?.documents_id || [])}</Td>
-                        <Td>{documentGroup.name}</Td>
+                        <Td>{documentGroup.name}*</Td>
                         <Td>{handleCareTypeLabel(document?.status)}</Td>
                         <Td>{handleComplexityLabel(document?.complexity)}</Td>
                         <Td>{document?.created_at ? formatDate(document.created_at, 'DD/MM/YYYY HH:mm:ss') : '-'}</Td>

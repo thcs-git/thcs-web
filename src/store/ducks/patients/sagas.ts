@@ -101,7 +101,7 @@ export function* updatePatient({ payload: { data } }: any) {
       const { data: googleAddressData }: AxiosResponse = yield googleMaps.get(
         `/geocode/json?address=${street},${number},${district},${city},${state}`
       );
-
+      console.log(googleAddressData.results);
       if (googleAddressData.results) {
         const {
           lat: latitude,
@@ -146,7 +146,6 @@ export function* getAddress({ payload }: any) {
 
     yield put(successGetAddress(data));
   } catch (error) {
-
     yield put(loadFailure());
   }
 }
@@ -159,10 +158,8 @@ export function* searchPatient({ payload: { params } }: any) {
       searchQuery = `&search=${params}`;
     } else {
       requestParams = params;
-
       delete requestParams.limit;
       delete requestParams.page;
-
       requestParams = { params: requestParams };
     }
 

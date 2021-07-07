@@ -13,22 +13,9 @@ const center = {
   lat: -8.05428,
   lng: -34.8813
 };
-const position = {
-  lat: -7.080,
-  lng: -41.4583
-}
 
-const points =[
-  {
-    lat: -8.0235849,
-    lng: -34.9040313
-  },
-  {
-    lat: -7.993208099999999,
-    lng: -34.9097491
 
-  }
-]
+
 
 interface IMapsProps {
   points: any[];
@@ -40,7 +27,7 @@ interface PropsCheck {
 
 export default function MyComponent(props: IMapsProps) {
 
-  const [commentShown, setCommentShown] = useState<PropsCheck>({});
+const [commentShown, setCommentShown] = useState<PropsCheck>({});
 const [mouse,setMouse]= useState({showInfoWindow:true});
   const handleMouseOver = (index:any) => {
    console.log(index);
@@ -49,6 +36,16 @@ const [mouse,setMouse]= useState({showInfoWindow:true});
     //     showInfoWindow: true
     // });
 };
+const coordenadas = ()=>{
+
+  let coordenadas = {
+    lat:0,
+    lng:0
+  }
+
+
+  return coordenadas;
+}
   const handleMouseExit = (index:any) => {
     setCommentShown(prev => Boolean(!prev[index]) ? {...prev, [index]: true} : {...prev, [index]: false});
       setMouse({
