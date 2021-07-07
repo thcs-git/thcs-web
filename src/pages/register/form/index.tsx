@@ -496,7 +496,10 @@ export default function RegisterForm() {
     setInputPassword(prev => ({ ...prev,
       error: !((inputPassword.value.length >= SIZE_INPUT_PASSWORD) && (inputPasswordConfirm.value && inputPassword.value === inputPasswordConfirm.value))}));
 
-
+      setState(prev=>({
+        ...prev,
+        password:inputPassword.value
+      }))
   }, [inputPassword,inputPasswordConfirm]);
 
 ////////// form verify functions /////////////////
@@ -531,11 +534,11 @@ const  handleFormUser = useCallback(()=>{
   case "Saúde":
     if(inputEmail.error || inputPassword.error || inputCpf.error || inputName.error || inputPhone.error || inputProfession.error
       || inputConcil.error || inputNumberConcil.error || inputSpecialty.error || inputUf.error){
-        console.log(state);
+
         return;
     }else{
-      console.log(state);
-     // dispatch(createUserRequest(state));
+
+      dispatch(createUserRequest(state));
     }
 
     break;

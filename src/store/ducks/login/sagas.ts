@@ -25,36 +25,37 @@ export function* doLogin({ payload }: any) {
     localStorage.removeItem(LOCALSTORAGE.COMPANY_SELECTED);
     // localStorage.removeItem(LOCALSTORAGE.COMPANY_NAME);
     localStorage.removeItem(LOCALSTORAGE.CUSTOMER);
-    localStorage.removeItem(LOCALSTORAGE.CUSTOMER_NAME);
+    // localStorage.removeItem(LOCALSTORAGE.CUSTOMER_NAME);
 
     localStorage.setItem(LOCALSTORAGE.TOKEN, data.token);
-    localStorage.setItem(LOCALSTORAGE.USERNAME, data.username);
+    localStorage.setItem(LOCALSTORAGE.USERNAME, data.name);
     localStorage.setItem(LOCALSTORAGE.USER_ID, data._id);
     localStorage.setItem(
       LOCALSTORAGE.CUSTOMER,
-      data.companies[0].customer_id?._id || null
+      data.companies[0]?.customer_id?._id || null
     );
     localStorage.setItem(
       LOCALSTORAGE.CUSTOMER_NAME,
-      data.companies[0].customer_id?.name || 'Cliente'
+      data.companies[0]?.customer_id?.name || "SEM"
     );
 
-    if (data.companies.length > 0) {
-      localStorage.setItem(
-        LOCALSTORAGE.COMPANY_SELECTED,
-        data.companies[0]._id || null
-      );
-      localStorage.setItem(
-        LOCALSTORAGE.COMPANY_NAME,
-        data.companies[0].name || 'Empresa'
-      );
-    }
-
-    console.log(data)
+    localStorage.setItem(
+      LOCALSTORAGE.COMPANY_SELECTED,
+      data.companies[0]?._id || null
+    );
+    localStorage.setItem(
+      LOCALSTORAGE.COMPANY_NAME,
+      data.companies[0]?.name || "VÍNCULO"
+    );
 
     yield put(loadSuccess(data));
 
-    history.push("/dashboard");
+    if (localStorage.getItem(LOCALSTORAGE.CUSTOMER_NAME) != "SEM") {
+      history.push("/dashboard");
+    } else {
+      history.push("/dashboard_user");
+    }
+
     location.reload();
   } catch (err) {
     console.log("err", err);
