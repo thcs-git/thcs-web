@@ -600,6 +600,15 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
 
   }
 
+  function viewMainSpecialty() {
+    if (!userState.data.main_specialty_id) {
+      // return null;
+    } else {
+      return userState.data.main_specialty_id ? userState.data.main_specialty_id.name : null
+    }
+
+  }
+
   function viewSpecialtes() {
     let especialidades = "";
     if (_.isEmpty(state.specialties)) {
@@ -617,7 +626,10 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
   function handleSelectMainSpecialty(value: SpecialtyInterface) {
     setState((prevState) => ({
       ...prevState,
-      main_specialty_id: value._id,
+      main_specialty_id: {
+        _id: value._id,
+        name: value.name,
+      },
     }));
   }
 
@@ -668,9 +680,12 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
   };
 
   const selectMainSpecialty = useCallback(() => {
-    const selected = specialtyState.list.data.filter(
-      (item) => item._id === state.main_specialty_id
-    );
+
+    const selected = specialtyState.list.data.filter((item) => {
+      if (typeof state.main_specialty_id === "object") {
+        return item._id === state?.main_specialty_id?._id;
+      }
+    });
 
     return selected[0] ? selected[0] : null;
   }, [state.main_specialty_id]);
@@ -1572,6 +1587,15 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
                           />
                         </FormGroupSection>
                       </Grid>
+                      <Grid item md={12} xs={12}>
+                        {!(params.mode === 'config') &&(
+                        <ChipList>
+                          <Chip
+                            label={viewProfession()}
+                          />
+                        </ChipList>
+                        )}
+                      </Grid>
                       <Grid item md={5} xs={12}>
                         <FormGroupSection fullWidth error>
                           <Autocomplete
@@ -1587,7 +1611,7 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
                               />
                             )}
                             getOptionSelected={(option, value) =>
-                              option._id === state?.main_specialty_id
+                              option._id === state?.main_specialty_id.name
                             }
                             value={selectMainSpecialty()}
                             onChange={(event, value) => {
@@ -1602,7 +1626,15 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
                           />
                         </FormGroupSection>
                       </Grid>
-                      <Grid item md={6} xs={12}></Grid>
+                      <Grid item md={12} xs={12}>
+                        {!(params.mode === 'config') &&(
+                        <ChipList>
+                            <Chip
+                              label={viewMainSpecialty()}
+                            />
+                        </ChipList>
+                        )}
+                      </Grid>
                       <Grid item md={6} xs={12}>
                         <FormGroupSection fullWidth error>
                           <Autocomplete
@@ -1685,7 +1717,7 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
                                 <Chip
                                   key={`company_selected_${index}`}
                                   label={item.name}
-                                  onDelete={(event) => handleDeleteCompany(item)}
+                                  // onDelete={(event) => handleDeleteCompany(item)}
                                 />
                               ))}
                             </ChipList>
