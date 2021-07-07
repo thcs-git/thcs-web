@@ -96,6 +96,11 @@ export interface UserTypeInterface {
   name: string;
 }
 
+export interface MainSpecialtyInterface {
+  _id: string;
+  name: string;
+}
+
 export interface UserListItems {
   _id: string;
   name: string;
@@ -144,7 +149,7 @@ export interface UserInterface {
   cellphone: string;
   user_type_id: string | UserTypeInterface;
   profession_id?: string | ProfessionUserInterface;
-  main_specialty_id?: string;
+  main_specialty_id?: any ;
   specialties: (SpecialtiesUserInterface | {})[];
   council_id?: {
     _id: string;
