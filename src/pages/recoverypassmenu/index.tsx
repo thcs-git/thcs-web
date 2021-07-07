@@ -77,9 +77,34 @@ export default function RecoveryPassMenu(){
                  </FeedbackDescription>
                 </Grid>
                 <Grid item md={4}>
+                    <FormControl fullWidth margin='normal' variant="outlined">
+                      <InputLabel htmlFor="outlined-adornment-password">Senha Antiga</InputLabel>
+                        <OutlinedInput
+                          id="outlined-adornment-password"
+                          type={showPassword ? 'text' : 'password'}
+                          error={newPassword.error}
+
+                          endAdornment={
+                            <InputAdornment position="end">
+                              <IconButton
+                                aria-label="toggle password visibility"
+                                onClick={handleClickShowPassword}
+                                // onMouseDown={handleMouseDownPassword}
+                                edge="end"
+                              >
+                                {showPassword ? <Visibility /> : <VisibilityOff />}
+                              </IconButton>
+                            </InputAdornment>
+                          }
+
+                          labelWidth={70}
+                        />
+                      </FormControl>
+                  </Grid>
+                <Grid item md={4}>
 
                   <FormControl fullWidth margin='normal' variant="outlined">
-                      <InputLabel htmlFor="outlined-adornment-password">Senha</InputLabel>
+                      <InputLabel htmlFor="outlined-adornment-password">Nova Senha</InputLabel>
                         <OutlinedInput
                           id="outlined-adornment-password"
                           type={showPassword ? 'text' : 'password'}
@@ -142,8 +167,10 @@ export default function RecoveryPassMenu(){
                 </Grid>
                 <Grid md={12} style={{marginTop:"2rem"}}>
                   <ButtonsContent>
+                  <Button variant="outlined" onClick={()=>{ history.push("/userconfiguration")}}>Voltar</Button>
                       <ButtonDefault onClick={recoveryPassword}>Salvar Senha</ButtonDefault>
                   </ButtonsContent>
+
                 </Grid>
               </Grid>
         </BoxCustom>
