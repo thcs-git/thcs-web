@@ -22,7 +22,7 @@ export default function Dashboard() {
   ];
 
   return (
-    <Sidebar>
+    <Sidebar >
       <Container>
 
         <Title>Procurando algo?</Title>

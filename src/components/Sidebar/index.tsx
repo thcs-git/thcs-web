@@ -140,6 +140,9 @@ const Transition = React.forwardRef(function Transition(
   return <Slide direction="up" ref={ref} {...props} />;
 });
 
+interface PropsSidebar{
+  permission?:boolean
+}
 const Sibebar = (props: Props<any>) => {
   const history = useHistory();
   const classes = useStyles();
@@ -295,7 +298,7 @@ const Sibebar = (props: Props<any>) => {
         </List>
       </Drawer>
       <main className={classes.content}>
-        {props.children}
+        {/* {props.children} */}
       </main>
 
       <Dialog

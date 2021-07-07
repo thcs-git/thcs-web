@@ -50,11 +50,14 @@ export function* doLogin({ payload }: any) {
       );
     }
 
-    console.log(data);
-
     yield put(loadSuccess(data));
 
-    history.push("/dashboard");
+    if (localStorage.getItem(LOCALSTORAGE.CUSTOMER_NAME) != "Cliente") {
+      history.push("/dashboard");
+    } else {
+      history.push("/dashboard_user");
+    }
+
     location.reload();
   } catch (err) {
     console.log("err", err);
