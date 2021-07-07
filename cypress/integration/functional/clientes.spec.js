@@ -83,7 +83,9 @@ describe('Validation Client', () => {
   })
 
   it('Should to Edit a Client and cancel POPUP', () => {
-
+    cy.get(loc.CLIENTES.SEARCH).type('Cliente de Teste')
+    cy.wait(2000)
+    cy.xpath(loc.CLIENTES.XP_BTN_NOME_FANTASIA).should('be.visible')
     cy.xpath(loc.CLIENTES.XP_BTN_NOME_FANTASIA).click()
     cy.wait(1000)
     cy.xpath(loc.CLIENTES.XP_BTN_CLIENTE_EDITAR).click()
@@ -146,8 +148,11 @@ describe('Validation Client', () => {
 
 
   it('Should to Edit a Client', () => {
-    cy.xpath(loc.CLIENTES.XP_BTN_NOME_FANTASIA).click()
+    cy.get(loc.CLIENTES.SEARCH).type('Cliente de Teste')
     cy.wait(2000)
+    cy.xpath(loc.CLIENTES.XP_BTN_NOME_FANTASIA).should('be.visible')
+    cy.xpath(loc.CLIENTES.XP_BTN_NOME_FANTASIA).click()
+    cy.wait(1000)
     cy.xpath(loc.CLIENTES.XP_BTN_CLIENTE_EDITAR).click()
     cy.get(loc.CLIENTES.NOME_RESPONSAVEL).click()
     cy.wait(500)
@@ -175,8 +180,7 @@ describe('Validation Client', () => {
   it('Should to search for Name', () =>{
     cy.server()
     cy.route('GET','**/client/**').as('res')
-    cy.get(loc.CLIENTES.SEARCH).type('Cliente de Testes{enter}')
-
+    cy.get(loc.CLIENTES.SEARCH).type('Cliente de Teste{enter}')
     cy.wait('@res').then((xhr) => {
       let total = xhr.response.body.total;
       let nome = xhr.response.body.data[0].name

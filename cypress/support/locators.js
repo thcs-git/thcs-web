@@ -63,7 +63,7 @@ const locators = {
     BTN_SEARCH:'.MuiInputAdornment-root > .MuiButtonBase-root',
     XP_BTN_CANCELAR:`//span[contains(.,'Cancelar')]`,
     XP_BTN_SALVAR: `//span[contains(.,'Salvar')]`,
-    XP_BTN_NOME_FANTASIA:  `//a[contains(.,'Cliente de Testes')]`,
+    XP_BTN_NOME_FANTASIA:  `//*[@id="root"]/div[1]/main/div/div[2]/table/tbody/tr/td[1]/div/a`,
     XP_BTN_CLIENTE_EDITAR: `//span[contains(.,'Editar')]`,
     BTN_MENU:'#btn_patient-menu1 > .MuiButton-label > .MuiSvgIcon-root',
     BTN_MENU_EDITAR:'#patient-menu1 > .MuiPaper-root > .MuiList-root > [tabindex="0"]',

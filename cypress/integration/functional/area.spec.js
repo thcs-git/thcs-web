@@ -76,7 +76,8 @@ describe('Validation of the Area Module', () => {
 
     //BAIRROS
     cy.get(loc.AREA.ESTADOS).type('Pernambuco{downarrow}{enter}')
-    cy.get(loc.AREA.CIDADES).type('CARUARU').wait(1000)
+    cy.get(loc.AREA.CIDADES).type('CARUARU')
+    cy.wait(1000)
     cy.get(loc.AREA.CIDADES).type('{downArrow}{downArrow}{enter}')
     cy.get(loc.AREA.BAIRROS).type('Universitário').wait(2000)
     cy.get(loc.AREA.BAIRROS).type('{downArrow}{enter}')
