@@ -114,7 +114,6 @@ export default function UserDisengaged() {
                     <Button style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', }} onClick={() => setOpenModalSpeciality(true)}>
                       <AddIcon style={{ color: '#0899BA', cursor: "pointer" }} />
                     </Button>
-
                   </ListItem>
                 </TableCell>
                 <TableCell>
@@ -184,16 +183,15 @@ export default function UserDisengaged() {
             aria-describedby="speciality-description"
             TransitionComponent={Transicao}
           >
-            <DialogTitle id="speciality-title">Configurações</DialogTitle>
+            <DialogTitle id="speciality-title">Especialidades</DialogTitle>
             <DialogContent>
-              {/* <SpecialtyComponent /> */}
-              OLA
+              <SpecialtyComponent />
             </DialogContent>
             <DialogActions>
               <Button onClick={() => {
                 setOpenModalSpeciality(false)
                 // history.push(`/userdesengaged`);
-                //location.reload()
+                location.reload()
               }}
                 color="primary"
               >
