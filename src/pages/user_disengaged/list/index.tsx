@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef, useCallback, ChangeEvent } from 're
 import { useHistory, Link } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import Loading from '../../../components/Loading';
-import { Container, Button, Menu, MenuItem, TableRow, TableCell } from '@material-ui/core';
+import { Container, Button, Menu, MenuItem, TableRow, TableCell, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle } from '@material-ui/core';
 import { MoreVert } from '@material-ui/icons';
 import { UserInterface, UserListItems } from '../../../store/ducks/users/types';
 import { ApplicationState } from '../../../store';
@@ -19,6 +19,12 @@ import ListItem from '@material-ui/core/ListItem';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
 import AddIcon from '@material-ui/icons/Add';
+import { TransitionProps } from '@material-ui/core/transitions';
+import Slide from '@material-ui/core/Slide';
+
+
+import SpecialtyComponent from '../../../components/Specialities';
+
 
 export default function UserDisengaged() {
   const history = useHistory();
@@ -46,6 +52,18 @@ export default function UserDisengaged() {
     setAnchorEl(null);
   }, [anchorEl]);
 
+  const [openModalSpeciality, setOpenModalSpeciality] = useState(false);
+
+  const handleToggleModalConfig = useCallback(() => {
+    setOpenModalSpeciality(!openModalSpeciality);
+  }, []);
+
+  const Transicao = React.forwardRef(function Transicao(
+    props: TransitionProps & { children?: React.ReactElement },
+    ref: React.Ref<unknown>,
+  ) {
+    return <Slide direction="up" ref={ref} {...props} />;
+  });
 
 
   return (
@@ -93,9 +111,10 @@ export default function UserDisengaged() {
                   ))} */}
                   <ListItem >
                     {user.main_specialty_id}
-                    <Button style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', }} onClick={handleOpenRowMenu}>
+                    <Button style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', }} onClick={() => setOpenModalSpeciality(true)}>
                       <AddIcon style={{ color: '#0899BA', cursor: "pointer" }} />
                     </Button>
+
                   </ListItem>
                 </TableCell>
                 <TableCell>
@@ -158,8 +177,32 @@ export default function UserDisengaged() {
               search
             }))}
           />
-
+          <Dialog
+            open={openModalSpeciality}
+            //onClose={handleToggleModalConfig}
+            aria-labelledby="speciality-title"
+            aria-describedby="speciality-description"
+            TransitionComponent={Transicao}
+          >
+            <DialogTitle id="speciality-title">Configurações</DialogTitle>
+            <DialogContent>
+              {/* <SpecialtyComponent /> */}
+              OLA
+            </DialogContent>
+            <DialogActions>
+              <Button onClick={() => {
+                setOpenModalSpeciality(false)
+                // history.push(`/userdesengaged`);
+                //location.reload()
+              }}
+                color="primary"
+              >
+                Fechar
+              </Button>
+            </DialogActions>
+          </Dialog>
         </Container>
+
       </Sidebar>
     </>
   )
