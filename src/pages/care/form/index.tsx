@@ -211,17 +211,13 @@ export default function CareForm(props: RouteComponentProps<IPageParams>) {
     [currentTab]
   );
   function selectPatient(element:any) {
+    console.log("cheguei");
     careState.list.data.map((care)=>{
-      if(care._id === element){
-        console.log("match");
+
         if(care.patient_id._id){
           dispatch(loadPatientById(care.patient_id._id));
         }
-      }
     })
-    console.log(careState);
-    console.log(element);
-    console.log(selectCheckbox?._id);
     if(selectCheckbox?._id){
       dispatch(loadPatientById(selectCheckbox?._id))
     }
@@ -685,10 +681,10 @@ export default function CareForm(props: RouteComponentProps<IPageParams>) {
                           label="Endereço"
                           variant="outlined"
                           size="small"
-                        //  value={state.address_id.street}
+                          value={patientState.data?.address_id.street}
                         //  onChange={(element) => setState({ ...state, address_id: { ...state.address_id, street: element.target.value } })}
                           fullWidth
-                        //  disabled={!canEdit}
+                          disabled={!canEdit}
                         />
                       </Grid>
                       <Grid item md={2} xs={12}>
@@ -698,10 +694,10 @@ export default function CareForm(props: RouteComponentProps<IPageParams>) {
 
                           variant="outlined"
                           size="small"
-                        //  value={state.address_id.number}
+                          value={patientState.data?.address_id.number}
                         //  onChange={(element) => setState({ ...state, address_id: { ...state.address_id, number: element.target.value } })}
                           fullWidth
-                        //  disabled={!canEdit}
+                          disabled={!canEdit}
                         />
                       </Grid>
 
@@ -711,10 +707,10 @@ export default function CareForm(props: RouteComponentProps<IPageParams>) {
                           label="Complemento"
                           variant="outlined"
                           size="small"
-                        //  value={state.address_id.complement}
+                          value={patientState.data?.address_id.complement}
                         //  onChange={(element) => setState({ ...state, address_id: { ...state.address_id, complement: element.target.value } })}
                           fullWidth
-                        //  disabled={!canEdit}
+                         disabled={!canEdit}
                         />
                       </Grid>
 
@@ -725,10 +721,10 @@ export default function CareForm(props: RouteComponentProps<IPageParams>) {
 
                           variant="outlined"
                           size="small"
-                         // value={state.address_id.district}
+                         value={patientState.data?.address_id.district}
                          // onChange={(element) => setState({ ...state, address_id: { ...state.address_id, district: element.target.value } })}
                           fullWidth
-                         // disabled={!canEdit}
+                          disabled={!canEdit}
                         />
                       </Grid>
 
@@ -739,10 +735,10 @@ export default function CareForm(props: RouteComponentProps<IPageParams>) {
                           variant="outlined"
 
                           size="small"
-                         // value={state.address_id.city}
+                         value={patientState.data?.address_id.city}
                          // onChange={(element) => setState({ ...state, address_id: { ...state.address_id, city: element.target.value } })}
                           fullWidth
-                        //  disabled={!canEdit}
+                          disabled={!canEdit}
                         />
                       </Grid>
 
@@ -752,7 +748,7 @@ export default function CareForm(props: RouteComponentProps<IPageParams>) {
                           label="UF"
                           variant="outlined"
                           size="small"
-                        //  value={patientState.data.address_id.state}
+                          value={patientState.data?.address_id.state}
                           fullWidth
                           disabled={!canEdit}
                         />
@@ -770,7 +766,7 @@ export default function CareForm(props: RouteComponentProps<IPageParams>) {
                           getOptionSelected={(option, value) => option._id === state?.area_id}
                           noOptionsText="Nenhum resultado encontrado"
                           fullWidth
-                        //  disabled={!canEdit}
+                          disabled={!canEdit}
                         />
                       </Grid>
                     </Grid>
@@ -790,11 +786,11 @@ export default function CareForm(props: RouteComponentProps<IPageParams>) {
                           label="Nome do responsável"
                           variant="outlined"
                           size="small"
-                         // value={state.responsable?.name}
+                         value={patientState.data?.responsable?.name}
                          // onChange={(element) => setState({ ...state, responsable: { ...state.responsable, name: element.target.value } })}
                           placeholder=""
                           fullWidth
-                         // disabled={!canEdit}
+                          disabled={!canEdit}
                         />
                       </Grid>
 
@@ -804,11 +800,11 @@ export default function CareForm(props: RouteComponentProps<IPageParams>) {
                           label="Parentesco"
                           variant="outlined"
                           size="small"
-                        //  value={state.responsable?.relationship}
+                          value={patientState.data?.responsable?.relationship}
                         //  onChange={(element) => setState({ ...state, responsable: { ...state.responsable, relationship: element.target.value } })}
                           placeholder=""
                           fullWidth
-                       //   disabled={!canEdit}
+                          disabled={!canEdit}
                         />
                       </Grid>
                     </Grid>
@@ -1027,7 +1023,7 @@ export default function CareForm(props: RouteComponentProps<IPageParams>) {
                     fullWidth
                   />
                 </Grid>
-                <Grid item md={6} xs={12}>
+                {/* <Grid item md={6} xs={12}>
                   <Autocomplete
                     id="input-type-accommodation"
                     options={careState.accommondation_type}
@@ -1055,8 +1051,8 @@ export default function CareForm(props: RouteComponentProps<IPageParams>) {
                     noOptionsText="Nenhum Tipo de acomodação encontrada"
                     fullWidth
                   />
-                </Grid>
-                <Grid item md={6} xs={12}>
+                </Grid> */}
+                <Grid item md={4} xs={12}>
                   <Autocomplete
                     id="input-care-type"
                     options={careState.care_type}
@@ -1085,8 +1081,8 @@ export default function CareForm(props: RouteComponentProps<IPageParams>) {
                     fullWidth
                   />
                 </Grid>
-                <Grid item md={12} xs={12}>
-                  {/* <TextField
+                {/* <Grid item md={12} xs={12}>
+                  <TextField
                     id="input-procedure"
                     label="Procedimento"
                     variant="outlined"
@@ -1099,10 +1095,10 @@ export default function CareForm(props: RouteComponentProps<IPageParams>) {
                       }))
                     }
                     fullWidth
-                  /> */}
-                </Grid>
-                <Grid item md={12} xs={12}>
-                  {/* <Autocomplete
+                  />
+                </Grid> */}
+                {/* <Grid item md={12} xs={12}>
+                  <Autocomplete
                     id="input-diagnostic"
                     options={careState.cid}
                     getOptionLabel={(option) =>
@@ -1129,8 +1125,8 @@ export default function CareForm(props: RouteComponentProps<IPageParams>) {
                     }}
                     noOptionsText="Nenhum CID foi encontrado"
                     fullWidth
-                  /> */}
-                </Grid>
+                  />
+                </Grid> */}
                 <Grid item md={8} xs={12}>
                   <Autocomplete
                     id="combo-box-users"
@@ -1156,7 +1152,7 @@ export default function CareForm(props: RouteComponentProps<IPageParams>) {
                     fullWidth
                   />
                 </Grid>
-                <Grid item md={4} xs={12}>
+                {/* <Grid item md={4} xs={12}>
                   <Autocomplete
                     id="combo-box-areas"
                     options={areaState.list.data}
@@ -1176,7 +1172,7 @@ export default function CareForm(props: RouteComponentProps<IPageParams>) {
                     }}
                     fullWidth
                   />
-                </Grid>
+                </Grid> */}
               </Grid>
 
             )}
@@ -1335,6 +1331,7 @@ export default function CareForm(props: RouteComponentProps<IPageParams>) {
             {!startStep && ( <Button
             background="default"
             onClick={()=>{
+              history.push('/care')
               setStartStep(!startStep);
               setCurrentStep(0)}}
           >
