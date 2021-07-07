@@ -109,12 +109,17 @@ export default function UserDisengaged() {
                   {/* {user.specialties.map((specialty, index) => (
                     `${specialty.name}${index < (user.specialties.length - 1) ? ',' : ''}`
                   ))} */}
-                  <ListItem >
-                    {user.main_specialty_id}
-                    <Button style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', }} onClick={() => setOpenModalSpeciality(true)}>
-                      <AddIcon style={{ color: '#0899BA', cursor: "pointer" }} />
-                    </Button>
-                  </ListItem>
+                  {user.specialties.map((specialty, index) => (
+                    <>
+                      {user.specialties.length > 0 ? (<ListItem>
+                        {user.main_specialty_id}
+                        <Button style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', }} onClick={() => setOpenModalSpeciality(true)}>
+                          <AddIcon style={{ color: '#0899BA', cursor: "pointer" }} />
+                        </Button>
+                      </ListItem>) : (null)
+                      }
+                    </>
+                  ))}
                 </TableCell>
                 <TableCell>
                   {formatDate(user.created_at, 'DD/MM/YYYY HH:mm:ss')}

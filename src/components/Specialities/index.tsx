@@ -1,35 +1,15 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, ChangeEvent } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { UserInterface, UserListItems } from '../../store/ducks/users/types';
+import { searchUserDisengaged } from '../../store/ducks/users/sagas';
+import debounce from 'lodash.debounce';
+import { cleanAction, loadGetUserDisengaged } from '../../store/ducks/users/actions';
 
 import { ApplicationState } from '../../store';
 
 
 export default function Specialities() {
     const dispatch = useDispatch();
-    const [search, setSearch] = useState('');
-    const userState = useSelector((state: ApplicationState) => state.users);
-    const [users, setUsers] = useState<UserInterface[]>([]);
-    const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
-    const handleChangeInput = useCallback((event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-        setSearch(event.target.value)
-        dispatch(searchUserDisengaged(event.target.value));
-    }, []);
-    const debounceSearchRequest = debounce(handleChangeInput, 900);
-
-    useEffect(() => {
-        dispatch(cleanAction());
-        dispatch(loadGetUserDisengaged());
-    }, [])
-
-    const handleOpenRowMenu = useCallback((event: React.MouseEvent<HTMLButtonElement>) => {
-        setAnchorEl(event.currentTarget);
-    }, [anchorEl]);
-
-    const handleCloseRowMenu = useCallback(() => {
-        setAnchorEl(null);
-    }, [anchorEl]);
-
     return (
         <>
             <div>
@@ -37,11 +17,8 @@ export default function Specialities() {
 
                 <br />
 
-                <p>Você está trabalhando nesta empresa, mas você pode mudar quando quiser</p>
-
-                <br />
-
                 <h2>Secundária</h2>
+
 
             </div>
         </>
