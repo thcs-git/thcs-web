@@ -895,11 +895,11 @@ export default function SchedulePage(props: RouteComponentProps<IPageParams>) {
                       <CardTitle>
                         <SupervisorAccountRounded />
                         <h4>Equipe Multidisciplinar</h4>
-                        {console.log({ team })}
+
                       </CardTitle>
                       <div>
 
-                        {team.length ? (
+                        {team.length>1 ? (
                           <>
                             {team.map(user => (
                               <p style={{ marginBottom: 10 }}>{user.name}</p>
