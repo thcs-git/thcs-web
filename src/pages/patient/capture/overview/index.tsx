@@ -33,6 +33,7 @@ import {
 } from './styles';
 
 import { ReactComponent as SuccessImage } from '../../../../assets/img/ilustracao-avaliacao-concluida.svg';
+import { forEach } from 'cypress/types/lodash';
 
 interface IPageParams {
   id: string;
@@ -73,6 +74,7 @@ export default function PatientCaptureForm(props: RouteComponentProps<IPageParam
   const [finishEnable, setFinishEnable] = useState(false);
   const [modalPrint, setModalPrint] = useState(false);
   const [documentHistory, setDocumentHistory] = useState<any[]>([]);
+
 
   const [captureData, setCaptureData] = useState<ICaptureData | any>({
   });
@@ -358,13 +360,20 @@ export default function PatientCaptureForm(props: RouteComponentProps<IPageParam
 
                     return (
                       <tr key={`documentGroup_${index}`}>
+
                         <Td center onClick={() => {
                           if (document?._id) {
                             handleScoreRoute(documentGroup?._id || '', care?._id || '', document?._id);
                           } else {
                             handleScoreRoute(documentGroup?._id || '', care?._id || '');
                           }
+
                         }}>{handleCheckDocument(documentGroup._id, care?.documents_id || [])}</Td>
+                        {
+                        (documentGroup.name != 'Tabela Socioambiental')? (
+                            <Td>{documentGroup.name}<span style={{color:'red'}}> *</span></Td>
+                        ):( <Td>{documentGroup.name}</Td>)
+                        }
                         <Td>{documentGroup.name}</Td>
                         <Td>{handleCareTypeLabel(document?.status)}</Td>
                         <Td>{handleComplexityLabel(document?.complexity)}</Td>
@@ -412,7 +421,7 @@ export default function PatientCaptureForm(props: RouteComponentProps<IPageParam
 
               <Card>
                 <CardContent>
-                  <h4>Orçamento</h4>
+                  <h4>Orçamento <span style={{ color: 'red' }}>*</span></h4>
                   <br />
                   {care.capture?.status === 'Em Andamento' ? (
                     <>
