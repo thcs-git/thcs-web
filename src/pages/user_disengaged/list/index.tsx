@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef, useCallback, ChangeEvent } from 're
 import { useHistory, Link } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import Loading from '../../../components/Loading';
-import { Container, Button, Menu, MenuItem, TableRow, TableCell, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle } from '@material-ui/core';
+import { Container, Button, Menu, MenuItem, TableRow, TableCell } from '@material-ui/core';
 import { MoreVert } from '@material-ui/icons';
 import { UserInterface, UserListItems } from '../../../store/ducks/users/types';
 import { ApplicationState } from '../../../store';
@@ -21,10 +21,6 @@ import ListItemText from '@material-ui/core/ListItemText';
 import AddIcon from '@material-ui/icons/Add';
 import { TransitionProps } from '@material-ui/core/transitions';
 import Slide from '@material-ui/core/Slide';
-
-
-import SpecialtyComponent from '../../../components/Specialities';
-
 
 export default function UserDisengaged() {
   const history = useHistory();
@@ -72,7 +68,7 @@ export default function UserDisengaged() {
         {userState.loading && <Loading />}
         <Container>
           <FormTitle>
-            Lista de Profissionais Disvinculados
+            Lista de Profissionais Desvinculados
           </FormTitle>
           <SearchComponent
             handleButton={() => history.push('/company/create/')}
@@ -106,7 +102,7 @@ export default function UserDisengaged() {
                   {user.profession_id.name}
                 </TableCell>
                 <TableCell>
-                  {/* {user.specialties.map((specialty, index) => (
+                  {user.specialties.map((specialty, index) => (
                     `${specialty.name}${index < (user.specialties.length - 1) ? ',' : ''}`
                   ))} */}
                   {user.specialties.map((specialty, index) => (

@@ -36,13 +36,18 @@ const [mouse,setMouse]= useState({showInfoWindow:true});
     //     showInfoWindow: true
     // });
 };
-const coordenadas = ()=>{
+const coordenadas = (point:any)=>{
 
   let coordenadas = {
     lat:0,
     lng:0
   }
-
+  if(point.address.geolocation){
+    coordenadas.lat = point.address.geolocation.latitude;
+    coordenadas.lng = point.address.geolocation.longitude;
+  }else{
+    return center;
+  }
 
   return coordenadas;
 }
@@ -63,7 +68,7 @@ const coordenadas = ()=>{
         zoom={12}
       >
         {props.points?.map((point, index) => (
-          <Marker position={{lat:parseFloat(point.address.geolocation.latitude),lng:parseFloat(point.address.geolocation.longitude)}}
+          <Marker position={coordenadas(point)}
             onMouseOver={()=>{
               handleMouseOver(index)}}
             onMouseOut={()=>{handleMouseExit(index)}}>

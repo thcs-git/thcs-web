@@ -850,13 +850,13 @@ export default function SchedulePage(props: RouteComponentProps<IPageParams>) {
                       </CardTitle>
 
                       <div>
-                        {events.map(({ user_id, start, extendedProps: { exchange } }) => (
+                        {/* {events.map(({ user_id, start, extendedProps: { exchange } }) => (
                           <>
                             {!!exchange.exchanged_to && (
                               <p><b>{dayjs(start).format('DD/MM')}</b> - {user_id.name} <b>por</b> {exchange?.exchanged_to?.name}</p>
                             )}
                           </>
-                        ))}
+                        ))} */}
                       </div>
                     </CardContent>
                   </Card>
@@ -895,11 +895,11 @@ export default function SchedulePage(props: RouteComponentProps<IPageParams>) {
                       <CardTitle>
                         <SupervisorAccountRounded />
                         <h4>Equipe Multidisciplinar</h4>
-                        {console.log({ team })}
+
                       </CardTitle>
                       <div>
 
-                        {team.length ? (
+                        {team.length>1 ? (
                           <>
                             {team.map(user => (
                               <p style={{ marginBottom: 10 }}>{user.name}</p>
