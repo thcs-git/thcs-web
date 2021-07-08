@@ -40,18 +40,18 @@ export default function CouncilList() {
 
   const [search, setSearch] = useState("");
 
-  // const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
+  const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
 
-  // const handleOpenRowMenu = useCallback(
-  //   (event: React.MouseEvent<HTMLButtonElement>) => {
-  //     setAnchorEl(event.currentTarget);
-  //   },
-  //   [anchorEl]
-  // );
+  const handleOpenRowMenu = useCallback(
+    (event: React.MouseEvent<HTMLButtonElement>) => {
+      setAnchorEl(event.currentTarget);
+    },
+    [anchorEl]
+  );
 
-  // const handleCloseRowMenu = useCallback(() => {
-  //   setAnchorEl(null);
-  // }, [anchorEl]);
+  const handleCloseRowMenu = useCallback(() => {
+    setAnchorEl(null);
+  }, [anchorEl]);
 
   const handleChangeInput = useCallback(
     (event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
@@ -63,13 +63,13 @@ export default function CouncilList() {
 
   const debounceSearchRequest = debounce(handleChangeInput, 900);
 
-  // const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
-  //   setAnchorEl(event.currentTarget);
-  // };
+  const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
+    setAnchorEl(event.currentTarget);
+  };
 
-  // const handleClose = () => {
-  //   setAnchorEl(null);
-  // };
+  const handleClose = () => {
+    setAnchorEl(null);
+  };
 
   return (
     <>
@@ -93,7 +93,7 @@ export default function CouncilList() {
               { name: "Tipo", align: "left" },
               { name: "Complexidade", align: "left" },
               { name: "Último Atendimento", align: "left" },
-              //{ name: " ", align: "left" },
+              { name: " ", align: "left" },
             ]}
           >
             {careState.list.data.map((care, index) => (
@@ -120,7 +120,7 @@ export default function CouncilList() {
                 <TableCell>
                   {formatDate(care?.created_at ?? "", "DD/MM/YYYY HH:mm:ss")}
                 </TableCell>
-                {/* <TableCell>
+                <TableCell>
                   <Button
                     aria-controls={`simple-menu${index}`}
                     id={`btn_simple-menu${index}`}
@@ -136,11 +136,9 @@ export default function CouncilList() {
                     open={anchorEl?.id === `btn_simple-menu${index}`}
                     onClose={handleCloseRowMenu}
                   >
-                    <MenuItem onClick={handleCloseRowMenu}>Profile1</MenuItem>
-                    <MenuItem onClick={handleCloseRowMenu}>My account</MenuItem>
-                    <MenuItem onClick={handleCloseRowMenu}>Logout</MenuItem>
+                    <MenuItem onClick={handleCloseRowMenu}>Histórico</MenuItem>
                   </Menu>
-                </TableCell> */}
+                </TableCell>
               </TableRow>
             ))}
           </Table>
