@@ -816,15 +816,23 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
             buttons
             successAction={() => {
               dispatch(cleanAction());
-              history.push("/user/create");
+              if(currentC != 'SEM'){
+                history.push("/dashboard_user");
+              }else{
+                history.push("/user/create");
+              }
             }}
             defaultAction={() => {
               dispatch(cleanAction());
-              history.push("/user");
+              if(currentC != 'SEM'){
+                history.push("/dashboard_user");
+              }else{
+                history.push("/user");
+              }
+
             }}
           />
         ) : (
-
           <FormSection>
             <FormContent>
               <div style={{display: 'flex', alignItems: 'center', flexDirection: 'row'}}>
@@ -1941,11 +1949,17 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
             buttons
             successAction={() => {
               dispatch(cleanAction());
-              history.push("/user/create");
+              if(currentC != 'SEM'){
+                history.push("/dashboard_user");
+              }else{
+                history.push("/user/create");
+              }
+
             }}
             defaultAction={() => {
               dispatch(cleanAction());
-              history.push("/user");
+                history.push("/dashboard_user");
+
             }}
           />
         ) : (
@@ -2855,7 +2869,7 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
                         <Grid item style={{paddingTop: '20px'}}>
                           <ButtonComponent style={{maxWidth: '10px'}} onClick={() => setAdd(!add)}>
                             {add ? (<CheckCircleRoundedIcon fontSize={'large'}
-                                                            style={{color: '#4FC66A'}}></CheckCircleRoundedIcon>) : (
+                              style={{color: '#4FC66A'}}></CheckCircleRoundedIcon>) : (
                               <>
                                 {params.mode === 'view' ? (
                                   <RemoveIcon fontSize={'large'} color={'primary'}></RemoveIcon>) : (
