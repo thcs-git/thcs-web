@@ -79,10 +79,12 @@ export default function QRcode(){
   }, [openModalConfirm]);
 
   const [openModalCare, setOpenModalCare] = useState<boolean>(false);
+  const [erro, setErro] = useState<boolean>(false);
   const searchPatient = useCallback((value: string) => {
     setPatient({});
 
     if (value.length > 0) {
+
       dispatch(searchPatientAction(value));
     }
   }, []);
@@ -91,15 +93,25 @@ export default function QRcode(){
       setPatient(patientState.list.data[0]);
       setPatientSearch(patientState.list.data[0].fiscal_number);
 
-     // dispatch(getCares({ patient_id: patientState.list.data[0]._id, status: 'Pre-Atendimento' }))
+      console.log(patientState.list);
+
+     dispatch(getCares({ search: patientState.list.data[0].fiscal_number, status: 'Atendimento' }))
     }
   }, [patientState.list]);
+
+  const qrcode =()=>{
+    if(careState.list.data[0]._id){
+      return careState.list.data[0]._id
+    }else{
+      setErro(true);
+    }
+  }
   // useEffect(() => {
   //   if (careState.success && !careState.error && careState.data._id) {
   //     history.push(`/patient/capture/${careState.data._id}/overview`);
   //   }
   // }, [careState])
-  return (
+   return (
     <Sidebar>
       <Container>
         <FormTitle>Gerador de QrCode</FormTitle>
@@ -194,13 +206,11 @@ export default function QRcode(){
             </Grid>
           )}
 
-
-<QRCode value={JSON.stringify(patient)}  />
-{/* <Button onClick={()=>handlePrint}>Print this out!</Button> */}
-
-
-
-
+          {(!erro && careState.list.data[0] )?(
+            <QRCode value={JSON.stringify(careState.list.data[0]._id)}  />
+          ):(
+             <div>Não foi possível achar o código do atendimento</div>
+          )}
       </Container>
     </Sidebar>
   );
