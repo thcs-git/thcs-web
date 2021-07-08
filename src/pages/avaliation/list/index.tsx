@@ -208,7 +208,7 @@ export default function AvaliationList() {
           <SearchComponent
             handleButton={() => history.push('/patient/capture/create')}
             buttonTitle="Nova avaliação"
-            inputPlaceholder="Busque nome do paciente, ID ou tipo de score"
+            inputPlaceholder="Busque nome do Paciente, Atendimento e Status"
             onChangeInput={debounceSearchRequest}
           />
 
