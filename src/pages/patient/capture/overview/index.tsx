@@ -33,8 +33,7 @@ import {
 } from './styles';
 
 import { ReactComponent as SuccessImage } from '../../../../assets/img/ilustracao-avaliacao-concluida.svg';
-import { forEach } from 'cypress/types/lodash';
-
+import { age } from '../../../../helpers/date';
 interface IPageParams {
   id: string;
 }
@@ -74,7 +73,6 @@ export default function PatientCaptureForm(props: RouteComponentProps<IPageParam
   const [finishEnable, setFinishEnable] = useState(false);
   const [modalPrint, setModalPrint] = useState(false);
   const [documentHistory, setDocumentHistory] = useState<any[]>([]);
-
 
   const [captureData, setCaptureData] = useState<ICaptureData | any>({
   });
@@ -313,8 +311,9 @@ export default function PatientCaptureForm(props: RouteComponentProps<IPageParam
                           <p className="title">{care?.patient_id?.name}</p>
                           <div className="subTitle">
                             <p>Pedido: {care?.capture?.order_number}</p>
-                            <p>Data do Atendimento: {care?.created_at ? formatDate(care.created_at, 'DD/MM/YYYY HH:mm:ss') : '-'}</p>
-                            <p>Status: {care.status}</p>
+                            <p>{care?.patient_id?.birthdate ? age(care?.patient_id?.birthdate) : ''}, {care?.patient_id?.gender}</p>
+                            <p>CPF: {care?.patient_id?.fiscal_number}</p>
+                            <p>Nome da Mãe: {care?.patient_id?.mother_name}</p>
                             {care.capture?.status === 'Em Andamento' && (
                               <Button onClick={() => setCaptureModalModalOpen(true)}><Edit style={{ width: 15, marginRight: 5 }} /> Editar</Button>
                             )}

@@ -13,7 +13,7 @@ interface IProps {
 
 export default function PatientCard(props: any) {
 
-  const { patient } = props;
+  const { patient , capture } = props;
 
 
   return (
@@ -26,9 +26,9 @@ export default function PatientCard(props: any) {
           <div>
             <p className="title">{patient?.name}</p>
             <div className="subTitle">
-              <p>{patient?.birthdate ? age(patient?.birthdate) : ''}, {patient?.gender}</p>
+              <p>Pedido: {capture?.order_number}</p>
+              <p>{patient?.birthdate} {patient?.birthdate ? age(patient?.birthdate) : ''}, {patient?.gender}</p>
               <p>CPF: {patient?.fiscal_number}</p>
-              {/* <p>Sexo: {patient?.gender}</p> */}
               <p>Nome da Mãe: {patient?.mother_name}</p>
             </div>
           </div>
