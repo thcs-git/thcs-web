@@ -48,7 +48,7 @@ export default function AvaliationList() {
 
   useEffect(() => {
     dispatch(cleanAction());
-    dispatch(getCares({ status: 'Pre-Atendimento' }))
+    dispatch(getCares({}))
   }, []);
 
   // useEffect(() => {
@@ -59,7 +59,7 @@ export default function AvaliationList() {
 
   const handleChangeInput = useCallback((event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     setSearch(event.target.value)
-    dispatch(searchCareRequest({ search: event.target.value, status: 'Pre-Atendimento' }));
+    dispatch(searchCareRequest({ search: event.target.value }));
   }, [search]);
 
   const debounceSearchRequest = debounce(handleChangeInput, 900);

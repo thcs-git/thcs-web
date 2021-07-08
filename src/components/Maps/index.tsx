@@ -29,12 +29,9 @@ export default function MyComponent(props: IMapsProps) {
 
 const [commentShown, setCommentShown] = useState<PropsCheck>({});
 const [mouse,setMouse]= useState({showInfoWindow:true});
-  const handleMouseOver = (index:any) => {
-   console.log(index);
+const handleMouseOver = (index:any) => {
    setCommentShown(prev => Boolean(!prev[index]) ? {...prev, [index]: true} : {...prev, [index]: false});
-    // setMouse({
-    //     showInfoWindow: true
-    // });
+
 };
 const coordenadas = (point:any)=>{
 
@@ -46,7 +43,8 @@ const coordenadas = (point:any)=>{
     coordenadas.lat = point.address.geolocation.latitude;
     coordenadas.lng = point.address.geolocation.longitude;
   }else{
-    return center;
+    coordenadas.lat = center.lat + (-0.04);
+    coordenadas.lng = center.lng + (-0.04);
   }
 
   return coordenadas;
