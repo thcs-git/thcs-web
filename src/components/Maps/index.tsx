@@ -33,6 +33,8 @@ const handleMouseOver = (index:any) => {
    setCommentShown(prev => Boolean(!prev[index]) ? {...prev, [index]: true} : {...prev, [index]: false});
 
 };
+let lat = center.lat;
+let lng = center.lng;
 const coordenadas = (point:any)=>{
 
   let coordenadas = {
@@ -43,10 +45,10 @@ const coordenadas = (point:any)=>{
     coordenadas.lat = point.address.geolocation.latitude;
     coordenadas.lng = point.address.geolocation.longitude;
   }else{
-    coordenadas.lat = center.lat + (-0.04);
-    coordenadas.lng = center.lng + (-0.04);
+    coordenadas.lat = lat -0.5;
+    coordenadas.lng = lng -0.5;
   }
-
+  console.log(coordenadas);
   return coordenadas;
 }
   const handleMouseExit = (index:any) => {

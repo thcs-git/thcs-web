@@ -224,21 +224,20 @@ export default function CareForm(props: RouteComponentProps<IPageParams>) {
     },
     [currentTab]
   );
-  const selectPatient= useCallback((care:Partial<CareInterface>)=>{
-     careState.list.data.map((care)=>{
-      if(care.patient_id._id){
+  function selectPatient(){
+      careState.list.data.map((care)=>{
+        if(care.patient_id._id){
           dispatch(loadPatientById(care.patient_id._id));
         }
-    })
-    console.log(care?._id);
-    if(care?._id){
-      dispatch(loadPatientById(care?._id))
+      })
+
+      if(selectCheckbox?._id){
+      dispatch(loadPatientById(selectCheckbox?._id))
     }
+    setStartStep(!startStep);
+  }
 
-      setStartStep(!startStep);
 
-
-  },[patientState])
 
   const nextstep = useCallback(()=>{
     setStartStep(!startStep);
@@ -454,7 +453,7 @@ export default function CareForm(props: RouteComponentProps<IPageParams>) {
                             <Checkbox
                               checked={selectCheckbox?._id === care?._id}
                               onChange={(element) => {
-                                selectPatient(care);
+                                selectPatient();
                                 if (care._id && care._id === element.target.value){
                                   console.log("checado");
                                    setSelectCheckbox({});
@@ -498,12 +497,6 @@ export default function CareForm(props: RouteComponentProps<IPageParams>) {
                     </tbody>
                   </Table>
                   <Button variant="outlined" className={classes.sucess_round} onClick={() =>{ history.push('/care') } } >Voltar</Button>
-                  <Button variant="outlined" className={classes.sucess_round} onClick={() =>{ if(selectCheckbox){
-                    selectPatient(selectCheckbox)}
-                    else{
-                        null
-                    }
-                    } } >Selecionar Paciente</Button>
                   </Grid>
                   </BoxCustom>
 
@@ -792,7 +785,7 @@ export default function CareForm(props: RouteComponentProps<IPageParams>) {
                           getOptionLabel={(option) => option.name}
                           renderInput={(params) => <TextField {...params} label="Área" variant="outlined" />}
                           size="small"
-                          // value={selectPatientArea()}
+                         // value={selectPatientArea()}
                           onChange={(element, value) => setState({ ...state, area_id: value?._id })}
                           getOptionSelected={(option, value) => option._id === state?.area_id}
                           noOptionsText="Nenhum resultado encontrado"
@@ -1379,6 +1372,7 @@ export default function CareForm(props: RouteComponentProps<IPageParams>) {
             ) }
             {(currentStep !== steps.length - 1 && !startStep) && (
                <Button
+               style={{marginLeft:'0.6rem'}}
                   disabled={currentStep === (steps.length - 1) || !selectCheckbox?._id}
                   background="primary"
                   onClick={handleNextStep}
@@ -1387,9 +1381,6 @@ export default function CareForm(props: RouteComponentProps<IPageParams>) {
                   Próximo
                 </Button>
             )}
-
-
-
           </ButtonsContent>
         </FormSection>
       </Container>
