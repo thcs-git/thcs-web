@@ -81,7 +81,7 @@ export default function UserDisengaged() {
           <Table
             tableCells={[
               { name: 'Profissional', align: 'left', },
-              { name: 'Email', align: 'left' },
+              //{ name: 'Email', align: 'left' },
               { name: 'Estado', align: 'left' },
               { name: 'Função', align: 'left' },
               { name: 'Especialidade', align: 'left' },
@@ -94,26 +94,26 @@ export default function UserDisengaged() {
                 <TableCell>
                   <Link to={`/user/${user._id}/link/edit`}>{user.name}</Link>
                 </TableCell>
-                <TableCell>
+                {/* <TableCell>
                   {user.email}
-                </TableCell>
+                </TableCell> */}
                 <TableCell>
-                  {/* {user.address.state} */}
+                  {user.address.state}
                 </TableCell>
                 <TableCell>
                   {user.profession_id.name}
                 </TableCell>
-                <TableCell>
+                <TableCell >
                   {/* {user.specialties.map((specialty, index) => (
                     `${specialty.name}${index < (user.specialties.length - 1) ? ',' : ''}`
                   ))} */}
 
                   <Grid container style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', }}>
-                    <Grid item xs={"auto"} md={6} >
+                    <Grid item lg={6}>
                       {user.main_specialty_id.name}
                     </Grid>
 
-                    <Grid item xs={"auto"} md={6} >
+                    <Grid item lg={6} >
                       {user.specialties.length > 0 ? (
                         // <ListItem>
                         //   <Button aria-controls={`user-menu${index}`} id={`btn_user-menu${index}`} aria-haspopup="true" onClick={handleClickOpen}>
