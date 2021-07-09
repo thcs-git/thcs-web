@@ -31,7 +31,7 @@ import {
   careTypeRequest,
   cidRequest,
 } from "../../../store/ducks/cares/actions";
-import { loadPatientById } from "../../../store/ducks/patients/actions";
+import { cleanAction, loadPatientById } from "../../../store/ducks/patients/actions";
 import { loadRequest as getAreasAction } from "../../../store/ducks/areas/actions";
 import { loadRequest as getUsersAction } from "../../../store/ducks/users/actions";
 
@@ -55,6 +55,7 @@ import {
   Typography,
   Tooltip,
   Switch,
+  makeStyles
 } from "@material-ui/core";
 
 import { Autocomplete } from "@material-ui/lab";
@@ -109,6 +110,7 @@ export default function CareForm(props: RouteComponentProps<IPageParams>) {
   const areaState = useSelector((state: ApplicationState) => state.areas);
   const userState = useSelector((state: ApplicationState) => state.users);
   const patientState = useSelector((state: ApplicationState) => state.patients);
+
   const [startStep,setStartStep] = useState(true);
   const { params } = props.match;
 
@@ -135,12 +137,23 @@ export default function CareForm(props: RouteComponentProps<IPageParams>) {
     Partial<CareInterface>
   >();
 
+  const useStyles = makeStyles((theme) => ({
+    sucess_round:{
+      backgroundColor: 'var(--white)',
+      color: 'var(--success)',
+      border: '1px solid var(--success)'},
+
+    tittleChip:{
+      paddingTop:'1rem'
+
+    }
+  }));
 
   const [patient, setPatient] = useState<any>();
   const [currentTab, setCurrentTab] = useState(0);
   const [currentStep, setCurrentStep] = useState(0);
   const [openModalCancel, setOpenModalCancel] = useState(false);
-
+  const classes = useStyles();
 
   const States = [
     {id:1,name:"São Paulo",sigla:'SP'},
@@ -181,6 +194,7 @@ export default function CareForm(props: RouteComponentProps<IPageParams>) {
   var isValidResponsableCellPhoneNumber: any;
   var formValid : any;
   useEffect(() => {
+    dispatch(cleanAction());
     if (params.id) {
       dispatch(loadCareById(params.id));
     }
@@ -210,20 +224,25 @@ export default function CareForm(props: RouteComponentProps<IPageParams>) {
     },
     [currentTab]
   );
-  function selectPatient(element:any) {
-    console.log("cheguei");
-    careState.list.data.map((care)=>{
-
-        if(care.patient_id._id){
+  const selectPatient= useCallback((care:Partial<CareInterface>)=>{
+     careState.list.data.map((care)=>{
+      if(care.patient_id._id){
           dispatch(loadPatientById(care.patient_id._id));
         }
     })
-    if(selectCheckbox?._id){
-      dispatch(loadPatientById(selectCheckbox?._id))
+    console.log(care?._id);
+    if(care?._id){
+      dispatch(loadPatientById(care?._id))
     }
-    setStartStep(!startStep);
 
-  }
+      setStartStep(!startStep);
+
+
+  },[patientState])
+
+  const nextstep = useCallback(()=>{
+    setStartStep(!startStep);
+  },[patientState]);
 
   const handleNextStep = useCallback(() => {
     setCurrentStep((prevState) => prevState + 1);
@@ -412,7 +431,8 @@ export default function CareForm(props: RouteComponentProps<IPageParams>) {
         <FormSection>
           <FormContent>
           {startStep && (
-             <BoxCustom>
+             <BoxCustom >
+               <Grid container>
 
 
           <Table>
@@ -434,8 +454,9 @@ export default function CareForm(props: RouteComponentProps<IPageParams>) {
                             <Checkbox
                               checked={selectCheckbox?._id === care?._id}
                               onChange={(element) => {
-                                selectPatient(element.target.value);
+                                selectPatient(care);
                                 if (care._id && care._id === element.target.value){
+                                  console.log("checado");
                                    setSelectCheckbox({});
                                 }else{
 
@@ -476,7 +497,16 @@ export default function CareForm(props: RouteComponentProps<IPageParams>) {
                       ))}
                     </tbody>
                   </Table>
+                  <Button variant="outlined" className={classes.sucess_round} onClick={() =>{ history.push('/care') } } >Voltar</Button>
+                  <Button variant="outlined" className={classes.sucess_round} onClick={() =>{ if(selectCheckbox){
+                    selectPatient(selectCheckbox)}
+                    else{
+                        null
+                    }
+                    } } >Selecionar Paciente</Button>
+                  </Grid>
                   </BoxCustom>
+
                   )}
 
 
@@ -516,7 +546,7 @@ export default function CareForm(props: RouteComponentProps<IPageParams>) {
                           label="Nome social"
                           variant="outlined"
                           size="small"
-                          value={patientState.data.social_name}
+                          value={patientState.data?.social_name}
                           fullWidth
                           disabled={!canEdit}
                         />
@@ -676,7 +706,7 @@ export default function CareForm(props: RouteComponentProps<IPageParams>) {
                     <Grid container>
 
 
-                      <Grid item md={9} xs={12}>
+                      {/* <Grid item md={9} xs={12}>
                         <TextField
                           id="input-address"
                           label="Endereço"
@@ -687,7 +717,7 @@ export default function CareForm(props: RouteComponentProps<IPageParams>) {
                           fullWidth
                           disabled={!canEdit}
                         />
-                      </Grid>
+                      </Grid> */}
                       <Grid item md={2} xs={12}>
                         <TextField
                           id="input-address-number"
@@ -772,11 +802,6 @@ export default function CareForm(props: RouteComponentProps<IPageParams>) {
                       </Grid>
                     </Grid>
                     <Grid container>
-
-
-
-
-
                     </Grid>
                   </FormGroupSection>
                   <FormGroupSection>
@@ -810,7 +835,6 @@ export default function CareForm(props: RouteComponentProps<IPageParams>) {
                       </Grid>
                     </Grid>
                   </FormGroupSection>
-
                 </FormContent>
               </FormSection>
             </BoxCustom>
