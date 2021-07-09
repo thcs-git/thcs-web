@@ -30,6 +30,8 @@ import {
   PatientData,
   SuccessContent,
   BackButtonContent,
+  MaleIconLogo,
+  FemaleIconLogo
 } from './styles';
 
 import { ReactComponent as SuccessImage } from '../../../../assets/img/ilustracao-avaliacao-concluida.svg';
@@ -309,11 +311,22 @@ export default function PatientCaptureForm(props: RouteComponentProps<IPageParam
                         </div>
                         <div>
                           <p className="title">{care?.patient_id?.name}</p>
-                          <div className="subTitle">
+                          <div className="subTitle" >
+                            <a className="patientInfo">{care?.patient_id?.birthdate ? age(care?.patient_id?.birthdate) : ''} | CPF: {care?.patient_id.fiscal_number} | Mãe: {care?.patient_id?.mother_name} | </a>
+                            {
+                              (care?.patient_id?.gender != 'Masculino')?
+                              (
+                                <>
+                                <a> Sexo:  </a> <FemaleIconLogo />
+                                </>
+                              ):(
+                                <>
+                                    <a>Sexo:  </a> <MaleIconLogo />
+                                </>
+                              )
+                            }
                             <p>Pedido: {care?.capture?.order_number}</p>
-                            <p>{care?.patient_id?.birthdate ? age(care?.patient_id?.birthdate) : ''}, {care?.patient_id?.gender}</p>
-                            <p>CPF: {care?.patient_id?.fiscal_number}</p>
-                            <p>Nome da Mãe: {care?.patient_id?.mother_name}</p>
+                            <p>Data de Nascimento: {formatDate(care?.patient_id?.birthdate, 'DD/MM/YYYY')}</p>
                             {care.capture?.status === 'Em Andamento' && (
                               <Button onClick={() => setCaptureModalModalOpen(true)}><Edit style={{ width: 15, marginRight: 5 }} /> Editar</Button>
                             )}
@@ -377,6 +390,7 @@ export default function PatientCaptureForm(props: RouteComponentProps<IPageParam
                                 <Td>{handleComplexityLabel(document?.complexity)}</Td>
                                 <Td>{document?.created_at ? formatDate(document.created_at, 'DD/MM/YYYY HH:mm:ss') : '-'}</Td>
                                 <Td>{handleElegibilityLabel(document?.status)}</Td>
+
                               </>
                           ):(
                               <>

@@ -39,7 +39,7 @@ import {
 } from "../../../../styles/components/Step";
 import { handleUserSelectedId } from '../../../../helpers/localStorage';
 
-import { ButtonsContent, FormContent } from "./styles";
+import { ButtonsContent, FormContent} from "./styles";
 
 interface IPageParams {
   id: string;
