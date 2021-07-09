@@ -608,7 +608,6 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
     }
 
   }
-
   function viewSpecialtes() {
     let especialidades = "";
     if (_.isEmpty(state.specialties)) {

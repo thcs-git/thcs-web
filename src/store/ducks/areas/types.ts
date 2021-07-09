@@ -65,8 +65,8 @@ export interface CityAreaInterface {
 }
 
 export interface AreaInterface {
-  _id?: string;
-  name: string;
+  _id?: any;
+  name: any;
   describe?: string;
   supply_days: number;
   week_day: number;

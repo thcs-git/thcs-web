@@ -66,7 +66,7 @@ export interface PatientInterface {
   national_id: string;
   issuing_organ: string;
   address_id: PatientAddressInterface;
-  area_id?: string | AreaInterface;
+  area_id?: any;
   email: string;
   phones: PatientPhonesInterface[] | [];
   sus_card: string;

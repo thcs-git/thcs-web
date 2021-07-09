@@ -792,7 +792,7 @@ export default function CareForm(props: RouteComponentProps<IPageParams>) {
                           getOptionLabel={(option) => option.name}
                           renderInput={(params) => <TextField {...params} label="Área" variant="outlined" />}
                           size="small"
-                         // value={selectPatientArea()}
+                          // value={selectPatientArea()}
                           onChange={(element, value) => setState({ ...state, area_id: value?._id })}
                           getOptionSelected={(option, value) => option._id === state?.area_id}
                           noOptionsText="Nenhum resultado encontrado"

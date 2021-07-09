@@ -316,7 +316,6 @@ export default function PatientForm(props: RouteComponentProps<IPageParams>) {
 
   useEffect(() => {
     const field = patientState.errorCep ? 'input-postal-code' : 'input-address-number';
-    console.log(patientState.errorCep);
 
 
     patientState.errorCep && setState(prevState => ({
@@ -448,7 +447,7 @@ export default function PatientForm(props: RouteComponentProps<IPageParams>) {
         ...prevState,
         address_id: {
           ...patientState.data.address_id
-        }
+        },
       }
     });
     setFieldValidations((prevState: any) => ({
@@ -477,6 +476,7 @@ export default function PatientForm(props: RouteComponentProps<IPageParams>) {
 
 
   const selectPatientArea = useCallback(() => {
+
     if(canEdit){
 
     }else{
@@ -484,7 +484,7 @@ export default function PatientForm(props: RouteComponentProps<IPageParams>) {
       if (typeof state?.area_id === 'object') {
         return item._id === state?.area_id._id
       }
-    });
+    })
 
     return (selected[0]) ? selected[0] : null;
     }
@@ -963,22 +963,36 @@ export default function PatientForm(props: RouteComponentProps<IPageParams>) {
                         />
                       </Grid>
 
+                      {!canEdit ? (
                       <Grid item md={7} xs={12}>
-                        <Autocomplete
+                        <TextField
                           id="combo-box-areas"
-                          options={areaState.list.data}
-                          getOptionLabel={(option) => option.name}
-                          renderInput={(params) => <TextField {...params} label="Área" variant="outlined" />}
+                          label="Área"
+                          variant="outlined"
                           size="small"
-                         // value={selectPatientArea()}
-                          onChange={(element, value) =>{setState({ ...state, area_id: value?._id })
-                          setModifi({...modifi.address_id,state: value})}}
-                          getOptionSelected={(option, value) => option._id === state?.area_id}
-                          noOptionsText="Nenhum resultado encontrado"
+                          value={state.area_id ? state.area_id.name : null}
                           fullWidth
                           disabled={!canEdit}
                         />
                       </Grid>
+                      ):(
+                        <Grid item md={7} xs={12}>
+                          <Autocomplete
+                            id="combo-box-areas"
+                            options={areaState.list.data}
+                            getOptionLabel={(option: any) => option.name}
+                            renderInput={(params) => <TextField {...params} label="Área" variant="outlined" />}
+                            size="small"
+                            value={selectPatientArea()}
+                            onChange={(element, value) => setState({ ...state, area_id: {...value }})}
+                            getOptionSelected={(option, value) => option._id === state?.area_id._id}
+                            noOptionsText="Nenhum resultado encontrado"
+                            fullWidth
+                            disabled={!canEdit}
+                          />
+                        </Grid>
+                      )}
+
                     </Grid>
                     <Grid container>
                       <Grid item md={6} xs={12}>
