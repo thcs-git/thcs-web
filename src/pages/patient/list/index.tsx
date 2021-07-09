@@ -95,6 +95,8 @@ export default function PatientList() {
                     <MenuItem onClick={() => history.push(`/patient/${patient._id}/edit/edit`)}>Editar</MenuItem>
                     <MenuItem onClick={() => history.push(`/patient/${patient._id}/view/edit`)}>Visualizar</MenuItem>
                     <MenuItem onClick={() => history.push(`/patient/capture/create?patient_id=${patient._id}`)}>Iniciar captação</MenuItem>
+                    <MenuItem >Histórico de captação</MenuItem>
+                    <MenuItem >Histórico de atendimento</MenuItem>
                   </Menu>
                 </TableCell>
               </TableRow>
