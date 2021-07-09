@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef, useCallback, ChangeEvent } from 're
 import { useHistory, Link } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import Loading from '../../../components/Loading';
-import { Container, Button, Menu, MenuItem, TableRow, TableCell } from '@material-ui/core';
+import { Container, Button, Menu, MenuItem, TableRow, TableCell, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Grid } from '@material-ui/core';
 import { MoreVert } from '@material-ui/icons';
 import { UserInterface, UserListItems } from '../../../store/ducks/users/types';
 import { ApplicationState } from '../../../store';
@@ -21,6 +21,10 @@ import ListItemText from '@material-ui/core/ListItemText';
 import AddIcon from '@material-ui/icons/Add';
 import { TransitionProps } from '@material-ui/core/transitions';
 import Slide from '@material-ui/core/Slide';
+import { makeStyles, createStyles, Theme } from '@material-ui/core/styles';
+
+import SpecialtyComponent from '../../../components/Specialities';
+
 
 export default function UserDisengaged() {
   const history = useHistory();
@@ -34,6 +38,7 @@ export default function UserDisengaged() {
     dispatch(searchUserDisengaged(event.target.value));
   }, []);
   const debounceSearchRequest = debounce(handleChangeInput, 900);
+  const [canEdit, setCanEdit] = useState(true);
 
   useEffect(() => {
     dispatch(cleanAction());
@@ -48,18 +53,15 @@ export default function UserDisengaged() {
     setAnchorEl(null);
   }, [anchorEl]);
 
-  const [openModalSpeciality, setOpenModalSpeciality] = useState(false);
+  const [open, setOpen] = useState(false);
 
-  const handleToggleModalConfig = useCallback(() => {
-    setOpenModalSpeciality(!openModalSpeciality);
-  }, []);
+  function handleClickOpen() {
+    setOpen(true);
+  }
 
-  const Transicao = React.forwardRef(function Transicao(
-    props: TransitionProps & { children?: React.ReactElement },
-    ref: React.Ref<unknown>,
-  ) {
-    return <Slide direction="up" ref={ref} {...props} />;
-  });
+  function handleClose() {
+    setOpen(false);
+  }
 
 
   return (
@@ -68,7 +70,7 @@ export default function UserDisengaged() {
         {userState.loading && <Loading />}
         <Container>
           <FormTitle>
-            Lista de Profissionais Desvinculados
+            Lista de Profissionais Disvinculados
           </FormTitle>
           <SearchComponent
             handleButton={() => history.push('/company/create/')}
@@ -79,7 +81,7 @@ export default function UserDisengaged() {
           <Table
             tableCells={[
               { name: 'Profissional', align: 'left', },
-              // { name: 'Email', align: 'left' },
+              { name: 'Email', align: 'left' },
               { name: 'Estado', align: 'left' },
               { name: 'Função', align: 'left' },
               { name: 'Especialidade', align: 'left' },
@@ -87,35 +89,90 @@ export default function UserDisengaged() {
               { name: '', align: 'left' },
             ]}
           >
-            { userState.list.data.map((user:UserListItems, index:number) =>(
-             <TableRow key={`user_${index}`}>
-               <TableCell>
-                <Link to={`/user/${user._id}/link/edit`}>{user.name}</Link>
-               </TableCell>
-               {/*<TableCell>*/}
-               {/*  {user.email}*/}
-               {/*</TableCell>*/}
-               <TableCell>
-                  {user.address?.state || 'BR'}
-               </TableCell>
-               <TableCell>
+            {userState.list.data.map((user: UserListItems, index: number) => (
+              <TableRow key={`user_${index}`}>
+                <TableCell>
+                  <Link to={`/user/${user._id}/link/edit`}>{user.name}</Link>
+                </TableCell>
+                <TableCell>
+                  {user.email}
+                </TableCell>
+                <TableCell>
+                  {/* {user.address.state} */}
+                </TableCell>
+                <TableCell>
                   {user.profession_id.name}
                 </TableCell>
                 <TableCell>
-                  {user.specialties.map((specialty, index) => (
+                  {/* {user.specialties.map((specialty, index) => (
                     `${specialty.name}${index < (user.specialties.length - 1) ? ',' : ''}`
                   ))} */}
-                  {user.specialties.map((specialty, index) => (
-                    <>
-                      {user.specialties.length > 0 ? (<ListItem>
-                        {user.main_specialty_id}
-                        <Button style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', }} onClick={() => setOpenModalSpeciality(true)}>
-                          <AddIcon style={{ color: '#0899BA', cursor: "pointer" }} />
-                        </Button>
-                      </ListItem>) : (null)
+
+                  <Grid container style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', }}>
+                    <Grid item xs={"auto"} md={6} >
+                      {user.main_specialty_id.name}
+                    </Grid>
+
+                    <Grid item xs={"auto"} md={6} >
+                      {user.specialties.length > 0 ? (
+                        // <ListItem>
+                        //   <Button aria-controls={`user-menu${index}`} id={`btn_user-menu${index}`} aria-haspopup="true" onClick={handleClickOpen}>
+                        //     <AddIcon style={{ color: '#0899BA', cursor: "pointer" }} />
+                        //   </Button>
+                        //   <Dialog
+                        //     open={open}
+                        //     onClose={handleClose}
+                        //     aria-labelledby="alert-dialog-slide-title"
+                        //     aria-describedby="alert-dialog-slide-description"
+                        //   >
+                        //     <DialogTitle id="alert-dialog-slide-title">Especialidades</DialogTitle>
+                        //     <DialogContent>
+                        //       <DialogContentText id="alert-dialog-slide-description">
+                        //         <h2>Principal</h2>
+                        //         <br />
+                        //         <p>{user.main_specialty_id.name}</p>
+                        //         <br />
+                        //         <h2>Secundária</h2>
+                        //         <br />
+                        //         <p>{user.specialties.map((specialty, index) => (
+                        //           `${specialty.name}${index < (user.specialties.length - 1) ? ',' : ''}`
+                        //         ))}</p>
+                        //       </DialogContentText>
+                        //     </DialogContent>
+                        //     <DialogActions>
+                        //       <Button onClick={handleClose} color="primary">
+                        //         Fechar
+                        //       </Button>
+                        //     </DialogActions>
+                        //   </Dialog>
+                        // </ListItem>
+                        <ListItem>
+                          <Button aria-controls={`user-speciality${index}`} id={`btn_user-speciality${index}`} aria-haspopup="true" onClick={handleOpenRowMenu}>
+                            <AddIcon style={{ color: '#0899BA', cursor: "pointer" }} />
+                          </Button>
+                          <Menu
+                            id={`user-speciality${index}`}
+                            anchorEl={anchorEl}
+                            keepMounted
+                            open={anchorEl?.id === `btn_user-speciality${index}`}
+                            onClose={handleCloseRowMenu}
+                          >
+                            <h2>Principal</h2>
+                            <br />
+                            <p>{user.main_specialty_id.name}</p>
+                            <br />
+                            <h2>Secundária</h2>
+                            <br />
+                            <p>{user.specialties.map((specialty, index) => (
+                              `${specialty.name}${index < (user.specialties.length - 1) ? ',' : ''}`
+                            ))}</p>
+                          </Menu>
+                        </ListItem>
+                      ) : (null)
                       }
-                    </>
-                  ))}
+                    </Grid>
+                  </Grid>
+
                 </TableCell>
                 <TableCell>
                   {formatDate(user.created_at, 'DD/MM/YYYY HH:mm:ss')}
@@ -177,29 +234,7 @@ export default function UserDisengaged() {
               search
             }))}
           />
-          <Dialog
-            open={openModalSpeciality}
-            //onClose={handleToggleModalConfig}
-            aria-labelledby="speciality-title"
-            aria-describedby="speciality-description"
-            TransitionComponent={Transicao}
-          >
-            <DialogTitle id="speciality-title">Especialidades</DialogTitle>
-            <DialogContent>
-              <SpecialtyComponent />
-            </DialogContent>
-            <DialogActions>
-              <Button onClick={() => {
-                setOpenModalSpeciality(false)
-                // history.push(`/userdesengaged`);
-                location.reload()
-              }}
-                color="primary"
-              >
-                Fechar
-              </Button>
-            </DialogActions>
-          </Dialog>
+
         </Container>
 
       </Sidebar>

@@ -106,7 +106,7 @@ export interface UserListItems {
   name: string;
   email: string;
   profession_id: ProfessionUserInterface;
-  main_specialty_id?: string;
+  main_specialty_id?: any;
   created_at: string;
   address: {
     postal_code: string;

@@ -1,19 +1,25 @@
 import React, { useState, useEffect, useCallback, ChangeEvent } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { UserInterface, UserListItems } from '../../store/ducks/users/types';
-import { searchUserDisengaged } from '../../store/ducks/users/sagas';
-import debounce from 'lodash.debounce';
-import { cleanAction, loadGetUserDisengaged } from '../../store/ducks/users/actions';
 
-import { ApplicationState } from '../../store';
+import { UserListItems, MainSpecialtyInterface, SpecialtiesUserInterface } from '../../store/ducks/users/types'
 
 
-export default function Specialities() {
-    const dispatch = useDispatch();
+interface IProps{
+
+    user: UserListItems
+    
+}
+
+export default function Specialities(props: any) {
+    const { user } = props
+   
     return (
         <>
             <div>
                 <h2>Principal</h2>
+
+                <br />
+                <p>{user?.name}</p>
 
                 <br />
 
