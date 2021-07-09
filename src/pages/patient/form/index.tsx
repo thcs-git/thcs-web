@@ -531,7 +531,6 @@ export default function PatientForm(props: RouteComponentProps<IPageParams>) {
       console.log(isEquals());
     }else{
       setOpenModalCancel(true);
-        console.log(isEquals());
     }
 
   }
@@ -561,6 +560,7 @@ export default function PatientForm(props: RouteComponentProps<IPageParams>) {
 
     if (state?._id) {
       dispatch(updatePatientRequest(patientData));
+      history.push('/patient');
     } else {
       dispatch(createPatientRequest(patientData));
     }
@@ -572,7 +572,7 @@ export default function PatientForm(props: RouteComponentProps<IPageParams>) {
   return (
     <Sidebar>
       {patientState.loading && <Loading />}
-      {patientState.isRegistrationCompleted ? (
+      {(patientState.isRegistrationCompleted &&  !state?._id) ? (
         <RegistrationCompleted {...props} />
       ) : (
         <Container>
