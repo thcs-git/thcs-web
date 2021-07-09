@@ -21,9 +21,6 @@ import ListItemText from '@material-ui/core/ListItemText';
 import AddIcon from '@material-ui/icons/Add';
 import { TransitionProps } from '@material-ui/core/transitions';
 import Slide from '@material-ui/core/Slide';
-import { makeStyles, createStyles, Theme } from '@material-ui/core/styles';
-
-import SpecialtyComponent from '../../../components/Specialities';
 
 
 export default function UserDisengaged() {
@@ -85,6 +82,7 @@ export default function UserDisengaged() {
               { name: 'Estado', align: 'left' },
               { name: 'Função', align: 'left' },
               { name: 'Especialidade', align: 'left' },
+              { name: '', align: 'left' },
               { name: 'Adicionado em', align: 'left' },
               { name: '', align: 'left' },
             ]}
@@ -98,81 +96,40 @@ export default function UserDisengaged() {
                   {user.email}
                 </TableCell> */}
                 <TableCell>
-                  {user.address.state}
+                  {user.address?.state || 'BR'}
                 </TableCell>
                 <TableCell>
                   {user.profession_id.name}
                 </TableCell>
-                <TableCell >
+                <TableCell>
                   {/* {user.specialties.map((specialty, index) => (
                     `${specialty.name}${index < (user.specialties.length - 1) ? ',' : ''}`
                   ))} */}
-
-                  <Grid container style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', }}>
-                    <Grid item lg={6}>
-                      {user.main_specialty_id.name}
-                    </Grid>
-
-                    <Grid item lg={6} >
-                      {user.specialties.length > 0 ? (
-                        // <ListItem>
-                        //   <Button aria-controls={`user-menu${index}`} id={`btn_user-menu${index}`} aria-haspopup="true" onClick={handleClickOpen}>
-                        //     <AddIcon style={{ color: '#0899BA', cursor: "pointer" }} />
-                        //   </Button>
-                        //   <Dialog
-                        //     open={open}
-                        //     onClose={handleClose}
-                        //     aria-labelledby="alert-dialog-slide-title"
-                        //     aria-describedby="alert-dialog-slide-description"
-                        //   >
-                        //     <DialogTitle id="alert-dialog-slide-title">Especialidades</DialogTitle>
-                        //     <DialogContent>
-                        //       <DialogContentText id="alert-dialog-slide-description">
-                        //         <h2>Principal</h2>
-                        //         <br />
-                        //         <p>{user.main_specialty_id.name}</p>
-                        //         <br />
-                        //         <h2>Secundária</h2>
-                        //         <br />
-                        //         <p>{user.specialties.map((specialty, index) => (
-                        //           `${specialty.name}${index < (user.specialties.length - 1) ? ',' : ''}`
-                        //         ))}</p>
-                        //       </DialogContentText>
-                        //     </DialogContent>
-                        //     <DialogActions>
-                        //       <Button onClick={handleClose} color="primary">
-                        //         Fechar
-                        //       </Button>
-                        //     </DialogActions>
-                        //   </Dialog>
-                        // </ListItem>
-                        <ListItem>
-                          <Button aria-controls={`user-speciality${index}`} id={`btn_user-speciality${index}`} aria-haspopup="true" onClick={handleOpenRowMenu}>
-                            <AddIcon style={{ color: '#0899BA', cursor: "pointer" }} />
-                          </Button>
-                          <Menu
-                            id={`user-speciality${index}`}
-                            anchorEl={anchorEl}
-                            keepMounted
-                            open={anchorEl?.id === `btn_user-speciality${index}`}
-                            onClose={handleCloseRowMenu}
-                          >
-                            <h2>Principal</h2>
-                            <br />
-                            <p>{user.main_specialty_id.name}</p>
-                            <br />
-                            <h2>Secundária</h2>
-                            <br />
-                            <p>{user.specialties.map((specialty, index) => (
-                              `${specialty.name}${index < (user.specialties.length - 1) ? ',' : ''}`
-                            ))}</p>
-                          </Menu>
-                        </ListItem>
-                      ) : (null)
-                      }
-                    </Grid>
-                  </Grid>
-
+                  {user.main_specialty_id.name}
+                </TableCell>
+                <TableCell align="center">
+                  {user.specialties.length > 0 ? (
+                    <ListItem>
+                      <Button aria-controls={`user-speciality${index}`} id={`btn_user-speciality${index}`} aria-haspopup="true" onClick={handleOpenRowMenu}>
+                        <AddIcon style={{ color: '#0899BA', cursor: "pointer" }} />
+                      </Button>
+                      <Menu
+                        id={`user-speciality${index}`}
+                        anchorEl={anchorEl}
+                        keepMounted
+                        open={anchorEl?.id === `btn_user-speciality${index}`}
+                        onClose={handleCloseRowMenu}
+                      >
+                        <MenuItem style={{ cursor: "default" }}><h2>Principal</h2></MenuItem>
+                        <MenuItem style={{ cursor: "default" }}>{user.main_specialty_id.name}</MenuItem>
+                        <MenuItem style={{ cursor: "default" }}><h2>Secundária</h2></MenuItem>
+                        <MenuItem style={{ cursor: "default" }}>{user.specialties.map((specialty, index) => (
+                          `${specialty.name}${index < (user.specialties.length - 1) ? ',' : ''}`
+                        ))}</MenuItem>
+                      </Menu>
+                    </ListItem>
+                  ) : (null)
+                  }
                 </TableCell>
                 <TableCell>
                   {formatDate(user.created_at, 'DD/MM/YYYY HH:mm:ss')}
