@@ -75,11 +75,13 @@ import {ProfessionUserInterface} from '../../../../store/ducks/users/types';
 import {formatDate, translate as translateDateHelper, getDayOfTheWeekName} from "../../../../helpers/date";
 import {exchangeTypes as exchageTypesHelper} from '../../../../helpers/schedule';
 
+import {ReactComponent as IconProfile} from '../../../../assets/img/icon-profile.svg';
 import {ReactComponent as IconPermuta} from '../../../../assets/img/icon-permuta.svg';
 import {ReactComponent as IconNoturno} from '../../../../assets/img/icon-noturno.svg';
 import {ReactComponent as IconDiurno} from '../../../../assets/img/icon-diurno.svg';
 import {ReactComponent as IconPlantao} from '../../../../assets/img/icon-plantao.svg';
 import {ReactComponent as IconPlantaoTransparent} from '../../../../assets/img/icon-plantao-transparent.svg';
+import {ReactComponent as IconEquipe} from '../../../../assets/img/icon-equipe-medica.svg';
 
 import Sidebar from '../../../../components/Sidebar';
 import Loading from '../../../../components/Loading';
@@ -96,11 +98,13 @@ import {
   CalendarContent,
   ScheduleEventStatus,
   HeaderContent,
+  BottomContent,
   ResumeList,
   TabsMenuWrapper,
   ContainerSearch,
   CardPlantonistas
 } from './styles';
+import _ from 'lodash';
 
 interface IDay {
   allDay: boolean;
@@ -392,6 +396,8 @@ export default function SchedulePage(props: RouteComponentProps<IPageParams>) {
       }
       startAt = dayjs(`${formatDate(schedule.start_plantao, 'YYYY-MM-DD')} ${schedule.start_hour_plantao}`).format()
       endAt = dayjs(`${formatDate(endDate, 'YYYY-MM-DD')} ${schedule.end_hour_plantao}`).format()
+      schedule.start_at = schedule.start_hour_plantao
+      schedule.end_at = schedule.end_hour_plantao
     }
 
     if (schedule?.data?._id) {
@@ -513,24 +519,68 @@ export default function SchedulePage(props: RouteComponentProps<IPageParams>) {
     const diffDate = eventDate.diff(today, 'm');
     const {extendedProps: eventData} = event;
 
-    if (diffDate < 0 && (!eventData.checkin || eventData.checkin.length === 0)) {
-      return <ScheduleEventStatus color="late"/>
-    } else if (eventData?.checkin?.length > 0) {
+    if (!_.isEmpty(eventData.exchange)) {
+      if (diffDate < 0 && (!eventData.checkin || eventData.checkin.length === 0)) {
+        return <IconPermuta className="late"/>
+      } else if (eventData?.checkin?.length > 0) {
 
-      const checkins = eventData.checkin.sort().reverse();
+        const checkins = eventData.checkin.sort().reverse();
 
-      const {start_at: checkIn, end_at: checkOut} = checkins[0];
+        const {start_at: checkIn, end_at: checkOut} = checkins[0];
 
-      if (checkIn && !checkOut) {
-        return <ScheduleEventStatus color="visiting" className="pulse"/>
-      } else if (checkIn && checkOut) {
-        return <ScheduleEventStatus color="complete"/>
+        if (checkIn && !checkOut) {
+          return <IconPermuta className="visiting"/>
+        } else if (checkIn && checkOut) {
+          return <IconPermuta className="complete"/>
+        } else {
+          return <IconPermuta className="future"/>
+        }
+
       } else {
-        return <ScheduleEventStatus color="future"/>
+        return <IconPermuta className="future"/>
       }
-
     } else {
-      return <ScheduleEventStatus color="future"/>
+      if (eventData.type === 'plantao' && eventData.professional_type === 'plantonista') {
+        if (diffDate < 0 && (!eventData.checkin || eventData.checkin.length === 0)) {
+          return <IconPlantaoTransparent className="late"/>
+        } else if (eventData?.checkin?.length > 0) {
+
+          const checkins = eventData.checkin.sort().reverse();
+
+          const {start_at: checkIn, end_at: checkOut} = checkins[0];
+
+          if (checkIn && !checkOut) {
+            return <IconPlantaoTransparent className="visiting"/>
+          } else if (checkIn && checkOut) {
+            return <IconPlantaoTransparent className="complete"/>
+          } else {
+            return <IconPlantaoTransparent className="future"/>
+          }
+
+        } else {
+          return <IconPlantaoTransparent className="future"/>
+        }
+      } else {
+        if (diffDate < 0 && (!eventData.checkin || eventData.checkin.length === 0)) {
+          return <ScheduleEventStatus color="late"/>
+        } else if (eventData?.checkin?.length > 0) {
+
+          const checkins = eventData.checkin.sort().reverse();
+
+          const {start_at: checkIn, end_at: checkOut} = checkins[0];
+
+          if (checkIn && !checkOut) {
+            return <ScheduleEventStatus color="visiting" className="pulse"/>
+          } else if (checkIn && checkOut) {
+            return <ScheduleEventStatus color="complete"/>
+          } else {
+            return <ScheduleEventStatus color="future"/>
+          }
+
+        } else {
+          return <ScheduleEventStatus color="future"/>
+        }
+      }
     }
   };
 
@@ -540,7 +590,7 @@ export default function SchedulePage(props: RouteComponentProps<IPageParams>) {
 
     try {
       schedule?.forEach(plantonista => {
-        if (plantonista.professional_type === 'plantonista' && (typeof plantonista.user_id === 'object')) {
+        if (plantonista.type === 'plantao' && plantonista.professional_type === 'plantonista' && (typeof plantonista.user_id === 'object')) {
           let hasPlantonista = uniqPlanotinista.some((uniq: any) => (typeof plantonista.user_id === 'object') && uniq.user_id.name === plantonista.user_id.name)
 
           if (!hasPlantonista) uniqPlanotinista.push(plantonista)
@@ -552,16 +602,35 @@ export default function SchedulePage(props: RouteComponentProps<IPageParams>) {
 
     return (
       <>
-        {uniqPlanotinista.map((planto: any) => (
+        {uniqPlanotinista.length > 1 ? (
           <>
-            {dayjs(planto.start_at).hour() >= 6 && dayjs(planto.end_at).hour() <= 21 ? (
-              <IconDiurno/>
-            ) : (
-              <IconNoturno/>
-            )}
-            <p>{planto.user_id.name}, {dayjs(planto.start_at).hour() >= 6 && dayjs(planto.end_at).hour() <= 21 ? 'diurno' : 'noturno'}</p>
+            <Grid container spacing={2}>
+              {uniqPlanotinista.map((planto: any) => (
+                <>
+                  <Grid container item xs={"auto"} spacing={1}>
+                    <Grid item xs={1}>
+                      {dayjs(planto.start_at).hour() >= 6 && dayjs(planto.end_at).hour() <= 21 ? (
+                        <>
+                          <IconDiurno className="diurno-icon"/>
+                        </>
+                      ) : (
+                        <>
+                          <IconNoturno className="noturno-icon"/>
+                        </>
+                      )}
+                    </Grid>
+                    <Grid item xs={10}>
+                      <p>{planto.user_id.name}, {dayjs(planto.start_at).hour() >= 6 && dayjs(planto.end_at).hour() <= 21 ?
+                        <b>diurno</b> : <b>noturno</b>}</p>
+                    </Grid>
+                  </Grid>
+                </>
+              ))}
+            </Grid>
           </>
-        ))}
+        ) : (
+          <p style={{textAlign: 'center'}}>Nenhum plantonista foi adicionado</p>
+        )}
       </>
     );
   }, [careState.schedule]);
@@ -841,24 +910,37 @@ export default function SchedulePage(props: RouteComponentProps<IPageParams>) {
         <Grid container>
           <Grid item md={3}>
             <div style={{paddingRight: 30}}>
-              <Card style={{marginBottom: 20}}>
-                <CardContent>
-                  <h4>{careState.data?.patient_id?.name}</h4>
-                  <br/>
-                  <p>Nº atendimento: {careState.data?._id}</p>
-                  <p>Data atendimento: {formatDate(careState.data?.created_at, 'DD/MM/YYYY [às] HH:mm:ss')}</p>
+              <Card style={{marginBottom: 20, color: 'white'}}>
+                <div style={{background: '#16679A', height: '5px'}}/>
+                <CardContent style={{background: '#0899BA', fontSize: 10}}>
+                  <Grid container spacing={2}>
+                    <CardTitle>
+                      <Grid container item xs={"auto"} spacing={1}
+                            style={{alignItems: 'center', marginTop: 10, marginLeft: 7}}>
+                        <Grid item xs={2}>
+                          <IconProfile className="profile-icon"/>
+                        </Grid>
+                        <Grid item xs={10}>
+                          <h4 style={{
+                            color: 'white',
+                            fontSize: 14,
+                            fontWeight: "bolder"
+                          }}>{careState.data?.patient_id?.name}</h4>
+                        </Grid>
+                      </Grid>
+                    </CardTitle>
+                  </Grid>
+                  <h4 style={{color: 'white', fontSize: 12, paddingTop: 5, fontWeight: "normal"}}>
+                    Nº atendimento: {careState.data?._id}
+                  </h4>
+                  <h4 style={{color: 'white', fontSize: 12, paddingTop: 5, fontWeight: "normal"}}>
+                    Data: {formatDate(careState.data?.created_at, 'DD/MM/YYYY [às] HH:mm:ss')}
+                  </h4>
+                  <h4 style={{color: 'white', fontSize: 13, paddingTop: 5, fontWeight: "bolder"}}>
+                    {careState.data?.capture?.complexity}
+                  </h4>
                 </CardContent>
               </Card>
-
-              <ContainerSearch>
-                <SearchComponent
-                  handleButton={handleClickButton}
-                  inputPlaceholder="Nome do profissional"
-                  // buttonTitle="Novo"
-                  onChangeInput={debounceSearchRequest}
-                />
-              </ContainerSearch>
-
 
               <div style={{margin: '10px 0'}}>
                 <p><strong>Filtrar por profissional:</strong></p>
@@ -894,6 +976,17 @@ export default function SchedulePage(props: RouteComponentProps<IPageParams>) {
                   </FormGroup>
                 </FormControl>
               </div>
+              <div style={{margin: '10px 0'}}>
+                <p><strong>Filtrar por nome:</strong></p>
+              </div>
+              <ContainerSearch>
+                <SearchComponent
+                  handleButton={handleClickButton}
+                  inputPlaceholder="Nome do profissional"
+                  // buttonTitle="Novo"
+                  onChangeInput={debounceSearchRequest}
+                />
+              </ContainerSearch>
               <div>
                 <p><strong>Legendas:</strong></p>
 
@@ -913,6 +1006,7 @@ export default function SchedulePage(props: RouteComponentProps<IPageParams>) {
           </Grid>
 
           <Grid item md={9}>
+            <div style={{background: '#0899BA', height: '5px'}}/>
             <Card>
               <CardContent>
                 <CalendarContent>
@@ -949,6 +1043,7 @@ export default function SchedulePage(props: RouteComponentProps<IPageParams>) {
               <Grid container>
                 <Grid item md={4}>
                   <Card style={{marginRight: 10}}>
+                    <div style={{background: '#0899BA', height: '5px'}}/>
                     <CardContent>
                       <CardTitle>
                         <IconPermuta className="permuta-icon"/>
@@ -956,7 +1051,11 @@ export default function SchedulePage(props: RouteComponentProps<IPageParams>) {
                       </CardTitle>
 
                       <div>
-                        {events[0] == undefined ? (null) : (
+                        {events[0] == undefined ? (
+                          <TextCenter>
+                            Nenhuma permuta foi adicionada
+                          </TextCenter>
+                        ) : (
                           <>
                             {events?.map(event => (
                               <>
@@ -976,6 +1075,7 @@ export default function SchedulePage(props: RouteComponentProps<IPageParams>) {
 
                 <Grid item md={4}>
                   <Card style={{marginRight: 10}}>
+                    <div style={{background: '#0899BA', height: '5px'}}/>
                     <CardContent>
                       <CardTitle>
                         <IconPlantaoTransparent className="duty-icon"/>
@@ -1002,10 +1102,12 @@ export default function SchedulePage(props: RouteComponentProps<IPageParams>) {
                 </Grid>
 
                 <Grid item md={4}>
-                  <Card style={{marginRight: 10}}>
+                  <Card style={{marginRight: 0}}>
+                    <div style={{background: '#0899BA', height: '5px'}}/>
                     <CardContent>
                       <CardTitle>
-                        <SupervisorAccountRounded/>
+                        {/*<SupervisorAccountRounded/>*/}
+                        <IconEquipe className="team-icon"/>
                         <h4>Equipe Multidisciplinar</h4>
 
                       </CardTitle>
@@ -1014,7 +1116,7 @@ export default function SchedulePage(props: RouteComponentProps<IPageParams>) {
                         {team.length > 1 ? (
                           <>
                             {team.map(user => (
-                              <p style={{marginBottom: 10}}>{user?.name}</p>
+                              <p style={{marginBottom: 10}}><b>{user?.profession_id[0]?.name}</b> - {user?.name}</p>
                             ))}
                           </>
                         ) : (
@@ -1032,10 +1134,13 @@ export default function SchedulePage(props: RouteComponentProps<IPageParams>) {
           </Grid>
         </Grid>
 
-        <TextCenter style={{marginTop: 50}}>
-          <ButtonComponent onClick={() => history.push(`/care/${params.id}/overview`)}
-                           background="primary">Voltar</ButtonComponent>
-        </TextCenter>
+        <BottomContent>
+          <FormTitle/>
+          <div>
+            <ButtonComponent onClick={() => history.push(`/care/${params.id}/overview`)}
+                             background="primary">Voltar</ButtonComponent>
+          </div>
+        </BottomContent>
 
       </Sidebar>
 
