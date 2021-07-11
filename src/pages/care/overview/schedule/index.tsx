@@ -91,8 +91,6 @@ import {TextCenter} from '../../../../styles/components/Text';
 import ButtonComponent from '../../../../styles/components/Button';
 import {ComplexityStatus} from '../../../../styles/components/Table';
 import DatePicker from '../../../../styles/components/DatePicker';
-import { TimePicker, MuiPickersUtilsProvider  } from '@material-ui/pickers'
-import DateFnsUtils from '@date-io/date-fns';
 
 import {
   ScheduleItem,
@@ -364,112 +362,118 @@ export default function SchedulePage(props: RouteComponentProps<IPageParams>) {
     schedule.professional_type = professionalTypeValue;
     schedule.type = currentTabValue === 0 ? 'assistencia' : 'plantao';
 
-    if (currentTabValue === 0 && schedule.day) {
-      const [hourOfStart, minuteOfStart] = schedule.start_at ? schedule.start_at.split(':') : [0, 0]
-      const [hourOfEnd, minuteOfEnd] = schedule.end_at ? schedule.end_at.split(':') : [0, 0]
+    if (schedule?.exchange?.exchanged_to) {
+      if (currentTabValue === 0 && schedule.day) {
+        const [hourOfStart, minuteOfStart] = schedule.start_at ? schedule.start_at.split(':') : [0, 0]
+        const [hourOfEnd, minuteOfEnd] = schedule.end_at ? schedule.end_at.split(':') : [0, 0]
 
-      if (Number(hourOfStart) > Number(hourOfEnd)) {
-        let endDate = new Date(schedule.day)
-        endDate.setDate(endDate.getDate() + 1)
+        if (Number(hourOfStart) > Number(hourOfEnd)) {
+          let endDate = new Date(schedule.day)
+          endDate.setDate(endDate.getDate() + 1)
 
-        startAt = dayjs(`${formatDate(schedule.day, 'YYYY-MM-DD')} ${schedule.start_at}`).format();
-        endAt = dayjs(`${formatDate(endDate, 'YYYY-MM-DD')} ${schedule.end_at}`).format();
+          startAt = dayjs(`${formatDate(schedule.day, 'YYYY-MM-DD')} ${schedule.start_at}`).format();
+          endAt = dayjs(`${formatDate(endDate, 'YYYY-MM-DD')} ${schedule.end_at}`).format();
+        } else {
+          startAt = dayjs(`${formatDate(schedule.day, 'YYYY-MM-DD')} ${schedule.start_at}`).format();
+          endAt = dayjs(`${formatDate(schedule.day, 'YYYY-MM-DD')} ${schedule.end_at}`).format();
+        }
       } else {
-        startAt = dayjs(`${formatDate(schedule.day, 'YYYY-MM-DD')} ${schedule.start_at}`).format();
-        endAt = dayjs(`${formatDate(schedule.day, 'YYYY-MM-DD')} ${schedule.end_at}`).format();
+        const [hourOfStart, minuteOfStart] = schedule.start_hour_plantao ? schedule.start_hour_plantao.split(':') : [0, 0]
+        const [hourOfEnd, minuteOfEnd] = schedule.end_hour_plantao ? schedule.end_hour_plantao.split(':') : [0, 0]
+
+        const day = schedule.start_plantao ? schedule.start_plantao : '0000-00-00'
+        let endDate = new Date(day)
+
+        if (Number(hourOfStart) > Number(hourOfEnd)) {
+          endDate.setDate(endDate.getDate() + 2)
+        } else {
+          endDate.setDate(endDate.getDate() + 1)
+        }
+
+        if (professionalTypeValue === 'plantonista') {
+          schedule.days_interval_repeat = 1
+        } else {
+          schedule.days_interval_repeat = 1
+        }
+        startAt = dayjs(`${formatDate(schedule.start_plantao, 'YYYY-MM-DD')} ${schedule.start_hour_plantao}`).format()
+        endAt = dayjs(`${formatDate(endDate, 'YYYY-MM-DD')} ${schedule.end_hour_plantao}`).format()
+        schedule.start_at = schedule.start_hour_plantao
+        schedule.end_at = schedule.end_hour_plantao
       }
-    } else {
-      const [hourOfStart, minuteOfStart] = schedule.start_hour_plantao ? schedule.start_hour_plantao.split(':') : [0, 0]
-      const [hourOfEnd, minuteOfEnd] = schedule.end_hour_plantao ? schedule.end_hour_plantao.split(':') : [0, 0]
 
-      const day = schedule.start_plantao ? schedule.start_plantao : '0000-00-00'
-      let endDate = new Date(day)
+      if (schedule?.data?._id) {
+        console.log(schedule.day);
 
-      if (Number(hourOfStart) > Number(hourOfEnd)) {
-        endDate.setDate(endDate.getDate() + 2)
+        setDayOptionsModalOpen(false);
+
+        const {data, ...scheduleData} = schedule;
+        const eventCopy = [...events];
+
+        eventCopy.forEach((item, key) => {
+          if (item?.extendedProps?._id === data._id) {
+            eventCopy[key] = {
+              ...eventCopy[key],
+              title: selectUser()?.name,
+              start: startAt,
+              end: endAt,
+            };
+            console.log(eventCopy[key]);
+          }
+        });
+
+        setEvents(eventCopy);
+        console.log('testando,', events);
+        setSchedule(prevState => ({
+          ...prevState,
+          _id: data._id,
+          attendance_id: params.id,
+          start_at: startAt,
+          end_at: endAt,
+        }));
+
+        console.log(schedule);
+        dispatch(updateScheduleAction({
+          ...schedule,
+          _id: data._id,
+          attendance_id: params.id,
+          start_at: startAt,
+          end_at: endAt,
+        }));
+
       } else {
-        endDate.setDate(endDate.getDate() + 1)
-      }
+        const newEvent: EventInput = {
+          id: createEventId(),
+          title: selectUser()?.name,
+          // start: todayStr,
+          start: startAt,
+          end: endAt,
+          backgroundColor: '#0899BA',
+          textColor: '#ffffff',
+        };
 
-      if (professionalTypeValue === 'plantonista') {
-        schedule.days_interval_repeat = 2
-      } else {
-        schedule.days_interval_repeat = 1
-      }
-      startAt = dayjs(`${formatDate(schedule.start_plantao, 'YYYY-MM-DD')} ${schedule.start_hour_plantao}`).format()
-      endAt = dayjs(`${formatDate(endDate, 'YYYY-MM-DD')} ${schedule.end_hour_plantao}`).format()
-      schedule.start_at = schedule.start_hour_plantao
-      schedule.end_at = schedule.end_hour_plantao
-    }
+        // A label fica com background azul quando o evento é do dia todo, ou seja, não tem hora de inicio ou fim, apenas a data '2021-02-22'
+        console.log('newEvent', newEvent)
 
-    if (schedule?.data?._id) {
-      console.log(schedule.day);
+        setEvents((prevState: any) => ([...prevState, newEvent]));
+
+        dispatch(storeScheduleAction({
+          ...schedule,
+          attendance_id: params.id,
+          start_at: startAt,
+          end_at: endAt,
+        }));
+      }
 
       setDayOptionsModalOpen(false);
 
-      const {data, ...scheduleData} = schedule;
-      const eventCopy = [...events];
-
-      eventCopy.forEach((item, key) => {
-        if (item?.extendedProps?._id === data._id) {
-          eventCopy[key] = {
-            ...eventCopy[key],
-            title: selectUser()?.name,
-            start: startAt,
-            end: endAt,
-          };
-          console.log(eventCopy[key]);
-        }
-      });
-
-      setEvents(eventCopy);
-      console.log('testando,', events);
-      setSchedule(prevState => ({
-        ...prevState,
-        _id: data._id,
-        attendance_id: params.id,
-        start_at: startAt,
-        end_at: endAt,
-      }));
-
-      console.log(schedule);
-      dispatch(updateScheduleAction({
-        ...schedule,
-        _id: data._id,
-        attendance_id: params.id,
-        start_at: startAt,
-        end_at: endAt,
-      }));
-
+      setTimeout(() => {
+        dispatch(loadScheduleRequest({attendance_id: params.id}))
+        // Resolve problemas de state e cache
+        // window.location.reload()
+      }, 2000);
     } else {
-      const newEvent: EventInput = {
-        id: createEventId(),
-        title: selectUser()?.name,
-        // start: todayStr,
-        start: startAt,
-        end: endAt,
-        backgroundColor: '#0899BA',
-        textColor: '#ffffff',
-      };
-
-      // A label fica com background azul quando o evento é do dia todo, ou seja, não tem hora de inicio ou fim, apenas a data '2021-02-22'
-      console.log('newEvent', newEvent)
-
-      setEvents((prevState: any) => ([...prevState, newEvent]));
-
-      dispatch(storeScheduleAction({
-        ...schedule,
-        attendance_id: params.id,
-        start_at: startAt,
-        end_at: endAt,
-      }));
+      setDayOptionsModalOpen(false);
     }
-
-    setDayOptionsModalOpen(false);
-
-    setTimeout(() => {
-      dispatch(loadScheduleRequest({attendance_id: params.id}))
-    }, 2000);
     // }
   }, [schedule, events]);
 
@@ -586,6 +590,45 @@ export default function SchedulePage(props: RouteComponentProps<IPageParams>) {
     }
   };
 
+  const renderOnlyPermutas = useCallback(() => {
+    let statePlantonista: boolean = true;
+    const {schedule} = careState;
+
+    try {
+      schedule?.forEach(exchange => {
+        if (!_.isEmpty(exchange.exchange)) {
+          statePlantonista = false
+        }
+      })
+    } catch (error) {
+
+    }
+
+    return (
+      <>
+        <div>
+          {statePlantonista ? (
+            <TextCenter>
+              Nenhuma permuta foi adicionada
+            </TextCenter>
+          ) : (
+            <>
+              {events?.map(event => (
+                <>
+                  {event?.extendedProps?.exchange?.exchanged_to && (
+                    <p><b>{dayjs(event?.start).format('DD/MM')}</b> - {event?.user_id.name}
+                      <b> por</b> {event?.extendedProps?.exchange ? event?.extendedProps?.exchange?.exchanged_to?.name : 'Sem nome'}
+                    </p>
+                  )}
+                </>
+              ))}
+            </>
+          )}
+        </div>
+      </>
+    );
+  }, [careState.schedule]);
+
   const renderOnlyPlantonistas = useCallback(() => {
     let uniqPlanotinista: any = [];
     const {schedule} = careState;
@@ -604,7 +647,7 @@ export default function SchedulePage(props: RouteComponentProps<IPageParams>) {
 
     return (
       <>
-        {uniqPlanotinista.length > 1 ? (
+        {uniqPlanotinista.length >= 1 ? (
           <>
             <Grid container spacing={2}>
               {uniqPlanotinista.map((planto: any) => (
@@ -1040,6 +1083,7 @@ export default function SchedulePage(props: RouteComponentProps<IPageParams>) {
                     eventAdd={event => console.log('eventAdded', event)}
                     eventChange={event => console.log('eventChanged', event)}
                     eventRemove={event => console.log('eventRemoved', event)}
+                    eventDisplay={'list-item'}
                     navLinks
                   />
                 </CalendarContent>
@@ -1056,26 +1100,7 @@ export default function SchedulePage(props: RouteComponentProps<IPageParams>) {
                         <IconPermuta className="permuta-icon"/>
                         <h4>Permutas</h4>
                       </CardTitle>
-
-                      <div>
-                        {events[0] == undefined ? (
-                          <TextCenter>
-                            Nenhuma permuta foi adicionada
-                          </TextCenter>
-                        ) : (
-                          <>
-                            {events?.map(event => (
-                              <>
-                                {event?.extendedProps?.exchange?.exchanged_to && (
-                                  <p><b>{dayjs(event?.start).format('DD/MM')}</b> - {event?.user_id.name}
-                                    <b> por</b> {event?.extendedProps?.exchange ? event?.extendedProps?.exchange?.exchanged_to?.name : 'Sem nome'}
-                                  </p>
-                                )}
-                              </>
-                            ))}
-                          </>
-                        )}
-                      </div>
+                      {renderOnlyPermutas()}
                     </CardContent>
                   </Card>
                 </Grid>
@@ -1120,10 +1145,12 @@ export default function SchedulePage(props: RouteComponentProps<IPageParams>) {
                       </CardTitle>
                       <div>
 
-                        {team.length > 1 ? (
+                        {team.length >= 1 ? (
                           <>
                             {team.map(user => (
-                              <p style={{marginBottom: 10}}><b>{user?.profession_id[0]?.name}</b> - {user?.name}</p>
+                              <p style={{marginBottom: 10}}>
+                                <b>{user?.profession_id ? user?.profession_id[0]?.name : 'Profissão'}</b> - {user?.name}
+                              </p>
                             ))}
                           </>
                         ) : (
@@ -1293,32 +1320,22 @@ export default function SchedulePage(props: RouteComponentProps<IPageParams>) {
 
                     <FieldContent>
 
-                      {/*<TextField*/}
-                      {/*  id="start-time"*/}
-                      {/*  type="time"*/}
-                      {/*  size="small"*/}
-                      {/*  label="Início"*/}
-                      {/*  variant="outlined"*/}
-                      {/*  InputLabelProps={{*/}
-                      {/*    shrink: true,*/}
-                      {/*  }}*/}
-                      {/*  inputProps={{*/}
-                      {/*    step: 300, // 5 min*/}
-                      {/*  }}*/}
-                      {/*  onChange={e => setSchedule(prevState => ({...prevState, start_at: e.target.value}))}*/}
-                      {/*  value={schedule.start_at}*/}
-                      {/*  fullWidth*/}
-                      {/*/>*/}
-                      <MuiPickersUtilsProvider utils={DateFnsUtils}>
-                      <TimePicker
-                        clearable
-                        ampm={false}
-                        label="24 hours"
-                        value="07:00"
-                        onChange={e => console.log(e)}
-                        // onChange={e => setSchedule(prevState => ({...prevState, start_at: e.target.value}))}
+                      <TextField
+                        id="start-time"
+                        type="time"
+                        size="small"
+                        label="Início"
+                        variant="outlined"
+                        InputLabelProps={{
+                          shrink: true,
+                        }}
+                        inputProps={{
+                          step: 300, // 5 min
+                        }}
+                        onChange={e => setSchedule(prevState => ({...prevState, start_at: e.target.value}))}
+                        value={schedule.start_at}
+                        fullWidth
                       />
-                      </MuiPickersUtilsProvider>
 
                     </FieldContent>
 
@@ -1755,13 +1772,13 @@ export default function SchedulePage(props: RouteComponentProps<IPageParams>) {
                     <AccountCircle/>
                   </ListItemIcon>
                   <ListItemText
-                    primary={(typeof schedule.data.created_by === 'object') ? `${schedule.data.created_by.name} - ${formatDate(schedule.day, 'dddd[,] DD [de] MMMM [de] YYYY')}` : ''}
+                    primary={(typeof schedule?.data?.created_by === 'object') ? `${schedule?.data?.created_by?.name} - ${formatDate(schedule?.day, 'dddd[,] DD [de] MMMM [de] YYYY')}` : ''}
                   />
                 </ListItem>
               </ResumeList>
 
 
-              {schedule.data.exchange.type ? (
+              {schedule?.data?.exchange?.type ? (
                 <>
                   <Divider/>
                   <br/>
