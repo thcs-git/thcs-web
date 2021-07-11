@@ -91,6 +91,8 @@ import {TextCenter} from '../../../../styles/components/Text';
 import ButtonComponent from '../../../../styles/components/Button';
 import {ComplexityStatus} from '../../../../styles/components/Table';
 import DatePicker from '../../../../styles/components/DatePicker';
+import { TimePicker, MuiPickersUtilsProvider  } from '@material-ui/pickers'
+import DateFnsUtils from '@date-io/date-fns';
 
 import {
   ScheduleItem,
@@ -720,7 +722,12 @@ export default function SchedulePage(props: RouteComponentProps<IPageParams>) {
       profession_id: value._id
     }));
 
-    dispatch(searchUserAction({profession_id: value._id}));
+    if (value?._id != '') {
+      dispatch(searchUserAction({profession_id: value._id}));
+    } else {
+      dispatch(searchUserAction({}));
+    }
+
   }, [schedule]);
 
   const selectProfession = useCallback(() => {
@@ -1196,9 +1203,8 @@ export default function SchedulePage(props: RouteComponentProps<IPageParams>) {
                     noOptionsText="Nenhum resultado encontrado"
                     value={selectProfession()}
                     onChange={(event, value) => {
-                      if (value) {
-                        handleSelectProfession(value)
-                      }
+                      handleSelectProfession(value ? value : {_id: '', name: ''})
+
                     }}
                     fullWidth
                   />
@@ -1287,22 +1293,32 @@ export default function SchedulePage(props: RouteComponentProps<IPageParams>) {
 
                     <FieldContent>
 
-                      <TextField
-                        id="start-time"
-                        type="time"
-                        size="small"
-                        label="Início"
-                        variant="outlined"
-                        InputLabelProps={{
-                          shrink: true,
-                        }}
-                        inputProps={{
-                          step: 300, // 5 min
-                        }}
-                        onChange={e => setSchedule(prevState => ({...prevState, start_at: e.target.value}))}
-                        value={schedule.start_at}
-                        fullWidth
+                      {/*<TextField*/}
+                      {/*  id="start-time"*/}
+                      {/*  type="time"*/}
+                      {/*  size="small"*/}
+                      {/*  label="Início"*/}
+                      {/*  variant="outlined"*/}
+                      {/*  InputLabelProps={{*/}
+                      {/*    shrink: true,*/}
+                      {/*  }}*/}
+                      {/*  inputProps={{*/}
+                      {/*    step: 300, // 5 min*/}
+                      {/*  }}*/}
+                      {/*  onChange={e => setSchedule(prevState => ({...prevState, start_at: e.target.value}))}*/}
+                      {/*  value={schedule.start_at}*/}
+                      {/*  fullWidth*/}
+                      {/*/>*/}
+                      <MuiPickersUtilsProvider utils={DateFnsUtils}>
+                      <TimePicker
+                        clearable
+                        ampm={false}
+                        label="24 hours"
+                        value="07:00"
+                        onChange={e => console.log(e)}
+                        // onChange={e => setSchedule(prevState => ({...prevState, start_at: e.target.value}))}
                       />
+                      </MuiPickersUtilsProvider>
 
                     </FieldContent>
 
@@ -1473,9 +1489,7 @@ export default function SchedulePage(props: RouteComponentProps<IPageParams>) {
                     noOptionsText="Nenhum resultado encontrado"
                     value={selectProfession()}
                     onChange={(event, value) => {
-                      if (value) {
-                        handleSelectProfession(value)
-                      }
+                      handleSelectProfession(value ? value : {_id: '', name: ''})
                     }}
                     fullWidth
                   />
