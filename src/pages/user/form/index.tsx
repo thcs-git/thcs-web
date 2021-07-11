@@ -66,7 +66,7 @@ import {
   TabBodyItem,
 } from "../../../styles/components/Tabs";
 import ButtonComponent from "../../../styles/components/Button";
-import FeedbackComponent from '../../../components/Feedback';
+import FeedbackUserComponent from '../../../components/FeedbackUser';
 
 import {formatDate, age} from "../../../helpers/date";
 import LOCALSTORAGE from "../../../helpers/constants/localStorage";
@@ -809,10 +809,10 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
       {userState.loading && <Loading/>}
       <Container>
         {userState.success ? (
-          <FeedbackComponent
+          <FeedbackUserComponent
             type="success"
             title="Cadastro concluído!"
-            description="Os dados foram salvos no sistema. Deseja adicionar novo cadastro?"
+            description="Os dados foram salvos no sistema!"
             buttons
             successAction={() => {
               dispatch(cleanAction());
@@ -1942,17 +1942,17 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
       {userState.loading && <Loading/>}
       <Container>
         {userState.success ? (
-          <FeedbackComponent
+          <FeedbackUserComponent
             type="success"
             title="Cadastro concluído!"
-            description="Os dados foram salvos no sistema. Deseja adicionar novo cadastro?"
+            description="Os dados foram s alvos no sistema!"
             buttons
             successAction={() => {
               dispatch(cleanAction());
               if(currentC != 'SEM'){
                 history.push("/dashboard_user");
               }else{
-                history.push("/user/create");
+                history.push("/dashboard_user");
               }
 
             }}
