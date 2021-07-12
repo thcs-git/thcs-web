@@ -92,7 +92,7 @@ export default function AvaliationList() {
       }
     };
 
-    if (found) {
+    if (found && documentId != '5ffd7acd2f5d2b1d8ff6bea4') {
       return found.status === 'Não Elegível' ? (
         <Tooltip title="Não Elegível">
           <ErrorOutline style={{ color: '#FF6565', cursor: 'pointer' }} onClick={() => history.push(`/patient/capture/${found.care_id}/${documentRoute()}/${found._id}`)} />
@@ -216,10 +216,10 @@ export default function AvaliationList() {
             tableCells={[
               { name: 'Paciente', align: 'left' },
               { name: 'Tipo', align: 'left' },
+              { name: 'Complexidade', align: 'left' },
               { name: 'Socioambiental', align: 'center' },
               { name: 'NEAD', align: 'center' },
               { name: 'ABEMID', align: 'center' },
-              { name: 'Última captação', align: 'left' },
               { name: 'Status da captação', align: 'left' },
               { name: ' ', align: 'left' }
             ]}
@@ -231,11 +231,11 @@ export default function AvaliationList() {
                     {care?.patient_id?.name}
                   </Link>
                 </TableCell> {/* Paciente */}
-                <TableCell align="left">{care.capture?.order_number || '-'}</TableCell> {/* Pedido */}
+                <TableCell align="left">{care.capture?.order_number || '-'}</TableCell> {/* tipo */}
+                <TableCell align="center"> - </TableCell> {/* Complexidade */}
                 <TableCell align="center">{handleCheckDocument('5ffd79012f5d2b1d8ff6bea3', care?.documents_id || [])}</TableCell> {/* Socioambiental */}
                 <TableCell align="center">{handleCheckDocument('5ff65469b4d4ac07d186e99f', care?.documents_id || [])}</TableCell> {/* NEAD */}
                 <TableCell align="center">{handleCheckDocument('5ffd7acd2f5d2b1d8ff6bea4', care?.documents_id || [])}</TableCell> {/* ABEMID */}
-                <TableCell align="left">{care?.created_at ? formatDate(care.created_at, 'DD/MM/YYYY HH:mm:ss') : '-'}</TableCell> {/* Última captação */}
                 <TableCell>
                   <ListItemCaptureStatus status={care?.capture?.status || ''}>
                     <FiberManualRecord /> {care?.capture?.status}
