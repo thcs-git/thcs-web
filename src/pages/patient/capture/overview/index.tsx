@@ -38,6 +38,7 @@ import { ReactComponent as SuccessImage } from '../../../../assets/img/ilustraca
 import { age } from '../../../../helpers/date';
 interface IPageParams {
   id: string;
+  mode: string;
 }
 
 interface ICaptureData {
@@ -328,7 +329,7 @@ export default function PatientCaptureForm(props: RouteComponentProps<IPageParam
                             <p>Pedido: {care?.capture?.order_number}</p>
                             <p>Data de Nascimento: {formatDate(care?.patient_id?.birthdate, 'DD/MM/YYYY')}</p>
                             {care.capture?.status === 'Em Andamento' && (
-                              <Button onClick={() => setCaptureModalModalOpen(true)}><Edit style={{ width: 15, marginRight: 5 }} /> Editar</Button>
+                              <Button onClick={() => setCaptureModalModalOpen(true)}><Visibility style={{width: 20, marginRight: 5}} />Dados da captação</Button>
                             )}
                           </div>
                         </div>
@@ -485,6 +486,7 @@ export default function PatientCaptureForm(props: RouteComponentProps<IPageParam
           captureData={captureData}
           setCaptureData={setCaptureData}
           saveCallback={handleSubmitCaptureData}
+          cantEdit={true}
         />
 
         <Dialog
