@@ -28,14 +28,12 @@ export default function UserDisengaged() {
   const dispatch = useDispatch();
   const [search, setSearch] = useState('');
   const userState = useSelector((state: ApplicationState) => state.users);
-  const [users, setUsers] = useState<UserInterface[]>([]);
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const handleChangeInput = useCallback((event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     setSearch(event.target.value)
-    dispatch(searchUserDisengaged(event.target.value));
+    dispatch(searchRequest(event.target.value));
   }, []);
   const debounceSearchRequest = debounce(handleChangeInput, 900);
-  const [canEdit, setCanEdit] = useState(true);
 
   useEffect(() => {
     dispatch(cleanAction());
@@ -52,15 +50,7 @@ export default function UserDisengaged() {
 
   const [open, setOpen] = useState(false);
 
-  function handleClickOpen() {
-    setOpen(true);
-  }
-
-  function handleClose() {
-    setOpen(false);
-  }
-
-
+  
   return (
     <>
       <Sidebar>
@@ -120,10 +110,10 @@ export default function UserDisengaged() {
                         open={anchorEl?.id === `btn_user-speciality${index}`}
                         onClose={handleCloseRowMenu}
                       >
-                        <MenuItem style={{ cursor: "default" }}><h2>Principal</h2></MenuItem>
-                        <MenuItem style={{ cursor: "default" }}>{user.main_specialty_id.name}</MenuItem>
-                        <MenuItem style={{ cursor: "default" }}><h2>Secundária</h2></MenuItem>
-                        <MenuItem style={{ cursor: "default" }}>{user.specialties.map((specialty, index) => (
+                        <MenuItem style={{ cursor: "default", fontSize: "13pt", fontFamily: "Open Sans Bold" }}><h4>Principal</h4></MenuItem>
+                        <MenuItem style={{ cursor: "default", fontSize: "10pt", fontFamily: "Open Sans Regular"}}>{user.main_specialty_id.name}</MenuItem>
+                        <MenuItem style={{ cursor: "default", fontSize: "13pt", fontFamily: "Open Sans Bold"}}><h4>Secundária</h4></MenuItem>
+                        <MenuItem style={{ cursor: "default", fontSize: "10pt", fontFamily: "Open Sans Regular"}}>{user.specialties.map((specialty, index) => (
                           `${specialty.name}${index < (user.specialties.length - 1) ? ',' : ''}`
                         ))}</MenuItem>
                       </Menu>
