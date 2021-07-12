@@ -219,7 +219,7 @@ export default function AvaliationList() {
               { name: 'Complexidade', align: 'left' },
               { name: 'Socioambiental', align: 'center' },
               { name: 'NEAD', align: 'center' },
-              { name: 'ABEMID', align: 'center' },
+              // { name: 'ABEMID', align: 'center' },
               { name: 'Status da captação', align: 'left' },
               { name: ' ', align: 'left' }
             ]}
@@ -232,7 +232,7 @@ export default function AvaliationList() {
                   </Link>
                 </TableCell> {/* Paciente */}
                 <TableCell align="left">{care.capture?.order_number || '-'}</TableCell> {/* tipo */}
-                <TableCell align="center"> - </TableCell> {/* Complexidade */}
+                {/* <TableCell align="center"> - </TableCell> Complexidade */}
                 <TableCell align="center">{handleCheckDocument('5ffd79012f5d2b1d8ff6bea3', care?.documents_id || [])}</TableCell> {/* Socioambiental */}
                 <TableCell align="center">{handleCheckDocument('5ff65469b4d4ac07d186e99f', care?.documents_id || [])}</TableCell> {/* NEAD */}
                 <TableCell align="center">{handleCheckDocument('5ffd7acd2f5d2b1d8ff6bea4', care?.documents_id || [])}</TableCell> {/* ABEMID */}
