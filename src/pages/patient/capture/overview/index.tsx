@@ -329,7 +329,7 @@ export default function PatientCaptureForm(props: RouteComponentProps<IPageParam
                             <p>Pedido: {care?.capture?.order_number}</p>
                             <p>Data de Nascimento: {formatDate(care?.patient_id?.birthdate, 'DD/MM/YYYY')}</p>
                             {care.capture?.status === 'Em Andamento' && (
-                              <Button onClick={() => setCaptureModalModalOpen(true)}><Visibility style={{width: 20, marginRight: 5}} />Dados da captação</Button>
+                              <Button onClick={() => setCaptureModalModalOpen(true)}><Visibility className="primary" style={{width: 20, marginRight: 5}} />Dados da captação</Button>
                             )}
                           </div>
                         </div>

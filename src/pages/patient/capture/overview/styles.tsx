@@ -30,7 +30,6 @@ export const PatientResumeContent = styled.div`
 
   .subTitle {
     color: var(--gray-dark);
-
   }
 
   .patientIcon {
@@ -78,6 +77,7 @@ export const BackButtonContent = styled.div`
     margin-right: 10px;
   }
 `;
+
 
 export const FemaleIconLogo = styled(femaleIcon)`
   height: 15px;
