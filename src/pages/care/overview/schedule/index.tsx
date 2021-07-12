@@ -362,7 +362,7 @@ export default function SchedulePage(props: RouteComponentProps<IPageParams>) {
     schedule.professional_type = professionalTypeValue;
     schedule.type = currentTabValue === 0 ? 'assistencia' : 'plantao';
 
-    if (schedule?.exchange?.exchanged_to) {
+    if (schedule?.exchange?.exchanged_to || schedule?.user_id != '') {
       if (currentTabValue === 0 && schedule.day) {
         const [hourOfStart, minuteOfStart] = schedule.start_at ? schedule.start_at.split(':') : [0, 0]
         const [hourOfEnd, minuteOfEnd] = schedule.end_at ? schedule.end_at.split(':') : [0, 0]

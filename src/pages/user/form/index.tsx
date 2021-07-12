@@ -780,9 +780,9 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
     const customer = localStorage.getItem(LOCALSTORAGE.CUSTOMER);
 
     let mycompanies: CompanyUserInterface[] = [];
-    state.companies.map((value, index) => {
+    state?.companies?.map((value, index) => {
 
-      if (value.customer_id._id === customer) {
+      if (value?.customer_id?._id === customer) {
         mycompanies.push(value);
       }
     })
