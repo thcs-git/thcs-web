@@ -198,6 +198,29 @@ export default function AvaliationList() {
 
   }, [captureStatus, careState]);
 
+
+  const handleCaptureAttendance = useCallback(() => {
+    setModalUpdateStatus(false);
+    setModalConfirmUpdateStatus(false);
+
+    const { care } = captureStatus;
+
+    const updateParams = {
+      ...care,
+      capture: {
+        ...care.capture,
+        status: captureStatus.approved,
+        complexity: captureStatus.complexity,
+      }
+    };
+
+    dispatch(updateCareAction(updateParams));
+    dispatch(getCares({ status: 'Pre-Atendimento' }));
+
+    history.push('/care/create/')
+
+  }, [captureStatus, careState]);
+
   return (
     <>
       <Sidebar>
@@ -391,14 +414,46 @@ export default function AvaliationList() {
               <Button onClick={() => setModalUpdateStatus(false)} color="primary">
                 Fechar
               </Button>
-              <Button onClick={() => setModalConfirmUpdateStatus(true)} color="primary">
-                Atualizar
+              {captureStatus.approved === 'Aprovado' ? (
+                <Button onClick={handleCaptureAttendance} color="primary">
+                  Atualizar
+                </Button>
+              ):(
+                <>
+                {captureStatus.approved === 'Recusado' ? (
+                    <Button onClick={handleUpdateCaptureStatus} color="secondary">
+                      Atualizar
+                    </Button>
+                  ):null}
+                </>
+              )}
+            </DialogActions>
+          </Dialog>
+
+          <Dialog
+            open={modalConfirmUpdateStatus && captureStatus.approved === 'Recusado'}
+            onClose={() => setModalConfirmUpdateStatus(false)}
+            aria-labelledby="alert-dialog-title"
+            aria-describedby="alert-dialog-description"
+          >
+            <DialogTitle id="alert-dialog-title">Finalizar Captação</DialogTitle>
+            <DialogContent>
+              <DialogContentText id="alert-dialog-description">
+                Tem certeza que deseja prosseguir?
+              </DialogContentText>
+            </DialogContent>
+            <DialogActions>
+              <Button onClick={() => setModalConfirmUpdateStatus(false)} color="primary">
+                Não
+              </Button>
+              <Button onClick={handleUpdateCaptureStatus} color="primary" autoFocus>
+                Sim
               </Button>
             </DialogActions>
           </Dialog>
 
           <Dialog
-            open={modalConfirmUpdateStatus}
+            open={modalConfirmUpdateStatus && captureStatus.approved === 'Aprovado'}
             onClose={() => setModalConfirmUpdateStatus(false)}
             aria-labelledby="alert-dialog-title"
             aria-describedby="alert-dialog-description"
@@ -411,10 +466,13 @@ export default function AvaliationList() {
             </DialogContent>
             <DialogActions>
               <Button onClick={() => setModalConfirmUpdateStatus(false)} color="primary">
-                Não
+                Cancelar
               </Button>
               <Button onClick={handleUpdateCaptureStatus} color="primary" autoFocus>
-                Sim
+                Confirmar
+              </Button>
+              <Button onClick={handleCaptureAttendance} color="primary" autoFocus>
+                Iniciar Atendimento
               </Button>
             </DialogActions>
           </Dialog>
