@@ -142,6 +142,17 @@ export default function UserConfiguration(){
     history.push(`/user/${user_id}/config/edit`)
   }
 
+  function handleBackUser() {
+    const user_id = localStorage.getItem(LOCALSTORAGE.USER_ID)
+    console.log(user_id)
+
+    if (currentCustomer != "SEM") {
+      history.push('/dashboard')
+    } else {
+      history.push('/dashboard_user')
+    }
+  }
+
   return (
 
 
@@ -159,12 +170,17 @@ export default function UserConfiguration(){
                       <Grid item md={1} style={{padding:"0"}}>
                       <AccountCircle style={{ fontSize: 60 }} />
                       </Grid>
-                      <Grid item md={5} style={{paddingLeft:"0px",paddingTop:"1.5rem"}}>
+                      <Grid item md={4} style={{paddingLeft:"0px",paddingTop:"1.5rem"}}>
                         <h3>{userState.data.name}</h3>
                       </Grid>
-                      <Grid item md={4}>
+                      <Grid item md={3}>
                         <ButtonComponent variant="outlined">
                           <Button onClick={handlePushUser}>Atualizar Dados</Button>
+                        </ButtonComponent>
+                      </Grid>
+                      <Grid item md={2}>
+                        <ButtonComponent variant="contained">
+                          <Button onClick={handleBackUser}>Voltar</Button>
                         </ButtonComponent>
                       </Grid>
                     </Grid>
@@ -326,12 +342,17 @@ export default function UserConfiguration(){
                       <Grid item md={1} style={{padding:"0"}}>
                       <AccountCircle style={{ fontSize: 60 }} />
                       </Grid>
-                      <Grid item md={5} style={{paddingLeft:"0px",paddingTop:"1.5rem"}}>
+                      <Grid item md={4} style={{paddingLeft:"0px",paddingTop:"1.5rem"}}>
                         <h3>{userState.data.name}</h3>
                       </Grid>
-                      <Grid item md={4}>
+                      <Grid item md={3}>
                         <ButtonComponent variant="outlined">
                           <Button onClick={handlePushUser}>Atualizar Dados</Button>
+                        </ButtonComponent>
+                      </Grid>
+                      <Grid item md={2}>
+                        <ButtonComponent variant="contained">
+                          <Button onClick={handleBackUser}>Voltar</Button>
                         </ButtonComponent>
                       </Grid>
                     </Grid>
