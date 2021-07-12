@@ -823,12 +823,12 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
               if(currentC != 'SEM'){
                 history.push("/dashboard_user");
               }else{
-                history.push("/user/create");
+                history.push("/dashboard_user");
               }
             }}
             defaultAction={() => {
               dispatch(cleanAction());
-                history.push("/user");
+                history.push("/dashboard_user");
 
 
             }}

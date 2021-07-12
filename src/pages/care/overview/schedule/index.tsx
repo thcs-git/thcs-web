@@ -469,7 +469,7 @@ export default function SchedulePage(props: RouteComponentProps<IPageParams>) {
       setTimeout(() => {
         dispatch(loadScheduleRequest({attendance_id: params.id}))
         // Resolve problemas de state e cache
-        // window.location.reload()
+        window.location.reload()
       }, 2000);
     } else {
       setDayOptionsModalOpen(false);
