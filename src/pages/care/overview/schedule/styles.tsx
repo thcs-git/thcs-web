@@ -24,6 +24,20 @@ export const CardPlantonistas = styled.div`
   display: flex;
   align-items: center;
 
+  .diurno-icon {
+    path.a {
+      stroke: #EBB500;
+      fill: none;
+    }
+  }
+
+  .noturno-icon {
+    path.a {
+      stroke: #6B4FC9;
+      fill: none;
+    }
+  }
+
   > svg {
     margin-right: 4px;
   }
@@ -57,6 +71,62 @@ export const ScheduleItem = styled.div`
   width: 100%;
   word-wrap: break-word;
   white-space: pre-wrap;
+
+  .late {
+    width: 10px;
+    height: 10px;
+    margin-left: 5px;
+    margin-right: 5px;
+    border-radius: 50px;
+
+    path.a {
+      stroke: none;
+      fill: #FF6565;
+    }
+  }
+
+  .visiting {
+    width: 10px;
+    height: 10px;
+    margin-left: 5px;
+    margin-right: 5px;
+    border-radius: 50px;
+
+    box-shadow: 0 0 0 0 var(--warning);
+    transform: scale(1);
+    animation: pulse 2s infinite;
+
+    path.a {
+      stroke: none;
+      fill: #F9CA24;
+    }
+  }
+
+  .complete {
+    width: 10px;
+    height: 10px;
+    margin-left: 5px;
+    margin-right: 5px;
+    border-radius: 50px;
+
+    path.a {
+      stroke: none;
+      fill: #4FC66A;
+    }
+  }
+
+  .future {
+    width: 10px;
+    height: 10px;
+    margin-left: 5px;
+    margin-right: 5px;
+    border-radius: 50px;
+
+    path.a {
+      stroke: none;
+      fill: #CCCCCC;
+    }
+  }
 
   & > .scheduleBadge {
     padding: 2px;
@@ -118,10 +188,29 @@ export const CardTitle = styled.div`
   align-items: center;
   margin-bottom: 20px;
 
+  .team-icon {
+    width: 21px;
+    height: 21px;
+    background: var(--secondary);
+    border-radius: 50%;
+    padding: 0px;
+
+    path.a {
+      stroke: none;
+      fill: #ffffff;
+    }
+  }
   .duty-icon {
+    width: 21px;
+    height: 21px;
     background: var(--secondary);
     border-radius: 50%;
     padding: 3px;
+
+    path.a {
+      stroke: none;
+      fill: #ffffff;
+    }
   }
   .permuta-icon {
     width: 21px;
@@ -129,6 +218,20 @@ export const CardTitle = styled.div`
     background: var(--secondary);
     border-radius: 50%;
     padding: 3px;
+
+    path.a {
+      stroke: none;
+      fill: #ffffff;
+    }
+  }
+
+  .profile-icon {
+    width: 25px;
+    height: 25px;
+
+    path.a {
+      fill: #ffffff;
+    }
   }
 
   & > svg {
@@ -176,6 +279,13 @@ export const HeaderContent = styled.div`
   display: flex;
   flex-direction: row;
   justify-content: space-between;
+`;
+
+export const BottomContent = styled.div`
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  margin-top: 30px;
 `;
 
 export const ResumeList = styled(List)`
