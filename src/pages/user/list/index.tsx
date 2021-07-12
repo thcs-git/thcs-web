@@ -114,10 +114,10 @@ export default function UserList() {
                         open={anchorEl?.id === `btn_user-speciality${index}`}
                         onClose={handleCloseRowMenu}
                       >
-                        <MenuItem style={{ cursor: "default" }}><h2>Principal</h2></MenuItem>
-                        <MenuItem style={{ cursor: "default" }}>{user.main_specialty_id.name}</MenuItem>
-                        <MenuItem style={{ cursor: "default" }}><h2>Secundária</h2></MenuItem>
-                        <MenuItem style={{ cursor: "default" }}>{user.specialties.map((specialty, index) => (
+                        <MenuItem style={{ cursor: "default", fontSize: "13pt", fontFamily: "Open Sans Bold" }}><h4>Principal</h4></MenuItem>
+                        <MenuItem style={{ cursor: "default", fontSize: "10pt", fontFamily: "Open Sans Regular"}}>{user.main_specialty_id.name}</MenuItem>
+                        <MenuItem style={{ cursor: "default", fontSize: "13pt", fontFamily: "Open Sans Bold"}}><h4>Secundária</h4></MenuItem>
+                        <MenuItem style={{ cursor: "default", fontSize: "10pt", fontFamily: "Open Sans Regular"}}>{user.specialties.map((specialty, index) => (
                           `${specialty.name}${index < (user.specialties.length - 1) ? ',' : ''}`
                         ))}</MenuItem>
                       </Menu>
