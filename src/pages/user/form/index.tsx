@@ -828,11 +828,8 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
             }}
             defaultAction={() => {
               dispatch(cleanAction());
-              if(currentC != 'SEM'){
-                history.push("/dashboard_user");
-              }else{
                 history.push("/user");
-              }
+
 
             }}
           />
