@@ -245,9 +245,13 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
 
 
   const validateCellPhone = () => {
-    var cellphone = state.cellphone.replace('(', '').replace(')', '').replace(' ', '').replace(' ', '').replace('-', '');
-    isValidCellPhoneNumber = validator.isMobilePhone(cellphone, 'pt-BR');
-    return (isValidCellPhoneNumber)
+    try {
+      var cellphone = state.cellphone.replace('(', '').replace(')', '').replace(' ', '').replace(' ', '').replace('-', '');
+      isValidCellPhoneNumber = validator.isMobilePhone(cellphone, 'pt-BR');
+      return (isValidCellPhoneNumber)
+    } catch {
+
+    }
   }
 
   if (validatePhone() == true && validateCellPhone() == true) {
@@ -1945,7 +1949,7 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
           <FeedbackUserComponent
             type="success"
             title="Cadastro concluído!"
-            description="Os dados foram s alvos no sistema!"
+            description="Os dados foram salvos no sistema!"
             buttons
             successAction={() => {
               dispatch(cleanAction());
