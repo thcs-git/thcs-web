@@ -149,6 +149,7 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
     council_number: "",
     verified: "",
     active: true,
+    professions:[]
   });
 
   const [specialties, setSpecialties] = useState<any[]>([]);
@@ -278,6 +279,7 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
   }));
   const classes = useStyles();
   useEffect(() => {
+  
     dispatch(cleanAction());
     dispatch(getSpecialtiesAction());
     dispatch(getCouncilsAction());
@@ -572,21 +574,29 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
     }));
   }
 
+  function getprofessionId(){
+    if (typeof state.profession_id === "object") {
+      return state?.profession_id?._id;
+    }
+  }
+
   const selectProfession = useCallback(() => {
     if (!userState.data.professions) {
       // return null;
     } else {
       const selected = userState.data.professions.filter((item) => {
         if (typeof state.profession_id === "object") {
-          return item._id === state?.profession_id?._id;
+          return item._id === state.profession_id._id;
         }
       });
+      console.log(selected);
 
-      return selected[0] ? selected[0] : null;
+
+      return selected[0]? selected[0]: userState.data.professions[1] ;
     }
 
 
-  }, [state.profession_id, state.professions]);
+  }, [state, state.professions]);
 
 
   function viewProfession() {
@@ -1498,12 +1508,15 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
                           <Autocomplete
                             id="combo-box-profession"
                             disabled={!canEdit}
-                            options={userState.data.professions || []}
+                            options={userState.data.professions}
                             getOptionLabel={(option) => option.name}
-                            renderInput={(params) => <TextField {...params} disabled={!canEdit} label="Função"
-                                                                variant="outlined"/>}
-                            getOptionSelected={(option, value) => option._id === state?.profession_id}
-                            value={selectProfession()}
+                            renderInput={(params) =>
+                            <TextField {...params}  label="Função" variant="outlined"/>}
+                            // getOptionSelected={(option, value) =>
+                            //   option._id ==
+                            //    userState.data.professions[0]._id
+                            //  }
+                            defaultValue={selectProfession()}
                             onChange={(event, value) => {
                               if (value) {
                                 handleSelectProfession(value);
@@ -1511,6 +1524,7 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
                             }}
                             size="small"
                             fullWidth
+
                           />
                         </FormGroupSection>
                       </Grid>
@@ -2633,8 +2647,8 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
                             getOptionLabel={(option) => option.name}
                             renderInput={(params) => <TextField {...params} disabled={!canEdit} label="Função"
                                                                 variant="outlined"/>}
-                            getOptionSelected={(option, value) => option._id === state?.profession_id}
-                            value={selectProfession()}
+                           // getOptionSelected={(option, value) => option._id === getprofessionId()}
+                            defaultValue={selectProfession()}
                             onChange={(event, value) => {
                               if (value) {
                                 handleSelectProfession(value);
