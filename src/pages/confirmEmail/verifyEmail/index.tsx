@@ -51,6 +51,7 @@ export default function VerifyEmailForm(props: RouteComponentProps<IPageParams>)
     council_number: "",
     verified: "",
     active: true,
+    professions:[]
   });
 
   useEffect(()=>{

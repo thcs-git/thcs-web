@@ -477,17 +477,25 @@ export default function PatientForm(props: RouteComponentProps<IPageParams>) {
 
   const selectPatientArea = useCallback(() => {
 
-    if(canEdit){
-
-    }else{
-       const selected = areaState.list.data.filter(item => {
+    const selected = areaState.list.data.filter(item => {
       if (typeof state?.area_id === 'object') {
         return item._id === state?.area_id._id
       }
     })
 
-    return (selected[0]) ? selected[0] : null;
-    }
+    return (selected[0]) ? selected[0]: areaState.list.data[0];
+
+    // if(canEdit){
+
+    // }else{
+    //    const selected = areaState.list.data.filter(item => {
+    //   if (typeof state?.area_id === 'object') {
+    //     return item._id === state?.area_id._id
+    //   }
+    // })
+
+    //return (selected[0]) ? selected[0]: areaState.list.data[0];
+    //}
 
   }, [state.area_id, areaState]);
 
@@ -963,35 +971,22 @@ export default function PatientForm(props: RouteComponentProps<IPageParams>) {
                         />
                       </Grid>
 
-                      {!canEdit ? (
                       <Grid item md={7} xs={12}>
-                        <TextField
-                          id="combo-box-areas"
-                          label="Área"
-                          variant="outlined"
-                          size="small"
-                          value={state.area_id ? state.area_id.name : null}
-                          fullWidth
-                          disabled={!canEdit}
-                        />
-                      </Grid>
-                      ):(
-                        <Grid item md={7} xs={12}>
-                          <Autocomplete
+                        <Autocomplete
                             id="combo-box-areas"
                             options={areaState.list.data}
                             getOptionLabel={(option: any) => option.name}
-                            renderInput={(params) => <TextField {...params} label="Área" variant="outlined" />}
+                            renderInput={(params) => <TextField {...params} label="Área"  variant="outlined"  />}
                             size="small"
-                            value={selectPatientArea()}
-                            onChange={(element, value) => setState({ ...state, area_id: {...value }})}
-                            getOptionSelected={(option, value) => option._id === state?.area_id._id}
+                            defaultValue={selectPatientArea()}
+                           // value={selectPatientArea()}
+                            onChange={(value) => setState({ ...state, area_id: {...value }})}
+                          //  getOptionSelected={(option, value) => option._id === state?.area_id._id}
                             noOptionsText="Nenhum resultado encontrado"
                             fullWidth
                             disabled={!canEdit}
                           />
-                        </Grid>
-                      )}
+                      </Grid>
 
                     </Grid>
                     <Grid container>
