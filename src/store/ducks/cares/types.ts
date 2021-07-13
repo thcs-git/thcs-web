@@ -156,6 +156,7 @@ export interface CareList {
   page: string;
   total: number;
   search?: string;
+  status?: string;
 }
 
 /**

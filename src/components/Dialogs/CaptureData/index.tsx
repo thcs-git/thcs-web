@@ -69,13 +69,13 @@ export default function CaptureDataDialog(props: IDialogProps) {
                 value="Não"
                 control={<Radio color="primary" />}
                 label="Não"
-                checked={!captureData.inpatient}
+                // checked={!captureData.inpatient}
               />
               <FormControlLabel
                 value="Sim"
                 control={<Radio color="primary" />}
                 label="Sim"
-                checked={captureData.inpatient}
+                // checked={captureData.inpatient}
               />
             </RadioGroup>
 
