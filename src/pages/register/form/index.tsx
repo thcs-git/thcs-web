@@ -229,6 +229,7 @@ export default function RegisterForm() {
     customer_id:'',
     password:"",
     active: true,
+    professions:[]
   });
 
 
