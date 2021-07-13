@@ -20,6 +20,7 @@ export const BoxCustom = styled(Box)`
   align-items: center;
   padding: 15px 0;
   margin: 20px 10%;
+
 `;
 export const FormSection = styled.div`
   display: flex;

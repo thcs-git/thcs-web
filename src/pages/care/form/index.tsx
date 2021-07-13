@@ -30,6 +30,7 @@ import {
   AccommodationTypeRequest,
   careTypeRequest,
   cidRequest,
+  cleanAction as clear
 } from "../../../store/ducks/cares/actions";
 import { cleanAction, loadPatientById } from "../../../store/ducks/patients/actions";
 import { loadRequest as getAreasAction } from "../../../store/ducks/areas/actions";
@@ -134,8 +135,8 @@ export default function CareForm(props: RouteComponentProps<IPageParams>) {
   });
 
   const [selectCheckbox, setSelectCheckbox] = useState<
-    Partial<CareInterface>
-  >();
+    Partial<CareInterface>>
+  ();
 
   const useStyles = makeStyles((theme) => ({
     sucess_round:{
@@ -195,6 +196,7 @@ export default function CareForm(props: RouteComponentProps<IPageParams>) {
   var formValid : any;
   useEffect(() => {
     dispatch(cleanAction());
+    dispatch(clear());
     if (params.id) {
       dispatch(loadCareById(params.id));
     }
@@ -203,7 +205,7 @@ export default function CareForm(props: RouteComponentProps<IPageParams>) {
     dispatch(healthInsuranceRequest());
     dispatch(AccommodationTypeRequest());
     dispatch(careTypeRequest());
-    dispatch(getCares({ status: "Pre-Atendimento", "capture.status": "Aprovado", 'patient_id.active': true }));
+     dispatch(getCares({ status: "Pre-Atendimento", "capture.status": "Aprovado", 'patient_id.active': true }));
   }, [dispatch]);
 
   useEffect(() => {
@@ -224,18 +226,40 @@ export default function CareForm(props: RouteComponentProps<IPageParams>) {
     },
     [currentTab]
   );
-  function selectPatient(){
+  const selectPatient= useCallback((care:CareInterface)=>{
+    console.log(care);
       careState.list.data.map((care)=>{
-        if(care.patient_id._id){
+        if(care.patient_id._id == care._id){
           dispatch(loadPatientById(care.patient_id._id));
         }
       })
+      dispatch(loadPatientById(care.patient_id._id))
 
-      if(selectCheckbox?._id){
-      dispatch(loadPatientById(selectCheckbox?._id))
-    }
     setStartStep(!startStep);
-  }
+  },[patientState])
+
+  const selectPatientArea = useCallback(() => {
+
+    const selected = areaState.list.data.filter(item => {
+      if (typeof state?.area_id === 'object') {
+        return item._id === state?.area_id._id
+      }
+    })
+    return (selected[0]) ? selected[0]: areaState.list.data[0];
+
+    // if(canEdit){
+
+    // }else{
+    //    const selected = areaState.list.data.filter(item => {
+    //   if (typeof state?.area_id === 'object') {
+    //     return item._id === state?.area_id._id
+    //   }
+    // })
+
+    //return (selected[0]) ? selected[0]: areaState.list.data[0];
+    //}
+
+  }, [state.area_id, areaState]);
 
 
 
@@ -367,24 +391,31 @@ export default function CareForm(props: RouteComponentProps<IPageParams>) {
   };
 
   const selectHealhInsurance = useCallback(() => {
+    console.log(selectCheckbox);
     const selected = careState.healthInsurance.filter(
-      (item) => item._id === state.health_insurance_id
+      (item) => item._id === selectCheckbox?.health_insurance_id
     );
-    return selected[0] ? selected[0] : null;
-  }, [state.health_insurance_id]);
+
+    if(selected[0]){
+    //  dispatch(healthPlanRequest(selected[0] && selected[0]._id));
+    }else{
+    //  dispatch(healthPlanRequest(selectCheckbox?.health_insurance_id));
+    }
+    return selected[0] ? selected[0] : careState.healthInsurance[0];
+  }, [selectCheckbox,state.health_insurance_id]);
 
   const selectHealhPlan = useCallback(() => {
     const selected = careState.healthPlan.filter(
       (item) => item._id === state.health_plan_id
     );
-    return selected[0] ? selected[0] : null;
+    return selected[0] ? selected[0] : careState.healthPlan[0];
   }, [state.health_plan_id]);
 
   const selectHealhSubPlan = useCallback(() => {
     const selected = careState.healthSubPlan.filter(
       (item) => item._id === state.health_sub_plan_id
     );
-    return selected[0] ? selected[0] : null;
+    return selected[0] ? selected[0] : careState.healthSubPlan[0];
   }, [state.health_sub_plan_id]);
 
   const selectAccommodationType = useCallback(() => {
@@ -453,13 +484,13 @@ export default function CareForm(props: RouteComponentProps<IPageParams>) {
                             <Checkbox
                               checked={selectCheckbox?._id === care?._id}
                               onChange={(element) => {
-                                selectPatient();
+                              //  selectPatient();
                                 if (care._id && care._id === element.target.value){
-                                  console.log("checado");
-                                   setSelectCheckbox({});
-                                }else{
 
+                                   setSelectCheckbox(care);
+                                }else{
                                   setSelectCheckbox(care);
+                                  selectPatient(care);
 
                                 }
                               }}
@@ -496,7 +527,7 @@ export default function CareForm(props: RouteComponentProps<IPageParams>) {
                       ))}
                     </tbody>
                   </Table>
-                  <Button variant="outlined" className={classes.sucess_round} onClick={() =>{ history.push('/care') } } >Voltar</Button>
+                  <Button variant="outlined"  className={classes.sucess_round} onClick={() =>{ history.push('/care') } } >Voltar</Button>
                   </Grid>
                   </BoxCustom>
 
@@ -687,9 +718,6 @@ export default function CareForm(props: RouteComponentProps<IPageParams>) {
                           />
                         </FormGroupSection>
                       </Grid>
-
-
-
                       <Grid item md={10} />
                     </Grid>
                   </FormGroupSection>
@@ -697,9 +725,7 @@ export default function CareForm(props: RouteComponentProps<IPageParams>) {
                   {/*  */}
                   <FormGroupSection>
                     <Grid container>
-
-
-                      {/* <Grid item md={9} xs={12}>
+                      <Grid item md={9} xs={12}>
                         <TextField
                           id="input-address"
                           label="Endereço"
@@ -710,12 +736,11 @@ export default function CareForm(props: RouteComponentProps<IPageParams>) {
                           fullWidth
                           disabled={!canEdit}
                         />
-                      </Grid> */}
+                      </Grid>
                       <Grid item md={2} xs={12}>
                         <TextField
                           id="input-address-number"
                           label="Número"
-
                           variant="outlined"
                           size="small"
                           value={patientState.data?.address_id.number}
@@ -742,10 +767,9 @@ export default function CareForm(props: RouteComponentProps<IPageParams>) {
                         <TextField
                           id="input-neighborhood"
                           label="Bairro"
-
                           variant="outlined"
                           size="small"
-                         value={patientState.data?.address_id.district}
+                          value={patientState.data?.address_id.district}
                          // onChange={(element) => setState({ ...state, address_id: { ...state.address_id, district: element.target.value } })}
                           fullWidth
                           disabled={!canEdit}
@@ -785,7 +809,7 @@ export default function CareForm(props: RouteComponentProps<IPageParams>) {
                           getOptionLabel={(option) => option.name}
                           renderInput={(params) => <TextField {...params} label="Área" variant="outlined" />}
                           size="small"
-                         // value={selectPatientArea()}
+                          defaultValue ={selectPatientArea()}
                           onChange={(element, value) => setState({ ...state, area_id: value?._id })}
                           getOptionSelected={(option, value) => option._id === state?.area_id}
                           noOptionsText="Nenhum resultado encontrado"
@@ -891,7 +915,7 @@ export default function CareForm(props: RouteComponentProps<IPageParams>) {
                     id="combo-box-health-insurance"
                     options={careState.healthInsurance}
                     getOptionLabel={(option) => option.name}
-                    value={selectHealhInsurance()}
+                    defaultValue={selectHealhInsurance()}
                     getOptionSelected={(option, value) =>
                       option._id === state.health_insurance_id
                     }
@@ -909,6 +933,7 @@ export default function CareForm(props: RouteComponentProps<IPageParams>) {
                           health_insurance_id: value._id,
                         }));
                       }
+                      console.log(value);
                       dispatch(healthPlanRequest(value && value._id));
                     }}
                     size="small"
@@ -921,7 +946,7 @@ export default function CareForm(props: RouteComponentProps<IPageParams>) {
                     id="combo-box-health-plan"
                     options={careState.healthPlan}
                     getOptionLabel={(option) => option.name}
-                    value={selectHealhPlan()}
+                    defaultValue={selectHealhPlan()}
                     getOptionSelected={(option, value) =>
                       option._id === state.health_plan_id
                     }
@@ -947,7 +972,7 @@ export default function CareForm(props: RouteComponentProps<IPageParams>) {
                     id="combo-box-health-sub-plan"
                     options={careState.healthSubPlan}
                     getOptionLabel={(option) => option.name}
-                    value={selectHealhSubPlan()}
+                    defaultValue={selectHealhSubPlan()}
                     getOptionSelected={(option, value) =>
                       option._id === state.health_sub_plan_id
                     }

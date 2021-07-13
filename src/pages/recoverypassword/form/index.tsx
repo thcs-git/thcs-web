@@ -62,6 +62,7 @@ export default function RecoveryPasswordPage(props: RouteComponentProps<IPagePar
     council_number: "",
     verified: "",
     active: true,
+    professions:[]
   });
 
   useEffect( ()=>{
