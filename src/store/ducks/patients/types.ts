@@ -11,6 +11,7 @@ export enum PatientTypes {
 
   CREATE_PATIENT_REQUEST = "@patient/CREATE_PATIENT_REQUEST",
   CREATE_PATIENT_SUCCESS = "@patient/CREATE_PATIENT_SUCCESS",
+  CLEAN = "@customer/CLEAN",
 
   UPDATE_PATIENT_REQUEST = "@patient/UPDATE_PATIENT_REQUEST",
   UPDATE_PATIENT_SUCCESS = "@patient/UPDATE_PATIENT_SUCCESS",
@@ -65,7 +66,7 @@ export interface PatientInterface {
   national_id: string;
   issuing_organ: string;
   address_id: PatientAddressInterface;
-  area_id?: string | AreaInterface;
+  area_id?: any;
   email: string;
   phones: PatientPhonesInterface[] | [];
   sus_card: string;

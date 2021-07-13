@@ -58,17 +58,16 @@ export function* createPatient({ payload: { data } }: any) {
       let { street, number, district, city, state } = data.address_id;
 
       try {
-        const { data: googleAddressData }: AxiosResponse = yield googleMaps.get(
-          `/geocode/json?address=${street},${number},${district},${city},${state}`
-        );
-
-        if (googleAddressData.results) {
-          const {
-            lat: latitude,
-            lng: longitude,
-          } = googleAddressData.results[0].geometry.location;
-          data.address_id.geolocation = { latitude, longitude };
-        }
+        // const { data: googleAddressData }: AxiosResponse = yield googleMaps.get(
+        //   `/geocode/json?address=${street},${number},${district},${city},${state}`
+        // );
+        // if (googleAddressData.results) {
+        //   const {
+        //     lat: latitude,
+        //     lng: longitude,
+        //   } = googleAddressData.results[0].geometry.location;
+        //   data.address_id.geolocation = { latitude, longitude };
+        // }
       } catch (e) {
         console.error("Get google maps data", e.message);
       }
@@ -94,25 +93,23 @@ export function* createPatient({ payload: { data } }: any) {
 export function* updatePatient({ payload: { data } }: any) {
   const { _id } = data;
 
-  if (data.address_id.postal_code) {
-    let { street, number, district, city, state } = data.address_id;
+  // if (data.address_id.postal_code) {
+  //   let { street, number, district, city, state } = data.address_id;
 
-    try {
-      const { data: googleAddressData }: AxiosResponse = yield googleMaps.get(
-        `/geocode/json?address=${street},${number},${district},${city},${state}`
-      );
+  //   try {
+  //     const { data: googleAddressData }: AxiosResponse = yield googleMaps.get(
+  //       `/geocode/json?address=${street},${number},${district},${city},${state}`
+  //     );
 
-      if (googleAddressData.results) {
-        const {
-          lat: latitude,
-          lng: longitude,
-        } = googleAddressData.results[0].geometry.location;
-        data.address_id.geolocation = { latitude, longitude };
-      }
-    } catch (e) {
-      console.error("Get google maps data", e.message);
-    }
-  }
+  //     if (googleAddressData.results) {
+  //       const { lat: latitude, lng: longitude } =
+  //         googleAddressData.results[0].geometry.location;
+  //       data.address_id.geolocation = { latitude, longitude };
+  //     }
+  //   } catch (e) {
+  //     console.error("Get google maps data", e.message);
+  //   }
+  // }
 
   try {
     const response: AxiosResponse = yield call(
@@ -146,7 +143,6 @@ export function* getAddress({ payload }: any) {
 
     yield put(successGetAddress(data));
   } catch (error) {
-
     yield put(loadFailure());
   }
 }
@@ -159,10 +155,8 @@ export function* searchPatient({ payload: { params } }: any) {
       searchQuery = `&search=${params}`;
     } else {
       requestParams = params;
-
       delete requestParams.limit;
       delete requestParams.page;
-
       requestParams = { params: requestParams };
     }
 
