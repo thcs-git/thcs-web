@@ -30,6 +30,7 @@ import {
   AccommodationTypeRequest,
   careTypeRequest,
   cidRequest,
+  cleanAction as clear,
 } from "../../../store/ducks/cares/actions";
 import { cleanAction, loadPatientById } from "../../../store/ducks/patients/actions";
 import { loadRequest as getAreasAction } from "../../../store/ducks/areas/actions";
@@ -194,6 +195,7 @@ export default function CareForm(props: RouteComponentProps<IPageParams>) {
   var isValidResponsableCellPhoneNumber: any;
   var formValid : any;
   useEffect(() => {
+    dispatch(clear())
     dispatch(cleanAction());
     if (params.id) {
       dispatch(loadCareById(params.id));
@@ -213,8 +215,9 @@ export default function CareForm(props: RouteComponentProps<IPageParams>) {
   }, [patientState.list]);
 
   useEffect(() => {
+    console.log(careState)
     if (careState.success && !careState.error && !careState.loading) {
-      history.push("/care");
+      // history.push("/care");
     }
   }, [careState.success]);
 

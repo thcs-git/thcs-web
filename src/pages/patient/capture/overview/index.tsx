@@ -290,14 +290,14 @@ export default function PatientCaptureForm(props: RouteComponentProps<IPageParam
         <Container>
           <FormTitle>Overview da Captação</FormTitle>
 
-          {state?.success && (
-            <SuccessContent>
-              <SuccessImage />
-              <h1>Avaliação concluída</h1>
+          {/*{state?.success && (*/}
+          {/*  <SuccessContent>*/}
+          {/*    <SuccessImage />*/}
+          {/*    <h1>Avaliação concluída</h1>*/}
 
-              <p><strong>Os dados da avaliação foram salvos no sistema. Para adicionar ou visualizar avaliações, use o menu <MoreVert /></strong></p>
-            </SuccessContent>
-          )}
+          {/*    <p><strong>Os dados da avaliação foram salvos no sistema. Para adicionar ou visualizar avaliações, use o menu <MoreVert /></strong></p>*/}
+          {/*  </SuccessContent>*/}
+          {/*)}*/}
 
           {care?._id && (
             <>
