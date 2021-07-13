@@ -46,17 +46,15 @@ export function* get({ payload }: any) {
   try {
     const { params } = payload;
 
-    console.log(
-      `/attendance/getAttendance?limit=${params.limit ?? 10}&page=${
-        params.page || 1
-      }`
-    );
+    console.log(`/attendance/getAttendance?limit=${params.limit ?? 10}&page=${
+      params.page || 1
+    }${params.search ? "&search=" + params.search : ""}${params.status ? "&status=" + params.status : ""}`)
 
     const response: AxiosResponse = yield call(
       apiSollar.get,
       `/attendance/getAttendance?limit=${params.limit ?? 10}&page=${
         params.page || 1
-      }${params.search ? "&search=" + params.search : ""}`
+      }${params.search ? "&search=" + params.search : ""}${params.status ? "&status=" + params.status : ""}`
     );
 
     yield put(searchCareSuccess(response.data));
@@ -130,6 +128,7 @@ export function* updateCare({ payload: { data } }: any) {
   const { _id } = data;
 
   try {
+    console.log(data);
     const response: AxiosResponse = yield call(
       apiSollar.put,
       `/care/${_id}/update`,

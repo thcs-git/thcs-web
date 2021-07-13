@@ -23,6 +23,7 @@ export const INITIAL_STATE: AreaState = {
   districts_: [],
   citys: [],
   profession: [],
+  points: [],
   error: false,
   loading: false,
   success: false,
@@ -128,6 +129,14 @@ const reducer: Reducer<AreaState> = (state = INITIAL_STATE, action) => {
       return {
         ...state,
         districts_: action.payload.data,
+        loading: false,
+        error: false,
+        success: false,
+      };
+    case AreaTypes.LOAD_POINTS_SUCCESS:
+      return {
+        ...state,
+        points: action.payload.data,
         loading: false,
         error: false,
         success: false,

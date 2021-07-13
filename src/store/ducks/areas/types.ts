@@ -25,6 +25,8 @@ export enum AreaTypes {
 
   LOAD_SUCCCES_GET_DISTRICTS_ = "@area/LOAD_SUCCCES_GET_DISTRICTS_",
 
+  LOAD_POINTS_AREA = "@area/LOAD_POINTS_AREA",
+  LOAD_POINTS_SUCCESS = "@area/LOAD_POINTS_SUCCESS",
   SEARCH_REQUEST = "@area/SEARCH_REQUEST",
   CLEAN = "@area/CLEAN",
 }
@@ -63,8 +65,8 @@ export interface CityAreaInterface {
 }
 
 export interface AreaInterface {
-  _id?: string;
-  name: string;
+  _id?: any;
+  name: any;
   describe?: string;
   supply_days: number;
   week_day: number;
@@ -74,6 +76,21 @@ export interface AreaInterface {
   created_at: string;
   active: boolean;
   profession_users: ProfessionAreaInterface[];
+}
+
+export interface AreaPoints {
+  name: string;
+  geolocation: {
+    latitude: string;
+    longitude: string;
+  };
+  portal_code: string;
+  street: string;
+  number: string;
+  district: string;
+  city: string;
+  state: string;
+  complement: string;
 }
 
 export interface AreaList {
@@ -95,6 +112,7 @@ export interface AreaState {
   citys: any[];
   districts_: any[];
   profession: ProfessionAreaInterface[];
+  points: AreaPoints[];
   loading: boolean;
   error: boolean;
   success: boolean;

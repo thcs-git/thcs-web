@@ -35,7 +35,13 @@ export const loadSuccessGetDistricts = (data: any) =>
 export const loadSuccessGetCitys = (data: any) =>
   action(AreaTypes.LOAD_SUCCCES_GET_CITYS, { data });
 
-export const searchRequest = (value: string) =>
+export const searchRequest = (value: any) =>
   action(AreaTypes.SEARCH_REQUEST, { value });
+
+export const loadPointsArea = (value: any) =>
+  action(AreaTypes.LOAD_POINTS_AREA, { value });
+
+export const loadPointSuccess = (data: any) =>
+  action(AreaTypes.LOAD_POINTS_SUCCESS, { data });
 
 export const cleanAction = () => action(AreaTypes.CLEAN);

@@ -396,7 +396,8 @@ export default function Abemid(props: RouteComponentProps<IPageParams>) {
               <ul>
                 <li>Inferior a 07 pontos Paciente não elegível para Internação Domiciliar</li>
                 <li>De 08 a 12 pontos Baixa Complexidade</li>
-                <li>De 13 a 18 pontos Média Complexidade Acima de 19 pontos Alta Complexidade</li>
+                <li>De 13 a 18 pontos Média Complexidade</li>
+                <li>Acima de 19 pontos Alta Complexidade</li>
               </ul>
             </div>
           </Popover>

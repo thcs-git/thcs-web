@@ -1,5 +1,6 @@
 import { CustomerInterface } from "./../customers/types";
 import { CompanyInterface } from "./../companies/types";
+
 /**
  * Action types
  */
@@ -60,6 +61,7 @@ export interface Phones {
   whatapp: string;
   telegram: string;
 }
+
 export interface SpecialtiesUserInterface {
   _id: string;
   name: string;
@@ -90,6 +92,11 @@ export interface CompanyUserInterface {
 }
 
 export interface UserTypeInterface {
+  _id: string;
+  name: string;
+}
+
+export interface MainSpecialtyInterface {
   _id: string;
   name: string;
 }
@@ -142,7 +149,7 @@ export interface UserInterface {
   cellphone: string;
   user_type_id: string | UserTypeInterface;
   profession_id?: string | ProfessionUserInterface;
-  main_specialty_id?: string;
+  main_specialty_id?: any;
   specialties: (SpecialtiesUserInterface | {})[];
   council_id?: {
     _id: string;
@@ -158,7 +165,7 @@ export interface UserInterface {
   username?: string;
   password?: string;
   active: boolean; // active
-  professions?: ProfessionUserInterface[];
+  professions: ProfessionUserInterface[];
   user_types?: UserTypesInterface[];
 }
 

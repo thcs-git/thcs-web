@@ -4,12 +4,13 @@ import React, { useState, useEffect, useCallback } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { RouteComponentProps, useHistory } from "react-router-dom";
 import { ReactComponent as SuccessImage } from "../../../assets/img/ilustracao-avaliacao-concluida.svg";
-import { FeedbackContent,FormGroupSection, FeedbackImage, FeedbackTitle,FeedbackButtonsContent, FeedbackDescription } from "./style";
+import { FeedbackContent,FormGroupSection, FeedbackImage, FeedbackTitle,FeedbackButtonsContent, FeedbackDescription,HomeIconLogo } from "./style";
 import { loadCheckEmail, cleanAction,loadRecoveryPassword, loadUserByEmail, loadRequest,loadUserTypesRequest} from "../../../store/ducks/users/actions";
 import { UserInterface } from "../../../store/ducks/users/types";
-import { TextField } from '@material-ui/core';
+import { TextField,Grid} from '@material-ui/core';
 import { ApplicationState } from '../../../store';
 import { UserRecoveryPassword } from "../../../store/ducks/users/types";
+import Box from '@material-ui/core/Box';
 
 const SIZE_INPUT_PASSWORD = 3;
 interface IPageParams {
@@ -61,6 +62,7 @@ export default function RecoveryPasswordPage(props: RouteComponentProps<IPagePar
     council_number: "",
     verified: "",
     active: true,
+    professions:[]
   });
 
   useEffect( ()=>{
@@ -114,30 +116,73 @@ export default function RecoveryPasswordPage(props: RouteComponentProps<IPagePar
     )}
 
       { !ok && (
+        <>
+        <FeedbackContent>
+        <Box display="flex" width={150} height={165} justifyContent="center" alignItems="center" style={{margin:"2rem"}}>
+            <HomeIconLogo />
+          </Box>
+          <FormGroupSection>
+             <Grid container direction="column">
+              <Grid item md={12}>
+                <FeedbackTitle>
+                  Redefinir Senha
+                </FeedbackTitle>
+              </Grid>
+              <Grid item md={12}>
+              <FeedbackDescription>
+                <TextField
+                  type="password"
+                  label="Nova senha"
+                  variant="outlined"
+                  size="small"
+                  error={newPassword.error}
+                  onChange={element=>{
+                    setNewPassword(prev=>({
+                      ...prev,
+                      value:element.target.value
+                    }))
+                  }
+                }
+                onBlur={handleValidatePassword}
+              >
+            </TextField>
+          </FeedbackDescription>
+              </Grid>
+              <Grid item md={12}>
+              <FeedbackDescription>
+            <TextField
+                type="password"
+                label="Confirmar Nova Senha"
+                variant="outlined"
+                size="small"
+                onChange={element=>{
+                  setNewConfirmPassword(prev=>({
+                    ...prev,
+                    value:element.target.value
+                  }))
+                }}
+                onBlur={handleValidatePassword}
+            >
+            </TextField>
+            </FeedbackDescription>
+              </Grid>
+              <Grid item>
+
+              </Grid>
+            </Grid>
+          </FormGroupSection>
+          <FeedbackButtonsContent>
+            <Button  variant="outlined" onClick={recoveryPassword}>Alterar Senha</Button>
+          </FeedbackButtonsContent>
+        </FeedbackContent>
+
         <FeedbackContent>
         <FormGroupSection>
           <FeedbackTitle>
             Cadastrar nova senha
           </FeedbackTitle>
 
-          <FeedbackDescription>
-            <TextField
-                type="password"
-                label="Nova senha"
-                variant="outlined"
-                size="small"
-                error={newPassword.error}
-                onChange={element=>{
-                  setNewPassword(prev=>({
-                    ...prev,
-                    value:element.target.value
-                  }))
-                }
-              }
-              onBlur={handleValidatePassword}
-            >
-            </TextField>
-          </FeedbackDescription>
+
           <FeedbackDescription>
             <TextField
                 type="password"
@@ -160,6 +205,8 @@ export default function RecoveryPasswordPage(props: RouteComponentProps<IPagePar
           </FeedbackButtonsContent>
 
         </FeedbackContent>
+        </>
+
       )}
 
     { ok &&  (

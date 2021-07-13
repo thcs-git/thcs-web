@@ -124,7 +124,7 @@ export interface CareInterface {
   care_type_id?: string | CareTypeInterface;
   procedure_id?: string;
   cid_id?: string | CidPopulateInterface;
-  area_id?: string;
+  area_id?: any;
   user_id?: string; // *
   status?: string; // * Pre-Atendimento, Em atendimento, Cancelado, Finalizado
   complexity?: string;
@@ -156,6 +156,7 @@ export interface CareList {
   page: string;
   total: number;
   search?: string;
+  status?: string;
 }
 
 /**
