@@ -195,6 +195,7 @@ export default function CareForm(props: RouteComponentProps<IPageParams>) {
   var isValidResponsableCellPhoneNumber: any;
   var formValid : any;
   useEffect(() => {
+    dispatch(clear())
     dispatch(cleanAction());
     dispatch(clear());
     if (params.id) {
@@ -215,8 +216,9 @@ export default function CareForm(props: RouteComponentProps<IPageParams>) {
   }, [patientState.list]);
 
   useEffect(() => {
+    console.log(careState)
     if (careState.success && !careState.error && !careState.loading) {
-      history.push("/care");
+      // history.push("/care");
     }
   }, [careState.success]);
 
