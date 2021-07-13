@@ -21,6 +21,7 @@ import { formatDate } from '../../../helpers/date';
 
 import { ListItemCaptureStatus, CaptionList } from './styles';
 
+import Popup from '../../../components/Dialogs/Popup';
 interface ICaptureStatus {
   care: any;
   approved: string;
@@ -45,6 +46,9 @@ export default function AvaliationList() {
   const [modalConfirmUpdateStatus, setModalConfirmUpdateStatus] = useState(false);
 
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
+
+  const [openPopup, setOpenPopup] = useState(false)
+  const [recordForEdit, setRecordForEdit] = useState(null)
 
   useEffect(() => {
     dispatch(cleanAction());
@@ -221,6 +225,11 @@ export default function AvaliationList() {
 
   }, [captureStatus, careState]);
 
+  const openInPopup = (care: any) => {
+    setRecordForEdit(care)
+    setOpenPopup(true)
+  }
+
   return (
     <>
       <Sidebar>
@@ -279,6 +288,7 @@ export default function AvaliationList() {
                       <MenuItem onClick={() => handleStartUpdateCaptureStatus(care)}>Atualizar status</MenuItem>
                     )}
                     <MenuItem onClick={() => history.push(`/patient/capture/${care._id}/overview`)}>Visualizar perfil</MenuItem>
+                    <MenuItem onClick={() => { openInPopup(care) }}>Histórico</MenuItem>
                   </Menu>
                 </TableCell>
               </TableRow>
@@ -418,13 +428,13 @@ export default function AvaliationList() {
                 <Button onClick={handleCaptureAttendance} color="primary">
                   Atualizar
                 </Button>
-              ):(
+              ) : (
                 <>
-                {captureStatus.approved === 'Recusado' ? (
+                  {captureStatus.approved === 'Recusado' ? (
                     <Button onClick={handleUpdateCaptureStatus} color="secondary">
                       Atualizar
                     </Button>
-                  ):null}
+                  ) : null}
                 </>
               )}
             </DialogActions>
@@ -476,6 +486,12 @@ export default function AvaliationList() {
               </Button>
             </DialogActions>
           </Dialog>
+          <Popup
+            title="Histórico de Captações"
+            openPopup={openPopup}
+            setOpenPopup={setOpenPopup}
+          >
+          </Popup>
 
         </Container>
       </Sidebar>
