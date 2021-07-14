@@ -290,8 +290,8 @@ export default function PatientForm(props: RouteComponentProps<IPageParams>) {
 
 
   const validateCellPhone = () => {
-    if ( state.phones[0]?.cellnumber){
-    var cellphone =  state.phones[0]?.cellnumber.replace('(','').replace(')','').replace(' ','').replace(' ','').replace('-','');
+    if ( state.phones[1]?.cellnumber){
+    var cellphone =  state.phones[1]?.cellnumber.replace('(','').replace(')','').replace(' ','').replace(' ','').replace('-','');
    isValidCellPhoneNumber = validator.isMobilePhone(cellphone, 'pt-BR');
 
     return (isValidCellPhoneNumber)
@@ -1048,14 +1048,14 @@ export default function PatientForm(props: RouteComponentProps<IPageParams>) {
                           <InputLabel htmlFor="search-input">Celular</InputLabel>
                           <InputMask
                             mask="(99) 9 9999-9999"
-                            value={state.phones[0]?.cellnumber}
+                            value={state.phones[1]?.cellnumber}
                            // onBlur={getAddress}
                             onChange={(element) => {
                               {setState(prevState => ({
                                 ...prevState,
                                 phones: [
                                   {
-                                    ...prevState.phones[0],
+                                    ...prevState.phones[1],
                                     cellnumber: element.target.value
                                   }
                                 ]
@@ -1070,12 +1070,12 @@ export default function PatientForm(props: RouteComponentProps<IPageParams>) {
                                 placeholder="(00) 0 0000-0000"
                                 labelWidth={80}
                                 style={{ marginRight: 12 }}
-                                error ={!validateCellPhone() && state.phones[0]?.cellnumber != ''}
+                                error ={!validateCellPhone() && state.phones[1]?.cellnumber != ''}
                               />
                             )}
                           </InputMask>
                         </FormControl>
-                        {!validateCellPhone() && state.phones[0]?.cellnumber &&(
+                        {!validateCellPhone() && state.phones[1]?.cellnumber &&(
                       <p style={{ color: '#f44336', margin:'1px 5px 20px' }}>
                        Por favor insira um número válido
                       </p>
