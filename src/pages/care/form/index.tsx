@@ -1182,7 +1182,7 @@ export default function CareForm(props: RouteComponentProps<IPageParams>) {
                     renderInput={(params) => (
                       <TextField
                         {...params}
-                        label="Médico responsável"
+                        label="Médico Assistente"
                         variant="outlined"
                       />
                     )}
@@ -1356,7 +1356,7 @@ export default function CareForm(props: RouteComponentProps<IPageParams>) {
                       Dados do hospital
                     </Typography>
                     <Typography variant="caption" color="textSecondary">
-                      Médico responsável: {selectUser()?.name}
+                      Médico Assistente: {selectUser()?.name}
                     </Typography>
                     <Typography variant="caption" color="textSecondary">
                       {`${selectCid()?.cid ?? ""} - ${selectCid()?.name ?? ""}`}
