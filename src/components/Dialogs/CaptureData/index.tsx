@@ -194,7 +194,7 @@ export default function CaptureDataDialog(props: IDialogProps) {
                 <FieldContent style={{ paddingRight: 15 }}>
                   <TextField
                     id="input-assistance-doctor"
-                    label="Médico Assistente"
+                    label="Médico Responsável"
                     variant="outlined"
                     size="small"
                     value={captureData.assistant_doctor}
