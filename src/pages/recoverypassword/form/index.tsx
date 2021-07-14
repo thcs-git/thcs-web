@@ -4,7 +4,7 @@ import React, { useState, useEffect, useCallback } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { RouteComponentProps, useHistory } from "react-router-dom";
 import { ReactComponent as SuccessImage } from "../../../assets/img/ilustracao-avaliacao-concluida.svg";
-import { FeedbackContent,FormGroupSection, FeedbackImage, FeedbackTitle,FeedbackButtonsContent, FeedbackDescription,HomeIconLogo,TokenIconErro } from "./style";
+import { FeedbackContent,FormGroupSection, FeedbackImage, FeedbackTitle,FeedbackButtonsContent, FeedbackDescription,HomeIconLogo,TokenIconErro, TokenIconSuccess } from "./style";
 import { loadCheckEmail, cleanAction,loadRecoveryPassword, loadUserByEmail, loadRequest,loadUserTypesRequest} from "../../../store/ducks/users/actions";
 import { UserInterface } from "../../../store/ducks/users/types";
 import { ApplicationState } from '../../../store';
@@ -245,17 +245,21 @@ export default function RecoveryPasswordPage(props: RouteComponentProps<IPagePar
 
     { ok &&  (
       <FeedbackContent>
-        <FormGroupSection>
-          <FeedbackTitle>
+        <Box display="flex" width={200} height={165} justifyContent="center" alignItems="center" style={{margin:"2rem"}}>
+          <HomeIconLogo />
+        </Box>
+        <Box>
+          <TokenIconSuccess></TokenIconSuccess>
+        </Box>
+        <FormGroupSection style={{ display:'flex', flexDirection:"column" }}>
+          <FeedbackTitle style={{textAlign:"center"}}>
             Sua Senha foi alterada com sucesso
           </FeedbackTitle>
-          <FeedbackDescription>
-            Por favor click no botão abaixo e faça login novamente com sua nova senha.
-          </FeedbackDescription>
-          <FeedbackButtonsContent>
-          <Button  variant="outlined" onClick={()=>{ history.push("/login")}}>Login</Button>
-        </FeedbackButtonsContent>
         </FormGroupSection>
+          <FeedbackButtonsContent>
+          <Button variant="contained" style={{ background:"#4FC66A99", color:"white"}}  onClick={()=>{history.push("/login")}}>Login</Button>
+        </FeedbackButtonsContent>
+
         </FeedbackContent>
     ) }
 

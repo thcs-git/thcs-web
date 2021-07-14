@@ -1,6 +1,7 @@
 import styled from "styled-components";
 import { ReactComponent as HomeIcon } from "../../../assets/img/marca-sollar-azul.svg";
 import { ReactComponent as TokenErro } from "../../../assets/img/illustration-token.svg";
+import { ReactComponent as TokenSuccess } from "../../../assets/img/illustration-sucess.svg";
 export const FeedbackContent = styled.div`
   display: flex;
   flex-direction: column;
@@ -35,6 +36,11 @@ export const TokenIconErro = styled(TokenErro)`
   height: 400px;
   width: 400px;
   `;
+export const TokenIconSuccess = styled(TokenSuccess)`
+margin-bottom: 8px;
+height: 400px;
+width: 400px;
+`;
 
 export const FeedbackDescription = styled.p`
   color: var(--black);
