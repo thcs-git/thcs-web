@@ -75,6 +75,7 @@ export default function UserConfiguration(){
     council_number: "",
     verified: "",
     active: true,
+    professions:[]
   });
   const supplyIntervals = [
     { value: 1, label: '1' },
