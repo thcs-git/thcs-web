@@ -22,6 +22,10 @@ import { formatDate } from '../../../helpers/date';
 import { ListItemCaptureStatus, CaptionList } from './styles';
 
 import Popup from '../../../components/Dialogs/Popup';
+
+import EmployeeForm from '../list/test'
+
+
 interface ICaptureStatus {
   care: any;
   approved: string;

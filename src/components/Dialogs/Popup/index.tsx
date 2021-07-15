@@ -1,31 +1,19 @@
 import React from 'react'
 import { Dialog, DialogTitle, DialogContent, makeStyles, Typography, DialogActions, Button } from '@material-ui/core';
 
-const useStyles = makeStyles(theme => ({
-    dialogWrapper: {
-        padding: theme.spacing(2),
-        position: 'absolute',
-        top: theme.spacing(5)
-    },
-    dialogTitle: {
-        paddingRight: '0px'
-    }
-}))
 
 export default function Popup(props: any) {
 
     const { title, children, openPopup, setOpenPopup } = props;
-    const classes = useStyles();
 
     return (
-        <Dialog open={openPopup} maxWidth="md" classes={{ paper: classes.dialogWrapper }}>
-            <DialogTitle className={classes.dialogTitle}>
-                <div style={{ display: 'flex' }}>
-                    <Typography variant="h6" component="div" style={{ flexGrow: 1 }}>
-                        {title}
-                    </Typography>
-                </div>
-            </DialogTitle>
+        <Dialog 
+        open={openPopup} 
+        maxWidth="md" 
+        aria-labelledby="alert-dialog-slide-title" 
+        aria-describedby="alert-dialog-slide-description"
+        >
+            <DialogTitle id="alert-dialog-slide-title"><h4>{title}</h4></DialogTitle>
             <DialogContent dividers>
                 {children}
             </DialogContent>
