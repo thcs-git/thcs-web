@@ -102,7 +102,6 @@ export default function RecoveryPassMenu(){
                       </FormControl>
                   </Grid>
                 <Grid item md={4}>
-
                   <FormControl fullWidth margin='normal' variant="outlined">
                       <InputLabel htmlFor="outlined-adornment-password">Nova Senha</InputLabel>
                         <OutlinedInput
@@ -131,15 +130,12 @@ export default function RecoveryPassMenu(){
                           labelWidth={70}
                         />
                       </FormControl>
-
-
                 </Grid>
                 <Grid item md={4}>
-
                   <FormControl fullWidth margin='normal' variant="outlined">
                       <InputLabel htmlFor="outlined-adornment-password">Confirmar Nova Senha</InputLabel>
                         <OutlinedInput
-                        labelWidth={200}
+                          labelWidth={200}
                           id="outlined-adornment-password"
                           type={showPassword ? 'text' : 'password'}
                           error={newPassword.error}
