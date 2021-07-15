@@ -154,6 +154,8 @@ export default function CareForm(props: RouteComponentProps<IPageParams>) {
   const [currentTab, setCurrentTab] = useState(0);
   const [currentStep, setCurrentStep] = useState(0);
   const [openModalCancel, setOpenModalCancel] = useState(false);
+  const [firstCall, setFirstcall] = useState(true);
+
   const classes = useStyles();
 
   const States = [
@@ -238,6 +240,15 @@ export default function CareForm(props: RouteComponentProps<IPageParams>) {
   }, [patientState])
 
   useEffect(() => {
+    const healthPlan = careState?.list?.data[0]?.capture?.health_insurance_id
+    const sheaSubPlan = careState?.list?.data[0]?.capture?.health_plan_id
+
+    if (firstCall && healthPlan != undefined && sheaSubPlan != undefined) {
+      dispatch(healthPlanRequest(healthPlan ? healthPlan : ""))
+      dispatch(healthSubPlanRequest(sheaSubPlan ? sheaSubPlan : ""))
+      setFirstcall(false)
+    }
+
     setState((prevState) => ({
       ...prevState,
       area_id: patientState?.data?.area_id?._id,
@@ -246,7 +257,9 @@ export default function CareForm(props: RouteComponentProps<IPageParams>) {
       health_plan_id: careState?.list?.data[0]?.capture?.health_plan_id,
       health_sub_plan_id: careState?.list?.data[0]?.capture?.health_sub_plan_id,
     }))
-    console.log('careState1', careState?.list?.data[0])
+    // console.log('careState', careState)
+    // console.log('state', state)
+
   }, [patientState, careState]);
 
   const selectPatientArea = useCallback(() => {
@@ -404,10 +417,12 @@ export default function CareForm(props: RouteComponentProps<IPageParams>) {
   };
 
   const selectHealhInsurance = useCallback(() => {
-    console.log(selectCheckbox);
+    console.log('selectCheckbox', selectCheckbox);
     const selected = careState.healthInsurance.filter(
       (item) => item._id === selectCheckbox?.health_insurance_id
     );
+
+    console.log('selected', selected);
 
     if (selected[0]) {
       //  dispatch(healthPlanRequest(selected[0] && selected[0]._id));
@@ -938,9 +953,9 @@ export default function CareForm(props: RouteComponentProps<IPageParams>) {
                         options={careState.healthInsurance}
                         getOptionLabel={(option) => option.name}
                         defaultValue={selectHealhInsurance()}
-                        getOptionSelected={(option, value) =>
-                          option._id === state.health_insurance_id
-                        }
+                        // getOptionSelected={(option, value) =>
+                        //   option._id === state.health_insurance_id
+                        // }
                         renderInput={(params) => (
                           <TextField
                             {...params}
@@ -969,9 +984,9 @@ export default function CareForm(props: RouteComponentProps<IPageParams>) {
                         options={careState.healthPlan}
                         getOptionLabel={(option) => option.name}
                         defaultValue={selectHealhPlan()}
-                        getOptionSelected={(option, value) =>
-                          option._id === state.health_plan_id
-                        }
+                        // getOptionSelected={(option, value) =>
+                        //   option._id === state.health_plan_id
+                        // }
                         renderInput={(params) => (
                           <TextField {...params} label="Plano" variant="outlined"/>
                         )}
@@ -995,9 +1010,9 @@ export default function CareForm(props: RouteComponentProps<IPageParams>) {
                         options={careState.healthSubPlan}
                         getOptionLabel={(option) => option.name}
                         defaultValue={selectHealhSubPlan()}
-                        getOptionSelected={(option, value) =>
-                          option._id === state.health_sub_plan_id
-                        }
+                        // getOptionSelected={(option, value) =>
+                        //   option._id === state.health_sub_plan_id
+                        // }
                         renderInput={(params) => (
                           <TextField
                             {...params}
