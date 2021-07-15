@@ -5,12 +5,26 @@ before_script:
     - npm i -g vercel
 
 stages:
+    - automation
     - staging
     - production
     - dev
     - presentation
     - merge
     #- test
+
+automation:
+    stage: automation
+    image: ruby:latest
+
+    rules:
+      - if: '$CI_MERGE_REQUEST_TARGET_BRANCH_NAME == "dev"'
+
+
+    script:
+        - if [[ "$CI_MERGE_REQUEST_TITLE" =~ SOLL-[0-9]+ ]]; then echo "Título do merge dentro do padrão"; else curl -X PUT -H "Authorization:Bearer $GITLAB_API_TOKEN" -H "Content-Type:application/json" https://gitlab.com/api/v4/projects/$CI_PROJECT_ID/merge_requests/$CI_MERGE_REQUEST_IID -d '{"title":"'"$CI_MERGE_REQUEST_SOURCE_BRANCH_NAME - $CI_MERGE_REQUEST_TITLE"'"}' &&  curl -X POST -H "Authorization:Bearer $GITLAB_API_TOKEN" -H "Content-Type:application/json" https://gitlab.com/api/v4/projects/$CI_PROJECT_ID/merge_requests/$CI_MERGE_REQUEST_IID/notes -d '{"body":"'"Automação Devops":" Nome do Título :robot":"<br/><br/>- Seu título no merge request está fora do padrão {+ (SOLL-000)+}❌<br/>- Titulo do merge alterado para o {+ nome da branch+} seguido pelo {+ título+} anterior<br/>- Novo título":" {+ $CI_MERGE_REQUEST_SOURCE_BRANCH_NAME - $CI_MERGE_REQUEST_TITLE+}<br/><br/><br/>![Semantic description of image]($SOLLAR_IMG 'Sollar')"'"}'; fi
+
+    interruptible: true
 
 merge:
     stage: merge
@@ -25,7 +39,7 @@ merge:
         PREVIEW_URL: dev-$CI_MERGE_REQUEST_IID-$CI_MERGE_REQUEST_SOURCE_BRANCH_NAME-$CI_MERGE_REQUEST_TARGET_BRANCH_NAME.sollar.app
 
     script:
-        - curl -X PUT -H "Authorization:Bearer $GITLAB_API_TOKEN" -H "Content-Type:application/json" https://gitlab.com/api/v4/projects/$CI_PROJECT_ID/merge_requests/$CI_MERGE_REQUEST_IID -d '{"title":"'"$CI_MERGE_REQUEST_SOURCE_BRANCH_NAME"'"}'
+        - if [[ "$CI_MERGE_REQUEST_TITLE" =~ SOLL-[0-9]+ ]]; then echo "Título do merge dentro do padrão"; else curl -X PUT -H "Authorization:Bearer $GITLAB_API_TOKEN" -H "Content-Type:application/json" https://gitlab.com/api/v4/projects/$CI_PROJECT_ID/merge_requests/$CI_MERGE_REQUEST_IID -d '{"title":"'"$CI_MERGE_REQUEST_SOURCE_BRANCH_NAME - $CI_MERGE_REQUEST_TITLE"'"}' &&  curl -X POST -H "Authorization:Bearer $GITLAB_API_TOKEN" -H "Content-Type:application/json" https://gitlab.com/api/v4/projects/$CI_PROJECT_ID/merge_requests/$CI_MERGE_REQUEST_IID/notes -d '{"body":"'"Automação Devops":" Nome do Título :robot":"<br/><br/>- Seu título no merge request está fora do padrão {+ (SOLL-000)+}❌<br/>- Titulo do merge alterado para o {+ nome da branch+} seguido pelo {+ título+} anterior<br/>- Novo título":" {+ $CI_MERGE_REQUEST_SOURCE_BRANCH_NAME - $CI_MERGE_REQUEST_TITLE+}<br/><br/><br/>![Semantic description of image]($SOLLAR_IMG 'Sollar')"'"}'; fi
         - DEPLOYMENT_URL=$(vercel -t $VERCEL_TOKEN --build-env REACT_APP_BASE_API=https://sollar-backend-dev.herokuapp.com/api --confirm)
         - echo $DEPLOYMENT_URL >vercel_deployment_url.txt
         - vercel alias set $DEPLOYMENT_URL $PREVIEW_URL -t $VERCEL_TOKEN

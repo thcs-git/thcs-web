@@ -64,6 +64,7 @@ import Typography from '@material-ui/core/Typography';
 import { loadSuccess } from '../../../store/ducks/areas/actions';
 import { objectValues } from 'react-toastify/dist/utils';
 import { createPrescriptionRequest } from '../../../store/ducks/prescripition/actions';
+import { AreaInterface } from '../../../store/ducks/areas/types';
 
 interface IFormFields {
   bloodType: string | null,
@@ -450,6 +451,7 @@ export default function PatientForm(props: RouteComponentProps<IPageParams>) {
         },
       }
     });
+
     setFieldValidations((prevState: any) => ({
       ...prevState,
       postal_code: !validator.isEmpty(patientState.data.address_id.postal_code),
@@ -532,8 +534,7 @@ export default function PatientForm(props: RouteComponentProps<IPageParams>) {
         relationship: state.responsable.relationship,
       },
     });
-    console.log(modifi);
-    console.log(patientState.data);
+
     if(isEquals()){
       handleCancelForm()
       console.log(isEquals());
@@ -567,9 +568,11 @@ export default function PatientForm(props: RouteComponentProps<IPageParams>) {
     };
 
     if (state?._id) {
+
       dispatch(updatePatientRequest(patientData));
       history.push('/patient');
     } else {
+
       dispatch(createPatientRequest(patientData));
     }
   }, [state]);
@@ -980,7 +983,11 @@ export default function PatientForm(props: RouteComponentProps<IPageParams>) {
                             size="small"
                             defaultValue={selectPatientArea()}
                            // value={selectPatientArea()}
-                            onChange={(value) => setState({ ...state, area_id: {...value }})}
+                            onChange={(event:any, newValue) =>{
+                              if(newValue){
+                                setState({...state,area_id:newValue._id})
+                              }
+                            } }
                           //  getOptionSelected={(option, value) => option._id === state?.area_id._id}
                             noOptionsText="Nenhum resultado encontrado"
                             fullWidth

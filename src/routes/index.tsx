@@ -69,7 +69,7 @@ const Routes = () => (
       <Route path="/register" component={RegisterForm} />
       <Route path="/:email/confirmemail" component={ConfirmEmail} />
       <Route path="/confirmemail/:token" component={VerifyEmail} />
-      <Route path="/:token/recoverypass" component={RecoveryPassword}/>
+      <Route path="/recoverypass/:token" component={RecoveryPassword}/>
       <Route path="/forgotpassword" component={ForgotPassword}/>
 
       <PrivateRoute path="/userconfiguration" component={UserConfiguration} />
