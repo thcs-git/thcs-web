@@ -147,6 +147,9 @@ export interface CareInterface {
     assistant_doctor?: string;
     sector?: string;
     bed?: string;
+    health_insurance_id?: string;
+    health_plan_id?: string;
+    health_sub_plan_id?: string;
   };
 }
 
