@@ -290,9 +290,18 @@ export default function PatientForm(props: RouteComponentProps<IPageParams>) {
 
 
 
+//   const validateCellPhone = () => {
+//     if ( state.phones[0]?.cellnumber){
+//     var cellphone =  state.phones[0]?.cellnumber.replace('(','').replace(')','').replace(' ','').replace(' ','').replace('-','');
+//    isValidCellPhoneNumber = validator.isMobilePhone(cellphone, 'pt-BR');
+
+//     return (isValidCellPhoneNumber)
+// }
+//    }
+
   const validateCellPhone = () => {
-    if ( state.phones[0]?.cellnumber){
-    var cellphone =  state.phones[0]?.cellnumber.replace('(','').replace(')','').replace(' ','').replace(' ','').replace('-','');
+    if ( state.phones[1]?.cellnumber){
+    var cellphone =  state.phones[1]?.cellnumber.replace('(','').replace(')','').replace(' ','').replace(' ','').replace('-','');
    isValidCellPhoneNumber = validator.isMobilePhone(cellphone, 'pt-BR');
 
     return (isValidCellPhoneNumber)
@@ -405,7 +414,8 @@ export default function PatientForm(props: RouteComponentProps<IPageParams>) {
         }));
         setInputCellPhone(prev =>({
           ...prev,
-          value:patientState.data.phones[0]?.cellnumber || ''
+          value:patientState.data.phones[1]?.cellnumber || ''
+          // value:patientState.data.phones[0]?.cellnumber || ''
         }));
 
       setFieldValidations({
@@ -563,7 +573,8 @@ export default function PatientForm(props: RouteComponentProps<IPageParams>) {
       ...state,
       phones: [
         { whatsapp: false, telegram: false, number: state.phones[0]?.number },
-        { whatsapp: false, telegram: false, cellnumber: state.phones[0]?.cellnumber },
+        // { whatsapp: false, telegram: false, cellnumber: state.phones[0]?.cellnumber },
+        { whatsapp: false, telegram: false, cellnumber: state.phones[1]?.cellnumber },
       ]
     };
 
@@ -1062,7 +1073,7 @@ export default function PatientForm(props: RouteComponentProps<IPageParams>) {
                                 ...prevState,
                                 phones: [
                                   {
-                                    ...prevState.phones[1],
+                                    ...prevState.phones[0],
                                     cellnumber: element.target.value
                                   }
                                 ]
@@ -1077,12 +1088,13 @@ export default function PatientForm(props: RouteComponentProps<IPageParams>) {
                                 placeholder="(00) 0 0000-0000"
                                 labelWidth={80}
                                 style={{ marginRight: 12 }}
-                                error ={!validateCellPhone() && state.phones[1]?.cellnumber != ''}
+                                error ={!validateCellPhone() && state.phones[0]?.cellnumber != ''}
                               />
                             )}
                           </InputMask>
                         </FormControl>
-                        {!validateCellPhone() && state.phones[1]?.cellnumber &&(
+                        {console.log(validateCellPhone)}
+                        {!validateCellPhone() && state.phones[0]?.cellnumber &&(
                       <p style={{ color: '#f44336', margin:'1px 5px 20px' }}>
                        Por favor insira um número válido
                       </p>
