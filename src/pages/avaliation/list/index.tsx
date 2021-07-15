@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useCallback, ChangeEvent } from 'react';
+import Modal from 'react-bootstrap/Modal';
 import { useHistory, Link } from 'react-router-dom';
 import { Container, Button, Menu, MenuItem, Dialog, DialogTitle, DialogContent, DialogContentText, DialogActions, RadioGroup, FormControlLabel, Radio, InputLabel, Tooltip, TableRow, TableCell, TextField } from '@material-ui/core';
 import { FiberManualRecord, ErrorOutline, MoreVert, Check as CheckIcon } from '@material-ui/icons';
@@ -23,7 +24,9 @@ import { ListItemCaptureStatus, CaptionList } from './styles';
 
 import Popup from '../../../components/Dialogs/Popup';
 
-import EmployeeForm from '../list/test'
+import { CareInterface } from '../../../store/ducks/cares/types';
+
+//import { Dialog, DialogActionsBar } from "@progress/kendo-react-dialogs";
 
 
 interface ICaptureStatus {
@@ -234,6 +237,12 @@ export default function AvaliationList() {
     setOpenPopup(true)
   }
 
+  // const [visible, setVisible] = React.useState(true);
+
+  // const toggleDialog = () => {
+  //   setVisible(!visible);
+  // };
+
   return (
     <>
       <Sidebar>
@@ -260,7 +269,7 @@ export default function AvaliationList() {
               { name: ' ', align: 'left' }
             ]}
           >
-            {careState.list.data.map((care, index) => (
+            {careState.list.data.map((care: CareInterface, index: number) => (
               <TableRow key={`care_${index}`}>
                 <TableCell component="th" scope="row">
                   <Link to={`/patient/capture/${care._id}/overview`}>
@@ -294,6 +303,26 @@ export default function AvaliationList() {
                     <MenuItem onClick={() => history.push(`/patient/capture/${care._id}/overview`)}>Visualizar perfil</MenuItem>
                     <MenuItem onClick={() => { openInPopup(care) }}>Histórico</MenuItem>
                   </Menu>
+                  {/* <button onClick={toggleDialog}>
+                    Open Dialog
+                  </button>
+
+                  <Dialog
+                    title={"Status"}
+                    onClose={toggleDialog}
+                    width={200}
+                    height={250}
+                  >
+                    <p style={{ margin: "25px", textAlign: "center" }}>
+                      {care?.patient_id?.name}
+                    </p>
+                    <DialogActionsBar>
+                      <button onClick={toggleDialog}>
+                        Launch
+                      </button>
+                    </DialogActionsBar>
+                  </Dialog> */}
+
                 </TableCell>
               </TableRow>
             ))}
@@ -394,10 +423,10 @@ export default function AvaliationList() {
                 </RadioGroup>
               </FieldContent>
 
-              {/* <FieldContent>
+              <FieldContent>
                 <DialogContentText tabIndex={-1}>Anexar Guia de Autorização</DialogContentText>
                 <input type="file" accept="application/pdf" onChange={handleChangeFiles} />
-              </FieldContent> */}
+              </FieldContent>
               <FieldContent>
                 <DialogContentText tabIndex={-1}>Anexar Guia de Autorização</DialogContentText>
                 <DialogContentText>Arquivos .pdf e menores que 5 megabytes.</DialogContentText>
@@ -495,6 +524,7 @@ export default function AvaliationList() {
             openPopup={openPopup}
             setOpenPopup={setOpenPopup}
           >
+
           </Popup>
 
         </Container>

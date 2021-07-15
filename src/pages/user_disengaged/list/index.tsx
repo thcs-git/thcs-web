@@ -15,6 +15,7 @@ import { loadGetUserDisengaged, searchRequest, cleanAction } from '../../../stor
 import debounce from 'lodash.debounce';
 import { formatDate } from '../../../helpers/date';
 import { searchUserDisengaged } from '../../../store/ducks/users/sagas';
+import Popup from '../../../components/Dialogs/Popup';
 
 export default function UserDisengaged() {
   const history = useHistory();
@@ -42,7 +43,8 @@ export default function UserDisengaged() {
     setAnchorEl(null);
   }, [anchorEl]);
 
-
+  const [openPopup, setOpenPopup] = useState(false)
+  
 
   return (
     <>
@@ -69,18 +71,18 @@ export default function UserDisengaged() {
               { name: '', align: 'left' },
             ]}
           >
-            { userState.list.data.map((user:UserListItems, index:number) =>(
-             <TableRow key={`user_${index}`}>
-               <TableCell>
-                <Link to={`/user/${user._id}/link/edit`}>{user.name}</Link>
-               </TableCell>
-               {/*<TableCell>*/}
-               {/*  {user.email}*/}
-               {/*</TableCell>*/}
-               <TableCell>
+            {userState.list.data.map((user: UserListItems, index: number) => (
+              <TableRow key={`user_${index}`}>
+                <TableCell>
+                  <Link to={`/user/${user._id}/link/edit`}>{user.name}</Link>
+                </TableCell>
+                {/*<TableCell>*/}
+                {/*  {user.email}*/}
+                {/*</TableCell>*/}
+                <TableCell>
                   {user.address?.state || 'BR'}
-               </TableCell>
-               <TableCell>
+                </TableCell>
+                <TableCell>
                   {user.profession_id.name}
                 </TableCell>
                 <TableCell>
@@ -95,6 +97,13 @@ export default function UserDisengaged() {
                   <Button aria-controls={`user-menu${index}`} id={`btn_user-menu${index}`} aria-haspopup="true" onClick={handleOpenRowMenu}>
                     <MoreVert style={{ color: '#0899BA' }} />
                   </Button>
+                  <Popup
+                    title="Histórico de Captações"
+                    openPopup={openPopup}
+                    setOpenPopup={setOpenPopup}
+                  >
+
+                  </Popup>
                   <Menu
                     id={`user-menu${index}`}
                     anchorEl={anchorEl}

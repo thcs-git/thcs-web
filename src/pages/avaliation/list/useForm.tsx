@@ -1,56 +1,31 @@
-import React, { useState } from 'react'
-import { makeStyles } from "@material-ui/core";
+import React, { useState, useEffect, useCallback, ChangeEvent } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { CareInterface } from '../../../store/ducks/cares/types';
 
-export function useForm(initialFValues: any, validateOnChange = false, validate: any) {
+interface IProps{
 
-
-    const [values, setValues] = useState(initialFValues);
-    const [errors, setErrors] = useState({});
-
-    const handleInputChange = (e: any) => {
-        const { name, value } = e.target
-        setValues({
-            ...values,
-            [name]: value
-        })
-        if (validateOnChange)
-            validate({ [name]: value })
-    }
-
-    const resetForm = () => {
-        setValues(initialFValues);
-        setErrors({})
-    }
-
-
-    return {
-        values,
-        setValues,
-        errors,
-        setErrors,
-        handleInputChange,
-        resetForm
-
-    }
+    care: CareInterface
+    
 }
 
 
-const useStyles = makeStyles(theme => ({
-    root: {
-        '& .MuiFormControl-root': {
-            width: '80%',
-            margin: theme.spacing(1)
-        }
-    }
-}))
-
-export function Form(props: any) {
-
-    const classes = useStyles();
-    const { children, ...other } = props;
+export default function Specialities(props: IProps) {
+    const { care } = props
+   
     return (
-        <form className={classes.root} autoComplete="off" {...other}>
-            {props.children}
-        </form>
-    )
+        <>
+            <div>
+                <h2>Principal</h2>
+
+                <br />
+                <p>{care?.patient_id?.name}</p>
+
+                <br />
+
+                <h2>Secundária</h2>
+
+
+            </div>
+        </>
+    );
 }
