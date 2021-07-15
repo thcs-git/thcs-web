@@ -246,6 +246,8 @@ export default function PatientCaptureForm(props: RouteComponentProps<IPageParam
       user_id: userSessionId,
     };
 
+    console.log('1', updateParams)
+
     dispatch(updateCareRequest(updateParams));
   };
 
