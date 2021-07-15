@@ -290,8 +290,8 @@ export default function PatientForm(props: RouteComponentProps<IPageParams>) {
 
 
   const validateCellPhone = () => {
-    if ( state.phones[1]?.cellnumber){
-    var cellphone =  state.phones[1]?.cellnumber.replace('(','').replace(')','').replace(' ','').replace(' ','').replace('-','');
+    if ( state.phones[0]?.cellnumber){
+    var cellphone =  state.phones[0]?.cellnumber.replace('(','').replace(')','').replace(' ','').replace(' ','').replace('-','');
    isValidCellPhoneNumber = validator.isMobilePhone(cellphone, 'pt-BR');
 
     return (isValidCellPhoneNumber)
