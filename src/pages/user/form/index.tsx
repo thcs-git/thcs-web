@@ -279,7 +279,7 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
   }));
   const classes = useStyles();
   useEffect(() => {
-  
+
     dispatch(cleanAction());
     dispatch(getSpecialtiesAction());
     dispatch(getCouncilsAction());
@@ -809,6 +809,9 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
     if (state?._id) {
       dispatch(updateUserRequest(state));
       if (params.mode == 'link') {
+        history.push('/userdesengaged');
+      }
+      else if (params.mode == 'view') {
         history.push('/userdesengaged');
       }
     } else {

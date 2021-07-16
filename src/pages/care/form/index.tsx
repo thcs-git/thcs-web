@@ -154,6 +154,8 @@ export default function CareForm(props: RouteComponentProps<IPageParams>) {
   const [currentTab, setCurrentTab] = useState(0);
   const [currentStep, setCurrentStep] = useState(0);
   const [openModalCancel, setOpenModalCancel] = useState(false);
+  const [firstCall, setFirstcall] = useState(true);
+
   const classes = useStyles();
 
   const States = [
@@ -201,7 +203,7 @@ export default function CareForm(props: RouteComponentProps<IPageParams>) {
       dispatch(loadCareById(params.id));
     }
     dispatch(getAreasAction());
-    dispatch(getUsersAction());
+    dispatch(getUsersAction({"profession_id": "5ff6076715685a1414e65fc0"}));
     dispatch(healthInsuranceRequest());
     dispatch(AccommodationTypeRequest());
     dispatch(careTypeRequest());
@@ -238,6 +240,15 @@ export default function CareForm(props: RouteComponentProps<IPageParams>) {
   }, [patientState])
 
   useEffect(() => {
+    const healthPlan = careState?.list?.data[0]?.capture?.health_insurance_id
+    const sheaSubPlan = careState?.list?.data[0]?.capture?.health_plan_id
+
+    if (firstCall && healthPlan != undefined && sheaSubPlan != undefined) {
+      dispatch(healthPlanRequest(healthPlan ? healthPlan : "6012b8ca863f4dd6560e756b"))
+      dispatch(healthSubPlanRequest(sheaSubPlan ? sheaSubPlan : "5fd666cd48392d0621196551"))
+      setFirstcall(false)
+    }
+
     setState((prevState) => ({
       ...prevState,
       area_id: patientState?.data?.area_id?._id,
@@ -246,7 +257,7 @@ export default function CareForm(props: RouteComponentProps<IPageParams>) {
       health_plan_id: careState?.list?.data[0]?.capture?.health_plan_id,
       health_sub_plan_id: careState?.list?.data[0]?.capture?.health_sub_plan_id,
     }))
-    console.log('careState1', careState?.list?.data[0])
+
   }, [patientState, careState]);
 
   const selectPatientArea = useCallback(() => {
@@ -404,32 +415,26 @@ export default function CareForm(props: RouteComponentProps<IPageParams>) {
   };
 
   const selectHealhInsurance = useCallback(() => {
-    console.log(selectCheckbox);
     const selected = careState.healthInsurance.filter(
-      (item) => item._id === selectCheckbox?.health_insurance_id
+      (item) => item._id === selectCheckbox?.capture?.health_insurance_id
     );
 
-    if (selected[0]) {
-      //  dispatch(healthPlanRequest(selected[0] && selected[0]._id));
-    } else {
-      //  dispatch(healthPlanRequest(selectCheckbox?.health_insurance_id));
-    }
     return selected[0] ? selected[0] : careState.healthInsurance[0];
   }, [selectCheckbox, state.health_insurance_id]);
 
   const selectHealhPlan = useCallback(() => {
     const selected = careState.healthPlan.filter(
-      (item) => item._id === state.health_plan_id
+      (item) => item._id === selectCheckbox?.capture?.health_plan_id
     );
     return selected[0] ? selected[0] : careState.healthPlan[0];
-  }, [state.health_plan_id]);
+  }, [selectCheckbox, state.health_plan_id]);
 
   const selectHealhSubPlan = useCallback(() => {
     const selected = careState.healthSubPlan.filter(
-      (item) => item._id === state.health_sub_plan_id
+      (item) => item._id === selectCheckbox?.capture?.health_sub_plan_id
     );
     return selected[0] ? selected[0] : careState.healthSubPlan[0];
-  }, [state.health_sub_plan_id]);
+  }, [selectCheckbox, state.health_sub_plan_id]);
 
   const selectAccommodationType = useCallback(() => {
     const selected = careState.accommondation_type.filter(
@@ -596,9 +601,10 @@ export default function CareForm(props: RouteComponentProps<IPageParams>) {
                                   id="combo-box-gender"
                                   options={['Masculino', 'Feminino', 'Indefinido']}
                                   getOptionLabel={(option) => option}
+                                  getOptionSelected={(option, value) => value === patientState.data?.gender}
                                   renderInput={(params) => <TextField {...params} label="Sexo" variant="outlined"/>}
                                   size="small"
-                                  value={patientState.data.gender}
+                                  value={patientState?.data?.gender}
                                   noOptionsText="Nenhum resultado encontrado"
                                   fullWidth
                                   disabled={!canEdit}
@@ -700,8 +706,8 @@ export default function CareForm(props: RouteComponentProps<IPageParams>) {
                                     getOptionLabel={(option) => option}
                                     renderInput={(params) => <TextField {...params} label="Estado Civil"
                                                                         variant="outlined" autoComplete="off"/>}
-                                    value={patientState.data?.marital_status}
-                                    getOptionSelected={(option, value) => option === patientState.data?.marital_status}
+                                    value={patientState?.data?.marital_status}
+                                    getOptionSelected={(option, value) => value === patientState.data?.marital_status}
                                     onChange={(event: any, newValue) => {
                                       setState(prevState => ({
                                         ...prevState,
@@ -823,17 +829,17 @@ export default function CareForm(props: RouteComponentProps<IPageParams>) {
                                 <Autocomplete
                                   id="combo-box-areas"
                                   options={areaState.list.data}
-                                  getOptionLabel={(option: any) => option.name}
+                                  getOptionLabel={(option) => option.name ? option.name : ""}
+                                  getOptionSelected={(option, value) => value.name === patientState.data?.area_id.name}
                                   renderInput={(params) => <TextField {...params} label="Área" variant="outlined"/>}
                                   size="small"
                                   defaultValue={selectPatientArea()}
                                   value={selectPatientArea()}
-                                  onChange={(event: any, newValue) => {
-                                    if (newValue) {
-                                      setState({...state, area_id: newValue._id})
-                                    }
-                                  }}
-                                  //  getOptionSelected={(option, value) => option._id === state?.area_id._id}
+                                  // onChange={(event: any, newValue) => {
+                                  //   if (newValue) {
+                                  //     setState({...state, area_id: newValue._id})
+                                  //   }
+                                  // }}
                                   noOptionsText="Nenhum resultado encontrado"
                                   fullWidth
                                   disabled={!canEdit}
@@ -935,12 +941,11 @@ export default function CareForm(props: RouteComponentProps<IPageParams>) {
                     <Grid item md={4} xs={12}>
                       <Autocomplete
                         id="combo-box-health-insurance"
-                        options={careState.healthInsurance}
-                        getOptionLabel={(option) => option.name}
+                        options={careState?.healthInsurance}
+                        getOptionLabel={(option: any) => option.name}
                         defaultValue={selectHealhInsurance()}
-                        getOptionSelected={(option, value) =>
-                          option._id === state.health_insurance_id
-                        }
+                        value={selectHealhInsurance()}
+                        // getOptionSelected={(option, value) => option._id === value._id}
                         renderInput={(params) => (
                           <TextField
                             {...params}
@@ -948,16 +953,15 @@ export default function CareForm(props: RouteComponentProps<IPageParams>) {
                             variant="outlined"
                           />
                         )}
-                        onChange={(event, value) => {
-                          if (value) {
-                            setState((prevState) => ({
-                              ...prevState,
-                              health_insurance_id: value._id,
-                            }));
-                          }
-                          console.log(value);
-                          dispatch(healthPlanRequest(value && value._id));
-                        }}
+                        // onChange={(event, value) => {
+                        //   if (value) {
+                        //     setState((prevState) => ({
+                        //       ...prevState,
+                        //       health_insurance_id: value._id,
+                        //     }));
+                        //     dispatch(healthPlanRequest(value && value._id));
+                        //   }
+                        // }}
                         size="small"
                         noOptionsText="Nenhum convênio encontrado"
                         fullWidth
@@ -969,22 +973,23 @@ export default function CareForm(props: RouteComponentProps<IPageParams>) {
                         options={careState.healthPlan}
                         getOptionLabel={(option) => option.name}
                         defaultValue={selectHealhPlan()}
-                        getOptionSelected={(option, value) =>
-                          option._id === state.health_plan_id
-                        }
+                        value={selectHealhPlan()}
+                        // getOptionSelected={(option, value) =>
+                        //   option._id === state.health_plan_id
+                        // }
                         renderInput={(params) => (
                           <TextField {...params} label="Plano" variant="outlined"/>
                         )}
                         size="small"
-                        onChange={(event, value) => {
-                          if (value) {
-                            setState((prevState) => ({
-                              ...prevState,
-                              health_plan_id: value._id,
-                            }));
-                          }
-                          dispatch(healthSubPlanRequest(value && value._id));
-                        }}
+                        // onChange={(event, value) => {
+                        //   if (value) {
+                        //     setState((prevState) => ({
+                        //       ...prevState,
+                        //       health_plan_id: value._id,
+                        //     }));
+                        //     dispatch(healthSubPlanRequest(value && value._id));
+                        //   }
+                        // }}
                         noOptionsText="Nenhum plano encontrado"
                         fullWidth
                       />
@@ -995,9 +1000,10 @@ export default function CareForm(props: RouteComponentProps<IPageParams>) {
                         options={careState.healthSubPlan}
                         getOptionLabel={(option) => option.name}
                         defaultValue={selectHealhSubPlan()}
-                        getOptionSelected={(option, value) =>
-                          option._id === state.health_sub_plan_id
-                        }
+                        value={selectHealhSubPlan()}
+                        // getOptionSelected={(option, value) =>
+                        //   option._id === state.health_sub_plan_id
+                        // }
                         renderInput={(params) => (
                           <TextField
                             {...params}
@@ -1006,14 +1012,14 @@ export default function CareForm(props: RouteComponentProps<IPageParams>) {
                           />
                         )}
                         size="small"
-                        onChange={(event, value) => {
-                          if (value) {
-                            setState((prevState) => ({
-                              ...prevState,
-                              health_sub_plan_id: value._id,
-                            }));
-                          }
-                        }}
+                        // onChange={(event, value) => {
+                        //   if (value) {
+                        //     setState((prevState) => ({
+                        //       ...prevState,
+                        //       health_sub_plan_id: value._id,
+                        //     }));
+                        //   }
+                        // }}
                         noOptionsText="Nenhum sub-plano encontrado"
                         fullWidth
                       />
@@ -1079,12 +1085,12 @@ export default function CareForm(props: RouteComponentProps<IPageParams>) {
                         variant="outlined"
                         size="small"
                         value={state.origin_id}
-                        onChange={(element) =>
-                          setState((prevState) => ({
-                            ...prevState,
-                            origin_id: element.target.value,
-                          }))
-                        }
+                        // onChange={(element) =>
+                        //   setState((prevState) => ({
+                        //     ...prevState,
+                        //     origin_id: element.target.value,
+                        //   }))
+                        // }
                         fullWidth
                       />
                     </Grid>
@@ -1215,6 +1221,7 @@ export default function CareForm(props: RouteComponentProps<IPageParams>) {
                             });
                           }
                         }}
+                        noOptionsText="Nenhum médico foi encontrado na empresa"
                         fullWidth
                       />
                     </Grid>
