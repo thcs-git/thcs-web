@@ -118,10 +118,14 @@ export default function PatientCaptureForm(props: RouteComponentProps<IPageParam
     setAnchorEl(null);
   }, [anchorEl]);
 
-  const handleComplexityLabel = (complexity: string = '') => {
+  const handleComplexityLabel = (name:string = '', complexity: string = '') => {
+    if (name === "Tabela Socioambiental") {
+      return '-'
+    }
     switch (complexity.toLocaleLowerCase()) {
       case 'sem complexidade':
-        return <NoComplexityLabel>{complexity}</NoComplexityLabel>;
+        return '-';
+      // return <NoComplexityLabel>-</NoComplexityLabel>;
 
       case 'baixa complexidade':
         return <LowerComplexityLabel>{complexity}</LowerComplexityLabel>;
@@ -133,11 +137,14 @@ export default function PatientCaptureForm(props: RouteComponentProps<IPageParam
         return <HighComplexityLabel>{complexity}</HighComplexityLabel>;
 
       default:
-        return complexity;
+        return '-';
     }
   };
 
-  const handleElegibilityLabel = (elegibile: string = '') => {
+  const handleElegibilityLabel = (name:string = '', elegibile: string = '') => {
+    if (name === "ABEMID") {
+      return '-'
+    }
     switch (elegibile.toLocaleLowerCase()) {
       case 'elegível':
         return <ElegibleLabel>{elegibile}</ElegibleLabel>;
@@ -146,20 +153,32 @@ export default function PatientCaptureForm(props: RouteComponentProps<IPageParam
         return <NotElegibleLabel>{elegibile}</NotElegibleLabel>;
 
       default:
-        return elegibile;
+        return '-';
     }
   };
 
-  const handleCareTypeLabel = (elegibile: string = '') => {
+  const handleCareTypeLabel = (name:string = '', elegibile: string = '') => {
+    if (name === "Tabela Socioambiental") {
+      return '-'
+    }
     switch (elegibile.toLocaleLowerCase()) {
-      case 'elegível':
+      case 'baixa complexidade':
         return 'Internação Domiciliar';
 
-      case 'não elegível':
-        return 'Assistência Domiciliar';
+      case 'média complexidade':
+        return 'Internação Domiciliar';
+
+      case 'alta complexidade':
+        return 'Internação Domiciliar';
+
+      case 'atenção domiciliar':
+        return 'Atenção Domiciliar';
+
+      case 'sem complexidade':
+        return 'Atenção Domiciliar';
 
       default:
-        return elegibile;
+        return '-';
     }
   };
 
@@ -245,8 +264,6 @@ export default function PatientCaptureForm(props: RouteComponentProps<IPageParam
       care_type_id: '5fd66ca189a402ec48110cc1',
       user_id: userSessionId,
     };
-
-    console.log('1', updateParams)
 
     dispatch(updateCareRequest(updateParams));
   };
@@ -376,18 +393,18 @@ export default function PatientCaptureForm(props: RouteComponentProps<IPageParam
                           (documentGroup.name != 'Tabela Socioambiental')? (
                               <>
                                 <Td>{documentGroup.name}<span style={{color:'red'}}> *</span></Td>
-                                <Td>{handleCareTypeLabel(document?.status)}</Td>
-                                <Td>{handleComplexityLabel(document?.complexity)}</Td>
-                                <Td>{document?.created_at ? formatDate(document.created_at, 'DD/MM/YYYY HH:mm:ss') : '-'}</Td>
-                                <Td>{handleElegibilityLabel(document?.status)}</Td>
+                                <Td center>{handleCareTypeLabel(documentGroup.name, document?.complexity)}</Td>
+                                <Td center>{handleComplexityLabel(documentGroup.name, document?.complexity)}</Td>
+                                <Td center>{document?.created_at ? formatDate(document.created_at, 'DD/MM/YYYY HH:mm:ss') : '-'}</Td>
+                                <Td center>{handleElegibilityLabel(documentGroup.name, document?.status)}</Td>
                               </>
                           ):(
                               <>
                                 <Td>{documentGroup.name}</Td>
-                                <Td center >{handleCareTypeLabel('-')}</Td>
-                                <Td center >{handleComplexityLabel('-')}</Td>
-                                <Td>{document?.created_at ? formatDate(document.created_at, 'DD/MM/YYYY HH:mm:ss') : '-'}</Td>
-                                <Td>{handleElegibilityLabel(document?.status)}</Td>
+                                <Td center >{handleCareTypeLabel(documentGroup.name,'-')}</Td>
+                                <Td center >{handleComplexityLabel(documentGroup.name,'-')}</Td>
+                                <Td center>{document?.created_at ? formatDate(document.created_at, 'DD/MM/YYYY HH:mm:ss') : '-'}</Td>
+                                <Td center>{handleElegibilityLabel(documentGroup.name, document?.status)}</Td>
                               </>
                             )
                         }
