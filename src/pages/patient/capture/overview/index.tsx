@@ -365,11 +365,11 @@ export default function PatientCaptureForm(props: RouteComponentProps<IPageParam
               <Table>
                 <thead>
                   <tr>
-                    <Th colSpan={2}>Tipo do Score</Th>
-                    <Th>Tipo</Th>
-                    <Th>Complexidade</Th>
-                    <Th>Adicionado em</Th>
-                    <Th>Status</Th>
+                    <Th center colSpan={2}>Tipo do Score</Th>
+                    <Th center>Tipo</Th>
+                    <Th center>Complexidade</Th>
+                    {/*<Th>Adicionado em</Th>*/}
+                    <Th center>Status</Th>
                   </tr>
                 </thead>
                 <tbody>
@@ -395,7 +395,7 @@ export default function PatientCaptureForm(props: RouteComponentProps<IPageParam
                                 <Td>{documentGroup.name}<span style={{color:'red'}}> *</span></Td>
                                 <Td center>{handleCareTypeLabel(documentGroup.name, document?.complexity)}</Td>
                                 <Td center>{handleComplexityLabel(documentGroup.name, document?.complexity)}</Td>
-                                <Td center>{document?.created_at ? formatDate(document.created_at, 'DD/MM/YYYY HH:mm:ss') : '-'}</Td>
+                                {/*<Td center>{document?.created_at ? formatDate(document.created_at, 'DD/MM/YYYY HH:mm:ss') : '-'}</Td>*/}
                                 <Td center>{handleElegibilityLabel(documentGroup.name, document?.status)}</Td>
                               </>
                           ):(
@@ -403,7 +403,7 @@ export default function PatientCaptureForm(props: RouteComponentProps<IPageParam
                                 <Td>{documentGroup.name}</Td>
                                 <Td center >{handleCareTypeLabel(documentGroup.name,'-')}</Td>
                                 <Td center >{handleComplexityLabel(documentGroup.name,'-')}</Td>
-                                <Td center>{document?.created_at ? formatDate(document.created_at, 'DD/MM/YYYY HH:mm:ss') : '-'}</Td>
+                                {/*<Td center>{document?.created_at ? formatDate(document.created_at, 'DD/MM/YYYY HH:mm:ss') : '-'}</Td>*/}
                                 <Td center>{handleElegibilityLabel(documentGroup.name, document?.status)}</Td>
                               </>
                             )
