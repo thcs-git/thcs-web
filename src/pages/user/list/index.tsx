@@ -114,7 +114,7 @@ export default function UserList() {
                     open={anchorEl?.id === `btn_user-menu${index}`}
                     onClose={handleCloseRowMenu}
                   >
-                    <MenuItem onClick={() => history.push(`/user/${user._id}/edit/edit`)}>Editar</MenuItem>
+                    {/*<MenuItem onClick={() => history.push(`/user/${user._id}/edit/edit`)}>Editar</MenuItem>*/}
                     <MenuItem onClick={() => history.push(`/user/${user._id}/view/edit`)}>Visualizar</MenuItem>
                   </Menu>
                 </TableCell>
