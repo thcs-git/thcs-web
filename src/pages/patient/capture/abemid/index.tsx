@@ -97,13 +97,14 @@ export default function Abemid(props: RouteComponentProps<IPageParams>) {
 
     if (isError) return;
 
-    window.scrollTo(0, 0)
+    window.scrollTo(0, 200)
 
     setCurrentStep((prevState) => prevState + 1);
   }, [currentStep, documentGroup]);
 
   const handleBackStep = useCallback(() => {
     setCurrentStep((prevState) => prevState - 1);
+    window.scrollTo(0, 200)
   }, [currentStep]);
 
   const handleNavigateStep = useCallback((step: number) => {
