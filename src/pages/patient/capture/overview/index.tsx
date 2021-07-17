@@ -1,28 +1,57 @@
-import React, { useState, useCallback, useEffect } from 'react';
-import { useHistory, RouteComponentProps } from 'react-router-dom';
-import { Container, Grid, Menu, MenuItem, Dialog, DialogTitle, DialogContent, DialogContentText, DialogActions, FormControlLabel, TextField, Card, CardContent, FormGroup, Checkbox } from '@material-ui/core';
-import { AccountCircle, CheckCircle, MoreVert, CheckCircleOutline, Edit, Print, Visibility } from '@material-ui/icons';
+import React, {useState, useCallback, useEffect} from 'react';
+import {useHistory, RouteComponentProps} from 'react-router-dom';
+import {
+  Container,
+  Grid,
+  Menu,
+  MenuItem,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogContentText,
+  DialogActions,
+  FormControlLabel,
+  TextField,
+  Card,
+  CardContent,
+  FormGroup,
+  Checkbox, RadioGroup, Radio, InputLabel
+} from '@material-ui/core';
+import {AccountCircle, CheckCircle, MoreVert, CheckCircleOutline, Edit, Print, Visibility} from '@material-ui/icons';
 
-import { useDispatch, useSelector } from 'react-redux';
-import { ApplicationState } from '../../../../store';
-import { loadCareById, updateCareRequest, healthInsuranceRequest, healthPlanRequest, healthSubPlanRequest } from '../../../../store/ducks/cares/actions';
-import { CareInterface } from '../../../../store/ducks/cares/types';
+import {useDispatch, useSelector} from 'react-redux';
+import {ApplicationState} from '../../../../store';
+import {
+  loadCareById,
+  updateCareRequest,
+  healthInsuranceRequest,
+  healthPlanRequest,
+  healthSubPlanRequest
+} from '../../../../store/ducks/cares/actions';
+import {CareInterface} from '../../../../store/ducks/cares/types';
 
-import { loadRequestByIds as getDocumentGroupsByIds } from '../../../../store/ducks/documentGroups/actions';
-import { DocumentGroupList } from '../../../../store/ducks/documentGroups/types';
+import {loadRequestByIds as getDocumentGroupsByIds} from '../../../../store/ducks/documentGroups/actions';
+import {DocumentGroupList} from '../../../../store/ducks/documentGroups/types';
 
 import CaptureDataDialog from '../../../../components/Dialogs/CaptureData';
 import Loading from '../../../../components/Loading';
 import Sidebar from '../../../../components/Sidebar';
 
 import LOCALSTORAGE from '../../../../helpers/constants/localStorage';
-import { formatDate } from '../../../../helpers/date';
+import {formatDate} from '../../../../helpers/date';
 
 import Button from '../../../../styles/components/Button';
-import { FormTitle, FieldContent } from '../../../../styles/components/Form';
-import { Table, Th, Td } from '../../../../styles/components/Table';
+import {FormTitle, FieldContent} from '../../../../styles/components/Form';
+import {Table, Th, Td} from '../../../../styles/components/Table';
 
-import { LowerComplexityLabel, MediumComplexityLabel, HighComplexityLabel, NoComplexityLabel, ElegibleLabel, NotElegibleLabel } from '../../../../styles/components/Text';
+import {
+  LowerComplexityLabel,
+  MediumComplexityLabel,
+  HighComplexityLabel,
+  NoComplexityLabel,
+  ElegibleLabel,
+  NotElegibleLabel
+} from '../../../../styles/components/Text';
 
 import {
   PatientResume,
@@ -32,8 +61,10 @@ import {
   BackButtonContent,
 } from './styles';
 
-import { ReactComponent as SuccessImage } from '../../../../assets/img/ilustracao-avaliacao-concluida.svg';
-import { forEach } from 'cypress/types/lodash';
+import {ReactComponent as SuccessImage} from '../../../../assets/img/ilustracao-avaliacao-concluida.svg';
+import {forEach} from 'cypress/types/lodash';
+import ButtonComponent from "../../../../styles/components/Button";
+import {HeaderContent} from "../../../care/overview/schedule/styles";
 
 interface IPageParams {
   id: string;
@@ -60,8 +91,8 @@ export default function PatientCaptureForm(props: RouteComponentProps<IPageParam
   const careState = useSelector((state: ApplicationState) => state.cares);
   const documentGroupsState = useSelector((state: ApplicationState) => state.documentGroups);
 
-  const { params } = props.match;
-  const { state } = props.location;
+  const {params} = props.match;
+  const {state} = props.location;
 
   const userSessionId = localStorage.getItem(LOCALSTORAGE.USER_ID) || '';
 
@@ -75,9 +106,9 @@ export default function PatientCaptureForm(props: RouteComponentProps<IPageParam
   const [modalPrint, setModalPrint] = useState(false);
   const [documentHistory, setDocumentHistory] = useState<any[]>([]);
 
-
-  const [captureData, setCaptureData] = useState<ICaptureData | any>({
-  });
+  const [modalAnexo, setModalAnexo] = useState(false);
+  const [file, setFile] = useState({error: false});
+  const [captureData, setCaptureData] = useState<ICaptureData | any>({});
 
   useEffect(() => {
     getCare(params.id);
@@ -103,6 +134,58 @@ export default function PatientCaptureForm(props: RouteComponentProps<IPageParam
     setDocumentGroups(documentGroupsState.list);
   }, [documentGroupsState.list]);
 
+  const readFile = (file: any) => {
+    return new Promise((resolve, reject) => {
+      const fileReader = new FileReader();
+      fileReader.onload = () => {
+        resolve(fileReader.result);
+      };
+      fileReader.onerror = () => {
+        reject(fileReader.error);
+      };
+      fileReader.readAsDataURL(file);
+    });
+  };
+
+  const handleChangeFiles = async (element: React.ChangeEvent<HTMLInputElement>) => {
+
+    const files = element.target.files;
+
+    if (!element) {
+      setFile(prevState => ({
+        ...prevState,
+        error: false
+      }))
+      return;
+    } else {
+      if (files && files?.length > 0) {
+        // console.log(files[0]);
+        if (files[0].type == 'application/pdf' && files[0].size < 5000000) {
+          setFile(prevState => ({
+            ...prevState,
+            error: false
+          }))
+        } else {
+          setFile(prevState => ({
+            ...prevState,
+            error: true
+          }))
+        }
+      }
+    }
+
+    if (files && files?.length > 0) {
+      const fileData: any = await readFile(files[0]);
+      // console.log(fileData)
+      // if (!file.error) {
+      //   setCaptureStatus(prevState => ({
+      //     ...prevState,
+      //     attachment: fileData
+      //   }));
+      // }
+    }
+  };
+
   const getCare = useCallback((id: string) => {
     if (id.length > 0) {
       dispatch(loadCareById(id));
@@ -118,7 +201,7 @@ export default function PatientCaptureForm(props: RouteComponentProps<IPageParam
     setAnchorEl(null);
   }, [anchorEl]);
 
-  const handleComplexityLabel = (name:string = '', complexity: string = '') => {
+  const handleComplexityLabel = (name: string = '', complexity: string = '') => {
     if (name === "Tabela Socioambiental") {
       return '-'
     }
@@ -141,7 +224,7 @@ export default function PatientCaptureForm(props: RouteComponentProps<IPageParam
     }
   };
 
-  const handleElegibilityLabel = (name:string = '', elegibile: string = '') => {
+  const handleElegibilityLabel = (name: string = '', elegibile: string = '') => {
     if (name === "ABEMID") {
       return '-'
     }
@@ -157,7 +240,7 @@ export default function PatientCaptureForm(props: RouteComponentProps<IPageParam
     }
   };
 
-  const handleCareTypeLabel = (name:string = '', elegibile: string = '') => {
+  const handleCareTypeLabel = (name: string = '', elegibile: string = '') => {
     if (name === "Tabela Socioambiental") {
       return '-'
     }
@@ -185,13 +268,13 @@ export default function PatientCaptureForm(props: RouteComponentProps<IPageParam
   const scoreStatusLabel = (status: string) => {
     switch (status) {
       case 'Aprovado':
-        return <span style={{ color: '#4FC66A' }}>{status}</span>
+        return <span style={{color: '#4FC66A'}}>{status}</span>
 
       case 'Reprovado':
-        return <span style={{ color: '#FF6565' }}>{status}</span>
+        return <span style={{color: '#FF6565'}}>{status}</span>
 
       case 'Em Andamento':
-        return <span style={{ color: '#0899BA' }}>{status}</span>
+        return <span style={{color: '#0899BA'}}>{status}</span>
 
       default:
         return <span>{status}</span>
@@ -218,7 +301,7 @@ export default function PatientCaptureForm(props: RouteComponentProps<IPageParam
       katzIsDone = (!!founded);
     }
 
-    (document_id) ? history.push(`${routes[id]}/${document_id}`, { katzIsDone }) : history.push((routes[id]), { katzIsDone });
+    (document_id) ? history.push(`${routes[id]}/${document_id}`, {katzIsDone}) : history.push((routes[id]), {katzIsDone});
   }, [care]);
 
   const toggleHistoryModal = (document_group_id: string) => {
@@ -241,7 +324,8 @@ export default function PatientCaptureForm(props: RouteComponentProps<IPageParam
       doc.finished
     ));
 
-    return (found) ? <CheckCircle style={{ color: '#4FC66A', cursor: 'pointer' }} /> : <CheckCircle style={{ color: '#EBEBEB', cursor: 'pointer' }} />;
+    return (found) ? <CheckCircle style={{color: '#4FC66A', cursor: 'pointer'}}/> :
+      <CheckCircle style={{color: '#EBEBEB', cursor: 'pointer'}}/>;
   };
 
   const handleDocument = (documentId: string, documents: Array<any>) => {
@@ -305,7 +389,7 @@ export default function PatientCaptureForm(props: RouteComponentProps<IPageParam
   return (
     <>
       <Sidebar>
-        {careState.loading && <Loading />}
+        {careState.loading && <Loading/>}
         <Container>
           <FormTitle>Overview da Captação</FormTitle>
 
@@ -326,16 +410,18 @@ export default function PatientCaptureForm(props: RouteComponentProps<IPageParam
                     <PatientResumeContent>
                       <PatientData>
                         <div className="patientIcon">
-                          <AccountCircle />
+                          <AccountCircle/>
                         </div>
                         <div>
                           <p className="title">{care?.patient_id?.name}</p>
                           <div className="subTitle">
                             <p>Pedido: {care?.capture?.order_number}</p>
-                            <p>Data do Atendimento: {care?.created_at ? formatDate(care.created_at, 'DD/MM/YYYY HH:mm:ss') : '-'}</p>
+                            <p>Data do
+                              Atendimento: {care?.created_at ? formatDate(care.created_at, 'DD/MM/YYYY HH:mm:ss') : '-'}</p>
                             <p>Status: {care.status}</p>
                             {care.capture?.status === 'Em Andamento' && (
-                              <Button onClick={() => setCaptureModalModalOpen(true)}><Edit style={{ width: 15, marginRight: 5 }} /> Editar</Button>
+                              <Button onClick={() => setCaptureModalModalOpen(true)}><Edit
+                                style={{width: 15, marginRight: 5}}/> Editar</Button>
                             )}
                           </div>
                         </div>
@@ -343,15 +429,16 @@ export default function PatientCaptureForm(props: RouteComponentProps<IPageParam
 
                       {care.capture?.status === 'Em Andamento' ? (
                         <div>
-                          <Button background={finishEnable ? "success" : "disable"} disabled={!finishEnable} onClick={() => setCaptureFinishModalOpen(true)}>
-                            <CheckCircleOutline />
+                          <Button background={finishEnable ? "success" : "disable"} disabled={!finishEnable}
+                                  onClick={() => setCaptureFinishModalOpen(true)}>
+                            <CheckCircleOutline/>
                             Concluir Captação
                           </Button>
                         </div>
                       ) : (
                         <div>
                           <Button center onClick={() => setModalPrint(true)}>
-                            <Print className="primary" style={{ width: 30, height: 30 }} />
+                            <Print className="primary" style={{width: 30, height: 30}}/>
                           </Button>
                         </div>
                       )}
@@ -364,96 +451,109 @@ export default function PatientCaptureForm(props: RouteComponentProps<IPageParam
 
               <Table>
                 <thead>
-                  <tr>
-                    <Th center colSpan={2}>Tipo do Score</Th>
-                    <Th center>Tipo</Th>
-                    <Th center>Complexidade</Th>
-                    {/*<Th>Adicionado em</Th>*/}
-                    <Th center>Status</Th>
-                  </tr>
+                <tr>
+                  <Th center colSpan={2}>Tipo do Score</Th>
+                  <Th center>Tipo</Th>
+                  <Th center>Complexidade</Th>
+                  {/*<Th>Adicionado em</Th>*/}
+                  <Th center>Status</Th>
+                </tr>
                 </thead>
                 <tbody>
-                  {documentGroups?.data.map((documentGroup: any, index: number) => {
+                {documentGroups?.data.map((documentGroup: any, index: number) => {
 
-                    const document = handleDocument(documentGroup._id, care?.documents_id || []);
+                  const document = handleDocument(documentGroup._id, care?.documents_id || []);
 
-                    return (
-                      <tr key={`documentGroup_${index}`}>
+                  return (
+                    <tr key={`documentGroup_${index}`}>
 
-                        <Td center onClick={() => {
-                          if (document?._id) {
-                            handleScoreRoute(documentGroup?._id || '', care?._id || '', document?._id);
-                          } else {
-                            handleScoreRoute(documentGroup?._id || '', care?._id || '');
-                          }
-
-                        }}>{handleCheckDocument(documentGroup._id, care?.documents_id || [])}</Td>
-
-                       {
-                          (documentGroup.name != 'Tabela Socioambiental')? (
-                              <>
-                                <Td>{documentGroup.name}<span style={{color:'red'}}> *</span></Td>
-                                <Td center>{handleCareTypeLabel(documentGroup.name, document?.complexity)}</Td>
-                                <Td center>{handleComplexityLabel(documentGroup.name, document?.complexity)}</Td>
-                                {/*<Td center>{document?.created_at ? formatDate(document.created_at, 'DD/MM/YYYY HH:mm:ss') : '-'}</Td>*/}
-                                <Td center>{handleElegibilityLabel(documentGroup.name, document?.status)}</Td>
-                              </>
-                          ):(
-                              <>
-                                <Td>{documentGroup.name}</Td>
-                                <Td center >{handleCareTypeLabel(documentGroup.name,'-')}</Td>
-                                <Td center >{handleComplexityLabel(documentGroup.name,'-')}</Td>
-                                {/*<Td center>{document?.created_at ? formatDate(document.created_at, 'DD/MM/YYYY HH:mm:ss') : '-'}</Td>*/}
-                                <Td center>{handleElegibilityLabel(documentGroup.name, document?.status)}</Td>
-                              </>
-                            )
+                      <Td center onClick={() => {
+                        if (document?._id) {
+                          handleScoreRoute(documentGroup?._id || '', care?._id || '', document?._id);
+                        } else {
+                          handleScoreRoute(documentGroup?._id || '', care?._id || '');
                         }
-                        <Td center>
-                          {care.capture?.status === 'Em Andamento' ? (
-                            <>
-                              <Button aria-controls={`simple-menu${index}`} id={`btn_simple-menu${index}`} aria-haspopup="true" onClick={handleOpenRowMenu}>
-                                <MoreVert className="primary" />
-                              </Button>
-                              <Menu
-                                id={`simple-menu${index}`}
-                                anchorEl={anchorEl}
-                                keepMounted
-                                open={anchorEl?.id === `btn_simple-menu${index}`}
-                                onClose={handleCloseRowMenu}
-                              >
-                                {document?._id ? (
-                                  <div>
-                                    <MenuItem onClick={() => handleScoreRoute(documentGroup?._id || '', care?._id || '', document?._id)}>Editar</MenuItem>
-                                    <MenuItem onClick={() => console.log(document?._id)}>Excluir</MenuItem>
-                                  </div>
-                                ) : (
-                                  <MenuItem onClick={() => handleScoreRoute(documentGroup?._id || '', care?._id || '')}>Adicionar novo</MenuItem>
-                                )}
-                                <MenuItem onClick={() => toggleHistoryModal(documentGroup._id)}>Ver histórico</MenuItem>
-                              </Menu>
-                            </>
-                          ) : (
-                            <>
-                              {(document?._id) && (
-                                <Button onClick={() => window.open(`/care/${care?._id}/medical-records/document/${document?._id}/print`, "_blank")}>
-                                  <Visibility className="primary" />
-                                </Button>
+
+                      }}>{handleCheckDocument(documentGroup._id, care?.documents_id || [])}</Td>
+
+                      {
+                        (documentGroup.name != 'Tabela Socioambiental') ? (
+                          <>
+                            <Td>{documentGroup.name}<span style={{color: 'red'}}> *</span></Td>
+                            <Td center>{handleCareTypeLabel(documentGroup.name, document?.complexity)}</Td>
+                            <Td center>{handleComplexityLabel(documentGroup.name, document?.complexity)}</Td>
+                            {/*<Td center>{document?.created_at ? formatDate(document.created_at, 'DD/MM/YYYY HH:mm:ss') : '-'}</Td>*/}
+                            <Td center>{handleElegibilityLabel(documentGroup.name, document?.status)}</Td>
+                          </>
+                        ) : (
+                          <>
+                            <Td>{documentGroup.name}</Td>
+                            <Td center>{handleCareTypeLabel(documentGroup.name, '-')}</Td>
+                            <Td center>{handleComplexityLabel(documentGroup.name, '-')}</Td>
+                            {/*<Td center>{document?.created_at ? formatDate(document.created_at, 'DD/MM/YYYY HH:mm:ss') : '-'}</Td>*/}
+                            <Td center>{handleElegibilityLabel(documentGroup.name, document?.status)}</Td>
+                          </>
+                        )
+                      }
+                      <Td center>
+                        {care.capture?.status === 'Em Andamento' ? (
+                          <>
+                            <Button aria-controls={`simple-menu${index}`} id={`btn_simple-menu${index}`}
+                                    aria-haspopup="true" onClick={handleOpenRowMenu}>
+                              <MoreVert className="primary"/>
+                            </Button>
+                            <Menu
+                              id={`simple-menu${index}`}
+                              anchorEl={anchorEl}
+                              keepMounted
+                              open={anchorEl?.id === `btn_simple-menu${index}`}
+                              onClose={handleCloseRowMenu}
+                            >
+                              {document?._id ? (
+                                <div>
+                                  <MenuItem
+                                    onClick={() => handleScoreRoute(documentGroup?._id || '', care?._id || '', document?._id)}>Editar</MenuItem>
+                                  <MenuItem onClick={() => console.log(document?._id)}>Excluir</MenuItem>
+                                </div>
+                              ) : (
+                                <MenuItem onClick={() => handleScoreRoute(documentGroup?._id || '', care?._id || '')}>Adicionar
+                                  novo</MenuItem>
                               )}
-                            </>
-                          )}
-                        </Td>
-                      </tr>
-                    );
-                  })}
+                              <MenuItem onClick={() => toggleHistoryModal(documentGroup._id)}>Ver histórico</MenuItem>
+                            </Menu>
+                          </>
+                        ) : (
+                          <>
+                            {(document?._id) && (
+                              <Button
+                                onClick={() => window.open(`/care/${care?._id}/medical-records/document/${document?._id}/print`, "_blank")}>
+                                <Visibility className="primary"/>
+                              </Button>
+                            )}
+                          </>
+                        )}
+                      </Td>
+                    </tr>
+                  );
+                })}
                 </tbody>
               </Table>
 
               <Card>
                 <CardContent>
-                  <h4>Orçamento <span style={{ color: 'red' }}>*</span></h4>
-                  <br />
                   {care.capture?.status === 'Em Andamento' ? (
                     <>
+                      <HeaderContent>
+                        <h3>Orçamento <span style={{color: 'red'}}>*</span></h3>
+                        <div>
+                          <ButtonComponent onClick={() => {
+                            setModalAnexo(true);
+                          }} background="primary">
+                            Anexar Documento
+                          </ButtonComponent>
+                        </div>
+                      </HeaderContent>
+                      <br/>
                       <FieldContent>
                         <TextField
                           id="input-estimate"
@@ -462,15 +562,19 @@ export default function PatientCaptureForm(props: RouteComponentProps<IPageParam
                           size="small"
                           placeholder="Adicione detalhes de orçamento"
                           value={captureData.estimate}
-                          onChange={(element) => setCaptureData({ ...captureData, estimate: element.target.value })}
+                          onChange={(element) => setCaptureData({...captureData, estimate: element.target.value})}
                           fullWidth
                           multiline
                         />
                       </FieldContent>
-                      <p className="text-danger">Para concluir a captação, os itens com asterisco são obrigatórios: Orçamento + Tabela NEAD ou Tabela Abemid.</p>
+                      <p className="text-danger">Para concluir a captação, os itens com asterisco são obrigatórios:
+                        Orçamento + Tabela NEAD ou Tabela Abemid.</p>
                     </>
                   ) : (
-                    <p>{captureData.estimate}</p>
+                    <>
+                      <h4>Orçamento <span style={{color: 'red'}}>*</span></h4>
+                      <p>{captureData.estimate}</p>
+                    </>
                   )}
                 </CardContent>
               </Card>
@@ -509,22 +613,22 @@ export default function PatientCaptureForm(props: RouteComponentProps<IPageParam
               {documentHistory.length > 0 ? (
                 <Table>
                   <thead>
-                    <tr>
-                      <Th>Tipo do Score</Th>
-                      <Th>Complexidade</Th>
-                      <Th>Adicionado em</Th>
-                      <Th>Status</Th>
-                    </tr>
+                  <tr>
+                    <Th>Tipo do Score</Th>
+                    <Th>Complexidade</Th>
+                    <Th>Adicionado em</Th>
+                    <Th>Status</Th>
+                  </tr>
                   </thead>
                   <tbody>
-                    {documentHistory.map((doc: any) => (
-                      <tr>
-                        <Td>{doc.document_group_id.name}</Td>
-                        <Td>{doc.complexity}</Td>
-                        <Td>{formatDate(doc.created_at, 'DD/MM/YYYY HH:mm:ss')}</Td>
-                        <Td>{doc.status}</Td>
-                      </tr>
-                    ))}
+                  {documentHistory.map((doc: any) => (
+                    <tr>
+                      <Td>{doc.document_group_id.name}</Td>
+                      <Td>{doc.complexity}</Td>
+                      <Td>{formatDate(doc.created_at, 'DD/MM/YYYY HH:mm:ss')}</Td>
+                      <Td>{doc.status}</Td>
+                    </tr>
+                  ))}
                   </tbody>
                 </Table>
               ) : (
@@ -549,7 +653,8 @@ export default function PatientCaptureForm(props: RouteComponentProps<IPageParam
           <DialogTitle id="scroll-dialog-title">Concluir a Captação</DialogTitle>
           <DialogContent>
             <DialogContentText id="scroll-dialog-description" tabIndex={-1}>
-              Tem certeza que deseja concluir a captação do paciente e iniciar o processo de autorização do plano de saúde?
+              Tem certeza que deseja concluir a captação do paciente e iniciar o processo de autorização do plano de
+              saúde?
             </DialogContentText>
           </DialogContent>
           <DialogActions>
@@ -577,7 +682,7 @@ export default function PatientCaptureForm(props: RouteComponentProps<IPageParam
               {documentGroups?.data.map((documentGroup: any, index: number) => (
                 <FormControlLabel
                   key={`document_print_${index}`}
-                  control={<Checkbox name="documentPrint[]" />}
+                  control={<Checkbox name="documentPrint[]"/>}
                   label={documentGroup.name}
                 />
               ))}
@@ -587,10 +692,44 @@ export default function PatientCaptureForm(props: RouteComponentProps<IPageParam
           <DialogActions>
             <Button onClick={() => setModalPrint(false)} color="primary">
               Cancelar
-              </Button>
+            </Button>
             <Button onClick={handlePrint} color="primary" autoFocus>
               Imprimir
-              </Button>
+            </Button>
+          </DialogActions>
+        </Dialog>
+
+        {/*Anexar Documento*/}
+        <Dialog
+          open={modalAnexo}
+          onClose={() => setModalAnexo(false)}
+          aria-labelledby="scroll-dialog-title"
+          aria-describedby="scroll-dialog-description"
+        >
+          <DialogTitle id="scroll-dialog-title">Anexo de documentos</DialogTitle>
+          <DialogContent>
+            <DialogContentText
+              id="scroll-dialog-description"
+              tabIndex={-1}
+            >
+              Para dar continuidade a captação, é necessário a documentação!
+            </DialogContentText>
+
+            <FieldContent>
+              <DialogContentText tabIndex={-1}>Anexar Documentos</DialogContentText>
+              <DialogContentText>Arquivos .pdf e menores que 5 megabytes.</DialogContentText>
+              <TextField
+                error={file.error}
+                onChange={handleChangeFiles}
+                helperText={file.error ? "Aquivo não compatível ou muito grande" : null}
+                type='file'>
+              </TextField>
+            </FieldContent>
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={() => setModalAnexo(false)} color="primary">
+              Fechar
+            </Button>
           </DialogActions>
         </Dialog>
       </Sidebar>

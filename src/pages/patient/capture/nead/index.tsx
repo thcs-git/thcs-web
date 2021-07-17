@@ -23,6 +23,7 @@ import {
   actionDocumentNeadRequest,
   actionDocumentNeadStoreRequest,
   actionDocumentNeadUpdateRequest,
+  cleanAction,
 } from "../../../../store/ducks/cares/actions";
 import {
   CareInterface,
@@ -50,6 +51,9 @@ import {
 import {handleUserSelectedId} from '../../../../helpers/localStorage';
 
 import {ButtonsContent, FormContent} from "./styles";
+import _ from "lodash";
+import ButtonComponent from "../../../../styles/components/Button";
+import {HeaderContent} from "../../../care/overview/schedule/styles";
 
 interface IPageParams {
   id: string;
@@ -269,6 +273,11 @@ export default function Nead(props: RouteComponentProps<IPageParams>) {
     setSteps(prevState => stepsCopy);
   }, [documentGroup, steps, currentStep]);
 
+  const isDone = useCallback(() => {
+    let documentObj = _.find(care?.documents_id, {document_group_id: {name: 'NEAD'}});
+    return documentObj?.finished ? documentObj?.finished : false
+  }, [care]);
+
   const handleFieldAnswer = useCallback(() => {
     let documentGroupCopy = {...documentGroup};
 
@@ -386,7 +395,13 @@ export default function Nead(props: RouteComponentProps<IPageParams>) {
 
 
   const handleNextStep = useCallback(() => {
-    const isError = checkAllCurrentQuestionsAnswered();
+    let isError = null
+
+    if (isDone() || careState.data.capture?.status != 'Em Andamento') {
+
+    } else {
+      isError = checkAllCurrentQuestionsAnswered();
+    }
 
     if (isError) return;
 
@@ -394,6 +409,22 @@ export default function Nead(props: RouteComponentProps<IPageParams>) {
 
     setCurrentStep((prevState) => prevState + 1);
   }, [currentStep, documentGroup]);
+
+  const clearDocument = useCallback(() => {
+    let documentGroupCopy = {...documentGroup};
+
+    documentGroupCopy?.fields?.map((field: any) => {
+      field.options.map((option: any) => {
+        option.selected = false
+      })
+    })
+
+    setDocumentGroup(documentGroupCopy);
+
+    steps?.map((field: any) => {
+      field.score.total = 0
+    })
+  }, [documentGroup, steps]);
 
   const handleBackStep = useCallback(() => {
     setCurrentStep((prevState) => prevState - 1);
@@ -452,6 +483,16 @@ export default function Nead(props: RouteComponentProps<IPageParams>) {
           >
             <HelpIcon style={{color: "#ccc"}}/>
           </IconButton>
+          {!isDone() && careState.data.capture?.status === 'Em Andamento' && (
+            <>
+              <ButtonComponent onClick={() => {
+                clearDocument()
+              }} background="primary">
+                Limpar Campos
+              </ButtonComponent>
+            </>
+          )}
+
           <Popover
             id={"popover_help_abemid"}
             open={openHelpPopover}
@@ -557,319 +598,733 @@ export default function Nead(props: RouteComponentProps<IPageParams>) {
           ))}
         </StepperComponent>
 
-        <FormContent>
-          {/* Score de KATZ */}
-          {currentStep === 0 && (
-            <>
-              <StepTitle>KATZ</StepTitle>
+        {isDone() || careState.data.capture?.status != 'Em Andamento' ? (
+          <>
+            <FormContent>
+              {/* Score de KATZ */}
+              {currentStep === 0 && (
+                <>
+                  <StepTitle>KATZ</StepTitle>
 
-              {documentGroup?.fields?.map((field: any, index: number) => {
-                if (field.step === 0) {
-                  return (
-                    <FormControl component="form" ref={formNeadRef} onSubmit={(e: any) => {
-                      e.preventDefault();
-                    }}>
-                      <QuestionSection key={`question_${field._id}_${index}`}>
-                        <QuestionTitle>{field.description}</QuestionTitle>
-                        <RadioGroup style={{width: 'fit-content'}}
-                                    onChange={e => selectOption(field._id, e.target.value)}>
-                          {/* {() => handleSelectRadio(field)} */}
-                          {/* <FormHelperText>{(field.options.some((option: any) => option.selected)) ? '' : 'error'}</FormHelperText> */}
-                          {field.options.map((option: any, index: number) => (
-                            <FormControlLabel
-                              key={`option_${field._id}_${index}`}
-                              value={option._id}
-                              control={(
-                                <Radio
-                                  color="primary"
-                                  checked={option?.selected}
+                  {documentGroup?.fields?.map((field: any, index: number) => {
+                    if (field.step === 0) {
+                      return (
+                        <FormControl component="form" ref={formNeadRef} onSubmit={(e: any) => {
+                          e.preventDefault();
+                        }}>
+                          <QuestionSection key={`question_${field._id}_${index}`}>
+                            <QuestionTitle>{field.description}</QuestionTitle>
+                            <RadioGroup style={{width: 'fit-content'}}>
+                              {/* {() => handleSelectRadio(field)} */}
+                              {/* <FormHelperText>{(field.options.some((option: any) => option.selected)) ? '' : 'error'}</FormHelperText> */}
+                              {field.options.map((option: any, index: number) => (
+                                <FormControlLabel
+                                  key={`option_${field._id}_${index}`}
+                                  value={option._id}
+                                  control={(
+                                    <Radio
+                                      color="primary"
+                                      checked={isDone() ? option?.selected : false}
 
+                                    />
+                                  )}
+                                  label={option.text}
                                 />
-                              )}
-                              label={option.text}
-                            />
-                          ))}
-                        </RadioGroup>
-                      </QuestionSection>
-                    </FormControl>
-                  );
-                }
-              })}
+                              ))}
+                            </RadioGroup>
+                          </QuestionSection>
+                        </FormControl>
+                      );
+                    }
+                  })}
 
-              <ScoreTotalContent>
-                <ScoreLabel>PONTUAÇÃO KATZ:</ScoreLabel>
-                <ScoreTotal>
-                  {steps[currentStep].score.total} -{" "}
-                  {steps[currentStep].score.complexity}
-                </ScoreTotal>
-              </ScoreTotalContent>
-            </>
-          )}
+                  <ScoreTotalContent>
+                    <ScoreLabel>PONTUAÇÃO KATZ:</ScoreLabel>
+                    <ScoreTotal>
+                      {steps[currentStep].score.total} -{" "}
+                      {steps[currentStep].score.complexity}
+                    </ScoreTotal>
+                  </ScoreTotalContent>
+                </>
+              )}
 
-          {/* Grupo 1 */}
-          {currentStep === 1 && (
-            <>
-              <StepTitle>Elegibilidade</StepTitle>
+              {/* Grupo 1 */}
+              {currentStep === 1 && (
+                <>
+                  <StepTitle>Elegibilidade</StepTitle>
 
-              {documentGroup?.fields?.map((field: any, index: number) => {
-                if (field.step === 1) {
-                  return (
-                    <QuestionSection key={`question_${field._id}_${index}`}>
-                      <QuestionTitle>{field.description}</QuestionTitle>
-                      <RadioGroup
-                        onChange={(e) =>
-                          selectOption(field._id, e.target.value)
-                        }
-                      >
-                        {field.options.map((option: any, index: number) => (
-                          <FormControlLabel
-                            onError={() => alert('erro')}
-                            key={`option_${field._id}_${index}`}
-                            value={option._id}
-                            control={
-                              <Radio
-                                color="primary"
-                                checked={option?.selected}
+                  {documentGroup?.fields?.map((field: any, index: number) => {
+                    if (field.step === 1) {
+                      return (
+                        <QuestionSection key={`question_${field._id}_${index}`}>
+                          <QuestionTitle>{field.description}</QuestionTitle>
+                          <RadioGroup>
+                            {field.options.map((option: any, index: number) => (
+                              <FormControlLabel
+                                onError={() => alert('erro')}
+                                key={`option_${field._id}_${index}`}
+                                value={option._id}
+                                control={
+                                  <Radio
+                                    color="primary"
+                                    checked={isDone() ? option?.selected : false}
+                                  />
+                                }
+                                label={option.text}
                               />
-                            }
-                            label={option.text}
-                          />
-                        ))}
-                      </RadioGroup>
-                    </QuestionSection>
-                  );
-                }
-              })}
+                            ))}
+                          </RadioGroup>
+                        </QuestionSection>
+                      );
+                    }
+                  })}
 
-              <p>
-                <i>
-                  *Se responder "NÃO" a qualquer uma das questões acima,
-                  considerar contraindicar Atenção Domiciliar
-                </i>
-              </p>
-              <br/>
+                  <p>
+                    <i>
+                      *Se responder "NÃO" a qualquer uma das questões acima,
+                      considerar contraindicar Atenção Domiciliar
+                    </i>
+                  </p>
+                  <br/>
 
-              <ScoreTotalContent>
-                <ScoreLabel>ELEGIBILIDADE:</ScoreLabel>
-                <ScoreTotal>
-                  {steps[currentStep].score.status ? steps[currentStep].score.status : "Não Elegível"}
-                </ScoreTotal>
-              </ScoreTotalContent>
-            </>
-          )}
+                  <ScoreTotalContent>
+                    <ScoreLabel>ELEGIBILIDADE:</ScoreLabel>
+                    <ScoreTotal>
+                      {steps[currentStep].score.status ? steps[currentStep].score.status : "Não Elegível"}
+                    </ScoreTotal>
+                  </ScoreTotalContent>
+                </>
+              )}
 
-          {/* Grupo 2 */}
-          {currentStep === 2 && (
-            <>
-              <StepTitle>
-                Critérios para indicação imediata de internação domiciliar
-              </StepTitle>
+              {/* Grupo 2 */}
+              {currentStep === 2 && (
+                <>
+                  <StepTitle>
+                    Critérios para indicação imediata de internação domiciliar
+                  </StepTitle>
 
-              {documentGroup?.fields?.map((field: any, index: number) => {
-                if (field.step === 2) {
-                  return (
-                    <QuestionSection key={`question_${field._id}_${index}`}>
-                      <QuestionTitle>{field.description}</QuestionTitle>
-                      <RadioGroup
-                        onChange={(e) =>
-                          selectOption(field._id, e.target.value)
-                        }
-                      >
-                        {field.options.map((option: any, index: number) => (
-                          <FormControlLabel
-                            key={`option_${field._id}_${index}`}
-                            value={option._id}
-                            control={
-                              <Radio
-                                color="primary"
-                                checked={option?.selected}
+                  {documentGroup?.fields?.map((field: any, index: number) => {
+                    if (field.step === 2) {
+                      return (
+                        <QuestionSection key={`question_${field._id}_${index}`}>
+                          <QuestionTitle>{field.description}</QuestionTitle>
+                          <RadioGroup>
+                            {field.options.map((option: any, index: number) => (
+                              <FormControlLabel
+                                key={`option_${field._id}_${index}`}
+                                value={option._id}
+                                control={
+                                  <Radio
+                                    color="primary"
+                                    checked={isDone() ? option?.selected : false}
+                                  />
+                                }
+                                label={option.text}
                               />
-                            }
-                            label={option.text}
-                          />
-                        ))}
-                      </RadioGroup>
-                    </QuestionSection>
-                  );
-                }
-              })}
+                            ))}
+                          </RadioGroup>
+                        </QuestionSection>
+                      );
+                    }
+                  })}
 
-              <p>
-                <i>
-                  *Para indicação de Planejamento de Atenção (P.A.D.),
-                  considerar a maior complexidade assinalada, ainda que a única
-                  vez.
-                </i>
-              </p>
+                  <p>
+                    <i>
+                      *Para indicação de Planejamento de Atenção (P.A.D.),
+                      considerar a maior complexidade assinalada, ainda que a única
+                      vez.
+                    </i>
+                  </p>
 
-              <ScoreTotalContent>
-                <ScoreLabel>P.A.D.:</ScoreLabel>
-                <ScoreTotal>
-                  {steps[currentStep].score.complexity ? steps[currentStep].score.complexity : "Não Elegível"}
-                </ScoreTotal>
-              </ScoreTotalContent>
-            </>
-          )}
+                  <ScoreTotalContent>
+                    <ScoreLabel>P.A.D.:</ScoreLabel>
+                    <ScoreTotal>
+                      {steps[currentStep].score.complexity ? steps[currentStep].score.complexity : "Não Elegível"}
+                    </ScoreTotal>
+                  </ScoreTotalContent>
+                </>
+              )}
 
-          {/* Grupo 3 */}
-          {currentStep === 3 && (
-            <>
-              <div
-                style={{
-                  display: "flex",
-                  alignItems: "center",
-                  flexDirection: "row",
-                  marginBottom: 40,
-                }}
-              >
-                <StepTitle style={{margin: 0}}>
-                  Critérios de apoio para indicação de planejamento de atenção
-                  domiciliar
-                </StepTitle>
-
-                <IconButton
-                  aria-describedby={"popover_help_abemid_group_3"}
-                  onClick={handleClickHelpGroup3Popover}
-                  style={{marginLeft: 10}}
-                >
-                  <HelpIcon style={{color: "#ccc"}}/>
-                </IconButton>
-                <Popover
-                  id={"popover_help_abemid_group_3"}
-                  open={openHelpGroup3Popover}
-                  anchorEl={anchorHelpGroup3Popover}
-                  onClose={handleCloseHelpGroup3Popover}
-                  anchorOrigin={{
-                    vertical: "bottom",
-                    horizontal: "center",
-                  }}
-                  transformOrigin={{
-                    vertical: "top",
-                    horizontal: "left",
-                  }}
-                >
+              {/* Grupo 3 */}
+              {currentStep === 3 && (
+                <>
                   <div
                     style={{
-                      paddingTop: 20,
-                      paddingLeft: 30,
-                      paddingBottom: 20,
-                      paddingRight: 30,
-                      maxWidth: 500,
-                      listStylePosition: "inside",
-                      textAlign: "justify",
+                      display: "flex",
+                      alignItems: "center",
+                      flexDirection: "row",
+                      marginBottom: 40,
                     }}
                   >
-                    <p>Regra:</p>
-                    <br/>
-                    <ul>
-                      <li>
-                        Até 5 Pontos - Considerar procedimentos pontuais
-                        exclusivos ou outros programas:
-                      </li>
-                      <p>
-                        ( ) Curativos ( ) Medicações Parenterais ( ) Outros
-                        Programas
-                      </p>
-                      <br/>
+                    <StepTitle style={{margin: 0}}>
+                      Critérios de apoio para indicação de planejamento de atenção
+                      domiciliar
+                    </StepTitle>
 
-                      <li>
-                        De 6 a 11 Pontos - Considerar Atendimento Domiciliar
-                        Multiprofissional (inclui procedimentos pontuais, desde
-                        que não exclusivos)
-                      </li>
-                      <br/>
-
-                      <li>
-                        De 12 a 17 Pontos - Considerar Internação Domiciliar 12h
-                      </li>
-                      <br/>
-
-                      <li>
-                        18 ou mais Pontos - Considerar Internação Domiciliar 24h
-                      </li>
-                      <br/>
-                    </ul>
-                  </div>
-                </Popover>
-              </div>
-
-              {documentGroup?.fields?.map((field: any, index: number) => {
-                if (field.step === 3) {
-                  return (
-                    <QuestionSection key={`question_${field._id}_${index}`}>
-                      <QuestionTitle>{field.description}</QuestionTitle>
-                      <RadioGroup
-                        onChange={(e) => {
-                          selectOption(field._id, e.target.value);
+                    <IconButton
+                      aria-describedby={"popover_help_abemid_group_3"}
+                      onClick={handleClickHelpGroup3Popover}
+                      style={{marginLeft: 10}}
+                    >
+                      <HelpIcon style={{color: "#ccc"}}/>
+                    </IconButton>
+                    <Popover
+                      id={"popover_help_abemid_group_3"}
+                      open={openHelpGroup3Popover}
+                      anchorEl={anchorHelpGroup3Popover}
+                      onClose={handleCloseHelpGroup3Popover}
+                      anchorOrigin={{
+                        vertical: "bottom",
+                        horizontal: "center",
+                      }}
+                      transformOrigin={{
+                        vertical: "top",
+                        horizontal: "left",
+                      }}
+                    >
+                      <div
+                        style={{
+                          paddingTop: 20,
+                          paddingLeft: 30,
+                          paddingBottom: 20,
+                          paddingRight: 30,
+                          maxWidth: 500,
+                          listStylePosition: "inside",
+                          textAlign: "justify",
                         }}
                       >
-                        {field.options.map((option: any, index: number) => (
-                          <FormControlLabel
-                            key={`option_${field._id}_${index}`}
-                            value={option._id}
-                            control={
-                              <Radio
-                                color="primary"
-                                checked={option?.selected}
-                              />
-                            }
-                            label={option.text}
-                            checked={option?.selected}
-                          />
-                        ))}
-                      </RadioGroup>
-                    </QuestionSection>
-                  );
-                }
-              })}
+                        <p>Regra:</p>
+                        <br/>
+                        <ul>
+                          <li>
+                            Até 5 Pontos - Considerar procedimentos pontuais
+                            exclusivos ou outros programas:
+                          </li>
+                          <p>
+                            ( ) Curativos ( ) Medicações Parenterais ( ) Outros
+                            Programas
+                          </p>
+                          <br/>
 
-              <ScoreTotalContent>
-                <ScoreLabel>PONTUAÇÃO FINAL:</ScoreLabel>
-                <ScoreTotal>
-                  {steps[currentStep].score.total} -{" "}
-                  {steps[currentStep].score.complexity}
-                </ScoreTotal>
-              </ScoreTotalContent>
-            </>
-          )}
+                          <li>
+                            De 6 a 11 Pontos - Considerar Atendimento Domiciliar
+                            Multiprofissional (inclui procedimentos pontuais, desde
+                            que não exclusivos)
+                          </li>
+                          <br/>
 
-          <ButtonsContent>
-            <Button
-              background="default"
-              onClick={() =>
-                history.push(`/patient/capture/${care?._id}/overview`)
-              }
-            >
-              Cancelar
-            </Button>
-            <Button
-              disabled={currentStep === 0}
-              background="default"
-              onClick={handleBackStep}
-            >
-              Anterior
-            </Button>
+                          <li>
+                            De 12 a 17 Pontos - Considerar Internação Domiciliar 12h
+                          </li>
+                          <br/>
 
-            {currentStep === steps.length - 1 ? (
-              <>
-                {careState.data.capture?.status === "Em Andamento" && (
-                  <Button background="primary" onClick={handleSubmit}>
-                    Finalizar
+                          <li>
+                            18 ou mais Pontos - Considerar Internação Domiciliar 24h
+                          </li>
+                          <br/>
+                        </ul>
+                      </div>
+                    </Popover>
+                  </div>
+
+                  {documentGroup?.fields?.map((field: any, index: number) => {
+                    if (field.step === 3) {
+
+                      const getKatz = (option: any, score: number) => {
+                        option.selected = false
+                        if (option.value === '0') {
+                          if (score > 4) {
+                            option.selected = true
+                          }
+                        } else if (option.value === '1') {
+                          if (score >= 3 && score <= 4) {
+                            option.selected = true
+                          }
+                        } else if (option.value === '2') {
+                          if (score <= 2) {
+                            option.selected = true
+                          }
+                        } else {
+                          option.selected = false
+                        }
+                        return option
+                      };
+
+                      return (
+                        <QuestionSection key={`question_${field._id}_${index}`}>
+
+                          {(field.description === '3. KATZ (se pediatria, considerar dependência total)') ? (
+                            <>
+                              <QuestionTitle>{field.description}</QuestionTitle>
+                              <RadioGroup>
+                                {field.options.map((option: any, index: number) => (
+                                  <>
+                                    {/*{console.log(option)}*/}
+                                    <FormControlLabel
+                                      key={`option_${field._id}_${index}`}
+                                      value={getKatz(option, steps[0].score.total)}
+                                      control={
+                                        <Radio
+                                          color="primary"
+                                          checked={isDone() ? option?.selected : false}
+                                        />
+                                      }
+                                      label={option.text}
+                                      checked={isDone() ? option?.selected : false}
+                                    />
+                                  </>
+                                ))}
+                              </RadioGroup>
+                            </>
+                          ) : (
+                            <>
+                              <QuestionTitle>{field.description}</QuestionTitle>
+                              <RadioGroup>
+                                {field.options.map((option: any, index: number) => (
+                                  <>
+                                    <FormControlLabel
+                                      key={`option_${field._id}_${index}`}
+                                      value={option._id}
+                                      control={
+                                        <Radio
+                                          color="primary"
+                                          checked={isDone() ? option?.selected : false}
+                                        />
+                                      }
+                                      label={option.text}
+                                      checked={isDone() ? option?.selected : false}
+                                    />
+                                  </>
+                                ))}
+                              </RadioGroup>
+                            </>
+                          )}
+                        </QuestionSection>
+                      );
+                    }
+                  })}
+
+                  <ScoreTotalContent>
+                    <ScoreLabel>PONTUAÇÃO FINAL:</ScoreLabel>
+                    <ScoreTotal>
+                      {steps[currentStep].score.total} -{" "}
+                      {steps[currentStep].score.complexity}
+                    </ScoreTotal>
+                  </ScoreTotalContent>
+                </>
+              )}
+
+              <ButtonsContent>
+                <Button
+                  background="default"
+                  onClick={() =>
+                    history.push(`/patient/capture/${care?._id}/overview`)
+                  }
+                >
+                  Voltar
+                </Button>
+                <Button
+                  disabled={currentStep === 0}
+                  background="default"
+                  onClick={handleBackStep}
+                >
+                  Anterior
+                </Button>
+
+                {currentStep === steps.length - 1 ? (
+                  <>
+                    {careState.data.capture?.status === "Em Andamento" && (
+                      <Button background="primary" onClick={handleSubmit}>
+                        Finalizar
+                      </Button>
+                    )}
+                  </>
+                ) : (
+                  <Button
+                    disabled={currentStep === (steps.length - 1)}
+                    background="success"
+                    type="submit"
+                    onClick={handleNextStep}
+                  >
+                    Próximo
                   </Button>
                 )}
-              </>
-            ) : (
-              <Button
-                disabled={currentStep === (steps.length - 1)}
-                background="success"
-                type="submit"
-                onClick={handleNextStep}
-              >
-                Próximo
-              </Button>
-            )}
-          </ButtonsContent>
-        </FormContent>
+              </ButtonsContent>
+            </FormContent>
+          </>
+        ) : (
+          <>
+            <FormContent>
+              {/* Score de KATZ */}
+              {currentStep === 0 && (
+                <>
+                  <StepTitle>KATZ</StepTitle>
+
+                  {documentGroup?.fields?.map((field: any, index: number) => {
+                    if (field.step === 0) {
+                      return (
+                        <FormControl component="form" ref={formNeadRef} onSubmit={(e: any) => {
+                          e.preventDefault();
+                        }}>
+                          <QuestionSection key={`question_${field._id}_${index}`}>
+                            <QuestionTitle>{field.description}</QuestionTitle>
+                            <RadioGroup style={{width: 'fit-content'}}
+                                        onChange={e => selectOption(field._id, e.target.value)}>
+                              {/* {() => handleSelectRadio(field)} */}
+                              {/* <FormHelperText>{(field.options.some((option: any) => option.selected)) ? '' : 'error'}</FormHelperText> */}
+                              {field.options.map((option: any, index: number) => (
+                                <FormControlLabel
+                                  key={`option_${field._id}_${index}`}
+                                  value={option._id}
+                                  control={(
+                                    <Radio
+                                      color="primary"
+                                      checked={option?.selected}
+
+                                    />
+                                  )}
+                                  label={option.text}
+                                />
+                              ))}
+                            </RadioGroup>
+                          </QuestionSection>
+                        </FormControl>
+                      );
+                    }
+                  })}
+
+                  <ScoreTotalContent>
+                    <ScoreLabel>PONTUAÇÃO KATZ:</ScoreLabel>
+                    <ScoreTotal>
+                      {steps[currentStep].score.total} -{" "}
+                      {steps[currentStep].score.complexity}
+                    </ScoreTotal>
+                  </ScoreTotalContent>
+                </>
+              )}
+
+              {/* Grupo 1 */}
+              {currentStep === 1 && (
+                <>
+                  <StepTitle>Elegibilidade</StepTitle>
+
+                  {documentGroup?.fields?.map((field: any, index: number) => {
+                    if (field.step === 1) {
+                      return (
+                        <QuestionSection key={`question_${field._id}_${index}`}>
+                          <QuestionTitle>{field.description}</QuestionTitle>
+                          <RadioGroup
+                            onChange={(e) =>
+                              selectOption(field._id, e.target.value)
+                            }
+                          >
+                            {field.options.map((option: any, index: number) => (
+                              <FormControlLabel
+                                onError={() => alert('erro')}
+                                key={`option_${field._id}_${index}`}
+                                value={option._id}
+                                control={
+                                  <Radio
+                                    color="primary"
+                                    checked={option?.selected}
+                                  />
+                                }
+                                label={option.text}
+                              />
+                            ))}
+                          </RadioGroup>
+                        </QuestionSection>
+                      );
+                    }
+                  })}
+
+                  <p>
+                    <i>
+                      *Se responder "NÃO" a qualquer uma das questões acima,
+                      considerar contraindicar Atenção Domiciliar
+                    </i>
+                  </p>
+                  <br/>
+
+                  <ScoreTotalContent>
+                    <ScoreLabel>ELEGIBILIDADE:</ScoreLabel>
+                    <ScoreTotal>
+                      {steps[currentStep].score.status ? steps[currentStep].score.status : "Não Elegível"}
+                    </ScoreTotal>
+                  </ScoreTotalContent>
+                </>
+              )}
+
+              {/* Grupo 2 */}
+              {currentStep === 2 && (
+                <>
+                  <StepTitle>
+                    Critérios para indicação imediata de internação domiciliar
+                  </StepTitle>
+
+                  {documentGroup?.fields?.map((field: any, index: number) => {
+                    if (field.step === 2) {
+                      return (
+                        <QuestionSection key={`question_${field._id}_${index}`}>
+                          <QuestionTitle>{field.description}</QuestionTitle>
+                          <RadioGroup
+                            onChange={(e) =>
+                              selectOption(field._id, e.target.value)
+                            }
+                          >
+                            {field.options.map((option: any, index: number) => (
+                              <FormControlLabel
+                                key={`option_${field._id}_${index}`}
+                                value={option._id}
+                                control={
+                                  <Radio
+                                    color="primary"
+                                    checked={option?.selected}
+                                  />
+                                }
+                                label={option.text}
+                              />
+                            ))}
+                          </RadioGroup>
+                        </QuestionSection>
+                      );
+                    }
+                  })}
+
+                  <p>
+                    <i>
+                      *Para indicação de Planejamento de Atenção (P.A.D.),
+                      considerar a maior complexidade assinalada, ainda que a única
+                      vez.
+                    </i>
+                  </p>
+
+                  <ScoreTotalContent>
+                    <ScoreLabel>P.A.D.:</ScoreLabel>
+                    <ScoreTotal>
+                      {steps[currentStep].score.complexity ? steps[currentStep].score.complexity : "Não Elegível"}
+                    </ScoreTotal>
+                  </ScoreTotalContent>
+                </>
+              )}
+
+              {/* Grupo 3 */}
+              {currentStep === 3 && (
+                <>
+                  <div
+                    style={{
+                      display: "flex",
+                      alignItems: "center",
+                      flexDirection: "row",
+                      marginBottom: 40,
+                    }}
+                  >
+                    <StepTitle style={{margin: 0}}>
+                      Critérios de apoio para indicação de planejamento de atenção
+                      domiciliar
+                    </StepTitle>
+
+                    <IconButton
+                      aria-describedby={"popover_help_abemid_group_3"}
+                      onClick={handleClickHelpGroup3Popover}
+                      style={{marginLeft: 10}}
+                    >
+                      <HelpIcon style={{color: "#ccc"}}/>
+                    </IconButton>
+                    <Popover
+                      id={"popover_help_abemid_group_3"}
+                      open={openHelpGroup3Popover}
+                      anchorEl={anchorHelpGroup3Popover}
+                      onClose={handleCloseHelpGroup3Popover}
+                      anchorOrigin={{
+                        vertical: "bottom",
+                        horizontal: "center",
+                      }}
+                      transformOrigin={{
+                        vertical: "top",
+                        horizontal: "left",
+                      }}
+                    >
+                      <div
+                        style={{
+                          paddingTop: 20,
+                          paddingLeft: 30,
+                          paddingBottom: 20,
+                          paddingRight: 30,
+                          maxWidth: 500,
+                          listStylePosition: "inside",
+                          textAlign: "justify",
+                        }}
+                      >
+                        <p>Regra:</p>
+                        <br/>
+                        <ul>
+                          <li>
+                            Até 5 Pontos - Considerar procedimentos pontuais
+                            exclusivos ou outros programas:
+                          </li>
+                          <p>
+                            ( ) Curativos ( ) Medicações Parenterais ( ) Outros
+                            Programas
+                          </p>
+                          <br/>
+
+                          <li>
+                            De 6 a 11 Pontos - Considerar Atendimento Domiciliar
+                            Multiprofissional (inclui procedimentos pontuais, desde
+                            que não exclusivos)
+                          </li>
+                          <br/>
+
+                          <li>
+                            De 12 a 17 Pontos - Considerar Internação Domiciliar 12h
+                          </li>
+                          <br/>
+
+                          <li>
+                            18 ou mais Pontos - Considerar Internação Domiciliar 24h
+                          </li>
+                          <br/>
+                        </ul>
+                      </div>
+                    </Popover>
+                  </div>
+
+                  {documentGroup?.fields?.map((field: any, index: number) => {
+                    if (field.step === 3) {
+
+                      const getKatz = (option: any, score: number) => {
+                        option.selected = false
+                        if (option.value === '0') {
+                          if (score > 4) {
+                            option.selected = true
+                          }
+                        } else if (option.value === '1') {
+                          if (score >= 3 && score <= 4) {
+                            option.selected = true
+                          }
+                        } else if (option.value === '2') {
+                          if (score <= 2) {
+                            option.selected = true
+                          }
+                        } else {
+                          option.selected = false
+                        }
+                        return option
+                      };
+
+                      return (
+                        <QuestionSection key={`question_${field._id}_${index}`}>
+
+                          {(field.description === '3. KATZ (se pediatria, considerar dependência total)') ? (
+                            <>
+                              <QuestionTitle>{field.description}</QuestionTitle>
+                              <RadioGroup
+                                onChange={(e) => {
+                                  selectOption(field._id, e.target.value);
+                                }}
+                              >
+                                {field.options.map((option: any, index: number) => (
+                                  <>
+                                    {/*{console.log(option)}*/}
+                                    <FormControlLabel
+                                      key={`option_${field._id}_${index}`}
+                                      value={getKatz(option, steps[0].score.total)}
+                                      control={
+                                        <Radio
+                                          color="primary"
+                                          checked={option?.selected}
+                                        />
+                                      }
+                                      label={option.text}
+                                      checked={option?.selected}
+                                    />
+                                  </>
+                                ))}
+                              </RadioGroup>
+                            </>
+                          ) : (
+                            <>
+                              <QuestionTitle>{field.description}</QuestionTitle>
+                              <RadioGroup
+                                onChange={(e) => {
+                                  selectOption(field._id, e.target.value);
+                                }}
+                              >
+                                {field.options.map((option: any, index: number) => (
+                                  <>
+                                    <FormControlLabel
+                                      key={`option_${field._id}_${index}`}
+                                      value={option._id}
+                                      control={
+                                        <Radio
+                                          color="primary"
+                                          checked={option?.selected}
+                                        />
+                                      }
+                                      label={option.text}
+                                      checked={option?.selected}
+                                    />
+                                  </>
+                                ))}
+                              </RadioGroup>
+                            </>
+                          )}
+                        </QuestionSection>
+                      );
+                    }
+                  })}
+
+                  <ScoreTotalContent>
+                    <ScoreLabel>PONTUAÇÃO FINAL:</ScoreLabel>
+                    <ScoreTotal>
+                      {steps[currentStep].score.total} -{" "}
+                      {steps[currentStep].score.complexity}
+                    </ScoreTotal>
+                  </ScoreTotalContent>
+                </>
+              )}
+
+              <ButtonsContent>
+                <Button
+                  background="default"
+                  onClick={() =>
+                    history.push(`/patient/capture/${care?._id}/overview`)
+                  }
+                >
+                  Cancelar
+                </Button>
+                <Button
+                  disabled={currentStep === 0}
+                  background="default"
+                  onClick={handleBackStep}
+                >
+                  Anterior
+                </Button>
+
+                {currentStep === steps.length - 1 ? (
+                  <>
+                    {careState.data.capture?.status === "Em Andamento" && (
+                      <Button background="primary" onClick={handleSubmit}>
+                        Finalizar
+                      </Button>
+                    )}
+                  </>
+                ) : (
+                  <Button
+                    disabled={currentStep === (steps.length - 1)}
+                    background="success"
+                    type="submit"
+                    onClick={handleNextStep}
+                  >
+                    Próximo
+                  </Button>
+                )}
+              </ButtonsContent>
+            </FormContent>
+          </>
+        )}
+
       </Container>
     </Sidebar>
   );

@@ -66,6 +66,7 @@ import {
   TabBodyItem,
 } from "../../../styles/components/Tabs";
 import ButtonComponent from "../../../styles/components/Button";
+// @ts-ignore
 import FeedbackUserComponent from '../../../components/FeedbackUser';
 
 import {formatDate, age} from "../../../helpers/date";
@@ -87,6 +88,7 @@ import LocationOnIcon from '@material-ui/icons/LocationOn'
 import CheckCircleRoundedIcon from '@material-ui/icons/CheckCircleRounded';
 import {BoxCustom} from "../../customer/form/styles";
 import _ from "lodash";
+// @ts-ignore
 import Sidebar_menu from "../../../components/Sidebar_menu";
 
 
