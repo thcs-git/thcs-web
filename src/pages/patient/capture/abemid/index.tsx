@@ -1,10 +1,24 @@
-import React, { useState, useEffect, useCallback } from 'react';
-import { useHistory, RouteComponentProps } from 'react-router-dom';
-import { Container, StepLabel, Radio, RadioGroup, FormControlLabel, FormGroup, Checkbox, Stepper, Step, StepButton, Grid, Popover, IconButton } from '@material-ui/core';
-import { Help as HelpIcon } from '@material-ui/icons';
+import React, {useState, useEffect, useCallback} from 'react';
+import {useHistory, RouteComponentProps} from 'react-router-dom';
+import {
+  Container,
+  StepLabel,
+  Radio,
+  RadioGroup,
+  FormControlLabel,
+  FormGroup,
+  Checkbox,
+  Stepper,
+  Step,
+  StepButton,
+  Grid,
+  Popover,
+  IconButton
+} from '@material-ui/core';
+import {Help as HelpIcon} from '@material-ui/icons';
 
-import { useDispatch, useSelector } from 'react-redux';
-import { ApplicationState } from '../../../../store';
+import {useDispatch, useSelector} from 'react-redux';
+import {ApplicationState} from '../../../../store';
 
 import {
   loadCareById,
@@ -14,20 +28,27 @@ import {
   actionDocumentAbemidUpdateRequest,
   cleanAction
 } from '../../../../store/ducks/cares/actions';
-import { CareInterface, DocumentGroupInterface } from '../../../../store/ducks/cares/types';
+import {CareInterface, DocumentGroupInterface} from '../../../../store/ducks/cares/types';
 
 import PatientCard from '../../../../components/Card/Patient';
 import Loading from '../../../../components/Loading';
 import Sidebar from '../../../../components/Sidebar';
 
 import Button from '../../../../styles/components/Button';
-import { FormTitle, QuestionSection, QuestionTitle, ScoreTotalContent, ScoreLabel, ScoreTotal } from '../../../../styles/components/Form';
-import { StepperComponent, StepComponent, StepTitle } from '../../../../styles/components/Step';
-import { handleUserSelectedId } from '../../../../helpers/localStorage';
+import {
+  FormTitle,
+  QuestionSection,
+  QuestionTitle,
+  ScoreTotalContent,
+  ScoreLabel,
+  ScoreTotal
+} from '../../../../styles/components/Form';
+import {StepperComponent, StepComponent, StepTitle} from '../../../../styles/components/Step';
+import {handleUserSelectedId} from '../../../../helpers/localStorage';
 
 
-import { ButtonsContent, FormContent } from './styles';
-import { toast } from 'react-toastify';
+import {ButtonsContent, FormContent} from './styles';
+import {toast} from 'react-toastify';
 
 interface IPageParams {
   id: string;
@@ -41,14 +62,14 @@ interface IScore {
 }
 
 export default function Abemid(props: RouteComponentProps<IPageParams>) {
-  const { params } = props.match;
-  const { state: routeState } = props.location;
+  const {params} = props.match;
+  const {state: routeState} = props.location;
 
   const history = useHistory();
   const dispatch = useDispatch();
 
   const careState = useSelector((state: ApplicationState) => state.cares);
-  const { documentGroupAbemid: documentGroupState, documentAbemid: documentState } = careState;
+  const {documentGroupAbemid: documentGroupState, documentAbemid: documentState} = careState;
 
   const [care, setCare] = useState<CareInterface>();
   const [documentGroup, setDocumentGroup] = useState<DocumentGroupInterface>({
@@ -57,14 +78,14 @@ export default function Abemid(props: RouteComponentProps<IPageParams>) {
     description: '',
     fields: [],
     created_at: '',
-    created_by: { _id: '' },
+    created_by: {_id: ''},
     updated_at: '',
-    updated_by: { _id: '' },
+    updated_by: {_id: ''},
   });
   const [document, setDocument] = useState<any>();
   const [steps, setSteps] = useState([
-    { title: 'KATZ', finished: (!!routeState.katzIsDone), score: { total: 0, complexity: "", status: "" } },
-    { title: 'Abemid', finished: false, score: { total: 0, complexity: "", status: "" } },
+    {title: 'KATZ', finished: (!!routeState.katzIsDone), score: {total: 0, complexity: "", status: ""}},
+    {title: 'Abemid', finished: false, score: {total: 0, complexity: "", status: ""}},
   ]);
   const [currentStep, setCurrentStep] = useState(0);
 
@@ -75,6 +96,8 @@ export default function Abemid(props: RouteComponentProps<IPageParams>) {
     const isError = checkAllCurrentQuestionsAnswered(documentGroup, currentStep);
 
     if (isError) return;
+
+    window.scrollTo(0, 0)
 
     setCurrentStep((prevState) => prevState + 1);
   }, [currentStep, documentGroup]);
@@ -100,7 +123,7 @@ export default function Abemid(props: RouteComponentProps<IPageParams>) {
     dispatch(loadCareById(params.id));
 
     if (params?.documentId) {
-      dispatch(actionDocumentAbemidRequest({ _id: params.documentId, care_id: params.id }));
+      dispatch(actionDocumentAbemidRequest({_id: params.documentId, care_id: params.id}));
     }
   }, []);
 
@@ -126,7 +149,7 @@ export default function Abemid(props: RouteComponentProps<IPageParams>) {
         !documentState?.error
       ) {
         if (care?._id) {
-          history.push(`/patient/capture/${care._id}/overview/`, { success: true });
+          history.push(`/patient/capture/${care._id}/overview/`, {success: true});
         }
       }
     }
@@ -157,7 +180,7 @@ export default function Abemid(props: RouteComponentProps<IPageParams>) {
   }, [documentGroup, currentStep, documentGroupState]);
 
   const selectOption = useCallback((field_id: string, option_id: string, multiple: boolean = false) => {
-    let documentGroupCopy = { ...documentGroup };
+    let documentGroupCopy = {...documentGroup};
 
     documentGroupCopy?.fields?.map((field: any) => {
       if (field._id === field_id) {
@@ -189,7 +212,7 @@ export default function Abemid(props: RouteComponentProps<IPageParams>) {
       if (field.step === currentStep) {
         field.options.map((option: any) => {
           if (option?.selected) {
-            if (option.value === 5) {
+            if (option.value === '5') {
               countQuestionFive++;
             }
 
@@ -200,6 +223,7 @@ export default function Abemid(props: RouteComponentProps<IPageParams>) {
     });
 
     const getComplexity = (score: number) => {
+      // Abemid
       if (currentStep === 1) {
         if (countQuestionFive === 1) {
           return 'Média Complexidade';
@@ -212,15 +236,15 @@ export default function Abemid(props: RouteComponentProps<IPageParams>) {
         } else if (score >= 19) {
           return 'Alta Complexidade';
         } else {
-          return 'Complexidade Não Detectada';
+          return 'Atenção Domiciliar';
         }
       }
       // KATZ
       else if (currentStep === 0) {
-        if (score < 2) {
+        if (score <= 2) {
           return "Dependente Total";
         } else if (score >= 3 && score <= 4) {
-          return "Dependente Parcial";
+          return "Dependência Parcial";
         } else {
           return "Independente";
         }
@@ -230,11 +254,12 @@ export default function Abemid(props: RouteComponentProps<IPageParams>) {
     };
 
     const getStatus = (score: number) => {
-      if (score < 7) {
-        return 'Não Elegível';
-      } else {
-        return 'Elegível';
-      }
+      // if (score < 7) {
+      //   return 'Não Elegível';
+      // } else {
+      //   return 'Elegível';
+      // }
+      return ''
     };
 
     let stepsCopy = steps;
@@ -250,7 +275,7 @@ export default function Abemid(props: RouteComponentProps<IPageParams>) {
   }, [documentGroup, currentStep]);
 
   const handleFieldAnswer = useCallback(() => {
-    let documentGroupCopy = { ...documentGroup };
+    let documentGroupCopy = {...documentGroup};
 
     documentGroupCopy?.fields?.map((field: any) => {
       field.options.map((option: any) => {
@@ -335,11 +360,11 @@ export default function Abemid(props: RouteComponentProps<IPageParams>) {
         fields: selecteds,
         complexity,
         status,
-        created_by: { _id: handleUserSelectedId() || '' },
+        created_by: {_id: handleUserSelectedId() || ''},
       };
 
       if (document?._id) {
-        dispatch(actionDocumentAbemidUpdateRequest({ ...createDocumentParams, _id: document._id }));
+        dispatch(actionDocumentAbemidUpdateRequest({...createDocumentParams, _id: document._id}));
       } else {
         dispatch(actionDocumentAbemidStoreRequest(createDocumentParams));
       }
@@ -349,23 +374,24 @@ export default function Abemid(props: RouteComponentProps<IPageParams>) {
 
   return (
     <Sidebar>
-      {careState.loading && <Loading />}
+      {careState.loading && <Loading/>}
       <Container>
 
         {care?.patient_id && (
           <>
             <h2>Paciente</h2>
-            <PatientCard patient={care.patient_id} />
+            <PatientCard patient={care.patient_id}/>
           </>
         )}
 
-        <div style={{ display: 'flex', alignItems: 'center', flexDirection: 'row', marginBottom: 40 }}>
-          <FormTitle style={{ marginBottom: 0 }}>
+        <div style={{display: 'flex', alignItems: 'center', flexDirection: 'row', marginBottom: 40}}>
+          <FormTitle style={{marginBottom: 0}}>
             {documentGroup.name}
           </FormTitle>
-          <IconButton aria-describedby={'popover_help_abemid'} onClick={handleClickHelpPopover} style={{ marginLeft: 10 }}>
-            <HelpIcon style={{ color: "#ccc" }} />
-          </IconButton >
+          <IconButton aria-describedby={'popover_help_abemid'} onClick={handleClickHelpPopover}
+                      style={{marginLeft: 10}}>
+            <HelpIcon style={{color: "#ccc"}}/>
+          </IconButton>
           <Popover
             id={'popover_help_abemid'}
             open={openHelpPopover}
@@ -381,17 +407,30 @@ export default function Abemid(props: RouteComponentProps<IPageParams>) {
             }}
           >
             <div
-              style={{ paddingTop: 20, paddingLeft: 30, paddingBottom: 20, paddingRight: 30, maxWidth: 500, listStylePosition: 'inside', textAlign: 'justify' }}>
+              style={{
+                paddingTop: 20,
+                paddingLeft: 30,
+                paddingBottom: 20,
+                paddingRight: 30,
+                maxWidth: 500,
+                listStylePosition: 'inside',
+                textAlign: 'justify'
+              }}>
               <p>Regra:</p>
-              <br />
+              <br/>
               <ul>
                 <li>Ao obter 01 pontuação 5, o paciente migra automaticamente para Média Complexidade;</li>
 
-                <li>Ao obter 02 ou mais pontuações 5, o paciente migra automaticamente para Alta Complexidade, independente do total de pontos obtidos (com cuidado).<br />Obs. A migração acima referida, ocorre independente dos pontos totais obtidos</li>
+                <li>Ao obter 02 ou mais pontuações 5, o paciente migra automaticamente para Alta Complexidade,
+                  independente do total de pontos obtidos (com cuidado).<br/>Obs. A migração acima referida, ocorre
+                  independente dos pontos totais obtidos
+                </li>
 
-                <li>Em TODOS os itens de avaliação, EXCETO os relacionados a coluna SUPORTE TERAPÊUTICO, os pontos NÃO se somam, SEMPRE prevalecendo o item de MAIOR pontuação em decorrência da maior COMPLEXIDADE</li>
+                <li>Em TODOS os itens de avaliação, EXCETO os relacionados a coluna SUPORTE TERAPÊUTICO, os pontos NÃO
+                  se somam, SEMPRE prevalecendo o item de MAIOR pontuação em decorrência da maior COMPLEXIDADE
+                </li>
               </ul>
-              <br />
+              <br/>
 
               <ul>
                 <li>Inferior a 07 pontos Paciente não elegível para Internação Domiciliar</li>
@@ -430,7 +469,7 @@ export default function Abemid(props: RouteComponentProps<IPageParams>) {
                         onChange={(e) =>
                           selectOption(field._id, e.target.value)
                         }
-                        style={{ width: 'fit-content' }}
+                        style={{width: 'fit-content'}}
                       >
                         {field.options.map((option: any, index: number) => (
                           <FormControlLabel
@@ -458,7 +497,7 @@ export default function Abemid(props: RouteComponentProps<IPageParams>) {
                     steps[currentStep].score.total ?
                       `${steps[currentStep].score.total} - ${steps[currentStep].score.complexity}`
                       :
-                      '0'
+                      '0 - Dependente Total'
                   }
                 </ScoreTotal>
               </ScoreTotalContent>
@@ -485,7 +524,7 @@ export default function Abemid(props: RouteComponentProps<IPageParams>) {
                             <FormControlLabel
                               key={`option_${field._id}_${index}`}
                               value={option._id}
-                              control={<Radio color="primary" />}
+                              control={<Radio color="primary"/>}
                               label={option.text}
                               checked={option?.selected}
                             />
@@ -502,7 +541,7 @@ export default function Abemid(props: RouteComponentProps<IPageParams>) {
                               onChange={e => selectOption(field._id, option._id, true)}
                               control={(
                                 <Checkbox color="primary"
-                                  checked={option?.selected ?? false}
+                                          checked={option?.selected ?? false}
                                 />
                               )}
                               label={option.text}
@@ -522,7 +561,7 @@ export default function Abemid(props: RouteComponentProps<IPageParams>) {
                     steps[currentStep].score.total ?
                       `${steps[currentStep].score.total} - ${steps[currentStep].score.complexity}`
                       :
-                      '0'
+                      '0 - Atenção Domiciliar'
                   }
                 </ScoreTotal>
               </ScoreTotalContent>
