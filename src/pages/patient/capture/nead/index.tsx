@@ -1,11 +1,21 @@
-import React, { useState, useEffect, useCallback, useRef } from 'react';
-import { useHistory, RouteComponentProps } from 'react-router-dom';
-import { Container, StepLabel, Radio, RadioGroup, FormControlLabel, IconButton, Popover, FormHelperText, FormControl } from '@material-ui/core';
-import { Help as HelpIcon } from '@material-ui/icons';
-import { toast } from 'react-toastify';
+import React, {useState, useEffect, useCallback, useRef} from 'react';
+import {useHistory, RouteComponentProps} from 'react-router-dom';
+import {
+  Container,
+  StepLabel,
+  Radio,
+  RadioGroup,
+  FormControlLabel,
+  IconButton,
+  Popover,
+  FormHelperText,
+  FormControl
+} from '@material-ui/core';
+import {Help as HelpIcon} from '@material-ui/icons';
+import {toast} from 'react-toastify';
 
-import { useDispatch, useSelector } from 'react-redux';
-import { ApplicationState } from '../../../../store';
+import {useDispatch, useSelector} from 'react-redux';
+import {ApplicationState} from '../../../../store';
 
 import {
   loadCareById,
@@ -37,9 +47,9 @@ import {
   StepComponent,
   StepTitle,
 } from "../../../../styles/components/Step";
-import { handleUserSelectedId } from '../../../../helpers/localStorage';
+import {handleUserSelectedId} from '../../../../helpers/localStorage';
 
-import { ButtonsContent, FormContent } from "./styles";
+import {ButtonsContent, FormContent} from "./styles";
 
 interface IPageParams {
   id: string;
@@ -47,7 +57,7 @@ interface IPageParams {
 }
 
 export default function Nead(props: RouteComponentProps<IPageParams>) {
-  const { params } = props.match;
+  const {params} = props.match;
 
   const history = useHistory();
   const dispatch = useDispatch();
@@ -75,11 +85,11 @@ export default function Nead(props: RouteComponentProps<IPageParams>) {
   const [steps, setSteps] = useState([
     {
       title: "Escore de Katz",
-      score: { total: 0, complexity: "", status: "" },
+      score: {total: 0, complexity: "", status: ""},
     },
-    { title: "Grupo 1", score: { total: 0, complexity: "", status: "" } },
-    { title: "Grupo 2", score: { total: 0, complexity: "", status: "" } },
-    { title: "Grupo 3", score: { total: 0, complexity: "", status: "" } },
+    {title: "Grupo 1", score: {total: 0, complexity: "", status: ""}},
+    {title: "Grupo 2", score: {total: 0, complexity: "", status: ""}},
+    {title: "Grupo 3", score: {total: 0, complexity: "", status: ""}},
   ]);
 
   const [currentStep, setCurrentStep] = useState(0);
@@ -91,9 +101,9 @@ export default function Nead(props: RouteComponentProps<IPageParams>) {
     description: "",
     fields: [],
     created_at: "",
-    created_by: { _id: "" },
+    created_by: {_id: ""},
     updated_at: "",
-    updated_by: { _id: "" },
+    updated_by: {_id: ""},
   });
   const [document, setDocument] = useState<any>();
 
@@ -153,7 +163,7 @@ export default function Nead(props: RouteComponentProps<IPageParams>) {
 
   const selectOption = useCallback(
     (field_id: string, option_id: string, multiple: boolean = false) => {
-      let documentGroupCopy = { ...documentGroup };
+      let documentGroupCopy = {...documentGroup};
 
       documentGroupCopy?.fields?.map((field: any) => {
         if (field._id === field_id) {
@@ -211,7 +221,7 @@ export default function Nead(props: RouteComponentProps<IPageParams>) {
         } else if (count12hours > 0) {
           return "Média Complexidade";
         } else {
-          return "Sem Complexidade";
+          return "Atenção Domiciliar";
         }
       }
       // Atividades (GRUPO 3)
@@ -223,12 +233,12 @@ export default function Nead(props: RouteComponentProps<IPageParams>) {
         } else if (partialScore >= 18) {
           return "Alta Complexidade";
         } else {
-          return "Sem Complexidade";
+          return "Atenção Domiciliar";
         }
       }
       // KATZ
       else if (currentStep === 0) {
-        if (score < 2) {
+        if (score <= 2) {
           return "Dependente Total";
         } else if (score >= 3 && score <= 4) {
           return "Dependente Parcial";
@@ -260,7 +270,7 @@ export default function Nead(props: RouteComponentProps<IPageParams>) {
   }, [documentGroup, steps, currentStep]);
 
   const handleFieldAnswer = useCallback(() => {
-    let documentGroupCopy = { ...documentGroup };
+    let documentGroupCopy = {...documentGroup};
 
     documentGroupCopy?.fields?.map((field: any) => {
       field.options.map((option: any) => {
@@ -344,7 +354,7 @@ export default function Nead(props: RouteComponentProps<IPageParams>) {
         fields: selecteds,
         complexity,
         status,
-        created_by: { _id: handleUserSelectedId() || '' },
+        created_by: {_id: handleUserSelectedId() || ''},
       };
 
       if (document?._id) {
@@ -380,11 +390,14 @@ export default function Nead(props: RouteComponentProps<IPageParams>) {
 
     if (isError) return;
 
+    window.scrollTo(0, 200)
+
     setCurrentStep((prevState) => prevState + 1);
   }, [currentStep, documentGroup]);
 
   const handleBackStep = useCallback(() => {
     setCurrentStep((prevState) => prevState - 1);
+    window.scrollTo(0, 200)
   }, [currentStep]);
 
   const handleNavigateStep = useCallback((step: number) => {
@@ -413,12 +426,12 @@ export default function Nead(props: RouteComponentProps<IPageParams>) {
 
   return (
     <Sidebar>
-      {careState.loading && <Loading />}
+      {careState.loading && <Loading/>}
       <Container>
         {care?.patient_id && (
           <>
             <h2>Paciente</h2>
-            <PatientCard patient={care.patient_id} />
+            <PatientCard patient={care.patient_id}/>
           </>
         )}
         <div
@@ -429,15 +442,15 @@ export default function Nead(props: RouteComponentProps<IPageParams>) {
             marginBottom: 40,
           }}
         >
-          <FormTitle style={{ margin: 0 }}>
+          <FormTitle style={{margin: 0}}>
             Tabela de avaliação para planejamento de atenção domiciliar
           </FormTitle>
           <IconButton
             aria-describedby={"popover_help_abemid"}
             onClick={handleClickHelpPopover}
-            style={{ marginLeft: 10 }}
+            style={{marginLeft: 10}}
           >
-            <HelpIcon style={{ color: "#ccc" }} />
+            <HelpIcon style={{color: "#ccc"}}/>
           </IconButton>
           <Popover
             id={"popover_help_abemid"}
@@ -465,22 +478,22 @@ export default function Nead(props: RouteComponentProps<IPageParams>) {
               }}
             >
               <p>Regra:</p>
-              <br />
+              <br/>
               <ul>
                 <li>KATZ</li>
                 <p>Classificação:</p>
                 <p>
-                  5 ou 6 - Independente<br />
-                  3 ou 4 - Dependente Parcial<br />
+                  5 ou 6 - Independente<br/>
+                  3 ou 4 - Dependente Parcial<br/>
                   {`< 2 - Dependente Total`}</p>
-                <br />
+                <br/>
 
                 <li>GRUPO 1 – ELEGIBILIDADE</li>
                 <p>
                   Se responder <b>NÃO</b> a qualquer uma das questões,
                   considerar contraindicar Atenção Domiciliar
                 </p>
-                <br />
+                <br/>
 
                 <li>
                   GRUPO 2 – CRITÉRIOS PARA INDICAÇÃO IMEDIATA DE INTERNAÇÃO
@@ -491,7 +504,7 @@ export default function Nead(props: RouteComponentProps<IPageParams>) {
                   considerar a maior complexidade assinalada, ainda que uma
                   única vez.
                 </p>
-                <br />
+                <br/>
 
                 <li>
                   GRUPO 3 – CRITÉRIOS DE APOIO PARA INDICAÇÃO DE PLANEJAMENTO DE
@@ -501,7 +514,7 @@ export default function Nead(props: RouteComponentProps<IPageParams>) {
                   A resposta da pergunta três deve vir preenchida conforme o
                   resultado da classificação do KATZ
                 </p>
-                <br />
+                <br/>
 
                 <li>
                   Até 5 Pontos - Considerar procedimentos pontuais exclusivos ou
@@ -510,24 +523,24 @@ export default function Nead(props: RouteComponentProps<IPageParams>) {
                 <p>
                   ( ) Curativos ( ) Medicações Parenterais ( ) Outros Programas
                 </p>
-                <br />
+                <br/>
 
                 <li>
                   De 6 a 11 Pontos - Considerar Atendimento Domiciliar
                   Multiprofissional (inclui procedimentos pontuais, desde que
                   não exclusivos)
                 </li>
-                <br />
+                <br/>
 
                 <li>
                   De 12 a 17 Pontos - Considerar Internação Domiciliar 12h
                 </li>
-                <br />
+                <br/>
 
                 <li>
                   18 ou mais Pontos - Considerar Internação Domiciliar 24h
                 </li>
-                <br />
+                <br/>
               </ul>
             </div>
           </Popover>
@@ -558,7 +571,8 @@ export default function Nead(props: RouteComponentProps<IPageParams>) {
                     }}>
                       <QuestionSection key={`question_${field._id}_${index}`}>
                         <QuestionTitle>{field.description}</QuestionTitle>
-                        <RadioGroup  style={{ width: 'fit-content' }} onChange={e => selectOption(field._id, e.target.value)}>
+                        <RadioGroup style={{width: 'fit-content'}}
+                                    onChange={e => selectOption(field._id, e.target.value)}>
                           {/* {() => handleSelectRadio(field)} */}
                           {/* <FormHelperText>{(field.options.some((option: any) => option.selected)) ? '' : 'error'}</FormHelperText> */}
                           {field.options.map((option: any, index: number) => (
@@ -609,7 +623,7 @@ export default function Nead(props: RouteComponentProps<IPageParams>) {
                       >
                         {field.options.map((option: any, index: number) => (
                           <FormControlLabel
-                            onError={() => alert('arro')}
+                            onError={() => alert('erro')}
                             key={`option_${field._id}_${index}`}
                             value={option._id}
                             control={
@@ -633,6 +647,14 @@ export default function Nead(props: RouteComponentProps<IPageParams>) {
                   considerar contraindicar Atenção Domiciliar
                 </i>
               </p>
+              <br/>
+
+              <ScoreTotalContent>
+                <ScoreLabel>ELEGIBILIDADE:</ScoreLabel>
+                <ScoreTotal>
+                  {steps[currentStep].score.status ? steps[currentStep].score.status : "Não Elegível"}
+                </ScoreTotal>
+              </ScoreTotalContent>
             </>
           )}
 
@@ -679,6 +701,13 @@ export default function Nead(props: RouteComponentProps<IPageParams>) {
                   vez.
                 </i>
               </p>
+
+              <ScoreTotalContent>
+                <ScoreLabel>P.A.D.:</ScoreLabel>
+                <ScoreTotal>
+                  {steps[currentStep].score.complexity ? steps[currentStep].score.complexity : "Não Elegível"}
+                </ScoreTotal>
+              </ScoreTotalContent>
             </>
           )}
 
@@ -693,7 +722,7 @@ export default function Nead(props: RouteComponentProps<IPageParams>) {
                   marginBottom: 40,
                 }}
               >
-                <StepTitle style={{ margin: 0 }}>
+                <StepTitle style={{margin: 0}}>
                   Critérios de apoio para indicação de planejamento de atenção
                   domiciliar
                 </StepTitle>
@@ -701,9 +730,9 @@ export default function Nead(props: RouteComponentProps<IPageParams>) {
                 <IconButton
                   aria-describedby={"popover_help_abemid_group_3"}
                   onClick={handleClickHelpGroup3Popover}
-                  style={{ marginLeft: 10 }}
+                  style={{marginLeft: 10}}
                 >
-                  <HelpIcon style={{ color: "#ccc" }} />
+                  <HelpIcon style={{color: "#ccc"}}/>
                 </IconButton>
                 <Popover
                   id={"popover_help_abemid_group_3"}
@@ -731,7 +760,7 @@ export default function Nead(props: RouteComponentProps<IPageParams>) {
                     }}
                   >
                     <p>Regra:</p>
-                    <br />
+                    <br/>
                     <ul>
                       <li>
                         Até 5 Pontos - Considerar procedimentos pontuais
@@ -741,24 +770,24 @@ export default function Nead(props: RouteComponentProps<IPageParams>) {
                         ( ) Curativos ( ) Medicações Parenterais ( ) Outros
                         Programas
                       </p>
-                      <br />
+                      <br/>
 
                       <li>
                         De 6 a 11 Pontos - Considerar Atendimento Domiciliar
                         Multiprofissional (inclui procedimentos pontuais, desde
                         que não exclusivos)
                       </li>
-                      <br />
+                      <br/>
 
                       <li>
                         De 12 a 17 Pontos - Considerar Internação Domiciliar 12h
                       </li>
-                      <br />
+                      <br/>
 
                       <li>
                         18 ou mais Pontos - Considerar Internação Domiciliar 24h
                       </li>
-                      <br />
+                      <br/>
                     </ul>
                   </div>
                 </Popover>
