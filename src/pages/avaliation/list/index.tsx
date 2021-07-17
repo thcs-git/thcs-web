@@ -1,25 +1,50 @@
-import React, { useState, useEffect, useCallback, ChangeEvent } from 'react';
-import { useHistory, Link } from 'react-router-dom';
-import { Container, Button, Menu, MenuItem, Dialog, DialogTitle, DialogContent, DialogContentText, DialogActions, RadioGroup, FormControlLabel, Radio, InputLabel, Tooltip, TableRow, TableCell, TextField } from '@material-ui/core';
-import { FiberManualRecord, ErrorOutline, MoreVert, Check as CheckIcon } from '@material-ui/icons';
+import React, {useState, useEffect, useCallback, ChangeEvent} from 'react';
+import {useHistory, Link} from 'react-router-dom';
+import {
+  Container,
+  Button,
+  Menu,
+  MenuItem,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogContentText,
+  DialogActions,
+  RadioGroup,
+  FormControlLabel,
+  Radio,
+  InputLabel,
+  Tooltip,
+  TableRow,
+  TableCell,
+  TextField
+} from '@material-ui/core';
+import {FiberManualRecord, ErrorOutline, MoreVert, Check as CheckIcon} from '@material-ui/icons';
 import debounce from 'lodash.debounce';
 
-import { useDispatch, useSelector } from 'react-redux';
-import { ApplicationState } from '../../../store/';
-import { loadRequest, searchCareRequest } from '../../../store/ducks/cares/actions';
+import {useDispatch, useSelector} from 'react-redux';
+import {ApplicationState} from '../../../store/';
+import {careTypeRequest, loadRequest, searchCareRequest} from '../../../store/ducks/cares/actions';
 
-import { searchCareRequest as getCares, updateCareRequest as updateCareAction, cleanAction } from '../../../store/ducks/cares/actions';
+import {
+  searchCareRequest as getCares,
+  updateCareRequest as updateCareAction,
+  cleanAction
+} from '../../../store/ducks/cares/actions';
 
 import PaginationComponent from '../../../components/Pagination';
 import Sidebar from '../../../components/Sidebar';
 import Table from '../../../components/Table';
 import SearchComponent from '../../../components/List/Search';
 import Loading from '../../../components/Loading';
-import { FormTitle, SelectComponent as Select, FieldContent } from '../../../styles/components/Form';
+import {FormTitle, SelectComponent as Select, FieldContent} from '../../../styles/components/Form';
 
-import { formatDate } from '../../../helpers/date';
+import {formatDate} from '../../../helpers/date';
 
-import { ListItemCaptureStatus, CaptionList } from './styles';
+import {ListItemCaptureStatus, CaptionList} from './styles';
+import {HighComplexityLabel, LowerComplexityLabel, MediumComplexityLabel} from "../../../styles/components/Text";
+import {CareInterface} from "../../../store/ducks/cares/types";
+import _ from 'lodash';
 
 interface ICaptureStatus {
   care: any;
@@ -34,7 +59,7 @@ export default function AvaliationList() {
   const careState = useSelector((state: ApplicationState) => state.cares);
 
   const [search, setSearch] = useState('');
-  const [file, setFile] = useState({ error: false });
+  const [file, setFile] = useState({error: false});
   const [captureStatus, setCaptureStatus] = useState<ICaptureStatus>({
     care: {},
     approved: '',
@@ -49,6 +74,7 @@ export default function AvaliationList() {
   useEffect(() => {
     dispatch(cleanAction());
     dispatch(getCares({}))
+    dispatch(careTypeRequest());
   }, []);
 
   // useEffect(() => {
@@ -57,9 +83,138 @@ export default function AvaliationList() {
   //   }
   // }, [careState.data.status]);
 
+  const handleType = useCallback((care: any) => {
+    let complexitiesArray: any = []
+    let complexity: string = ""
+    care.documents_id.map((field: any) => {
+      complexitiesArray.push(field.complexity);
+    })
+    if (
+      complexitiesArray.findIndex(
+        (item: string) => item === "Alta Complexidade"
+      ) > -1
+    ) {
+      complexity = "Internação";
+    } else if (
+      complexitiesArray.findIndex(
+        (item: string) => item === "Média Complexidade"
+      ) > -1
+    ) {
+      complexity = "Internação";
+    } else if (
+      complexitiesArray.findIndex(
+        (item: string) => item === "Baixa Complexidade"
+      ) > -1
+    ) {
+      complexity = "Internação";
+    } else if (
+      complexitiesArray.findIndex(
+        (item: string) => item === "Sem Complexidade"
+      ) > -1
+    ) {
+      complexity = "Atenção";
+    } else {
+      complexity = "-";
+    }
+
+    return complexity
+  }, [careState]);
+
+  const handleCoplexities = useCallback((care: any) => {
+    let complexitiesArray: any = []
+    let complexity: string = ""
+    care?.documents_id?.map((field: any) => {
+      complexitiesArray.push(field.complexity);
+    })
+    if (
+      complexitiesArray.findIndex(
+        (item: string) => item === "Alta Complexidade"
+      ) > -1
+    ) {
+      complexity = "Alta";
+    } else if (
+      complexitiesArray.findIndex(
+        (item: string) => item === "Média Complexidade"
+      ) > -1
+    ) {
+      complexity = "Média";
+    } else if (
+      complexitiesArray.findIndex(
+        (item: string) => item === "Baixa Complexidade"
+      ) > -1
+    ) {
+      complexity = "Baixa";
+    } else {
+      complexity = "-";
+    }
+
+    switch (complexity.toLocaleLowerCase()) {
+      case 'sem complexidade':
+        return '-';
+
+      case 'baixa':
+        return <LowerComplexityLabel>{complexity}</LowerComplexityLabel>;
+
+      case 'média':
+        return <MediumComplexityLabel>{complexity}</MediumComplexityLabel>;
+
+      case 'alta':
+        return <HighComplexityLabel>{complexity}</HighComplexityLabel>;
+
+      default:
+        return '-';
+    }
+  }, [careState]);
+
+  const handleCoplexitiesDialog = useCallback((care: any) => {
+    let complexitiesArray: any = []
+    let complexity: string = ""
+    care?.documents_id?.map((field: any) => {
+      complexitiesArray.push(field.complexity);
+    })
+    if (
+      complexitiesArray.findIndex(
+        (item: string) => item === "Alta Complexidade"
+      ) > -1
+    ) {
+      complexity = "Alta";
+    } else if (
+      complexitiesArray.findIndex(
+        (item: string) => item === "Média Complexidade"
+      ) > -1
+    ) {
+      complexity = "Média";
+    } else if (
+      complexitiesArray.findIndex(
+        (item: string) => item === "Baixa Complexidade"
+      ) > -1
+    ) {
+      complexity = "Baixa";
+    } else {
+      complexity = "-";
+    }
+
+    switch (complexity.toLocaleLowerCase()) {
+      case 'sem complexidade':
+        return 'Atenção Domiciliar';
+
+      case 'baixa':
+        return '<LowerComplexityLabel>{`${complexity} Complexidade`}</LowerComplexityLabel>';
+
+      case 'média':
+        return <MediumComplexityLabel>{`${complexity} Complexidade`}</MediumComplexityLabel>;
+
+      case 'alta':
+        return <HighComplexityLabel>{`${complexity} Complexidade`}</HighComplexityLabel>;
+
+      default:
+        return 'Atenção Domiciliar';
+    }
+  }, [careState]);
+
   const handleChangeInput = useCallback((event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     setSearch(event.target.value)
-    dispatch(searchCareRequest({ search: event.target.value }));
+    dispatch(searchCareRequest({search: event.target.value}));
   }, [search]);
 
   const debounceSearchRequest = debounce(handleChangeInput, 900);
@@ -94,18 +249,20 @@ export default function AvaliationList() {
 
     if (found) {
       return found.status === 'Não Elegível' ? (
-        <Tooltip title="Não Elegível">
-          <ErrorOutline style={{ color: '#FF6565', cursor: 'pointer' }} onClick={() => history.push(`/patient/capture/${found.care_id}/${documentRoute()}/${found._id}`)} />
-        </Tooltip>
-      )
+          <Tooltip title="Não Elegível">
+            <ErrorOutline style={{color: '#FF6565', cursor: 'pointer'}}
+                          onClick={() => history.push(`/patient/capture/${found.care_id}/${documentRoute()}/${found._id}`)}/>
+          </Tooltip>
+        )
         :
         (
           <Tooltip title="Elegível">
-            <CheckIcon style={{ color: '#4FC66A', cursor: 'pointer' }} onClick={() => history.push(`/patient/capture/${found.care_id}/${documentRoute()}/${found._id}`)} />
+            <CheckIcon style={{color: '#4FC66A', cursor: 'pointer'}}
+                       onClick={() => history.push(`/patient/capture/${found.care_id}/${documentRoute()}/${found._id}`)}/>
           </Tooltip>
         );
     } else {
-      return <Tooltip title="Não Realizado"><CheckIcon style={{ color: '#EBEBEB' }} /></Tooltip>;
+      return <Tooltip title="Não Realizado"><CheckIcon style={{color: '#EBEBEB'}}/></Tooltip>;
     }
   };
 
@@ -118,7 +275,7 @@ export default function AvaliationList() {
       care
     }));
 
-  }, [captureStatus]);
+  }, [captureStatus, careState]);
 
   const handleChangeComplexity = useCallback((event: any) => {
     setCaptureStatus(prevState => ({
@@ -152,7 +309,7 @@ export default function AvaliationList() {
       return;
     } else {
       if (files && files?.length > 0) {
-        console.log(files[0]);
+        // console.log(files[0]);
         if (files[0].type == 'application/pdf' && files[0].size < 5000000) {
           setFile(prevState => ({
             ...prevState,
@@ -182,7 +339,7 @@ export default function AvaliationList() {
     setModalUpdateStatus(false);
     setModalConfirmUpdateStatus(false);
 
-    const { care } = captureStatus;
+    const {care} = captureStatus;
 
     const updateParams = {
       ...care,
@@ -194,7 +351,7 @@ export default function AvaliationList() {
     };
 
     dispatch(updateCareAction(updateParams));
-    dispatch(getCares({ status: 'Pre-Atendimento' }));
+    dispatch(getCares({status: 'Pre-Atendimento'}));
 
   }, [captureStatus, careState]);
 
@@ -203,19 +360,58 @@ export default function AvaliationList() {
     setModalUpdateStatus(false);
     setModalConfirmUpdateStatus(false);
 
-    const { care } = captureStatus;
+    const {care} = captureStatus;
+
+    let complexitiesArray: any = []
+    let complexity: string = ""
+    let careType: string = ""
+    care?.documents_id?.map((field: any) => {
+      complexitiesArray.push(field.complexity);
+    })
+    if (
+      complexitiesArray.findIndex(
+        (item: string) => item === "Alta Complexidade"
+      ) > -1
+    ) {
+      complexity = "Alta Complexidade";
+      careType = "Internação"
+    } else if (
+      complexitiesArray.findIndex(
+        (item: string) => item === "Média Complexidade"
+      ) > -1
+    ) {
+      complexity = "Média Complexidade";
+      careType = "Internação"
+    } else if (
+      complexitiesArray.findIndex(
+        (item: string) => item === "Baixa Complexidade"
+      ) > -1
+    ) {
+      complexity = "Baixa Complexidade";
+      careType = "Internação"
+    } else {
+      complexity = "Sem Complexidade";
+      careType = "Atenção"
+    }
+
+    var careTypeObj = _.find(careState.care_type, {name:careType});
 
     const updateParams = {
       ...care,
       capture: {
         ...care.capture,
         status: captureStatus.approved,
-        complexity: captureStatus.complexity,
+        complexity: complexity,
+      },
+      care_type_id: {
+        _id: careTypeObj?._id
       }
     };
 
     dispatch(updateCareAction(updateParams));
-    dispatch(getCares({ status: 'Pre-Atendimento' }));
+    dispatch(getCares({status: 'Pre-Atendimento'}));
+    dispatch(cleanAction())
+
 
     history.push('/care/create/')
 
@@ -224,7 +420,7 @@ export default function AvaliationList() {
   return (
     <>
       <Sidebar>
-        {careState.loading && <Loading />}
+        {careState.loading && <Loading/>}
         <Container>
           <FormTitle>Lista de Avaliações</FormTitle>
 
@@ -237,14 +433,15 @@ export default function AvaliationList() {
 
           <Table
             tableCells={[
-              { name: 'Paciente', align: 'left' },
-              { name: 'Tipo', align: 'left' },
-              { name: 'Socioambiental', align: 'center' },
-              { name: 'NEAD', align: 'center' },
-              { name: 'ABEMID', align: 'center' },
-              { name: 'Última captação', align: 'left' },
-              { name: 'Status da captação', align: 'left' },
-              { name: ' ', align: 'left' }
+              {name: 'Paciente', align: 'left'},
+              {name: 'Tipo', align: 'center'},
+              {name: 'Complexidade', align: 'center'},
+              {name: 'Socioambiental', align: 'center'},
+              {name: 'NEAD', align: 'center'},
+              {name: 'ABEMID', align: 'center'},
+              {name: 'Última captação', align: 'left'},
+              {name: 'Status da captação', align: 'left'},
+              {name: ' ', align: 'left'}
             ]}
           >
             {careState.list.data.map((care, index) => (
@@ -254,19 +451,25 @@ export default function AvaliationList() {
                     {care?.patient_id?.name}
                   </Link>
                 </TableCell> {/* Paciente */}
-                <TableCell align="left">{care.capture?.order_number || '-'}</TableCell> {/* Pedido */}
-                <TableCell align="center">{handleCheckDocument('5ffd79012f5d2b1d8ff6bea3', care?.documents_id || [])}</TableCell> {/* Socioambiental */}
-                <TableCell align="center">{handleCheckDocument('5ff65469b4d4ac07d186e99f', care?.documents_id || [])}</TableCell> {/* NEAD */}
-                <TableCell align="center">{handleCheckDocument('5ffd7acd2f5d2b1d8ff6bea4', care?.documents_id || [])}</TableCell> {/* ABEMID */}
-                <TableCell align="left">{care?.created_at ? formatDate(care.created_at, 'DD/MM/YYYY HH:mm:ss') : '-'}</TableCell> {/* Última captação */}
+                <TableCell align="center">{handleType(care)}</TableCell> {/* Tipo */}
+                <TableCell align="center">{handleCoplexities(care)}</TableCell> {/* Complexidade */}
+                <TableCell
+                  align="center">{handleCheckDocument('5ffd79012f5d2b1d8ff6bea3', care?.documents_id || [])}</TableCell> {/* Socioambiental */}
+                <TableCell
+                  align="center">{handleCheckDocument('5ff65469b4d4ac07d186e99f', care?.documents_id || [])}</TableCell> {/* NEAD */}
+                <TableCell
+                  align="center">{handleCheckDocument('5ffd7acd2f5d2b1d8ff6bea4', care?.documents_id || [])}</TableCell> {/* ABEMID */}
+                <TableCell
+                  align="left">{care?.created_at ? formatDate(care.created_at, 'DD/MM/YYYY HH:mm:ss') : '-'}</TableCell> {/* Última captação */}
                 <TableCell>
                   <ListItemCaptureStatus status={care?.capture?.status || ''}>
-                    <FiberManualRecord /> {care?.capture?.status}
+                    <FiberManualRecord/> {care?.capture?.status}
                   </ListItemCaptureStatus>
                 </TableCell>
                 <TableCell align="center">
-                  <Button aria-controls={`patient-capture-menu${index}`} id={`btn_patient-capture-menu${index}`} aria-haspopup="true" onClick={handleOpenRowMenu}>
-                    <MoreVert style={{ color: '#0899BA' }} />
+                  <Button aria-controls={`patient-capture-menu${index}`} id={`btn_patient-capture-menu${index}`}
+                          aria-haspopup="true" onClick={handleOpenRowMenu}>
+                    <MoreVert style={{color: '#0899BA'}}/>
                   </Button>
                   <Menu
                     id={`patient-capture-menu${index}`}
@@ -278,7 +481,8 @@ export default function AvaliationList() {
                     {care.capture?.status === 'Aguardando' && (
                       <MenuItem onClick={() => handleStartUpdateCaptureStatus(care)}>Atualizar status</MenuItem>
                     )}
-                    <MenuItem onClick={() => history.push(`/patient/capture/${care._id}/overview`)}>Visualizar perfil</MenuItem>
+                    <MenuItem onClick={() => history.push(`/patient/capture/${care._id}/overview`)}>Visualizar
+                      perfil</MenuItem>
                   </Menu>
                 </TableCell>
               </TableRow>
@@ -326,12 +530,20 @@ export default function AvaliationList() {
 
           <div>
             <h3>Legendas para status de captação:</h3>
-            <br />
+            <br/>
             <CaptionList>
-              <div className="captionItem aprovado"><FiberManualRecord /> <span>Aprovado</span> &nbsp;- o pedido foi aprovado pelo plano de saúde</div>
-              <div className="captionItem recusado"><FiberManualRecord /> <span>Recusado</span> &nbsp;- o pedido foi recusado pelo plano</div>
-              <div className="captionItem aguardando"><FiberManualRecord /> <span>Aguardando</span> &nbsp;- o pedido está aguardando análise do plano de saúde</div>
-              <div className="captionItem andamento"><FiberManualRecord /> <span>Em andamento</span> &nbsp;- as captações estão em andamento</div>
+              <div className="captionItem aprovado"><FiberManualRecord/> <span>Aprovado</span> &nbsp;- o pedido foi
+                aprovado pelo plano de saúde
+              </div>
+              <div className="captionItem recusado"><FiberManualRecord/> <span>Recusado</span> &nbsp;- o pedido foi
+                recusado pelo plano
+              </div>
+              <div className="captionItem aguardando"><FiberManualRecord/> <span>Aguardando</span> &nbsp;- o pedido está
+                aguardando análise do plano de saúde
+              </div>
+              <div className="captionItem andamento"><FiberManualRecord/> <span>Em andamento</span> &nbsp;- as captações
+                estão em andamento
+              </div>
             </CaptionList>
           </div>
 
@@ -348,7 +560,8 @@ export default function AvaliationList() {
                 id="scroll-dialog-description"
                 tabIndex={-1}
               >
-                Para dar continuidade ao atendimento, é necessário atualizar o status do pedido do paciente, anexar a guia de autorização do plano (formato PDF) e definir complexidade:
+                Para dar continuidade ao atendimento, é necessário atualizar o status do pedido do paciente, anexar a
+                guia de autorização do plano (formato PDF) e definir complexidade:
               </DialogContentText>
 
               <FieldContent>
@@ -396,18 +609,20 @@ export default function AvaliationList() {
               </FieldContent>
 
               <FieldContent>
-                <InputLabel id="capture-status-complexity-label">Complexidade</InputLabel>
-                <Select
-                  labelId="capture-status-complexity-label"
-                  id="capture-status-complexity"
-                  value={captureStatus.complexity}
-                  onChange={handleChangeComplexity}
-                  fullWidth
-                >
-                  <MenuItem key="complexity-low" value="Baixa Complexidade">Baixa Complexidade</MenuItem>
-                  <MenuItem key="complexity-medium" value="Média Complexidade">Média Complexidade</MenuItem>
-                  <MenuItem key="complexity-high" value="Alta Complexidade">Alta Complexidade</MenuItem>
-                </Select>
+                <InputLabel id="capture-status-complexity-label">Complexidade:</InputLabel>
+                {/*<Select*/}
+                {/*  labelId="capture-status-complexity-label"*/}
+                {/*  id="capture-status-complexity"*/}
+                {/*  value={captureStatus.complexity}*/}
+                {/*  onChange={handleChangeComplexity}*/}
+                {/*  fullWidth*/}
+                {/*>*/}
+                {/*  <MenuItem key="complexity-low" value="Baixa Complexidade">Baixa Complexidade</MenuItem>*/}
+                {/*  <MenuItem key="complexity-medium" value="Média Complexidade">Média Complexidade</MenuItem>*/}
+                {/*  <MenuItem key="complexity-high" value="Alta Complexidade">Alta Complexidade</MenuItem>*/}
+                {/*</Select>*/}
+                <br/>
+                {handleCoplexitiesDialog(captureStatus?.care)}
               </FieldContent>
             </DialogContent>
             <DialogActions>
@@ -418,13 +633,13 @@ export default function AvaliationList() {
                 <Button onClick={handleCaptureAttendance} color="primary">
                   Atualizar
                 </Button>
-              ):(
+              ) : (
                 <>
-                {captureStatus.approved === 'Recusado' ? (
+                  {captureStatus.approved === 'Recusado' ? (
                     <Button onClick={handleUpdateCaptureStatus} color="secondary">
                       Atualizar
                     </Button>
-                  ):null}
+                  ) : null}
                 </>
               )}
             </DialogActions>
@@ -461,7 +676,8 @@ export default function AvaliationList() {
             <DialogTitle id="alert-dialog-title">Finalizar Captação</DialogTitle>
             <DialogContent>
               <DialogContentText id="alert-dialog-description">
-                Ao alterar o status dessa captação você iniciará o atendimento do paciente. Tem certeza que deseja prosseguir?
+                Ao alterar o status dessa captação você iniciará o atendimento do paciente. Tem certeza que deseja
+                prosseguir?
               </DialogContentText>
             </DialogContent>
             <DialogActions>
