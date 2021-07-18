@@ -17,8 +17,9 @@ import {
   FormGroup,
   Checkbox, RadioGroup, Radio, InputLabel
 } from '@material-ui/core';
-import {AccountCircle, CheckCircle, MoreVert, CheckCircleOutline, Edit, Print, Visibility} from '@material-ui/icons';
+import {AccountCircle, CheckCircle, MoreVert, CheckCircleOutline, Edit, Print, Visibility, Add, Description} from '@material-ui/icons';
 
+import {ReactComponent as IconAlertRed} from '../../../../assets/img/Icon-alert-red.svg';
 import {useDispatch, useSelector} from 'react-redux';
 import {ApplicationState} from '../../../../store';
 import {
@@ -26,7 +27,8 @@ import {
   updateCareRequest,
   healthInsuranceRequest,
   healthPlanRequest,
-  healthSubPlanRequest
+  healthSubPlanRequest, createCareRequest as createCareAction,
+  cleanAction,
 } from '../../../../store/ducks/cares/actions';
 import {CareInterface} from '../../../../store/ducks/cares/types';
 
@@ -102,6 +104,7 @@ export default function PatientCaptureForm(props: RouteComponentProps<IPageParam
   const [historyModalOpen, setHistoryModalOpen] = useState(false);
   const [captureOptionsModalOpen, setCaptureModalModalOpen] = useState(false);
   const [captureFinishModalOpen, setCaptureFinishModalOpen] = useState(false);
+  const [captureNewModalOpen, setCaptureNewModalOpen] = useState(false);
   const [finishEnable, setFinishEnable] = useState(false);
   const [modalPrint, setModalPrint] = useState(false);
   const [documentHistory, setDocumentHistory] = useState<any[]>([]);
@@ -325,7 +328,7 @@ export default function PatientCaptureForm(props: RouteComponentProps<IPageParam
     ));
 
     return (found) ? <CheckCircle style={{color: '#4FC66A', cursor: 'pointer'}}/> :
-      <CheckCircle style={{color: '#EBEBEB', cursor: 'pointer'}}/>;
+      <Add style={{color: '#0899BA', cursor: 'pointer'}}/>;
   };
 
   const handleDocument = (documentId: string, documents: Array<any>) => {
@@ -370,6 +373,44 @@ export default function PatientCaptureForm(props: RouteComponentProps<IPageParam
 
     history.push('/avaliation');
   }, [care, captureData]);
+
+  const handleSubmitNewCapture = useCallback(() => {
+    setCaptureNewModalOpen(false)
+
+    const careParams = {
+      patient_id: care?.patient_id?._id || '',
+      status: 'Pre-Atendimento',
+      capture: {
+        ...captureData,
+        status: 'Em Andamento',
+        estimate: ''
+      },
+      care_type_id: care?.care_type_id?._id,
+      user_id: localStorage.getItem(LOCALSTORAGE.USER_ID) || ``,
+      company_id: localStorage.getItem(LOCALSTORAGE.COMPANY_SELECTED) || ``,
+    };
+
+    const updateParams = {
+      ...care,
+      capture: {
+        ...care?.capture,
+        ...captureData,
+        status: 'Recusado'
+      },
+      care_type_id: care?.care_type_id?._id,
+      user_id: userSessionId,
+    };
+
+    dispatch(updateCareRequest(updateParams));
+
+    dispatch(cleanAction())
+    dispatch(createCareAction(careParams));
+    handleNewCaptureData()
+  }, [care, careState]);
+
+  const handleNewCaptureData = useCallback(() => {
+    history.push(`/patient/capture/${careState.data._id}/overview`)
+  }, [careState.success]);
 
   const handleValidadeFinishEnable = useCallback(() => {
     const abemidDocument = handleDocument('5ffd7acd2f5d2b1d8ff6bea4', care?.documents_id || []);
@@ -427,22 +468,29 @@ export default function PatientCaptureForm(props: RouteComponentProps<IPageParam
                         </div>
                       </PatientData>
 
-                      {care.capture?.status === 'Em Andamento' ? (
+                      {care.capture?.status === 'Em Andamento' || care.capture?.status === 'Aguardando' || care.capture?.status === 'Recusado' ? (
                         <div>
-                          <Button background={finishEnable ? "success" : "disable"} disabled={!finishEnable}
-                                  onClick={() => setCaptureFinishModalOpen(true)}>
-                            <CheckCircleOutline/>
-                            Concluir Captação
+                          <Button background={"primary"}
+                                  onClick={() => setCaptureNewModalOpen(true)}>
+                            <Add/>
+                            Nova Captação
                           </Button>
-                        </div>
-                      ) : (
-                        <div>
+                          {care.capture?.status === 'Em Andamento' && (
+                            <Button background={finishEnable ? "success" : "disable"} disabled={!finishEnable}
+                                    onClick={() => setCaptureFinishModalOpen(true)}>
+                              <CheckCircleOutline/>
+                              Concluir Captação
+                            </Button>
+                          )}
                           <Button center onClick={() => setModalPrint(true)}>
                             <Print className="primary" style={{width: 30, height: 30}}/>
                           </Button>
                         </div>
+                      ) : (
+                        <Button center onClick={() => setModalPrint(true)}>
+                          <Print className="primary" style={{width: 30, height: 30}}/>
+                        </Button>
                       )}
-
 
                     </PatientResumeContent>
                   </PatientResume>
@@ -452,11 +500,12 @@ export default function PatientCaptureForm(props: RouteComponentProps<IPageParam
               <Table>
                 <thead>
                 <tr>
-                  <Th center colSpan={2}>Tipo do Score</Th>
+                  <Th colSpan={2} style={{paddingLeft: 25}}>Tipo do Score</Th>
                   <Th center>Tipo</Th>
                   <Th center>Complexidade</Th>
                   {/*<Th>Adicionado em</Th>*/}
                   <Th center>Status</Th>
+                  <Th center>Histórico</Th>
                 </tr>
                 </thead>
                 <tbody>
@@ -498,37 +547,51 @@ export default function PatientCaptureForm(props: RouteComponentProps<IPageParam
                       <Td center>
                         {care.capture?.status === 'Em Andamento' ? (
                           <>
-                            <Button aria-controls={`simple-menu${index}`} id={`btn_simple-menu${index}`}
-                                    aria-haspopup="true" onClick={handleOpenRowMenu}>
-                              <MoreVert className="primary"/>
-                            </Button>
-                            <Menu
-                              id={`simple-menu${index}`}
-                              anchorEl={anchorEl}
-                              keepMounted
-                              open={anchorEl?.id === `btn_simple-menu${index}`}
-                              onClose={handleCloseRowMenu}
-                            >
-                              {document?._id ? (
-                                <div>
-                                  <MenuItem
-                                    onClick={() => handleScoreRoute(documentGroup?._id || '', care?._id || '', document?._id)}>Editar</MenuItem>
-                                  <MenuItem onClick={() => console.log(document?._id)}>Excluir</MenuItem>
-                                </div>
-                              ) : (
-                                <MenuItem onClick={() => handleScoreRoute(documentGroup?._id || '', care?._id || '')}>Adicionar
-                                  novo</MenuItem>
-                              )}
-                              <MenuItem onClick={() => toggleHistoryModal(documentGroup._id)}>Ver histórico</MenuItem>
-                            </Menu>
+                            {/*<Button aria-controls={`simple-menu${index}`} id={`btn_simple-menu${index}`}*/}
+                            {/*        aria-haspopup="true" onClick={handleOpenRowMenu}>*/}
+                            {/*  <MoreVert className="primary"/>*/}
+                            {/*</Button>*/}
+                            {/*<Menu*/}
+                            {/*  id={`simple-menu${index}`}*/}
+                            {/*  anchorEl={anchorEl}*/}
+                            {/*  keepMounted*/}
+                            {/*  open={anchorEl?.id === `btn_simple-menu${index}`}*/}
+                            {/*  onClose={handleCloseRowMenu}*/}
+                            {/*>*/}
+                            {/*  {document?._id ? (*/}
+                            {/*    <div>*/}
+                            {/*      <MenuItem*/}
+                            {/*        onClick={() => handleScoreRoute(documentGroup?._id || '', care?._id || '', document?._id)}>Editar</MenuItem>*/}
+                            {/*      <MenuItem onClick={() => console.log(document?._id)}>Excluir</MenuItem>*/}
+                            {/*    </div>*/}
+                            {/*  ) : (*/}
+                            {/*    <MenuItem onClick={() => handleScoreRoute(documentGroup?._id || '', care?._id || '')}>Adicionar*/}
+                            {/*      novo</MenuItem>*/}
+                            {/*  )}*/}
+                            {/*  <MenuItem onClick={() => toggleHistoryModal(documentGroup._id)}>Ver histórico</MenuItem>*/}
+                            {/*</Menu>*/}
+                            {(document?._id) ? (
+                              <Button
+                                onClick={() => toggleHistoryModal(documentGroup._id)}>
+                                <Visibility className="primary"/>
+                              </Button>
+                            ) : (
+                              <>-</>
+                            )}
                           </>
                         ) : (
                           <>
-                            {(document?._id) && (
+                            {(document?._id) ? (
+                              // <Button
+                              //   onClick={() => window.open(`/care/${care?._id}/medical-records/document/${document?._id}/print`, "_blank")}>
+                              //   <Visibility className="primary"/>
+                              // </Button>
                               <Button
-                                onClick={() => window.open(`/care/${care?._id}/medical-records/document/${document?._id}/print`, "_blank")}>
+                                onClick={() => toggleHistoryModal(documentGroup._id)}>
                                 <Visibility className="primary"/>
                               </Button>
+                            ) : (
+                              <>-</>
                             )}
                           </>
                         )}
@@ -545,13 +608,6 @@ export default function PatientCaptureForm(props: RouteComponentProps<IPageParam
                     <>
                       <HeaderContent>
                         <h3>Orçamento <span style={{color: 'red'}}>*</span></h3>
-                        <div>
-                          <ButtonComponent onClick={() => {
-                            setModalAnexo(true);
-                          }} background="primary">
-                            Anexar Documento
-                          </ButtonComponent>
-                        </div>
                       </HeaderContent>
                       <br/>
                       <FieldContent>
@@ -567,7 +623,16 @@ export default function PatientCaptureForm(props: RouteComponentProps<IPageParam
                           multiline
                         />
                       </FieldContent>
-                      <p className="text-danger">Para concluir a captação, os itens com asterisco são obrigatórios:
+                      <div>
+                        <ButtonComponent onClick={() => {
+                          setModalAnexo(true);
+                        }} background="default" style={{color:"#0899BA"}}>
+                          <Description/>
+                          Anexar Documento
+                        </ButtonComponent>
+                      </div>
+                      <br/>
+                      <p><span style={{marginRight: 10}}><IconAlertRed/></span>Para concluir a captação, os itens com <span style={{color: 'red'}}>asterisco</span> são obrigatórios:
                         Orçamento + Tabela NEAD ou Tabela Abemid.</p>
                     </>
                   ) : (
@@ -662,6 +727,31 @@ export default function PatientCaptureForm(props: RouteComponentProps<IPageParam
               Não
             </Button>
             <Button onClick={handleSubmitFinishCapture} color="primary">
+              Sim
+            </Button>
+          </DialogActions>
+        </Dialog>
+
+        <Dialog
+          open={captureNewModalOpen}
+          onClose={() => setCaptureNewModalOpen(false)}
+          aria-labelledby="scroll-dialog-title"
+          aria-describedby="scroll-dialog-description"
+        >
+          <DialogTitle id="scroll-dialog-title">Nova Captação</DialogTitle>
+          <DialogContent>
+            <DialogContentText id="scroll-dialog-description" tabIndex={-1}>
+              Tem certeza que deseja iniciar uma nova captação do paciente?
+            </DialogContentText>
+            <DialogContentText id="scroll-dialog-description" tabIndex={-1}>
+              Ao iniciar uma nova a atual será recusada e uma nova vai ser iniciada
+            </DialogContentText>
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={() => setCaptureNewModalOpen(false)} color="primary">
+              Não
+            </Button>
+            <Button onClick={handleSubmitNewCapture} color="primary">
               Sim
             </Button>
           </DialogActions>
