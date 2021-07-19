@@ -203,7 +203,7 @@ export default function AvaliationList() {
         return 'Atenção Domiciliar';
 
       case 'baixa':
-        return '<LowerComplexityLabel>{`${complexity} Complexidade`}</LowerComplexityLabel>';
+        return <LowerComplexityLabel>{`${complexity} Complexidade`}</LowerComplexityLabel>;
 
       case 'média':
         return <MediumComplexityLabel>{`${complexity} Complexidade`}</MediumComplexityLabel>;
