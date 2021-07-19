@@ -32,6 +32,9 @@ import {handleUserSelectedId} from '../../../../helpers/localStorage';
 
 import {ButtonsContent, FormContent} from './styles';
 import {toast} from 'react-toastify';
+import _ from "lodash";
+import ButtonComponent from "../../../../styles/components/Button";
+import {HeaderContent} from "../../../care/overview/schedule/styles";
 
 interface IPageParams {
   id: string;
@@ -138,6 +141,22 @@ export default function SocioAmbiental(props: RouteComponentProps<IPageParams>) 
     calculateScore();
 
   }, [documentGroup]);
+
+  const clearDocument = useCallback(() => {
+    let documentGroupCopy = {...documentGroup};
+
+    documentGroupCopy?.fields?.map((field: any) => {
+      field.options.map((option: any) => {
+        option.selected = false
+      })
+    })
+
+    setDocumentGroup(documentGroupCopy);
+
+    scoreSocial.total = 0
+    scoreAmbiental.total = 0
+    score.total = 0
+  }, [documentGroup, scoreSocial.total, scoreAmbiental.total, score.total]);
 
   const calculateScore = useCallback(() => {
     // let partialScore = 0, countQuestionReject = 0;
@@ -254,6 +273,11 @@ export default function SocioAmbiental(props: RouteComponentProps<IPageParams>) 
     return description
   }, []);
 
+  const isDone = useCallback(() => {
+    let documentObj = _.find(care?.documents_id, {document_group_id: {name: 'Tabela Socioambiental'}});
+    return documentObj?.finished ? documentObj?.finished : false
+  }, [care]);
+
   const handleSubmit = useCallback(() => {
     let selecteds: any = [];
 
@@ -308,89 +332,193 @@ export default function SocioAmbiental(props: RouteComponentProps<IPageParams>) 
         )}
 
         {/*<FormTitle>{documentGroup.name}</FormTitle>*/}
-        <FormTitle>Avaliação Social</FormTitle>
 
-        <FormContent>
-          {documentGroup?.fields?.map((field: any, index: number) => (
-            <QuestionSection key={`question_${field._id}_${index}`}>
+        <HeaderContent>
+          <FormTitle>Avaliação Social</FormTitle>
+          {!isDone() && careState.data.capture?.status === 'Em Andamento' && (
+            <>
+              <div>
+                <ButtonComponent onClick={() => {
+                  clearDocument()
+                }} background="primary">
+                  Limpar Campos
+                </ButtonComponent>
+              </div>
+            </>
+          )}
+        </HeaderContent>
 
-              {(field.description === '4. Espaço físico') && (
+        {isDone() || careState.data.capture?.status != 'Em Andamento' ? (
+          <>
+            <FormContent>
+              {documentGroup?.fields?.map((field: any, index: number) => (
                 <>
-                  <ScoreTotalContent>
-                    <ScoreLabel>SCORE:</ScoreLabel>
-                    <ScoreTotal>
-                      {
-                        scoreSocial.total ? `${scoreSocial.total} - ${scoreSocial.status}` : '0 - Não Elegível'
-                      }
-                    </ScoreTotal>
-                  </ScoreTotalContent>
-                  <FormTitle>Avaliação Ambiental</FormTitle>
+                  <QuestionSection key={`question_${field._id}_${index}`}>
+
+                    {(field.description === '4. Espaço físico') && (
+                      <>
+                        <ScoreTotalContent>
+                          <ScoreLabel>SCORE:</ScoreLabel>
+                          <ScoreTotal>
+                            {
+                              scoreSocial.total ? `${scoreSocial.total} - ${scoreSocial.status}` : '0 - Não Elegível'
+                            }
+                          </ScoreTotal>
+                        </ScoreTotalContent>
+                        <FormTitle>Avaliação Ambiental</FormTitle>
+                      </>
+                    )}
+
+                    <QuestionTitle>{handleDescription(field)}</QuestionTitle>
+                    {field.type === 'radio' && (
+                      <RadioGroup style={{width: 'fit-content'}}>
+                        {field.options.map((option: any, index: number) => (
+                          <FormControlLabel
+                            key={`option_${field._id}_${index}`}
+                            value={option._id}
+                            control={<Radio color="primary"/>}
+                            label={option.text}
+                            checked={isDone() ? option?.selected : false}
+                          />
+                        ))}
+                      </RadioGroup>
+                    )}
+
+                    {field.type === 'check' && (
+                      <FormGroup>
+                        {field.options.map((option: any, index: number) => (
+                          <FormControlLabel
+                            key={`option_${field._id}_${index}`}
+                            value={option._id}
+                            control={(
+                              <Checkbox color="primary"
+                                        checked={isDone() ? option?.selected : false}
+                              />
+                            )}
+                            label={option.text}
+                          />
+                        ))}
+                      </FormGroup>
+                    )}
+                  </QuestionSection>
                 </>
-              )}
+              ))}
 
-              <QuestionTitle>{handleDescription(field)}</QuestionTitle>
+              <ScoreTotalContent>
+                <ScoreLabel>SCORE:</ScoreLabel>
+                <ScoreTotal>
+                  {
+                    scoreAmbiental.total ? `${scoreAmbiental.total} - ${scoreAmbiental.status}` : '0 - Não Elegível'
+                  }
+                </ScoreTotal>
+              </ScoreTotalContent>
 
-              {field.type === 'radio' && (
-                <RadioGroup style={{width: 'fit-content'}} onChange={e => selectOption(field._id, e.target.value)}>
-                  {field.options.map((option: any, index: number) => (
-                    <FormControlLabel
-                      key={`option_${field._id}_${index}`}
-                      value={option._id}
-                      control={<Radio color="primary"/>}
-                      label={option.text}
-                      checked={option?.selected}
-                    />
-                  ))}
-                </RadioGroup>
-              )}
+              <ButtonsContent>
+                <Button
+                  background="default"
+                  onClick={() => history.push(`/patient/capture/${care?._id}/overview`)}
+                >
+                  Voltar
+                </Button>
 
-              {field.type === 'check' && (
-                <FormGroup>
-                  {field.options.map((option: any, index: number) => (
-                    <FormControlLabel
-                      key={`option_${field._id}_${index}`}
-                      value={option._id}
-                      onChange={e => selectOption(field._id, option._id, true)}
-                      control={(
-                        <Checkbox color="primary"
-                                  checked={option?.selected ?? false}
-                        />
-                      )}
-                      label={option.text}
-                    />
-                  ))}
-                </FormGroup>
-              )}
-            </QuestionSection>
-          ))}
+                {careState.data.capture?.status === 'Em Andamento' && (
+                  <Button
+                    background="primary"
+                    onClick={handleSubmit}
+                  >
+                    Finalizar
+                  </Button>
+                )}
+              </ButtonsContent>
+            </FormContent>
+          </>
+        ) : (
+          <>
+            <FormContent>
+              {documentGroup?.fields?.map((field: any, index: number) => (
+                <>
+                  <QuestionSection key={`question_${field._id}_${index}`}>
 
-          <ScoreTotalContent>
-            <ScoreLabel>SCORE:</ScoreLabel>
-            <ScoreTotal>
-              {
-                scoreAmbiental.total ? `${scoreAmbiental.total} - ${scoreAmbiental.status}` : '0 - Não Elegível'
-              }
-            </ScoreTotal>
-          </ScoreTotalContent>
+                    {(field.description === '4. Espaço físico') && (
+                      <>
+                        <ScoreTotalContent>
+                          <ScoreLabel>SCORE:</ScoreLabel>
+                          <ScoreTotal>
+                            {
+                              scoreSocial.total ? `${scoreSocial.total} - ${scoreSocial.status}` : '0 - Não Elegível'
+                            }
+                          </ScoreTotal>
+                        </ScoreTotalContent>
+                        <FormTitle>Avaliação Ambiental</FormTitle>
+                      </>
+                    )}
 
-          <ButtonsContent>
-            <Button
-              background="default"
-              onClick={() => history.push(`/patient/capture/${care?._id}/overview`)}
-            >
-              Cancelar
-            </Button>
+                    <QuestionTitle>{handleDescription(field)}</QuestionTitle>
+                    {field.type === 'radio' && (
+                      <RadioGroup style={{width: 'fit-content'}}
+                                  onChange={e => selectOption(field._id, e.target.value)}>
+                        {field.options.map((option: any, index: number) => (
+                          <FormControlLabel
+                            key={`option_${field._id}_${index}`}
+                            value={option._id}
+                            control={<Radio color="primary"/>}
+                            label={option.text}
+                            checked={option?.selected}
+                          />
+                        ))}
+                      </RadioGroup>
+                    )}
 
-            {careState.data.capture?.status === 'Em Andamento' && (
-              <Button
-                background="primary"
-                onClick={handleSubmit}
-              >
-                Finalizar
-              </Button>
-            )}
-          </ButtonsContent>
-        </FormContent>
+                    {field.type === 'check' && (
+                      <FormGroup>
+                        {field.options.map((option: any, index: number) => (
+                          <FormControlLabel
+                            key={`option_${field._id}_${index}`}
+                            value={option._id}
+                            onChange={e => selectOption(field._id, option._id, true)}
+                            control={(
+                              <Checkbox color="primary"
+                                        checked={option?.selected ?? false}
+                              />
+                            )}
+                            label={option.text}
+                          />
+                        ))}
+                      </FormGroup>
+                    )}
+                  </QuestionSection>
+                </>
+              ))}
+
+              <ScoreTotalContent>
+                <ScoreLabel>SCORE:</ScoreLabel>
+                <ScoreTotal>
+                  {
+                    scoreAmbiental.total ? `${scoreAmbiental.total} - ${scoreAmbiental.status}` : '0 - Não Elegível'
+                  }
+                </ScoreTotal>
+              </ScoreTotalContent>
+
+              <ButtonsContent>
+                <Button
+                  background="default"
+                  onClick={() => history.push(`/patient/capture/${care?._id}/overview`)}
+                >
+                  Cancelar
+                </Button>
+
+                {careState.data.capture?.status === 'Em Andamento' && (
+                  <Button
+                    background="primary"
+                    onClick={handleSubmit}
+                  >
+                    Finalizar
+                  </Button>
+                )}
+              </ButtonsContent>
+            </FormContent>
+          </>
+        )}
 
       </Container>
     </Sidebar>
