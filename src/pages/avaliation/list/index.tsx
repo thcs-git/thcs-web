@@ -45,6 +45,7 @@ import {ListItemCaptureStatus, CaptionList} from './styles';
 import {HighComplexityLabel, LowerComplexityLabel, MediumComplexityLabel} from "../../../styles/components/Text";
 import {CareInterface} from "../../../store/ducks/cares/types";
 import _ from 'lodash';
+import {Td, Th} from "../../../styles/components/Table";
 
 interface ICaptureStatus {
   care: any;
@@ -70,6 +71,9 @@ export default function AvaliationList() {
   const [modalConfirmUpdateStatus, setModalConfirmUpdateStatus] = useState(false);
 
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
+
+  const [historyModalOpen, setHistoryModalOpen] = useState(false);
+  const [anexoModalOpen, setAnexoModalOpen] = useState(false);
 
   useEffect(() => {
     dispatch(cleanAction());
@@ -277,6 +281,18 @@ export default function AvaliationList() {
 
   }, [captureStatus, careState]);
 
+  const toggleHistoryModal = () => {
+    handleCloseRowMenu();
+
+    setHistoryModalOpen(!historyModalOpen);
+  };
+
+  const toggleAnexoModal = () => {
+    handleCloseRowMenu();
+
+    setAnexoModalOpen(!anexoModalOpen)
+  };
+
   const handleChangeComplexity = useCallback((event: any) => {
     setCaptureStatus(prevState => ({
       ...prevState,
@@ -394,7 +410,7 @@ export default function AvaliationList() {
       careType = "Atenção"
     }
 
-    var careTypeObj = _.find(careState.care_type, {name:careType});
+    var careTypeObj = _.find(careState.care_type, {name: careType});
 
     const updateParams = {
       ...care,
@@ -478,11 +494,13 @@ export default function AvaliationList() {
                     open={anchorEl?.id === `btn_patient-capture-menu${index}`}
                     onClose={handleCloseRowMenu}
                   >
+                    <MenuItem onClick={() => history.push(`/patient/capture/${care._id}/overview`)}>Visualizar
+                      perfil</MenuItem>
+                    <MenuItem onClick={() => toggleHistoryModal()}>Histórico</MenuItem>
+                    <MenuItem onClick={() => toggleAnexoModal()}>Documentos Anexados</MenuItem>
                     {care.capture?.status === 'Aguardando' && (
                       <MenuItem onClick={() => handleStartUpdateCaptureStatus(care)}>Atualizar status</MenuItem>
                     )}
-                    <MenuItem onClick={() => history.push(`/patient/capture/${care._id}/overview`)}>Visualizar
-                      perfil</MenuItem>
                   </Menu>
                 </TableCell>
               </TableRow>
@@ -695,6 +713,55 @@ export default function AvaliationList() {
 
         </Container>
       </Sidebar>
+
+      {/*Historico*/}
+      <Dialog
+        scroll="paper"
+        open={historyModalOpen}
+        onClose={() => setHistoryModalOpen(false)}
+        aria-labelledby="scroll-dialog-title"
+        aria-describedby="scroll-dialog-description"
+      >
+        <DialogTitle id="scroll-dialog-title">Histórico do Score</DialogTitle>
+        <DialogContent>
+          <DialogContentText
+            id="scroll-dialog-description"
+            tabIndex={-1}
+          >
+
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => setHistoryModalOpen(false)} color="primary">
+            Fechar
+          </Button>
+        </DialogActions>
+      </Dialog>
+
+      {/*Visualizar Anexos*/}
+      <Dialog
+        scroll="paper"
+        open={anexoModalOpen}
+        onClose={() => setAnexoModalOpen(false)}
+        aria-labelledby="scroll-dialog-title"
+        aria-describedby="scroll-dialog-description"
+      >
+        <DialogTitle id="scroll-dialog-title">Documentos Anexados</DialogTitle>
+        <DialogContent>
+          <DialogContentText
+            id="scroll-dialog-description"
+            tabIndex={-1}
+          >
+
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => setAnexoModalOpen(false)} color="primary">
+            Fechar
+          </Button>
+        </DialogActions>
+      </Dialog>
+
     </>
   );
 }

@@ -49,6 +49,8 @@ import {handleUserSelectedId} from '../../../../helpers/localStorage';
 
 import {ButtonsContent, FormContent} from './styles';
 import {toast} from 'react-toastify';
+import _ from "lodash";
+import ButtonComponent from "../../../../styles/components/Button";
 
 interface IPageParams {
   id: string;
@@ -93,7 +95,13 @@ export default function Abemid(props: RouteComponentProps<IPageParams>) {
   const openHelpPopover = Boolean(anchorHelpPopover);
 
   const handleNextStep = useCallback(() => {
-    const isError = checkAllCurrentQuestionsAnswered(documentGroup, currentStep);
+    let isError = null
+
+    if (isDone() || careState.data.capture?.status != 'Em Andamento'){
+
+    } else {
+      isError = checkAllCurrentQuestionsAnswered(documentGroup, currentStep);
+    }
 
     if (isError) return;
 
@@ -179,6 +187,27 @@ export default function Abemid(props: RouteComponentProps<IPageParams>) {
 
     return isError;
   }, [documentGroup, currentStep, documentGroupState]);
+
+  const isDone = useCallback(() => {
+    let documentObj = _.find(care?.documents_id, {document_group_id: {name: 'ABEMID'}});
+    return documentObj?.finished ? documentObj?.finished : false
+  }, [care]);
+
+  const clearDocument = useCallback(() => {
+    let documentGroupCopy = {...documentGroup};
+
+    documentGroupCopy?.fields?.map((field: any) => {
+      field.options.map((option: any) => {
+        option.selected = false
+      })
+    })
+
+    setDocumentGroup(documentGroupCopy);
+
+    steps?.map((field: any) => {
+      field.score.total = 0
+    })
+  }, [documentGroup, steps]);
 
   const selectOption = useCallback((field_id: string, option_id: string, multiple: boolean = false) => {
     let documentGroupCopy = {...documentGroup};
@@ -386,13 +415,22 @@ export default function Abemid(props: RouteComponentProps<IPageParams>) {
         )}
 
         <div style={{display: 'flex', alignItems: 'center', flexDirection: 'row', marginBottom: 40}}>
-          <FormTitle style={{marginBottom: 0}}>
+          <FormTitle style={{margin: 0}}>
             {documentGroup.name}
           </FormTitle>
           <IconButton aria-describedby={'popover_help_abemid'} onClick={handleClickHelpPopover}
                       style={{marginLeft: 10}}>
             <HelpIcon style={{color: "#ccc"}}/>
           </IconButton>
+          {!isDone() && careState.data.capture?.status === 'Em Andamento' && (
+            <>
+              <ButtonComponent onClick={() => {
+                clearDocument()
+              }} background="primary">
+                Limpar Campos
+              </ButtonComponent>
+            </>
+          )}
           <Popover
             id={'popover_help_abemid'}
             open={openHelpPopover}
@@ -455,159 +493,403 @@ export default function Abemid(props: RouteComponentProps<IPageParams>) {
           ))}
         </StepperComponent>
 
-        <FormContent>
-          {/* Score de KATZ */}
-          {currentStep === 0 && (
-            <>
-              <StepTitle>KATZ</StepTitle>
+        {isDone() || careState.data.capture?.status != 'Em Andamento' ? (
+          <>
+            <FormContent>
+              {/* Score de KATZ */}
+              {currentStep === 0 && (
+                <>
+                  <StepTitle>KATZ</StepTitle>
 
-              {documentGroup?.fields?.map((field: any, index: number) => {
-                if (field.step === 0) {
-                  return (
-                    <QuestionSection key={`question_${field._id}_${index}`}>
-                      <QuestionTitle>{field.description}</QuestionTitle>
-                      <RadioGroup
-                        onChange={(e) =>
-                          selectOption(field._id, e.target.value)
-                        }
-                        style={{width: 'fit-content'}}
-                      >
-                        {field.options.map((option: any, index: number) => (
-                          <FormControlLabel
-                            key={`option_${field._id}_${index}`}
-                            value={option._id}
-                            control={
-                              <Radio
-                                color="primary"
-                                checked={option?.selected}
+                  {documentGroup?.fields?.map((field: any, index: number) => {
+                    if (field.step === 0) {
+                      return (
+                        <QuestionSection key={`question_${field._id}_${index}`}>
+                          <QuestionTitle>{field.description}</QuestionTitle>
+                          <RadioGroup
+                            style={{width: 'fit-content'}}
+                          >
+                            {field.options.map((option: any, index: number) => (
+                              <FormControlLabel
+                                key={`option_${field._id}_${index}`}
+                                value={option._id}
+                                control={
+                                  <Radio
+                                    color="primary"
+                                    checked={isDone() ? option?.selected : false}
+                                  />
+                                }
+                                label={option.text}
                               />
-                            }
-                            label={option.text}
-                          />
-                        ))}
-                      </RadioGroup>
-                    </QuestionSection>
-                  );
-                }
-              })}
+                            ))}
+                          </RadioGroup>
+                        </QuestionSection>
+                      );
+                    }
+                  })}
 
-              <ScoreTotalContent>
-                <ScoreLabel>PONTUAÇÃO KATZ:</ScoreLabel>
-                <ScoreTotal>
-                  {
-                    steps[currentStep].score.total ?
-                      `${steps[currentStep].score.total} - ${steps[currentStep].score.complexity}`
-                      :
-                      '0 - Dependente Total'
-                  }
-                </ScoreTotal>
-              </ScoreTotalContent>
-            </>
-          )}
+                  <ScoreTotalContent>
+                    <ScoreLabel>PONTUAÇÃO KATZ:</ScoreLabel>
+                    <ScoreTotal>
+                      {
+                        steps[currentStep].score.total ?
+                          `${steps[currentStep].score.total} - ${steps[currentStep].score.complexity}`
+                          :
+                          '0 - Dependente Total'
+                      }
+                    </ScoreTotal>
+                  </ScoreTotalContent>
+                </>
+              )}
 
-        </FormContent>
-        <FormContent>
+            </FormContent>
+            <FormContent>
 
-          {/* Grupo 1 */}
-          {currentStep === 1 && (
-            <>
-              {/*<StepTitle>Elegibilidade</StepTitle>*/}
+              {/* Grupo 1 */}
+              {currentStep === 1 && (
+                <>
+                  {/*<StepTitle>Elegibilidade</StepTitle>*/}
 
-              {documentGroup?.fields?.map((field: any, index: number) => {
-                if (field.step === 1) {
-                  return (
-                    <QuestionSection key={`question_${field._id}_${index}`}>
-                      <QuestionTitle>{field.description}</QuestionTitle>
+                  {documentGroup?.fields?.map((field: any, index: number) => {
+                    if (field.step === 1) {
 
-                      {field.type === 'radio' && (
-                        <RadioGroup onChange={e => selectOption(field._id, e.target.value)}>
-                          {field.options.map((option: any, index: number) => (
-                            <FormControlLabel
-                              key={`option_${field._id}_${index}`}
-                              value={option._id}
-                              control={<Radio color="primary"/>}
-                              label={option.text}
-                              checked={option?.selected}
-                            />
-                          ))}
-                        </RadioGroup>
-                      )}
+                      const getKatz = (option: any, score: number) => {
+                        option.selected = false
+                        if (option.value === '0') {
+                          if (score > 4) {
+                            option.selected = true
+                          }
+                        } else if (option.value === '2') {
+                          if (score >= 3 && score <= 4) {
+                            option.selected = true
+                          }
+                        } else if (option.value === '5') {
+                          if (score <= 2) {
+                            option.selected = true
+                          }
+                        } else {
+                          option.selected = false
+                        }
+                        return option
+                      };
 
-                      {field.type === 'check' && (
-                        <FormGroup>
-                          {field.options.map((option: any, index: number) => (
-                            <FormControlLabel
-                              key={`option_${field._id}_${index}`}
-                              value={option._id}
-                              onChange={e => selectOption(field._id, option._id, true)}
-                              control={(
-                                <Checkbox color="primary"
-                                          checked={option?.selected ?? false}
-                                />
+                      return (
+                        <QuestionSection key={`question_${field._id}_${index}`}>
+
+                          {(field.description === '5. Grau de atividade da vida diária relacionada a cuidados técnicos') ? (
+                            <>
+                              <QuestionTitle>{field.description}</QuestionTitle>
+
+                              {field.type === 'radio' && (
+                                <RadioGroup>
+                                  {field.options.map((option: any, index: number) => (
+                                    <FormControlLabel
+                                      key={`option_${field._id}_${index}`}
+                                      value={getKatz(option, steps[0].score.total)}
+                                      control={<Radio color="primary"/>}
+                                      label={option.text}
+                                      checked={isDone() ? option?.selected : false}
+                                    />
+                                  ))}
+                                </RadioGroup>
                               )}
-                              label={option.text}
-                            />
-                          ))}
-                        </FormGroup>
-                      )}
-                    </QuestionSection>
-                  );
-                }
-              })}
+                            </>
+                          ) : (
+                            <>
+                              <QuestionTitle>{field.description}</QuestionTitle>
 
-              <ScoreTotalContent>
-                <ScoreLabel>TOTAL DE PONTOS:</ScoreLabel>
-                <ScoreTotal>
-                  {
-                    steps[currentStep].score.total ?
-                      `${steps[currentStep].score.total} - ${steps[currentStep].score.complexity}`
-                      :
-                      '0 - Atenção Domiciliar'
+                              {field.type === 'radio' && (
+                                <RadioGroup>
+                                  {field.options.map((option: any, index: number) => (
+                                    <FormControlLabel
+                                      key={`option_${field._id}_${index}`}
+                                      value={option._id}
+                                      control={<Radio color="primary"/>}
+                                      label={option.text}
+                                      checked={isDone() ? option?.selected : false}
+                                    />
+                                  ))}
+                                </RadioGroup>
+                              )}
+
+                              {field.type === 'check' && (
+                                <FormGroup>
+                                  {field.options.map((option: any, index: number) => (
+                                    <FormControlLabel
+                                      key={`option_${field._id}_${index}`}
+                                      value={option._id}
+                                      control={(
+                                        <Checkbox color="primary"
+                                                  checked={isDone() ? option?.selected : false}
+                                        />
+                                      )}
+                                      label={option.text}
+                                    />
+                                  ))}
+                                </FormGroup>
+                              )}
+                            </>
+                          )}
+
+                        </QuestionSection>
+                      );
+                    }
+                  })}
+
+                  <ScoreTotalContent>
+                    <ScoreLabel>TOTAL DE PONTOS:</ScoreLabel>
+                    <ScoreTotal>
+                      {
+                        steps[currentStep].score.total ?
+                          `${steps[currentStep].score.total} - ${steps[currentStep].score.complexity}`
+                          :
+                          '0 - Atenção Domiciliar'
+                      }
+                    </ScoreTotal>
+                  </ScoreTotalContent>
+                </>
+              )}
+            </FormContent>
+
+            <FormContent>
+              <ButtonsContent>
+                <Button
+                  background="default"
+                  onClick={() =>
+                    history.push(`/patient/capture/${care?._id}/overview`)
                   }
-                </ScoreTotal>
-              </ScoreTotalContent>
-            </>
-          )}
-        </FormContent>
+                >
+                  voltar
+                </Button>
+                <Button
+                  disabled={currentStep === 0}
+                  background="default"
+                  onClick={handleBackStep}
+                >
+                  Anterior
+                </Button>
 
-        <FormContent>
-          <ButtonsContent>
-            <Button
-              background="default"
-              onClick={() =>
-                history.push(`/patient/capture/${care?._id}/overview`)
-              }
-            >
-              Cancelar
-            </Button>
-            <Button
-              disabled={currentStep === 0}
-              background="default"
-              onClick={handleBackStep}
-            >
-              Anterior
-            </Button>
-
-            {currentStep === steps.length - 1 ? (
-              <>
-                {careState.data.capture?.status === "Em Andamento" && (
-                  <Button background="primary" onClick={handleSubmit}>
-                    Finalizar
+                {currentStep === steps.length - 1 ? (
+                  <>
+                    {careState.data.capture?.status === "Em Andamento" && (
+                      <Button background="primary" onClick={handleSubmit}>
+                        Finalizar
+                      </Button>
+                    )}
+                  </>
+                ) : (
+                  <Button
+                    disabled={currentStep === steps.length - 1}
+                    background="success"
+                    onClick={handleNextStep}
+                  >
+                    Próximo
                   </Button>
                 )}
-              </>
-            ) : (
-              <Button
-                disabled={currentStep === steps.length - 1}
-                background="success"
-                onClick={handleNextStep}
-              >
-                Próximo
-              </Button>
-            )}
-          </ButtonsContent>
-        </FormContent>
+              </ButtonsContent>
+            </FormContent>
+          </>
+        ) : (
+          <>
+            <FormContent>
+              {/* Score de KATZ */}
+              {currentStep === 0 && (
+                <>
+                  <StepTitle>KATZ</StepTitle>
 
+                  {documentGroup?.fields?.map((field: any, index: number) => {
+                    if (field.step === 0) {
+                      return (
+                        <QuestionSection key={`question_${field._id}_${index}`}>
+                          <QuestionTitle>{field.description}</QuestionTitle>
+                          <RadioGroup
+                            onChange={(e) =>
+                              selectOption(field._id, e.target.value)
+                            }
+                            style={{width: 'fit-content'}}
+                          >
+                            {field.options.map((option: any, index: number) => (
+                              <FormControlLabel
+                                key={`option_${field._id}_${index}`}
+                                value={option._id}
+                                control={
+                                  <Radio
+                                    color="primary"
+                                    checked={option?.selected}
+                                  />
+                                }
+                                label={option.text}
+                              />
+                            ))}
+                          </RadioGroup>
+                        </QuestionSection>
+                      );
+                    }
+                  })}
+
+                  <ScoreTotalContent>
+                    <ScoreLabel>PONTUAÇÃO KATZ:</ScoreLabel>
+                    <ScoreTotal>
+                      {
+                        steps[currentStep].score.total ?
+                          `${steps[currentStep].score.total} - ${steps[currentStep].score.complexity}`
+                          :
+                          '0 - Dependente Total'
+                      }
+                    </ScoreTotal>
+                  </ScoreTotalContent>
+                </>
+              )}
+
+            </FormContent>
+            <FormContent>
+
+              {/* Grupo 1 */}
+              {currentStep === 1 && (
+                <>
+                  {/*<StepTitle>Elegibilidade</StepTitle>*/}
+
+                  {documentGroup?.fields?.map((field: any, index: number) => {
+                    if (field.step === 1) {
+
+                      const getKatz = (option: any, score: number) => {
+                        option.selected = false
+                        if (option.value === '0') {
+                          if (score > 4) {
+                            option.selected = true
+                          }
+                        } else if (option.value === '2') {
+                          if (score >= 3 && score <= 4) {
+                            option.selected = true
+                          }
+                        } else if (option.value === '5') {
+                          if (score <= 2) {
+                            option.selected = true
+                          }
+                        } else {
+                          option.selected = false
+                        }
+                        return option
+                      };
+
+                      return (
+                        <QuestionSection key={`question_${field._id}_${index}`}>
+
+                          {(field.description === '5. Grau de atividade da vida diária relacionada a cuidados técnicos') ? (
+                            <>
+                              <QuestionTitle>{field.description}</QuestionTitle>
+
+                              {field.type === 'radio' && (
+                                <RadioGroup onChange={e => selectOption(field._id, e.target.value)}>
+                                  {field.options.map((option: any, index: number) => (
+                                    <FormControlLabel
+                                      key={`option_${field._id}_${index}`}
+                                      value={getKatz(option, steps[0].score.total)}
+                                      control={<Radio color="primary"/>}
+                                      label={option.text}
+                                      checked={option?.selected}
+                                    />
+                                  ))}
+                                </RadioGroup>
+                              )}
+                            </>
+                          ) : (
+                            <>
+                              <QuestionTitle>{field.description}</QuestionTitle>
+
+                              {field.type === 'radio' && (
+                                <RadioGroup onChange={e => selectOption(field._id, e.target.value)}>
+                                  {field.options.map((option: any, index: number) => (
+                                    <FormControlLabel
+                                      key={`option_${field._id}_${index}`}
+                                      value={option._id}
+                                      control={<Radio color="primary"/>}
+                                      label={option.text}
+                                      checked={option?.selected}
+                                    />
+                                  ))}
+                                </RadioGroup>
+                              )}
+
+                              {field.type === 'check' && (
+                                <FormGroup>
+                                  {field.options.map((option: any, index: number) => (
+                                    <FormControlLabel
+                                      key={`option_${field._id}_${index}`}
+                                      value={option._id}
+                                      onChange={e => selectOption(field._id, option._id, true)}
+                                      control={(
+                                        <Checkbox color="primary"
+                                                  checked={option?.selected ?? false}
+                                        />
+                                      )}
+                                      label={option.text}
+                                    />
+                                  ))}
+                                </FormGroup>
+                              )}
+                            </>
+                          )}
+
+                        </QuestionSection>
+                      );
+                    }
+                  })}
+
+                  <ScoreTotalContent>
+                    <ScoreLabel>TOTAL DE PONTOS:</ScoreLabel>
+                    <ScoreTotal>
+                      {
+                        steps[currentStep].score.total ?
+                          `${steps[currentStep].score.total} - ${steps[currentStep].score.complexity}`
+                          :
+                          '0 - Atenção Domiciliar'
+                      }
+                    </ScoreTotal>
+                  </ScoreTotalContent>
+                </>
+              )}
+            </FormContent>
+
+            <FormContent>
+              <ButtonsContent>
+                <Button
+                  background="default"
+                  onClick={() =>
+                    history.push(`/patient/capture/${care?._id}/overview`)
+                  }
+                >
+                  Cancelar
+                </Button>
+                <Button
+                  disabled={currentStep === 0}
+                  background="default"
+                  onClick={handleBackStep}
+                >
+                  Anterior
+                </Button>
+
+                {currentStep === steps.length - 1 ? (
+                  <>
+                    {careState.data.capture?.status === "Em Andamento" && (
+                      <Button background="primary" onClick={handleSubmit}>
+                        Finalizar
+                      </Button>
+                    )}
+                  </>
+                ) : (
+                  <Button
+                    disabled={currentStep === steps.length - 1}
+                    background="success"
+                    onClick={handleNextStep}
+                  >
+                    Próximo
+                  </Button>
+                )}
+              </ButtonsContent>
+            </FormContent>
+          </>
+        )}
       </Container>
     </Sidebar>
   );
