@@ -121,7 +121,7 @@ export interface CareInterface {
   health_plan_card_validate?: string;
   origin_id?: string;
   accommodation_type_id?: string;
-  care_type_id?: string | CareTypeInterface;
+  care_type_id?: any;
   procedure_id?: string;
   cid_id?: string | CidPopulateInterface;
   area_id?: any;
