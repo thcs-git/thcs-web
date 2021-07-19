@@ -314,10 +314,10 @@ export default function CompanyForm(props: RouteComponentProps<IPageParams>) {
   }, [state.customer_id]);
 
   const handleSaveFormCustomer = useCallback(() => {
-    if (!handleValidateFields()) {
-      toast.error('Existem campos que precisam ser preenchidos para continuar');
-      return;
-    }
+    // if (!handleValidateFields()) {
+    //   toast.error('Existem campos que precisam ser preenchidos para continuar');
+    //   return;
+    // }
 
     if (params.id) {
       dispatch(updateCompanyRequest(state));
