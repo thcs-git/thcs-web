@@ -66,6 +66,7 @@ import {
   TabBodyItem,
 } from "../../../styles/components/Tabs";
 import ButtonComponent from "../../../styles/components/Button";
+// @ts-ignore
 import FeedbackUserComponent from '../../../components/FeedbackUser';
 
 import {formatDate, age} from "../../../helpers/date";
@@ -87,6 +88,7 @@ import LocationOnIcon from '@material-ui/icons/LocationOn'
 import CheckCircleRoundedIcon from '@material-ui/icons/CheckCircleRounded';
 import {BoxCustom} from "../../customer/form/styles";
 import _ from "lodash";
+// @ts-ignore
 import Sidebar_menu from "../../../components/Sidebar_menu";
 
 
@@ -149,6 +151,7 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
     council_number: "",
     verified: "",
     active: true,
+    professions:[]
   });
 
   const [specialties, setSpecialties] = useState<any[]>([]);
@@ -278,6 +281,7 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
   }));
   const classes = useStyles();
   useEffect(() => {
+
     dispatch(cleanAction());
     dispatch(getSpecialtiesAction());
     dispatch(getCouncilsAction());
@@ -322,6 +326,10 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
     if (userState.data._id) {
       let joinState = [state, userState.data];
 
+      if (!firstCall && params.mode === "linking") {
+        setCurrentTab(2)
+      }
+
       setState((prevState) => ({
         ...joinState[firstCall ? 0 : 1],
         // user_type_id:
@@ -333,7 +341,7 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
     }
     // Força o validador em 'true' quando entrar na tela para editar
     if (params?.id) {
-      if (params.mode === "view" || params.mode === "link") {
+      if (params.mode === "view" || params.mode === "link" || params.mode === "linking") {
         setCanEdit(false)
       }
       setFieldValidations({
@@ -557,7 +565,7 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
   }, [state.companies]);
 
   function handlerReturn() {
-    if (params.mode == 'link') {
+    if (params.mode == 'link' || params.mode === "linking") {
       history.push('/userdesengaged');
     } else {
       history.push('/user');
@@ -572,21 +580,29 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
     }));
   }
 
+  function getprofessionId(){
+    if (typeof state.profession_id === "object") {
+      return state?.profession_id?._id;
+    }
+  }
+
   const selectProfession = useCallback(() => {
     if (!userState.data.professions) {
       // return null;
     } else {
       const selected = userState.data.professions.filter((item) => {
         if (typeof state.profession_id === "object") {
-          return item._id === state?.profession_id?._id;
+          return item._id === state.profession_id._id;
         }
       });
+      console.log(selected);
 
-      return selected[0] ? selected[0] : null;
+
+      return selected[0]? selected[0]: userState.data.professions[1] ;
     }
 
 
-  }, [state.profession_id, state.professions]);
+  }, [state, state.professions]);
 
 
   function viewProfession() {
@@ -798,7 +814,10 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
 
     if (state?._id) {
       dispatch(updateUserRequest(state));
-      if (params.mode == 'link') {
+      if (params.mode == 'link' || params.mode === "linking") {
+        history.push('/userdesengaged');
+      }
+      else if (params.mode == 'view') {
         history.push('/userdesengaged');
       }
     } else {
@@ -837,15 +856,15 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
           <FormSection>
             <FormContent>
               <div style={{display: 'flex', alignItems: 'center', flexDirection: 'row'}}>
-                <FormTitle>Cadastro de Usuario</FormTitle>
+                <FormTitle>Dados de usuário</FormTitle>
 
-                {(params.id && params.mode == 'view' && !canEdit) && (
-                  <Button style={{marginTop: -20, marginLeft: 15, color: '#0899BA'}}
-                          onClick={() => setCanEdit(!canEdit)}>
-                    <Edit style={{marginRight: 5, width: 18}}/>
-                    Editar {canEdit}
-                  </Button>
-                )}
+                {/*{(params.id && params.mode == 'view' && !canEdit) && (*/}
+                {/*  <Button style={{marginTop: -20, marginLeft: 15, color: '#0899BA'}}*/}
+                {/*          onClick={() => setCanEdit(!canEdit)}>*/}
+                {/*    <Edit style={{marginRight: 5, width: 18}}/>*/}
+                {/*    Editar {canEdit}*/}
+                {/*  </Button>*/}
+                {/*)}*/}
               </div>
 
               <TabContent>
@@ -1498,12 +1517,15 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
                           <Autocomplete
                             id="combo-box-profession"
                             disabled={!canEdit}
-                            options={userState.data.professions || []}
+                            options={userState.data.professions}
                             getOptionLabel={(option) => option.name}
-                            renderInput={(params) => <TextField {...params} disabled={!canEdit} label="Função"
-                                                                variant="outlined"/>}
-                            getOptionSelected={(option, value) => option._id === state?.profession_id}
-                            value={selectProfession()}
+                            renderInput={(params) =>
+                            <TextField {...params}  label="Função" variant="outlined"/>}
+                            // getOptionSelected={(option, value) =>
+                            //   option._id ==
+                            //    userState.data.professions[0]._id
+                            //  }
+                            defaultValue={selectProfession()}
                             onChange={(event, value) => {
                               if (value) {
                                 handleSelectProfession(value);
@@ -1511,6 +1533,7 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
                             }}
                             size="small"
                             fullWidth
+
                           />
                         </FormGroupSection>
                       </Grid>
@@ -1968,7 +1991,7 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
           <FormSection>
             <FormContent>
               <div style={{display: 'flex', alignItems: 'center', flexDirection: 'row'}}>
-                <FormTitle>Cadastro de Usuario</FormTitle>
+                <FormTitle>Dados de usuário</FormTitle>
 
                 {(params.id && params.mode == 'view' && !canEdit) && (
                   <Button style={{marginTop: -20, marginLeft: 15, color: '#0899BA'}}
@@ -2633,8 +2656,8 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
                             getOptionLabel={(option) => option.name}
                             renderInput={(params) => <TextField {...params} disabled={!canEdit} label="Função"
                                                                 variant="outlined"/>}
-                            getOptionSelected={(option, value) => option._id === state?.profession_id}
-                            value={selectProfession()}
+                           // getOptionSelected={(option, value) => option._id === getprofessionId()}
+                            defaultValue={selectProfession()}
                             onChange={(event, value) => {
                               if (value) {
                                 handleSelectProfession(value);

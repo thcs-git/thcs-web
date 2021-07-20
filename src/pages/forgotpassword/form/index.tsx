@@ -89,6 +89,7 @@ export default function ForgotPasswordPage(props: RouteComponentProps<IPageParam
     council_number: "",
     verified: "",
     active: true,
+    professions:[]
   });
   // function handleUserbyEmail(value:any){
   //   dispatch(loadUserByEmail(value));
