@@ -502,7 +502,7 @@ export default function CustomerForm(props: RouteComponentProps<IPageParams>) {
                   <Grid item md={7} xs={12}>
                     <TextField
                       id="input-social-name"
-                      label="Nome Social"
+                      label="Razão Social"
                       variant="outlined"
                       size="small"
 

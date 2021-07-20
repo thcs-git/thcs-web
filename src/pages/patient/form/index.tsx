@@ -993,7 +993,7 @@ export default function PatientForm(props: RouteComponentProps<IPageParams>) {
                             renderInput={(params) => <TextField {...params} label="Área"  variant="outlined"  />}
                             size="small"
                             defaultValue={selectPatientArea()}
-                           // value={selectPatientArea()}
+                            value={selectPatientArea()}
                             onChange={(event:any, newValue) =>{
                               if(newValue){
                                 setState({...state,area_id:newValue._id})
