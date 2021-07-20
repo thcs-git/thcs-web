@@ -289,7 +289,7 @@ export default function PatientForm(props: RouteComponentProps<IPageParams>) {
   }, [state.fiscal_number]);
 
 const cellPhoneReturn = useCallback(()=>{
-  return state.phones[1]?.cellnumber?state.phones[1].cellnumber:'(81) 9 1234-5678';
+  return state.phones[1]?.cellnumber?state.phones[1].cellnumber:state.phones[0].cellnumber;
 },[state.phones[1]?.cellnumber])
 
 
@@ -297,14 +297,13 @@ const cellPhoneReturn = useCallback(()=>{
     if ( state.phones[0]?.cellnumber){
     var cellphone =  state.phones[0]?.cellnumber.replace('(','').replace(')','').replace(' ','').replace(' ','').replace('-','');
     isValidCellPhoneNumber = validator.isMobilePhone(cellphone, 'pt-BR');
-    return (isValidCellPhoneNumber)
-
-    if ( state.phones[1]?.cellnumber){
-      var cellphone =  state.phones[1]?.cellnumber.replace('(','').replace(')','').replace(' ','').replace(' ','').replace('-','');
-     isValidCellPhoneNumber = validator.isMobilePhone(cellphone, 'pt-BR');
 
     return (isValidCellPhoneNumber)
-    }
+   }else if (state.phones[1]?.cellnumber){
+    var cellphone =  state.phones[1]?.cellnumber.replace('(','').replace(')','').replace(' ','').replace(' ','').replace('-','');
+    isValidCellPhoneNumber = validator.isMobilePhone(cellphone, 'pt-BR');
+
+    return (isValidCellPhoneNumber)
    }
 }
 
@@ -1076,7 +1075,7 @@ const cellPhoneReturn = useCallback(()=>{
                               }));
                               setModifi({...modifi,cellnumber:element.target.value})
                             }}}
-                            // onBlur={validateCellPhone}
+                            onBlur={validateCellPhone}
                           >
                             {(inputProps: any) => (
                               <OutlinedInputFiled
@@ -1084,12 +1083,12 @@ const cellPhoneReturn = useCallback(()=>{
                                 placeholder="(00) 0 0000-0000"
                                 labelWidth={80}
                                 style={{ marginRight: 12 }}
-                                error ={!validateCellPhone()}
+                                error ={!validateCellPhone() && cellPhoneReturn() != ''}
                               />
                             )}
                           </InputMask>
                         </FormControl>
-                        {!validateCellPhone() &&(
+                        {!validateCellPhone() && cellPhoneReturn() != '' &&(
                           <p style={{ color: '#f44336', margin:'1px 5px 20px' }}>
                           Por favor insira um número válido
                           </p>
