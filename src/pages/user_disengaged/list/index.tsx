@@ -15,7 +15,6 @@ import { loadGetUserDisengaged, searchRequest, cleanAction } from '../../../stor
 import debounce from 'lodash.debounce';
 import { formatDate } from '../../../helpers/date';
 import { searchUserDisengaged } from '../../../store/ducks/users/sagas';
-import Popup from '../../../components/Dialogs/Popup';
 
 export default function UserDisengaged() {
   const history = useHistory();
@@ -97,13 +96,6 @@ export default function UserDisengaged() {
                   <Button aria-controls={`user-menu${index}`} id={`btn_user-menu${index}`} aria-haspopup="true" onClick={handleOpenRowMenu}>
                     <MoreVert style={{ color: '#0899BA' }} />
                   </Button>
-                  <Popup
-                    title="Histórico de Captações"
-                    openPopup={openPopup}
-                    setOpenPopup={setOpenPopup}
-                  >
-
-                  </Popup>
                   <Menu
                     id={`user-menu${index}`}
                     anchorEl={anchorEl}
