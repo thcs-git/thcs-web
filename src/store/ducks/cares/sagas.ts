@@ -48,13 +48,13 @@ export function* get({ payload }: any) {
 
     console.log(`/attendance/getAttendance?limit=${params.limit ?? 10}&page=${
       params.page || 1
-    }${params.search ? "&search=" + params.search : ""}${params.status ? "&status=" + params.status : ""}`)
+    }${params.search ? "&search=" + params.search : ""}${params.status ? "&status=" + params.status : ""}${params.patient_id ? "&patient_id=" + params.patient_id : ""}`)
 
     const response: AxiosResponse = yield call(
       apiSollar.get,
       `/attendance/getAttendance?limit=${params.limit ?? 10}&page=${
         params.page || 1
-      }${params.search ? "&search=" + params.search : ""}${params.status ? "&status=" + params.status : ""}`
+      }${params.search ? "&search=" + params.search : ""}${params.status ? "&status=" + params.status : ""}${params.patient_id ? "&patient_id=" + params.patient_id : ""}`
     );
 
     yield put(searchCareSuccess(response.data));

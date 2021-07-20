@@ -21,7 +21,7 @@ import {
   Grid,
   Box
 } from '@material-ui/core';
-import { FiberManualRecord, Visibility as VisibilityIcon, ErrorOutline, MoreVert, Check as CheckIcon,  AccountCircle as AccountCircleIcon } from '@material-ui/icons';
+import { FiberManualRecord, Visibility as VisibilityIcon, ErrorOutline, MoreVert, Check as CheckIcon, AccountCircle as AccountCircleIcon } from '@material-ui/icons';
 import debounce from 'lodash.debounce';
 import { useDispatch, useSelector } from 'react-redux';
 import { ApplicationState } from '../../../store/';
@@ -73,7 +73,7 @@ export default function AvaliationList() {
   });
   const [modalUpdateStatus, setModalUpdateStatus] = useState(false);
   const [modalConfirmUpdateStatus, setModalConfirmUpdateStatus] = useState(false);
-  const [careIndex,setCareIndex]= useState(0);
+  const [careIndex, setCareIndex] = useState(0);
 
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
 
@@ -95,7 +95,8 @@ export default function AvaliationList() {
   const handleType = useCallback((care: any) => {
     let complexitiesArray: any = []
     let complexity: string = ""
-    care.documents_id.map((field: any) => {
+    console.log(care)
+    care?.documents_id?.map((field: any) => {
       complexitiesArray.push(field.complexity);
     })
     if (
@@ -286,7 +287,7 @@ export default function AvaliationList() {
 
   }, [captureStatus, careState]);
 
-  const toggleHistoryModal = (index:number) => {
+  const toggleHistoryModal = (index: number) => {
     handleCloseRowMenu();
     setCareIndex(index);
     setHistoryModalOpen(!historyModalOpen);
@@ -752,11 +753,19 @@ export default function AvaliationList() {
 
       {/*Historico*/}
       <Dialog
-        scroll="paper"
+
+        maxWidth="lg"
         open={historyModalOpen}
         onClose={() => setHistoryModalOpen(false)}
         aria-labelledby="scroll-dialog-title"
         aria-describedby="scroll-dialog-description"
+
+      // handleFirstPage={() => dispatch(loadRequest({
+      //   page: '1',
+      //   limit: careState.list.limit,
+      //   total: careState.list.total,
+      //   search
+      // }))}
       >
         <DialogTitle id="scroll-dialog-title"><h3>Histórico de Captações</h3></DialogTitle>
         <DialogContent>
@@ -764,30 +773,36 @@ export default function AvaliationList() {
             id="scroll-dialog-description"
             tabIndex={-1}
           >
-            <Grid container style={{display:"flex", flexDirection:"row", justifyContent:"space-between"}}>
-              <Grid item md={1} style={{padding:"0"}}>
+            <Grid container style={{ display: "flex", flexDirection: "row", justifyContent: "space-between" }}>
+              <Grid item md={1} style={{ padding: "0" }}>
                 <AccountCircleIcon style={{ color: '#0899BA', fontSize: '30pt' }} />
               </Grid>
-              <Grid item md={11} style={{padding:"0", paddingTop:"0.4rem"}}>
+              <Grid item md={11} style={{ padding: "0", paddingTop: "0.4rem" }}>
                 <h3 style={{ color: '#333333' }}>{careState.list.data[careIndex]?.patient_id.name}</h3>
               </Grid>
             </Grid>
             <Table
               tableCells={[
-                { name: 'Nº da Guia', align: 'left' },
-                { name: 'Data de atendimento', align: 'left' },
+                { name: 'Data da captação', align: 'left' },
+                { name: 'Tipo', align: 'left' },
+                { name: 'Complexidade', align: 'left' },
                 { name: 'Status', align: 'left' },
-                { name: ' ', align: 'left' }
+                { name: 'Visualizar', align: 'left' }
               ]}
             >
               <TableCell >
-                <p>{careState.list.data[careIndex]?.capture?.order_number}</p>
+                <p>{careState.list.data[careIndex]?.created_at ? formatDate(careState.list.data[careIndex]?.created_at, 'DD/MM/YYYY') : '-'}</p>
               </TableCell>
               <TableCell >
-                <p>{careState.list.data[careIndex]?.created_at ? formatDate(careState.list.data[careIndex]?.created_at, 'DD/MM/YYYY HH:mm:ss') : '-'}</p>
+                <p>{handleType(careState.list.data[careIndex])}</p>
               </TableCell>
               <TableCell >
-                <p>{careState.list.data[careIndex]?.status}</p>
+                <p>{handleCoplexities(careState.list.data[careIndex])}</p>
+              </TableCell>
+              <TableCell >
+                <ListItemCaptureStatus status={careState.list.data[careIndex]?.capture?.status || ''}>
+                  <FiberManualRecord /> {careState.list.data[careIndex]?.capture?.status}
+                </ListItemCaptureStatus>
               </TableCell>
               <TableCell align="center">
                 <Button onClick={() => history.push(`/patient/capture/${careState.list.data[careIndex]?._id}/overview`)}>
@@ -800,7 +815,7 @@ export default function AvaliationList() {
         </DialogContent>
         <DialogActions>
           <Button onClick={() => setHistoryModalOpen(false)} color="primary">
-            <h3 style={{color: '#0899BA', fontSize: '11pt'}}>Fechar</h3>
+            <h3 style={{ color: '#0899BA', fontSize: '11pt' }}>Fechar</h3>
           </Button>
         </DialogActions>
       </Dialog>
