@@ -111,7 +111,7 @@ export default function UserDisengaged() {
                     open={anchorEl?.id === `btn_user-menu${index}`}
                     onClose={handleCloseRowMenu}
                   >
-                    <MenuItem onClick={() => history.push(`/user/${user._id}/edit/edit`)}>Vincular a Empresa</MenuItem>
+                    <MenuItem onClick={() => history.push(`/user/${user._id}/linking/edit`)}>Vincular a Empresa</MenuItem>
                     <MenuItem onClick={() => history.push(`/user/${user._id}/link/edit`)}>Visualizar</MenuItem>
                   </Menu>
                 </TableCell>

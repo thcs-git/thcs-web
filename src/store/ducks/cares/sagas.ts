@@ -455,7 +455,6 @@ export function* getCareType() {
   try {
     const { data }: AxiosResponse = yield call(apiSollar.get, `/caretype`);
 
-    console.log(data);
     yield put(careTypeSuccess(data.data));
   } catch (error) {
     console.log(error);
