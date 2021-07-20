@@ -273,7 +273,7 @@ export default function PatientForm(props: RouteComponentProps<IPageParams>) {
   const validatePhone = () => {
 
     if ( state.phones[0]?.number){
-      const landline =  state.phones[0]?.number.replace('(','').replace(')','9').replace(' ','').replace(' ','').replace('-','');
+      const landline =  state.phones[0]?.number.replace('(','').replace(')','').replace(' ','').replace(' ','').replace('-','');
 
      isValidPhoneNumber = validator.isMobilePhone(landline, 'pt-BR');
 
@@ -300,14 +300,13 @@ export default function PatientForm(props: RouteComponentProps<IPageParams>) {
 //    }
 
   const validateCellPhone = () => {
-    if ( state.phones[1]?.cellnumber){
-    var cellphone =  state.phones[1]?.cellnumber.replace('(','').replace(')','').replace(' ','').replace(' ','').replace('-','');
+    if ( state.phones[0]?.cellnumber){
+    var cellphone =  state.phones[0]?.cellnumber.replace('(','').replace(')','').replace(' ','').replace(' ','').replace('-','');
    isValidCellPhoneNumber = validator.isMobilePhone(cellphone, 'pt-BR');
 
     return (isValidCellPhoneNumber)
 }
    }
-
 
   const validateResponsableCellPhone = () => {
     if ( state.responsable?.phone){
@@ -318,7 +317,7 @@ export default function PatientForm(props: RouteComponentProps<IPageParams>) {
 }
    }
 
-   if( validatePhone() == true && validateCellPhone()==true && validateCellPhone()==true){
+   if( validatePhone() == true  && validateCellPhone()==true){
 
     formValid = true;
 
@@ -414,8 +413,7 @@ export default function PatientForm(props: RouteComponentProps<IPageParams>) {
         }));
         setInputCellPhone(prev =>({
           ...prev,
-          value:patientState.data.phones[1]?.cellnumber || ''
-          // value:patientState.data.phones[0]?.cellnumber || ''
+          value:patientState.data.phones[0]?.cellnumber || ''
         }));
 
       setFieldValidations({
@@ -573,8 +571,7 @@ export default function PatientForm(props: RouteComponentProps<IPageParams>) {
       ...state,
       phones: [
         { whatsapp: false, telegram: false, number: state.phones[0]?.number },
-        // { whatsapp: false, telegram: false, cellnumber: state.phones[0]?.cellnumber },
-        { whatsapp: false, telegram: false, cellnumber: state.phones[1]?.cellnumber },
+        { whatsapp: false, telegram: false, cellnumber: state.phones[0]?.cellnumber },
       ]
     };
 
@@ -1067,7 +1064,6 @@ export default function PatientForm(props: RouteComponentProps<IPageParams>) {
                           <InputMask
                             mask="(99) 9 9999-9999"
                             value={state.phones[1]?.cellnumber}
-                           // onBlur={getAddress}
                             onChange={(element) => {
                               {setState(prevState => ({
                                 ...prevState,
@@ -1090,10 +1086,10 @@ export default function PatientForm(props: RouteComponentProps<IPageParams>) {
                                 style={{ marginRight: 12 }}
                                 error ={!validateCellPhone() && state.phones[0]?.cellnumber != ''}
                               />
-                            )}
+                            )}  
                           </InputMask>
                         </FormControl>
-                        {console.log(validateCellPhone)}
+                        {console.log(validateCellPhone())}
                         {!validateCellPhone() && state.phones[0]?.cellnumber &&(
                       <p style={{ color: '#f44336', margin:'1px 5px 20px' }}>
                        Por favor insira um número válido
