@@ -327,7 +327,7 @@ export default function SocioAmbiental(props: RouteComponentProps<IPageParams>) 
         {care?.patient_id && (
           <>
             <h2>Paciente</h2>
-            <PatientCard patient={care.patient_id}/>
+            <PatientCard patient={care.patient_id}capture={care.capture}/>
           </>
         )}
 
