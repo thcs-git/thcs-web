@@ -288,11 +288,6 @@ export default function PatientForm(props: RouteComponentProps<IPageParams>) {
 
   }, [state.fiscal_number]);
 
-const cellPhoneReturn = useCallback(()=>{
-  return state.phones[1]?.cellnumber?state.phones[1].cellnumber:state.phones[0].cellnumber;
-},[state.phones[1]?.cellnumber])
-
-
   const validateCellPhone = () => {
     if ( state.phones[0]?.cellnumber){
     var cellphone =  state.phones[0]?.cellnumber.replace('(','').replace(')','').replace(' ','').replace(' ','').replace('-','');
@@ -1062,7 +1057,7 @@ const cellPhoneReturn = useCallback(()=>{
                           <InputLabel htmlFor="search-input">Celular</InputLabel>
                           <InputMask
                             mask="(99) 9 9999-9999"
-                            defaultValue={cellPhoneReturn()}
+                            value={state.phones[1]?.cellnumber}
                             onChange={(element) => {
                               {setState(prevState => ({
                                 ...prevState,
@@ -1083,12 +1078,12 @@ const cellPhoneReturn = useCallback(()=>{
                                 placeholder="(00) 0 0000-0000"
                                 labelWidth={80}
                                 style={{ marginRight: 12 }}
-                                error ={!validateCellPhone() && cellPhoneReturn() != ''}
+                                error ={!validateCellPhone() && state.phones[0]?.cellnumber != ''}
                               />
                             )}
                           </InputMask>
                         </FormControl>
-                        {!validateCellPhone() && cellPhoneReturn() != '' &&(
+                        {!validateCellPhone() && state.phones[0]?.cellnumber != '' &&(
                           <p style={{ color: '#f44336', margin:'1px 5px 20px' }}>
                           Por favor insira um número válido
                           </p>
