@@ -17,6 +17,7 @@ interface IDialogProps {
   captureData: any;
   setCaptureData: Function;
   saveCallback: Function;
+  cantEdit?:boolean;
 }
 
 export default function CaptureDataDialog(props: IDialogProps) {
@@ -24,7 +25,7 @@ export default function CaptureDataDialog(props: IDialogProps) {
 
   const careState = useSelector((state: ApplicationState) => state.cares);
 
-  const { dialogState, toogleModalState, captureData, setCaptureData, saveCallback } = props;
+  const { dialogState, toogleModalState, captureData, setCaptureData, saveCallback, cantEdit } = props;
 
   useEffect(() => {
     dispatch(healthInsuranceRequest());
@@ -70,12 +71,14 @@ export default function CaptureDataDialog(props: IDialogProps) {
                 control={<Radio color="primary" />}
                 label="Não"
                 // checked={!captureData.inpatient}
+                disabled={cantEdit}
               />
               <FormControlLabel
                 value="Sim"
                 control={<Radio color="primary" />}
                 label="Sim"
                 // checked={captureData.inpatient}
+                disabled={cantEdit}
               />
             </RadioGroup>
 
@@ -84,6 +87,7 @@ export default function CaptureDataDialog(props: IDialogProps) {
               <Grid item md={5}>
                 <FieldContent style={{ paddingRight: 15 }}>
                   <Autocomplete
+                    disabled={cantEdit}
                     id="combo-box-health-insurance"
                     options={careState.healthInsurance}
                     getOptionLabel={(option) => option.name}
@@ -114,6 +118,7 @@ export default function CaptureDataDialog(props: IDialogProps) {
                     size="small"
                     value={captureData.order_number}
                     onChange={(element) => setCaptureData({ ...captureData, order_number: element.target.value })}
+                    disabled={cantEdit}
                     fullWidth
                   />
                 </FieldContent>
@@ -135,6 +140,7 @@ export default function CaptureDataDialog(props: IDialogProps) {
                       }
                       dispatch(healthSubPlanRequest(value && value._id));
                     }}
+                    disabled={cantEdit}
                     noOptionsText="Nenhum plano encontrado"
                     fullWidth
                   />
@@ -156,6 +162,7 @@ export default function CaptureDataDialog(props: IDialogProps) {
                         setCaptureData({ ...captureData, health_sub_plan_id: value._id })
                       }
                     }}
+                    disabled={cantEdit}
                     noOptionsText="Nenhum sub-plano encontrado"
                     fullWidth
                   />
@@ -171,6 +178,7 @@ export default function CaptureDataDialog(props: IDialogProps) {
                     size="small"
                     value={captureData.hospital}
                     onChange={(element) => setCaptureData({ ...captureData, hospital: element.target.value })}
+                    disabled={cantEdit}
                     fullWidth
                   />
                 </FieldContent>
@@ -185,6 +193,7 @@ export default function CaptureDataDialog(props: IDialogProps) {
                     size="small"
                     value={captureData.unity}
                     onChange={(element) => setCaptureData({ ...captureData, unity: element.target.value })}
+                    disabled={cantEdit}
                     fullWidth
                   />
                 </FieldContent>
@@ -199,6 +208,7 @@ export default function CaptureDataDialog(props: IDialogProps) {
                     size="small"
                     value={captureData.assistant_doctor}
                     onChange={(element) => setCaptureData({ ...captureData, assistant_doctor: element.target.value })}
+                    disabled={cantEdit}
                     fullWidth
                   />
                 </FieldContent>
@@ -213,6 +223,7 @@ export default function CaptureDataDialog(props: IDialogProps) {
                     size="small"
                     value={captureData.sector}
                     onChange={(element) => setCaptureData({ ...captureData, sector: element.target.value })}
+                    disabled={cantEdit}
                     fullWidth
                   />
                 </FieldContent>
@@ -227,6 +238,7 @@ export default function CaptureDataDialog(props: IDialogProps) {
                     size="small"
                     value={captureData.bed}
                     onChange={(element) => setCaptureData({ ...captureData, bed: element.target.value })}
+                    disabled={cantEdit}
                     fullWidth
                   />
                 </FieldContent>
@@ -235,13 +247,21 @@ export default function CaptureDataDialog(props: IDialogProps) {
           </div>
         </DialogContent>
         <DialogActions>
-          <Button onClick={() => toogleModalState(false)} color="primary">Fechar</Button>
-          <Button onClick={() => {
-            toogleModalState(false);
-            saveCallback();
-          }} color="primary">
-            Salvar
-        </Button>
+          {
+            (cantEdit != true)?(
+              <>
+              <Button onClick={() => toogleModalState(false)} color="primary">Fechar</Button>
+              <Button onClick={() => {
+                toogleModalState(false);
+                saveCallback();
+              }} color="primary">
+                Salvar
+              </Button>
+              </>
+            ):(
+              <Button onClick={() => toogleModalState(false)} color="primary">Fechar</Button>
+            )
+          }
         </DialogActions>
       </Dialog>
     </>
