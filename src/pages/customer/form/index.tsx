@@ -105,7 +105,8 @@ export default function CustomerForm(props: RouteComponentProps<IPageParams>) {
     city:false,
     state: false,
     email:false,
-    phone:false
+
+    phones:false
 
   });
   const States = [
@@ -778,10 +779,13 @@ export default function CustomerForm(props: RouteComponentProps<IPageParams>) {
                   <InputMask
                     mask="(99) 9 9999-9999"
                     disabled={!canEdit}
-                    value={inputCellPhone.value}
+                    value={state.cellphone}
                     onBlur={validateCellPhone}
-                    onChange={(element) => setInputCellPhone({ ...inputCellPhone, value: element.target.value })}
-
+                    onChange={(element) =>{
+                      setState({...state,cellphone:element.target.value})
+                      // setInputCellPhone({ ...inputCellPhone, value: element.target.value })}
+                      setFieldValidations((prevState: any) => ({ ...prevState, cellphone: !validator.isEmpty(element.target.value) }));
+                    }}
                   >
                     {(inputProps: any) => (
                       <TextField
