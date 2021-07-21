@@ -2,6 +2,8 @@ import styled from 'styled-components';
 import { TextField, OutlinedInput, Button, Stepper, Step } from '@material-ui/core';
 import { ReactComponent as NoData } from '../../../../assets/img/no-data.svg';
 import { ReactComponent as SuccessImage } from '../../../../assets/img/ilustracao-avaliaca-concluida.svg';
+import {ReactComponent as  femaleIcon} from "../../../../assets/img/ionic-md-female.svg";
+import {ReactComponent  as maleIcon} from "../../../../assets/img/icon-male.svg";
 
 
 export const PatientResume = styled.div`
@@ -44,7 +46,7 @@ export const PatientResumeContent = styled.div`
 export const PatientData = styled.div`
   display: flex;
   flex-direction: row;
-  width: 50%;
+  width: 70%;
 
   margin-right: 30px;
 `;
@@ -74,4 +76,15 @@ export const BackButtonContent = styled.div`
   button:first-child {
     margin-right: 10px;
   }
+`;
+
+
+export const FemaleIconLogo = styled(femaleIcon)`
+  height: 15px;
+  width: 15px;
+`;
+
+export const MaleIconLogo = styled(maleIcon)`
+  height: 15px;
+  width: 15px;
 `;
