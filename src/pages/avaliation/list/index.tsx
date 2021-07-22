@@ -25,11 +25,12 @@ import { FiberManualRecord, Visibility as VisibilityIcon, ErrorOutline, MoreVert
 import debounce from 'lodash.debounce';
 import { useDispatch, useSelector } from 'react-redux';
 import { ApplicationState } from '../../../store/';
-import { careTypeRequest, loadRequest, searchCareRequest } from '../../../store/ducks/cares/actions';
+import { careTypeRequest, loadRequest, searchCareRequest, loadRequestPopUp } from '../../../store/ducks/cares/actions';
 
 import {
   searchCareRequest as getCares,
   updateCareRequest as updateCareAction,
+  searchPatientSuccess as getPatient,
   cleanAction
 } from '../../../store/ducks/cares/actions';
 
@@ -47,8 +48,6 @@ import { HighComplexityLabel, LowerComplexityLabel, MediumComplexityLabel } from
 import { CareInterface } from "../../../store/ducks/cares/types";
 import _ from 'lodash';
 import { Td, Th } from "../../../styles/components/Table";
-
-//import { Dialog, DialogActionsBar } from "@progress/kendo-react-dialogs";
 
 
 interface ICaptureStatus {
@@ -79,11 +78,19 @@ export default function AvaliationList() {
 
   const [historyModalOpen, setHistoryModalOpen] = useState(false);
   const [anexoModalOpen, setAnexoModalOpen] = useState(false);
+  const [patientArray, setpatientArray] = useState<any>();
 
   useEffect(() => {
     dispatch(cleanAction());
-    dispatch(getCares({}))
+    dispatch(getCares({}));
     dispatch(careTypeRequest());
+    dispatch(loadRequestPopUp({
+      page: '1',
+      limit: '1000',
+      total: 1000,
+      search
+    }));
+    
   }, []);
 
   // useEffect(() => {
@@ -95,7 +102,7 @@ export default function AvaliationList() {
   const handleType = useCallback((care: any) => {
     let complexitiesArray: any = []
     let complexity: string = ""
-    console.log(care)
+    //console.log(care)
     care?.documents_id?.map((field: any) => {
       complexitiesArray.push(field.complexity);
     })
@@ -287,9 +294,10 @@ export default function AvaliationList() {
 
   }, [captureStatus, careState]);
 
-  const toggleHistoryModal = (index: number) => {
+  const toggleHistoryModal = (index: number, care: any) => {
     handleCloseRowMenu();
     setCareIndex(index);
+    isDone(care);
     setHistoryModalOpen(!historyModalOpen);
   };
 
@@ -299,12 +307,12 @@ export default function AvaliationList() {
     setAnexoModalOpen(!anexoModalOpen)
   };
 
-  const handleChangeComplexity = useCallback((event: any) => {
-    setCaptureStatus(prevState => ({
-      ...prevState,
-      complexity: event.target.value,
-    }));
-  }, [captureStatus]);
+  // const handleChangeComplexity = useCallback((event: any) => {
+  //   setCaptureStatus(prevState => ({
+  //     ...prevState,
+  //     complexity: event.target.value,
+  //   }));
+  // }, [captureStatus]);
 
   const readFile = (file: any) => {
     return new Promise((resolve, reject) => {
@@ -439,16 +447,21 @@ export default function AvaliationList() {
 
   }, [captureStatus, careState]);
 
-  // const openInPopup = (care: any) => {
-  //   setRecordForEdit(care)
-  //   setOpenPopup(true)
-  // }
+  const isDone = useCallback((care: any) => {
+    let patientId = _.filter(careState.list2.data, { patient_id: { _id: care?.patient_id._id } });
+    //console.log("teste", patientId);
+    setpatientArray(patientId);
+    //console.log(patientArray);
+  }, [careState]);
 
-  // const [visible, setVisible] = React.useState(true);
+  // const isPopup = useCallback(() => {
+  //   //{console.log(patientArray)}
+  //   patientArray?.map((patient: any) => {
+  //     console.log(patient)
+  //     return "string"
+  //   })
+  // }, [patientArray]);
 
-  // const toggleDialog = () => {
-  //   setVisible(!visible);
-  // };
 
   return (
     <>
@@ -513,7 +526,7 @@ export default function AvaliationList() {
                   >
                     <MenuItem onClick={() => history.push(`/patient/capture/${care._id}/overview`)}>Visualizar
                       perfil</MenuItem>
-                    <MenuItem onClick={() => toggleHistoryModal(index)}>Histórico</MenuItem>
+                    <MenuItem onClick={() => toggleHistoryModal(index, care)}>Histórico</MenuItem>
                     <MenuItem onClick={() => toggleAnexoModal()}>Documentos Anexados</MenuItem>
                     {care.capture?.status === 'Aguardando' && (
                       <MenuItem onClick={() => handleStartUpdateCaptureStatus(care)}>Atualizar status</MenuItem>
@@ -759,13 +772,6 @@ export default function AvaliationList() {
         onClose={() => setHistoryModalOpen(false)}
         aria-labelledby="scroll-dialog-title"
         aria-describedby="scroll-dialog-description"
-
-      // handleFirstPage={() => dispatch(loadRequest({
-      //   page: '1',
-      //   limit: careState.list.limit,
-      //   total: careState.list.total,
-      //   search
-      // }))}
       >
         <DialogTitle id="scroll-dialog-title"><h3>Histórico de Captações</h3></DialogTitle>
         <DialogContent>
@@ -784,33 +790,39 @@ export default function AvaliationList() {
             <Table
               tableCells={[
                 { name: 'Data da captação', align: 'left' },
-                { name: 'Tipo', align: 'left' },
-                { name: 'Complexidade', align: 'left' },
-                { name: 'Status', align: 'left' },
+                { name: 'Tipo', align: 'center' },
+                { name: 'Complexidade', align: 'center' },
+                { name: 'Status', align: 'center' },
                 { name: 'Visualizar', align: 'left' }
               ]}
             >
-              <TableCell >
-                <p>{careState.list.data[careIndex]?.created_at ? formatDate(careState.list.data[careIndex]?.created_at, 'DD/MM/YYYY') : '-'}</p>
-              </TableCell>
-              <TableCell >
-                <p>{handleType(careState.list.data[careIndex])}</p>
-              </TableCell>
-              <TableCell >
-                <p>{handleCoplexities(careState.list.data[careIndex])}</p>
-              </TableCell>
-              <TableCell >
-                <ListItemCaptureStatus status={careState.list.data[careIndex]?.capture?.status || ''}>
-                  <FiberManualRecord /> {careState.list.data[careIndex]?.capture?.status}
-                </ListItemCaptureStatus>
-              </TableCell>
-              <TableCell align="center">
-                <Button onClick={() => history.push(`/patient/capture/${careState.list.data[careIndex]?._id}/overview`)}>
-                  <VisibilityIcon style={{ color: '#0899BA' }} />
-                </Button>
-              </TableCell>
+              {patientArray?.map((patient: any, index: number) => {
+                console.log(patient)
+                return (
+                  <TableRow key={`patient_${index}`}>
+                    <TableCell >
+                      <p>{patient?.created_at ? formatDate(patient?.created_at, 'DD/MM/YYYY') : '-'}</p>
+                    </TableCell>
+                    <TableCell align="center">
+                      <p>{handleType(patient)}</p>
+                    </TableCell>
+                    <TableCell align="center">
+                      <p>{handleCoplexities(patient)}</p>
+                    </TableCell>
+                    <TableCell align="center">
+                      <ListItemCaptureStatus status={patient?.capture?.status || ''}>
+                        <FiberManualRecord /> {patient?.capture?.status}
+                      </ListItemCaptureStatus>
+                    </TableCell>
+                    <TableCell align="center">
+                      <Button onClick={() => history.push(`/patient/capture/${patient?._id}/overview`)}>
+                        <VisibilityIcon style={{ color: '#0899BA' }} />
+                      </Button>
+                    </TableCell>
+                  </TableRow>
+                )
+              })}
             </Table>
-
           </DialogContentText>
         </DialogContent>
         <DialogActions>
