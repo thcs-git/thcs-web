@@ -105,9 +105,6 @@ export default function CustomerForm(props: RouteComponentProps<IPageParams>) {
     city:false,
     state: false,
     email:false,
-
-    phones:false
-
   });
   const States = [
     {id:1,name:"São Paulo",sigla:'SP'},
@@ -152,11 +149,12 @@ export default function CustomerForm(props: RouteComponentProps<IPageParams>) {
       complement: '',
     },
     email: '',
-    phones: {
-      number: '',
+    phones: [{
+      cellphone: '',
+      phone:'',
       telegram: false,
       whatsapp: false,
-    },
+    }],
     cellphone: '',
     phone:'',
     responsible_user:'',
@@ -203,11 +201,11 @@ export default function CustomerForm(props: RouteComponentProps<IPageParams>) {
         });
         setInputPhone(prev =>({
           ...prev,
-          value:customerState.data.phone || ''
+          value:customerState.data.phones[0]?.phone || ''
         }));
         setInputCellPhone(prev =>({
           ...prev,
-          value:customerState.data.cellphone || ''
+          value:customerState.data.phones[0]?.cellphone || ''
         }));
 
       setFieldValidations({
@@ -221,7 +219,8 @@ export default function CustomerForm(props: RouteComponentProps<IPageParams>) {
         city:true,
         state:true,
         email:true,
-        phone:true
+        phone:true,
+        cellphone: true,
        })
 
     }
@@ -726,13 +725,12 @@ export default function CustomerForm(props: RouteComponentProps<IPageParams>) {
               <Grid item md={4} xs={12}>
                 <InputMask
                   mask="(99) 9999-9999"
-                  value={state.phone}
+                  value={state.phones[0]?.phone}
                   disabled={!canEdit}
                   onChange={(element) =>{
                     setState({...state,phone:element.target.value})
                     setFieldValidations((prevState: any) => ({ ...prevState, phone: !validator.isEmpty(element.target.value) }));
-                  }
-                  }
+                  }}
                   onBlur={validatePhone}
                     // onBlur={(element)=>{
                     //   setFieldValidations((prevState: any) => ({ ...prevState, phone: !validator.isEmpty(element.target.value) }));}}
