@@ -64,6 +64,7 @@ import Typography from '@material-ui/core/Typography';
 import { loadSuccess } from '../../../store/ducks/areas/actions';
 import { objectValues } from 'react-toastify/dist/utils';
 import { createPrescriptionRequest } from '../../../store/ducks/prescripition/actions';
+import { AreaInterface } from '../../../store/ducks/areas/types';
 
 interface IFormFields {
   bloodType: string | null,
@@ -316,7 +317,6 @@ export default function PatientForm(props: RouteComponentProps<IPageParams>) {
 
   useEffect(() => {
     const field = patientState.errorCep ? 'input-postal-code' : 'input-address-number';
-    console.log(patientState.errorCep);
 
 
     patientState.errorCep && setState(prevState => ({
@@ -448,9 +448,10 @@ export default function PatientForm(props: RouteComponentProps<IPageParams>) {
         ...prevState,
         address_id: {
           ...patientState.data.address_id
-        }
+        },
       }
     });
+
     setFieldValidations((prevState: any) => ({
       ...prevState,
       postal_code: !validator.isEmpty(patientState.data.address_id.postal_code),
@@ -477,17 +478,26 @@ export default function PatientForm(props: RouteComponentProps<IPageParams>) {
 
 
   const selectPatientArea = useCallback(() => {
-    if(canEdit){
 
-    }else{
-       const selected = areaState.list.data.filter(item => {
+    const selected = areaState.list.data.filter(item => {
       if (typeof state?.area_id === 'object') {
         return item._id === state?.area_id._id
       }
-    });
+    })
 
-    return (selected[0]) ? selected[0] : null;
-    }
+    return (selected[0]) ? selected[0]: areaState.list.data[0];
+
+    // if(canEdit){
+
+    // }else{
+    //    const selected = areaState.list.data.filter(item => {
+    //   if (typeof state?.area_id === 'object') {
+    //     return item._id === state?.area_id._id
+    //   }
+    // })
+
+    //return (selected[0]) ? selected[0]: areaState.list.data[0];
+    //}
 
   }, [state.area_id, areaState]);
 
@@ -524,14 +534,12 @@ export default function PatientForm(props: RouteComponentProps<IPageParams>) {
         relationship: state.responsable.relationship,
       },
     });
-    console.log(modifi);
-    console.log(patientState.data);
+
     if(isEquals()){
       handleCancelForm()
       console.log(isEquals());
     }else{
       setOpenModalCancel(true);
-        console.log(isEquals());
     }
 
   }
@@ -560,8 +568,11 @@ export default function PatientForm(props: RouteComponentProps<IPageParams>) {
     };
 
     if (state?._id) {
+
       dispatch(updatePatientRequest(patientData));
+      history.push('/patient');
     } else {
+
       dispatch(createPatientRequest(patientData));
     }
   }, [state]);
@@ -572,7 +583,7 @@ export default function PatientForm(props: RouteComponentProps<IPageParams>) {
   return (
     <Sidebar>
       {patientState.loading && <Loading />}
-      {patientState.isRegistrationCompleted ? (
+      {(patientState.isRegistrationCompleted &&  !state?._id) ? (
         <RegistrationCompleted {...props} />
       ) : (
         <Container>
@@ -965,20 +976,25 @@ export default function PatientForm(props: RouteComponentProps<IPageParams>) {
 
                       <Grid item md={7} xs={12}>
                         <Autocomplete
-                          id="combo-box-areas"
-                          options={areaState.list.data}
-                          getOptionLabel={(option) => option.name}
-                          renderInput={(params) => <TextField {...params} label="Área" variant="outlined" />}
-                          size="small"
-                         // value={selectPatientArea()}
-                          onChange={(element, value) =>{setState({ ...state, area_id: value?._id })
-                          setModifi({...modifi.address_id,state: value})}}
-                          getOptionSelected={(option, value) => option._id === state?.area_id}
-                          noOptionsText="Nenhum resultado encontrado"
-                          fullWidth
-                          disabled={!canEdit}
-                        />
+                            id="combo-box-areas"
+                            options={areaState.list.data}
+                            getOptionLabel={(option: any) => option.name}
+                            renderInput={(params) => <TextField {...params} label="Área"  variant="outlined"  />}
+                            size="small"
+                            defaultValue={selectPatientArea()}
+                            value={selectPatientArea()}
+                            onChange={(event:any, newValue) =>{
+                              if(newValue){
+                                setState({...state,area_id:newValue._id})
+                              }
+                            } }
+                          //  getOptionSelected={(option, value) => option._id === state?.area_id._id}
+                            noOptionsText="Nenhum resultado encontrado"
+                            fullWidth
+                            disabled={!canEdit}
+                          />
                       </Grid>
+
                     </Grid>
                     <Grid container>
                       <Grid item md={6} xs={12}>

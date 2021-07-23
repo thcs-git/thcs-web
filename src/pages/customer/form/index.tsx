@@ -311,12 +311,20 @@ export default function CustomerForm(props: RouteComponentProps<IPageParams>) {
   const handleSaveFormCustomer = useCallback(() => {
     console.log(fieldsValidation);
 
-    if (!fieldsValidation.name || !fieldsValidation.social_name  || !fieldsValidation.fiscal_number || !fieldsValidation.responsible_user ||
-      !fieldsValidation.phone || !fieldsValidation.email || !fieldsValidation.phone || !fieldsValidation.postal_code  || !fieldsValidation.street ) {
-      toast.error('Existem campos que precisam ser preenchidos para continuar');
-      return;
-    }
-    else if (params.id && ModifiCondition() ) {
+    // if (!fieldsValidation.name || !fieldsValidation.social_name  || !fieldsValidation.fiscal_number || !fieldsValidation.responsible_user ||
+    //   !fieldsValidation.phone || !fieldsValidation.email || !fieldsValidation.phone || !fieldsValidation.postal_code  || !fieldsValidation.street ) {
+    //   toast.error('Existem campos que precisam ser preenchidos para continuar');
+    //   return;
+    // }
+    // else if (params.id && ModifiCondition() ) {
+    //
+    //   dispatch(updateCustomerRequest(state));
+    //
+    // }else{
+    //   dispatch(createCustomerRequest(state));
+    //
+    // }
+    if (params.id && ModifiCondition() ) {
 
       dispatch(updateCustomerRequest(state));
 
@@ -493,7 +501,7 @@ export default function CustomerForm(props: RouteComponentProps<IPageParams>) {
                   <Grid item md={7} xs={12}>
                     <TextField
                       id="input-social-name"
-                      label="Nome Social"
+                      label="Razão Social"
                       variant="outlined"
                       size="small"
 

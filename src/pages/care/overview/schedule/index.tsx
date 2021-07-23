@@ -1,46 +1,110 @@
-import React, { useState, useEffect, useCallback, useRef } from 'react';
-import { useSelector, useDispatch } from 'react-redux';
-import { RouteComponentProps, useHistory } from 'react-router-dom';
-import { Help as HelpIcon } from '@material-ui/icons';
+import React, {useState, useEffect, useCallback, useRef} from 'react';
+import {useSelector, useDispatch} from 'react-redux';
+import {RouteComponentProps, useHistory} from 'react-router-dom';
+import {Help as HelpIcon} from '@material-ui/icons';
 import Checkbox from '@material-ui/core/Checkbox';
-import { Dialog, DialogContent, DialogTitle, Grid, Card, CardContent, TextField, FormGroup, FormControlLabel, RadioGroup, DialogActions, Button, List, ListItem, Typography, ListItemIcon, ListItemText, IconButton, Divider, Box, Tabs, Tab, Paper, AppBar, FormControl, FormLabel, Popover } from '@material-ui/core';
-import { Autocomplete } from '@material-ui/lab';
-import { AccountCircle, SupervisorAccountRounded, ReportProblemOutlined, Event as EventIcon, Cached as RefreshIcon, Schedule as ScheduleIcon, CommentRounded as CommentRoundedIcon, AccountBox as AccountBoxIcon, SwapHoriz as SwapHorizIcon, Edit as EditIcon, Delete as DeleteIcon, WarningRounded as WarningRoundedIcon } from '@material-ui/icons';
+import {
+  Dialog,
+  DialogContent,
+  DialogTitle,
+  Grid,
+  Card,
+  CardContent,
+  TextField,
+  FormGroup,
+  FormControlLabel,
+  RadioGroup,
+  DialogActions,
+  Button,
+  List,
+  ListItem,
+  Typography,
+  ListItemIcon,
+  ListItemText,
+  IconButton,
+  Divider,
+  Box,
+  Tabs,
+  Tab,
+  Paper,
+  AppBar,
+  FormControl,
+  FormLabel,
+  Popover
+} from '@material-ui/core';
+import {Autocomplete} from '@material-ui/lab';
+import {
+  AccountCircle,
+  SupervisorAccountRounded,
+  ReportProblemOutlined,
+  Event as EventIcon,
+  Cached as RefreshIcon,
+  Schedule as ScheduleIcon,
+  CommentRounded as CommentRoundedIcon,
+  AccountBox as AccountBoxIcon,
+  SwapHoriz as SwapHorizIcon,
+  Edit as EditIcon,
+  Delete as DeleteIcon,
+  WarningRounded as WarningRoundedIcon
+} from '@material-ui/icons';
 import dayjs from 'dayjs';
 import debounce from 'lodash.debounce';
 
-import FullCalendar, { EventClickArg, EventApi, EventInput, EventAddArg } from '@fullcalendar/react';
+import FullCalendar, {EventClickArg, EventApi, EventInput, EventAddArg} from '@fullcalendar/react';
 import dayGridPlugin from '@fullcalendar/daygrid';
 import timeGridPlugin from '@fullcalendar/timegrid';
 import interactionPlugin from '@fullcalendar/interaction';
 import ptBrLocale from '@fullcalendar/core/locales/pt-br';
 
 import SearchComponent from '../../../../components/List/Search';
-import { ApplicationState } from '../../../../store';
-import { loadCareById, loadScheduleRequest, createScheduleRequest as storeScheduleAction, deleteScheduleRequest as deleteScheduleAction, updateScheduleRequest as updateScheduleAction } from '../../../../store/ducks/cares/actions';
-import { ScheduleInterface } from '../../../../store/ducks/cares/types';
-import { searchRequest as searchUserAction, loadProfessionsRequest as getProfessionsAction } from '../../../../store/ducks/users/actions';
-import { ProfessionUserInterface } from '../../../../store/ducks/users/types';
+import {ApplicationState} from '../../../../store';
+import {
+  loadCareById,
+  loadScheduleRequest,
+  createScheduleRequest as storeScheduleAction,
+  deleteScheduleRequest as deleteScheduleAction,
+  updateScheduleRequest as updateScheduleAction
+} from '../../../../store/ducks/cares/actions';
+import {ScheduleInterface} from '../../../../store/ducks/cares/types';
+import {
+  searchRequest as searchUserAction,
+  loadProfessionsRequest as getProfessionsAction
+} from '../../../../store/ducks/users/actions';
+import {ProfessionUserInterface} from '../../../../store/ducks/users/types';
 
-import { formatDate, translate as translateDateHelper, getDayOfTheWeekName } from "../../../../helpers/date";
-import { exchangeTypes as exchageTypesHelper } from '../../../../helpers/schedule';
+import {formatDate, translate as translateDateHelper, getDayOfTheWeekName} from "../../../../helpers/date";
+import {exchangeTypes as exchageTypesHelper} from '../../../../helpers/schedule';
 
-import { ReactComponent as IconPermuta } from '../../../../assets/img/icon-permuta.svg';
-import { ReactComponent as IconNoturno } from '../../../../assets/img/icon-noturno.svg';
-import { ReactComponent as IconDiurno } from '../../../../assets/img/icon-diurno.svg';
-import { ReactComponent as IconPlantao } from '../../../../assets/img/icon-plantao.svg';
-import { ReactComponent as IconPlantaoTransparent } from '../../../../assets/img/icon-plantao-transparent.svg';
+import {ReactComponent as IconProfile} from '../../../../assets/img/icon-profile.svg';
+import {ReactComponent as IconPermuta} from '../../../../assets/img/icon-permuta.svg';
+import {ReactComponent as IconNoturno} from '../../../../assets/img/icon-noturno.svg';
+import {ReactComponent as IconDiurno} from '../../../../assets/img/icon-diurno.svg';
+import {ReactComponent as IconPlantao} from '../../../../assets/img/icon-plantao.svg';
+import {ReactComponent as IconPlantaoTransparent} from '../../../../assets/img/icon-plantao-transparent.svg';
+import {ReactComponent as IconEquipe} from '../../../../assets/img/icon-equipe-medica.svg';
 
 import Sidebar from '../../../../components/Sidebar';
 import Loading from '../../../../components/Loading';
 
-import { FieldContent, FormTitle, RadioComponent as Radio } from '../../../../styles/components/Form';
-import { TextCenter } from '../../../../styles/components/Text';
+import {FieldContent, FormTitle, RadioComponent as Radio} from '../../../../styles/components/Form';
+import {TextCenter} from '../../../../styles/components/Text';
 import ButtonComponent from '../../../../styles/components/Button';
-import { ComplexityStatus } from '../../../../styles/components/Table';
+import {ComplexityStatus} from '../../../../styles/components/Table';
 import DatePicker from '../../../../styles/components/DatePicker';
 
-import { ScheduleItem, CardTitle, CalendarContent, ScheduleEventStatus, HeaderContent, ResumeList, TabsMenuWrapper, ContainerSearch, CardPlantonistas } from './styles';
+import {
+  ScheduleItem,
+  CardTitle,
+  CalendarContent,
+  ScheduleEventStatus,
+  HeaderContent,
+  BottomContent,
+  ResumeList,
+  TabsMenuWrapper,
+  ContainerSearch,
+  CardPlantonistas
+} from './styles';
+import _ from 'lodash';
 
 interface IDay {
   allDay: boolean;
@@ -82,7 +146,7 @@ export default function SchedulePage(props: RouteComponentProps<IPageParams>) {
   const userState = useSelector((state: ApplicationState) => state.users);
   const companyState = useSelector((state: ApplicationState) => state.companies);
 
-  const { params } = props.match;
+  const {params} = props.match;
 
   let eventGuid = 0
   let todayStr = new Date().toISOString().replace(/T.*$/, '') // YYYY-MM-DD of today
@@ -139,15 +203,15 @@ export default function SchedulePage(props: RouteComponentProps<IPageParams>) {
   const [eventSelected, setEventSelected] = useState<EventClickArg>();
   const [team, setTeam] = useState<any[]>([]);
   const [repeatOptions, setRepeatOptions] = useState([
-    { title: 'Diariamente', interval: 1 },
-    { title: 'A cada 2 dias', interval: 2 },
-    { title: 'A cada 3 dias', interval: 3 },
-    { title: 'A cada 4 dias', interval: 4 },
-    { title: 'A cada 5 dias', interval: 5 },
-    { title: 'A cada 6 dias', interval: 6 },
-    { title: 'Semanalmente', interval: 7 },
-    { title: 'Quinzenalmente', interval: 15 },
-    { title: 'Mensalmente', interval: 30 },
+    {title: 'Diariamente', interval: 1},
+    {title: 'A cada 2 dias', interval: 2},
+    {title: 'A cada 3 dias', interval: 3},
+    {title: 'A cada 4 dias', interval: 4},
+    {title: 'A cada 5 dias', interval: 5},
+    {title: 'A cada 6 dias', interval: 6},
+    {title: 'Semanalmente', interval: 7},
+    {title: 'Quinzenalmente', interval: 15},
+    {title: 'Mensalmente', interval: 30},
   ]);
   const [removeType, setRemoveType] = useState<string>('');
   const [exchangeType, setExchangeType] = useState<string>('');
@@ -193,13 +257,13 @@ export default function SchedulePage(props: RouteComponentProps<IPageParams>) {
   }, [dispatch]);
 
   useEffect(() => {
-    dispatch(loadScheduleRequest({ attendance_id: params.id }))
+    dispatch(loadScheduleRequest({attendance_id: params.id}))
   }, [careState.data._id]);
 
   useEffect(() => {
     // if (careState.schedule?.length) {
-      translateSchedule();
-      handleTeam();
+    translateSchedule();
+    handleTeam();
     // }
 
     // getAllProfessinalFilter();
@@ -243,7 +307,7 @@ export default function SchedulePage(props: RouteComponentProps<IPageParams>) {
     setCanExchange(false);
     setExchangeType('');
 
-    const { event } = clickInfo;
+    const {event} = clickInfo;
 
     setSchedule({
       day: event.start,
@@ -291,30 +355,58 @@ export default function SchedulePage(props: RouteComponentProps<IPageParams>) {
 
   const handleAddEvent = useCallback((event: any) => {
     // if (schedule.day && schedule?.start_at && schedule?.end_at) {
-      let startAt: string;
-      let endAt: string;
-      schedule.duty_day = (schedule.duty_day === 0) ? 'par' : 'impar';
-      schedule.professional_type = professionalTypeValue;
-      schedule.type = currentTabValue === 0 ? 'assistencia' : 'plantao';
+    let startAt: string;
+    let endAt: string;
 
+    schedule.duty_day = (schedule.duty_day === 0) ? 'par' : 'impar';
+    schedule.professional_type = professionalTypeValue;
+    schedule.type = currentTabValue === 0 ? 'assistencia' : 'plantao';
+
+    if (schedule?.exchange?.exchanged_to || schedule?.user_id != '') {
       if (currentTabValue === 0 && schedule.day) {
-        startAt = dayjs(`${formatDate(schedule.day, 'YYYY-MM-DD')} ${schedule.start_at}`).format();
-        endAt = dayjs(`${formatDate(schedule.day, 'YYYY-MM-DD')} ${schedule.end_at}`).format();
-        // startAt = dayjs(schedule.day).startOf('day').format();
-        // endAt = dayjs(schedule.day).startOf('day').format();
+        const [hourOfStart, minuteOfStart] = schedule.start_at ? schedule.start_at.split(':') : [0, 0]
+        const [hourOfEnd, minuteOfEnd] = schedule.end_at ? schedule.end_at.split(':') : [0, 0]
+
+        if (Number(hourOfStart) > Number(hourOfEnd)) {
+          let endDate = new Date(schedule.day)
+          endDate.setDate(endDate.getDate() + 1)
+
+          startAt = dayjs(`${formatDate(schedule.day, 'YYYY-MM-DD')} ${schedule.start_at}`).format();
+          endAt = dayjs(`${formatDate(endDate, 'YYYY-MM-DD')} ${schedule.end_at}`).format();
+        } else {
+          startAt = dayjs(`${formatDate(schedule.day, 'YYYY-MM-DD')} ${schedule.start_at}`).format();
+          endAt = dayjs(`${formatDate(schedule.day, 'YYYY-MM-DD')} ${schedule.end_at}`).format();
+        }
       } else {
-        schedule.days_interval_repeat = professionalTypeValue === 'plantonista' ? 2 : 1;
-        startAt = dayjs(`${schedule.start_plantao} ${schedule.start_hour_plantao}`).format()
-        endAt = dayjs(`${schedule.end_plantao} ${schedule.end_hour_plantao}`).format()
+        const [hourOfStart, minuteOfStart] = schedule.start_hour_plantao ? schedule.start_hour_plantao.split(':') : [0, 0]
+        const [hourOfEnd, minuteOfEnd] = schedule.end_hour_plantao ? schedule.end_hour_plantao.split(':') : [0, 0]
+
+        const day = schedule.start_plantao ? schedule.start_plantao : '0000-00-00'
+        let endDate = new Date(day)
+
+        if (Number(hourOfStart) > Number(hourOfEnd)) {
+          endDate.setDate(endDate.getDate() + 2)
+        } else {
+          endDate.setDate(endDate.getDate() + 1)
+        }
+
+        if (professionalTypeValue === 'plantonista') {
+          schedule.days_interval_repeat = 1
+        } else {
+          schedule.days_interval_repeat = 1
+        }
+        startAt = dayjs(`${formatDate(schedule.start_plantao, 'YYYY-MM-DD')} ${schedule.start_hour_plantao}`).format()
+        endAt = dayjs(`${formatDate(endDate, 'YYYY-MM-DD')} ${schedule.end_hour_plantao}`).format()
+        schedule.start_at = schedule.start_hour_plantao
+        schedule.end_at = schedule.end_hour_plantao
       }
 
-
       if (schedule?.data?._id) {
-          console.log(schedule.day);
+        console.log(schedule.day);
 
         setDayOptionsModalOpen(false);
 
-        const { data, ...scheduleData } = schedule;
+        const {data, ...scheduleData} = schedule;
         const eventCopy = [...events];
 
         eventCopy.forEach((item, key) => {
@@ -330,13 +422,13 @@ export default function SchedulePage(props: RouteComponentProps<IPageParams>) {
         });
 
         setEvents(eventCopy);
-        console.log(events);
-        setSchedule(prevState=>({
-         ...prevState,
-         _id: data._id,
-         attendance_id: params.id,
-         start_at: startAt,
-         end_at: endAt,
+        console.log('testando,', events);
+        setSchedule(prevState => ({
+          ...prevState,
+          _id: data._id,
+          attendance_id: params.id,
+          start_at: startAt,
+          end_at: endAt,
         }));
 
         console.log(schedule);
@@ -360,7 +452,7 @@ export default function SchedulePage(props: RouteComponentProps<IPageParams>) {
         };
 
         // A label fica com background azul quando o evento é do dia todo, ou seja, não tem hora de inicio ou fim, apenas a data '2021-02-22'
-        // console.log('newEvent', newEvent)
+        console.log('newEvent', newEvent)
 
         setEvents((prevState: any) => ([...prevState, newEvent]));
 
@@ -375,8 +467,13 @@ export default function SchedulePage(props: RouteComponentProps<IPageParams>) {
       setDayOptionsModalOpen(false);
 
       setTimeout(() => {
-        dispatch(loadScheduleRequest({ attendance_id: params.id }))
+        dispatch(loadScheduleRequest({attendance_id: params.id}))
+        // Resolve problemas de state e cache
+        window.location.reload()
       }, 2000);
+    } else {
+      setDayOptionsModalOpen(false);
+    }
     // }
   }, [schedule, events]);
 
@@ -387,7 +484,7 @@ export default function SchedulePage(props: RouteComponentProps<IPageParams>) {
       dispatch(deleteScheduleAction(schedule.data._id, removeType));
 
       setTimeout(() => {
-        dispatch(loadScheduleRequest({ attendance_id: params.id }))
+        dispatch(loadScheduleRequest({attendance_id: params.id}))
       }, 2000);
 
       setDayOptionsModalOpen(false);
@@ -398,21 +495,25 @@ export default function SchedulePage(props: RouteComponentProps<IPageParams>) {
   const handleTeam = useCallback(() => {
     const teamUsers: any = [];
 
-    careState.schedule?.forEach(item => {
-      if (teamUsers.length === 0) {
-        teamUsers.push(item.user_id);
-      } else {
-        const founded = teamUsers.findIndex((user: any) => {
-          if (typeof item.user_id === 'object') {
-            return user._id === item.user_id._id
-          }
-        });
-
-        if (founded < 0) {
+    try {
+      careState.schedule?.forEach(item => {
+        if (teamUsers.length === 0) {
           teamUsers.push(item.user_id);
+        } else {
+          const founded = teamUsers.findIndex((user: any) => {
+            if (typeof item.user_id === 'object') {
+              return user._id === item.user_id._id
+            }
+          });
+
+          if (founded < 0) {
+            teamUsers.push(item.user_id);
+          }
         }
-      }
-    });
+      });
+    } catch (error) {
+
+    }
 
     setTeam(teamUsers);
 
@@ -422,53 +523,159 @@ export default function SchedulePage(props: RouteComponentProps<IPageParams>) {
     const today = dayjs();
     const eventDate = dayjs(event.start);
     const diffDate = eventDate.diff(today, 'm');
-    const { extendedProps: eventData } = event;
+    const {extendedProps: eventData} = event;
 
-    if (diffDate < 0 && (!eventData.checkin || eventData.checkin.length === 0)) {
-      return <ScheduleEventStatus color="late" />
-    } else if (eventData?.checkin?.length > 0) {
+    if (!_.isEmpty(eventData.exchange)) {
+      if (diffDate < 0 && (!eventData.checkin || eventData.checkin.length === 0)) {
+        return <IconPermuta className="late"/>
+      } else if (eventData?.checkin?.length > 0) {
 
-      const checkins = eventData.checkin.sort().reverse();
+        const checkins = eventData.checkin.sort().reverse();
 
-      const { start_at: checkIn, end_at: checkOut } = checkins[0];
+        const {start_at: checkIn, end_at: checkOut} = checkins[0];
 
-      if (checkIn && !checkOut) {
-        return <ScheduleEventStatus color="visiting" className="pulse" />
-      } else if (checkIn && checkOut) {
-        return <ScheduleEventStatus color="complete" />
+        if (checkIn && !checkOut) {
+          return <IconPermuta className="visiting"/>
+        } else if (checkIn && checkOut) {
+          return <IconPermuta className="complete"/>
+        } else {
+          return <IconPermuta className="future"/>
+        }
+
       } else {
-        return <ScheduleEventStatus color="future" />
+        return <IconPermuta className="future"/>
       }
-
     } else {
-      return <ScheduleEventStatus color="future" />
+      if (eventData.type === 'plantao' && eventData.professional_type === 'plantonista') {
+        if (diffDate < 0 && (!eventData.checkin || eventData.checkin.length === 0)) {
+          return <IconPlantaoTransparent className="late"/>
+        } else if (eventData?.checkin?.length > 0) {
+
+          const checkins = eventData.checkin.sort().reverse();
+
+          const {start_at: checkIn, end_at: checkOut} = checkins[0];
+
+          if (checkIn && !checkOut) {
+            return <IconPlantaoTransparent className="visiting"/>
+          } else if (checkIn && checkOut) {
+            return <IconPlantaoTransparent className="complete"/>
+          } else {
+            return <IconPlantaoTransparent className="future"/>
+          }
+
+        } else {
+          return <IconPlantaoTransparent className="future"/>
+        }
+      } else {
+        if (diffDate < 0 && (!eventData.checkin || eventData.checkin.length === 0)) {
+          return <ScheduleEventStatus color="late"/>
+        } else if (eventData?.checkin?.length > 0) {
+
+          const checkins = eventData.checkin.sort().reverse();
+
+          const {start_at: checkIn, end_at: checkOut} = checkins[0];
+
+          if (checkIn && !checkOut) {
+            return <ScheduleEventStatus color="visiting" className="pulse"/>
+          } else if (checkIn && checkOut) {
+            return <ScheduleEventStatus color="complete"/>
+          } else {
+            return <ScheduleEventStatus color="future"/>
+          }
+
+        } else {
+          return <ScheduleEventStatus color="future"/>
+        }
+      }
     }
   };
 
-  const renderOnlyPlantonistas = useCallback(() => {
-    let uniqPlanotinista: any = [];
-    const { schedule } = careState;
+  const renderOnlyPermutas = useCallback(() => {
+    let statePlantonista: boolean = true;
+    const {schedule} = careState;
 
-    schedule?.forEach(plantonista => {
-      if (plantonista.professional_type === 'plantonista' && (typeof plantonista.user_id === 'object')) {
-        let hasPlantonista = uniqPlanotinista.some((uniq: any) => (typeof plantonista.user_id === 'object') && uniq.user_id.name === plantonista.user_id.name)
+    try {
+      schedule?.forEach(exchange => {
+        if (!_.isEmpty(exchange.exchange)) {
+          statePlantonista = false
+        }
+      })
+    } catch (error) {
 
-        if (!hasPlantonista) uniqPlanotinista.push(plantonista)
-      }
-    })
+    }
 
     return (
       <>
-        {uniqPlanotinista.map((planto: any) => (
+        <div>
+          {statePlantonista ? (
+            <TextCenter>
+              Nenhuma permuta foi adicionada
+            </TextCenter>
+          ) : (
+            <>
+              {events?.map(event => (
+                <>
+                  {event?.extendedProps?.exchange?.exchanged_to && (
+                    <p><b>{dayjs(event?.start).format('DD/MM')}</b> - {event?.user_id.name}
+                      <b> por</b> {event?.extendedProps?.exchange ? event?.extendedProps?.exchange?.exchanged_to?.name : 'Sem nome'}
+                    </p>
+                  )}
+                </>
+              ))}
+            </>
+          )}
+        </div>
+      </>
+    );
+  }, [careState.schedule]);
+
+  const renderOnlyPlantonistas = useCallback(() => {
+    let uniqPlanotinista: any = [];
+    const {schedule} = careState;
+
+    try {
+      schedule?.forEach(plantonista => {
+        if (plantonista.type === 'plantao' && plantonista.professional_type === 'plantonista' && (typeof plantonista.user_id === 'object')) {
+          let hasPlantonista = uniqPlanotinista.some((uniq: any) => (typeof plantonista.user_id === 'object') && uniq.user_id.name === plantonista.user_id.name)
+
+          if (!hasPlantonista) uniqPlanotinista.push(plantonista)
+        }
+      })
+    } catch (error) {
+
+    }
+
+    return (
+      <>
+        {uniqPlanotinista.length >= 1 ? (
           <>
-            {dayjs(planto.start_at).hour() >= 6 && dayjs(planto.end_at).hour() <= 21 ? (
-              <IconDiurno />
-            ): (
-              <IconNoturno />
-            )}
-            <p>{planto.user_id.name}, {dayjs(planto.start_at).hour() >= 6 && dayjs(planto.end_at).hour() <= 21 ? 'diurno' : 'noturno'}</p>
+            <Grid container spacing={2}>
+              {uniqPlanotinista.map((planto: any) => (
+                <>
+                  <Grid container item xs={"auto"} spacing={1}>
+                    <Grid item xs={1}>
+                      {dayjs(planto.start_at).hour() >= 6 && dayjs(planto.end_at).hour() <= 21 ? (
+                        <>
+                          <IconDiurno className="diurno-icon"/>
+                        </>
+                      ) : (
+                        <>
+                          <IconNoturno className="noturno-icon"/>
+                        </>
+                      )}
+                    </Grid>
+                    <Grid item xs={10}>
+                      <p>{planto.user_id.name}, {dayjs(planto.start_at).hour() >= 6 && dayjs(planto.end_at).hour() <= 21 ?
+                        <b>diurno</b> : <b>noturno</b>}</p>
+                    </Grid>
+                  </Grid>
+                </>
+              ))}
+            </Grid>
           </>
-        ))}
+        ) : (
+          <p style={{textAlign: 'center'}}>Nenhum plantonista foi adicionado</p>
+        )}
       </>
     );
   }, [careState.schedule]);
@@ -477,7 +684,8 @@ export default function SchedulePage(props: RouteComponentProps<IPageParams>) {
     const complexity = companyState.data.settings?.complexity?.find(item => item.title === (careState.data?.complexity || careState.data?.capture?.complexity || 'Sem Complexidade'));
 
     return (complexity?.recommendation.length) ? complexity?.recommendation.map((recommendation, key) => (
-      <p key={`recommendation_${key}`}>{`${recommendation.amount} ${(typeof recommendation.profession_id === 'object' ? recommendation.profession_id.name : '')}, ${recommendation.interval}x por ${translateDateHelper[recommendation.frequency].toLowerCase()}`}</p>
+      <p
+        key={`recommendation_${key}`}>{`${recommendation.amount} ${(typeof recommendation.profession_id === 'object' ? recommendation.profession_id.name : '')}, ${recommendation.interval}x por ${translateDateHelper[recommendation.frequency].toLowerCase()}`}</p>
     )) : (
       <TextCenter>
         Nenhuma periodicidade encontrada para essa complexidade
@@ -496,7 +704,7 @@ export default function SchedulePage(props: RouteComponentProps<IPageParams>) {
 
   // const getAllProfessinalFilter = useCallback(() => {
   useEffect(() => {
-    const { professions } = userState?.data;
+    const {professions} = userState?.data;
 
     const allProfessionalScheduled = professions?.filter(profession => {
       const filtered = events.filter(schedule => {
@@ -518,28 +726,32 @@ export default function SchedulePage(props: RouteComponentProps<IPageParams>) {
     const schedules = careState.schedule;
     let scheduleArray: EventInput[] = [];
 
-    if (schedules) {
+    try {
+      if (schedules) {
 
-      schedules.forEach(item => {
-        let title = '';
+        schedules.forEach(item => {
+          let title = '';
 
-        if (typeof item?.exchange?.exchanged_to === 'object' && item?.exchange?.exchanged_to) {
-          title = item?.exchange?.exchanged_to.name;
-        } else if (typeof item.user_id === 'object') {
-          title = item.user_id.name;
-        }
+          if (typeof item?.exchange?.exchanged_to === 'object' && item?.exchange?.exchanged_to) {
+            title = item?.exchange?.exchanged_to.name;
+          } else if (typeof item.user_id === 'object') {
+            title = item.user_id.name;
+          }
 
-        scheduleArray.push({
-          id: createEventId(),
-          title,
-          start: item.start_at,
-          end: item.end_at,
-          backgroundColor: '#0899BA',
-          textColor: '#ffffff',
-          extendedProps: item,
-          user_id: item.user_id
+          scheduleArray.push({
+            id: createEventId(),
+            title,
+            start: item.start_at,
+            end: item.end_at,
+            backgroundColor: '#0899BA',
+            textColor: '#ffffff',
+            extendedProps: item,
+            user_id: item.user_id
+          });
         });
-      });
+      }
+    } catch (error) {
+
     }
 
     setEvents(scheduleArray);
@@ -553,7 +765,12 @@ export default function SchedulePage(props: RouteComponentProps<IPageParams>) {
       profession_id: value._id
     }));
 
-    dispatch(searchUserAction({ profession_id: value._id }));
+    if (value?._id != '') {
+      dispatch(searchUserAction({profession_id: value._id}));
+    } else {
+      dispatch(searchUserAction({}));
+    }
+
   }, [schedule]);
 
   const selectProfession = useCallback(() => {
@@ -603,8 +820,8 @@ export default function SchedulePage(props: RouteComponentProps<IPageParams>) {
 
   }, [schedule]);
 
-  const TabPanel =  useCallback((props: ITabPanelProps) => {
-    const { children, value, index, ...other } = props;
+  const TabPanel = useCallback((props: ITabPanelProps) => {
+    const {children, value, index, ...other} = props;
 
     return (
       <div
@@ -695,9 +912,9 @@ export default function SchedulePage(props: RouteComponentProps<IPageParams>) {
   }, [checkDiarista, searchInputName]);
 
   const handleInputSearch = useCallback((event: any) => {
-    setSearchInputName(event.target.value )
+    setSearchInputName(event.target.value)
 
-    dispatch(loadScheduleRequest({ attendance_id: params.id, user_name: event.target.value }));
+    dispatch(loadScheduleRequest({attendance_id: params.id, user_name: event.target.value}));
   }, []);
 
   const debounceSearchRequest = debounce(handleInputSearch, 900);
@@ -709,7 +926,7 @@ export default function SchedulePage(props: RouteComponentProps<IPageParams>) {
   return (
     <>
       <Sidebar>
-        {careState.loading && <Loading />}
+        {careState.loading && <Loading/>}
 
         <HeaderContent>
           <FormTitle>Agenda do Paciente</FormTitle>
@@ -742,71 +959,104 @@ export default function SchedulePage(props: RouteComponentProps<IPageParams>) {
 
         <Grid container>
           <Grid item md={3}>
-            <div style={{ paddingRight: 30 }}>
-              <Card style={{ marginBottom: 20 }}>
-                <CardContent>
-                  <h4>{careState.data?.patient_id?.name}</h4>
-                  <br />
-                  <p>Nº atendimento: {careState.data?._id}</p>
-                  <p>Data atendimento: {formatDate(careState.data?.created_at, 'DD/MM/YYYY [às] HH:mm:ss')}</p>
+            <div style={{paddingRight: 30}}>
+              <Card style={{marginBottom: 20, color: 'white'}}>
+                <div style={{background: '#16679A', height: '5px'}}/>
+                <CardContent style={{background: '#0899BA', fontSize: 10}}>
+                  <Grid container spacing={2}>
+                    <CardTitle>
+                      <Grid container item xs={"auto"} spacing={1}
+                            style={{alignItems: 'center', marginTop: 10, marginLeft: 7}}>
+                        <Grid item xs={2}>
+                          <IconProfile className="profile-icon"/>
+                        </Grid>
+                        <Grid item xs={10}>
+                          <h4 style={{
+                            color: 'white',
+                            fontSize: 14,
+                            fontWeight: "bolder"
+                          }}>{careState.data?.patient_id?.name}</h4>
+                        </Grid>
+                      </Grid>
+                    </CardTitle>
+                  </Grid>
+                  <h4 style={{color: 'white', fontSize: 12, paddingTop: 5, fontWeight: "normal"}}>
+                    Nº atendimento: {careState.data?._id}
+                  </h4>
+                  <h4 style={{color: 'white', fontSize: 12, paddingTop: 5, fontWeight: "normal"}}>
+                    Data: {formatDate(careState.data?.created_at, 'DD/MM/YYYY [às] HH:mm:ss')}
+                  </h4>
+                  <h4 style={{color: 'white', fontSize: 13, paddingTop: 5, fontWeight: "bolder"}}>
+                    {careState.data?.capture?.complexity}
+                  </h4>
                 </CardContent>
               </Card>
 
+              <div style={{margin: '10px 0'}}>
+                <p><strong>Filtrar por profissional:</strong></p>
+                <FormControl component="fieldset">
+                  <FormGroup>
+                    {professionScheduled?.map(profession => (
+                      <FormControlLabel
+                        control={<Checkbox color="primary"
+                                           checked={professionalChecks.some(prof => prof === profession._id)}
+                                           onClick={((event: any) => handleProfessionalCheck(profession._id, event))}
+                                           name={profession.name}/>}
+                        label={profession.name}
+                      />
+                    ))}
+                  </FormGroup>
+                </FormControl>
+              </div>
+
+              <div style={{margin: '10px 0'}}>
+                <p><strong>Filtro por categoria:</strong></p>
+                <FormControl component="fieldset">
+                  <FormGroup>
+                    <FormControlLabel
+                      control={<Checkbox color="primary" checked={checkPlantonista} onChange={handleCheckPlantonista}
+                                         name="plantonista"/>}
+                      label="Plantonista"
+                    />
+                    <FormControlLabel
+                      control={<Checkbox color="primary" checked={checkDiarista} onChange={handleCheckDiarista}
+                                         name="diarista"/>}
+                      label="Diarista"
+                    />
+                  </FormGroup>
+                </FormControl>
+              </div>
+              <div style={{margin: '10px 0'}}>
+                <p><strong>Filtrar por nome:</strong></p>
+              </div>
               <ContainerSearch>
                 <SearchComponent
                   handleButton={handleClickButton}
-                  inputPlaceholder = "Nome do profissional"
+                  inputPlaceholder="Nome do profissional"
                   // buttonTitle="Novo"
                   onChangeInput={debounceSearchRequest}
                 />
               </ContainerSearch>
-
-
-              <div style={{ margin: '10px 0' }}>
-                <p><strong>Filtrar por profissional:</strong></p>
-                  <FormControl component="fieldset" >
-                    <FormGroup>
-                      {professionScheduled?.map(profession => (
-                        <FormControlLabel
-                          control={<Checkbox color="primary" checked={professionalChecks.some(prof => prof === profession._id)}
-                          onClick={((event: any) => handleProfessionalCheck(profession._id, event))}
-                          name={profession.name}  />}
-                          label={profession.name}
-                        />
-                      ))}
-                    </FormGroup>
-                  </FormControl>
-              </div>
-
-              <div style={{ margin: '10px 0' }}>
-                <p><strong>Filtro por categoria:</strong></p>
-                  <FormControl component="fieldset">
-                    <FormGroup>
-                      <FormControlLabel
-                        control={<Checkbox color="primary"  checked={checkPlantonista} onChange={handleCheckPlantonista} name="plantonista" />}
-                        label="Plantonista"
-                      />
-                      <FormControlLabel
-                        control={<Checkbox color="primary"  checked={checkDiarista} onChange={handleCheckDiarista} name="diarista" />}
-                        label="Diarista"
-                      />
-                    </FormGroup>
-                  </FormControl>
-              </div>
               <div>
                 <p><strong>Legendas:</strong></p>
 
                 <List>
-                  <ListItem key="legend_late" style={{ paddingLeft: 0 }}><ScheduleEventStatus color="late" /> Falta</ListItem>
-                  <ListItem key="legend_visiting" style={{ paddingLeft: 0 }}><ScheduleEventStatus color="visiting" className="pulse" /> Em atendimento</ListItem>
-                  <ListItem key="legend_complete" style={{ paddingLeft: 0 }}><ScheduleEventStatus color="complete" /> Atendimento concluído</ListItem>
-                  <ListItem key="legend_future" style={{ paddingLeft: 0 }}><ScheduleEventStatus color="future" /> Próximos atendimentos</ListItem>
+                  <ListItem key="legend_late" style={{paddingLeft: 0}}><ScheduleEventStatus
+                    color="late"/> Falta</ListItem>
+                  <ListItem key="legend_visiting" style={{paddingLeft: 0}}><ScheduleEventStatus color="visiting"
+                                                                                                className="pulse"/> Em
+                    atendimento</ListItem>
+                  <ListItem key="legend_complete" style={{paddingLeft: 0}}><ScheduleEventStatus
+                    color="complete"/> Atendimento concluído</ListItem>
+                  <ListItem key="legend_future" style={{paddingLeft: 0}}><ScheduleEventStatus color="future"/> Próximos
+                    atendimentos</ListItem>
                 </List>
               </div>
             </div>
           </Grid>
 
           <Grid item md={9}>
+            <div style={{background: '#0899BA', height: '5px'}}/>
             <Card>
               <CardContent>
                 <CalendarContent>
@@ -833,40 +1083,34 @@ export default function SchedulePage(props: RouteComponentProps<IPageParams>) {
                     eventAdd={event => console.log('eventAdded', event)}
                     eventChange={event => console.log('eventChanged', event)}
                     eventRemove={event => console.log('eventRemoved', event)}
+                    eventDisplay={'list-item'}
                     navLinks
                   />
                 </CalendarContent>
               </CardContent>
             </Card>
 
-            <div style={{ marginTop: 20 }}>
+            <div style={{marginTop: 20}}>
               <Grid container>
                 <Grid item md={4}>
-                  <Card style={{ marginRight: 10 }}>
+                  <Card style={{marginRight: 10}}>
+                    <div style={{background: '#0899BA', height: '5px'}}/>
                     <CardContent>
                       <CardTitle>
-                        <IconPermuta className="permuta-icon"  />
+                        <IconPermuta className="permuta-icon"/>
                         <h4>Permutas</h4>
                       </CardTitle>
-
-                      <div>
-                        {/* {events.map(({ user_id, start, extendedProps: { exchange } }) => (
-                          <>
-                            {!!exchange.exchanged_to && (
-                              <p><b>{dayjs(start).format('DD/MM')}</b> - {user_id.name} <b>por</b> {exchange?.exchanged_to?.name}</p>
-                            )}
-                          </>
-                        ))} */}
-                      </div>
+                      {renderOnlyPermutas()}
                     </CardContent>
                   </Card>
                 </Grid>
 
                 <Grid item md={4}>
-                  <Card style={{ marginRight: 10 }}>
+                  <Card style={{marginRight: 10}}>
+                    <div style={{background: '#0899BA', height: '5px'}}/>
                     <CardContent>
                       <CardTitle>
-                        <IconPlantaoTransparent className="duty-icon" />
+                        <IconPlantaoTransparent className="duty-icon"/>
                         <h4>Plantonistas</h4>
                       </CardTitle>
 
@@ -890,19 +1134,23 @@ export default function SchedulePage(props: RouteComponentProps<IPageParams>) {
                 </Grid>
 
                 <Grid item md={4}>
-                  <Card style={{ marginRight: 10 }}>
+                  <Card style={{marginRight: 0}}>
+                    <div style={{background: '#0899BA', height: '5px'}}/>
                     <CardContent>
                       <CardTitle>
-                        <SupervisorAccountRounded />
+                        {/*<SupervisorAccountRounded/>*/}
+                        <IconEquipe className="team-icon"/>
                         <h4>Equipe Multidisciplinar</h4>
 
                       </CardTitle>
                       <div>
 
-                        {team.length>1 ? (
+                        {team.length >= 1 ? (
                           <>
                             {team.map(user => (
-                              <p style={{ marginBottom: 10 }}>{user.name}</p>
+                              <p style={{marginBottom: 10}}>
+                                <b>{user?.profession_id ? user?.profession_id[0]?.name : 'Profissão'}</b> - {user?.name}
+                              </p>
                             ))}
                           </>
                         ) : (
@@ -920,9 +1168,13 @@ export default function SchedulePage(props: RouteComponentProps<IPageParams>) {
           </Grid>
         </Grid>
 
-        <TextCenter style={{ marginTop: 50 }}>
-          <ButtonComponent onClick={() => history.push(`/care/${params.id}/overview`)} background="primary">Voltar</ButtonComponent>
-        </TextCenter>
+        <BottomContent>
+          <FormTitle/>
+          <div>
+            <ButtonComponent onClick={() => history.push(`/care/${params.id}/overview`)}
+                             background="primary">Voltar</ButtonComponent>
+          </div>
+        </BottomContent>
 
       </Sidebar>
 
@@ -940,14 +1192,15 @@ export default function SchedulePage(props: RouteComponentProps<IPageParams>) {
           <>
             <DialogTitle id="scroll-dialog-title">
               <strong>
-                Agendamento - {formatDate(schedule.day || new Date, 'DD/MM/YYYY')} ({formatDate(schedule.day || new Date, 'dddd')})
+                Agendamento
+                - {formatDate(schedule.day || new Date, 'DD/MM/YYYY')} ({formatDate(schedule.day || new Date, 'dddd')})
               </strong>
             </DialogTitle>
 
             <DialogContent>
 
               <p>Para iniciar o agendamento de um evento, selecione a categoria:</p>
-              <br />
+              <br/>
 
               {/* <AppBar position="static" color="default"> */}
               <TabsMenuWrapper>
@@ -970,15 +1223,15 @@ export default function SchedulePage(props: RouteComponentProps<IPageParams>) {
                     id="combo-box-profession"
                     options={userState.data.professions || []}
                     getOptionLabel={(option) => option.name}
-                    renderInput={(params) => <TextField {...params} label="Selecione a função do profissional" variant="outlined" />}
+                    renderInput={(params) => <TextField {...params} label="Selecione a função do profissional"
+                                                        variant="outlined"/>}
                     size="small"
                     // onChange={(element, value) => setSchedule(prevState => ({ ...prevState, user_id: value?._id }))}
                     noOptionsText="Nenhum resultado encontrado"
                     value={selectProfession()}
                     onChange={(event, value) => {
-                      if (value) {
-                        handleSelectProfession(value)
-                      }
+                      handleSelectProfession(value ? value : {_id: '', name: ''})
+
                     }}
                     fullWidth
                   />
@@ -989,9 +1242,10 @@ export default function SchedulePage(props: RouteComponentProps<IPageParams>) {
                     id="combo-box-user"
                     options={userState.list.data}
                     getOptionLabel={(option) => option.name}
-                    renderInput={(params) => <TextField {...params} label="Agora, selecione o profissional" variant="outlined" />}
+                    renderInput={(params) => <TextField {...params} label="Agora, selecione o profissional"
+                                                        variant="outlined"/>}
                     size="small"
-                    onChange={(element, value) => setSchedule(prevState => ({ ...prevState, user_id: `${value?._id}` }))}
+                    onChange={(element, value) => setSchedule(prevState => ({...prevState, user_id: `${value?._id}`}))}
                     value={selectUser()}
                     noOptionsText="Nenhum resultado encontrado"
                     fullWidth
@@ -1001,13 +1255,14 @@ export default function SchedulePage(props: RouteComponentProps<IPageParams>) {
                 <Grid container>
                   <Grid item md={6}>
 
-                  <div style={{ display: 'flex', alignItems: 'center', flexDirection: 'row' }}>
+                    <div style={{display: 'flex', alignItems: 'center', flexDirection: 'row'}}>
                       <p>
                         Data início do evento:
                       </p>
-                      <IconButton aria-describedby={'popover_help_abemid'} onClick={handleClickHelpPopover} style={{ marginLeft: 10 }}>
-                        <HelpIcon style={{ color: "#ccc" }} />
-                      </IconButton >
+                      <IconButton aria-describedby={'popover_help_abemid'} onClick={handleClickHelpPopover}
+                                  style={{marginLeft: 10}}>
+                        <HelpIcon style={{color: "#ccc"}}/>
+                      </IconButton>
                       <Popover
                         id={'popover_help_abemid'}
                         open={openHelpPopover}
@@ -1022,13 +1277,22 @@ export default function SchedulePage(props: RouteComponentProps<IPageParams>) {
                           horizontal: 'left',
                         }}
                       >
-                    <div
-                        style={{ paddingTop: 20, paddingLeft: 30, paddingBottom: 20, paddingRight: 30, maxWidth: 500, listStylePosition: 'inside', textAlign: 'justify' }}>
-                        <p>Para contratos temporários, defina data de início e fim do contrato. Para eventos sem limitações, basta definir data de início do evento.</p>
-                      </div>
-                    </Popover>
+                        <div
+                          style={{
+                            paddingTop: 20,
+                            paddingLeft: 30,
+                            paddingBottom: 20,
+                            paddingRight: 30,
+                            maxWidth: 500,
+                            listStylePosition: 'inside',
+                            textAlign: 'justify'
+                          }}>
+                          <p>Para contratos temporários, defina data de início e fim do contrato. Para eventos sem
+                            limitações, basta definir data de início do evento.</p>
+                        </div>
+                      </Popover>
 
-                  </div>
+                    </div>
                     <FieldContent>
                       <TextField
                         id="event-date"
@@ -1039,7 +1303,7 @@ export default function SchedulePage(props: RouteComponentProps<IPageParams>) {
                         InputLabelProps={{
                           shrink: true,
                         }}
-                        onChange={e => setSchedule(prevState => ({ ...prevState, day: e.target.value }))}
+                        onChange={e => setSchedule(prevState => ({...prevState, day: e.target.value}))}
                         value={formatDate(schedule.day, 'YYYY-MM-DD')}
                         fullWidth
                       />
@@ -1049,135 +1313,143 @@ export default function SchedulePage(props: RouteComponentProps<IPageParams>) {
 
 
                 <p>Defina o horário do atendimento:</p>
-                <br />
+                <br/>
 
                 <Grid container>
-                <Grid item md={3} style={{ paddingRight: 10 }}>
+                  <Grid item md={3} style={{paddingRight: 10}}>
 
-                  <FieldContent>
+                    <FieldContent>
 
-                    <TextField
-                      id="start-time"
-                      type="time"
-                      size="small"
-                      label="Início"
-                      variant="outlined"
-                      InputLabelProps={{
-                        shrink: true,
-                      }}
-                      inputProps={{
-                        step: 300, // 5 min
-                      }}
-                      onChange={e => setSchedule(prevState => ({ ...prevState, start_at: e.target.value }))}
-                      value={schedule.start_at}
-                      fullWidth
-                    />
-
-                  </FieldContent>
-
-                </Grid>
-
-                <Grid item md={3} style={{ paddingLeft: 10 }}>
-
-                  <FieldContent>
-
-                    <TextField
-                      id="end-time"
-                      type="time"
-                      size="small"
-                      label="Fim"
-                      variant="outlined"
-                      // defaultValue="07:30"
-                      InputLabelProps={{
-                        shrink: true,
-                      }}
-                      inputProps={{
-                        step: 300, // 5 min
-                      }}
-                      onChange={e => setSchedule(prevState => ({ ...prevState, end_at: e.target.value }))}
-                      value={schedule.end_at}
-                      fullWidth
-                    />
-
-                  </FieldContent>
-
-                </Grid>
-
-                <Grid item md={6}></Grid>
-
-                <Grid item md={6} style={{ paddingRight: 10 }}>
-                  <FieldContent>
-                    <FormGroup>
-                      <p>Repetir evento?</p>
-                      <br />
-
-                      <Autocomplete
-                        id="combo-box-repeat-options"
-                        options={repeatOptions}
-                        getOptionLabel={(option) => option.title}
-                        renderInput={(params) => <TextField {...params} label="Selecione a frequência" variant="outlined" />}
+                      <TextField
+                        id="start-time"
+                        type="time"
                         size="small"
-                        onChange={(element, value) => setSchedule(prevState => ({ ...prevState, days_interval_repeat: value?.interval }))}
-                        value={selectRepeatInterval()}
-                        noOptionsText="Nenhum resultado encontrado"
+                        label="Início"
+                        variant="outlined"
+                        InputLabelProps={{
+                          shrink: true,
+                        }}
+                        inputProps={{
+                          step: 300, // 5 min
+                        }}
+                        onChange={e => setSchedule(prevState => ({...prevState, start_at: e.target.value}))}
+                        value={schedule.start_at}
                         fullWidth
                       />
-                    </FormGroup>
-                  </FieldContent>
-                </Grid>
 
-                {schedule?.days_interval_repeat && schedule?.days_interval_repeat > 0 && (
-                  <Grid item md={6}>
+                    </FieldContent>
+
+                  </Grid>
+
+                  <Grid item md={3} style={{paddingLeft: 10}}>
+
+                    <FieldContent>
+
+                      <TextField
+                        id="end-time"
+                        type="time"
+                        size="small"
+                        label="Fim"
+                        variant="outlined"
+                        // defaultValue="07:30"
+                        InputLabelProps={{
+                          shrink: true,
+                        }}
+                        inputProps={{
+                          step: 300, // 5 min
+                        }}
+                        onChange={e => setSchedule(prevState => ({...prevState, end_at: e.target.value}))}
+                        value={schedule.end_at}
+                        fullWidth
+                      />
+
+                    </FieldContent>
+
+                  </Grid>
+
+                  <Grid item md={6}></Grid>
+
+                  <Grid item md={6} style={{paddingRight: 10}}>
                     <FieldContent>
                       <FormGroup>
-                        <p>Quando esta repetição vai acabar?</p>
-                        <br />
+                        <p>Repetir evento?</p>
+                        <br/>
 
-                        <TextField
-                          id="repeat-end"
-                          type="date"
+                        <Autocomplete
+                          id="combo-box-repeat-options"
+                          options={repeatOptions}
+                          getOptionLabel={(option) => option.title}
+                          renderInput={(params) => <TextField {...params} label="Selecione a frequência"
+                                                              variant="outlined"/>}
                           size="small"
-                          label="Fim da repetição"
-                          variant="outlined"
-                          InputLabelProps={{
-                            shrink: true,
-                          }}
-                          onChange={e => setSchedule(prevState => ({ ...prevState, repeat_stop_at: e.target.value }))}
-                          value={schedule?.repeat_stop_at}
+                          onChange={(element, value) => setSchedule(prevState => ({
+                            ...prevState,
+                            days_interval_repeat: value?.interval
+                          }))}
+                          value={selectRepeatInterval()}
+                          noOptionsText="Nenhum resultado encontrado"
                           fullWidth
                         />
-
                       </FormGroup>
                     </FieldContent>
                   </Grid>
-                )}
-              </Grid>
+
+                  {schedule?.days_interval_repeat && schedule?.days_interval_repeat > 0 ? (
+                    <Grid item md={6}>
+                      <FieldContent>
+                        <FormGroup>
+                          <p>Quando esta repetição vai acabar?</p>
+                          <br/>
+
+                          <TextField
+                            id="repeat-end"
+                            type="date"
+                            size="small"
+                            label="Fim da repetição"
+                            variant="outlined"
+                            InputLabelProps={{
+                              shrink: true,
+                            }}
+                            onChange={e => setSchedule(prevState => ({...prevState, repeat_stop_at: e.target.value}))}
+                            value={schedule?.repeat_stop_at}
+                            fullWidth
+                          />
+
+                        </FormGroup>
+                      </FieldContent>
+                    </Grid>
+                  ) : null}
+                </Grid>
 
                 <FieldContent>
-                <TextField
-                  id="input-description"
-                  variant="outlined"
-                  size="small"
-                  rows={6}
-                  rowsMax={6}
-                  label="Observações"
-                  placeholder="Digite aqui alguma observação para o agendamento"
-                  value={schedule.description}
-                  onChange={(element) => setSchedule(prevState => ({ ...prevState, description: element.target.value }))}
-                  fullWidth
-                  multiline
-                />
-              </FieldContent>
+                  <TextField
+                    id="input-description"
+                    variant="outlined"
+                    size="small"
+                    rows={6}
+                    rowsMax={6}
+                    label="Observações"
+                    placeholder="Digite aqui alguma observação para o agendamento"
+                    value={schedule.description}
+                    onChange={(element) => setSchedule(prevState => ({
+                      ...prevState,
+                      description: element.target.value
+                    }))}
+                    fullWidth
+                    multiline
+                  />
+                </FieldContent>
               </TabPanel>
 
               <TabPanel value={currentTabValue} index={1}>
-                <div style={{ display: 'flex', alignItems: 'center', flexDirection: 'row' }}>
+                <div style={{display: 'flex', alignItems: 'center', flexDirection: 'row'}}>
                   <p>
                     Data de início e fim do evento:
                   </p>
-                  <IconButton aria-describedby={'popover_help_abemid'} onClick={handleClickHelpPopover} style={{ marginLeft: 10 }}>
-                    <HelpIcon style={{ color: "#ccc" }} />
-                  </IconButton >
+                  <IconButton aria-describedby={'popover_help_abemid'} onClick={handleClickHelpPopover}
+                              style={{marginLeft: 10}}>
+                    <HelpIcon style={{color: "#ccc"}}/>
+                  </IconButton>
                   <Popover
                     id={'popover_help_abemid'}
                     open={openHelpPopover}
@@ -1193,84 +1465,48 @@ export default function SchedulePage(props: RouteComponentProps<IPageParams>) {
                     }}
                   >
                     <div
-                      style={{ paddingTop: 20, paddingLeft: 30, paddingBottom: 20, paddingRight: 30, maxWidth: 500, listStylePosition: 'inside', textAlign: 'justify' }}>
-                      <p>Para contratos temporários, defina data de início e fim do contrato. Para eventos sem limitações, basta definir data de início do evento.</p>
+                      style={{
+                        paddingTop: 20,
+                        paddingLeft: 30,
+                        paddingBottom: 20,
+                        paddingRight: 30,
+                        maxWidth: 500,
+                        listStylePosition: 'inside',
+                        textAlign: 'justify'
+                      }}>
+                      <p>Para contratos temporários, defina data de início e fim do contrato. Para eventos sem
+                        limitações, basta definir data de início do evento.</p>
                     </div>
                   </Popover>
 
                 </div>
-                <br />
-
-                <Grid container>
-                  <Grid item md={3} style={{ paddingRight: 10 }}>
-                    <FieldContent>
-                      <TextField
-                        // id="start-time"
-                        type="date"
-                        size="small"
-                        label="Início"
-                        variant="outlined"
-                        InputLabelProps={{
-                          shrink: true,
-                        }}
-                        onChange={e => setSchedule(prevState => ({ ...prevState, start_plantao: e.target.value }))}
-                        value={schedule.start_plantao}
-                        fullWidth
-                      />
-
-                    </FieldContent>
-
-                    </Grid>
-
-                    <Grid item md={3} style={{ paddingLeft: 10 }}>
-
-                    <FieldContent>
-
-                      <TextField
-                        // id="end-time"
-                        type="date"
-                        size="small"
-                        label="Fim"
-                        variant="outlined"
-                        // defaultValue="07:30"
-                        InputLabelProps={{
-                          shrink: true,
-                        }}
-                        onChange={e => setSchedule(prevState => ({ ...prevState, end_plantao: e.target.value }))}
-                        value={schedule.end_plantao}
-                        fullWidth
-                      />
-
-                    </FieldContent>
-                  </Grid>
-                </Grid>
+                <br/>
 
                 <FormControl component="fieldset" margin="dense">
                   <FormLabel component="legend" color="primary">O profissional é:</FormLabel>
-                  <RadioGroup aria-label="professional" name="professional_type" value={professionalTypeValue} onChange={handleProfessionalChange}>
-                    <FormControlLabel value="diarista" control={<Radio />} label="Diarista" />
-                    <FormControlLabel value="plantonista" control={<Radio />} label="Plantonista (regime 12x36h)" />
+                  <RadioGroup aria-label="professional" name="professional_type" value={professionalTypeValue}
+                              onChange={handleProfessionalChange}>
+                    <FormControlLabel value="diarista" control={<Radio/>} label="Diarista"/>
+                    <FormControlLabel value="plantonista" control={<Radio/>} label="Plantonista (regime 12x36h)"/>
                   </RadioGroup>
                 </FormControl>
 
-                <br />
+                <br/>
                 <p>Selecione a função do profissional:</p>
-                <br />
+                <br/>
 
                 <FieldContent>
                   <Autocomplete
                     id="combo-box-profession"
                     options={userState.data.professions || []}
                     getOptionLabel={(option) => option.name}
-                    renderInput={(params) => <TextField {...params} label="" variant="outlined" />}
+                    renderInput={(params) => <TextField {...params} label="" variant="outlined"/>}
                     size="small"
                     // onChange={(element, value) => setSchedule(prevState => ({ ...prevState, user_id: value?._id }))}
                     noOptionsText="Nenhum resultado encontrado"
                     value={selectProfession()}
                     onChange={(event, value) => {
-                      if (value) {
-                        handleSelectProfession(value)
-                      }
+                      handleSelectProfession(value ? value : {_id: '', name: ''})
                     }}
                     fullWidth
                   />
@@ -1278,15 +1514,15 @@ export default function SchedulePage(props: RouteComponentProps<IPageParams>) {
 
 
                 <p>Agora, selecione o profissional:</p>
-                <br />
+                <br/>
                 <FieldContent>
                   <Autocomplete
                     id="combo-box-user"
                     options={userState.list.data}
                     getOptionLabel={(option) => option.name}
-                    renderInput={(params) => <TextField {...params} label="" variant="outlined" />}
+                    renderInput={(params) => <TextField {...params} label="" variant="outlined"/>}
                     size="small"
-                    onChange={(element, value) => setSchedule(prevState => ({ ...prevState, user_id: `${value?._id}` }))}
+                    onChange={(element, value) => setSchedule(prevState => ({...prevState, user_id: `${value?._id}`}))}
                     value={selectUser()}
                     noOptionsText="Nenhum resultado encontrado"
                     fullWidth
@@ -1309,74 +1545,126 @@ export default function SchedulePage(props: RouteComponentProps<IPageParams>) {
                 </TabsMenuWrapper> */}
 
                 <p>Defina os horários de início e fim do turno:</p>
-                <br />
+                <br/>
 
-                <Grid container>
-                  <Grid item md={3} style={{ paddingRight: 10 }}>
+                {professionalTypeValue === 'plantonista' ? (
+                  <Grid container>
+                    <Grid item md={3} style={{paddingRight: 10}}>
 
-                    <FieldContent>
+                      <FieldContent>
 
-                      <TextField
-                        id="start-time"
-                        type="time"
-                        size="small"
-                        label="Início"
-                        variant="outlined"
-                        InputLabelProps={{
-                          shrink: true,
-                        }}
-                        inputProps={{
-                          step: 300, // 5 min
-                        }}
-                        onChange={e => {
-                          const WORK_HOURS = 12;
+                        <TextField
+                          id="start-time"
+                          type="time"
+                          size="small"
+                          label="Início"
+                          variant="outlined"
+                          InputLabelProps={{
+                            shrink: true,
+                          }}
+                          inputProps={{
+                            step: 300, // 5 min
+                          }}
+                          onChange={e => {
+                            const WORK_HOURS = 12;
 
-                          const value = e.target.value;
-                          const [hourOfValue, minuteOfValue] = value.split(':');
-                          let currentDate = new Date();
+                            const value = e.target.value;
+                            const [hourOfValue, minuteOfValue] = value.split(':');
+                            let currentDate = new Date();
 
-                          currentDate.setHours(parseInt(hourOfValue) + WORK_HOURS, parseInt(minuteOfValue));
+                            currentDate.setHours(parseInt(hourOfValue) + WORK_HOURS, parseInt(minuteOfValue));
 
-                          setSchedule(prevState => ({
-                            ...prevState,
-                            start_hour_plantao: value,
-                            end_hour_plantao: `${currentDate.getHours()}:${currentDate.getMinutes() === 0 ? '00' : currentDate.getMinutes()}`
-                          }))
-                        }}
-                        value={schedule.start_hour_plantao}
-                        fullWidth
-                      />
+                            setSchedule(prevState => ({
+                              ...prevState,
+                              start_hour_plantao: value,
+                              end_hour_plantao: `${(currentDate.getHours() >= 0 && currentDate.getHours() < 10) ? '0' + currentDate.getHours() : currentDate.getHours()}:${(currentDate.getMinutes() >= 0 && currentDate.getMinutes() < 10) ? '0' + currentDate.getMinutes() : currentDate.getMinutes()}`
+                            }))
+                          }}
+                          value={schedule.start_hour_plantao}
+                          fullWidth
+                        />
 
-                    </FieldContent>
+                      </FieldContent>
 
+                    </Grid>
+
+                    <Grid item md={3} style={{paddingLeft: 10}}>
+
+                      <FieldContent>
+
+                        <TextField
+                          id="end-time"
+                          type="time"
+                          size="small"
+                          label="Fim"
+                          variant="outlined"
+                          disabled={!!(professionalTypeValue === 'plantonista')}
+                          // defaultValue="07:30"
+                          InputLabelProps={{
+                            shrink: true,
+                          }}
+                          inputProps={{
+                            step: 300, // 5 min
+                          }}
+                          onChange={e => setSchedule(prevState => ({...prevState, end_hour_plantao: e.target.value}))}
+                          value={schedule.end_hour_plantao}
+                          fullWidth
+                        />
+
+                      </FieldContent>
+                    </Grid>
                   </Grid>
+                ) : (
+                  <Grid container>
+                    <Grid item md={3} style={{paddingRight: 10}}>
+                      <FieldContent>
+                        <TextField
+                          id="start-time"
+                          type="time"
+                          size="small"
+                          label="Início"
+                          variant="outlined"
+                          InputLabelProps={{
+                            shrink: true,
+                          }}
+                          inputProps={{
+                            step: 300, // 5 min
+                          }}
+                          onChange={e => setSchedule(prevState => ({...prevState, start_hour_plantao: e.target.value}))}
+                          value={schedule.start_hour_plantao}
+                          fullWidth
+                        />
 
-                  <Grid item md={3} style={{ paddingLeft: 10 }}>
+                      </FieldContent>
 
-                    <FieldContent>
+                    </Grid>
 
-                      <TextField
-                        id="end-time"
-                        type="time"
-                        size="small"
-                        label="Fim"
-                        variant="outlined"
-                        disabled={!!(professionalTypeValue === 'plantonista')}
-                        // defaultValue="07:30"
-                        InputLabelProps={{
-                          shrink: true,
-                        }}
-                        inputProps={{
-                          step: 300, // 5 min
-                        }}
-                        // onChange={e => setSchedule(prevState => ({ ...prevState, end_hour_plantao: e.target.value }))}
-                        value={schedule.end_hour_plantao}
-                        fullWidth
-                      />
+                    <Grid item md={3} style={{paddingLeft: 10}}>
 
-                    </FieldContent>
+                      <FieldContent>
+
+                        <TextField
+                          id="end-time"
+                          type="time"
+                          size="small"
+                          label="Fim"
+                          variant="outlined"
+                          // defaultValue="07:30"
+                          InputLabelProps={{
+                            shrink: true,
+                          }}
+                          inputProps={{
+                            step: 300, // 5 min
+                          }}
+                          onChange={e => setSchedule(prevState => ({...prevState, end_hour_plantao: e.target.value}))}
+                          value={schedule.end_hour_plantao}
+                          fullWidth
+                        />
+
+                      </FieldContent>
+                    </Grid>
                   </Grid>
-                </Grid>
+                )}
               </TabPanel>
             </DialogContent>
 
@@ -1400,22 +1688,22 @@ export default function SchedulePage(props: RouteComponentProps<IPageParams>) {
               Evento Agendado
 
               &nbsp;
-            <ButtonComponent
+              <ButtonComponent
                 variant="outlined"
                 background="secondary"
-                startIcon={<EditIcon />}
+                startIcon={<EditIcon/>}
                 onClick={() => setCanEdit(!canEdit)}
               >
                 Editar
-            </ButtonComponent>
+              </ButtonComponent>
               &nbsp;
-            <ButtonComponent
-                startIcon={<DeleteIcon />}
+              <ButtonComponent
+                startIcon={<DeleteIcon/>}
                 background="danger"
                 onClick={() => setRemoveEventsModalOpen(true)}
               >
                 Excluir
-            </ButtonComponent>
+              </ButtonComponent>
             </DialogTitle>
 
             <DialogContent>
@@ -1424,7 +1712,7 @@ export default function SchedulePage(props: RouteComponentProps<IPageParams>) {
               <ResumeList>
                 <ListItem key="resume_day">
                   <ListItemIcon>
-                    <EventIcon />
+                    <EventIcon/>
                   </ListItemIcon>
                   <ListItemText
                     primary={formatDate(schedule.day, 'dddd[,] DD [de] MMMM [de] YYYY')}
@@ -1434,7 +1722,7 @@ export default function SchedulePage(props: RouteComponentProps<IPageParams>) {
                 {typeof schedule.days_interval_repeat === 'number' && schedule?.days_interval_repeat > 0 && (
                   <ListItem key="resume_repeat">
                     <ListItemIcon>
-                      <RefreshIcon />
+                      <RefreshIcon/>
                     </ListItemIcon>
                     <ListItemText
                       primary={`O evento se repete ${getRepeatLabel(schedule.days_interval_repeat)}`}
@@ -1444,7 +1732,7 @@ export default function SchedulePage(props: RouteComponentProps<IPageParams>) {
 
                 <ListItem key="resume_period">
                   <ListItemIcon>
-                    <ScheduleIcon />
+                    <ScheduleIcon/>
                   </ListItemIcon>
                   <ListItemText
                     primary={`Se inicia em ${schedule.start_at} e finaliza às ${schedule.end_at}`}
@@ -1454,7 +1742,7 @@ export default function SchedulePage(props: RouteComponentProps<IPageParams>) {
                 {schedule.type && (
                   <ListItem key="resume_type">
                     <ListItemIcon>
-                      <IconPlantao style={{ marginLeft: '.35rem' }} />
+                      <IconPlantao style={{marginLeft: '.35rem'}}/>
                     </ListItemIcon>
                     <ListItemText
                       primary={schedule.type}
@@ -1465,7 +1753,7 @@ export default function SchedulePage(props: RouteComponentProps<IPageParams>) {
                 {schedule?.data?.description && (
                   <ListItem key="resume_description">
                     <ListItemIcon>
-                      <CommentRoundedIcon />
+                      <CommentRoundedIcon/>
                     </ListItemIcon>
                     <ListItemText
                       primary={schedule?.data?.description}
@@ -1481,26 +1769,26 @@ export default function SchedulePage(props: RouteComponentProps<IPageParams>) {
               <ResumeList>
                 <ListItem key="resume_created_by">
                   <ListItemIcon>
-                    <AccountCircle />
+                    <AccountCircle/>
                   </ListItemIcon>
                   <ListItemText
-                    primary={(typeof schedule.data.created_by === 'object') ? `${schedule.data.created_by.name} - ${formatDate(schedule.day, 'dddd[,] DD [de] MMMM [de] YYYY')}` : ''}
+                    primary={(typeof schedule?.data?.created_by === 'object') ? `${schedule?.data?.created_by?.name} - ${formatDate(schedule?.day, 'dddd[,] DD [de] MMMM [de] YYYY')}` : ''}
                   />
                 </ListItem>
               </ResumeList>
 
 
-              {schedule.data.exchange.type ? (
+              {schedule?.data?.exchange?.type ? (
                 <>
-                  <Divider />
-                  <br />
+                  <Divider/>
+                  <br/>
 
                   <Typography><strong>Dados da permuta de profissional:</strong></Typography>
 
                   <ResumeList>
                     <ListItem key="resume_exchange_professionals">
                       <ListItemIcon>
-                        <AccountBoxIcon />
+                        <AccountBoxIcon/>
                       </ListItemIcon>
                       <ListItemText
                         primary={(
@@ -1509,10 +1797,11 @@ export default function SchedulePage(props: RouteComponentProps<IPageParams>) {
                               <Typography>{(typeof schedule?.exchange?.exchanged_to === 'object' && schedule.exchange.exchanged_to) ? schedule?.exchange?.exchanged_to.name : ''}</Typography>
                             </Grid>
                             <Grid item md={2}>
-                              <SwapHorizIcon style={{ color: '#4FC66A' }} />
+                              <SwapHorizIcon style={{color: '#4FC66A'}}/>
                             </Grid>
                             <Grid item md={5}>
-                              <Typography style={{ color: '#ccc' }}>{(typeof schedule.user_id === 'object') ? schedule.user_id.name : ''}</Typography>
+                              <Typography
+                                style={{color: '#ccc'}}>{(typeof schedule.user_id === 'object') ? schedule.user_id.name : ''}</Typography>
                             </Grid>
                           </Grid>
                         )}
@@ -1523,7 +1812,7 @@ export default function SchedulePage(props: RouteComponentProps<IPageParams>) {
 
                     <ListItem key="resume_exchange_type">
                       <ListItemIcon>
-                        <AccountCircle />
+                        <AccountCircle/>
                       </ListItemIcon>
                       <ListItemText
                         primary={schedule?.exchange?.type ? exchageTypesHelper[schedule?.exchange?.type] : schedule?.exchange?.type}
@@ -1534,7 +1823,7 @@ export default function SchedulePage(props: RouteComponentProps<IPageParams>) {
 
                     <ListItem key="resume_exchange_description">
                       <ListItemIcon>
-                        <WarningRoundedIcon style={{ color: '#f9ca24' }} />
+                        <WarningRoundedIcon style={{color: '#f9ca24'}}/>
                       </ListItemIcon>
                       <ListItemText
                         primary={schedule?.exchange?.description}
@@ -1545,10 +1834,11 @@ export default function SchedulePage(props: RouteComponentProps<IPageParams>) {
 
                     <ListItem key="resume_exchange_created_by">
                       <ListItemIcon>
-                        <AccountCircle />
+                        <AccountCircle/>
                       </ListItemIcon>
                       <ListItemText
-                        primary={<Typography>{(typeof schedule?.exchange?.created_by === 'object' && schedule.exchange.created_by) ? schedule?.exchange?.created_by.name : ''}</Typography>}
+                        primary={
+                          <Typography>{(typeof schedule?.exchange?.created_by === 'object' && schedule.exchange.created_by) ? schedule?.exchange?.created_by.name : ''}</Typography>}
                       />
                     </ListItem>
                   </ResumeList>
@@ -1560,19 +1850,20 @@ export default function SchedulePage(props: RouteComponentProps<IPageParams>) {
                   <ResumeList>
                     <ListItem key="resume_professional">
                       <ListItemIcon>
-                        <AccountBoxIcon />
+                        <AccountBoxIcon/>
                       </ListItemIcon>
                       <ListItemText
                         primary={(
                           <Grid container>
                             <Grid item md={6}>
-                              <div style={{ display: 'flex', alignItems: 'center', flexDirection: 'row' }}>
-                                <div style={{ marginRight: 20 }}>{(typeof schedule.user_id === 'object') ? schedule.user_id.name : ''}</div>
+                              <div style={{display: 'flex', alignItems: 'center', flexDirection: 'row'}}>
+                                <div
+                                  style={{marginRight: 20}}>{(typeof schedule.user_id === 'object') ? schedule.user_id.name : ''}</div>
 
                                 {!canExchange ? (
                                   <Button
                                     variant="outlined"
-                                    startIcon={<SwapHorizIcon />}
+                                    startIcon={<SwapHorizIcon/>}
                                     onClick={() => setCanExchange(!canExchange)}
                                   >
                                     Permutar
@@ -1582,7 +1873,7 @@ export default function SchedulePage(props: RouteComponentProps<IPageParams>) {
                                     color="secondary"
                                     onClick={() => setCanExchange(!canExchange)}
                                   >
-                                    <SwapHorizIcon />
+                                    <SwapHorizIcon/>
                                   </IconButton>
                                 )}
                               </div>
@@ -1593,9 +1884,13 @@ export default function SchedulePage(props: RouteComponentProps<IPageParams>) {
                                   id="combo-box-user"
                                   options={userState.list.data}
                                   getOptionLabel={(option) => option.name}
-                                  renderInput={(params) => <TextField {...params} label="Digite o nome do profissional" variant="outlined" />}
+                                  renderInput={(params) => <TextField {...params} label="Digite o nome do profissional"
+                                                                      variant="outlined"/>}
                                   size="small"
-                                  onChange={(element, value) => setSchedule(prevState => ({ ...prevState, exchange: { ...prevState.exchange, exchanged_to: `${value?._id}` } }))}
+                                  onChange={(element, value) => setSchedule(prevState => ({
+                                    ...prevState,
+                                    exchange: {...prevState.exchange, exchanged_to: `${value?._id}`}
+                                  }))}
                                   value={selectExchangeUser()}
                                   noOptionsText="Nenhum resultado encontrado"
                                   fullWidth
@@ -1616,13 +1911,20 @@ export default function SchedulePage(props: RouteComponentProps<IPageParams>) {
                           aria-label="exchangeType"
                           name="exchangeType"
                           value={schedule?.exchange?.type}
-                          onChange={(event, value) => setSchedule(prevState => ({ ...prevState, exchange: { ...prevState.exchange, type: value } }))}
+                          onChange={(event, value) => setSchedule(prevState => ({
+                            ...prevState,
+                            exchange: {...prevState.exchange, type: value}
+                          }))}
 
                         >
-                          <FormControlLabel value="miss" control={<Radio />} label={exchageTypesHelper["miss"]} checked={schedule?.exchange?.type === 'miss'} />
-                          <FormControlLabel value="off" control={<Radio />} label={exchageTypesHelper["off"]} checked={schedule?.exchange?.type === 'off'} />
-                          <FormControlLabel value="switch" control={<Radio />} label={exchageTypesHelper["switch"]} checked={schedule?.exchange?.type === 'switch'} />
-                          <FormControlLabel value="vacation" control={<Radio />} label={exchageTypesHelper["vacation"]} checked={schedule?.exchange?.type === 'vacation'} />
+                          <FormControlLabel value="miss" control={<Radio/>} label={exchageTypesHelper["miss"]}
+                                            checked={schedule?.exchange?.type === 'miss'}/>
+                          <FormControlLabel value="off" control={<Radio/>} label={exchageTypesHelper["off"]}
+                                            checked={schedule?.exchange?.type === 'off'}/>
+                          <FormControlLabel value="switch" control={<Radio/>} label={exchageTypesHelper["switch"]}
+                                            checked={schedule?.exchange?.type === 'switch'}/>
+                          <FormControlLabel value="vacation" control={<Radio/>} label={exchageTypesHelper["vacation"]}
+                                            checked={schedule?.exchange?.type === 'vacation'}/>
                         </RadioGroup>
                       </FieldContent>
                     </>
@@ -1631,14 +1933,14 @@ export default function SchedulePage(props: RouteComponentProps<IPageParams>) {
                   {schedule?.exchange?.type === 'vacation' && (
                     <>
                       <Typography><strong>Defina a data de fim da férias:</strong></Typography>
-                      <br />
+                      <br/>
                       <FieldContent>
                         <DatePicker
                           id="input-vacation-end"
                           label="Data fim de férias"
                           // value={state?.birthdate?.length > 10 ? formatDate(state.birthdate, 'YYYY-MM-DD') : state.birthdate}
                           onChange={(element) => {
-                            setSchedule(prevState => ({ ...prevState, vacation_end: element.target.value }));
+                            setSchedule(prevState => ({...prevState, vacation_end: element.target.value}));
                             // setFieldValidations((prevState: any) => ({ ...prevState, birthdate: !validator.isEmpty(element.target.value) }));
                           }}
                           InputLabelProps={{
@@ -1655,7 +1957,7 @@ export default function SchedulePage(props: RouteComponentProps<IPageParams>) {
                   {schedule?.exchange?.type && (
                     <>
                       <Typography><strong>Justificativa:</strong></Typography>
-                      <br />
+                      <br/>
                       <FieldContent>
                         <TextField
                           id="input-exchange-description"
@@ -1666,7 +1968,10 @@ export default function SchedulePage(props: RouteComponentProps<IPageParams>) {
                           label="Justificativa"
                           placeholder="Faça uma breve explanação do motivo da permuta"
                           value={schedule?.exchange?.description || ''}
-                          onChange={(element) => setSchedule(prevState => ({ ...prevState, exchange: { ...prevState.exchange, description: element.target.value } }))}
+                          onChange={(element) => setSchedule(prevState => ({
+                            ...prevState,
+                            exchange: {...prevState.exchange, description: element.target.value}
+                          }))}
                           fullWidth
                           multiline
                         />
@@ -1703,21 +2008,25 @@ export default function SchedulePage(props: RouteComponentProps<IPageParams>) {
         fullWidth
       >
         <DialogTitle id="scroll-dialog-title">
-          <Typography color="error" style={{ display: 'flex', alignItems: 'center', flexDirection: 'row' }}>
-            <ReportProblemOutlined style={{ marginRight: 10 }} /><strong>Atenção</strong>
+          <Typography color="error" style={{display: 'flex', alignItems: 'center', flexDirection: 'row'}}>
+            <ReportProblemOutlined style={{marginRight: 10}}/><strong>Atenção</strong>
           </Typography>
         </DialogTitle>
 
         <DialogContent>
           <Typography>
-            <strong>Você está prestes a excluir um ou mais eventos da agenda.</strong> Selecione se deseja excluir apenas esse evento ou todos os próximos eventos relacionados.
+            <strong>Você está prestes a excluir um ou mais eventos da agenda.</strong> Selecione se deseja excluir
+            apenas esse evento ou todos os próximos eventos relacionados.
           </Typography>
-          <br />
+          <br/>
 
           <FieldContent>
-            <RadioGroup aria-label="removeOption" name="removeOption" value={removeType} onChange={(event, value) => setRemoveType(value)}>
-              <FormControlLabel value="current" control={<Radio />} label="Este evento" checked={removeType === 'current' || removeType === ''} />
-              <FormControlLabel value="nexts" control={<Radio />} label="Todos os próximos" checked={removeType === 'nexts'} />
+            <RadioGroup aria-label="removeOption" name="removeOption" value={removeType}
+                        onChange={(event, value) => setRemoveType(value)}>
+              <FormControlLabel value="current" control={<Radio/>} label="Este evento"
+                                checked={removeType === 'current' || removeType === ''}/>
+              <FormControlLabel value="nexts" control={<Radio/>} label="Todos os próximos"
+                                checked={removeType === 'nexts'}/>
             </RadioGroup>
           </FieldContent>
         </DialogContent>

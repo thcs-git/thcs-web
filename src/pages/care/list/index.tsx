@@ -152,6 +152,7 @@ export default function CouncilList() {
                   page: "1",
                   limit: careState.list.limit,
                   total: careState.list.total,
+                  status: 'Atendimento',
                   search,
                 })
               )
@@ -164,6 +165,7 @@ export default function CouncilList() {
                   ).toString(),
                   limit: careState.list.limit,
                   total: careState.list.total,
+                  status: 'Atendimento',
                   search,
                 })
               )
@@ -174,6 +176,7 @@ export default function CouncilList() {
                   page: (+careState.list.page + 1).toString(),
                   limit: careState.list.limit,
                   total: careState.list.total,
+                  status: 'Atendimento',
                   search,
                 })
               )
@@ -184,6 +187,7 @@ export default function CouncilList() {
                   page: (+careState.list.page - 1).toString(),
                   limit: careState.list.limit,
                   total: careState.list.total,
+                  status: 'Atendimento',
                   search,
                 })
               )
@@ -193,6 +197,7 @@ export default function CouncilList() {
                 loadRequest({
                   limit: event.target.value,
                   page: "1",
+                  status: 'Atendimento',
                   search,
                 })
               )
