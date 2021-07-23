@@ -1,5 +1,5 @@
-import React, {useState, useEffect, useCallback, ChangeEvent} from 'react';
-import {useHistory, Link} from 'react-router-dom';
+import React, { useState, useEffect, useCallback, ChangeEvent } from 'react';
+import { useHistory, Link } from 'react-router-dom';
 import {
   Container,
   Button,
@@ -17,18 +17,20 @@ import {
   Tooltip,
   TableRow,
   TableCell,
-  TextField
+  TextField,
+  Grid,
+  Box
 } from '@material-ui/core';
-import {FiberManualRecord, ErrorOutline, MoreVert, Check as CheckIcon} from '@material-ui/icons';
+import { FiberManualRecord, Visibility as VisibilityIcon, ErrorOutline, MoreVert, Check as CheckIcon, AccountCircle as AccountCircleIcon } from '@material-ui/icons';
 import debounce from 'lodash.debounce';
-
-import {useDispatch, useSelector} from 'react-redux';
-import {ApplicationState} from '../../../store/';
-import {careTypeRequest, loadRequest, searchCareRequest} from '../../../store/ducks/cares/actions';
+import { useDispatch, useSelector } from 'react-redux';
+import { ApplicationState } from '../../../store/';
+import { careTypeRequest, loadRequest, searchCareRequest, loadRequestPopUp } from '../../../store/ducks/cares/actions';
 
 import {
   searchCareRequest as getCares,
   updateCareRequest as updateCareAction,
+  searchPatientSuccess as getPatient,
   cleanAction
 } from '../../../store/ducks/cares/actions';
 
@@ -37,15 +39,16 @@ import Sidebar from '../../../components/Sidebar';
 import Table from '../../../components/Table';
 import SearchComponent from '../../../components/List/Search';
 import Loading from '../../../components/Loading';
-import {FormTitle, SelectComponent as Select, FieldContent} from '../../../styles/components/Form';
+import { FormTitle, SelectComponent as Select, FieldContent } from '../../../styles/components/Form';
 
-import {formatDate} from '../../../helpers/date';
+import { formatDate } from '../../../helpers/date';
 
-import {ListItemCaptureStatus, CaptionList} from './styles';
-import {HighComplexityLabel, LowerComplexityLabel, MediumComplexityLabel} from "../../../styles/components/Text";
-import {CareInterface} from "../../../store/ducks/cares/types";
+import { ListItemCaptureStatus, CaptionList } from './styles';
+import { HighComplexityLabel, LowerComplexityLabel, MediumComplexityLabel } from "../../../styles/components/Text";
+import { CareInterface } from "../../../store/ducks/cares/types";
 import _ from 'lodash';
-import {Td, Th} from "../../../styles/components/Table";
+import { Td, Th } from "../../../styles/components/Table";
+
 
 interface ICaptureStatus {
   care: any;
@@ -60,7 +63,7 @@ export default function AvaliationList() {
   const careState = useSelector((state: ApplicationState) => state.cares);
 
   const [search, setSearch] = useState('');
-  const [file, setFile] = useState({error: false});
+  const [file, setFile] = useState({ error: false });
   const [captureStatus, setCaptureStatus] = useState<ICaptureStatus>({
     care: {},
     approved: '',
@@ -69,16 +72,25 @@ export default function AvaliationList() {
   });
   const [modalUpdateStatus, setModalUpdateStatus] = useState(false);
   const [modalConfirmUpdateStatus, setModalConfirmUpdateStatus] = useState(false);
+  const [careIndex, setCareIndex] = useState(0);
 
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
 
   const [historyModalOpen, setHistoryModalOpen] = useState(false);
   const [anexoModalOpen, setAnexoModalOpen] = useState(false);
+  const [patientArray, setpatientArray] = useState<any>();
 
   useEffect(() => {
     dispatch(cleanAction());
-    dispatch(getCares({}))
+    dispatch(getCares({}));
     dispatch(careTypeRequest());
+    dispatch(loadRequestPopUp({
+      page: '1',
+      limit: '1000',
+      total: 1000,
+      search
+    }));
+    
   }, []);
 
   // useEffect(() => {
@@ -90,7 +102,8 @@ export default function AvaliationList() {
   const handleType = useCallback((care: any) => {
     let complexitiesArray: any = []
     let complexity: string = ""
-    care.documents_id.map((field: any) => {
+    //console.log(care)
+    care?.documents_id?.map((field: any) => {
       complexitiesArray.push(field.complexity);
     })
     if (
@@ -218,7 +231,7 @@ export default function AvaliationList() {
 
   const handleChangeInput = useCallback((event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     setSearch(event.target.value)
-    dispatch(searchCareRequest({search: event.target.value}));
+    dispatch(searchCareRequest({ search: event.target.value }));
   }, [search]);
 
   const debounceSearchRequest = debounce(handleChangeInput, 900);
@@ -253,20 +266,20 @@ export default function AvaliationList() {
 
     if (found && documentId != '5ffd7acd2f5d2b1d8ff6bea4') {
       return found.status === 'Não Elegível' ? (
-          <Tooltip title="Não Elegível">
-            <ErrorOutline style={{color: '#FF6565', cursor: 'pointer'}}
-                          onClick={() => history.push(`/patient/capture/${found.care_id}/${documentRoute()}/${found._id}`)}/>
-          </Tooltip>
-        )
+        <Tooltip title="Não Elegível">
+          <ErrorOutline style={{ color: '#FF6565', cursor: 'pointer' }}
+            onClick={() => history.push(`/patient/capture/${found.care_id}/${documentRoute()}/${found._id}`)} />
+        </Tooltip>
+      )
         :
         (
           <Tooltip title="Elegível">
-            <CheckIcon style={{color: '#4FC66A', cursor: 'pointer'}}
-                       onClick={() => history.push(`/patient/capture/${found.care_id}/${documentRoute()}/${found._id}`)}/>
+            <CheckIcon style={{ color: '#4FC66A', cursor: 'pointer' }}
+              onClick={() => history.push(`/patient/capture/${found.care_id}/${documentRoute()}/${found._id}`)} />
           </Tooltip>
         );
     } else {
-      return <Tooltip title="Não Realizado"><CheckIcon style={{color: '#EBEBEB'}}/></Tooltip>;
+      return <Tooltip title="Não Realizado"><CheckIcon style={{ color: '#EBEBEB' }} /></Tooltip>;
     }
   };
 
@@ -281,9 +294,10 @@ export default function AvaliationList() {
 
   }, [captureStatus, careState]);
 
-  const toggleHistoryModal = () => {
+  const toggleHistoryModal = (index: number, care: any) => {
     handleCloseRowMenu();
-
+    setCareIndex(index);
+    isDone(care);
     setHistoryModalOpen(!historyModalOpen);
   };
 
@@ -293,12 +307,12 @@ export default function AvaliationList() {
     setAnexoModalOpen(!anexoModalOpen)
   };
 
-  const handleChangeComplexity = useCallback((event: any) => {
-    setCaptureStatus(prevState => ({
-      ...prevState,
-      complexity: event.target.value,
-    }));
-  }, [captureStatus]);
+  // const handleChangeComplexity = useCallback((event: any) => {
+  //   setCaptureStatus(prevState => ({
+  //     ...prevState,
+  //     complexity: event.target.value,
+  //   }));
+  // }, [captureStatus]);
 
   const readFile = (file: any) => {
     return new Promise((resolve, reject) => {
@@ -355,7 +369,7 @@ export default function AvaliationList() {
     setModalUpdateStatus(false);
     setModalConfirmUpdateStatus(false);
 
-    const {care} = captureStatus;
+    const { care } = captureStatus;
 
     const updateParams = {
       ...care,
@@ -367,7 +381,7 @@ export default function AvaliationList() {
     };
 
     dispatch(updateCareAction(updateParams));
-    dispatch(getCares({status: 'Pre-Atendimento'}));
+    dispatch(getCares({ status: 'Pre-Atendimento' }));
 
   }, [captureStatus, careState]);
 
@@ -376,7 +390,7 @@ export default function AvaliationList() {
     setModalUpdateStatus(false);
     setModalConfirmUpdateStatus(false);
 
-    const {care} = captureStatus;
+    const { care } = captureStatus;
 
     let complexitiesArray: any = []
     let complexity: string = ""
@@ -410,7 +424,7 @@ export default function AvaliationList() {
       careType = "Atenção"
     }
 
-    var careTypeObj = _.find(careState.care_type, {name: careType});
+    var careTypeObj = _.find(careState.care_type, { name: careType });
 
     const updateParams = {
       ...care,
@@ -425,7 +439,7 @@ export default function AvaliationList() {
     };
 
     dispatch(updateCareAction(updateParams));
-    dispatch(getCares({status: 'Pre-Atendimento'}));
+    dispatch(getCares({ status: 'Pre-Atendimento' }));
     dispatch(cleanAction())
 
 
@@ -433,10 +447,26 @@ export default function AvaliationList() {
 
   }, [captureStatus, careState]);
 
+  const isDone = useCallback((care: any) => {
+    let patientId = _.filter(careState.list2.data, { patient_id: { _id: care?.patient_id._id } });
+    //console.log("teste", patientId);
+    setpatientArray(patientId);
+    //console.log(patientArray);
+  }, [careState]);
+
+  // const isPopup = useCallback(() => {
+  //   //{console.log(patientArray)}
+  //   patientArray?.map((patient: any) => {
+  //     console.log(patient)
+  //     return "string"
+  //   })
+  // }, [patientArray]);
+
+
   return (
     <>
       <Sidebar>
-        {careState.loading && <Loading/>}
+        {careState.loading && <Loading />}
         <Container>
           <FormTitle>Lista de Avaliações</FormTitle>
 
@@ -449,18 +479,18 @@ export default function AvaliationList() {
 
           <Table
             tableCells={[
-              {name: 'Paciente', align: 'left'},
-              {name: 'Tipo', align: 'center'},
-              {name: 'Complexidade', align: 'center'},
-              {name: 'Socioambiental', align: 'center'},
-              {name: 'NEAD', align: 'center'},
-              {name: 'ABEMID', align: 'center'},
-              {name: 'Última captação', align: 'left'},
-              {name: 'Status da captação', align: 'left'},
-              {name: ' ', align: 'left'}
+              { name: 'Paciente', align: 'left' },
+              { name: 'Tipo', align: 'center' },
+              { name: 'Complexidade', align: 'center' },
+              { name: 'Socioambiental', align: 'center' },
+              { name: 'NEAD', align: 'center' },
+              { name: 'ABEMID', align: 'center' },
+              { name: 'Última captação', align: 'left' },
+              { name: 'Status da captação', align: 'left' },
+              { name: ' ', align: 'left' }
             ]}
           >
-            {careState.list.data.map((care, index) => (
+            {careState.list.data.map((care: CareInterface, index: number) => (
               <TableRow key={`care_${index}`}>
                 <TableCell component="th" scope="row">
                   <Link to={`/patient/capture/${care._id}/overview`}>
@@ -479,13 +509,13 @@ export default function AvaliationList() {
                   align="left">{care?.created_at ? formatDate(care.created_at, 'DD/MM/YYYY HH:mm:ss') : '-'}</TableCell> {/* Última captação */}
                 <TableCell>
                   <ListItemCaptureStatus status={care?.capture?.status || ''}>
-                    <FiberManualRecord/> {care?.capture?.status}
+                    <FiberManualRecord /> {care?.capture?.status}
                   </ListItemCaptureStatus>
                 </TableCell>
                 <TableCell align="center">
                   <Button aria-controls={`patient-capture-menu${index}`} id={`btn_patient-capture-menu${index}`}
-                          aria-haspopup="true" onClick={handleOpenRowMenu}>
-                    <MoreVert style={{color: '#0899BA'}}/>
+                    aria-haspopup="true" onClick={handleOpenRowMenu}>
+                    <MoreVert style={{ color: '#0899BA' }} />
                   </Button>
                   <Menu
                     id={`patient-capture-menu${index}`}
@@ -496,13 +526,33 @@ export default function AvaliationList() {
                   >
                     <MenuItem onClick={() => history.push(`/patient/capture/${care._id}/overview`)}>Visualizar
                       perfil</MenuItem>
-                    <MenuItem onClick={() => toggleHistoryModal()}>Histórico</MenuItem>
+                    <MenuItem onClick={() => toggleHistoryModal(index, care)}>Histórico</MenuItem>
                     <MenuItem onClick={() => toggleAnexoModal()}>Documentos Anexados</MenuItem>
                     {care.capture?.status === 'Aguardando' && (
                       <MenuItem onClick={() => handleStartUpdateCaptureStatus(care)}>Atualizar status</MenuItem>
                     )}
                     <MenuItem onClick={() => history.push(`/patient/capture/${care._id}/overview`)}>Visualizar perfil</MenuItem>
                   </Menu>
+                  {/* <button onClick={toggleDialog}>
+                    Open Dialog
+                  </button>
+
+                  <Dialog
+                    title={"Status"}
+                    onClose={toggleDialog}
+                    width={200}
+                    height={250}
+                  >
+                    <p style={{ margin: "25px", textAlign: "center" }}>
+                      {care?.patient_id?.name}
+                    </p>
+                    <DialogActionsBar>
+                      <button onClick={toggleDialog}>
+                        Launch
+                      </button>
+                    </DialogActionsBar>
+                  </Dialog> */}
+
                 </TableCell>
               </TableRow>
             ))}
@@ -549,18 +599,18 @@ export default function AvaliationList() {
 
           <div>
             <h3>Legendas para status de captação:</h3>
-            <br/>
+            <br />
             <CaptionList>
-              <div className="captionItem aprovado"><FiberManualRecord/> <span>Aprovado</span> &nbsp;- o pedido foi
+              <div className="captionItem aprovado"><FiberManualRecord /> <span>Aprovado</span> &nbsp;- o pedido foi
                 aprovado pelo plano de saúde
               </div>
-              <div className="captionItem recusado"><FiberManualRecord/> <span>Recusado</span> &nbsp;- o pedido foi
+              <div className="captionItem recusado"><FiberManualRecord /> <span>Recusado</span> &nbsp;- o pedido foi
                 recusado pelo plano
               </div>
-              <div className="captionItem aguardando"><FiberManualRecord/> <span>Aguardando</span> &nbsp;- o pedido está
+              <div className="captionItem aguardando"><FiberManualRecord /> <span>Aguardando</span> &nbsp;- o pedido está
                 aguardando análise do plano de saúde
               </div>
-              <div className="captionItem andamento"><FiberManualRecord/> <span>Em andamento</span> &nbsp;- as captações
+              <div className="captionItem andamento"><FiberManualRecord /> <span>Em andamento</span> &nbsp;- as captações
                 estão em andamento
               </div>
             </CaptionList>
@@ -612,10 +662,10 @@ export default function AvaliationList() {
                 </RadioGroup>
               </FieldContent>
 
-              {/* <FieldContent>
+              <FieldContent>
                 <DialogContentText tabIndex={-1}>Anexar Guia de Autorização</DialogContentText>
                 <input type="file" accept="application/pdf" onChange={handleChangeFiles} />
-              </FieldContent> */}
+              </FieldContent>
               <FieldContent>
                 <DialogContentText tabIndex={-1}>Anexar Guia de Autorização</DialogContentText>
                 <DialogContentText>Arquivos .pdf e menores que 5 megabytes.</DialogContentText>
@@ -640,7 +690,7 @@ export default function AvaliationList() {
                 {/*  <MenuItem key="complexity-medium" value="Média Complexidade">Média Complexidade</MenuItem>*/}
                 {/*  <MenuItem key="complexity-high" value="Alta Complexidade">Alta Complexidade</MenuItem>*/}
                 {/*</Select>*/}
-                <br/>
+                <br />
                 {handleCoplexitiesDialog(captureStatus?.care)}
               </FieldContent>
             </DialogContent>
@@ -717,24 +767,68 @@ export default function AvaliationList() {
 
       {/*Historico*/}
       <Dialog
-        scroll="paper"
+
+        maxWidth="lg"
         open={historyModalOpen}
         onClose={() => setHistoryModalOpen(false)}
         aria-labelledby="scroll-dialog-title"
         aria-describedby="scroll-dialog-description"
       >
-        <DialogTitle id="scroll-dialog-title">Histórico do Score</DialogTitle>
+        <DialogTitle id="scroll-dialog-title"><h3>Histórico de Captações</h3></DialogTitle>
         <DialogContent>
           <DialogContentText
             id="scroll-dialog-description"
             tabIndex={-1}
           >
-
+            <Grid container style={{ display: "flex", flexDirection: "row", justifyContent: "space-between" }}>
+              <Grid item md={1} style={{ padding: "0" }}>
+                <AccountCircleIcon style={{ color: '#0899BA', fontSize: '30pt' }} />
+              </Grid>
+              <Grid item md={11} style={{ padding: "0", paddingTop: "0.4rem" }}>
+                <h3 style={{ color: '#333333' }}>{careState.list.data[careIndex]?.patient_id.name}</h3>
+              </Grid>
+            </Grid>
+            <Table
+              tableCells={[
+                { name: 'Data da captação', align: 'left' },
+                { name: 'Tipo', align: 'center' },
+                { name: 'Complexidade', align: 'center' },
+                { name: 'Status', align: 'center' },
+                { name: 'Visualizar', align: 'left' }
+              ]}
+            >
+              {patientArray?.map((patient: any, index: number) => {
+                console.log(patient)
+                return (
+                  <TableRow key={`patient_${index}`}>
+                    <TableCell >
+                      <p>{patient?.created_at ? formatDate(patient?.created_at, 'DD/MM/YYYY') : '-'}</p>
+                    </TableCell>
+                    <TableCell align="center">
+                      <p>{handleType(patient)}</p>
+                    </TableCell>
+                    <TableCell align="center">
+                      <p>{handleCoplexities(patient)}</p>
+                    </TableCell>
+                    <TableCell align="center">
+                      <ListItemCaptureStatus status={patient?.capture?.status || ''}>
+                        <FiberManualRecord /> {patient?.capture?.status}
+                      </ListItemCaptureStatus>
+                    </TableCell>
+                    <TableCell align="center">
+                      <Button onClick={() => history.push(`/patient/capture/${patient?._id}/overview`)}>
+                        <VisibilityIcon style={{ color: '#0899BA' }} />
+                      </Button>
+                    </TableCell>
+                  </TableRow>
+                )
+              })}
+            </Table>
           </DialogContentText>
         </DialogContent>
         <DialogActions>
           <Button onClick={() => setHistoryModalOpen(false)} color="primary">
-            Fechar
+            <h3 style={{ color: '#0899BA', fontSize: '11pt' }}>Fechar</h3>
           </Button>
         </DialogActions>
       </Dialog>
