@@ -264,7 +264,7 @@ export default function AvaliationList() {
       }
     };
 
-    if (found) {
+    if (found && documentId != '5ffd7acd2f5d2b1d8ff6bea4') {
       return found.status === 'Não Elegível' ? (
         <Tooltip title="Não Elegível">
           <ErrorOutline style={{ color: '#FF6565', cursor: 'pointer' }}
@@ -531,6 +531,7 @@ export default function AvaliationList() {
                     {care.capture?.status === 'Aguardando' && (
                       <MenuItem onClick={() => handleStartUpdateCaptureStatus(care)}>Atualizar status</MenuItem>
                     )}
+                    <MenuItem onClick={() => history.push(`/patient/capture/${care._id}/overview`)}>Visualizar perfil</MenuItem>
                   </Menu>
                   {/* <button onClick={toggleDialog}>
                     Open Dialog
