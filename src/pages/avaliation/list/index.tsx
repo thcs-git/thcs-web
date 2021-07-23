@@ -90,7 +90,7 @@ export default function AvaliationList() {
       total: 1000,
       search
     }));
-    
+
   }, []);
 
   // useEffect(() => {
@@ -486,7 +486,7 @@ export default function AvaliationList() {
               { name: 'Socioambiental', align: 'center' },
               { name: 'NEAD', align: 'center' },
               { name: 'ABEMID', align: 'center' },
-              { name: 'Última captação', align: 'left' },
+              // { name: 'Última captação', align: 'left' },
               { name: 'Status da captação', align: 'left' },
               { name: ' ', align: 'left' }
             ]}
@@ -506,8 +506,8 @@ export default function AvaliationList() {
                   align="center">{handleCheckDocument('5ff65469b4d4ac07d186e99f', care?.documents_id || [])}</TableCell> {/* NEAD */}
                 <TableCell
                   align="center">{handleCheckDocument('5ffd7acd2f5d2b1d8ff6bea4', care?.documents_id || [])}</TableCell> {/* ABEMID */}
-                <TableCell
-                  align="left">{care?.created_at ? formatDate(care.created_at, 'DD/MM/YYYY HH:mm:ss') : '-'}</TableCell> {/* Última captação */}
+                {/*<TableCell*/}
+                {/*  align="left">{care?.created_at ? formatDate(care.created_at, 'DD/MM/YYYY HH:mm:ss') : '-'}</TableCell> /!* Última captação *!/*/}
                 <TableCell>
                   <ListItemCaptureStatus status={care?.capture?.status || ''}>
                     <FiberManualRecord /> {care?.capture?.status}
