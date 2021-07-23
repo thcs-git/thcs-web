@@ -127,7 +127,7 @@ export default function CouncilList() {
                     aria-haspopup="true"
                     onClick={handleOpenRowMenu}
                   >
-                    <MoreVert />
+                    <MoreVert style={{ color: '#0899BA' }}/>
                   </Button>
                   <Menu
                     id={`simple-menu${index}`}
