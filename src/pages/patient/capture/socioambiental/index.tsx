@@ -285,10 +285,10 @@ export default function SocioAmbiental(props: RouteComponentProps<IPageParams>) 
     const isAllQuestionAnswered = currentStepAnswer?.map(field => field?.options?.some(option => option.hasOwnProperty('selected')));
     const isError = isAllQuestionAnswered?.some(answered => !answered);
 
-    if (isError) {
-      toast.error("Selecione ao menos uma alternativa por pergunta");
-      return;
-    }
+    // if (isError) {
+    //   toast.error("Selecione ao menos uma alternativa por pergunta");
+    //   return;
+    // }
 
     documentGroup?.fields?.map((field: any) => {
       field.options.map((option: any) => {
@@ -327,7 +327,7 @@ export default function SocioAmbiental(props: RouteComponentProps<IPageParams>) 
         {care?.patient_id && (
           <>
             <h2>Paciente</h2>
-            <PatientCard patient={care.patient_id}/>
+            <PatientCard patient={care.patient_id}capture={care.capture}/>
           </>
         )}
 
