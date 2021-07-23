@@ -55,6 +55,7 @@ export default function Dashboard_user() {
     council_number: "",
     verified: "",
     active: true,
+    professions:[],
   });
 
   const [user, setUser] = useState({

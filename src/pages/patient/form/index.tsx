@@ -64,6 +64,7 @@ import Typography from '@material-ui/core/Typography';
 import { loadSuccess } from '../../../store/ducks/areas/actions';
 import { objectValues } from 'react-toastify/dist/utils';
 import { createPrescriptionRequest } from '../../../store/ducks/prescripition/actions';
+import { AreaInterface } from '../../../store/ducks/areas/types';
 
 interface IFormFields {
   bloodType: string | null,
@@ -450,6 +451,7 @@ export default function PatientForm(props: RouteComponentProps<IPageParams>) {
         },
       }
     });
+
     setFieldValidations((prevState: any) => ({
       ...prevState,
       postal_code: !validator.isEmpty(patientState.data.address_id.postal_code),
@@ -477,17 +479,25 @@ export default function PatientForm(props: RouteComponentProps<IPageParams>) {
 
   const selectPatientArea = useCallback(() => {
 
-    if(canEdit){
-
-    }else{
-       const selected = areaState.list.data.filter(item => {
+    const selected = areaState.list.data.filter(item => {
       if (typeof state?.area_id === 'object') {
         return item._id === state?.area_id._id
       }
     })
 
-    return (selected[0]) ? selected[0] : null;
-    }
+    return (selected[0]) ? selected[0]: areaState.list.data[0];
+
+    // if(canEdit){
+
+    // }else{
+    //    const selected = areaState.list.data.filter(item => {
+    //   if (typeof state?.area_id === 'object') {
+    //     return item._id === state?.area_id._id
+    //   }
+    // })
+
+    //return (selected[0]) ? selected[0]: areaState.list.data[0];
+    //}
 
   }, [state.area_id, areaState]);
 
@@ -524,8 +534,7 @@ export default function PatientForm(props: RouteComponentProps<IPageParams>) {
         relationship: state.responsable.relationship,
       },
     });
-    console.log(modifi);
-    console.log(patientState.data);
+
     if(isEquals()){
       handleCancelForm()
       console.log(isEquals());
@@ -559,9 +568,11 @@ export default function PatientForm(props: RouteComponentProps<IPageParams>) {
     };
 
     if (state?._id) {
+
       dispatch(updatePatientRequest(patientData));
       history.push('/patient');
     } else {
+
       dispatch(createPatientRequest(patientData));
     }
   }, [state]);
@@ -963,35 +974,26 @@ export default function PatientForm(props: RouteComponentProps<IPageParams>) {
                         />
                       </Grid>
 
-                      {!canEdit ? (
                       <Grid item md={7} xs={12}>
-                        <TextField
-                          id="combo-box-areas"
-                          label="Área"
-                          variant="outlined"
-                          size="small"
-                          value={state.area_id ? state.area_id.name : null}
-                          fullWidth
-                          disabled={!canEdit}
-                        />
-                      </Grid>
-                      ):(
-                        <Grid item md={7} xs={12}>
-                          <Autocomplete
+                        <Autocomplete
                             id="combo-box-areas"
                             options={areaState.list.data}
                             getOptionLabel={(option: any) => option.name}
-                            renderInput={(params) => <TextField {...params} label="Área" variant="outlined" />}
+                            renderInput={(params) => <TextField {...params} label="Área"  variant="outlined"  />}
                             size="small"
+                            defaultValue={selectPatientArea()}
                             value={selectPatientArea()}
-                            onChange={(element, value) => setState({ ...state, area_id: {...value }})}
-                            getOptionSelected={(option, value) => option._id === state?.area_id._id}
+                            onChange={(event:any, newValue) =>{
+                              if(newValue){
+                                setState({...state,area_id:newValue._id})
+                              }
+                            } }
+                          //  getOptionSelected={(option, value) => option._id === state?.area_id._id}
                             noOptionsText="Nenhum resultado encontrado"
                             fullWidth
                             disabled={!canEdit}
                           />
-                        </Grid>
-                      )}
+                      </Grid>
 
                     </Grid>
                     <Grid container>

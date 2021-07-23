@@ -27,7 +27,7 @@ interface PropsCheck {
 
 export default function MyComponent(props: IMapsProps) {
 
-const [commentShown, setCommentShown] = useState<PropsCheck>({});
+const [commentShown, setCommentShown] = useState<PropsCheck>({}); 
 const [mouse,setMouse]= useState({showInfoWindow:true});
 const handleMouseOver = (index:any) => {
    setCommentShown(prev => Boolean(!prev[index]) ? {...prev, [index]: true} : {...prev, [index]: false});
