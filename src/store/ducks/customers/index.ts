@@ -20,11 +20,12 @@ export const INITIAL_STATE: CustomerState = {
       complement: "",
     },
     email: "",
-    phones: {
-      number: "",
+    phones: [{
+      cellphone: "",
+      phone: "",
       telegram: false,
       whatsapp: false,
-    },
+    }],
     responsible_user: "",
     cellphone: "",
     phone: "",

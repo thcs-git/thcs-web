@@ -26,6 +26,12 @@ export const INITIAL_STATE: CareState = {
     page: '1',
     total: 0
   },
+  list2: {
+    data: [],
+    limit: '1000',
+    page: '1',
+    total: 0
+  },
   error: false,
   loading: false,
   success: false,
@@ -49,6 +55,17 @@ const reducer: Reducer<CareState> = (state = INITIAL_STATE, action) => {
   switch (action.type) {
     case CareTypes.LOAD_REQUEST:
       return { ...state, loading: true, success: false, };
+    case CareTypes.LOAD_PATIENT_REQUEST:
+      return { ...state, loading: true, success: false, };
+    case CareTypes.SEARCH_PATIENT_SUCCESS:
+      return {
+        ...state,
+        data: INITIAL_STATE.data,
+        list2: action.payload.data,
+        loading: false,
+        success: false,
+        error: false
+      };
     case CareTypes.LOAD_SUCCESS:
       return {
         ...state,

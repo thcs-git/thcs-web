@@ -102,6 +102,7 @@ import {
 import { CareTypes } from "./cares/types";
 import {
   get as getCares,
+  getPopUp as getPatient,
   createCare,
   getCareById,
   updateCare,
@@ -155,6 +156,7 @@ export default function* rootSaga() {
 
     // Care
     takeLatest(CareTypes.LOAD_REQUEST, getCares),
+    takeLatest(CareTypes.LOAD_PATIENT_REQUEST, getPatient),
     takeLatest(CareTypes.LOAD_REQUEST_CARE_BY_ID, getCareById),
     takeLatest(CareTypes.CREATE_CARE_REQUEST, createCare),
     takeLatest(CareTypes.UPDATE_CARE_REQUEST, updateCare),
