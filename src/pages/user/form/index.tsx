@@ -66,6 +66,7 @@ import {
   TabBodyItem,
 } from "../../../styles/components/Tabs";
 import ButtonComponent from "../../../styles/components/Button";
+// @ts-ignore
 import FeedbackUserComponent from '../../../components/FeedbackUser';
 
 import {formatDate, age} from "../../../helpers/date";
@@ -87,6 +88,7 @@ import LocationOnIcon from '@material-ui/icons/LocationOn'
 import CheckCircleRoundedIcon from '@material-ui/icons/CheckCircleRounded';
 import {BoxCustom} from "../../customer/form/styles";
 import _ from "lodash";
+// @ts-ignore
 import Sidebar_menu from "../../../components/Sidebar_menu";
 
 
@@ -324,6 +326,10 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
     if (userState.data._id) {
       let joinState = [state, userState.data];
 
+      if (!firstCall && params.mode === "linking") {
+        setCurrentTab(2)
+      }
+
       setState((prevState) => ({
         ...joinState[firstCall ? 0 : 1],
         // user_type_id:
@@ -335,7 +341,7 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
     }
     // Força o validador em 'true' quando entrar na tela para editar
     if (params?.id) {
-      if (params.mode === "view" || params.mode === "link") {
+      if (params.mode === "view" || params.mode === "link" || params.mode === "linking") {
         setCanEdit(false)
       }
       setFieldValidations({
@@ -559,7 +565,7 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
   }, [state.companies]);
 
   function handlerReturn() {
-    if (params.mode == 'link') {
+    if (params.mode == 'link' || params.mode === "linking") {
       history.push('/userdesengaged');
     } else {
       history.push('/user');
@@ -808,7 +814,7 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
 
     if (state?._id) {
       dispatch(updateUserRequest(state));
-      if (params.mode == 'link') {
+      if (params.mode == 'link' || params.mode === "linking") {
         history.push('/userdesengaged');
       }
       else if (params.mode == 'view') {
@@ -850,15 +856,15 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
           <FormSection>
             <FormContent>
               <div style={{display: 'flex', alignItems: 'center', flexDirection: 'row'}}>
-                <FormTitle>Cadastro de Usuario</FormTitle>
+                <FormTitle>Dados de usuário</FormTitle>
 
-                {(params.id && params.mode == 'view' && !canEdit) && (
-                  <Button style={{marginTop: -20, marginLeft: 15, color: '#0899BA'}}
-                          onClick={() => setCanEdit(!canEdit)}>
-                    <Edit style={{marginRight: 5, width: 18}}/>
-                    Editar {canEdit}
-                  </Button>
-                )}
+                {/*{(params.id && params.mode == 'view' && !canEdit) && (*/}
+                {/*  <Button style={{marginTop: -20, marginLeft: 15, color: '#0899BA'}}*/}
+                {/*          onClick={() => setCanEdit(!canEdit)}>*/}
+                {/*    <Edit style={{marginRight: 5, width: 18}}/>*/}
+                {/*    Editar {canEdit}*/}
+                {/*  </Button>*/}
+                {/*)}*/}
               </div>
 
               <TabContent>
@@ -1985,7 +1991,7 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
           <FormSection>
             <FormContent>
               <div style={{display: 'flex', alignItems: 'center', flexDirection: 'row'}}>
-                <FormTitle>Cadastro de Usuario</FormTitle>
+                <FormTitle>Dados de usuário</FormTitle>
 
                 {(params.id && params.mode == 'view' && !canEdit) && (
                   <Button style={{marginTop: -20, marginLeft: 15, color: '#0899BA'}}

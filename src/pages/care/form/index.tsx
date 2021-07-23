@@ -197,6 +197,7 @@ export default function CareForm(props: RouteComponentProps<IPageParams>) {
   var isValidResponsableCellPhoneNumber: any;
   var formValid: any;
   useEffect(() => {
+    dispatch(clear())
     dispatch(cleanAction());
     dispatch(clear());
     if (params.id) {
@@ -217,7 +218,7 @@ export default function CareForm(props: RouteComponentProps<IPageParams>) {
   }, [patientState.list]);
 
   useEffect(() => {
-    if (careState.success && !careState.error && !careState.loading) {
+    if (!firstCall && careState.success && !careState.error && !careState.loading) {
       history.push("/care");
     }
   }, [careState.success]);
@@ -236,12 +237,8 @@ export default function CareForm(props: RouteComponentProps<IPageParams>) {
     })
     dispatch(loadPatientById(care.patient_id._id))
 
-    setStartStep(!startStep);
-  }, [patientState])
-
-  useEffect(() => {
-    const healthPlan = careState?.list?.data[0]?.capture?.health_insurance_id
-    const sheaSubPlan = careState?.list?.data[0]?.capture?.health_plan_id
+    const healthPlan = care?.capture?.health_insurance_id
+    const sheaSubPlan = care?.capture?.health_plan_id
 
     if (firstCall && healthPlan != undefined && sheaSubPlan != undefined) {
       dispatch(healthPlanRequest(healthPlan ? healthPlan : "6012b8ca863f4dd6560e756b"))
@@ -251,16 +248,18 @@ export default function CareForm(props: RouteComponentProps<IPageParams>) {
 
     setState((prevState) => ({
       ...prevState,
-      area_id: patientState?.data?.area_id?._id,
-      origin_id: careState?.list?.data[0]?.capture?.hospital,
-      health_insurance_id: careState?.list?.data[0]?.capture?.health_insurance_id,
-      health_plan_id: careState?.list?.data[0]?.capture?.health_plan_id,
-      health_sub_plan_id: careState?.list?.data[0]?.capture?.health_sub_plan_id,
+      area_id: care?.patient_id?.area_id,
+      origin_id: care?.capture?.hospital,
+      health_insurance_id: care?.capture?.health_insurance_id,
+      health_plan_id: care?.capture?.health_plan_id,
+      health_sub_plan_id: care?.capture?.health_sub_plan_id,
     }))
 
-  }, [patientState, careState]);
+    setStartStep(!startStep);
+  }, [patientState, selectCheckbox])
 
   const selectPatientArea = useCallback(() => {
+
     const selected = areaState.list.data.filter(item => {
       if (typeof state?.area_id === 'object') {
         return item._id === state?.area_id._id
@@ -292,11 +291,12 @@ export default function CareForm(props: RouteComponentProps<IPageParams>) {
 
   const handleNextStep = useCallback(() => {
     setCurrentStep((prevState) => prevState + 1);
-  }, [currentStep]);
+  }, [currentStep, state.health_insurance_id]);
 
   const handleBackStep = useCallback(() => {
     if (currentStep === 0) {
-      handleCancelForm();
+      setStartStep(true)
+      setSelectCheckbox(undefined)
     } else {
       setCurrentStep((prevState) => prevState - 1);
     }
@@ -340,9 +340,10 @@ export default function CareForm(props: RouteComponentProps<IPageParams>) {
       status: "Atendimento",
       origin_id: '5fd667d948392d0621196553',
       created_at: selectCheckbox?.created_at,
-      start_at: new Date()
+      start_at: new Date(),
+      care_type_id: selectCareType()?._id
     };
-    console.log(assignSelectCheckbox);
+    // console.log(assignSelectCheckbox);
 
     dispatch(updateCareRequest(assignSelectCheckbox));
   }
@@ -420,21 +421,21 @@ export default function CareForm(props: RouteComponentProps<IPageParams>) {
     );
 
     return selected[0] ? selected[0] : careState.healthInsurance[0];
-  }, [selectCheckbox, state.health_insurance_id]);
+  }, [selectCheckbox, state.health_insurance_id, careState.healthInsurance]);
 
   const selectHealhPlan = useCallback(() => {
     const selected = careState.healthPlan.filter(
       (item) => item._id === selectCheckbox?.capture?.health_plan_id
     );
     return selected[0] ? selected[0] : careState.healthPlan[0];
-  }, [selectCheckbox, state.health_plan_id]);
+  }, [selectCheckbox, state.health_plan_id, careState.healthPlan]);
 
   const selectHealhSubPlan = useCallback(() => {
     const selected = careState.healthSubPlan.filter(
       (item) => item._id === selectCheckbox?.capture?.health_sub_plan_id
     );
     return selected[0] ? selected[0] : careState.healthSubPlan[0];
-  }, [selectCheckbox, state.health_sub_plan_id]);
+  }, [selectCheckbox, state.health_sub_plan_id, careState.healthSubPlan]);
 
   const selectAccommodationType = useCallback(() => {
     const selected = careState.accommondation_type.filter(
@@ -445,10 +446,10 @@ export default function CareForm(props: RouteComponentProps<IPageParams>) {
 
   const selectCareType = useCallback(() => {
     const selected = careState.care_type.filter(
-      (item) => item._id === state.care_type_id
+      (item) => item._id === selectCheckbox?.care_type_id?._id
     );
-    return selected[0] ? selected[0] : null;
-  }, [state.care_type_id]);
+    return selected[0] ? selected[0] : careState.care_type[0];
+  }, [selectCheckbox, state.care_type_id, careState.care_type]);
 
   const selectUser = useCallback(() => {
     const selected = userState.list.data.filter(
@@ -1142,7 +1143,7 @@ export default function CareForm(props: RouteComponentProps<IPageParams>) {
                         size="small"
                         onChange={(event, value) => {
                           if (value) {
-                            console.log(value);
+                            // console.log(value);
                             setState((prevState) => ({
                               ...prevState,
                               care_type_id: value._id,
@@ -1396,6 +1397,7 @@ export default function CareForm(props: RouteComponentProps<IPageParams>) {
             )}
 
           </FormContent>
+
 
 
           <ButtonsContent>

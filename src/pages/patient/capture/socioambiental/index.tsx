@@ -1,23 +1,40 @@
-import React, { useState, useEffect, useCallback } from 'react';
-import { useHistory, RouteComponentProps } from 'react-router-dom';
-import { Container, StepLabel, Radio, RadioGroup, FormControlLabel, FormGroup, Checkbox } from '@material-ui/core';
+import React, {useState, useEffect, useCallback} from 'react';
+import {useHistory, RouteComponentProps} from 'react-router-dom';
+import {Container, StepLabel, Radio, RadioGroup, FormControlLabel, FormGroup, Checkbox} from '@material-ui/core';
 
-import { useDispatch, useSelector } from 'react-redux';
-import { ApplicationState } from '../../../../store';
+import {useDispatch, useSelector} from 'react-redux';
+import {ApplicationState} from '../../../../store';
 
-import { loadCareById, actionDocumentGroupSocioAmbientalRequest, actionDocumentSocioAmbientalRequest, actionDocumentSocioAmbientalStoreRequest, actionDocumentSocioAmbientalUpdateRequest, cleanAction } from '../../../../store/ducks/cares/actions';
-import { CareInterface, DocumentGroupInterface } from '../../../../store/ducks/cares/types';
+import {
+  loadCareById,
+  actionDocumentGroupSocioAmbientalRequest,
+  actionDocumentSocioAmbientalRequest,
+  actionDocumentSocioAmbientalStoreRequest,
+  actionDocumentSocioAmbientalUpdateRequest,
+  cleanAction
+} from '../../../../store/ducks/cares/actions';
+import {CareInterface, DocumentGroupInterface} from '../../../../store/ducks/cares/types';
 
 import PatientCard from '../../../../components/Card/Patient';
 import Loading from '../../../../components/Loading';
 import Sidebar from '../../../../components/Sidebar';
 
 import Button from '../../../../styles/components/Button';
-import { FormTitle, QuestionSection, QuestionTitle, ScoreTotalContent, ScoreLabel, ScoreTotal } from '../../../../styles/components/Form';
-import { handleUserSelectedId } from '../../../../helpers/localStorage';
+import {
+  FormTitle,
+  QuestionSection,
+  QuestionTitle,
+  ScoreTotalContent,
+  ScoreLabel,
+  ScoreTotal
+} from '../../../../styles/components/Form';
+import {handleUserSelectedId} from '../../../../helpers/localStorage';
 
-import { ButtonsContent, FormContent } from './styles';
-import { toast } from 'react-toastify';
+import {ButtonsContent, FormContent} from './styles';
+import {toast} from 'react-toastify';
+import _ from "lodash";
+import ButtonComponent from "../../../../styles/components/Button";
+import {HeaderContent} from "../../../care/overview/schedule/styles";
 
 interface IPageParams {
   id: string;
@@ -31,13 +48,13 @@ interface IScore {
 }
 
 export default function SocioAmbiental(props: RouteComponentProps<IPageParams>) {
-  const { params } = props.match;
+  const {params} = props.match;
 
   const history = useHistory();
   const dispatch = useDispatch();
 
   const careState = useSelector((state: ApplicationState) => state.cares);
-  const { documentGroupSocioAmbiental: documentGroupState, documentSocioAmbiental: documentState } = careState;
+  const {documentGroupSocioAmbiental: documentGroupState, documentSocioAmbiental: documentState} = careState;
 
   const [care, setCare] = useState<CareInterface>();
   const [documentGroup, setDocumentGroup] = useState<DocumentGroupInterface>({
@@ -46,19 +63,21 @@ export default function SocioAmbiental(props: RouteComponentProps<IPageParams>) 
     description: '',
     fields: [],
     created_at: '',
-    created_by: { _id: '' },
+    created_by: {_id: ''},
     updated_at: '',
-    updated_by: { _id: '' },
+    updated_by: {_id: ''},
   });
   const [document, setDocument] = useState<any>();
-  const [score, setScore] = useState<IScore>({ total: 0, complexity: 'Sem Complexidade', status: '' });
+  const [score, setScore] = useState<IScore>({total: 0, complexity: 'Sem Complexidade', status: ''});
+  const [scoreSocial, setScoreSocial] = useState<IScore>({total: 0, complexity: 'Sem Complexidade', status: ''});
+  const [scoreAmbiental, setScoreAmbiental] = useState<IScore>({total: 0, complexity: 'Sem Complexidade', status: ''});
 
   useEffect(() => {
     dispatch(actionDocumentGroupSocioAmbientalRequest());
     dispatch(loadCareById(params.id));
 
     if (params?.documentId) {
-      dispatch(actionDocumentSocioAmbientalRequest({ _id: params.documentId, care_id: params.id }));
+      dispatch(actionDocumentSocioAmbientalRequest({_id: params.documentId, care_id: params.id}));
     }
 
   }, []);
@@ -85,7 +104,7 @@ export default function SocioAmbiental(props: RouteComponentProps<IPageParams>) 
         !documentState?.error
       ) {
         if (care?._id) {
-          history.push(`/patient/capture/${care._id}/overview/`, { success: true });
+          history.push(`/patient/capture/${care._id}/overview/`, {success: true});
         }
       }
     }
@@ -98,7 +117,7 @@ export default function SocioAmbiental(props: RouteComponentProps<IPageParams>) 
   }, [document]);
 
   const selectOption = useCallback((field_id: string, option_id: string, multiple: boolean = false) => {
-    let documentGroupCopy = { ...documentGroup };
+    let documentGroupCopy = {...documentGroup};
 
     documentGroupCopy?.fields?.map((field: any) => {
       if (field._id === field_id) {
@@ -123,35 +142,110 @@ export default function SocioAmbiental(props: RouteComponentProps<IPageParams>) 
 
   }, [documentGroup]);
 
-  const calculateScore = useCallback(() => {
-    let partialScore = 0, countQuestionReject = 0;
+  const clearDocument = useCallback(() => {
+    let documentGroupCopy = {...documentGroup};
 
-    documentGroup?.fields?.map((field: any) => {
+    documentGroupCopy?.fields?.map((field: any) => {
+      field.options.map((option: any) => {
+        option.selected = false
+      })
+    })
+
+    setDocumentGroup(documentGroupCopy);
+
+    scoreSocial.total = 0
+    scoreAmbiental.total = 0
+    score.total = 0
+  }, [documentGroup, scoreSocial.total, scoreAmbiental.total, score.total]);
+
+  const calculateScore = useCallback(() => {
+    // let partialScore = 0, countQuestionReject = 0;
+    let partialScoreSocial = 0, countQuestionRejectSocial = 0;
+    let partialScoreAmbiental = 0, countQuestionRejectAmbiental = 0;
+
+    let documentGroupSocial = documentGroup?.fields?.slice(0, 3)
+    let documentGroupAmbiental = documentGroup?.fields?.slice(3, 6)
+
+    // documentGroup?.fields?.map((field: any) => {
+    //   field.options.map((option: any) => {
+    //     if (option?.selected) {
+    //       if (option.value < 0) {
+    //         countQuestionReject++;
+    //       } else {
+    //         partialScore += parseInt(option.value);
+    //       }
+    //     }
+    //   });
+    // });
+
+    documentGroupSocial?.map((field: any) => {
       field.options.map((option: any) => {
         if (option?.selected) {
           if (option.value < 0) {
-            countQuestionReject++;
+            countQuestionRejectSocial++;
+          } else {
+            partialScoreSocial += parseInt(option.value);
           }
-
-          partialScore += parseInt(option.value);
         }
       });
     });
 
-    const getStatus = (score: number) => {
-      if (score < 7 || countQuestionReject > 0) {
+    documentGroupAmbiental?.map((field: any) => {
+      field.options.map((option: any) => {
+        if (option?.selected) {
+          if (option.value < 0) {
+            countQuestionRejectAmbiental++;
+          } else {
+            partialScoreAmbiental += parseInt(option.value);
+          }
+        }
+      });
+    });
+
+    const getStatus = (scoreSocial: number, scoreAmbiental: number) => {
+      if (!(scoreSocial < 7 || countQuestionRejectSocial > 0) && !(scoreAmbiental < 2 || countQuestionRejectAmbiental > 0)) {
+        return 'Elegível';
+      } else {
+        return 'Não Elegível';
+      }
+    };
+
+    const getStatusSocial = (score: number) => {
+      if (score < 7 || countQuestionRejectSocial > 0) {
         return 'Não Elegível';
       } else {
         return 'Elegível';
       }
     };
 
-    setScore({ total: partialScore, complexity: 'Sem Complexidade', status: getStatus(partialScore) });
+    const getStatusAmbiental = (score: number) => {
+      if (score < 2 || countQuestionRejectAmbiental > 0) {
+        return 'Não Elegível';
+      } else {
+        return 'Elegível';
+      }
+    };
+
+    setScoreSocial({
+      total: partialScoreSocial,
+      complexity: 'Sem Complexidade',
+      status: getStatusSocial(partialScoreSocial)
+    });
+    setScoreAmbiental({
+      total: partialScoreAmbiental,
+      complexity: 'Sem Complexidade',
+      status: getStatusAmbiental(partialScoreAmbiental)
+    });
+    setScore({
+      total: partialScoreSocial + partialScoreAmbiental,
+      complexity: 'Sem Complexidade',
+      status: getStatus(partialScoreSocial, partialScoreAmbiental)
+    });
 
   }, [documentGroup]);
 
   const handleFieldAnswer = useCallback(() => {
-    let documentGroupCopy = { ...documentGroup };
+    let documentGroupCopy = {...documentGroup};
 
     documentGroupCopy?.fields?.map((field: any) => {
       field.options.map((option: any) => {
@@ -169,6 +263,21 @@ export default function SocioAmbiental(props: RouteComponentProps<IPageParams>) 
     calculateScore();
   }, [documentGroup, document]);
 
+  const handleDescription = useCallback((field) => {
+    let description = field.description
+
+    description = description.replace('4', '1')
+    description = description.replace('5', '2')
+    description = description.replace('6', '3')
+
+    return description
+  }, []);
+
+  const isDone = useCallback(() => {
+    let documentObj = _.find(care?.documents_id, {document_group_id: {name: 'Tabela Socioambiental'}});
+    return documentObj?.finished ? documentObj?.finished : false
+  }, [care]);
+
   const handleSubmit = useCallback(() => {
     let selecteds: any = [];
 
@@ -176,15 +285,15 @@ export default function SocioAmbiental(props: RouteComponentProps<IPageParams>) 
     const isAllQuestionAnswered = currentStepAnswer?.map(field => field?.options?.some(option => option.hasOwnProperty('selected')));
     const isError = isAllQuestionAnswered?.some(answered => !answered);
 
-    if (isError) {
-      toast.error("Selecione ao menos uma alternativa por pergunta");
-      return;
-    }
+    // if (isError) {
+    //   toast.error("Selecione ao menos uma alternativa por pergunta");
+    //   return;
+    // }
 
     documentGroup?.fields?.map((field: any) => {
       field.options.map((option: any) => {
         if (option?.selected) {
-          selecteds.push({ _id: field._id, description: field.description, option_id: option._id, value: option.value })
+          selecteds.push({_id: field._id, description: field.description, option_id: option._id, value: option.value})
         }
       })
     });
@@ -198,11 +307,11 @@ export default function SocioAmbiental(props: RouteComponentProps<IPageParams>) 
         finished: true,
         canceled: false,
         fields: selecteds,
-        created_by: { _id: handleUserSelectedId() || '' },
+        created_by: {_id: handleUserSelectedId() || ''},
       };
 
       if (document?._id) {
-        dispatch(actionDocumentSocioAmbientalUpdateRequest({ ...createDocumentParams, _id: document._id }));
+        dispatch(actionDocumentSocioAmbientalUpdateRequest({...createDocumentParams, _id: document._id}));
       } else {
         dispatch(actionDocumentSocioAmbientalStoreRequest(createDocumentParams));
       }
@@ -212,82 +321,206 @@ export default function SocioAmbiental(props: RouteComponentProps<IPageParams>) 
 
   return (
     <Sidebar>
-      {careState.loading && <Loading />}
+      {careState.loading && <Loading/>}
       <Container>
 
         {care?.patient_id && (
           <>
             <h2>Paciente</h2>
-            <PatientCard patient={care.patient_id} />
+            <PatientCard patient={care.patient_id}capture={care.capture}/>
           </>
         )}
 
-        <FormTitle>{documentGroup.name}</FormTitle>
+        {/*<FormTitle>{documentGroup.name}</FormTitle>*/}
 
-        <FormContent>
-          {documentGroup?.fields?.map((field: any, index: number) => (
-            <QuestionSection key={`question_${field._id}_${index}`}>
-              <QuestionTitle>{field.description}</QuestionTitle>
+        <HeaderContent>
+          <FormTitle>Avaliação Social</FormTitle>
+          {!isDone() && careState.data.capture?.status === 'Em Andamento' && (
+            <>
+              <div>
+                <ButtonComponent onClick={() => {
+                  clearDocument()
+                }} background="primary">
+                  Limpar Campos
+                </ButtonComponent>
+              </div>
+            </>
+          )}
+        </HeaderContent>
 
-              {field.type === 'radio' && (
-                <RadioGroup  style={{ width: 'fit-content' }} onChange={e => selectOption(field._id, e.target.value)}>
-                  {field.options.map((option: any, index: number) => (
-                    <FormControlLabel
-                      key={`option_${field._id}_${index}`}
-                      value={option._id}
-                      control={<Radio color="primary" />}
-                      label={option.text}
-                      checked={option?.selected}
-                    />
-                  ))}
-                </RadioGroup>
-              )}
+        {isDone() || careState.data.capture?.status != 'Em Andamento' ? (
+          <>
+            <FormContent>
+              {documentGroup?.fields?.map((field: any, index: number) => (
+                <>
+                  <QuestionSection key={`question_${field._id}_${index}`}>
 
-              {field.type === 'check' && (
-                <FormGroup>
-                  {field.options.map((option: any, index: number) => (
-                    <FormControlLabel
-                      key={`option_${field._id}_${index}`}
-                      value={option._id}
-                      onChange={e => selectOption(field._id, option._id, true)}
-                      control={(
-                        <Checkbox color="primary"
-                          checked={option?.selected ?? false}
-                        />
-                      )}
-                      label={option.text}
-                    />
-                  ))}
-                </FormGroup>
-              )}
-            </QuestionSection>
-          ))}
+                    {(field.description === '4. Espaço físico') && (
+                      <>
+                        <ScoreTotalContent>
+                          <ScoreLabel>SCORE:</ScoreLabel>
+                          <ScoreTotal>
+                            {
+                              scoreSocial.total ? `${scoreSocial.total} - ${scoreSocial.status}` : '0 - Não Elegível'
+                            }
+                          </ScoreTotal>
+                        </ScoreTotalContent>
+                        <FormTitle>Avaliação Ambiental</FormTitle>
+                      </>
+                    )}
 
-          <ScoreTotalContent>
-            <ScoreLabel>SCORE:</ScoreLabel>
-            <ScoreTotal>{score.total}</ScoreTotal>
-          </ScoreTotalContent>
+                    <QuestionTitle>{handleDescription(field)}</QuestionTitle>
+                    {field.type === 'radio' && (
+                      <RadioGroup style={{width: 'fit-content'}}>
+                        {field.options.map((option: any, index: number) => (
+                          <FormControlLabel
+                            key={`option_${field._id}_${index}`}
+                            value={option._id}
+                            control={<Radio color="primary"/>}
+                            label={option.text}
+                            checked={isDone() ? option?.selected : false}
+                          />
+                        ))}
+                      </RadioGroup>
+                    )}
 
-          <ButtonsContent>
-            <Button
-              background="default"
-              onClick={() => history.push(`/patient/capture/${care?._id}/overview`)}
-            >
-              Cancelar
-            </Button>
+                    {field.type === 'check' && (
+                      <FormGroup>
+                        {field.options.map((option: any, index: number) => (
+                          <FormControlLabel
+                            key={`option_${field._id}_${index}`}
+                            value={option._id}
+                            control={(
+                              <Checkbox color="primary"
+                                        checked={isDone() ? option?.selected : false}
+                              />
+                            )}
+                            label={option.text}
+                          />
+                        ))}
+                      </FormGroup>
+                    )}
+                  </QuestionSection>
+                </>
+              ))}
 
-            {careState.data.capture?.status === 'Em Andamento' && (
-              <Button
-                background="primary"
-                onClick={handleSubmit}
-              >
-                Finalizar
-              </Button>
-            )}
-          </ButtonsContent>
-        </FormContent>
+              <ScoreTotalContent>
+                <ScoreLabel>SCORE:</ScoreLabel>
+                <ScoreTotal>
+                  {
+                    scoreAmbiental.total ? `${scoreAmbiental.total} - ${scoreAmbiental.status}` : '0 - Não Elegível'
+                  }
+                </ScoreTotal>
+              </ScoreTotalContent>
+
+              <ButtonsContent>
+                <Button
+                  background="default"
+                  onClick={() => history.push(`/patient/capture/${care?._id}/overview`)}
+                >
+                  Voltar
+                </Button>
+
+                {careState.data.capture?.status === 'Em Andamento' && (
+                  <Button
+                    background="primary"
+                    onClick={handleSubmit}
+                  >
+                    Finalizar
+                  </Button>
+                )}
+              </ButtonsContent>
+            </FormContent>
+          </>
+        ) : (
+          <>
+            <FormContent>
+              {documentGroup?.fields?.map((field: any, index: number) => (
+                <>
+                  <QuestionSection key={`question_${field._id}_${index}`}>
+
+                    {(field.description === '4. Espaço físico') && (
+                      <>
+                        <ScoreTotalContent>
+                          <ScoreLabel>SCORE:</ScoreLabel>
+                          <ScoreTotal>
+                            {
+                              scoreSocial.total ? `${scoreSocial.total} - ${scoreSocial.status}` : '0 - Não Elegível'
+                            }
+                          </ScoreTotal>
+                        </ScoreTotalContent>
+                        <FormTitle>Avaliação Ambiental</FormTitle>
+                      </>
+                    )}
+
+                    <QuestionTitle>{handleDescription(field)}</QuestionTitle>
+                    {field.type === 'radio' && (
+                      <RadioGroup style={{width: 'fit-content'}}
+                                  onChange={e => selectOption(field._id, e.target.value)}>
+                        {field.options.map((option: any, index: number) => (
+                          <FormControlLabel
+                            key={`option_${field._id}_${index}`}
+                            value={option._id}
+                            control={<Radio color="primary"/>}
+                            label={option.text}
+                            checked={option?.selected}
+                          />
+                        ))}
+                      </RadioGroup>
+                    )}
+
+                    {field.type === 'check' && (
+                      <FormGroup>
+                        {field.options.map((option: any, index: number) => (
+                          <FormControlLabel
+                            key={`option_${field._id}_${index}`}
+                            value={option._id}
+                            onChange={e => selectOption(field._id, option._id, true)}
+                            control={(
+                              <Checkbox color="primary"
+                                        checked={option?.selected ?? false}
+                              />
+                            )}
+                            label={option.text}
+                          />
+                        ))}
+                      </FormGroup>
+                    )}
+                  </QuestionSection>
+                </>
+              ))}
+
+              <ScoreTotalContent>
+                <ScoreLabel>SCORE:</ScoreLabel>
+                <ScoreTotal>
+                  {
+                    scoreAmbiental.total ? `${scoreAmbiental.total} - ${scoreAmbiental.status}` : '0 - Não Elegível'
+                  }
+                </ScoreTotal>
+              </ScoreTotalContent>
+
+              <ButtonsContent>
+                <Button
+                  background="default"
+                  onClick={() => history.push(`/patient/capture/${care?._id}/overview`)}
+                >
+                  Cancelar
+                </Button>
+
+                {careState.data.capture?.status === 'Em Andamento' && (
+                  <Button
+                    background="primary"
+                    onClick={handleSubmit}
+                  >
+                    Finalizar
+                  </Button>
+                )}
+              </ButtonsContent>
+            </FormContent>
+          </>
+        )}
 
       </Container>
-    </Sidebar >
+    </Sidebar>
   );
 }
