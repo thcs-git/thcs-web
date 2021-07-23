@@ -6,7 +6,7 @@ import { loadCustomerById, getAddress as getAddressAction, updateCustomerRequest
 import { CustomerInterface } from '../../../store/ducks/customers/types';
 import { createUserRequest as createUserAction } from '../../../store/ducks/users/actions';
 import { UserInterface } from '../../../store/ducks/users/types';
-import { SearchOutlined, Edit, CodeOutlined } from '@material-ui/icons';
+import { SearchOutlined, Edit, CodeOutlined, TrackChangesTwoTone } from '@material-ui/icons';
 import { useHistory, RouteComponentProps } from 'react-router-dom';
 import {
   Button,
@@ -155,8 +155,8 @@ export default function CustomerForm(props: RouteComponentProps<IPageParams>) {
       telegram: false,
       whatsapp: false,
     }],
-    cellphone: '',
-    phone:'',
+    // cellphone: '',
+    // phone:'',
     responsible_user:'',
     active: true,
 
@@ -201,11 +201,11 @@ export default function CustomerForm(props: RouteComponentProps<IPageParams>) {
         });
         setInputPhone(prev =>({
           ...prev,
-          value:customerState.data.phone || ''
+          value:customerState.data.phones[0]?.phone || ''
         }));
         setInputCellPhone(prev =>({
           ...prev,
-          value:customerState.data.cellphone || ''
+          value:customerState.data.phones[0]?.cellphone || ''
         }));
 
       setFieldValidations({
@@ -725,12 +725,21 @@ export default function CustomerForm(props: RouteComponentProps<IPageParams>) {
               <Grid item md={4} xs={12}>
                 <InputMask
                   mask="(99) 9999-9999"
-                  value={state.phone}
+                  value={state.phones[0]?.phone}
                   disabled={!canEdit}
                   onChange={(element) =>{
-                    setState({...state, phone:element.target.value})
+                    // setState({...state, phone:element.target.value})
+                    {setState(prevState => ({
+                      ...prevState,
+                      phones: [
+                        {
+                        ...prevState.phones[0],
+                        phone : element.target.value
+                        }
+                    ]
+                    }))
                     setFieldValidations((prevState: any) => ({ ...prevState, phone: !validator.isEmpty(element.target.value) }));
-                  }}
+                  }}}
                   onBlur={validatePhone}
                     // onBlur={(element)=>{
                     //   setFieldValidations((prevState: any) => ({ ...prevState, phone: !validator.isEmpty(element.target.value) }));}}
@@ -777,13 +786,26 @@ export default function CustomerForm(props: RouteComponentProps<IPageParams>) {
                   <InputMask
                     mask="(99) 9 9999-9999"
                     disabled={!canEdit}
-                    value={state.cellphone}
+                    value={state.phones[0]?.cellphone}
                     onBlur={validateCellPhone}
+                    // onChange={(element) =>{
+                    //   setState({...state,cellphone:element.target.value})
+                    //   // setInputCellPhone({ ...inputCellPhone, value: element.target.value })}
+                    //   setFieldValidations((prevState: any) => ({ ...prevState, cellphone: !validator.isEmpty(element.target.value) }));
+                    // }}
                     onChange={(element) =>{
-                      setState({...state,cellphone:element.target.value})
-                      // setInputCellPhone({ ...inputCellPhone, value: element.target.value })}
-                      setFieldValidations((prevState: any) => ({ ...prevState, cellphone: !validator.isEmpty(element.target.value) }));
-                    }}
+                      // setState({...state, phone:element.target.value})
+                      {setState(prevState => ({
+                        ...prevState,
+                        phones: [
+                          {
+                          ...prevState.phones[0],
+                          cellphone : element.target.value
+                          }
+                      ]
+                      }))
+                      setFieldValidations((prevState: any) => ({ ...prevState, phone: !validator.isEmpty(element.target.value) }));
+                    }}}
                   >
                     {(inputProps: any) => (
                       <TextField
