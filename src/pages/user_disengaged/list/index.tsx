@@ -34,6 +34,8 @@ export default function UserDisengaged() {
     dispatch(searchRequest(event.target.value));
   }, []);
   const debounceSearchRequest = debounce(handleChangeInput, 900);
+  const [historyModalOpen, setHistoryModalOpen] = useState(false);
+  const [userIndex, setUserIndex] = useState(0);
 
   useEffect(() => {
     dispatch(cleanAction());
@@ -48,9 +50,13 @@ export default function UserDisengaged() {
     setAnchorEl(null);
   }, [anchorEl]);
 
-  const [open, setOpen] = useState(false);
+  const toggleHistoryModal = (index: number) => {
+    handleCloseRowMenu();
+    setUserIndex(index);
+    setHistoryModalOpen(!historyModalOpen);
+  };
 
-  
+
   return (
     <>
       <Sidebar>
@@ -100,10 +106,10 @@ export default function UserDisengaged() {
                 <TableCell align="center">
                   {user.specialties.length > 0 ? (
                     <ListItem>
-                      <Button aria-controls={`user-speciality${index}`} id={`btn_user-speciality${index}`} aria-haspopup="true" onClick={handleOpenRowMenu}>
+                      <Button onClick={() => toggleHistoryModal(index)}>
                         <AddIcon style={{ color: '#0899BA', cursor: "pointer" }} />
                       </Button>
-                      <Menu
+                      {/* <Menu
                         id={`user-speciality${index}`}
                         anchorEl={anchorEl}
                         keepMounted
@@ -111,12 +117,12 @@ export default function UserDisengaged() {
                         onClose={handleCloseRowMenu}
                       >
                         <MenuItem style={{ cursor: "default", fontSize: "13pt", fontFamily: "Open Sans Bold" }}><h4>Principal</h4></MenuItem>
-                        <MenuItem style={{ cursor: "default", fontSize: "10pt", fontFamily: "Open Sans Regular"}}>{user.main_specialty_id.name}</MenuItem>
-                        <MenuItem style={{ cursor: "default", fontSize: "13pt", fontFamily: "Open Sans Bold"}}><h4>Secundária</h4></MenuItem>
-                        <MenuItem style={{ cursor: "default", fontSize: "10pt", fontFamily: "Open Sans Regular"}}>{user.specialties.map((specialty, index) => (
+                        <MenuItem style={{ cursor: "default", fontSize: "10pt", fontFamily: "Open Sans Regular" }}>{user.main_specialty_id.name}</MenuItem>
+                        <MenuItem style={{ cursor: "default", fontSize: "13pt", fontFamily: "Open Sans Bold" }}><h4>Secundária</h4></MenuItem>
+                        <MenuItem style={{ cursor: "default", fontSize: "10pt", fontFamily: "Open Sans Regular" }}>{user.specialties.map((specialty, index) => (
                           `${specialty.name}${index < (user.specialties.length - 1) ? ',' : ''}`
                         ))}</MenuItem>
-                      </Menu>
+                      </Menu> */}
                     </ListItem>
                   ) : (null)
                   }
@@ -183,6 +189,37 @@ export default function UserDisengaged() {
           />
 
         </Container>
+        {/*Especialidades*/}
+        <Dialog
+
+          maxWidth="lg"
+          open={historyModalOpen}
+          onClose={() => setHistoryModalOpen(false)}
+          aria-labelledby="scroll-dialog-title"
+          aria-describedby="scroll-dialog-description"
+        >
+          <DialogTitle id="scroll-dialog-title"><h3>Especialidades</h3></DialogTitle>
+          <DialogContent>
+            <DialogContentText
+              id="scroll-dialog-description"
+              tabIndex={-1}
+            >
+              <p style={{ fontFamily: "Open Sans Bold" }}><h3>Principal</h3></p>
+              <br />
+              <p style={{ color: '#333333', fontSize: "10pt", fontFamily: "Open Sans Regular" }}>{userState.list.data[userIndex]?.main_specialty_id.name}</p>
+              <br />
+              <p style={{ fontFamily: "Open Sans Bold" }}><h3>Secundária</h3></p>
+              <br />
+              <p style={{ color: '#333333', fontSize: "10pt", fontFamily: "Open Sans Regular" }}>{userState.list.data[userIndex]?.specialties.map((specialty, index) => (
+                `${specialty.name}${index < (userState.list.data[userIndex].specialties.length - 1) ? ',' : ''}`))}</p>
+            </DialogContentText>
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={() => setHistoryModalOpen(false)} color="primary">
+              <h3 style={{ color: '#0899BA', fontSize: '11pt' }}>Fechar</h3>
+            </Button>
+          </DialogActions>
+        </Dialog>
 
       </Sidebar>
     </>
