@@ -572,6 +572,11 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
     }
   }
 
+  const handleBackStep = useCallback(() => {
+    setCurrentTab((prevState) => prevState - 1);
+    window.scrollTo(0, 200)
+  }, [currentTab]);
+
 
   function handleSelectProfession(value: ProfessionUserInterface) {
     setState((prevState) => ({
@@ -1906,14 +1911,31 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
             </FormContent>
             <ButtonsContent>
 
-              {canEdit && (<ButtonComponent variant="outlined" className={classes.cancel}
-                                            onClick={() => userState.success ? history.push('/user') : handleOpenModalCancel()}>
-                Cancelar
-              </ButtonComponent>)}
-              {(!canEdit && currentTab === 0) && (
-                <ButtonComponent background="success_rounded" onClick={() => handlerReturn()}>
-                  Voltar
-                </ButtonComponent>)}
+              <ButtonComponent
+                background="default"
+                onClick={() =>
+                  history.push(`/user`)
+                }
+              >
+                Voltar
+              </ButtonComponent>
+
+              <ButtonComponent
+                disabled={currentTab === 0}
+                background="success_rounded"
+                onClick={() => handleBackStep()}
+              >
+                Anterior
+              </ButtonComponent>
+
+              {/*{canEdit && (<ButtonComponent variant="outlined" className={classes.cancel}*/}
+              {/*                              onClick={() => userState.success ? history.push('/user') : handleOpenModalCancel()}>*/}
+              {/*  Cancelar*/}
+              {/*</ButtonComponent>)}*/}
+              {/*{(!canEdit && currentTab === 0) && (*/}
+              {/*  <ButtonComponent background="success_rounded" onClick={() => handlerReturn()}>*/}
+              {/*    Voltar*/}
+              {/*  </ButtonComponent>)}*/}
 
               {currentTab === 0 ? (
                 <ButtonComponent
