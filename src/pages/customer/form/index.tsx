@@ -219,8 +219,8 @@ export default function CustomerForm(props: RouteComponentProps<IPageParams>) {
         city:true,
         state:true,
         email:true,
-        phone:true,
-        cellphone: true,
+        // phone:true,
+        // cellphone: true,
        })
 
     }
@@ -358,8 +358,8 @@ export default function CustomerForm(props: RouteComponentProps<IPageParams>) {
 
   const validatePhone = () => {
 
-    if ( state.phone){
-      const landline =  state.phone.replace('(','').replace(')','9').replace(' ','').replace(' ','').replace('-','');
+    if (state.phones[0]?.phone){
+      const landline =  state.phones[0]?.phone.replace('(','').replace(')','9').replace(' ','').replace(' ','').replace('-','');
 
      isValidPhoneNumber = validator.isMobilePhone(landline, 'pt-BR');
 
@@ -725,12 +725,12 @@ export default function CustomerForm(props: RouteComponentProps<IPageParams>) {
               <Grid item md={4} xs={12}>
                 <InputMask
                   mask="(99) 9999-9999"
-                  value={state.phones[0]?.phone}
+                  value={state.phone? state.phone : state.phones[0]?.phone}
                   disabled={!canEdit}
                   onChange={(element) =>{
-                    // setState({...state, phone:element.target.value})
                     {setState(prevState => ({
                       ...prevState,
+                      phone: element.target.value,
                       phones: [
                         {
                         ...prevState.phones[0],
@@ -753,14 +753,14 @@ export default function CustomerForm(props: RouteComponentProps<IPageParams>) {
                       variant="outlined"
                       size="small"
                       placeholder="(00) 0000-0000"
-                      error ={!validatePhone() && state.phone != ''}
+                      error ={!validatePhone() && state.phones[0].phone != ''}
 
                       fullWidth
 
                     />
                   )}
                 </InputMask>
-                {!validatePhone() && state.phone &&(
+                {!validatePhone() && state.phones[0].phone &&(
                       <p style={{ color: '#f44336', margin:'-10px 5px 10px' }}>
                        Por favor insira um número válido
                       </p>
@@ -786,17 +786,12 @@ export default function CustomerForm(props: RouteComponentProps<IPageParams>) {
                   <InputMask
                     mask="(99) 9 9999-9999"
                     disabled={!canEdit}
-                    value={state.phones[0]?.cellphone}
+                    value={state.cellphone? state.cellphone : state.phones[0]?.cellphone }
                     onBlur={validateCellPhone}
-                    // onChange={(element) =>{
-                    //   setState({...state,cellphone:element.target.value})
-                    //   // setInputCellPhone({ ...inputCellPhone, value: element.target.value })}
-                    //   setFieldValidations((prevState: any) => ({ ...prevState, cellphone: !validator.isEmpty(element.target.value) }));
-                    // }}
                     onChange={(element) =>{
-                      // setState({...state, phone:element.target.value})
                       {setState(prevState => ({
                         ...prevState,
+                        cellphone: element.target.value,
                         phones: [
                           {
                           ...prevState.phones[0],
@@ -805,6 +800,7 @@ export default function CustomerForm(props: RouteComponentProps<IPageParams>) {
                       ]
                       }))
                       setFieldValidations((prevState: any) => ({ ...prevState, phone: !validator.isEmpty(element.target.value) }));
+                      // setInputCellPhone({...inputCellPhone, value: element.target.value})
                     }}}
                   >
                     {(inputProps: any) => (
@@ -816,13 +812,13 @@ export default function CustomerForm(props: RouteComponentProps<IPageParams>) {
                         variant="outlined"
                         size="small"
                         placeholder="(00) 0 0000-0000"
-                        error ={!validateCellPhone() && state.cellphone != ''}
+                        error ={!validateCellPhone() && state.phones[0]?.cellphone != ''}
                         fullWidth
 
                       />
                     )}
                   </InputMask>
-                  {!validateCellPhone() && state.cellphone &&(
+                  {!validateCellPhone() && state.phones[0]?.cellphone &&(
                       <p style={{ color: '#f44336', margin: '4px 4px' }}>
                        Por favor insira um número válido
                       </p>
