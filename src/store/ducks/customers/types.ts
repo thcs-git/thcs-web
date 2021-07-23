@@ -44,11 +44,12 @@ export interface CustomerInterface {
     complement: string;
   };
   email: string;
-  phones: {
-    number: string;
+  phones: [{
+    cellphone?: string;
+    phone?: string;
     telegram: boolean;
     whatsapp: boolean;
-  };
+  }];
   cellphone?: string;
   phone?: string;
   responsible_user: string;
