@@ -61,15 +61,19 @@ import {
   PatientData,
   SuccessContent,
   BackButtonContent,
+  MaleIconLogo,
+  FemaleIconLogo
 } from './styles';
 
-import {ReactComponent as SuccessImage} from '../../../../assets/img/ilustracao-avaliacao-concluida.svg';
+import { ReactComponent as SuccessImage } from '../../../../assets/img/ilustracao-avaliacao-concluida.svg';
+import { age } from '../../../../helpers/date';
 import {forEach} from 'cypress/types/lodash';
 import ButtonComponent from "../../../../styles/components/Button";
 import {HeaderContent} from "../../../care/overview/schedule/styles";
 
 interface IPageParams {
   id: string;
+  mode: string;
 }
 
 interface ICaptureData {
@@ -352,8 +356,6 @@ export default function PatientCaptureForm(props: RouteComponentProps<IPageParam
       user_id: userSessionId,
     };
 
-    console.log('1', updateParams)
-
     dispatch(updateCareRequest(updateParams));
   };
 
@@ -457,14 +459,25 @@ export default function PatientCaptureForm(props: RouteComponentProps<IPageParam
                         </div>
                         <div>
                           <p className="title">{care?.patient_id?.name}</p>
-                          <div className="subTitle">
+                          <div className="subTitle" >
+                            <a className="patientInfo">{care?.patient_id?.birthdate ? age(care?.patient_id?.birthdate) : ''} | CPF: {care?.patient_id.fiscal_number} | Mãe: {care?.patient_id?.mother_name} | </a>
+                            {
+                              (care?.patient_id?.gender != 'Masculino')?
+                              (
+                                <>
+                                <a> Sexo:  </a> <FemaleIconLogo />
+                                </>
+                              ):(
+                                <>
+                                    <a>Sexo:  </a> <MaleIconLogo />
+                                </>
+                              )
+                            }
                             <p>Pedido: {care?.capture?.order_number}</p>
-                            <p>Data do
-                              Atendimento: {care?.created_at ? formatDate(care.created_at, 'DD/MM/YYYY HH:mm:ss') : '-'}</p>
-                            <p>Status: {care.status}</p>
+                            <p>Data de Nascimento: {formatDate(care?.patient_id?.birthdate, 'DD/MM/YYYY')}</p>
                             {care.capture?.status === 'Em Andamento' && (
-                              <Button onClick={() => setCaptureModalModalOpen(true)}><Edit
-                                style={{width: 15, marginRight: 5}}/> Editar</Button>
+                              <Button onClick={() => setCaptureModalModalOpen(true)}><Visibility className="primary"
+                                style={{width: 20, marginRight: 5}}/> Dados da captação</Button>
                             )}
                           </div>
                         </div>
@@ -493,6 +506,7 @@ export default function PatientCaptureForm(props: RouteComponentProps<IPageParam
                           <Print className="primary" style={{width: 30, height: 30}}/>
                         </Button>
                       )}
+
 
                     </PatientResumeContent>
                   </PatientResume>
@@ -535,10 +549,11 @@ export default function PatientCaptureForm(props: RouteComponentProps<IPageParam
                             <Td center>{handleComplexityLabel(documentGroup.name, document?.complexity)}</Td>
                             {/*<Td center>{document?.created_at ? formatDate(document.created_at, 'DD/MM/YYYY HH:mm:ss') : '-'}</Td>*/}
                             <Td center>{handleElegibilityLabel(documentGroup.name, document?.status)}</Td>
-                          </>
-                        ) : (
-                          <>
-                            <Td>{documentGroup.name}</Td>
+
+                        </>
+                          ):(
+                            <>
+                                <Td>{documentGroup.name}</Td>
                             <Td center>{handleCareTypeLabel(documentGroup.name, '-')}</Td>
                             <Td center>{handleComplexityLabel(documentGroup.name, '-')}</Td>
                             {/*<Td center>{document?.created_at ? formatDate(document.created_at, 'DD/MM/YYYY HH:mm:ss') : '-'}</Td>*/}
@@ -662,6 +677,7 @@ export default function PatientCaptureForm(props: RouteComponentProps<IPageParam
           captureData={captureData}
           setCaptureData={setCaptureData}
           saveCallback={handleSubmitCaptureData}
+          cantEdit={true}
         />
 
         <Dialog

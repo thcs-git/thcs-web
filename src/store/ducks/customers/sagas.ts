@@ -84,8 +84,8 @@ export function* updateCompanyCustomer({ payload: { data } }: any) {
   try {
     const phones = [];
 
+    console.log("data", data);
     if (data?.phone?.length > 0) {
-      console.log("data", data);
       phones.push({
         whatsapp: false,
         telegram: false,
@@ -102,7 +102,7 @@ export function* updateCompanyCustomer({ payload: { data } }: any) {
     }
 
     data.phones = phones;
-    console.log(data.phones);
+    console.log("phone",data.phones);
 
     const response: AxiosResponse = yield call(
       apiSollar.put,
