@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef, useCallback, ChangeEvent } from 're
 import { useHistory, Link } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import Loading from '../../../components/Loading';
-import { Container, Button, Menu, MenuItem, TableRow, TableCell } from '@material-ui/core';
+import { Container, Button, Menu, MenuItem, TableRow, TableCell, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Grid } from '@material-ui/core';
 import { MoreVert } from '@material-ui/icons';
 import { UserInterface, UserListItems } from '../../../store/ducks/users/types';
 import { ApplicationState } from '../../../store';
@@ -15,19 +15,27 @@ import { loadGetUserDisengaged, searchRequest, cleanAction } from '../../../stor
 import debounce from 'lodash.debounce';
 import { formatDate } from '../../../helpers/date';
 import { searchUserDisengaged } from '../../../store/ducks/users/sagas';
+import ListItem from '@material-ui/core/ListItem';
+import ListItemIcon from '@material-ui/core/ListItemIcon';
+import ListItemText from '@material-ui/core/ListItemText';
+import AddIcon from '@material-ui/icons/Add';
+import { TransitionProps } from '@material-ui/core/transitions';
+import Slide from '@material-ui/core/Slide';
+
 
 export default function UserDisengaged() {
   const history = useHistory();
   const dispatch = useDispatch();
   const [search, setSearch] = useState('');
   const userState = useSelector((state: ApplicationState) => state.users);
-  const [users, setUsers] = useState<UserInterface[]>([]);
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const handleChangeInput = useCallback((event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     setSearch(event.target.value)
-    dispatch(searchUserDisengaged(event.target.value));
+    dispatch(searchRequest(event.target.value));
   }, []);
   const debounceSearchRequest = debounce(handleChangeInput, 900);
+  const [historyModalOpen, setHistoryModalOpen] = useState(false);
+  const [userIndex, setUserIndex] = useState(0);
 
   useEffect(() => {
     dispatch(cleanAction());
@@ -42,6 +50,13 @@ export default function UserDisengaged() {
     setAnchorEl(null);
   }, [anchorEl]);
 
+  const toggleHistoryModal = (index: number) => {
+    handleCloseRowMenu();
+    setUserIndex(index);
+    setHistoryModalOpen(!historyModalOpen);
+  };
+
+  const [openPopup, setOpenPopup] = useState(false)
 
 
   return (
@@ -50,7 +65,7 @@ export default function UserDisengaged() {
         {userState.loading && <Loading />}
         <Container>
           <FormTitle>
-            Lista de Profissionais Desvinculados
+            Lista de Profissionais Disvinculados
           </FormTitle>
           <SearchComponent
             handleButton={() => history.push('/company/create/')}
@@ -61,32 +76,58 @@ export default function UserDisengaged() {
           <Table
             tableCells={[
               { name: 'Profissional', align: 'left', },
-              // { name: 'Email', align: 'left' },
+              //{ name: 'Email', align: 'left' },
               { name: 'Estado', align: 'left' },
               { name: 'Função', align: 'left' },
               { name: 'Especialidade', align: 'left' },
+              { name: '', align: 'left' },
               { name: 'Adicionado em', align: 'left' },
               { name: '', align: 'left' },
             ]}
           >
-            { userState.list.data.map((user:UserListItems, index:number) =>(
-             <TableRow key={`user_${index}`}>
-               <TableCell>
-                <Link to={`/user/${user._id}/link/edit`}>{user.name}</Link>
-               </TableCell>
-               {/*<TableCell>*/}
-               {/*  {user.email}*/}
-               {/*</TableCell>*/}
-               <TableCell>
+            {userState.list.data.map((user: UserListItems, index: number) => (
+              <TableRow key={`user_${index}`}>
+                <TableCell>
+                  <Link to={`/user/${user._id}/link/edit`}>{user.name}</Link>
+                </TableCell>
+                {/*<TableCell>
+                {user.email}
+                </TableCell>*/}
+                <TableCell>
                   {user.address?.state || 'BR'}
-               </TableCell>
-               <TableCell>
+                </TableCell>
+                <TableCell>
                   {user.profession_id.name}
                 </TableCell>
                 <TableCell>
-                  {user.specialties.map((specialty, index) => (
+                  {/* {user.specialties.map((specialty, index) => (
                     `${specialty.name}${index < (user.specialties.length - 1) ? ',' : ''}`
-                  ))}
+                  ))} */}
+                  {user.main_specialty_id.name}
+                </TableCell>
+                <TableCell align="center">
+                  {user.specialties.length > 0 ? (
+                    <ListItem>
+                      <Button onClick={() => toggleHistoryModal(index)}>
+                        <AddIcon style={{ color: '#0899BA', cursor: "pointer" }} />
+                      </Button>
+                      {/* <Menu
+                        id={`user-speciality${index}`}
+                        anchorEl={anchorEl}
+                        keepMounted
+                        open={anchorEl?.id === `btn_user-speciality${index}`}
+                        onClose={handleCloseRowMenu}
+                      >
+                        <MenuItem style={{ cursor: "default", fontSize: "13pt", fontFamily: "Open Sans Bold" }}><h4>Principal</h4></MenuItem>
+                        <MenuItem style={{ cursor: "default", fontSize: "10pt", fontFamily: "Open Sans Regular" }}>{user.main_specialty_id.name}</MenuItem>
+                        <MenuItem style={{ cursor: "default", fontSize: "13pt", fontFamily: "Open Sans Bold" }}><h4>Secundária</h4></MenuItem>
+                        <MenuItem style={{ cursor: "default", fontSize: "10pt", fontFamily: "Open Sans Regular" }}>{user.specialties.map((specialty, index) => (
+                          `${specialty.name}${index < (user.specialties.length - 1) ? ',' : ''}`
+                        ))}</MenuItem>
+                      </Menu> */}
+                    </ListItem>
+                  ) : (null)
+                  }
                 </TableCell>
                 <TableCell>
                   {formatDate(user.created_at, 'DD/MM/YYYY HH:mm:ss')}
@@ -150,6 +191,38 @@ export default function UserDisengaged() {
           />
 
         </Container>
+        {/*Especialidades*/}
+        <Dialog
+
+          maxWidth="lg"
+          open={historyModalOpen}
+          onClose={() => setHistoryModalOpen(false)}
+          aria-labelledby="scroll-dialog-title"
+          aria-describedby="scroll-dialog-description"
+        >
+          <DialogTitle id="scroll-dialog-title"><h3>Especialidades</h3></DialogTitle>
+          <DialogContent>
+            <DialogContentText
+              id="scroll-dialog-description"
+              tabIndex={-1}
+            >
+              <p style={{ fontFamily: "Open Sans Bold" }}><h3>Principal</h3></p>
+              <br />
+              <p style={{ color: '#333333', fontSize: "10pt", fontFamily: "Open Sans Regular" }}>{userState.list.data[userIndex]?.main_specialty_id.name}</p>
+              <br />
+              <p style={{ fontFamily: "Open Sans Bold" }}><h3>Secundária</h3></p>
+              <br />
+              <p style={{ color: '#333333', fontSize: "10pt", fontFamily: "Open Sans Regular" }}>{userState.list.data[userIndex]?.specialties.map((specialty, index) => (
+                `${specialty.name}${index < (userState.list.data[userIndex].specialties.length - 1) ? ',' : ''}`))}</p>
+            </DialogContentText>
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={() => setHistoryModalOpen(false)} color="primary">
+              <h3 style={{ color: '#0899BA', fontSize: '11pt' }}>Fechar</h3>
+            </Button>
+          </DialogActions>
+        </Dialog>
+
       </Sidebar>
     </>
   )

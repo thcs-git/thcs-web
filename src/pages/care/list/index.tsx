@@ -56,7 +56,7 @@ export default function CouncilList() {
   const handleChangeInput = useCallback(
     (event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
       setSearch(event.target.value);
-      dispatch(getCares({ search: event.target.value, status: "Atendimento" }));
+      dispatch(getCares({ search: event.target.value, status: "Atendimento"}));
     },
     [search]
   );

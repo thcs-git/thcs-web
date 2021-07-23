@@ -197,6 +197,7 @@ export default function CareForm(props: RouteComponentProps<IPageParams>) {
   var isValidResponsableCellPhoneNumber: any;
   var formValid: any;
   useEffect(() => {
+    dispatch(clear())
     dispatch(cleanAction());
     dispatch(clear());
     if (params.id) {
@@ -258,6 +259,7 @@ export default function CareForm(props: RouteComponentProps<IPageParams>) {
   }, [patientState, selectCheckbox])
 
   const selectPatientArea = useCallback(() => {
+
     const selected = areaState.list.data.filter(item => {
       if (typeof state?.area_id === 'object') {
         return item._id === state?.area_id._id
@@ -1395,6 +1397,7 @@ export default function CareForm(props: RouteComponentProps<IPageParams>) {
             )}
 
           </FormContent>
+
 
 
           <ButtonsContent>
