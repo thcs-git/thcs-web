@@ -201,11 +201,11 @@ export default function CustomerForm(props: RouteComponentProps<IPageParams>) {
         });
         setInputPhone(prev =>({
           ...prev,
-          value:customerState.data.phones[0]?.phone || ''
+          value:customerState.data.phone || ''
         }));
         setInputCellPhone(prev =>({
           ...prev,
-          value:customerState.data.phones[0]?.cellphone || ''
+          value:customerState.data.cellphone || ''
         }));
 
       setFieldValidations({
@@ -725,10 +725,10 @@ export default function CustomerForm(props: RouteComponentProps<IPageParams>) {
               <Grid item md={4} xs={12}>
                 <InputMask
                   mask="(99) 9999-9999"
-                  value={state.phones[0]?.phone}
+                  value={state.phone}
                   disabled={!canEdit}
                   onChange={(element) =>{
-                    setState({...state,phone:element.target.value})
+                    setState({...state, phone:element.target.value})
                     setFieldValidations((prevState: any) => ({ ...prevState, phone: !validator.isEmpty(element.target.value) }));
                   }}
                   onBlur={validatePhone}
