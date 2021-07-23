@@ -121,7 +121,7 @@ export interface CareInterface {
   health_plan_card_validate?: string;
   origin_id?: string;
   accommodation_type_id?: string;
-  care_type_id?: string | CareTypeInterface;
+  care_type_id?: any;
   procedure_id?: string;
   cid_id?: string | CidPopulateInterface;
   area_id?: any;
@@ -147,6 +147,9 @@ export interface CareInterface {
     assistant_doctor?: string;
     sector?: string;
     bed?: string;
+    health_insurance_id?: string;
+    health_plan_id?: string;
+    health_sub_plan_id?: string;
   };
 }
 
@@ -156,6 +159,7 @@ export interface CareList {
   page: string;
   total: number;
   search?: string;
+  status?: string;
 }
 
 /**

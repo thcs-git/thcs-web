@@ -4,13 +4,14 @@ import React, { useState, useEffect, useCallback } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { RouteComponentProps, useHistory } from "react-router-dom";
 import { ReactComponent as SuccessImage } from "../../../assets/img/ilustracao-avaliacao-concluida.svg";
-import { FeedbackContent,FormGroupSection, FeedbackImage, FeedbackTitle,FeedbackButtonsContent, FeedbackDescription,HomeIconLogo } from "./style";
+import { FeedbackContent,FormGroupSection, FeedbackImage, FeedbackTitle,FeedbackButtonsContent, FeedbackDescription,HomeIconLogo,TokenIconErro, TokenIconSuccess } from "./style";
 import { loadCheckEmail, cleanAction,loadRecoveryPassword, loadUserByEmail, loadRequest,loadUserTypesRequest} from "../../../store/ducks/users/actions";
 import { UserInterface } from "../../../store/ducks/users/types";
-import { TextField,Grid} from '@material-ui/core';
 import { ApplicationState } from '../../../store';
 import { UserRecoveryPassword } from "../../../store/ducks/users/types";
-import Box from '@material-ui/core/Box';
+import { Box,  FormControl, Grid, IconButton, InputAdornment, InputLabel, OutlinedInput, TextField }from '@material-ui/core';
+import { VisibilityOff,Visibility } from '@material-ui/icons';
+import ButtonComponent from '../../../styles/components/Button';
 
 const SIZE_INPUT_PASSWORD = 3;
 interface IPageParams {
@@ -28,6 +29,7 @@ export default function RecoveryPasswordPage(props: RouteComponentProps<IPagePar
   const [newPassword,setNewPassword] = useState({value:"",error:false});
   const [newConfirmPassword,setNewConfirmPassword] = useState({value:""});
   const userState = useSelector((state: ApplicationState) => state.users);
+  const [showPassword, setShowPassword] = useState(false);
   const [ok,setOk] = useState(false);
   const [userecovery, setUserecovery] = useState<UserRecoveryPassword>({
     _id:"",
@@ -62,6 +64,7 @@ export default function RecoveryPasswordPage(props: RouteComponentProps<IPagePar
     council_number: "",
     verified: "",
     active: true,
+    professions:[]
   });
 
   useEffect( ()=>{
@@ -78,110 +81,142 @@ export default function RecoveryPasswordPage(props: RouteComponentProps<IPagePar
     }))
   },[params])
 
+  const handleClickShowPassword = useCallback(() => {
+    setShowPassword(prev => !prev);
+  }, []);
+
   const  handleValidatePassword = useCallback(()=>{
-    setNewPassword(prev => ({ ...prev, error: !(newPassword.value.length >= SIZE_INPUT_PASSWORD
-      && newPassword.value == newConfirmPassword.value) }));
-      setUserecovery(prev=>({
-        ...prev,
-        password:newPassword.value
-      }))
+    console.log("validação");
+    setNewPassword(prev => (
+      { ...prev,
+        error: !(userecovery.password.length >= SIZE_INPUT_PASSWORD
+      && userecovery.password == newConfirmPassword.value) }));
+
       }
   ,[newPassword])
 
   const  recoveryPassword= useCallback(()=>{
+    console.log(userecovery);
     if(!newPassword.error){
-
-        console.log(userecovery);
-    dispatch(loadRecoveryPassword(userecovery));
-    setOk(true);
+       dispatch(loadRecoveryPassword(userecovery));
+      setOk(true);
     }
   },[newPassword])
 
   return (
     <>
     { userState.error && (
-      <FeedbackContent>
-      <FormGroupSection>
-        <FeedbackTitle>
-          Infelizmente não foi possível alterar a sua senha
-        </FeedbackTitle>
-        <FeedbackDescription>
-        O usuário é inválido ou o link expirou.
-        Por favor refaça os procedimento para alteração de senha.
-        </FeedbackDescription>
 
+      <FeedbackContent>
+        <Box display="flex" width={200} height={165} justifyContent="center" alignItems="center" style={{margin:"2rem"}}>
+        <HomeIconLogo />
+        </Box>
+        <Box>
+          <TokenIconErro></TokenIconErro>
+        </Box>
+      <FormGroupSection style={{ display:'flex', flexDirection:"column" }}>
+        <FeedbackTitle style={{textAlign:"center"}}>
+          Não foi possível alterar sua senha
+        </FeedbackTitle>
+        <FeedbackDescription style={{ display:'flex', flexDirection:"column", textAlign:"center" }}>
+        Isso pode acontecer quando você insere um usuário inválido ou utiliza um link já expirado. <br />
+        Que tal recomeçar as etapas de recuperação de senha?
+        </FeedbackDescription>
       </FormGroupSection>
+      <FeedbackButtonsContent >
+        <Button variant="contained" style={{ background:"#4FC66A99", color:"white"}}  onClick={()=>{history.push("/login")}}>Login</Button>
+      </FeedbackButtonsContent>
     </FeedbackContent>
     )}
 
-      { !ok && (
+      { (!ok && !userState.error)  && (
         <>
         <FeedbackContent>
-        <Box display="flex" width={150} height={165} justifyContent="center" alignItems="center" style={{margin:"2rem"}}>
+        <Box display="flex" width={200} height={165} justifyContent="center" alignItems="center" style={{margin:"2rem"}}>
             <HomeIconLogo />
-          </Box>
-          <FormGroupSection>
+        </Box>
+          <FormGroupSection style={{width:"400px"}}>
              <Grid container direction="column">
               <Grid item md={12}>
                 <FeedbackTitle>
-                  Redefinir Senha
+                  <h6>
+                    Redefinir Senha
+                  </h6>
                 </FeedbackTitle>
               </Grid>
-              <Grid item md={12}>
-              <FeedbackDescription>
-                <TextField
-                  type="password"
-                  label="Nova senha"
-                  variant="outlined"
-                  size="small"
-                  error={newPassword.error}
-                  onChange={element=>{
-                    setNewPassword(prev=>({
-                      ...prev,
-                      value:element.target.value
-                    }))
-                  }
-                }
-                onBlur={handleValidatePassword}
-              >
-            </TextField>
-          </FeedbackDescription>
+              <Grid item md={12} xs={12}>
+              <FormControl fullWidth margin='normal' variant="outlined">
+                <InputLabel htmlFor="outlined-adornment-password"> Nova Senha </InputLabel>
+                  <OutlinedInput
+                    id="outlined-adornment-password"
+                    type={showPassword ? 'text' : 'password'}
+                    error={newPassword.error}
+                    onChange={element=>{
+                      setUserecovery(prev=>({
+                        ...prev,
+                        password:element.target.value
+                      }))
+                    }}
+                    endAdornment={
+                      <InputAdornment position="end">
+                        <IconButton
+                          aria-label="toggle password visibility"
+                          onClick={handleClickShowPassword}
+                       // onMouseDown={handleMouseDownPassword}
+                          edge="end"
+                              >
+                                {showPassword ? <Visibility /> : <VisibilityOff />}
+                              </IconButton>
+                            </InputAdornment>
+                          }
+                          onBlur={handleValidatePassword}
+                          labelWidth={100}
+                        />
+                </FormControl>
               </Grid>
               <Grid item md={12}>
-              <FeedbackDescription>
-            <TextField
-                type="password"
-                label="Confirmar Nova Senha"
-                variant="outlined"
-                size="small"
-                onChange={element=>{
-                  setNewConfirmPassword(prev=>({
-                    ...prev,
-                    value:element.target.value
-                  }))
-                }}
-                onBlur={handleValidatePassword}
-            >
-            </TextField>
-            </FeedbackDescription>
+                <FormControl fullWidth margin='normal' variant="outlined">
+                  <InputLabel htmlFor="outlined-adornment-password"> Confirmar Nova senha </InputLabel>
+                    <OutlinedInput
+                      id="outlined-adornment-password"
+                          type={showPassword ? 'text' : 'password'}
+                          error={newPassword.error}
+                          onChange={element=>{
+                            setNewConfirmPassword(prev=>({
+                              ...prev,
+                              value:element.target.value
+                            }))
+                          }}
+                          endAdornment={
+                            <InputAdornment position="end">
+                              <IconButton
+                                aria-label="toggle password visibility"
+                                onClick={handleClickShowPassword}
+                                // onMouseDown={handleMouseDownPassword}
+                                edge="end"
+                              >
+                                {showPassword ? <Visibility /> : <VisibilityOff />}
+                              </IconButton>
+                            </InputAdornment>
+                          }
+                          onBlur={handleValidatePassword}
+                          labelWidth={100}
+                        />
+                </FormControl>
               </Grid>
               <Grid item>
-
+                <FeedbackButtonsContent >
+                  <Button variant="contained" style={{ background:"#4FC66A99", color:"white"}}  onClick={recoveryPassword}>Alterar Senha</Button>
+                </FeedbackButtonsContent>
               </Grid>
             </Grid>
           </FormGroupSection>
-          <FeedbackButtonsContent>
-            <Button  variant="outlined" onClick={recoveryPassword}>Alterar Senha</Button>
-          </FeedbackButtonsContent>
         </FeedbackContent>
-
-        <FeedbackContent>
+        {/* <FeedbackContent>
         <FormGroupSection>
           <FeedbackTitle>
             Cadastrar nova senha
           </FeedbackTitle>
-
-
           <FeedbackDescription>
             <TextField
                 type="password"
@@ -199,28 +234,32 @@ export default function RecoveryPasswordPage(props: RouteComponentProps<IPagePar
             </TextField>
             </FeedbackDescription>
           </FormGroupSection>
-          <FeedbackButtonsContent>
-            <Button  variant="outlined" onClick={recoveryPassword}>Alterar Senha</Button>
+          <FeedbackButtonsContent style={{width:"400px"}}>
+            <Button fullWidth  variant="outlined" onClick={recoveryPassword}>Alterar Senha</Button>
           </FeedbackButtonsContent>
 
-        </FeedbackContent>
+        </FeedbackContent> */}
         </>
 
       )}
 
     { ok &&  (
       <FeedbackContent>
-        <FormGroupSection>
-          <FeedbackTitle>
+        <Box display="flex" width={200} height={165} justifyContent="center" alignItems="center" style={{margin:"2rem"}}>
+          <HomeIconLogo />
+        </Box>
+        <Box>
+          <TokenIconSuccess></TokenIconSuccess>
+        </Box>
+        <FormGroupSection style={{ display:'flex', flexDirection:"column" }}>
+          <FeedbackTitle style={{textAlign:"center"}}>
             Sua Senha foi alterada com sucesso
           </FeedbackTitle>
-          <FeedbackDescription>
-            Por favor click no botão abaixo e faça login novamente com sua nova senha.
-          </FeedbackDescription>
-          <FeedbackButtonsContent>
-          <Button  variant="outlined" onClick={()=>{ history.push("/login")}}>Login</Button>
-        </FeedbackButtonsContent>
         </FormGroupSection>
+          <FeedbackButtonsContent>
+          <Button variant="contained" style={{ background:"#4FC66A99", color:"white"}}  onClick={()=>{history.push("/login")}}>Login</Button>
+        </FeedbackButtonsContent>
+
         </FeedbackContent>
     ) }
 

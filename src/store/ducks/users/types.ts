@@ -1,5 +1,5 @@
-import {CustomerInterface} from "./../customers/types";
-import {CompanyInterface} from "./../companies/types";
+import { CustomerInterface } from "./../customers/types";
+import { CompanyInterface } from "./../companies/types";
 
 /**
  * Action types
@@ -149,7 +149,7 @@ export interface UserInterface {
   cellphone: string;
   user_type_id: string | UserTypeInterface;
   profession_id?: string | ProfessionUserInterface;
-  main_specialty_id?: any ;
+  main_specialty_id?: any;
   specialties: (SpecialtiesUserInterface | {})[];
   council_id?: {
     _id: string;
@@ -165,7 +165,7 @@ export interface UserInterface {
   username?: string;
   password?: string;
   active: boolean; // active
-  professions?: ProfessionUserInterface[];
+  professions: ProfessionUserInterface[];
   user_types?: UserTypesInterface[];
 }
 
