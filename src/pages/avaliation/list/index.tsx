@@ -382,7 +382,8 @@ export default function AvaliationList() {
     };
 
     dispatch(updateCareAction(updateParams));
-    dispatch(getCares({ status: 'Pre-Atendimento' }));
+    // dispatch(getCares({ status: 'Pre-Atendimento' }));
+    window.location.reload()
 
   }, [captureStatus, careState]);
 
@@ -610,8 +611,11 @@ export default function AvaliationList() {
               <div className="captionItem aguardando"><FiberManualRecord /> <span>Aguardando</span> &nbsp;- o pedido está
                 aguardando análise do plano de saúde
               </div>
-              <div className="captionItem andamento"><FiberManualRecord /> <span>Em andamento</span> &nbsp;- as captações
+              <div className="captionItem andamento"><FiberManualRecord /> <span>Em Andamento</span> &nbsp;- as captações
                 estão em andamento
+              </div>
+              <div className="captionItem cancelado"><FiberManualRecord /> <span>Cancelado</span> &nbsp;- a captação foi
+                cancelada e uma nova foi criada
               </div>
             </CaptionList>
           </div>
