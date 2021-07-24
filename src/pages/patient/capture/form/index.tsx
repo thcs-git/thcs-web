@@ -195,6 +195,7 @@ export default function PatientCaptureForm(props: RouteComponentProps) {
       capture: {
         ...captureData,
         status: 'Em Andamento',
+        created_at: new Date
       },
       care_type_id: '5fd66ca189a402ec48110cc1',
       user_id: localStorage.getItem(LOCALSTORAGE.USER_ID) || ``,
