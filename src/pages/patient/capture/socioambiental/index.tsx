@@ -348,7 +348,7 @@ export default function SocioAmbiental(props: RouteComponentProps<IPageParams>) 
           )}
         </HeaderContent>
 
-        {isDone() || careState.data.capture?.status != 'Em Andamento' ? (
+        {careState.data.capture?.status != 'Em Andamento' ? (
           <>
             <FormContent>
               {documentGroup?.fields?.map((field: any, index: number) => (
