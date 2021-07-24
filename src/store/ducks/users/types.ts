@@ -120,6 +120,7 @@ export interface UserListItems {
   };
   specialties: SpecialtiesUserInterface[];
   active: boolean;
+  fiscal_number: string;
 }
 
 export interface UserInterface {
