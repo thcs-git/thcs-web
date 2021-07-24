@@ -125,7 +125,7 @@ export default function CouncilList() {
                   </ComplexityStatus>
                 </TableCell>
                 <TableCell>
-                  {formatDate(care?.created_at ?? "", "DD/MM/YYYY HH:mm:ss")}
+                  {care?.started_at ? formatDate(care?.started_at ?? "", "DD/MM/YYYY HH:mm:ss") : ""}
                 </TableCell>
                 {/* <TableCell>
                   <Button

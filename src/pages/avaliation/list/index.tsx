@@ -802,11 +802,10 @@ export default function AvaliationList() {
               ]}
             >
               {patientArray?.map((patient: any, index: number) => {
-                console.log(patient)
                 return (
                   <TableRow key={`patient_${index}`}>
                     <TableCell >
-                      <p>{patient?.created_at ? formatDate(patient?.created_at, 'DD/MM/YYYY') : '-'}</p>
+                      <p>{patient?.capture?.created_at ? formatDate(patient?.created_at, 'DD/MM/YYYY') : '-'}</p>
                     </TableCell>
                     <TableCell align="center">
                       <p>{handleType(patient)}</p>
