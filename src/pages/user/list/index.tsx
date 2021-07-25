@@ -75,6 +75,12 @@ export default function UserList() {
     setHistoryModalOpen(!historyModalOpen);
   };
 
+  const handleCpf = (cpf: string) => {
+    cpf = cpf.replace('.', '')
+    cpf = cpf.replace('.', '')
+    cpf = cpf.replace('-', '')
+    return `${cpf[0]}${cpf[1]}${cpf[2]}.${cpf[3]}${cpf[4]}${cpf[5]}.${cpf[6]}${cpf[7]}${cpf[8]}-${cpf[9]}${cpf[10]}`
+  };
 
   return (
     <>
@@ -92,6 +98,7 @@ export default function UserList() {
           <Table
             tableCells={[
               { name: 'Prestador', align: 'left', },
+              {name: 'CPF', align: 'left'},
               { name: 'Função', align: 'left' },
               { name: 'Especialidades', align: 'left' },
               { name: '', align: 'left' },
@@ -104,6 +111,9 @@ export default function UserList() {
               <TableRow key={`user_${index}`}>
                 <TableCell align="left">
                   <Link key={index} to={`/user/${user._id}/view/edit`}>{user.name}</Link>
+                </TableCell>
+                <TableCell>
+                  {handleCpf(user.fiscal_number)}
                 </TableCell>
                 <TableCell>
                   {user.profession_id.name}
@@ -136,7 +146,7 @@ export default function UserList() {
                   }
                 </TableCell>
                 <TableCell>
-                  {formatDate(user.created_at, 'DD/MM/YYYY HH:mm:ss')}
+                  {formatDate(user.created_at, 'DD/MM/YYYY')}
                 </TableCell>
                 <TableCell>
                   <ListItemStatus active={user.active}>{user.active ? 'Ativo' : 'Inativo'}</ListItemStatus>
