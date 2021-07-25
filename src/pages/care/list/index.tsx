@@ -63,6 +63,13 @@ export default function CouncilList() {
 
   const debounceSearchRequest = debounce(handleChangeInput, 900);
 
+  const handleComplexity = (complexity: any) => {
+    if (complexity === 'Sem Complexidade') {
+      return ''
+    }
+    return complexity
+  };
+
   // const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
   //   setAnchorEl(event.currentTarget);
   // };
@@ -114,11 +121,11 @@ export default function CouncilList() {
                   <ComplexityStatus
                     status={care?.complexity || care?.capture?.complexity}
                   >
-                    {care?.complexity || care?.capture?.complexity}
+                    {handleComplexity(care?.complexity || care?.capture?.complexity)}
                   </ComplexityStatus>
                 </TableCell>
                 <TableCell>
-                  {formatDate(care?.created_at ?? "", "DD/MM/YYYY HH:mm:ss")}
+                  {care?.started_at ? formatDate(care?.started_at ?? "", "DD/MM/YYYY HH:mm:ss") : ""}
                 </TableCell>
                 {/* <TableCell>
                   <Button

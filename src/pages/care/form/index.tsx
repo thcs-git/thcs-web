@@ -340,7 +340,7 @@ export default function CareForm(props: RouteComponentProps<IPageParams>) {
       status: "Atendimento",
       origin_id: '5fd667d948392d0621196553',
       created_at: selectCheckbox?.created_at,
-      start_at: new Date(),
+      started_at: new Date().toISOString(),
       care_type_id: selectCareType()?._id
     };
     // console.log(assignSelectCheckbox);

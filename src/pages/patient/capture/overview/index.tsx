@@ -17,7 +17,17 @@ import {
   FormGroup,
   Checkbox, RadioGroup, Radio, InputLabel
 } from '@material-ui/core';
-import {AccountCircle, CheckCircle, MoreVert, CheckCircleOutline, Edit, Print, Visibility, Add, Description} from '@material-ui/icons';
+import {
+  AccountCircle,
+  CheckCircle,
+  MoreVert,
+  CheckCircleOutline,
+  Edit,
+  Print,
+  Visibility,
+  Add,
+  Description
+} from '@material-ui/icons';
 
 import {ReactComponent as IconAlertRed} from '../../../../assets/img/Icon-alert-red.svg';
 import {useDispatch, useSelector} from 'react-redux';
@@ -65,8 +75,8 @@ import {
   FemaleIconLogo
 } from './styles';
 
-import { ReactComponent as SuccessImage } from '../../../../assets/img/ilustracao-avaliacao-concluida.svg';
-import { age } from '../../../../helpers/date';
+import {ReactComponent as SuccessImage} from '../../../../assets/img/ilustracao-avaliacao-concluida.svg';
+import {age} from '../../../../helpers/date';
 import {forEach} from 'cypress/types/lodash';
 import ButtonComponent from "../../../../styles/components/Button";
 import {HeaderContent} from "../../../care/overview/schedule/styles";
@@ -331,8 +341,13 @@ export default function PatientCaptureForm(props: RouteComponentProps<IPageParam
       doc.finished
     ));
 
-    return (found) ? <CheckCircle style={{color: '#4FC66A', cursor: 'pointer'}}/> :
-      <Add style={{color: '#0899BA', cursor: 'pointer'}}/>;
+    if (care?.capture?.status === 'Em Andamento') {
+      return (found) ? <CheckCircle style={{color: '#4FC66A', cursor: 'pointer'}}/> :
+        <Add style={{color: '#0899BA', cursor: 'pointer'}}/>;
+    } else {
+      return (found) ? <CheckCircle style={{color: '#4FC66A', cursor: 'pointer'}}/> :
+        <></>;
+    }
   };
 
   const handleDocument = (documentId: string, documents: Array<any>) => {
@@ -374,6 +389,7 @@ export default function PatientCaptureForm(props: RouteComponentProps<IPageParam
     };
 
     dispatch(updateCareRequest(updateParams));
+    dispatch(cleanAction())
 
     history.push('/avaliation');
   }, [care, captureData]);
@@ -399,7 +415,7 @@ export default function PatientCaptureForm(props: RouteComponentProps<IPageParam
       capture: {
         ...care?.capture,
         ...captureData,
-        status: 'Recusado'
+        status: 'Cancelado'
       },
       care_type_id: care?.care_type_id?._id,
       user_id: userSessionId,
@@ -459,25 +475,36 @@ export default function PatientCaptureForm(props: RouteComponentProps<IPageParam
                         </div>
                         <div>
                           <p className="title">{care?.patient_id?.name}</p>
-                          <div className="subTitle" >
-                            <a className="patientInfo">{care?.patient_id?.birthdate ? age(care?.patient_id?.birthdate) : ''} | CPF: {care?.patient_id.fiscal_number} | Mãe: {care?.patient_id?.mother_name} | </a>
+                          <div className="subTitle">
+                            <a
+                              className="patientInfo">{care?.patient_id?.birthdate ? age(care?.patient_id?.birthdate) : ''} |
+                              CPF: {care?.patient_id.fiscal_number} | Mãe: {care?.patient_id?.mother_name} | </a>
                             {
-                              (care?.patient_id?.gender != 'Masculino')?
-                              (
-                                <>
-                                <a> Sexo:  </a> <FemaleIconLogo />
-                                </>
-                              ):(
-                                <>
-                                    <a>Sexo:  </a> <MaleIconLogo />
-                                </>
-                              )
+                              (care?.patient_id?.gender != 'Masculino') ?
+                                (
+                                  <>
+                                    <a> Sexo: </a> <FemaleIconLogo/>
+                                  </>
+                                ) : (
+                                  <>
+                                    <a>Sexo: </a> <MaleIconLogo/>
+                                  </>
+                                )
                             }
                             <p>Pedido: {care?.capture?.order_number}</p>
                             <p>Data de Nascimento: {formatDate(care?.patient_id?.birthdate, 'DD/MM/YYYY')}</p>
-                            {care.capture?.status === 'Em Andamento' && (
+                            {care.capture?.status != 'Em Andamento' ? (
                               <Button onClick={() => setCaptureModalModalOpen(true)}><Visibility className="primary"
-                                style={{width: 20, marginRight: 5}}/> Dados da captação</Button>
+                                                                                                 style={{
+                                                                                                   width: 20,
+                                                                                                   marginRight: 5
+                                                                                                 }}/> Dados da captação</Button>
+                            ) : (
+                              <Button onClick={() => setCaptureModalModalOpen(true)}><Edit className="primary"
+                                                                                                 style={{
+                                                                                                   width: 20,
+                                                                                                   marginRight: 5
+                                                                                                 }}/> Editar Dados da captação</Button>
                             )}
                           </div>
                         </div>
@@ -485,11 +512,13 @@ export default function PatientCaptureForm(props: RouteComponentProps<IPageParam
 
                       {care.capture?.status === 'Em Andamento' || care.capture?.status === 'Aguardando' || care.capture?.status === 'Recusado' ? (
                         <div>
-                          <Button background={"primary"}
-                                  onClick={() => setCaptureNewModalOpen(true)}>
-                            <Add/>
-                            Nova Captação
-                          </Button>
+                          {care.capture?.status === 'Aguardando' && (
+                            <Button background={"primary"}
+                                    onClick={() => setCaptureNewModalOpen(true)}>
+                              <Add/>
+                              Nova Captação
+                            </Button>
+                          )}
                           {care.capture?.status === 'Em Andamento' && (
                             <Button background={finishEnable ? "success" : "disable"} disabled={!finishEnable}
                                     onClick={() => setCaptureFinishModalOpen(true)}>
@@ -550,10 +579,10 @@ export default function PatientCaptureForm(props: RouteComponentProps<IPageParam
                             {/*<Td center>{document?.created_at ? formatDate(document.created_at, 'DD/MM/YYYY HH:mm:ss') : '-'}</Td>*/}
                             <Td center>{handleElegibilityLabel(documentGroup.name, document?.status)}</Td>
 
-                        </>
-                          ):(
-                            <>
-                                <Td>{documentGroup.name}</Td>
+                          </>
+                        ) : (
+                          <>
+                            <Td>{documentGroup.name}</Td>
                             <Td center>{handleCareTypeLabel(documentGroup.name, '-')}</Td>
                             <Td center>{handleComplexityLabel(documentGroup.name, '-')}</Td>
                             {/*<Td center>{document?.created_at ? formatDate(document.created_at, 'DD/MM/YYYY HH:mm:ss') : '-'}</Td>*/}
@@ -643,13 +672,14 @@ export default function PatientCaptureForm(props: RouteComponentProps<IPageParam
                       <div>
                         <ButtonComponent onClick={() => {
                           setModalAnexo(true);
-                        }} background="default" style={{color:"#0899BA"}}>
+                        }} background="default" style={{color: "#0899BA"}}>
                           <Description/>
                           Anexar Documento
                         </ButtonComponent>
                       </div>
                       <br/>
-                      <p><span style={{marginRight: 10}}><IconAlertRed/></span>Para concluir a captação, os itens com <span style={{color: 'red'}}>asterisco</span> são obrigatórios:
+                      <p><span style={{marginRight: 10}}><IconAlertRed/></span>Para concluir a captação, os itens
+                        com <span style={{color: 'red'}}>asterisco</span> são obrigatórios:
                         Orçamento + Tabela NEAD ou Tabela Abemid.</p>
                     </>
                   ) : (
@@ -677,7 +707,7 @@ export default function PatientCaptureForm(props: RouteComponentProps<IPageParam
           captureData={captureData}
           setCaptureData={setCaptureData}
           saveCallback={handleSubmitCaptureData}
-          cantEdit={true}
+          cantEdit={care?.capture?.status != 'Em Andamento'}
         />
 
         <Dialog
