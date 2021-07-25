@@ -121,13 +121,13 @@ export default function UserDisengaged() {
                   {user.address?.state || '-'}
                 </TableCell>
                 <TableCell>
-                  {user.profession_id.name}
+                  {user.profession_id?.name || '-'}
                 </TableCell>
                 <TableCell>
                   {/* {user.specialties.map((specialty, index) => (
                     `${specialty.name}${index < (user.specialties.length - 1) ? ',' : ''}`
                   ))} */}
-                  {user.main_specialty_id.name}
+                  {user.main_specialty_id?.name || '-'}
                 </TableCell>
                 <TableCell align="center">
                   {user.specialties.length > 0 ? (
