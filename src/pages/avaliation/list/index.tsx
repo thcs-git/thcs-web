@@ -382,7 +382,8 @@ export default function AvaliationList() {
     };
 
     dispatch(updateCareAction(updateParams));
-    dispatch(getCares({ status: 'Pre-Atendimento' }));
+    // dispatch(getCares({ status: 'Pre-Atendimento' }));
+    window.location.reload()
 
   }, [captureStatus, careState]);
 
@@ -610,8 +611,11 @@ export default function AvaliationList() {
               <div className="captionItem aguardando"><FiberManualRecord /> <span>Aguardando</span> &nbsp;- o pedido está
                 aguardando análise do plano de saúde
               </div>
-              <div className="captionItem andamento"><FiberManualRecord /> <span>Em andamento</span> &nbsp;- as captações
+              <div className="captionItem andamento"><FiberManualRecord /> <span>Em Andamento</span> &nbsp;- as captações
                 estão em andamento
+              </div>
+              <div className="captionItem cancelado"><FiberManualRecord /> <span>Cancelado</span> &nbsp;- a captação foi
+                cancelada e uma nova foi criada
               </div>
             </CaptionList>
           </div>
@@ -798,11 +802,10 @@ export default function AvaliationList() {
               ]}
             >
               {patientArray?.map((patient: any, index: number) => {
-                console.log(patient)
                 return (
                   <TableRow key={`patient_${index}`}>
                     <TableCell >
-                      <p>{patient?.created_at ? formatDate(patient?.created_at, 'DD/MM/YYYY') : '-'}</p>
+                      <p>{patient?.capture?.created_at ? formatDate(patient?.created_at, 'DD/MM/YYYY') : '-'}</p>
                     </TableCell>
                     <TableCell align="center">
                       <p>{handleType(patient)}</p>
