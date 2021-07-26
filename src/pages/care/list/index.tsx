@@ -93,22 +93,6 @@ export default function CouncilList() {
 
   const debounceSearchRequest = debounce(handleChangeInput, 900);
 
-<<<<<<< HEAD
-  const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
-    setAnchorEl(event.currentTarget);
-  };
-
-  const handleClose = () => {
-    setAnchorEl(null);
-  };
-
-  const isDone = useCallback((care: any) => {
-    let patientId = _.filter(careState.list2.data, { patient_id: { _id: care?.patient_id._id } });
-    //console.log("teste", patientId);
-    setpatientArray(patientId);
-    //console.log(patientArray);
-  }, [careState]);
-=======
   const handleComplexity = (complexity: any) => {
     if (complexity === 'Sem Complexidade') {
       return ''
@@ -119,7 +103,13 @@ export default function CouncilList() {
   // const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
   //   setAnchorEl(event.currentTarget);
   // };
->>>>>>> dev
+
+  const isDone = useCallback((care: any) => {
+    let patientId = _.filter(careState.list2.data, { patient_id: { _id: care?.patient_id._id } });
+    //console.log("teste", patientId);
+    setpatientArray(patientId);
+    //console.log(patientArray);
+  }, [careState]);
 
   const toggleHistoryModal = (index: number, care: any) => {
     handleCloseRowMenu();
