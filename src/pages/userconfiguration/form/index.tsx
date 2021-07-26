@@ -66,6 +66,12 @@ export default function UserConfiguration(){
       state: "",
       complement: "",
     },
+    phones: [{
+      cellphone: "",
+      phone: "",
+      telegram: false,
+      whatsapp: false,
+    }],
     email: "",
     phone: "",
     cellphone: "",

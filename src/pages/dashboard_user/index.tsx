@@ -46,6 +46,12 @@ export default function Dashboard_user() {
       state: "",
       complement: "",
     },
+    phones: [{
+      cellphone: "",
+      phone: "",
+      telegram: false,
+      whatsapp: false,
+    }],
     email: "",
     phone: "",
     cellphone: "",

@@ -218,6 +218,12 @@ export default function RegisterForm() {
       state: "",
       complement: "",
     },
+    phones: [{
+      cellphone: "",
+      phone: "",
+      telegram: false,
+      whatsapp: false,
+    }],
     email: "",
     phone: "",
     cellphone: "",

@@ -21,6 +21,14 @@ export const INITIAL_STATE: UserState = {
       state: "",
       complement: "",
     },
+    phones: [
+      {
+        phone:"",
+        cellphone:"",
+        whatsapp: false,
+        telegram: false
+      }
+    ],
     email: "",
     phone: "",
     cellphone: "",

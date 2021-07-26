@@ -146,6 +146,12 @@ export interface UserInterface {
     geolocation?: { latitude: number; longitude: number };
   };
   email: string; // email
+  phones: [{
+    cellphone?: string;
+    phone?: string;
+    telegram: boolean;
+    whatsapp: boolean;
+  }];
   phone: string;
   cellphone: string;
   user_type_id: string | UserTypeInterface;
