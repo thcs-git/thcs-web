@@ -598,7 +598,7 @@ export default function Nead(props: RouteComponentProps<IPageParams>) {
           ))}
         </StepperComponent>
 
-        {isDone() || careState.data.capture?.status != 'Em Andamento' ? (
+        {careState.data.capture?.status != 'Em Andamento' ? (
           <>
             <FormContent>
               {/* Score de KATZ */}
