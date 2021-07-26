@@ -533,12 +533,21 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
           name: customer.name
         }
       }
+
+      var link: any = {
+        companie_id: company._id,
+        user_type_id: "5fb81e21c7921937fdb79994",
+        active: true,
+        linked_at: new Date,
+        iat: 0
+      }
     }
     if (company) {
       setState((prevState) => ({
         ...prevState,
         companies: [...prevState.companies, com],
-        customer_id: company.customer_id
+        customer_id: company.customer_id,
+        companies_links: [link],
       }));
     }
     setEngaged(true);
