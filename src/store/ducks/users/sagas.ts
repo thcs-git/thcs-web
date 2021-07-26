@@ -154,23 +154,23 @@ export async function* registerUser({ payload: { data } }: any) {
 
 export function* createUser({ payload: { data } }: any) {
   console.log(data);
-  const phones = [];
+  // const phones = [];
 
-  if (data.phone.length > 0) {
-    phones.push({
-      whatsapp: false,
-      telegram: false,
-      number: data.phone,
-    });
-  }
+  // if (data.phone.length > 0) {
+  //   phones.push({
+  //     whatsapp: false,
+  //     telegram: false,
+  //     number: data.phone,
+  //   });
+  // }
 
-  if (data.cellphone.length > 0) {
-    phones.push({
-      whatsapp: false,
-      telegram: false,
-      number: data.cellphone,
-    });
-  }
+  // if (data.cellphone.length > 0) {
+  //   phones.push({
+  //     whatsapp: false,
+  //     telegram: false,
+  //     number: data.cellphone,
+  //   });
+  // }
 
   data.username = data.email;
   data.fiscal_number = data.fiscal_number
@@ -183,7 +183,7 @@ export function* createUser({ payload: { data } }: any) {
   //   .replaceAll("-", "");
 
   data.password = data.password;
-  data.phones = phones;
+  // data.phones = phones;
 
   try {
     const response: AxiosResponse = yield call(
@@ -205,25 +205,25 @@ export function* createUser({ payload: { data } }: any) {
 export function* updateUser({ payload: { data } }: any) {
   const { _id } = data;
 
-  const phones = [];
+  // const phones = [];
 
-  if (data?.phone?.length > 0) {
-    phones.push({
-      whatsapp: false,
-      telegram: false,
-      number: data.phone,
-    });
-  }
+  // if (data?.phone) {
+  //   phones.push({
+  //     whatsapp: false,
+  //     telegram: false,
+  //     number: data.phone,
+  //   });
+  // }
 
-  if (data?.cellphone?.length > 0) {
-    phones.push({
-      whatsapp: false,
-      telegram: false,
-      cellnumber: data.cellphone,
-    });
-  }
+  // if (data?.cellphone) {
+  //   phones.push({
+  //     whatsapp: false,
+  //     telegram: false,
+  //     cellnumber: data.cellphone,
+  //   });
+  // }
 
-  data.phones = phones;
+  // data.phones = phones;
 
   delete data.phone;
   delete data.cellphone;

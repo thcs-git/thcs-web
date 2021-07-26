@@ -116,10 +116,10 @@ export default function UserList() {
                   {handleCpf(user.fiscal_number)}
                 </TableCell>
                 <TableCell>
-                  {user.profession_id.name}
+                  {user.profession_id?.name}
                 </TableCell>
                 <TableCell>
-                  {user?.main_specialty_id.name}
+                  {user?.main_specialty_id?.name}
                 </TableCell>
                 <TableCell align="center">
                   {user.specialties.length > 0 ? (
@@ -226,7 +226,7 @@ export default function UserList() {
             >
               <p style={{ fontFamily: "Open Sans Bold" }}><h3>Principal</h3></p>
               <br />
-              <p style={{ color: '#333333', fontSize: "10pt", fontFamily: "Open Sans Regular" }}>{userState.list.data[userIndex]?.main_specialty_id.name}</p>
+              <p style={{ color: '#333333', fontSize: "10pt", fontFamily: "Open Sans Regular" }}>{userState.list.data[userIndex]?.main_specialty_id?.name}</p>
               <br />
               <p style={{ fontFamily: "Open Sans Bold" }}><h3>Secundária</h3></p>
               <br />

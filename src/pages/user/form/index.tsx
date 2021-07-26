@@ -1476,7 +1476,7 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
                               onChange={(element) =>{
                                 {setState(prevState => ({
                                   ...prevState,
-                                  cellphone: element.target.value,
+                                  // cellphone: element.target.value,
                                   phones: [
                                     {
                                     ...prevState.phones[0],
@@ -2607,7 +2607,7 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
                             <InputMask
                               mask="(99) 9999-9999"
                               disabled={!canEdit}
-                              value={state.phone}
+                              value={state.phones[0]?.number}
                               onChange={(element) => {
                                 setState({...state, phone: element.target.value});
                                 setFieldValidations((prevState: any) => ({
@@ -2642,7 +2642,7 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
                             <InputMask
                               mask="(99) 99999-9999"
                               disabled={!canEdit}
-                              value={state.cellphone}
+                              value={state.phones[0]?.cellnumber}
                               onChange={(element) => {
                                 setState({
                                   ...state,
