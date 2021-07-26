@@ -14,7 +14,8 @@ import {
   DialogContent,
   DialogContentText,
   DialogTitle,
-  Grid
+  Grid, 
+  Tooltip
 } from '@material-ui/core';
 import {MoreVert} from '@material-ui/icons';
 import {UserInterface, UserListItems} from '../../../store/ducks/users/types';
@@ -34,6 +35,7 @@ import ListItemText from '@material-ui/core/ListItemText';
 import AddIcon from '@material-ui/icons/Add';
 import {TransitionProps} from '@material-ui/core/transitions';
 import Slide from '@material-ui/core/Slide';
+import MoreHorizTwoToneIcon from '@material-ui/icons/MoreHorizTwoTone';
 
 
 export default function UserDisengaged() {
@@ -101,7 +103,7 @@ export default function UserDisengaged() {
               {name: 'Estado', align: 'left'},
               {name: 'Função', align: 'left'},
               {name: 'Especialidade', align: 'left'},
-              {name: '', align: 'left'},
+              //{name: '', align: 'left'},
               // { name: 'Adicionado em', align: 'left' },
               {name: '', align: 'left'},
             ]}
@@ -123,35 +125,14 @@ export default function UserDisengaged() {
                 <TableCell>
                   {user.profession_id?.name || '-'}
                 </TableCell>
-                <TableCell>
-                  {/* {user.specialties.map((specialty, index) => (
-                    `${specialty.name}${index < (user.specialties.length - 1) ? ',' : ''}`
-                  ))} */}
-                  {user.main_specialty_id?.name || '-'}
-                </TableCell>
-                <TableCell align="center">
-                  {user.specialties.length > 0 ? (
-                    <ListItem>
-                      <Button onClick={() => toggleHistoryModal(index)}>
-                        <AddIcon style={{color: '#0899BA', cursor: "pointer"}}/>
-                      </Button>
-                      {/* <Menu
-                        id={`user-speciality${index}`}
-                        anchorEl={anchorEl}
-                        keepMounted
-                        open={anchorEl?.id === `btn_user-speciality${index}`}
-                        onClose={handleCloseRowMenu}
-                      >
-                        <MenuItem style={{ cursor: "default", fontSize: "13pt", fontFamily: "Open Sans Bold" }}><h4>Principal</h4></MenuItem>
-                        <MenuItem style={{ cursor: "default", fontSize: "10pt", fontFamily: "Open Sans Regular" }}>{user.main_specialty_id.name}</MenuItem>
-                        <MenuItem style={{ cursor: "default", fontSize: "13pt", fontFamily: "Open Sans Bold" }}><h4>Secundária</h4></MenuItem>
-                        <MenuItem style={{ cursor: "default", fontSize: "10pt", fontFamily: "Open Sans Regular" }}>{user.specialties.map((specialty, index) => (
-                          `${specialty.name}${index < (user.specialties.length - 1) ? ',' : ''}`
-                        ))}</MenuItem>
-                      </Menu> */}
-                    </ListItem>
-                  ) : (null)
-                  }
+                <TableCell align="left">
+                <div style={{display: 'flex'}}>
+                    <p style={{ marginTop:'0.3rem'}}>{user.main_specialty_id?.name}</p>
+                  {user.specialties.length > 0 ? (<Tooltip style={{ fontSize: '10pt', marginTop: '0.8rem' }} title={user.specialties.map((specialty, index) => (
+                      `${specialty.name}${index < (user.specialties.length - 1) ? ',' : ''}`
+                    ))}><MoreHorizTwoToneIcon /></Tooltip>
+                    ) : (null)}
+                  </div>
                 </TableCell>
                 {/*<TableCell>*/}
                 {/*  {formatDate(user.created_at, 'DD/MM/YYYY HH:mm:ss')}*/}
@@ -238,7 +219,7 @@ export default function UserDisengaged() {
                 color: '#333333',
                 fontSize: "10pt",
                 fontFamily: "Open Sans Regular"
-              }}>{userState.list.data[userIndex]?.main_specialty_id.name}</p>
+              }}>{userState.list.data[userIndex]?.main_specialty_id?.name}</p>
               <br/>
               <p style={{fontFamily: "Open Sans Bold"}}><h3>Secundária</h3></p>
               <br/>
@@ -247,7 +228,7 @@ export default function UserDisengaged() {
                 fontSize: "10pt",
                 fontFamily: "Open Sans Regular"
               }}>{userState.list.data[userIndex]?.specialties.map((specialty, index) => (
-                `${specialty.name}${index < (userState.list.data[userIndex].specialties.length - 1) ? ',' : ''}`))}</p>
+                `${specialty?.name}${index < (userState.list.data[userIndex].specialties.length - 1) ? ',' : ''}`))}</p>
             </DialogContentText>
           </DialogContent>
           <DialogActions>
