@@ -137,6 +137,7 @@ export async function* registerUser({ payload: { data } }: any) {
   }
 
   try {
+    console.log('saga :',data)
     const response: AxiosResponse = yield call(
       apiSollar.post,
       `/user/register`,
@@ -218,7 +219,7 @@ export function* updateUser({ payload: { data } }: any) {
     phones.push({
       whatsapp: false,
       telegram: false,
-      number: data.cellphone,
+      cellnumber: data.cellphone,
     });
   }
 

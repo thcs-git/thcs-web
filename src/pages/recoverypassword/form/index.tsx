@@ -56,8 +56,8 @@ export default function RecoveryPasswordPage(props: RouteComponentProps<IPagePar
       complement: "",
     },
     phones: [{
-      cellphone: "",
-      phone: "",
+      cellnumber: "",
+      number: "",
       telegram: false,
       whatsapp: false,
     }],

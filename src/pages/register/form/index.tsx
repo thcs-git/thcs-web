@@ -219,8 +219,8 @@ export default function RegisterForm() {
       complement: "",
     },
     phones: [{
-      cellphone: "",
-      phone: "",
+      cellnumber: "",
+      number: "",
       telegram: false,
       whatsapp: false,
     }],

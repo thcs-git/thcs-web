@@ -238,7 +238,7 @@ export default function UserDisengaged() {
                 color: '#333333',
                 fontSize: "10pt",
                 fontFamily: "Open Sans Regular"
-              }}>{userState.list.data[userIndex]?.main_specialty_id.name}</p>
+              }}>{userState.list.data[userIndex]?.main_specialty_id?.name}</p>
               <br/>
               <p style={{fontFamily: "Open Sans Bold"}}><h3>Secundária</h3></p>
               <br/>
@@ -247,7 +247,7 @@ export default function UserDisengaged() {
                 fontSize: "10pt",
                 fontFamily: "Open Sans Regular"
               }}>{userState.list.data[userIndex]?.specialties.map((specialty, index) => (
-                `${specialty.name}${index < (userState.list.data[userIndex].specialties.length - 1) ? ',' : ''}`))}</p>
+                `${specialty?.name}${index < (userState.list.data[userIndex].specialties.length - 1) ? ',' : ''}`))}</p>
             </DialogContentText>
           </DialogContent>
           <DialogActions>

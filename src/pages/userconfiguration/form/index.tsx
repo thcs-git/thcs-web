@@ -67,8 +67,8 @@ export default function UserConfiguration(){
       complement: "",
     },
     phones: [{
-      cellphone: "",
-      phone: "",
+      cellnumber: "",
+      number: "",
       telegram: false,
       whatsapp: false,
     }],
@@ -133,7 +133,7 @@ export default function UserConfiguration(){
   }, [userState.data]);
 
   useEffect(() => {
-    const { companies: userCompanies } = userState.data
+    const { companies: userCompanies } = userState?.data
 
     userCompanies.forEach(function (item) {
       console.log(item);

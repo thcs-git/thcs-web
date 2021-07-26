@@ -47,8 +47,8 @@ export default function Dashboard_user() {
       complement: "",
     },
     phones: [{
-      cellphone: "",
-      phone: "",
+      cellnumber: "",
+      number: "",
       telegram: false,
       whatsapp: false,
     }],

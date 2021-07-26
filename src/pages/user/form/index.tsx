@@ -143,8 +143,8 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
       complement: "",
     },
     phones: [{
-      cellphone: "",
-      phone: "",
+      cellnumber: "",
+      number: "",
       telegram: false,
       whatsapp: false,
     }],
@@ -1413,14 +1413,26 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
                             <InputMask
                               mask="(99) 9999-9999"
                               disabled={!canEdit}
-                              value={state.phone}
-                              onChange={(element) => {
-                                setState({...state, phone: element.target.value});
-                                setFieldValidations((prevState: any) => ({
+                              value={state.phones[0]?.number}
+                              // onChange={(element) => {
+                              //   setState({...state, phone: element.target.value});
+                              //   setFieldValidations((prevState: any) => ({
+                              //     ...prevState,
+                              //     phone: !validator.isEmpty(element.target.value),
+                              //   }));
+                              // }}
+                              onChange={(element) =>{
+                                {setState(prevState => ({
                                   ...prevState,
-                                  phone: !validator.isEmpty(element.target.value),
-                                }));
-                              }}
+                                  phone: element.target.value,
+                                  phones: [
+                                    {
+                                    ...prevState.phones[0],
+                                    number : element.target.value
+                                    }
+                                ]
+                                }))
+                              }}}
                               onBlur={validatePhone}
                             >
                               {(inputProps: any) => (
@@ -1448,18 +1460,31 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
                             <InputMask
                               mask="(99) 99999-9999"
                               disabled={!canEdit}
-                              value={state.cellphone}
-                              onChange={(element) => {
-                                setState({
-                                  ...state,
-                                  cellphone: element.target.value,
-                                });
-                                setFieldValidations((prevState: any) => ({
-                                  ...prevState,
-                                  cellphone: !validator.isEmpty(element.target.value),
+                              value={state.phones[0]?.cellnumber}
+                              // value={state.cellphone}
+                              // onChange={(element) => {
+                              //   setState({
+                              //     ...state,
+                              //     cellphone: element.target.value,
+                              //   });
+                              //   setFieldValidations((prevState: any) => ({
+                              //     ...prevState,
+                              //     cellphone: !validator.isEmpty(element.target.value),
 
-                                }));
-                              }}
+                              //   }));
+                              // }}
+                              onChange={(element) =>{
+                                {setState(prevState => ({
+                                  ...prevState,
+                                  cellphone: element.target.value,
+                                  phones: [
+                                    {
+                                    ...prevState.phones[0],
+                                    cellnumber : element.target.value
+                                    }
+                                ]
+                                }))
+                              }}}
                               onBlur={validateCellPhone}
                             >
                               {(inputProps: any) => (

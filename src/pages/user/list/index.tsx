@@ -110,7 +110,7 @@ export default function UserList() {
             {userState.list.data.map((user, index) => (
               <TableRow key={`user_${index}`}>
                 <TableCell align="left">
-                  <Link key={index} to={`/user/${user._id}/view/edit`}>{user.name}</Link>
+                  <Link key={index} to={`/user/${user._id}/view/edit`}>{user?.name}</Link>
                 </TableCell>
                 <TableCell>
                   {handleCpf(user.fiscal_number)}
@@ -119,7 +119,7 @@ export default function UserList() {
                   {user.profession_id.name}
                 </TableCell>
                 <TableCell>
-                  {user.main_specialty_id.name}
+                  {user?.main_specialty_id.name}
                 </TableCell>
                 <TableCell align="center">
                   {user.specialties.length > 0 ? (

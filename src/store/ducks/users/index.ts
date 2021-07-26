@@ -23,10 +23,10 @@ export const INITIAL_STATE: UserState = {
     },
     phones: [
       {
-        phone:"",
-        cellphone:"",
+        cellnumber: "",
+        number: "",
+        telegram: false,
         whatsapp: false,
-        telegram: false
       }
     ],
     email: "",

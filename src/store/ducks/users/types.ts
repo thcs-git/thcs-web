@@ -58,6 +58,7 @@ export enum UserTypes {
 export interface Phones {
   _id: string;
   number: string;
+  cellnumber: string;
   whatapp: string;
   telegram: string;
 }
@@ -147,8 +148,8 @@ export interface UserInterface {
   };
   email: string; // email
   phones: [{
-    cellphone?: string;
-    phone?: string;
+    cellnumber?: string;
+    number?: string;
     telegram: boolean;
     whatsapp: boolean;
   }];

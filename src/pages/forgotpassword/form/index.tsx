@@ -81,8 +81,8 @@ export default function ForgotPasswordPage(props: RouteComponentProps<IPageParam
       complement: "",
     },
     phones: [{
-      cellphone: "",
-      phone: "",
+      cellnumber: "",
+      number: "",
       telegram: false,
       whatsapp: false,
     }],
