@@ -90,7 +90,7 @@ export default function AvaliationList() {
       total: 1000,
       search
     }));
-    
+
   }, []);
 
   // useEffect(() => {
@@ -382,7 +382,8 @@ export default function AvaliationList() {
     };
 
     dispatch(updateCareAction(updateParams));
-    dispatch(getCares({ status: 'Pre-Atendimento' }));
+    // dispatch(getCares({ status: 'Pre-Atendimento' }));
+    window.location.reload()
 
   }, [captureStatus, careState]);
 
@@ -486,7 +487,7 @@ export default function AvaliationList() {
               { name: 'Socioambiental', align: 'center' },
               { name: 'NEAD', align: 'center' },
               { name: 'ABEMID', align: 'center' },
-              { name: 'Última captação', align: 'left' },
+              // { name: 'Última captação', align: 'left' },
               { name: 'Status da captação', align: 'left' },
               { name: ' ', align: 'left' }
             ]}
@@ -506,8 +507,8 @@ export default function AvaliationList() {
                   align="center">{handleCheckDocument('5ff65469b4d4ac07d186e99f', care?.documents_id || [])}</TableCell> {/* NEAD */}
                 <TableCell
                   align="center">{handleCheckDocument('5ffd7acd2f5d2b1d8ff6bea4', care?.documents_id || [])}</TableCell> {/* ABEMID */}
-                <TableCell
-                  align="left">{care?.created_at ? formatDate(care.created_at, 'DD/MM/YYYY HH:mm:ss') : '-'}</TableCell> {/* Última captação */}
+                {/*<TableCell*/}
+                {/*  align="left">{care?.created_at ? formatDate(care.created_at, 'DD/MM/YYYY HH:mm:ss') : '-'}</TableCell> /!* Última captação *!/*/}
                 <TableCell>
                   <ListItemCaptureStatus status={care?.capture?.status || ''}>
                     <FiberManualRecord /> {care?.capture?.status}
@@ -610,8 +611,11 @@ export default function AvaliationList() {
               <div className="captionItem aguardando"><FiberManualRecord /> <span>Aguardando</span> &nbsp;- o pedido está
                 aguardando análise do plano de saúde
               </div>
-              <div className="captionItem andamento"><FiberManualRecord /> <span>Em andamento</span> &nbsp;- as captações
+              <div className="captionItem andamento"><FiberManualRecord /> <span>Em Andamento</span> &nbsp;- as captações
                 estão em andamento
+              </div>
+              <div className="captionItem cancelado"><FiberManualRecord /> <span>Cancelado</span> &nbsp;- a captação foi
+                cancelada e uma nova foi criada
               </div>
             </CaptionList>
           </div>
@@ -798,11 +802,10 @@ export default function AvaliationList() {
               ]}
             >
               {patientArray?.map((patient: any, index: number) => {
-                console.log(patient)
                 return (
                   <TableRow key={`patient_${index}`}>
                     <TableCell >
-                      <p>{patient?.created_at ? formatDate(patient?.created_at, 'DD/MM/YYYY') : '-'}</p>
+                      <p>{patient?.capture?.created_at ? formatDate(patient?.created_at, 'DD/MM/YYYY') : '-'}</p>
                     </TableCell>
                     <TableCell align="center">
                       <p>{handleType(patient)}</p>
