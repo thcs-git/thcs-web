@@ -462,7 +462,7 @@ export default function Nead(props: RouteComponentProps<IPageParams>) {
         {care?.patient_id && (
           <>
             <h2>Paciente</h2>
-            <PatientCard patient={care.patient_id}/>
+            <PatientCard patient={care.patient_id}capture={care.capture}/>
           </>
         )}
         <div
@@ -598,7 +598,7 @@ export default function Nead(props: RouteComponentProps<IPageParams>) {
           ))}
         </StepperComponent>
 
-        {isDone() || careState.data.capture?.status != 'Em Andamento' ? (
+        {careState.data.capture?.status != 'Em Andamento' ? (
           <>
             <FormContent>
               {/* Score de KATZ */}

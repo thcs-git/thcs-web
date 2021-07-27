@@ -21,6 +21,9 @@ export enum CareTypes {
   SEARCH_CARE_REQUEST = "@care/SEARCH_CARE_REQUEST",
   SEARCH_CARE_SUCCESS = "@care/SEARCH_CARE_SUCCESS",
 
+  LOAD_PATIENT_REQUEST = "@care/LOAD_PATIENT_REQUEST",
+  SEARCH_PATIENT_SUCCESS = "@care/SEARCH_PATIENT_SUCCESS",
+
   // Documento Socioambiental
 
   DOCUMENT_GROUP_SOCIOAMBIENTAL_REQUEST = "@care/DOCUMENT_GROUP_SOCIOAMBIENTAL_REQUEST",
@@ -168,6 +171,7 @@ export interface CareList {
 export interface CareState {
   data: CareInterface;
   list: CareList;
+  list2: CareList;
   loading: boolean;
   error: boolean;
   success: boolean;

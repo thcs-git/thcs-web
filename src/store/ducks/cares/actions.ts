@@ -37,6 +37,12 @@ export const searchCareRequest = (params: any) =>
 export const searchCareSuccess = (data: CareInterface) =>
   action(CareTypes.SEARCH_CARE_SUCCESS, { data });
 
+export const loadRequestPopUp = (params: LoadRequestParams = {}) =>
+  action(CareTypes.LOAD_PATIENT_REQUEST, { params });
+
+export const searchPatientSuccess = (data: CareInterface) =>
+  action(CareTypes.SEARCH_PATIENT_SUCCESS, { data } );
+
 /**
  * Documento Socioambiental
  */

@@ -97,7 +97,7 @@ export default function Abemid(props: RouteComponentProps<IPageParams>) {
   const handleNextStep = useCallback(() => {
     let isError = null
 
-    if (isDone() || careState.data.capture?.status != 'Em Andamento'){
+    if (isDone() || careState.data.capture?.status != 'Em Andamento') {
 
     } else {
       isError = checkAllCurrentQuestionsAnswered(documentGroup, currentStep);
@@ -178,7 +178,13 @@ export default function Abemid(props: RouteComponentProps<IPageParams>) {
   const checkAllCurrentQuestionsAnswered = useCallback((localDocumentGroup: DocumentGroupInterface, localCurrentStep: number) => {
 
     const currentStepAnswer = localDocumentGroup?.fields?.filter(field => field.step === localCurrentStep);
-    const isAllQuestionAnswered = currentStepAnswer?.map(field => field?.options?.some(option => option.hasOwnProperty('selected')));
+    if (currentStep === 1)
+      currentStepAnswer?.shift()
+    const isAllQuestionAnswered = currentStepAnswer?.map(field =>
+      field?.options?.some(option =>
+        option.hasOwnProperty('selected')
+      )
+    );
     const isError = isAllQuestionAnswered?.some(answered => !answered);
 
     if (isError) {
@@ -302,7 +308,7 @@ export default function Abemid(props: RouteComponentProps<IPageParams>) {
 
     setSteps(prevState => stepsCopy);
 
-  }, [documentGroup, currentStep]);
+  }, [documentGroup, currentStep, steps[currentStep].score.total]);
 
   const handleFieldAnswer = useCallback(() => {
     let documentGroupCopy = {...documentGroup};
@@ -322,6 +328,39 @@ export default function Abemid(props: RouteComponentProps<IPageParams>) {
     setDocumentGroup(documentGroupCopy);
     calculateScore();
   }, [documentGroup, document]);
+
+  const getScore = useCallback(() => {
+    let partialScore = 0, countQuestionFive = 0;
+
+    documentGroup?.fields?.map((field: any) => {
+      field.options.map((option: any) => {
+        if (option?.selected) {
+          if (option.value === '5') {
+            countQuestionFive++;
+          }
+          partialScore += parseInt(option.value);
+        }
+      });
+    });
+
+    const getComplexity = (score: number) => {
+      if (countQuestionFive === 1) {
+        return 'Média Complexidade';
+      } else if (countQuestionFive > 1) {
+        return 'Alta Complexidade';
+      } else if (score >= 8 && score <= 12) {
+        return 'Baixa Complexidade';
+      } else if (score >= 13 && score <= 18) {
+        return 'Média Complexidade';
+      } else if (score >= 19) {
+        return 'Alta Complexidade';
+      } else {
+        return 'Atenção Domiciliar';
+      }
+    }
+
+    return partialScore ? `${partialScore - steps[0].score.total} - ${getComplexity(partialScore - steps[0].score.total)}` : '0 - Atenção Domiciliar'
+  }, [documentGroup]);
 
   const handleSubmit = useCallback(() => {
     let selecteds: any = [],
@@ -410,7 +449,7 @@ export default function Abemid(props: RouteComponentProps<IPageParams>) {
         {care?.patient_id && (
           <>
             <h2>Paciente</h2>
-            <PatientCard patient={care.patient_id}/>
+            <PatientCard patient={care.patient_id} capture={care.capture}/>
           </>
         )}
 
@@ -493,7 +532,7 @@ export default function Abemid(props: RouteComponentProps<IPageParams>) {
           ))}
         </StepperComponent>
 
-        {isDone() || careState.data.capture?.status != 'Em Andamento' ? (
+        {careState.data.capture?.status != 'Em Andamento' ? (
           <>
             <FormContent>
               {/* Score de KATZ */}
@@ -640,10 +679,7 @@ export default function Abemid(props: RouteComponentProps<IPageParams>) {
                     <ScoreLabel>TOTAL DE PONTOS:</ScoreLabel>
                     <ScoreTotal>
                       {
-                        steps[currentStep].score.total ?
-                          `${steps[currentStep].score.total} - ${steps[currentStep].score.complexity}`
-                          :
-                          '0 - Atenção Domiciliar'
+                        getScore()
                       }
                     </ScoreTotal>
                   </ScoreTotalContent>
@@ -840,10 +876,7 @@ export default function Abemid(props: RouteComponentProps<IPageParams>) {
                     <ScoreLabel>TOTAL DE PONTOS:</ScoreLabel>
                     <ScoreTotal>
                       {
-                        steps[currentStep].score.total ?
-                          `${steps[currentStep].score.total} - ${steps[currentStep].score.complexity}`
-                          :
-                          '0 - Atenção Domiciliar'
+                        getScore()
                       }
                     </ScoreTotal>
                   </ScoreTotalContent>
