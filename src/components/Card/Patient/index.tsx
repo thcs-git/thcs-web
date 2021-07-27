@@ -3,9 +3,10 @@ import { AccountCircle } from '@material-ui/icons';
 
 import { PatientInterface } from '../../../store/ducks/patients/types'
 
-import { age } from '../../../helpers/date';
+import { age , formatDate} from '../../../helpers/date';
 
-import { PatientResume, PatientResumeContent, PatientData, } from './styles';
+import { PatientResume, PatientResumeContent, PatientData, MaleIconLogo, FemaleIconLogo} from './styles';
+
 
 interface IProps {
   patient: PatientInterface
@@ -13,8 +14,7 @@ interface IProps {
 
 export default function PatientCard(props: any) {
 
-  const { patient } = props;
-
+  const { patient , capture } = props;
 
   return (
     <PatientResume>
@@ -26,10 +26,21 @@ export default function PatientCard(props: any) {
           <div>
             <p className="title">{patient?.name}</p>
             <div className="subTitle">
-              <p>{patient?.birthdate ? age(patient?.birthdate) : ''}, {patient?.gender}</p>
-              <p>CPF: {patient?.fiscal_number}</p>
-              {/* <p>Sexo: {patient?.gender}</p> */}
-              <p>Nome da Mãe: {patient?.mother_name}</p>
+              <a>{patient?.birthdate ? age(patient?.birthdate) : ''} | CPF: {patient?.fiscal_number} | Mãe: {patient?.mother_name} | </a>
+              {
+                (patient?.gender != 'Masculino')?
+                (
+                  <>
+                  <a> Sexo:  </a> <FemaleIconLogo />
+                  </>
+                ):(
+                  <>
+                      <a>Sexo:  </a> <MaleIconLogo />
+                  </>
+                )
+              }
+              <p>Pedido: {capture?.order_number}</p>
+              <p>Data de Nascimento: {formatDate(patient?.birthdate, 'DD/MM/YYYY')}</p>
             </div>
           </div>
         </PatientData>
