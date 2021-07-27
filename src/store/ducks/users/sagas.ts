@@ -137,7 +137,7 @@ export async function* registerUser({ payload: { data } }: any) {
   }
 
   try {
-    console.log('saga :',data)
+
     const response: AxiosResponse = yield call(
       apiSollar.post,
       `/user/register`,
@@ -153,7 +153,7 @@ export async function* registerUser({ payload: { data } }: any) {
 }
 
 export function* createUser({ payload: { data } }: any) {
-  console.log(data);
+
   // const phones = [];
 
   // if (data.phone.length > 0) {
@@ -196,7 +196,7 @@ export function* createUser({ payload: { data } }: any) {
     yield put(createUserSuccess(response.data));
     toast.success("Usuário cadastrado com sucesso!");
   } catch (e) {
-    console.log("e", e);
+
     toast.error("Não foi possível cadastrar o usuário");
     yield put(loadFailure());
   }
@@ -256,7 +256,7 @@ export function* updateUser({ payload: { data } }: any) {
       { headers: { token } }
     );
 
-    console.log(response.data);
+
 
     toast.success("Usuário atualizado com sucesso!");
     yield put(updateUserSuccess(response.data));
@@ -289,7 +289,7 @@ export function* getProfessions() {
     const response: AxiosResponse = yield call(apiSollar.get, `/profession`, {
       headers: { token },
     });
-    console.log(response);
+
 
     yield put(loadProfessionsSuccess(response.data));
   } catch (error) {
@@ -344,7 +344,7 @@ export function* checkEmail({ payload: { token } }: any) {
       apiSollar.get,
       `/email?token=${token}`
     );
-    console.log(response.data);
+
     yield put(loadCheckSuccess(response.data));
   } catch (error) {
     yield put(loadFailure());
@@ -363,7 +363,7 @@ export function* recoveryPassword({ payload: { data } }: any) {
       `/users/recoverypassword`,
       { ...data }
     );
-    console.log(response.data);
+
     yield put(loadRecoverySuccess(response.data));
   } catch (error) {
     yield put(loadFailure());
@@ -376,7 +376,7 @@ export function* recoverypasswordiftoken({ payload: { data } }: any) {
       `/users/recoverypasswordiftoken`,
       { ...data }
     );
-    console.log(response.data);
+
     yield put(loadRecoverySuccess(response.data));
   } catch (error) {
     yield put(loadFailure());
@@ -388,7 +388,7 @@ export function* loadConfirmUser({ payload: { token } }: any) {
       apiSollar.get,
       `/user/confirm?token=${token}`
     );
-    console.log(response.data);
+
     yield put(loadSuccessConfirm(response.data));
   } catch (error) {
     yield put(loadFailure());

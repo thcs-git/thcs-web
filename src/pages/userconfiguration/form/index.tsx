@@ -142,7 +142,7 @@ export default function UserConfiguration(){
     console.log(userCompanies);
     setCompanies(userCompanies);
 
-  }, [userState.data]);
+  }, [userState?.data]);
   function handlePushUser() {
     const user_id = localStorage.getItem(LOCALSTORAGE.USER_ID)
     console.log(user_id)
