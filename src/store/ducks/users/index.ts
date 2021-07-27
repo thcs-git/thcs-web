@@ -4,6 +4,7 @@ import { UserState, UserTypes } from "./types";
 export const INITIAL_STATE: UserState = {
   data: {
     companies: [],
+    companies_links: [],
     name: "",
     birthdate: "",
     gender: "",

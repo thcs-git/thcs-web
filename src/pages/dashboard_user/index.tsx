@@ -29,6 +29,7 @@ export default function Dashboard_user() {
   const [firstCall, setFirstcall] = useState(false);
   const [state, setState] = useState<UserInterface>({
     companies: [],
+    companies_links: [],
     name: "",
     birthdate: "",
     gender: "",

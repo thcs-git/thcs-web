@@ -122,9 +122,11 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
 
   const [currentTab, setCurrentTab] = useState(0);
   const [engaged, setEngaged] = useState(false);
+  const [companyLink, setcompanyLink] = useState('');
   const [add, setAdd] = useState(false);
   const [state, setState] = useState<UserInterface>({
     companies: [],
+    companies_links: [],
     name: "",
     birthdate: "",
     gender: "",
@@ -547,7 +549,7 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
         ...prevState,
         companies: [...prevState.companies, com],
         customer_id: company.customer_id,
-        companies_links: [link],
+        companies_links: [...prevState.companies_links, link],
       }));
     }
     setEngaged(true);
@@ -555,9 +557,14 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
 
   const dengagedUser = useCallback((company: CompanyInterface) => {
     let companiesSelected = [...state.companies];
+    let companiesLinkSelected = [...state.companies_links];
     const companyFounded = companiesSelected.findIndex((item: any) => {
       return company._id === item._id
     })
+    const companyLinkFounded = companiesLinkSelected.findIndex((item: any) => {
+      return company._id === item.companie_id
+    })
+
     if (companyFounded > -1) {
       const companyData = companiesSelected.find((item: any) => {
         return company._id === item._id
@@ -569,7 +576,19 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
         companies: companiesSelected
       }))
       setEngaged(true);
+    }
 
+    if (companyLinkFounded > -1) {
+      let companyLink = companiesLinkSelected.splice(companyLinkFounded, 1)[0];
+      companyLink.active = false
+
+      companiesLinkSelected.push(companyLink)
+
+      setState(prevState => ({
+        ...prevState,
+        companies_links: companiesLinkSelected,
+      }))
+      setEngaged(true);
     }
   }, [state.companies]);
 
@@ -1888,12 +1907,48 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
                             </ChipList>
                           </Grid> */}
                                     {(params.mode === 'link' && !checkCompany) && (
+                                      <>
+                                        <Grid item md={12} xs={12}>
+                                          <ButtonComponent background="success_rounded" onClick={() => engagedUser()}>
+                                            Vincular este prestador a minha empresa
+                                          </ButtonComponent>
+                                        </Grid>
 
-                                      <Grid item md={12} xs={12}>
-                                        <ButtonComponent background="success_rounded" onClick={() => engagedUser()}>
-                                          Vincular este prestador a minha empresa
-                                        </ButtonComponent>
-                                      </Grid>
+                                        <TextField
+                                          id="link-end"
+                                          type="date"
+                                          size="small"
+                                          label="Vínculo até"
+                                          variant="outlined"
+                                          InputLabelProps={{
+                                            shrink: true,
+                                          }}
+                                          onChange={e => setcompanyLink(e.target.value)}
+                                          value={companyLink}
+                                          fullWidth
+                                        />
+
+                                        <Autocomplete
+                                          id="combo-box-user-type"
+                                          options={userState.data.user_types || []}
+                                          getOptionLabel={(option) => option.name}
+                                          // disabled={!canEdit}
+                                          renderInput={(params) => (
+                                            <TextField {...params}
+                                                       disabled={!canEdit}
+                                                       label="Tipo do Usuário"
+                                                       variant="outlined"
+                                            />
+                                          )}
+                                          value={selectUserType()}
+                                          getOptionSelected={(option, value) =>
+                                            option._id === state.user_type_id
+                                          }
+                                          size="small"
+                                          fullWidth
+                                        />
+
+                                      </>
                                     )}
                                     {(params.mode === 'link' && checkCompany && !engaged) && (
 
@@ -3148,8 +3203,8 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
                       onClick={handleSaveFormUser}
                       disabled={!formValid}
                     >
-                    Salvar
-                  </ButtonComponent>)}
+                      Salvar
+                    </ButtonComponent>)}
                 </ButtonsContent>
               </FormSection>
             )}

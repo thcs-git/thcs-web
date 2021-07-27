@@ -91,6 +91,15 @@ export interface CompanyUserInterface {
   customer_id: CustomerUserInterface;
 }
 
+export interface CompanyUserLinkInterface {
+  _id: string;
+  companie_id: string;
+  user_type_id: string;
+  active: boolean;
+  linked_at: string;
+  iat: number;
+}
+
 export interface UserTypeInterface {
   _id: string;
   name: string;
@@ -126,6 +135,7 @@ export interface UserListItems {
 export interface UserInterface {
   _id?: string;
   companies: CompanyUserInterface[];
+  companies_links: CompanyUserLinkInterface[];
   customer_id?: string;
   name: string; // name
   birthdate: string;
