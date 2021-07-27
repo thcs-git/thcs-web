@@ -354,6 +354,11 @@ export default function PatientForm(props: RouteComponentProps<IPageParams>) {
          setCanEdit(false);
       }
 
+    }else{
+      setState(prevState=>({
+        ...prevState,
+        area_id:areaState.list.data[0]._id
+      }))
     }
   }, [patientState.data]);
 
@@ -479,12 +484,12 @@ export default function PatientForm(props: RouteComponentProps<IPageParams>) {
 
   const selectPatientArea = useCallback(() => {
 
+
     const selected = areaState.list.data.filter(item => {
       if (typeof state?.area_id === 'object') {
         return item._id === state?.area_id._id
       }
     })
-
     return (selected[0]) ? selected[0]: areaState.list.data[0];
 
     // if(canEdit){
@@ -857,7 +862,6 @@ export default function PatientForm(props: RouteComponentProps<IPageParams>) {
                           <InputLabel htmlFor="search-input">CEP</InputLabel>
                           <InputMask
                             mask="99999-999"
-
                             value={state.address_id.postal_code}
                             onChange={(element) => {setState({ ...state, address_id: { ...state.address_id, postal_code: element.target.value } })
                             setModifi({...modifi.address_id , postal_code: element.target.value})}}
@@ -982,7 +986,7 @@ export default function PatientForm(props: RouteComponentProps<IPageParams>) {
                             renderInput={(params) => <TextField {...params} label="Área"  variant="outlined"  />}
                             size="small"
                             defaultValue={selectPatientArea()}
-                            value={selectPatientArea()}
+                           // value={selectPatientArea()}
                             onChange={(event:any, newValue) =>{
                               if(newValue){
                                 setState({...state,area_id:newValue._id})
@@ -992,6 +996,7 @@ export default function PatientForm(props: RouteComponentProps<IPageParams>) {
                             noOptionsText="Nenhum resultado encontrado"
                             fullWidth
                             disabled={!canEdit}
+
                           />
                       </Grid>
 
