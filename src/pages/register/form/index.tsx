@@ -651,7 +651,6 @@ const  handleFormUser = useCallback(()=>{
                   id="input-phone-number"
                   label="Telefone"
                   variant="outlined"
-
                   size="small"
                   required
                   placeholder="(00) 0000-0000"
@@ -662,6 +661,17 @@ const  handleFormUser = useCallback(()=>{
                       value:element.target.value
                     }))
                   }
+                  // onChange={(element) =>{
+                  //   {setState(prevState => ({
+                  //     ...prevState,
+                  //     phones: [
+                  //       {
+                  //       ...prevState.phones[0],
+                  //       number : element.target.value
+                  //       }
+                  //   ]
+                  //   }))
+                  // }}}
                   onBlur={handlePhoneValidator}
                 />
                 </FormControl>
