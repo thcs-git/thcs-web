@@ -91,28 +91,28 @@ export function* loadGetUserDisengaged({ payload }: any) {
 }
 
 export async function* registerUser({ payload: { data } }: any) {
-  const phones = [];
+  // const phones = [];
 
-  if (data.phone.length > 0) {
-    phones.push({
-      whatsapp: false,
-      telegram: false,
-      number: data.phone,
-    });
-  }
+  // if (data.phone.length > 0) {
+  //   phones.push({
+  //     whatsapp: false,
+  //     telegram: false,
+  //     number: data.phone,
+  //   });
+  // }
 
-  if (data.cellphone.length > 0) {
-    phones.push({
-      whatsapp: false,
-      telegram: false,
-      number: data.cellphone,
-    });
-  }
+  // if (data.cellphone.length > 0) {
+  //   phones.push({
+  //     whatsapp: false,
+  //     telegram: false,
+  //     number: data.cellphone,
+  //   });
+  // }
 
   data.username = data.email;
   data.password = data.fiscal_number;
 
-  data.phones = phones;
+  // data.phones = phones;
 
   data.user_type_id = { _id: "5fc05d1803058800244bc41b" };
 

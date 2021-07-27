@@ -206,6 +206,10 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
       state: false,
       complement: true,
     },
+    phones:[{
+      number: false,
+      cellnumber: false,
+    }],
     email: false,
     phone: false,
     cellphone: false,
@@ -1446,7 +1450,7 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
                                   variant="outlined"
                                   size="small"
                                   placeholder="0000-0000"
-                                  error={!validatePhone() && state.phones[0]?.number != ''}
+                                  error={!validatePhone() && state.phones[0]?.number != undefined}
 
                                   fullWidth
                                 />
@@ -1486,7 +1490,7 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
                                   variant="outlined"
                                   size="small"
                                   placeholder="(00) 0 0000-0000"
-                                  error={!validateCellPhone() && state.phones[0]?.cellnumber != ''}
+                                  error={!validateCellPhone() && state.phones[0]?.cellnumber != undefined}
 
                                   fullWidth
                                 />
@@ -2599,13 +2603,6 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
                               mask="(99) 9999-9999"
                               disabled={!canEdit}
                               value={state.phones[0]?.number}
-                              // onChange={(element) => {
-                              //   setState({...state, phone: element.target.value});
-                              //   setFieldValidations((prevState: any) => ({
-                              //     ...prevState,
-                              //     phone: !validator.isEmpty(element.target.value),
-                              //   }));
-                              // }}
                               onChange={(element) =>{
                                 {setState(prevState => ({
                                   ...prevState,
@@ -2629,7 +2626,7 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
                                   variant="outlined"
                                   size="small"
                                   placeholder="0000-0000"
-                                  error={!validatePhone() && state.phones[0]?.number != ''}
+                                  error={!validatePhone() && state.phones[0]?.number != undefined}
 
                                   fullWidth
                                 />
@@ -2671,7 +2668,7 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
                                   variant="outlined"
                                   size="small"
                                   placeholder="(00) 0 0000-0000"
-                                  error={!validateCellPhone() && state.phones[0]?.cellnumber != ''}
+                                  error={!validateCellPhone() && state.phones[0]?.cellnumber != undefined}
 
                                   fullWidth
                                 />
