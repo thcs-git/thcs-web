@@ -22,6 +22,8 @@ import {
   Box
 } from '@material-ui/core';
 import { FiberManualRecord, Visibility as VisibilityIcon, ErrorOutline, MoreVert, Check as CheckIcon, AccountCircle as AccountCircleIcon } from '@material-ui/icons';
+import GetAppOutlinedIcon from '@material-ui/icons/GetAppOutlined';
+import ErrorOutlineOutlinedIcon from '@material-ui/icons/ErrorOutlineOutlined';
 import debounce from 'lodash.debounce';
 import { useDispatch, useSelector } from 'react-redux';
 import { ApplicationState } from '../../../store/';
@@ -183,6 +185,52 @@ export default function AvaliationList() {
     }
   }, [careState]);
 
+  const handleCoplexitiesDialogAnexo = useCallback((care: any) => {
+    let complexitiesArray: any = []
+    let complexity: string = ""
+    care?.documents_id?.map((field: any) => {
+      complexitiesArray.push(field.complexity);
+    })
+    if (
+      complexitiesArray.findIndex(
+        (item: string) => item === "Alta Complexidade"
+      ) > -1
+    ) {
+      complexity = "Alta Complexidade";
+    } else if (
+      complexitiesArray.findIndex(
+        (item: string) => item === "Média Complexidade"
+      ) > -1
+    ) {
+      complexity = "Média Complexidade";
+    } else if (
+      complexitiesArray.findIndex(
+        (item: string) => item === "Baixa Complexidade"
+      ) > -1
+    ) {
+      complexity = "Baixa Complexidade";
+    } else {
+      complexity = "-";
+    }
+
+    switch (complexity.toLocaleLowerCase()) {
+      case 'sem complexidade':
+        return '-';
+
+      case 'baixa complexidade':
+        return <LowerComplexityLabel>{complexity}</LowerComplexityLabel>;
+
+      case 'média complexidade':
+        return <MediumComplexityLabel>{complexity}</MediumComplexityLabel>;
+
+      case 'alta complexidade':
+        return <HighComplexityLabel>{complexity}</HighComplexityLabel>;
+
+      default:
+        return '-';
+    }
+  }, [careState]);
+
   const handleCoplexitiesDialog = useCallback((care: any) => {
     let complexitiesArray: any = []
     let complexity: string = ""
@@ -302,9 +350,10 @@ export default function AvaliationList() {
     setHistoryModalOpen(!historyModalOpen);
   };
 
-  const toggleAnexoModal = () => {
+  const toggleAnexoModal = (index: number, care: any) => {
     handleCloseRowMenu();
-
+    setCareIndex(index);
+    isDone(care);
     setAnexoModalOpen(!anexoModalOpen)
   };
 
@@ -529,7 +578,7 @@ export default function AvaliationList() {
                     <MenuItem onClick={() => history.push(`/patient/capture/${care._id}/overview`)}>Visualizar
                       perfil</MenuItem>
                     <MenuItem onClick={() => toggleHistoryModal(index, care)}>Histórico</MenuItem>
-                    <MenuItem onClick={() => toggleAnexoModal()}>Documentos Anexados</MenuItem>
+                    <MenuItem onClick={() => toggleAnexoModal(index, care)}>Documentos Anexados</MenuItem>
                     {care.capture?.status === 'Aguardando' && (
                       <MenuItem onClick={() => handleStartUpdateCaptureStatus(care)}>Atualizar status</MenuItem>
                     )}
@@ -836,8 +885,9 @@ export default function AvaliationList() {
         </DialogActions>
       </Dialog>
 
-      {/*Visualizar Anexos*/}
+      {/*Documentos Anexos*/}
       <Dialog
+        maxWidth="lg"
         scroll="paper"
         open={anexoModalOpen}
         onClose={() => setAnexoModalOpen(false)}
@@ -850,6 +900,75 @@ export default function AvaliationList() {
             id="scroll-dialog-description"
             tabIndex={-1}
           >
+            <Grid container style={{ display: "flex", flexDirection: "row", justifyContent: "space-between" }}>
+              <Grid item md={1} style={{ padding: "0" }}>
+                <AccountCircleIcon style={{ color: '#0899BA', fontSize: '60pt' }} />
+              </Grid>
+              <Grid item md={10} style={{ padding: "1rem", paddingTop: "0.5rem" }}>
+                <h3 style={{ color: '#333333' }}>{careState.list.data[careIndex]?.patient_id.name}</h3>
+                <p style={{ color: '#333333' }}>Atendimento {handleType(careState.list.data[careIndex])}</p>
+                <p style={{ color: '#333333' }}>{handleCoplexitiesDialogAnexo(careState.list.data[careIndex])}</p>
+                <p style={{ color: '#333333' }}>Nº da guia: {careState.list.data[careIndex]?.capture?.order_number} </p>
+              </Grid>
+            </Grid>
+            <div>
+              <br />
+              <h4 style={{ color: '#333333' }}>Documentação do Plano</h4>
+              <br />
+              <Table
+                tableCells={[
+                  //{ name: 'Documentação do Plano', align: 'left' },
+                  //{ name: ' ', align: 'right' },
+                ]}
+              >
+                {patientArray?.map((patient: any, index: number) => {
+                  return (
+                    <TableRow key={`patient_${index}`}>
+                      <TableCell align="center">
+                        {/* <ListItemCaptureStatus status={patient?.capture?.status || ''}>
+                          <ErrorOutlineOutlinedIcon /> {patient?.capture?.finished_at ? formatDate(patient?.finished_at, 'DD/MM/YYYY') : '-'} {patient?.capture?.status} pela {patient?.capture?.hospital}
+                        </ListItemCaptureStatus> */}
+                      </TableCell>
+                      <TableCell align="center">
+                        <Button onClick={() => history.push(`/patient/capture/${patient?._id}/overview`)}>
+                          <VisibilityIcon style={{ color: '#0899BA' }} />
+                        </Button>
+                        <Button onClick={() => history.push(`/patient/capture/${patient?._id}/overview`)}>
+                          <GetAppOutlinedIcon style={{ color: '#0899BA' }} />
+                        </Button>
+                      </TableCell>
+                    </TableRow>
+                  )
+                })}
+              </Table>
+              <br />
+              <h4 style={{ color: '#333333' }}>Orçamento</h4>
+              <br />
+              <Table
+                tableCells={[
+                  //{ name: 'Documentação do Plano', align: 'left' },
+                  //{ name: ' ', align: 'right' },
+                ]}
+              >
+                {patientArray?.map((patient: any, index: number) => {
+                  return (
+                    <TableRow key={`patient_${index}`}>
+                      <TableCell align="center">
+                        {/* {patient?.capture?.estimate} */}
+                      </TableCell>
+                      <TableCell align="center">
+                        <Button onClick={() => history.push(`/patient/capture/${patient?._id}/overview`)}>
+                          <VisibilityIcon style={{ color: '#0899BA' }} />
+                        </Button>
+                        <Button onClick={() => history.push(`/patient/capture/${patient?._id}/overview`)}>
+                          <GetAppOutlinedIcon style={{ color: '#0899BA' }} />
+                        </Button>
+                      </TableCell>
+                    </TableRow>
+                  )
+                })}
+              </Table>
+            </div>
 
           </DialogContentText>
         </DialogContent>
