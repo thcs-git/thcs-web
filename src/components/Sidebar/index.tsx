@@ -340,7 +340,7 @@ const Sibebar = (props: Props<any>) => {
           <Button onClick={() => {
             setOpenModalConfig(false)
             history.push(`/dashboard`);
-           // location.reload()
+            //location.reload()
           }}
             color="primary"
           >
