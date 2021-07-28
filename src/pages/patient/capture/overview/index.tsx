@@ -382,7 +382,8 @@ export default function PatientCaptureForm(props: RouteComponentProps<IPageParam
       capture: {
         ...care?.capture,
         ...captureData,
-        status: 'Aguardando'
+        status: 'Aguardando',
+        finished_at: new Date
       },
       care_type_id: '5fd66ca189a402ec48110cc1',
       user_id: userSessionId,
