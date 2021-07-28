@@ -529,7 +529,9 @@ export default function AvaliationList() {
                     <MenuItem onClick={() => history.push(`/patient/capture/${care._id}/overview`)}>Visualizar
                       perfil</MenuItem>
                     <MenuItem onClick={() => toggleHistoryModal(index, care)}>Histórico</MenuItem>
-                    <MenuItem onClick={() => toggleAnexoModal()}>Documentos Anexados</MenuItem>
+                    {care.capture?.status === 'Aprovado' && (
+                      <MenuItem onClick={() => toggleAnexoModal()}>Documentos Anexados</MenuItem>
+                    )}
                     {care.capture?.status === 'Aguardando' && (
                       <MenuItem onClick={() => handleStartUpdateCaptureStatus(care)}>Atualizar status</MenuItem>
                     )}
