@@ -805,7 +805,7 @@ export default function AvaliationList() {
                 return (
                   <TableRow key={`patient_${index}`}>
                     <TableCell >
-                      <p>{patient?.capture?.created_at ? formatDate(patient?.created_at, 'DD/MM/YYYY') : '-'}</p>
+                      <p>{patient?.capture?.finished_at ? formatDate(patient?.finished_at, 'DD/MM/YYYY') : '-'}</p>
                     </TableCell>
                     <TableCell align="center">
                       <p>{handleType(patient)}</p>
