@@ -257,7 +257,6 @@ export function* updateUser({ payload: { data } }: any) {
     );
 
 
-
     toast.success("Usuário atualizado com sucesso!");
     yield put(updateUserSuccess(response.data));
   } catch (error) {
@@ -289,7 +288,6 @@ export function* getProfessions() {
     const response: AxiosResponse = yield call(apiSollar.get, `/profession`, {
       headers: { token },
     });
-
 
     yield put(loadProfessionsSuccess(response.data));
   } catch (error) {
@@ -344,7 +342,6 @@ export function* checkEmail({ payload: { token } }: any) {
       apiSollar.get,
       `/email?token=${token}`
     );
-
     yield put(loadCheckSuccess(response.data));
   } catch (error) {
     yield put(loadFailure());
@@ -363,7 +360,6 @@ export function* recoveryPassword({ payload: { data } }: any) {
       `/users/recoverypassword`,
       { ...data }
     );
-
     yield put(loadRecoverySuccess(response.data));
   } catch (error) {
     yield put(loadFailure());
@@ -376,7 +372,6 @@ export function* recoverypasswordiftoken({ payload: { data } }: any) {
       `/users/recoverypasswordiftoken`,
       { ...data }
     );
-
     yield put(loadRecoverySuccess(response.data));
   } catch (error) {
     yield put(loadFailure());
@@ -388,7 +383,6 @@ export function* loadConfirmUser({ payload: { token } }: any) {
       apiSollar.get,
       `/user/confirm?token=${token}`
     );
-
     yield put(loadSuccessConfirm(response.data));
   } catch (error) {
     yield put(loadFailure());

@@ -178,7 +178,7 @@ export default function UserConfiguration(){
                       <AccountCircle style={{ fontSize: 60 }} />
                       </Grid>
                       <Grid item md={4} style={{paddingLeft:"0px",paddingTop:"1.5rem"}}>
-                        <h3>{userState.data.name}</h3>
+                        <h3>{userState?.data?.name}</h3>
                       </Grid>
                       <Grid item md={3}>
                         <ButtonComponent variant="outlined">
@@ -193,13 +193,13 @@ export default function UserConfiguration(){
                     </Grid>
                     <Grid container direction="column" >
                         <Grid item style={{paddingLeft:"5rem"}}>
-                      cpf:{userState.data.fiscal_number}
+                      cpf:{userState?.data?.fiscal_number}
                     </Grid>
                     <Grid item style={{paddingLeft:"5rem"}}>
-                      email:{userState.data.email}
+                      email:{userState?.data?.email}
                     </Grid>
                     <Grid item style={{paddingLeft:"5rem"}}>
-                      telefone:{userState.data.phone}
+                      telefone:{userState?.data?.phone}
                     </Grid>
                     </Grid>
                   </CardContent>
@@ -350,7 +350,7 @@ export default function UserConfiguration(){
                       <AccountCircle style={{ fontSize: 60 }} />
                       </Grid>
                       <Grid item md={4} style={{paddingLeft:"0px",paddingTop:"1.5rem"}}>
-                        <h3>{userState.data.name}</h3>
+                        <h3>{userState?.data?.name}</h3>
                       </Grid>
                       <Grid item md={3}>
                         <ButtonComponent variant="outlined">
@@ -365,13 +365,13 @@ export default function UserConfiguration(){
                     </Grid>
                     <Grid container direction="column" >
                         <Grid item style={{paddingLeft:"5rem"}}>
-                      cpf:{userState.data.fiscal_number}
+                      cpf:{userState?.data?.fiscal_number}
                     </Grid>
                     <Grid item style={{paddingLeft:"5rem"}}>
-                      email:{userState.data.email}
+                      email:{userState?.data?.email}
                     </Grid>
                     <Grid item style={{paddingLeft:"5rem"}}>
-                      telefone:{userState.data.phone}
+                      telefone:{userState?.data?.phone}
                     </Grid>
                     </Grid>
                   </CardContent>

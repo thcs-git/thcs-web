@@ -596,24 +596,23 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
     window.scrollTo(0, 200)
   }, [currentTab]);
 
-
   function handleSelectProfession(value: ProfessionUserInterface) {
     setState((prevState) => ({
       ...prevState,
-      profession_id: value._id,
+      profession_id: value
     }));
   }
 
   function getprofessionId() {
     if (typeof state.profession_id === "object") {
       return state?.profession_id?._id;
+    } else {
+      return state?.profession_id
     }
   }
 
   const selectProfession = useCallback(() => {
-    if (!userState.data.professions) {
-      // return null;
-    } else {
+    if (typeof userState.data.profession_id === "object") {
       const selected = userState.data.professions.filter((item) => {
         if (typeof state.profession_id === "object") {
           return item._id === state.profession_id._id;
@@ -622,11 +621,10 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
 
 
 
-      return selected[0] ? selected[0] : userState.data.professions[1];
+
+      return selected[0] ? selected[0] : {_id: '', name: ''}
     }
-
-
-  }, [state, state.professions]);
+  }, [userState.data.profession_id, userState.data.professions, state.profession_id]);
 
 
   function viewProfession() {
@@ -1563,17 +1561,26 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
                                 id="combo-box-profession"
                                 disabled={!canEdit}
                                 options={userState.data.professions}
-                                getOptionLabel={(option) => option.name}
+                                getOptionLabel={(option) => {
+                                  if (typeof option === "object") {
+                                    return option.name
+                                  } else {
+                                    return option
+                                  }
+                                }}
                                 renderInput={(params) =>
                                   <TextField {...params} label="Função" variant="outlined"/>}
-                                // getOptionSelected={(option, value) =>
-                                //   option._id ==
-                                //    userState.data.professions[0]._id
-                                //  }
-                                defaultValue={selectProfession()}
+                                getOptionSelected={(option, value) => option._id === getprofessionId()}
+                                // defaultValue={selectProfession()}
+                                value={selectProfession()}
                                 onChange={(event, value) => {
                                   if (value) {
                                     handleSelectProfession(value);
+                                  } else {
+                                    setState((prevState) => ({
+                                      ...prevState,
+                                      profession_id: {_id: '', name: ''}
+                                    }));
                                   }
                                 }}
                                 size="small"
@@ -1663,15 +1670,15 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
                               />
                             </FormGroupSection>
                           </Grid>
-                          <Grid item md={12} xs={12}>
-                            {!(params.mode === 'config') && (
-                              <ChipList>
-                                <Chip
-                                  label={viewProfession()}
-                                />
-                              </ChipList>
-                            )}
-                          </Grid>
+                          {/*<Grid item md={12} xs={12}>*/}
+                          {/*  {!(params.mode === 'config') && (*/}
+                          {/*    <ChipList>*/}
+                          {/*      <Chip*/}
+                          {/*        label={viewProfession()}*/}
+                          {/*      />*/}
+                          {/*    </ChipList>*/}
+                          {/*  )}*/}
+                          {/*</Grid>*/}
                           <Grid item md={5} xs={12}>
                             <FormGroupSection fullWidth error>
                               <Autocomplete
@@ -1702,15 +1709,15 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
                               />
                             </FormGroupSection>
                           </Grid>
-                          <Grid item md={12} xs={12}>
-                            {!(params.mode === 'config') && (
-                              <ChipList>
-                                <Chip
-                                  label={viewMainSpecialty()}
-                                />
-                              </ChipList>
-                            )}
-                          </Grid>
+                          {/*<Grid item md={12} xs={12}>*/}
+                          {/*  {!(params.mode === 'config') && (*/}
+                          {/*    <ChipList>*/}
+                          {/*      <Chip*/}
+                          {/*        label={viewMainSpecialty()}*/}
+                          {/*      />*/}
+                          {/*    </ChipList>*/}
+                          {/*  )}*/}
+                          {/*</Grid>*/}
                           <Grid item md={6} xs={12}>
                             <FormGroupSection fullWidth error>
                               <Autocomplete
@@ -2740,19 +2747,32 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
                               <Autocomplete
                                 id="combo-box-profession"
                                 disabled={!canEdit}
-                                options={userState.data.professions || []}
-                                getOptionLabel={(option) => option.name}
-                                renderInput={(params) => <TextField {...params} disabled={!canEdit} label="Função"
-                                                                    variant="outlined"/>}
-                                // getOptionSelected={(option, value) => option._id === getprofessionId()}
-                                defaultValue={selectProfession()}
+                                options={userState.data.professions}
+                                getOptionLabel={(option) => {
+                                  if (typeof option === "object") {
+                                    return option.name
+                                  } else {
+                                    return option
+                                  }
+                                }}
+                                renderInput={(params) =>
+                                  <TextField {...params} label="Função" variant="outlined"/>}
+                                getOptionSelected={(option, value) => option._id === getprofessionId()}
+                                // defaultValue={selectProfession()}
+                                value={selectProfession()}
                                 onChange={(event, value) => {
                                   if (value) {
                                     handleSelectProfession(value);
+                                  } else {
+                                    setState((prevState) => ({
+                                      ...prevState,
+                                      profession_id: {_id: '', name: ''}
+                                    }));
                                   }
                                 }}
                                 size="small"
                                 fullWidth
+
                               />
                             </FormGroupSection>
                           </Grid>
@@ -3173,8 +3193,8 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
                       onClick={handleSaveFormUser}
                       disabled={!formValid}
                     >
-                    Salvar
-                  </ButtonComponent>)}
+                      Salvar
+                    </ButtonComponent>)}
                 </ButtonsContent>
               </FormSection>
             )}
