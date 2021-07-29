@@ -578,6 +578,15 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
   }, [currentTab]);
 
 
+  const handleTeste = useCallback(() => {
+    console.log('state', state)
+    if (typeof state?.profession_id === "object") {
+      if (state?.profession_id?._id) {
+        return userState.data.professions[1]
+      }
+    }
+  }, [state]);
+
   function handleSelectProfession(value: ProfessionUserInterface) {
     setState((prevState) => ({
       ...prevState,
@@ -592,6 +601,9 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
   }
 
   const selectProfession = useCallback(() => {
+    // console.log('teste1', state.profession_id)
+    // console.log('teste', state.professions)
+    // console.log('teste2', userState.data.professions)
     if (!userState.data.professions) {
       // return null;
     } else {
@@ -600,14 +612,11 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
           return item._id === state.profession_id._id;
         }
       });
-      console.log(selected);
 
 
       return selected[0] ? selected[0] : userState.data.professions[1];
     }
-
-
-  }, [state, state.professions]);
+  }, [state.professions, userState.data.professions[0]]);
 
 
   function viewProfession() {
@@ -914,6 +923,26 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
                     <TabBody>
                       <TabBodyItem className={currentTab === 0 ? "show" : ""}>
                         <Grid container>
+                          <Grid item md={12} xs={12}>
+                            <Autocomplete
+                              id="combo-box-profession"
+                              // disabled={!canEdit}
+                              options={userState.data.professions}
+                              getOptionLabel={(option) => option.name}
+                              renderInput={(params) => <TextField {...params} disabled={!canEdit} label="Função"
+                                                                  variant="outlined"/>}
+                              // getOptionSelected={(option, value) => option._id === getprofessionId()}
+                              // defaultValue={userState.data.professions[10]}
+                              value={handleTeste()}
+                              // onChange={(event, value) => {
+                              //   if (value) {
+                              //     handleSelectProfession(value);
+                              //   }
+                              // }}
+                              size="small"
+                              fullWidth
+                            />
+                          </Grid>
                           <Grid item md={12} xs={12}>
                             <TextField
                               disabled={!canEdit}
