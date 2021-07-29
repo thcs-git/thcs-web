@@ -111,10 +111,10 @@ export default function UserList() {
               { name: '', align: 'left' },
             ]}
           >
-            {userState.list.data.map((user, index) => (
+            {userState?.list.data.map((user, index) => (
               <TableRow key={`user_${index}`}>
                 <TableCell align="left">
-                  <Link key={index} to={`/user/${user._id}/view/edit`}>{user.name}</Link>
+                  <Link key={index} to={`/user/${user._id}/view/edit`}>{user?.name}</Link>
                 </TableCell>
                 <TableCell>
                   {handleCpf(user.fiscal_number)}

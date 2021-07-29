@@ -108,10 +108,10 @@ export default function UserDisengaged() {
               {name: '', align: 'left'},
             ]}
           >
-            {userState.list.data.map((user: UserListItems, index: number) => (
+            {userState?.list.data.map((user: UserListItems, index: number) => (
               <TableRow key={`user_${index}`}>
                 <TableCell>
-                  <Link to={`/user/${user._id}/link/edit`}>{user.name}</Link>
+                  <Link to={`/user/${user._id}/link/edit`}>{user?.name}</Link>
                 </TableCell>
                 {/*<TableCell>
                 {user.email}
