@@ -2633,7 +2633,7 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
                                   variant="outlined"
                                   size="small"
                                   placeholder="0000-0000"
-                                  error={!validatePhone() && state.phones[0]?.number != undefined}
+                                  error={!validatePhone() && state.phones[0]?.number != ''}
 
                                   fullWidth
                                 />
@@ -2675,7 +2675,7 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
                                   variant="outlined"
                                   size="small"
                                   placeholder="(00) 0 0000-0000"
-                                  error={!validateCellPhone() && state.phones[0]?.cellnumber != undefined}
+                                  error={!validateCellPhone() && state.phones[0]?.cellnumber != ''}
 
                                   fullWidth
                                 />
