@@ -72,7 +72,6 @@ export function* getPopUp({ payload }: any) {
     // console.log(`/attendance/getAttendance?limit=${params.limit ?? 10}&page=${
     //   params.page || 1
     // }${params.search ? "&search=" + params.search : ""}${params.status ? "&status=" + params.status : ""}${params.patient_id ? "&patient_id=" + params.patient_id : ""}`)
-    console.log("Tarcisio");
     const response: AxiosResponse = yield call(
       apiSollar.get,
       `/attendance/getAttendance?limit=${params.limit ?? 10}&page=${

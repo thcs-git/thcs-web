@@ -248,6 +248,7 @@ export default function PatientForm(props: RouteComponentProps<IPageParams>) {
     sector: '',
     sub_health_insurance: '',
     unit_health: '',
+    created_at: '',
   });
 
   const [canEdit, setCanEdit] = useState(true);
