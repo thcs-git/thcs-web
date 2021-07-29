@@ -95,36 +95,11 @@ export default function UserConfiguration(){
     name: localStorage.getItem(LOCALSTORAGE.USERNAME),
     companySelected: handleCompanySelected()
   });
-  const currentUser = window.localStorage.getItem(LOCALSTORAGE.USER_ID);
-  const currentCustomer = window.localStorage.getItem(LOCALSTORAGE.CUSTOMER_NAME);
   const [companies, setCompanies] = useState<any>([]);
 
-  let currentCompany = localStorage.getItem(LOCALSTORAGE.COMPANY_SELECTED);
-  useEffect(()=>{
-    dispatch(cleanAction());
-    if(currentUser){
-       dispatch(loadUserById(currentUser));
-    }
-  },[]);
-  const selectCompany = useCallback(() => {
-    currentCompany = localStorage.getItem(LOCALSTORAGE.COMPANY_SELECTED);
-    const selected = userState.data.companies.filter((item: any) => item._id === currentCompany);
-    return (selected[0]) ? selected[0] : null;
-  }, [userState]);
-
-  const changeCompany = useCallback((company: any) => {
-    console.log("change");
-    localStorage.setItem(LOCALSTORAGE.COMPANY_SELECTED, company._id);
-    localStorage.setItem(LOCALSTORAGE.COMPANY_NAME, company.name);
-    localStorage.setItem(LOCALSTORAGE.CUSTOMER, company.customer_id._id);
-    localStorage.setItem(LOCALSTORAGE.CUSTOMER_NAME, company.customer_id.name);
-
-    setUser(prevState => ({
-      ...prevState,
-      companySelected: company._id
-    }))
-    selectCompany();
-  }, [userState.data]);
+  useEffect(() => {
+    dispatch(loadUserById(user.id))
+  }, []);
 
   useEffect(() => {
     const { companies: userCompanies } = userState.data
@@ -139,6 +114,29 @@ export default function UserConfiguration(){
       setCompanies(userCompanies);
     }
   }, [userState.data]);
+
+  const selectCompany = useCallback(() => {
+    const selected = companies.filter((item: any) => item._id === user.companySelected);
+    return (selected[0]) ? selected[0] : null;
+  }, [companies, user]);
+
+  const currentUser = window.localStorage.getItem(LOCALSTORAGE.USER_ID);
+  const currentCustomer = window.localStorage.getItem(LOCALSTORAGE.CUSTOMER_NAME);
+
+
+  const changeCompany = useCallback((company: any) => {
+    localStorage.setItem(LOCALSTORAGE.COMPANY_SELECTED, company._id);
+    localStorage.setItem(LOCALSTORAGE.COMPANY_NAME, company.name);
+    localStorage.setItem(LOCALSTORAGE.CUSTOMER, company.customer_id._id);
+    localStorage.setItem(LOCALSTORAGE.CUSTOMER_NAME, company.customer_id.name);
+
+    setUser(prevState => ({
+      ...prevState,
+      companySelected: company._id
+    }))
+  }, [user]);
+
+
   function handlePushUser() {
     const user_id = localStorage.getItem(LOCALSTORAGE.USER_ID)
     console.log(user_id)
@@ -217,7 +215,7 @@ export default function UserConfiguration(){
                   id="combo-box-change-company"
                   options={companies}
                   getOptionLabel={(option: any) => option.customer}
-                  getOptionSelected={(option, value) => option._id === currentCompany}
+                  getOptionSelected={(option, value) => option._id === user.companySelected}
                   value={selectCompany()}
                   renderInput={(params) => <TextField {...params} label="Empresa" variant="outlined" autoComplete="off" />}
                   size="small"
@@ -389,7 +387,7 @@ export default function UserConfiguration(){
                   id="combo-box-change-company"
                   options={companies}
                   getOptionLabel={(option: any) => option.customer}
-                  getOptionSelected={(option, value) => option._id === currentCompany}
+                  getOptionSelected={(option, value) => option._id === user.companySelected}
                   value={selectCompany()}
                   renderInput={(params) => <TextField {...params} label="Empresa" variant="outlined" autoComplete="off" />}
                   size="small"
