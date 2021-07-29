@@ -135,28 +135,24 @@ export default function RecoveryPasswordPage(props: RouteComponentProps<IPagePar
         <Box display="flex" width={200} height={165} justifyContent="center" alignItems="center" style={{margin:"2rem"}}>
             <HomeIconLogo />
         </Box>
-          <FormGroupSection style={{width:"400px"}}>
-             <Grid container direction="column">
-              <Grid item md={12}>
-                <FeedbackTitle>
+          <FormGroupSection style={{ display:'flex', flexDirection:"column",width:"400px" }}>
+            <FeedbackTitle>
                   <h6>
                     Redefinir Senha
                   </h6>
                 </FeedbackTitle>
-              </Grid>
-              <Grid item md={12} xs={12}>
-              <FormControl fullWidth margin='normal' variant="outlined">
-                <InputLabel htmlFor="outlined-adornment-password"> Nova Senha </InputLabel>
-                  <OutlinedInput
-                    id="outlined-adornment-password"
-                    type={showPassword ? 'text' : 'password'}
-                    error={newPassword.error}
-                    onChange={element=>{
-                      setUserecovery(prev=>({
-                        ...prev,
-                        password:element.target.value
-                      }))
-                    }}
+                <FormControl fullWidth margin='normal' variant="outlined">
+                  <InputLabel htmlFor="outlined-adornment-password"> Nova Senha </InputLabel>
+                    <OutlinedInput
+                      id="outlined-adornment-password"
+                      type={showPassword ? 'text' : 'password'}
+                      error={newPassword.error}
+                      onChange={element=>{
+                        setUserecovery(prev=>({
+                          ...prev,
+                          password:element.target.value
+                        }))
+                      }}
                     endAdornment={
                       <InputAdornment position="end">
                         <IconButton
@@ -173,8 +169,7 @@ export default function RecoveryPasswordPage(props: RouteComponentProps<IPagePar
                           labelWidth={100}
                         />
                 </FormControl>
-              </Grid>
-              <Grid item md={12}>
+
                 <FormControl fullWidth margin='normal' variant="outlined">
                   <InputLabel htmlFor="outlined-adornment-password"> Confirmar Nova senha </InputLabel>
                     <OutlinedInput
@@ -203,13 +198,9 @@ export default function RecoveryPasswordPage(props: RouteComponentProps<IPagePar
                           labelWidth={100}
                         />
                 </FormControl>
-              </Grid>
-              <Grid item>
                 <FeedbackButtonsContent >
                   <Button variant="contained" style={{ background:"#4FC66A99", color:"white"}}  onClick={recoveryPassword}>Alterar Senha</Button>
                 </FeedbackButtonsContent>
-              </Grid>
-            </Grid>
           </FormGroupSection>
         </FeedbackContent>
         {/* <FeedbackContent>
