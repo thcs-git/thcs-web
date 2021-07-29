@@ -6,6 +6,7 @@ export const INITIAL_STATE: PatientState = {
     companies: [],
     name: "",
     social_name: "",
+    created_at: "",
     birthdate: "",
     gender: "",
     mother_name: "",
