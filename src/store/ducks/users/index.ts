@@ -32,6 +32,10 @@ export const INITIAL_STATE: UserState = {
     customer_id: "",
     active: true,
     professions: [],
+    profession_id: {
+      _id: "",
+      name: "",
+    },
   },
   list: {
     data: [],

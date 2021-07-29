@@ -107,19 +107,19 @@ export default function UserList() {
               { name: '', align: 'left' },
             ]}
           >
-            {userState.list.data.map((user, index) => (
+            {userState?.list.data.map((user, index) => (
               <TableRow key={`user_${index}`}>
                 <TableCell align="left">
-                  <Link key={index} to={`/user/${user._id}/view/edit`}>{user.name}</Link>
+                  <Link key={index} to={`/user/${user._id}/view/edit`}>{user?.name}</Link>
                 </TableCell>
                 <TableCell>
                   {handleCpf(user.fiscal_number)}
                 </TableCell>
                 <TableCell>
-                  {user.profession_id.name}
+                  {user.profession_id?.name}
                 </TableCell>
                 <TableCell>
-                  {user.main_specialty_id.name}
+                  {user.main_specialty_id?.name}
                 </TableCell>
                 <TableCell align="center">
                   {user.specialties.length > 0 ? (
@@ -226,12 +226,12 @@ export default function UserList() {
             >
               <p style={{ fontFamily: "Open Sans Bold" }}><h3>Principal</h3></p>
               <br />
-              <p style={{ color: '#333333', fontSize: "10pt", fontFamily: "Open Sans Regular" }}>{userState.list.data[userIndex]?.main_specialty_id.name}</p>
+              <p style={{ color: '#333333', fontSize: "10pt", fontFamily: "Open Sans Regular" }}>{userState.list.data[userIndex]?.main_specialty_id?.name}</p>
               <br />
               <p style={{ fontFamily: "Open Sans Bold" }}><h3>Secundária</h3></p>
               <br />
               <p style={{ color: '#333333', fontSize: "10pt", fontFamily: "Open Sans Regular" }}>{userState.list.data[userIndex]?.specialties.map((specialty, index) => (
-                `${specialty.name}${index < (userState.list.data[userIndex].specialties.length - 1) ? ',' : ''}`))}</p>
+                `${specialty?.name}${index < (userState.list.data[userIndex].specialties.length - 1) ? ',' : ''}`))}</p>
             </DialogContentText>
           </DialogContent>
           <DialogActions>
