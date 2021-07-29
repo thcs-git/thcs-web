@@ -87,10 +87,11 @@ export interface PatientInterface {
   convenio?: string;
   health_insurance?: string;
   sub_health_insurance?: string;
+  created_at: string;
 }
 
 export interface PatientList {
-  data: PatientDataItems[];
+  data: PatientInterface[];
   limit: string;
   page: string;
   total: number;
