@@ -149,7 +149,7 @@ export interface UserInterface {
   phone: string;
   cellphone: string;
   user_type_id: string | UserTypeInterface;
-  profession_id?: string | ProfessionUserInterface;
+  profession_id?: ProfessionUserInterface | string;
   main_specialty_id?: any;
   specialties: (SpecialtiesUserInterface | {})[];
   council_id?: {
