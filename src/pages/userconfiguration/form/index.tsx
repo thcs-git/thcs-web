@@ -129,13 +129,15 @@ export default function UserConfiguration(){
   useEffect(() => {
     const { companies: userCompanies } = userState.data
 
-    userCompanies.forEach(function (item) {
-      console.log(item);
-      Object.assign(item, {customer: item['customer_id']['name'] + ' - ' + item['name']});
-    })
-    console.log(userCompanies);
-    setCompanies(userCompanies);
-
+    if (userCompanies.length > 0) {
+      userCompanies?.forEach(function (item) {
+        let customer = item?.customer_id?.name ? item?.customer_id?.name : ''
+        let company = item?.name ? item?.name : ''
+        Object.assign(item, {customer: customer + ' - ' + company});
+      })
+      // console.log(userCompanies);
+      setCompanies(userCompanies);
+    }
   }, [userState.data]);
   function handlePushUser() {
     const user_id = localStorage.getItem(LOCALSTORAGE.USER_ID)
@@ -172,7 +174,7 @@ export default function UserConfiguration(){
                       <AccountCircle style={{ fontSize: 60 }} />
                       </Grid>
                       <Grid item md={4} style={{paddingLeft:"0px",paddingTop:"1.5rem"}}>
-                        <h3>{userState.data.name}</h3>
+                        <h3>{userState?.data?.name}</h3>
                       </Grid>
                       <Grid item md={3}>
                         <ButtonComponent variant="outlined">
@@ -187,13 +189,13 @@ export default function UserConfiguration(){
                     </Grid>
                     <Grid container direction="column" >
                         <Grid item style={{paddingLeft:"5rem"}}>
-                      cpf:{userState.data.fiscal_number}
+                      cpf:{userState?.data?.fiscal_number}
                     </Grid>
                     <Grid item style={{paddingLeft:"5rem"}}>
-                      email:{userState.data.email}
+                      email:{userState?.data?.email}
                     </Grid>
                     <Grid item style={{paddingLeft:"5rem"}}>
-                      telefone:{userState.data.phone}
+                      telefone:{userState?.data?.phone}
                     </Grid>
                     </Grid>
                   </CardContent>
@@ -344,7 +346,7 @@ export default function UserConfiguration(){
                       <AccountCircle style={{ fontSize: 60 }} />
                       </Grid>
                       <Grid item md={4} style={{paddingLeft:"0px",paddingTop:"1.5rem"}}>
-                        <h3>{userState.data.name}</h3>
+                        <h3>{userState?.data?.name}</h3>
                       </Grid>
                       <Grid item md={3}>
                         <ButtonComponent variant="outlined">
@@ -359,13 +361,13 @@ export default function UserConfiguration(){
                     </Grid>
                     <Grid container direction="column" >
                         <Grid item style={{paddingLeft:"5rem"}}>
-                      cpf:{userState.data.fiscal_number}
+                      cpf:{userState?.data?.fiscal_number}
                     </Grid>
                     <Grid item style={{paddingLeft:"5rem"}}>
-                      email:{userState.data.email}
+                      email:{userState?.data?.email}
                     </Grid>
                     <Grid item style={{paddingLeft:"5rem"}}>
-                      telefone:{userState.data.phone}
+                      telefone:{userState?.data?.phone}
                     </Grid>
                     </Grid>
                   </CardContent>
