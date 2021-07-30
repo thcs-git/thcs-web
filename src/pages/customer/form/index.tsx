@@ -290,7 +290,6 @@ export default function CustomerForm(props: RouteComponentProps<IPageParams>) {
 
   useEffect(() => {
     const field = customerState.errorCep ? 'input-postal-code' : 'input-address-number';
-    console.log(customerState.errorCep);
 
 
     customerState.errorCep && setState(prevState => ({
@@ -309,7 +308,7 @@ export default function CustomerForm(props: RouteComponentProps<IPageParams>) {
   }, [customerState.errorCep]);
 
   const handleSaveFormCustomer = useCallback(() => {
-    console.log(fieldsValidation);
+
 
     // if (!fieldsValidation.name || !fieldsValidation.social_name  || !fieldsValidation.fiscal_number || !fieldsValidation.responsible_user ||
     //   !fieldsValidation.phone || !fieldsValidation.email || !fieldsValidation.phone || !fieldsValidation.postal_code  || !fieldsValidation.street ) {
@@ -353,7 +352,7 @@ export default function CustomerForm(props: RouteComponentProps<IPageParams>) {
    }, [state])
 
 
-
+  const teste = () => {console.log('teste do onBlur')}
   ///////// Validação ////////////////
 
   const validatePhone = () => {
@@ -570,7 +569,7 @@ export default function CustomerForm(props: RouteComponentProps<IPageParams>) {
                         setState({ ...state, address: { ...state.address, postal_code: element.target.value } })
                         setFieldValidations((prevState: any) => ({ ...prevState, postal_code: !validator.isEmpty(element.target.value) }));
                       }}
-                     onBlur={getAddress}
+                      onBlur={getAddress}
                     >
                       {(inputProps: Props) => (
                         <OutlinedInputFiled
