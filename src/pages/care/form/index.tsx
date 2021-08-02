@@ -1154,7 +1154,7 @@ export default function CareForm(props: RouteComponentProps<IPageParams>) {
                         fullWidth
                       />
                     </Grid>
-                    {/* <Grid item md={12} xs={12}>
+                    <Grid item md={12} xs={12}>
                   <TextField
                     id="input-procedure"
                     label="Procedimento"
@@ -1169,8 +1169,8 @@ export default function CareForm(props: RouteComponentProps<IPageParams>) {
                     }
                     fullWidth
                   />
-                </Grid> */}
-                    {/* <Grid item md={12} xs={12}>
+                </Grid>
+                    <Grid item md={12} xs={12}>
                   <Autocomplete
                     id="input-diagnostic"
                     options={careState.cid}
@@ -1199,7 +1199,7 @@ export default function CareForm(props: RouteComponentProps<IPageParams>) {
                     noOptionsText="Nenhum CID foi encontrado"
                     fullWidth
                   />
-                </Grid> */}
+                </Grid>
                     <Grid item md={8} xs={12}>
                       <Autocomplete
                         id="combo-box-users"
@@ -1386,7 +1386,7 @@ export default function CareForm(props: RouteComponentProps<IPageParams>) {
                           Médico Assistente: {selectUser()?.name}
                         </Typography>
                         <Typography variant="caption" color="textSecondary">
-                          {`${selectCid()?.cid ?? ""} - ${selectCid()?.name ?? ""}`}
+                          Diagnóstico CID:{`${selectCid()?.cid ?? ""} - ${selectCid()?.name ?? ""}`}
                         </Typography>
                       </Box>
                     </Box>
