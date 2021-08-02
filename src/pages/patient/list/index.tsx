@@ -391,17 +391,16 @@ export default function PatientList() {
                 ]}
               >
                 {patientArray?.map((patient: any, index: number) => {
-                  console.log(patient)
                   return (
                     <TableRow key={`patient_${index}`}>
-                      <TableCell >
-                        <p></p>
+                      <TableCell align="center">
+                        <p>-</p>
                       </TableCell>
                       <TableCell align="center">
                         <p>{patient?._id}</p>
                       </TableCell>
                       <TableCell align="center">
-                        <p></p>
+                        <p>-</p>
                       </TableCell>
                       <TableCell align="center">
                         {typeof patient?.care_type_id === "object"
