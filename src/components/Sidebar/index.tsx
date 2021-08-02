@@ -1,12 +1,12 @@
-import React, { useState, useEffect, Props, useCallback } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import React, {useState, useEffect, Props, useCallback} from 'react';
+import {useDispatch, useSelector} from 'react-redux';
 
-import { ApplicationState } from '../../store';
+import {ApplicationState} from '../../store';
 
-import { loadCompanyById } from '../../store/ducks/companies/actions';
+import {loadCompanyById} from '../../store/ducks/companies/actions';
 
 import clsx from 'clsx';
-import { createStyles, makeStyles, useTheme, Theme } from '@material-ui/core/styles';
+import {createStyles, makeStyles, useTheme, Theme} from '@material-ui/core/styles';
 import Drawer from '@material-ui/core/Drawer';
 import List from '@material-ui/core/List';
 import CssBaseline from '@material-ui/core/CssBaseline';
@@ -22,7 +22,7 @@ import ExitToApp from '@material-ui/icons/ExitToApp';
 import AccountCircle from '@material-ui/icons/AccountCircle';
 import SettingsIcon from '@material-ui/icons/Settings';
 import Slide from '@material-ui/core/Slide';
-import { TransitionProps } from '@material-ui/core/transitions';
+import {TransitionProps} from '@material-ui/core/transitions';
 import ExpansionPanel from '@material-ui/core/ExpansionPanel';
 import ExpansionPanelSummary from '@material-ui/core/ExpansionPanelSummary';
 import ExpansionPanelDetails from '@material-ui/core/ExpansionPanelDetails';
@@ -41,7 +41,7 @@ import {
   Typography,
 } from '@material-ui/core';
 
-import { useHistory } from "react-router-dom";
+import {useHistory} from "react-router-dom";
 
 /**
  * Icons
@@ -56,26 +56,33 @@ import LocalHospital from '@material-ui/icons/LocalHospital';
 import StarRateIcon from '@material-ui/icons/StarRate';
 import FavoriteIcon from '@material-ui/icons/Favorite';
 
-import { Logo, UserContent } from './styles';
+import {Logo, UserContent} from './styles';
 import LOCALSTORAGE from '../../helpers/constants/localStorage';
 
 // Components
 import ConfigComponent from '../Configuration';
+import SESSIONSTORAGE from "../../helpers/constants/sessionStorage";
+import {toast} from "react-toastify";
 
 const drawerWidth = 270;
 
-const itemsMenu = [
-  { title: 'Dashboard', route: '/', icon: <DashboardIcon style={{ color: '#fff' }} /> },
-  { title: 'Clientes', route: '/customer', icon: <AssignmentIndIcon style={{ color: '#fff' }} /> },
-  { title: 'Empresas', route: '/company', icon: <BusinessIcon style={{ color: '#fff' }} /> },
-  { title: 'Meus Profissionais', route: "/user", icon: <PersonIcon style={{ color: '#fff' }} /> },
-  { title: 'Banco de Talentos', route: "/userdesengaged", icon: <StarRateIcon style={{ color: '#fff' }} /> },
-  { title: 'Área', route: '/area', icon: <LocationOncon style={{ color: '#fff' }} /> },
-  { title: 'Pacientes', route: '/patient', icon: <GroupAddIcon style={{ color: '#fff' }} /> },
-  { title: 'Avaliação', route: '/avaliation', icon: <FavoriteIcon style={{ color: '#fff' }} /> },
-  { title: 'Atendimento', route: '/care', icon: <LocalHospital style={{ color: '#fff' }} />},
 
-]
+let test = []
+
+// const itemsMenu = [
+//   menu.map((item: any) => {
+//     test.push({ title: item.name, route: item.slug, icon: <AssignmentIndIcon style={{ color: '#fff' }} /> })
+//   }),
+//   { title: 'Dashboard', route: '/', icon: <DashboardIcon style={{ color: '#fff' }} /> },
+//   { title: 'Clientes', route: '/customer', icon: <AssignmentIndIcon style={{ color: '#fff' }} /> },
+//   { title: 'Empresas', route: '/company', icon: <BusinessIcon style={{ color: '#fff' }} /> },
+//   { title: 'Meus Profissionais', route: "/user", icon: <PersonIcon style={{ color: '#fff' }} /> },
+//   { title: 'Banco de Talentos', route: "/userdesengaged", icon: <StarRateIcon style={{ color: '#fff' }} /> },
+//   { title: 'Área', route: '/area', icon: <LocationOncon style={{ color: '#fff' }} /> },
+//   { title: 'Pacientes', route: '/patient', icon: <GroupAddIcon style={{ color: '#fff' }} /> },
+//   { title: 'Avaliação', route: '/avaliation', icon: <FavoriteIcon style={{ color: '#fff' }} /> },
+//   { title: 'Atendimento', route: '/care', icon: <LocalHospital style={{ color: '#fff' }} />},
+// ]
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -141,9 +148,10 @@ const Transition = React.forwardRef(function Transition(
   return <Slide direction="up" ref={ref} {...props} />;
 });
 
-interface PropsSidebar{
-  permission?:boolean
+interface PropsSidebar {
+  permission?: boolean
 }
+
 const Sibebar = (props: Props<any>) => {
   const history = useHistory();
   const classes = useStyles();
@@ -198,9 +206,52 @@ const Sibebar = (props: Props<any>) => {
     setOpenModalConfig(!openModalConfig);
   }, []);
 
+  const [itemsMenu, setItemsMenu] = useState<any>([]);
+
+  useEffect(() => {
+    const menu = JSON.parse(sessionStorage.getItem(SESSIONSTORAGE.MENU) ?? '[]')
+
+    const itemsMenu = [
+      {title: 'Dashboard', route: '/', icon: <DashboardIcon style={{color: '#fff'}}/>},
+      {title: 'Clientes', route: '/customer', icon: <AssignmentIndIcon style={{color: '#fff'}}/>},
+      {title: 'Empresas', route: '/company', icon: <BusinessIcon style={{color: '#fff'}}/>},
+      {title: 'Meus Profissionais', route: "/user", icon: <PersonIcon style={{color: '#fff'}}/>},
+      {title: 'Banco de Talentos', route: "/userdesengaged", icon: <StarRateIcon style={{color: '#fff'}}/>},
+      {title: 'Área', route: '/area', icon: <LocationOncon style={{color: '#fff'}}/>},
+      {title: 'Pacientes', route: '/patient', icon: <GroupAddIcon style={{color: '#fff'}}/>},
+      {title: 'Avaliação', route: '/avaliation', icon: <FavoriteIcon style={{color: '#fff'}}/>},
+      {title: 'Atendimento', route: '/care', icon: <LocalHospital style={{color: '#fff'}}/>},
+    ]
+
+    const iconTypes : any = {
+      AssignmentIndIcon: AssignmentIndIcon,
+      LocalHospital: LocalHospital,
+    }
+
+    interface DocumentFields {
+      name: string;
+      style?: any;
+    }
+
+    const IconComponent = ({name, ...props}: DocumentFields) => {
+      let Icon = iconTypes[name]
+      return <Icon {...props} />;
+    };
+
+    menu.map((item: any) => {
+      itemsMenu.push({
+        title: item.name,
+        route: item.slug,
+        icon: <IconComponent name={item.icon} style={{color: item.color}}/>
+      })
+    })
+
+    setItemsMenu(itemsMenu)
+  }, []);
+
   return (
     <div className={classes.root}>
-      <CssBaseline />
+      <CssBaseline/>
       <Drawer
         variant="permanent"
         className={clsx(classes.drawer, {
@@ -215,38 +266,39 @@ const Sibebar = (props: Props<any>) => {
         }}
       >
         <div className={classes.toolbar}>
-          <Logo />
+          <Logo/>
           <IconButton onClick={handleDrawerClose}>
-            {open ? <ChevronLeftIcon style={{ color: '#fff' }} /> : <MenuIcon style={{ color: '#fff' }} />}
+            {open ? <ChevronLeftIcon style={{color: '#fff'}}/> : <MenuIcon style={{color: '#fff'}}/>}
           </IconButton>
         </div>
         {/* <Divider /> */}
 
         <UserContent className={!open ? 'hide' : ''}>
-          <AccountCircle />
+          <AccountCircle/>
 
           <div>
             <h3>{username}</h3>
-            <br />
-            <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', }}>
-              <ListItem style={{ padding: 0 }} className={classes.logOutButton} onClick={() => setOpenModalConfig(true)}>
-                <BusinessIcon />
-                <ListItemText style={{color:"#ffff",cursor:"pointer"}}>
-                  <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', }}>
-                    <h4 style={{ color: '#ffffff', marginLeft: 10 }}>{customer.name}</h4>
-                    <h4 style={{ color: '#ffffff', marginLeft: 10 }}>{company.name}</h4>
+            <br/>
+            <div style={{display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center',}}>
+              <ListItem style={{padding: 0}} className={classes.logOutButton} onClick={() => setOpenModalConfig(true)}>
+                <BusinessIcon/>
+                <ListItemText style={{color: "#ffff", cursor: "pointer"}}>
+                  <div
+                    style={{display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center',}}>
+                    <h4 style={{color: '#ffffff', marginLeft: 10}}>{customer.name}</h4>
+                    <h4 style={{color: '#ffffff', marginLeft: 10}}>{company.name}</h4>
                   </div>
                 </ListItemText>
-                <EditIcon style={{ color: '#fff', fontSize: '14px', marginLeft: '10px' }} />
+                <EditIcon style={{color: '#fff', fontSize: '14px', marginLeft: '10px'}}/>
               </ListItem>
             </div>
           </div>
         </UserContent>
         <List>
-          {itemsMenu.map((item,index)=>(
+          {itemsMenu.map((item: any, index: any) => (
             <>
 
-            {/* {item.subtitle?(
+              {/* {item.subtitle?(
 
                <Accordion style={{backgroundColor:"transparent", boxShadow:"none"}}>
                   <AccordionSummary >
@@ -271,30 +323,30 @@ const Sibebar = (props: Props<any>) => {
             </Accordion>
            ):( */}
               <ListItem key={index} onClick={() => history.push(item.route)}>
-                  <ListItemIcon>
-                      {item.icon}
-                    </ListItemIcon>
-                    <ListItemText primary={item.title} style={{color:"#ffff",cursor:"pointer"}}  />
+                <ListItemIcon>
+                  {item.icon}
+                </ListItemIcon>
+                <ListItemText primary={item.title} style={{color: "#ffff", cursor: "pointer"}}/>
               </ListItem>
 
-            {/* )} */}
+              {/* )} */}
             </>
 
           ))}
-          </List>
-        <Divider />
+        </List>
+        <Divider/>
         <List disablePadding={true}>
           <ListItem className={classes.logOutButton} onClick={() => history.push("/userconfiguration")}>
             <ListItemIcon>
-              <SettingsIcon style={{ color: '#fff' }} />
+              <SettingsIcon style={{color: '#fff'}}/>
             </ListItemIcon>
-            <ListItemText primary="Configurações" />
+            <ListItemText primary="Configurações"/>
           </ListItem>
           <ListItem className={classes.logOutButton} onClick={handleOpenModalLogout}>
             <ListItemIcon>
-              <ExitToApp style={{ color: '#fff' }} />
+              <ExitToApp style={{color: '#fff'}}/>
             </ListItemIcon>
-            <ListItemText primary="Sair" />
+            <ListItemText primary="Sair"/>
           </ListItem>
         </List>
       </Drawer>
@@ -312,15 +364,15 @@ const Sibebar = (props: Props<any>) => {
         <DialogContent>
           <DialogContentText id="alert-dialog-description">
             Tem certeza que deseja sair do Sollar?
-					</DialogContentText>
+          </DialogContentText>
         </DialogContent>
         <DialogActions>
           <Button onClick={handleCloseModalLogout} color="primary">
             Não
-					</Button>
+          </Button>
           <Button onClick={handleLogout} color="primary" autoFocus>
             Sim
-					</Button>
+          </Button>
         </DialogActions>
       </Dialog>
 
@@ -334,15 +386,15 @@ const Sibebar = (props: Props<any>) => {
       >
         <DialogTitle id="alert-dialog-title">Configurações</DialogTitle>
         <DialogContent>
-          <ConfigComponent />
+          <ConfigComponent/>
         </DialogContent>
         <DialogActions>
           <Button onClick={() => {
             setOpenModalConfig(false)
             history.push(`/dashboard`);
-           // location.reload()
+            // location.reload()
           }}
-            color="primary"
+                  color="primary"
           >
             Fechar
           </Button>
