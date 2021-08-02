@@ -35,6 +35,10 @@ export const ComplexityStatus = styled.div<IComplexityStatus>`
         return `var(--danger)`;
       case "Média Complexidade":
         return `var(--yellow)`;
+      case "Sem Complexidade:":
+        return `var(--black)`;
+      case "":
+        return `var(--black)`;
       default:
         return `var(--black)`;
     }
