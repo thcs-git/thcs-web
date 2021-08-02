@@ -289,13 +289,13 @@ export default function CouncilList() {
                   return (
                     <TableRow key={`patient_${index}`}>
                       <TableCell >
-                        <p>{patient?.started_at ? formatDate(patient?.started_at ?? "", "DD/MM/YYYY") : ""}</p>
+                        <p>{patient?.started_at ? formatDate(patient?.started_at ?? "", "DD/MM/YYYY") : "-"}</p>
                       </TableCell>
                       <TableCell align="center">
                         <p>{patient?._id}</p>
                       </TableCell>
                       <TableCell align="center">
-                        <p></p>
+                        <p>-</p>
                       </TableCell>
                       <TableCell align="center">
                         {typeof patient?.care_type_id === "object"
