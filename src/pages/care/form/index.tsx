@@ -1386,7 +1386,7 @@ export default function CareForm(props: RouteComponentProps<IPageParams>) {
                           Médico Assistente: {selectUser()?.name}
                         </Typography>
                         <Typography variant="caption" color="textSecondary">
-                          {`${selectCid()?.cid ?? ""} - ${selectCid()?.name ?? ""}`}
+                          Diagnóstico CID:{`${selectCid()?.cid ?? ""} - ${selectCid()?.name ?? ""}`}
                         </Typography>
                       </Box>
                     </Box>
