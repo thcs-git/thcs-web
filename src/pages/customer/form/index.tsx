@@ -169,17 +169,17 @@ export default function CustomerForm(props: RouteComponentProps<IPageParams>) {
     dispatch(cleanAction());
   }, []);
 
-  // useEffect(() => {
-  //   setState(prevState => {
-  //     return {
-  //       ...prevState,
-  //       address: {
-  //         ...prevState.address,
-  //         ...customerState.data.address
-  //       }
-  //     }
-  //   });
-  // }, [customerState.data.address]);
+  useEffect(() => {
+    setState(prevState => {
+      return {
+        ...prevState,
+        address: {
+          ...prevState.address,
+          ...customerState.data.address
+        }
+      }
+    });
+  }, [customerState.data.address]);
 
   useEffect(() => {
     if (params.id) {
@@ -324,7 +324,6 @@ export default function CustomerForm(props: RouteComponentProps<IPageParams>) {
     //
     // }
     if (params.id && ModifiCondition() ) {
-
       dispatch(updateCustomerRequest(state));
 
     }else{
@@ -352,7 +351,6 @@ export default function CustomerForm(props: RouteComponentProps<IPageParams>) {
    }, [state])
 
 
-  const teste = () => {console.log('teste do onBlur')}
   ///////// Validação ////////////////
 
   const validatePhone = () => {
