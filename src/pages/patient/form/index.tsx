@@ -358,12 +358,15 @@ export default function PatientForm(props: RouteComponentProps<IPageParams>) {
       }
 
     }else{
-      setState(prevState=>({
-        ...prevState,
-        area_id:areaState.list.data[0]._id
-      }))
+      if (areaState.list.data.length > 1) {
+        setState(prevState=>({
+          ...prevState,
+          area_id: areaState.list.data[0]._id
+        }))
+      }
     }
-  }, [patientState.data]);
+
+  }, [patientState.data, areaState.list.data]);
 
   useEffect(() => {
     setState(prevState => {

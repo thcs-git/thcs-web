@@ -666,10 +666,10 @@ export default function AvaliationList() {
                 </RadioGroup>
               </FieldContent>
 
-              <FieldContent>
-                <DialogContentText tabIndex={-1}>Anexar Guia de Autorização</DialogContentText>
-                <input type="file" accept="application/pdf" onChange={handleChangeFiles} />
-              </FieldContent>
+              {/*<FieldContent>*/}
+              {/*  <DialogContentText tabIndex={-1}>Anexar Guia de Autorização</DialogContentText>*/}
+              {/*  <input type="file" accept="application/pdf" onChange={handleChangeFiles} />*/}
+              {/*</FieldContent>*/}
               <FieldContent>
                 <DialogContentText tabIndex={-1}>Anexar Guia de Autorização</DialogContentText>
                 <DialogContentText>Arquivos .pdf e menores que 5 megabytes.</DialogContentText>
@@ -677,7 +677,8 @@ export default function AvaliationList() {
                   error={file.error}
                   onChange={handleChangeFiles}
                   helperText={file.error ? "Aquivo não compatível ou muito grande" : null}
-                  type='file'>
+                  type='file'
+                  inputProps={{accept:"application/pdf"}}>
                 </TextField>
               </FieldContent>
 
