@@ -94,8 +94,8 @@ export default function CouncilList() {
   const debounceSearchRequest = debounce(handleChangeInput, 900);
 
   const handleComplexity = (complexity: any) => {
-    if (complexity === 'Sem Complexidade') {
-      return ''
+    if (complexity === 'Sem Complexidade' || complexity==='') {
+      return '-'
     }
     return complexity
   };
@@ -157,15 +157,15 @@ export default function CouncilList() {
                     ? care?.care_type_id.name
                     : care?.care_type_id}
                 </TableCell>
-                <TableCell>
+                <TableCell align="left">
                   <ComplexityStatus
                     status={care?.complexity || care?.capture?.complexity}
                   >
-                    {handleComplexity(care?.complexity || care?.capture?.complexity)}
+                    <p>{handleComplexity(care?.complexity || care?.capture?.complexity)}</p>
                   </ComplexityStatus>
                 </TableCell>
-                <TableCell>
-                  {care?.started_at ? formatDate(care?.started_at ?? "", "DD/MM/YYYY HH:mm:ss") : ""}
+                <TableCell align="center">
+                  {care?.started_at ? formatDate(care?.started_at ?? "", "DD/MM/YYYY HH:mm:ss") : "-"}
                 </TableCell>
                 <TableCell>
                   <Button
@@ -288,14 +288,14 @@ export default function CouncilList() {
                   console.log(patient)
                   return (
                     <TableRow key={`patient_${index}`}>
-                      <TableCell >
-                        <p></p>
+                      <TableCell align="center">
+                        <p>-</p>
                       </TableCell>
                       <TableCell align="center">
                         <p>{patient?._id}</p>
                       </TableCell>
                       <TableCell align="center">
-                        <p></p>
+                        <p>-</p>
                       </TableCell>
                       <TableCell align="center">
                         {typeof patient?.care_type_id === "object"
