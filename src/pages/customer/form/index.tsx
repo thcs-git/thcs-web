@@ -262,7 +262,7 @@ export default function CustomerForm(props: RouteComponentProps<IPageParams>) {
   }, [customerState.data?.address]);
 
 
-  /// useEffect QUEBRADO!!!!
+  // useEffect QUEBRADO!!!!
   // useEffect(() => {
   //   if (customerState.success && customerState.data?._id && !customerState.isRegistrationCompleted) history.push('/customer');
   // }, [customerState.success])
