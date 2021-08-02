@@ -226,6 +226,7 @@ const Sibebar = (props: Props<any>) => {
     const iconTypes : any = {
       AssignmentIndIcon: AssignmentIndIcon,
       LocalHospital: LocalHospital,
+      default: AssignmentIndIcon,
     }
 
     interface DocumentFields {
@@ -234,7 +235,8 @@ const Sibebar = (props: Props<any>) => {
     }
 
     const IconComponent = ({name, ...props}: DocumentFields) => {
-      let Icon = iconTypes[name]
+      let Icon = iconTypes[name] ?? iconTypes.default
+      console.log('icon', Icon)
       return <Icon {...props} />;
     };
 
