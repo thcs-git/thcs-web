@@ -184,7 +184,7 @@ export default function CustomerForm(props: RouteComponentProps<IPageParams>) {
   useEffect(() => {
     if (params.id) {
       if(params.mode === "view"){
-        setCanEdit(false)
+        setCanEdit(!canEdit)
       }
 
         const uf = States.find(uf => uf.sigla === customerState.data.address.state) || null;
@@ -261,9 +261,11 @@ export default function CustomerForm(props: RouteComponentProps<IPageParams>) {
     }));
   }, [customerState.data?.address]);
 
-  useEffect(() => {
-    if (customerState.success && customerState.data?._id && !customerState.isRegistrationCompleted) history.push('/customer');
-  }, [customerState.success])
+
+  /// useEffect QUEBRADO!!!!
+  // useEffect(() => {
+  //   if (customerState.success && customerState.data?._id && !customerState.isRegistrationCompleted) history.push('/customer');
+  // }, [customerState.success])
 
 
   useEffect(() => {
@@ -468,7 +470,7 @@ export default function CustomerForm(props: RouteComponentProps<IPageParams>) {
             <FormTitle>Cadastro de Cliente</FormTitle>
 
             {(params.id && params.mode == 'view' && !canEdit)&& (
-              <Button style={{ marginTop: -20, marginLeft: 15, color: '#0899BA' }} onClick={() => setCanEdit(!canEdit)}>
+              <Button style={{ marginTop: -20, marginLeft: 15, color: '#0899BA' }} onClick={() => setCanEdit(true)}>
                 <Edit style={{ marginRight: 5, width: 18 }} />
               Editar
               </Button>
