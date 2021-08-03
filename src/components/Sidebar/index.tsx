@@ -214,6 +214,7 @@ const Sibebar = (props: Props<any>) => {
   interface itemsInterface {
     title: any;
     route: any;
+    modal: any;
     icon: JSX.Element;
   }
 
@@ -221,13 +222,20 @@ const Sibebar = (props: Props<any>) => {
     AssignmentIndIcon: AssignmentIndIcon,
     BusinessIcon: BusinessIcon,
     DashboardIcon: DashboardIcon,
+    ExitToApp: ExitToApp,
     FavoriteIcon: FavoriteIcon,
     GroupAddIcon: GroupAddIcon,
     LocalHospital: LocalHospital,
     LocationOncon: LocationOncon,
     PersonIcon: PersonIcon,
     StarRateIcon: StarRateIcon,
+    SettingsIcon: SettingsIcon,
     default: AssignmentIndIcon,
+  }
+
+  const modalTypes: any = {
+    ExitToApp: handleOpenModalLogout,
+    default: handleOpenModalLogout,
   }
 
   const IconComponent = ({name, ...props}: iconInterface) => {
@@ -271,7 +279,7 @@ const Sibebar = (props: Props<any>) => {
         {
           icon: 'StarRateIcon',
           id: 5,
-          name: 'Banco de Talentosntes',
+          name: 'Banco de Talentos',
           slug: '/userdesengaged',
           color: '#fff'
         },
@@ -303,6 +311,27 @@ const Sibebar = (props: Props<any>) => {
           slug: '/care',
           color: '#fff'
         },
+        {
+          icon: 'SettingsIcon',
+          id: 100,
+          name: 'Configurações',
+          slug: "/userconfiguration",
+          color: '#fff'
+        },
+        {
+          icon: 'SettingsIcon',
+          id: 101,
+          name: 'Configurações Cliente',
+          slug: "/clientconfiguration",
+          color: '#fff',
+        },
+        {
+          icon: 'ExitToApp',
+          id: 1000,
+          name: 'Sair',
+          modal: true,
+          color: '#fff',
+        },
       ]
       sessionStorage.setItem(SESSIONSTORAGE.MENU, JSON.stringify(menu))
     }
@@ -325,6 +354,7 @@ const Sibebar = (props: Props<any>) => {
       itemsMenu.push({
         title: item.name,
         route: item.slug,
+        modal: item.modal ? modalTypes[item.icon] : '',
         icon: <IconComponent name={item.icon} style={{color: item.color}}/>
       })
     })
@@ -380,30 +410,39 @@ const Sibebar = (props: Props<any>) => {
         <List>
           {itemsMenu.map((item: any, index: any) => (
             <>
-              <ListItem className={classes.logOutButton} key={index} onClick={() => history.push(item.route)}>
-                <ListItemIcon>
-                  {item.icon}
-                </ListItemIcon>
-                <ListItemText primary={item.title} style={{color: "#ffff", cursor: "pointer"}}/>
-              </ListItem>
+              {item.modal ? (
+                <ListItem className={classes.logOutButton} key={index} onClick={item.modal}>
+                  <ListItemIcon>
+                    {item.icon}
+                  </ListItemIcon>
+                  <ListItemText primary={item.title} style={{color: "#ffff", cursor: "pointer"}}/>
+                </ListItem>
+              ):(
+                <ListItem className={classes.logOutButton} key={index} onClick={() => history.push(item.route)}>
+                  <ListItemIcon>
+                    {item.icon}
+                  </ListItemIcon>
+                  <ListItemText primary={item.title} style={{color: "#ffff", cursor: "pointer"}}/>
+                </ListItem>
+              )}
             </>
           ))}
         </List>
-        <Divider/>
-        <List disablePadding={true}>
-          <ListItem className={classes.logOutButton} onClick={() => history.push("/userconfiguration")}>
-            <ListItemIcon>
-              <SettingsIcon style={{color: '#fff'}}/>
-            </ListItemIcon>
-            <ListItemText primary="Configurações"/>
-          </ListItem>
-          <ListItem className={classes.logOutButton} onClick={handleOpenModalLogout}>
-            <ListItemIcon>
-              <ExitToApp style={{color: '#fff'}}/>
-            </ListItemIcon>
-            <ListItemText primary="Sair"/>
-          </ListItem>
-        </List>
+        {/*<Divider/>*/}
+        {/*<List disablePadding={true}>*/}
+        {/*  <ListItem className={classes.logOutButton} onClick={() => history.push("/userconfiguration")}>*/}
+        {/*    <ListItemIcon>*/}
+        {/*      <SettingsIcon style={{color: '#fff'}}/>*/}
+        {/*    </ListItemIcon>*/}
+        {/*    <ListItemText primary="Configurações"/>*/}
+        {/*  </ListItem>*/}
+        {/*  <ListItem className={classes.logOutButton} onClick={handleOpenModalLogout}>*/}
+        {/*    <ListItemIcon>*/}
+        {/*      <ExitToApp style={{color: '#fff'}}/>*/}
+        {/*    </ListItemIcon>*/}
+        {/*    <ListItemText primary="Sair"/>*/}
+        {/*  </ListItem>*/}
+        {/*</List>*/}
       </Drawer>
       <main className={classes.content}>
         {props.children}
