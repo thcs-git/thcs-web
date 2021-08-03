@@ -23,7 +23,7 @@ import {
   Radio,
   RadioGroup
 } from '@material-ui/core';
-import { SearchOutlined, Edit, AddAlertSharp } from '@material-ui/icons';
+import { SearchOutlined, Edit, AddAlertSharp, TrainRounded } from '@material-ui/icons';
 import Autocomplete from '@material-ui/lab/Autocomplete';
 
 import { useDispatch, useSelector } from 'react-redux';
@@ -345,28 +345,26 @@ export default function PatientForm(props: RouteComponentProps<IPageParams>) {
 
     if (params.id) {
       dispatch(loadPatientById(params.id));
-    } else {
+    }else {
       dispatch(loadFailure());
     }
   }, [dispatch, params]);
 
-  useEffect(() => {
-    if (params.id) {
-      setState(patientState.data);
-      if(params.mode && params.mode ==='view'){
-         setCanEdit(false);
-      }
+  // useEffect(() => {
+  //   if (params.id) {
+  //     setState(patientState.data);
+  //     if(params.mode && params.mode ==='view'){
+  //        setCanEdit(!canEdit);
+  //     }else{
+  //     if (areaState.list.data.length > 1) {
+  //       setState(prevState=>({
+  //         ...prevState,
+  //         area_id: areaState.list.data[0]._id
+  //       }))
+  //     }
+  //   }
 
-    }else{
-      if (areaState.list.data.length > 1) {
-        setState(prevState=>({
-          ...prevState,
-          area_id: areaState.list.data[0]._id
-        }))
-      }
-    }
-
-  }, [patientState.data, areaState.list.data]);
+  // }, [patientState.data, areaState.list.data]);
 
   useEffect(() => {
     setState(prevState => {
@@ -602,7 +600,7 @@ export default function PatientForm(props: RouteComponentProps<IPageParams>) {
             <FormTitle>Cadastro de Paciente</FormTitle>
 
             {params.id && (
-              <Button style={{ marginTop: -20, marginLeft: 15, color: '#0899BA' }} onClick={() => setCanEdit(!canEdit)}>
+              <Button style={{ marginTop: -20, marginLeft: 15, color: '#0899BA' }} onClick={() => setCanEdit(true)}>
                 <Edit style={{ marginRight: 5, width: 18 }} />
               Editar
               </Button>
