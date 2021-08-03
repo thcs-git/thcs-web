@@ -109,6 +109,7 @@ const reducer: Reducer<PatientState> = (state = INITIAL_STATE, action) => {
         ...state,
         loading: false,
         error: true,
+        errorCep: true,
         success: false,
         list: {
           data: [],
