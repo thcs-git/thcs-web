@@ -34,6 +34,7 @@ import UserForm from '../pages/user/form';
 
 import UserDisengaged from '../pages/user_disengaged/list/index';
 import UserConfiguration from '../pages/userconfiguration/form/index';
+import ClientConfiguration from '../pages/clientconfiguration/form/index';
 import PatientList from '../pages/patient/list';
 import PatientForm from '../pages/patient/form';
 import PatientCaptureCreate from '../pages/patient/capture/form';
@@ -72,12 +73,14 @@ const Routes = () => (
       <Route path="/recoverypass/:token" component={RecoveryPassword}/>
       <Route path="/forgotpassword" component={ForgotPassword}/>
 
-      <PrivateRoute path="/userconfiguration" component={UserConfiguration} />
       <PrivateRoute path="/recoverypassmenu" component={RecoveryPassMenu} />
       <PrivateRoute path="/" component={Dashboard} exact />
       <PrivateRoute path="/dashboard_user" component={Dashboard_user} exact />
       <PrivateRoute path="/dashboard" component={Dashboard} />
 
+      {/* Configuration */}
+      <PrivateRoute path="/userconfiguration" component={UserConfiguration} />
+      <PrivateRoute path="/clientconfiguration" component={ClientConfiguration} />
 
       {/* Clientes */}
       <PrivateRoute path="/customer" component={CustomerList} exact />
