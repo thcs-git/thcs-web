@@ -23,7 +23,7 @@ import {
   Radio,
   RadioGroup
 } from '@material-ui/core';
-import { SearchOutlined, Edit, AddAlertSharp, TrainRounded } from '@material-ui/icons';
+import { SearchOutlined, Edit, AddAlertSharp } from '@material-ui/icons';
 import Autocomplete from '@material-ui/lab/Autocomplete';
 
 import { useDispatch, useSelector } from 'react-redux';
@@ -318,6 +318,8 @@ export default function PatientForm(props: RouteComponentProps<IPageParams>) {
 
   }
 
+   //////////////////////  useEffect   //////////////////////
+
   useEffect(() => {
     const field = patientState.errorCep ? 'input-postal-code' : 'input-address-number';
 
@@ -345,26 +347,28 @@ export default function PatientForm(props: RouteComponentProps<IPageParams>) {
 
     if (params.id) {
       dispatch(loadPatientById(params.id));
-    }else {
-      dispatch(loadFailure());
-    }
+     } else {
+       dispatch(loadFailure());
+     }
   }, [dispatch, params]);
 
-  // useEffect(() => {
-  //   if (params.id) {
-  //     setState(patientState.data);
-  //     if(params.mode && params.mode ==='view'){
-  //        setCanEdit(!canEdit);
-  //     }else{
-  //     if (areaState.list.data.length > 1) {
-  //       setState(prevState=>({
-  //         ...prevState,
-  //         area_id: areaState.list.data[0]._id
-  //       }))
-  //     }
-  //   }
+/////// useEffect Quebrado!!!!!
+  useEffect(() => {
+    if (params.id) {
+      setState(patientState.data);
+      if(params.mode && params.mode ==='view'){
+         setCanEdit(!canEdit);
+      }
+    } else {
+      if (areaState.list.data.length > 1) {
+        setState(prevState=>({
+          ...prevState,
+          area_id: areaState.list.data[0]._id
+        }))
+      }
+    }
 
-  // }, [patientState.data, areaState.list.data]);
+  }, [patientState.data, areaState.list.data]);
 
   useEffect(() => {
     setState(prevState => {
@@ -393,10 +397,11 @@ export default function PatientForm(props: RouteComponentProps<IPageParams>) {
   useEffect(() => {
     if (params.id) {
       if(params.mode === "view"){
-        setCanEdit(false)
+        setCanEdit(!canEdit)
       }
 
-        const uf = States.find(uf => uf.sigla === patientState.data.address_id.state) || null;
+      //// código comentado está quebrado !!!
+       const uf = States.find(uf => uf.sigla === patientState.data.address_id.state) || null;
 
       setState(prevState =>({
         ...prevState,
@@ -452,14 +457,14 @@ export default function PatientForm(props: RouteComponentProps<IPageParams>) {
       }))
     }
 
-    setState(prevState => {
-      return {
-        ...prevState,
-        address_id: {
-          ...patientState.data.address_id
-        },
-      }
-    });
+    // setState(prevState => {
+    //   return {
+    //     ...prevState,
+    //     address_id: {
+    //       ...patientState.data.address_id
+    //     },
+    //   }
+    // });
 
     setFieldValidations((prevState: any) => ({
       ...prevState,
@@ -599,8 +604,8 @@ export default function PatientForm(props: RouteComponentProps<IPageParams>) {
           <div style={{ display: 'flex', alignItems: 'center', flexDirection: 'row' }}>
             <FormTitle>Cadastro de Paciente</FormTitle>
 
-            {params.id && (
-              <Button style={{ marginTop: -20, marginLeft: 15, color: '#0899BA' }} onClick={() => setCanEdit(true)}>
+            {params.id && params.mode == 'view' && !canEdit && (
+              <Button style={{ marginTop: -20, marginLeft: 15, color: '#0899BA' }} onClick={() => setCanEdit(!canEdit)}>
                 <Edit style={{ marginRight: 5, width: 18 }} />
               Editar
               </Button>

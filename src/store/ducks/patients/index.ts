@@ -106,7 +106,7 @@ const reducer: Reducer<PatientState> = (state = INITIAL_STATE, action) => {
       };
     case PatientTypes.LOAD_FAILURE:
       return {
-        ...INITIAL_STATE,
+        ...state,
         loading: false,
         error: true,
         success: false,
