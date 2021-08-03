@@ -63,11 +63,9 @@ import LOCALSTORAGE from '../../helpers/constants/localStorage';
 import ConfigComponent from '../Configuration';
 import SESSIONSTORAGE from "../../helpers/constants/sessionStorage";
 import {toast} from "react-toastify";
+import _ from 'lodash';
 
 const drawerWidth = 270;
-
-
-let test = []
 
 // const itemsMenu = [
 //   menu.map((item: any) => {
@@ -136,7 +134,7 @@ const useStyles = makeStyles((theme: Theme) =>
     },
     logOutButton: {
       cursor: 'pointer',
-      marginLeft: 0,
+      marginLeft: 5,
     },
   })
 );
@@ -208,37 +206,120 @@ const Sibebar = (props: Props<any>) => {
 
   const [itemsMenu, setItemsMenu] = useState<any>([]);
 
+  interface iconInterface {
+    name: string;
+    style?: any;
+  }
+
+  interface itemsInterface {
+    title: any;
+    route: any;
+    icon: JSX.Element;
+  }
+
+  const iconTypes: any = {
+    AssignmentIndIcon: AssignmentIndIcon,
+    BusinessIcon: BusinessIcon,
+    DashboardIcon: DashboardIcon,
+    FavoriteIcon: FavoriteIcon,
+    GroupAddIcon: GroupAddIcon,
+    LocalHospital: LocalHospital,
+    LocationOncon: LocationOncon,
+    PersonIcon: PersonIcon,
+    StarRateIcon: StarRateIcon,
+    default: AssignmentIndIcon,
+  }
+
+  const IconComponent = ({name, ...props}: iconInterface) => {
+    let Icon = iconTypes[name] ?? iconTypes.default
+    return <Icon {...props} />;
+  };
+
   useEffect(() => {
-    const menu = JSON.parse(sessionStorage.getItem(SESSIONSTORAGE.MENU) ?? '[]')
+    let menu = JSON.parse(sessionStorage.getItem(SESSIONSTORAGE.MENU) ?? '[]')
 
-    const itemsMenu = [
-      {title: 'Dashboard', route: '/', icon: <DashboardIcon style={{color: '#fff'}}/>},
-      {title: 'Clientes', route: '/customer', icon: <AssignmentIndIcon style={{color: '#fff'}}/>},
-      {title: 'Empresas', route: '/company', icon: <BusinessIcon style={{color: '#fff'}}/>},
-      {title: 'Meus Profissionais', route: "/user", icon: <PersonIcon style={{color: '#fff'}}/>},
-      {title: 'Banco de Talentos', route: "/userdesengaged", icon: <StarRateIcon style={{color: '#fff'}}/>},
-      {title: 'Área', route: '/area', icon: <LocationOncon style={{color: '#fff'}}/>},
-      {title: 'Pacientes', route: '/patient', icon: <GroupAddIcon style={{color: '#fff'}}/>},
-      {title: 'Avaliação', route: '/avaliation', icon: <FavoriteIcon style={{color: '#fff'}}/>},
-      {title: 'Atendimento', route: '/care', icon: <LocalHospital style={{color: '#fff'}}/>},
+    if (menu.length < 1) {
+      menu = [
+        {
+          icon: 'DashboardIcon',
+          id: 1,
+          name: 'Dashboard',
+          slug: '/',
+          color: '#fff'
+        },
+        {
+          icon: 'AssignmentIndIcon',
+          id: 2,
+          name: 'Clientes',
+          slug: '/customer',
+          color: '#fff'
+        },
+        {
+          icon: 'BusinessIcon',
+          id: 3,
+          name: 'Empresas',
+          slug: '/company',
+          color: '#fff'
+        },
+        {
+          icon: 'PersonIcon',
+          id: 4,
+          name: 'Meus Profissionais',
+          slug: '/user',
+          color: '#fff'
+        },
+        {
+          icon: 'StarRateIcon',
+          id: 5,
+          name: 'Banco de Talentosntes',
+          slug: '/userdesengaged',
+          color: '#fff'
+        },
+        {
+          icon: 'LocationOncon',
+          id: 6,
+          name: 'Área',
+          slug: '/customer',
+          color: '#fff'
+        },
+        {
+          icon: 'GroupAddIcon',
+          id: 7,
+          name: 'Pacientes',
+          slug: '/patient',
+          color: '#fff'
+        },
+        {
+          icon: 'FavoriteIcon',
+          id: 8,
+          name: 'Avaliação',
+          slug: '/avaliation',
+          color: '#fff'
+        },
+        {
+          icon: 'LocalHospital',
+          id: 9,
+          name: 'Atendimento',
+          slug: '/care',
+          color: '#fff'
+        },
+      ]
+      sessionStorage.setItem(SESSIONSTORAGE.MENU, JSON.stringify(menu))
+    }
+
+    menu = _.sortBy(menu, ['id'])
+
+    const itemsMenu: itemsInterface[] = [
+      // {title: 'Dashboard', route: '/', icon: <DashboardIcon style={{color: '#fff'}}/>},
+      // {title: 'Clientes', route: '/customer', icon: <AssignmentIndIcon style={{color: '#fff'}}/>},
+      // {title: 'Empresas', route: '/company', icon: <BusinessIcon style={{color: '#fff'}}/>},
+      // {title: 'Meus Profissionais', route: "/user", icon: <PersonIcon style={{color: '#fff'}}/>},
+      // {title: 'Banco de Talentos', route: "/userdesengaged", icon: <StarRateIcon style={{color: '#fff'}}/>},
+      // {title: 'Área', route: '/area', icon: <LocationOncon style={{color: '#fff'}}/>},
+      // {title: 'Pacientes', route: '/patient', icon: <GroupAddIcon style={{color: '#fff'}}/>},
+      // {title: 'Avaliação', route: '/avaliation', icon: <FavoriteIcon style={{color: '#fff'}}/>},
+      // {title: 'Atendimento', route: '/care', icon: <LocalHospital style={{color: '#fff'}}/>},
     ]
-
-    const iconTypes : any = {
-      AssignmentIndIcon: AssignmentIndIcon,
-      LocalHospital: LocalHospital,
-      default: AssignmentIndIcon,
-    }
-
-    interface DocumentFields {
-      name: string;
-      style?: any;
-    }
-
-    const IconComponent = ({name, ...props}: DocumentFields) => {
-      let Icon = iconTypes[name] ?? iconTypes.default
-      console.log('icon', Icon)
-      return <Icon {...props} />;
-    };
 
     menu.map((item: any) => {
       itemsMenu.push({
@@ -299,41 +380,13 @@ const Sibebar = (props: Props<any>) => {
         <List>
           {itemsMenu.map((item: any, index: any) => (
             <>
-
-              {/* {item.subtitle?(
-
-               <Accordion style={{backgroundColor:"transparent", boxShadow:"none"}}>
-                  <AccordionSummary >
-                    <ListItemIcon>
-                      {item.icon}
-                    </ListItemIcon>
-                    { open && (<ListItemText primary={item.title} style={{color:"#ffff"}}  />) }
-
-                  </AccordionSummary>
-
-                  <AccordionDetails>
-                    <List>
-                      {item.subtitle.map((item, index)=>(
-                      <ListItem key={index} component ="button" button onClick={() => history.push(item.route)}>
-                        <ListItemText primary={item.title} style={{color:"#ffff",paddingLeft:'60px'}}></ListItemText>
-                      </ListItem>
-                    ))}
-                    </List>
-
-              </AccordionDetails>
-
-            </Accordion>
-           ):( */}
-              <ListItem key={index} onClick={() => history.push(item.route)}>
+              <ListItem className={classes.logOutButton} key={index} onClick={() => history.push(item.route)}>
                 <ListItemIcon>
                   {item.icon}
                 </ListItemIcon>
                 <ListItemText primary={item.title} style={{color: "#ffff", cursor: "pointer"}}/>
               </ListItem>
-
-              {/* )} */}
             </>
-
           ))}
         </List>
         <Divider/>
