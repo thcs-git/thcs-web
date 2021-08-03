@@ -320,25 +320,25 @@ export default function PatientForm(props: RouteComponentProps<IPageParams>) {
 
    //////////////////////  useEffect   //////////////////////
 
-  useEffect(() => {
-    const field = patientState.errorCep ? 'input-postal-code' : 'input-address-number';
+  // useEffect(() => {
+  //   const field = patientState.errorCep ? 'input-postal-code' : 'input-address-number';
+  //   console.log('CepError')
 
+  //   patientState.errorCep && setState(prevState => ({
+  //     ...prevState,
+  //     address_id: {
+  //       ...prevState.address_id,
+  //       city: '',
+  //       complement: 'Tarcisio',
+  //       district: '',
 
-    patientState.errorCep && setState(prevState => ({
-      ...prevState,
-      address_id: {
-        ...prevState.address_id,
-        city: '',
-        complement: '',
-        district: '',
+  //       state: '',
+  //       street: '',
+  //     }
+  //   }));
 
-        state: '',
-        street: '',
-      }
-    }));
-
-    document.getElementById('input-social-client')?.focus();
-  }, [patientState.errorCep]);
+  //   document.getElementById(field)?.focus();
+  // }, [patientState.errorCep]);
 
 
 
@@ -394,68 +394,68 @@ export default function PatientForm(props: RouteComponentProps<IPageParams>) {
    return _.isEqual(modifi,patientState.data);
   }
 
-  useEffect(() => {
-    if (params.id) {
-      if(params.mode === "view"){
-        setCanEdit(!canEdit)
-      }
+  // useEffect(() => {
+  //   if (params.id) {
+      // if(params.mode === "view"){
+      //   setCanEdit(!canEdit)
+      // }
 
       //// código comentado está quebrado !!!
-       const uf = States.find(uf => uf.sigla === patientState.data.address_id.state) || null;
+  //      const uf = States.find(uf => uf.sigla === patientState.data.address_id.state) || null;
 
-      setState(prevState =>({
-        ...prevState,
-        form:{uf:uf}
-      }));
-      setState(prevState=>{
-        return{
-          ...prevState,
-          ...patientState.data
-        }
-        });
-        setInputPhone(prev =>({
-          ...prev,
-          value:patientState.data.phones[0]?.number || ''
-        }));
-        setInputCellPhone(prev =>({
-          ...prev,
-          value:patientState.data.phones[0]?.cellnumber || ''
-        }));
+  //     setState(prevState =>({
+  //       ...prevState,
+  //       form:{uf:uf}
+  //     }));
+  //     setState(prevState=>{
+  //       return{
+  //         ...prevState,
+  //         ...patientState.data
+  //       }
+  //       });
+  //       setInputPhone(prev =>({
+  //         ...prev,
+  //         value:patientState.data.phones[0]?.number || ''
+  //       }));
+  //       setInputCellPhone(prev =>({
+  //         ...prev,
+  //         value:patientState.data.phones[0]?.cellnumber || ''
+  //       }));
 
-      setFieldValidations({
-        name:true,
-        social_name:true,
-        fiscal_number:true,
-        responsible_user:true,
-        postal_code: true,
-        street: true,
-        number: true,
-        district:true,
-        city:true,
-        state:true,
-        email:true,
-        phone:true
-       })
+  //     setFieldValidations({
+  //       name:true,
+  //       social_name:true,
+  //       fiscal_number:true,
+  //       responsible_user:true,
+  //       postal_code: true,
+  //       street: true,
+  //       number: true,
+  //       district:true,
+  //       city:true,
+  //       state:true,
+  //       email:true,
+  //       phone:true
+  //      })
 
-    }
-  }, [patientState, params.id]);
+  //   }
+  // }, [patientState, params.id]);
 
-  useEffect(() => {
-    if (patientState.error) {
+  // useEffect(() => {
+    // if (patientState.error) {
 
-      setState(prev => ({
-        ...prev,
-        address_id: {
-          ...prev.address_id,
-          street: '',
-          number: '',
-          district: '',
-          city: '',
-          state: '',
-          complement: '',
-        },
-      }))
-    }
+    //   setState(prev => ({
+    //     ...prev,
+    //     address_id: {
+    //       ...prev.address_id,
+    //       street: '',
+    //       number: '',
+    //       district: '',
+    //       city: '',
+    //       state: '',
+    //       complement: '',
+    //     },
+    //   }))
+    // }
 
     // setState(prevState => {
     //   return {
@@ -466,17 +466,17 @@ export default function PatientForm(props: RouteComponentProps<IPageParams>) {
     //   }
     // });
 
-    setFieldValidations((prevState: any) => ({
-      ...prevState,
-      postal_code: !validator.isEmpty(patientState.data.address_id.postal_code),
-      street: !validator.isEmpty(patientState.data.address_id.street),
-      number: !validator.isEmpty(patientState.data.address_id.number),
-      district: !validator.isEmpty(patientState.data.address_id.district),
-      city: !validator.isEmpty(patientState.data.address_id.city),
-      state: !validator.isEmpty(patientState.data.address_id.state),
-      complement: !validator.isEmpty(patientState.data.address_id.complement),
-    }));
-  }, [patientState.data?.address_id]);
+  //   setFieldValidations((prevState: any) => ({
+  //     ...prevState,
+  //     postal_code: !validator.isEmpty(patientState.data.address_id.postal_code),
+  //     street: !validator.isEmpty(patientState.data.address_id.street),
+  //     number: !validator.isEmpty(patientState.data.address_id.number),
+  //     district: !validator.isEmpty(patientState.data.address_id.district),
+  //     city: !validator.isEmpty(patientState.data.address_id.city),
+  //     state: !validator.isEmpty(patientState.data.address_id.state),
+  //     complement: !validator.isEmpty(patientState.data.address_id.complement),
+  //   }));
+  // }, [patientState.data?.address_id]);
 
   const handleBloodType = useCallback((event: any, newValue: any) => {
     setForm(prevState => ({
@@ -899,6 +899,7 @@ export default function PatientForm(props: RouteComponentProps<IPageParams>) {
                         Digite um CEP válido
                       </p>
                     )}
+
                       </Grid>
 
                       <Grid item md={9} xs={12}>

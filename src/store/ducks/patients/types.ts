@@ -117,6 +117,7 @@ export interface ViacepDataInterface {
   localidade: string;
   uf: string;
   erro?: boolean;
+  errorCep?: boolean;
 }
 
 /**

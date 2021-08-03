@@ -70,7 +70,7 @@ const reducer: Reducer<PatientState> = (state = INITIAL_STATE, action) => {
         ...state,
         list: action.payload.data,
         loading: false,
-        success: false,
+        success: true,
         error: false,
       };
     case PatientTypes.LOAD_REQUEST_PATIENT_BY_ID:
@@ -143,6 +143,10 @@ const reducer: Reducer<PatientState> = (state = INITIAL_STATE, action) => {
     case PatientTypes.LOAD_RESPONSE_ADDRESS:
       return {
         ...state,
+        loading: false,
+        error: false,
+        success: true,
+        errorCep: false,
         data: {
           ...state.data,
           address_id: {
@@ -156,9 +160,6 @@ const reducer: Reducer<PatientState> = (state = INITIAL_STATE, action) => {
             complement: action.payload.data.complemento,
           },
         },
-        loading: false,
-        error: false,
-        success: false,
       };
     case PatientTypes.LOAD_PATIENT_CAPTURE:
       return { ...state, loading: true, success: false };
