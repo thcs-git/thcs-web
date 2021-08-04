@@ -320,25 +320,25 @@ export default function PatientForm(props: RouteComponentProps<IPageParams>) {
 
    //////////////////////  useEffect   //////////////////////
 
-  // useEffect(() => {
-  //   const field = patientState.errorCep ? 'input-postal-code' : 'input-address-number';
-  //   console.log('CepError')
+  useEffect(() => {
+    const field = patientState.errorCep ? 'input-postal-code' : 'input-address-number';
+    console.log('CepError')
 
-  //   patientState.errorCep && setState(prevState => ({
-  //     ...prevState,
-  //     address_id: {
-  //       ...prevState.address_id,
-  //       city: '',
-  //       complement: 'Tarcisio',
-  //       district: '',
+    patientState.errorCep && setState(prevState => ({
+      ...prevState,
+      address_id: {
+        ...prevState.address_id,
+        city: '',
+        complement: '',
+        district: '',
 
-  //       state: '',
-  //       street: '',
-  //     }
-  //   }));
+        state: '',
+        street: '',
+      }
+    }));
 
-  //   document.getElementById(field)?.focus();
-  // }, [patientState.errorCep]);
+    document.getElementById(field)?.focus();
+  }, [patientState.errorCep]);
 
 
 
@@ -353,34 +353,34 @@ export default function PatientForm(props: RouteComponentProps<IPageParams>) {
   }, [dispatch, params]);
 
 /////// useEffect Quebrado!!!!!
-  useEffect(() => {
-    if (params.id) {
-      setState(patientState.data);
-      if(params.mode && params.mode ==='view'){
-         setCanEdit(!canEdit);
-      }
-    } else {
-      if (areaState.list.data.length > 1) {
-        setState(prevState=>({
-          ...prevState,
-          area_id: areaState.list.data[0]._id
-        }))
-      }
-    }
+  // useEffect(() => {
+  //   if (params.id) {
+  //     setState(patientState.data);
+  //     if(params.mode && params.mode ==='view'){
+  //        setCanEdit(!canEdit);
+  //     }
+  //   } else {
+  //     if (areaState.list.data.length > 1) {
+  //       setState(prevState=>({
+  //         ...prevState,
+  //         area_id: areaState.list.data[0]._id
+  //       }))
+  //     }
+  //   }
 
-  }, [patientState.data, areaState.list.data]);
+  // }, [patientState.data, areaState.list.data]);
 
-  useEffect(() => {
-    setState(prevState => {
-      return {
-        ...prevState,
-        address_id: {
-          ...prevState.address_id,
-          ...patientState.data.address_id
-        }
-      }
-    });
-  }, [patientState.data.address_id]);
+  // useEffect(() => {
+  //   setState(prevState => {
+  //     return {
+  //       ...prevState,
+  //       address_id: {
+  //         ...prevState.address_id,
+  //         ...patientState.data.address_id
+  //       }
+  //     }
+  //   });
+  // }, [patientState.data.address_id]);
 
   const getAddress = useCallback(() => {
     dispatch(getAddressAction(state.address_id.postal_code));
@@ -389,30 +389,31 @@ export default function PatientForm(props: RouteComponentProps<IPageParams>) {
 
 
 
+
   function isEquals(){
 
    return _.isEqual(modifi,patientState.data);
   }
+////// Quebrado !!! //////
 
   // useEffect(() => {
   //   if (params.id) {
-      // if(params.mode === "view"){
-      //   setCanEdit(!canEdit)
-      // }
+  //     if(params.mode === "view"){
+  //       setCanEdit(!canEdit)
+  //     }
 
-      //// código comentado está quebrado !!!
-  //      const uf = States.find(uf => uf.sigla === patientState.data.address_id.state) || null;
+      //  const uf = States.find(uf => uf.sigla === patientState.data.address_id.state) || null;
 
-  //     setState(prevState =>({
-  //       ...prevState,
-  //       form:{uf:uf}
-  //     }));
-  //     setState(prevState=>{
-  //       return{
-  //         ...prevState,
-  //         ...patientState.data
-  //       }
-  //       });
+      // setState(prevState =>({
+      //   ...prevState,
+      //   form:{uf:uf}
+      // }));
+      // setState(prevState=>{
+      //   return{
+      //     ...prevState,
+      //     ...patientState.data
+      //   }
+      //   });
   //       setInputPhone(prev =>({
   //         ...prev,
   //         value:patientState.data.phones[0]?.number || ''
@@ -440,43 +441,59 @@ export default function PatientForm(props: RouteComponentProps<IPageParams>) {
   //   }
   // }, [patientState, params.id]);
 
-  // useEffect(() => {
-    // if (patientState.error) {
+  useEffect(() => {
 
-    //   setState(prev => ({
-    //     ...prev,
-    //     address_id: {
-    //       ...prev.address_id,
-    //       street: '',
-    //       number: '',
-    //       district: '',
-    //       city: '',
-    //       state: '',
-    //       complement: '',
-    //     },
-    //   }))
-    // }
+    if (patientState.error) {
 
-    // setState(prevState => {
-    //   return {
-    //     ...prevState,
-    //     address_id: {
-    //       ...patientState.data.address_id
-    //     },
-    //   }
-    // });
+      setState(prev => ({
+        ...prev,
+        address_id: {
+          ...prev.address_id,
+          street: '',
+          number: '',
+          district: '',
+          city: '',
+          state: '',
+          complement: '',
+        },
+      }))
+    }
 
-  //   setFieldValidations((prevState: any) => ({
-  //     ...prevState,
-  //     postal_code: !validator.isEmpty(patientState.data.address_id.postal_code),
-  //     street: !validator.isEmpty(patientState.data.address_id.street),
-  //     number: !validator.isEmpty(patientState.data.address_id.number),
-  //     district: !validator.isEmpty(patientState.data.address_id.district),
-  //     city: !validator.isEmpty(patientState.data.address_id.city),
-  //     state: !validator.isEmpty(patientState.data.address_id.state),
-  //     complement: !validator.isEmpty(patientState.data.address_id.complement),
-  //   }));
-  // }, [patientState.data?.address_id]);
+    const uf = States.find(uf => uf.sigla === patientState.data.address_id.state) || null;
+
+      setState(prevState =>({
+        ...prevState,
+        form:{uf:uf}
+      }));
+      setState(prevState=>{
+        return{
+          ...prevState,
+          ...patientState.data
+        }
+        });
+
+
+    setState(prevState => {
+      return {
+        ...prevState,
+        address_id: {
+          ...patientState.data.address_id
+        },
+      }
+    });
+
+    setFieldValidations((prevState: any) => ({
+      ...prevState,
+      postal_code: !validator.isEmpty(patientState.data.address_id.postal_code),
+      street: !validator.isEmpty(patientState.data.address_id.street),
+      number: !validator.isEmpty(patientState.data.address_id.number),
+      district: !validator.isEmpty(patientState.data.address_id.district),
+      city: !validator.isEmpty(patientState.data.address_id.city),
+      state: !validator.isEmpty(patientState.data.address_id.state),
+      complement: !validator.isEmpty(patientState.data.address_id.complement),
+    }));
+
+  }, [patientState.data?.address_id]);
 
   const handleBloodType = useCallback((event: any, newValue: any) => {
     setForm(prevState => ({
@@ -488,7 +505,7 @@ export default function PatientForm(props: RouteComponentProps<IPageParams>) {
       ...prevState,
       blood_type: newValue,
     }));
-  }, [state.blood_type]);
+  }, [patientState, params.id]);
 
 
   const selectPatientArea = useCallback(() => {
@@ -573,31 +590,19 @@ export default function PatientForm(props: RouteComponentProps<IPageParams>) {
 
 
   const handleSaveFormPatient = useCallback(() => {
+    const patientData = {
+      ...state,
+      phones: [
+        { whatsapp: false, telegram: false, number: state.phones[0]?.number },
+        { whatsapp: false, telegram: false, cellnumber: state.phones[0]?.cellnumber },
+      ]
+    };
+
     if (state?._id) {
-      const patientData = {
-        ...state,
-        phones: [
-          { whatsapp: false, telegram: false, number: state.phones[0]?.number },
-          { whatsapp: false, telegram: false, cellnumber: state.phones[0]?.cellnumber },
-        ]
-      };
 
       dispatch(updatePatientRequest(patientData));
       history.push('/patient');
     } else {
-
-      const date = new Date
-
-      const patientData = {
-        ...state,
-        phones: [
-          { whatsapp: false, telegram: false, number: state.phones[0]?.number },
-          { whatsapp: false, telegram: false, cellnumber: state.phones[0]?.cellnumber },
-        ],
-        created_at: date.toISOString()
-      };
-
-      console.log(patientData)
 
       dispatch(createPatientRequest(patientData));
     }
@@ -617,7 +622,7 @@ export default function PatientForm(props: RouteComponentProps<IPageParams>) {
             <FormTitle>Cadastro de Paciente</FormTitle>
 
             {params.id && params.mode == 'view' && !canEdit && (
-              <Button style={{ marginTop: -20, marginLeft: 15, color: '#0899BA' }} onClick={() => setCanEdit(!canEdit)}>
+              <Button style={{ marginTop: -20, marginLeft: 15, color: '#0899BA' }} onClick={() => setCanEdit(canEdit)}>
                 <Edit style={{ marginRight: 5, width: 18 }} />
               Editar
               </Button>
