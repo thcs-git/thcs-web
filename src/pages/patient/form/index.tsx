@@ -322,7 +322,6 @@ export default function PatientForm(props: RouteComponentProps<IPageParams>) {
 
   useEffect(() => {
     const field = patientState.errorCep ? 'input-postal-code' : 'input-address-number';
-    console.log('CepError')
 
     patientState.errorCep && setState(prevState => ({
       ...prevState,
@@ -331,7 +330,7 @@ export default function PatientForm(props: RouteComponentProps<IPageParams>) {
         city: '',
         complement: '',
         district: '',
-
+        number: '',
         state: '',
         street: '',
       }
@@ -352,23 +351,14 @@ export default function PatientForm(props: RouteComponentProps<IPageParams>) {
      }
   }, [dispatch, params]);
 
-/////// useEffect Quebrado!!!!!
-  // useEffect(() => {
-  //   if (params.id) {
-  //     setState(patientState.data);
-  //     if(params.mode && params.mode ==='view'){
-  //        setCanEdit(!canEdit);
-  //     }
-  //   } else {
-  //     if (areaState.list.data.length > 1) {
-  //       setState(prevState=>({
-  //         ...prevState,
-  //         area_id: areaState.list.data[0]._id
-  //       }))
-  //     }
-  //   }
 
-  // }, [patientState.data, areaState.list.data]);
+  useEffect(() => {
+    if (params.id) {
+      if(params.mode && params.mode ==='view'){
+         setCanEdit(canEdit);
+      }
+    }
+  }, [patientState, params.id]);
 
   // useEffect(() => {
   //   setState(prevState => {
@@ -397,10 +387,10 @@ export default function PatientForm(props: RouteComponentProps<IPageParams>) {
 ////// Quebrado !!! //////
 
   // useEffect(() => {
-  //   if (params.id) {
-  //     if(params.mode === "view"){
-  //       setCanEdit(!canEdit)
-  //     }
+    // if (params.id) {
+    //   if(params.mode === "view"){
+    //     setCanEdit(canEdit)
+    //   }
 
       //  const uf = States.find(uf => uf.sigla === patientState.data.address_id.state) || null;
 
@@ -622,7 +612,7 @@ export default function PatientForm(props: RouteComponentProps<IPageParams>) {
             <FormTitle>Cadastro de Paciente</FormTitle>
 
             {params.id && params.mode == 'view' && !canEdit && (
-              <Button style={{ marginTop: -20, marginLeft: 15, color: '#0899BA' }} onClick={() => setCanEdit(canEdit)}>
+              <Button style={{ marginTop: -20, marginLeft: 15, color: '#0899BA' }} onClick={() => setCanEdit(!canEdit)}>
                 <Edit style={{ marginRight: 5, width: 18 }} />
               Editar
               </Button>
