@@ -570,19 +570,31 @@ export default function PatientForm(props: RouteComponentProps<IPageParams>) {
 
 
   const handleSaveFormPatient = useCallback(() => {
-    const patientData = {
-      ...state,
-      phones: [
-        { whatsapp: false, telegram: false, number: state.phones[0]?.number },
-        { whatsapp: false, telegram: false, cellnumber: state.phones[0]?.cellnumber },
-      ]
-    };
-
     if (state?._id) {
+      const patientData = {
+        ...state,
+        phones: [
+          { whatsapp: false, telegram: false, number: state.phones[0]?.number },
+          { whatsapp: false, telegram: false, cellnumber: state.phones[0]?.cellnumber },
+        ]
+      };
 
       dispatch(updatePatientRequest(patientData));
       history.push('/patient');
     } else {
+
+      const date = new Date
+
+      const patientData = {
+        ...state,
+        phones: [
+          { whatsapp: false, telegram: false, number: state.phones[0]?.number },
+          { whatsapp: false, telegram: false, cellnumber: state.phones[0]?.cellnumber },
+        ],
+        created_at: date.toISOString()
+      };
+
+      console.log(patientData)
 
       dispatch(createPatientRequest(patientData));
     }
