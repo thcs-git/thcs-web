@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react';
+ import React, { useState, useEffect, useCallback } from 'react';
 import Tab from '@material-ui/core/Tab';
 import InputMask,{ Props }  from 'react-input-mask';
 import { cpf } from 'cpf-cnpj-validator';
@@ -322,6 +322,7 @@ export default function PatientForm(props: RouteComponentProps<IPageParams>) {
 
   useEffect(() => {
     const field = patientState.errorCep ? 'input-postal-code' : 'input-address-number';
+    console.log('CepError')
 
     patientState.errorCep && setState(prevState => ({
       ...prevState,
@@ -330,7 +331,7 @@ export default function PatientForm(props: RouteComponentProps<IPageParams>) {
         city: '',
         complement: '',
         district: '',
-        number: '',
+
         state: '',
         street: '',
       }
@@ -351,14 +352,29 @@ export default function PatientForm(props: RouteComponentProps<IPageParams>) {
      }
   }, [dispatch, params]);
 
+/////// useEffect Quebrado!!!!!
+  // useEffect(() => {
+  //   if (params.id) {
+  //     setState(patientState.data);
+  //     if(params.mode && params.mode ==='view'){
+  //        setCanEdit(!canEdit);
+  //     }
+  //   } else {
+  //     if (areaState.list.data.length > 1) {
+  //       setState(prevState=>({
+  //         ...prevState,
+  //         area_id: areaState.list.data[0]._id
+  //       }))
+  //     }
+  //   }
 
   useEffect(() => {
     if (params.id) {
       if(params.mode && params.mode ==='view'){
-         setCanEdit(!canEdit);
+          setCanEdit(false);
       }
     }
-  }, [patientState, params.id]);
+  }, [params.id]);
 
   useEffect(() => {
     setState(prevState => {
