@@ -328,9 +328,9 @@ export default function PatientCaptureForm(props: RouteComponentProps<IPageParam
     (document_id) ? history.push(`${routes[id]}/${document_id}`, { katzIsDone }) : history.push((routes[id]), { katzIsDone });
   }, [care]);
 
-  const toggleHistoryModal = (document_group_id: string) => {
+  const toggleHistoryModal = (patient: string, document_group_id: string) => {
     handleCloseRowMenu();
-
+    console.log("Teste", patient, document_group_id);
     if (care?.documents_id) {
       const filtredDocuments = care?.documents_id.filter(doc => doc.document_group_id._id === document_group_id);
 
@@ -635,7 +635,7 @@ export default function PatientCaptureForm(props: RouteComponentProps<IPageParam
                               {/*</Menu>*/}
                               {(document?._id) ? (
                                 <Button
-                                  onClick={() => toggleHistoryModal(documentGroup._id)}>
+                                  onClick={() => toggleHistoryModal(care?.patient_id?._id, documentGroup._id)}>
                                   <Visibility className="primary" />
                                 </Button>
                               ) : (
@@ -650,7 +650,7 @@ export default function PatientCaptureForm(props: RouteComponentProps<IPageParam
                                 //   <Visibility className="primary"/>
                                 // </Button>
                                 <Button
-                                  onClick={() => toggleHistoryModal(documentGroup._id)}>
+                                  onClick={() => toggleHistoryModal(care?.patient_id?._id, documentGroup._id)}>
                                   <Visibility className="primary" />
                                 </Button>
                               ) : (

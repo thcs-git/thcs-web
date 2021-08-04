@@ -13,6 +13,9 @@ export enum DocumentTypes {
 
   LOAD_REQUEST_BY_CARE_ID = "@document/LOAD_REQUEST_BY_CARE_ID",
   LOAD_SUCCESS_BY_CARE_ID = "@document/LOAD_SUCCESS_BY_CARE_ID",
+
+  LOAD_REQUEST_GET_BY_SCORE = "@document/LOAD_REQUEST_GET_BY_SCORE",
+  LOAD_SUCCESS_GET_BY_SCORE = "@document/LOAD_SUCCESS_GET_BY_SCORE",
 }
 
 /**
@@ -61,6 +64,7 @@ interface DocumentGroupData {
 export interface DocumentState {
   data: DocumentInterface;
   list: DocumentList;
+  list2: DocumentList;
   loading: boolean;
   error: boolean;
   success: boolean;
