@@ -355,22 +355,22 @@ export default function PatientForm(props: RouteComponentProps<IPageParams>) {
   useEffect(() => {
     if (params.id) {
       if(params.mode && params.mode ==='view'){
-         setCanEdit(canEdit);
+         setCanEdit(!canEdit);
       }
     }
   }, [patientState, params.id]);
 
-  // useEffect(() => {
-  //   setState(prevState => {
-  //     return {
-  //       ...prevState,
-  //       address_id: {
-  //         ...prevState.address_id,
-  //         ...patientState.data.address_id
-  //       }
-  //     }
-  //   });
-  // }, [patientState.data.address_id]);
+  useEffect(() => {
+    setState(prevState => {
+      return {
+        ...prevState,
+        address_id: {
+          ...prevState.address_id,
+          ...patientState.data.address_id
+        }
+      }
+    });
+  }, [patientState.data.address_id]);
 
   const getAddress = useCallback(() => {
     dispatch(getAddressAction(state.address_id.postal_code));
@@ -387,23 +387,23 @@ export default function PatientForm(props: RouteComponentProps<IPageParams>) {
 ////// Quebrado !!! //////
 
   // useEffect(() => {
-    // if (params.id) {
-    //   if(params.mode === "view"){
-    //     setCanEdit(canEdit)
-    //   }
+  //   if (params.id) {
+  //     // if(params.mode === "view"){
+  //     //   setCanEdit(false)
+  //     // }
 
-      //  const uf = States.find(uf => uf.sigla === patientState.data.address_id.state) || null;
+  //     //  const uf = States.find(uf => uf.sigla === patientState.data.address_id.state) || null;
 
-      // setState(prevState =>({
-      //   ...prevState,
-      //   form:{uf:uf}
-      // }));
-      // setState(prevState=>{
-      //   return{
-      //     ...prevState,
-      //     ...patientState.data
-      //   }
-      //   });
+  //     // setState(prevState =>({
+  //     //   ...prevState,
+  //     //   form:{uf:uf}
+  //     // }));
+  //     // setState(prevState=>{
+  //     //   return{
+  //     //     ...prevState,
+  //     //     ...patientState.data
+  //     //   }
+  //     //   });
   //       setInputPhone(prev =>({
   //         ...prev,
   //         value:patientState.data.phones[0]?.number || ''
@@ -612,7 +612,7 @@ export default function PatientForm(props: RouteComponentProps<IPageParams>) {
             <FormTitle>Cadastro de Paciente</FormTitle>
 
             {params.id && params.mode == 'view' && !canEdit && (
-              <Button style={{ marginTop: -20, marginLeft: 15, color: '#0899BA' }} onClick={() => setCanEdit(!canEdit)}>
+              <Button style={{ marginTop: -20, marginLeft: 15, color: '#0899BA' }} onClick={() => setCanEdit(true)}>
                 <Edit style={{ marginRight: 5, width: 18 }} />
               Editar
               </Button>
