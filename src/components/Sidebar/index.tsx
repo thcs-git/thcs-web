@@ -287,7 +287,7 @@ const Sibebar = (props: Props<any>) => {
           icon: 'LocationOncon',
           id: 6,
           name: 'Área',
-          slug: '/customer',
+          slug: '/area',
           color: '#fff'
         },
         {
