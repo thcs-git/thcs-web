@@ -27,7 +27,7 @@ import { SearchOutlined, Edit, AddAlertSharp } from '@material-ui/icons';
 import Autocomplete from '@material-ui/lab/Autocomplete';
 
 import { useDispatch, useSelector } from 'react-redux';
-import { createPatientRequest, updatePatientRequest, getAddress as getAddressAction, loadPatientById, loadFailure } from '../../../store/ducks/patients/actions';
+import { createPatientRequest, updatePatientRequest, getAddress as getAddressAction, loadPatientById, loadFailure, cleanAction} from '../../../store/ducks/patients/actions';
 import { PatientInterface } from '../../../store/ducks/patients/types';
 
 import { loadRequest as getAreasAction } from '../../../store/ducks/areas/actions';
@@ -319,10 +319,12 @@ export default function PatientForm(props: RouteComponentProps<IPageParams>) {
   }
 
    //////////////////////  useEffect   //////////////////////
+   useEffect(() => {
+    dispatch(cleanAction());
+  }, []);
 
   useEffect(() => {
     const field = patientState.errorCep ? 'input-postal-code' : 'input-address-number';
-    console.log('CepError')
 
     patientState.errorCep && setState(prevState => ({
       ...prevState,
@@ -347,8 +349,10 @@ export default function PatientForm(props: RouteComponentProps<IPageParams>) {
 
     if (params.id) {
       dispatch(loadPatientById(params.id));
+      console.log('loadSucess')
      } else {
        dispatch(loadFailure());
+      console.log('loadFail')
      }
   }, [dispatch, params]);
 
@@ -376,17 +380,17 @@ export default function PatientForm(props: RouteComponentProps<IPageParams>) {
     }
   }, [params.id]);
 
-  useEffect(() => {
-    setState(prevState => {
-      return {
-        ...prevState,
-        address_id: {
-          ...prevState.address_id,
-          ...patientState.data.address_id
-        }
-      }
-    });
-  }, [patientState.data.address_id]);
+    // useEffect(() => {
+    //   setState(prevState => {
+    //     return {
+    //       ...prevState,
+    //       address_id: {
+    //         ...prevState.address_id,
+    //         ...patientState.data.address_id
+    //       }
+    //     }
+    //   });
+    // }, [patientState.data.address_id]);
 
   const getAddress = useCallback(() => {
     dispatch(getAddressAction(state.address_id.postal_code));
@@ -404,22 +408,22 @@ export default function PatientForm(props: RouteComponentProps<IPageParams>) {
 
   // useEffect(() => {
   //   if (params.id) {
-  //     // if(params.mode === "view"){
-  //     //   setCanEdit(false)
-  //     // }
+  //     if(params.mode === "view"){
+  //       setCanEdit(false)
+  //     }
 
-  //     //  const uf = States.find(uf => uf.sigla === patientState.data.address_id.state) || null;
+  //      const uf = States.find(uf => uf.sigla === patientState.data.address_id.state) || null;
 
-  //     // setState(prevState =>({
-  //     //   ...prevState,
-  //     //   form:{uf:uf}
-  //     // }));
-  //     // setState(prevState=>{
-  //     //   return{
-  //     //     ...prevState,
-  //     //     ...patientState.data
-  //     //   }
-  //     //   });
+  //     setState(prevState =>({
+  //       ...prevState,
+  //       form:{uf:uf}
+  //     }));
+  //     setState(prevState=>{
+  //       return{
+  //         ...prevState,
+  //         ...patientState.data
+  //       }
+  //       });
   //       setInputPhone(prev =>({
   //         ...prev,
   //         value:patientState.data.phones[0]?.number || ''
@@ -1093,7 +1097,7 @@ export default function PatientForm(props: RouteComponentProps<IPageParams>) {
                           <InputLabel htmlFor="search-input">Celular</InputLabel>
                           <InputMask
                             mask="(99) 9 9999-9999"
-                            value={state.phones[1]?.cellnumber}
+                            value={state.phones[0]?.cellnumber? state.phones[0]?.cellnumber : state.phones[1]?.cellnumber}
                             onChange={(element) => {
                               {setState(prevState => ({
                                 ...prevState,

@@ -173,8 +173,11 @@ const reducer: Reducer<PatientState> = (state = INITIAL_STATE, action) => {
       };
     case PatientTypes.SEARCH_REQUEST:
       return { ...state, loading: true, error: false };
+
+    case PatientTypes.CLEAN:
+      return INITIAL_STATE;
     default:
-      return state;
+        return state;
   }
 };
 
