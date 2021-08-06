@@ -1969,25 +1969,25 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
                     </ButtonComponent>
                   )}
 
-                  {currentTab === 1 && params.mode === 'config' && (
-                    <ButtonComponent
-                      background="success"
-                      // onClick={() => selectTab(2)}
-                      disabled={true}
-                    >
-                      Próximo
-                    </ButtonComponent>
-                  )}
+                  {/*{currentTab === 1 && params.mode === 'config' && (*/}
+                  {/*  <ButtonComponent*/}
+                  {/*    background="success"*/}
+                  {/*    // onClick={() => selectTab(2)}*/}
+                  {/*    disabled={true}*/}
+                  {/*  >*/}
+                  {/*    Próximo*/}
+                  {/*  </ButtonComponent>*/}
+                  {/*)}*/}
 
-                  {currentTab === 2 && (
-                    <ButtonComponent
-                      background="success"
-                      onClick={() => selectTab(2)}
-                      disabled={currentTab === 2}
-                    >
-                      Próximo
-                    </ButtonComponent>
-                  )}
+                  {/*{currentTab === 2 && (*/}
+                  {/*  <ButtonComponent*/}
+                  {/*    background="success"*/}
+                  {/*    onClick={() => selectTab(2)}*/}
+                  {/*    disabled={currentTab === 2}*/}
+                  {/*  >*/}
+                  {/*    Próximo*/}
+                  {/*  </ButtonComponent>*/}
+                  {/*)}*/}
 
                   {(canEdit || engaged) && (<ButtonComponent background="success" onClick={handleSaveFormUser}>
                     Salvar
@@ -3130,25 +3130,25 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
                     </ButtonComponent>
                   )}
 
-                  {currentTab === 1 && params.mode === 'config' && (
-                    <ButtonComponent
-                      background="success"
-                      // onClick={() => selectTab(2)}
-                      disabled={true}
-                    >
-                      Próximo
-                    </ButtonComponent>
-                  )}
+                  {/*{currentTab === 1 && params.mode === 'config' && (*/}
+                  {/*  <ButtonComponent*/}
+                  {/*    background="success"*/}
+                  {/*    // onClick={() => selectTab(2)}*/}
+                  {/*    disabled={true}*/}
+                  {/*  >*/}
+                  {/*    Próximo*/}
+                  {/*  </ButtonComponent>*/}
+                  {/*)}*/}
 
-                  {currentTab === 2 && (
-                    <ButtonComponent
-                      background="success"
-                      onClick={() => selectTab(2)}
-                      disabled={currentTab === 2}
-                    >
-                      Próximo
-                    </ButtonComponent>
-                  )}
+                  {/*{currentTab === 2 && (*/}
+                  {/*  <ButtonComponent*/}
+                  {/*    background="success"*/}
+                  {/*    onClick={() => selectTab(2)}*/}
+                  {/*    disabled={currentTab === 2}*/}
+                  {/*  >*/}
+                  {/*    Próximo*/}
+                  {/*  </ButtonComponent>*/}
+                  {/*)}*/}
 
                   {(canEdit || engaged) && (
                     <ButtonComponent
