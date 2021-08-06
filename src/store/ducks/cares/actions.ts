@@ -132,7 +132,7 @@ export const actionDocumentNeadUpdateRequest = (data: DocumentInterface) =>
 export const actionDocumentNeadUpdate = (data: DocumentInterface) =>
   action(CareTypes.DOCUMENT_NEAD_UPDATE, { data });
 
-export const cleanAction = () => action(CareTypes.CLEAN);
+  export const cleanAction = () => action(CareTypes.CLEAN);
 
 /**
  * Health Care
