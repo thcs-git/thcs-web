@@ -11,6 +11,12 @@ export const INITIAL_STATE: DocumentState = {
     page: '1',
     total: 0
   },
+  list2: {
+    data: [],
+    limit: '100',
+    page: '1',
+    total: 0
+  },
   error: false,
   loading: false,
   success: false,
@@ -44,6 +50,16 @@ const reducer: Reducer<DocumentState> = (state = INITIAL_STATE, action) => {
       return {
         ...state,
         list: action.payload.data,
+        loading: false,
+        error: false,
+        success: true
+      };
+    case DocumentTypes.LOAD_REQUEST_GET_BY_SCORE:
+      return { ...state, loading: true, success: false, };
+    case DocumentTypes.LOAD_SUCCESS_GET_BY_SCORE:
+      return {
+        ...state,
+        list2: action.payload.data,
         loading: false,
         error: false,
         success: true
