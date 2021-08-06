@@ -320,6 +320,7 @@ export default function PatientForm(props: RouteComponentProps<IPageParams>) {
 
    //////////////////////  useEffect   //////////////////////
    useEffect(() => {
+     console.log('useState', state)
     dispatch(cleanAction());
   }, []);
 
@@ -345,14 +346,17 @@ export default function PatientForm(props: RouteComponentProps<IPageParams>) {
 
 
   useEffect(() => {
+    console.log('cleanAction ' ,state.phones);
+    console.log('cleanModifi', modifi.phones);
+
     dispatch(getAreasAction());
 
     if (params.id) {
       dispatch(loadPatientById(params.id));
-      console.log('loadSucess')
+      dispatch(cleanAction())
      } else {
        dispatch(loadFailure());
-      console.log('loadFail')
+       dispatch(cleanAction())
      }
   }, [dispatch, params]);
 
@@ -578,7 +582,7 @@ export default function PatientForm(props: RouteComponentProps<IPageParams>) {
 
     if(isEquals()){
       handleCancelForm()
-      console.log(isEquals());
+
     }else{
       setOpenModalCancel(true);
     }
@@ -592,6 +596,8 @@ export default function PatientForm(props: RouteComponentProps<IPageParams>) {
   function handleCancelForm() {
     setOpenModalCancel(false);
     history.push(`/patient`);
+    dispatch(cleanAction())
+
   }
 
   const handleChangeRegistryType = useCallback((element) => {
@@ -611,7 +617,9 @@ export default function PatientForm(props: RouteComponentProps<IPageParams>) {
     if (state?._id) {
 
       dispatch(updatePatientRequest(patientData));
+      dispatch(cleanAction())
       history.push('/patient');
+
     } else {
 
       dispatch(createPatientRequest(patientData));

@@ -27,7 +27,15 @@ export const INITIAL_STATE: PatientState = {
       complement: "",
     },
     area_id: "",
-    phones: [],
+    phones: [{
+        cellnumber:"",
+        number:""
+    },
+    {
+      cellnumber:"",
+      number:""
+    }
+  ],
     email: "",
     sus_card: "FIELD_NOT_EXISTS_IN_PATIENT_REGISTRATION",
     blood_type: "",
