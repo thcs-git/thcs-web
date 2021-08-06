@@ -42,7 +42,10 @@ import {
   healthSubPlanRequest, createCareRequest as createCareAction,
   cleanAction,
 } from '../../../../store/ducks/cares/actions';
+
+import { loadRequestGetByScore } from '../../../../store/ducks/documents/actions';
 import { CareInterface } from '../../../../store/ducks/cares/types';
+import { DocumentInterface } from '../../../../store/ducks/documents/types';
 
 import { loadRequestByIds as getDocumentGroupsByIds } from '../../../../store/ducks/documentGroups/actions';
 import { DocumentGroupList } from '../../../../store/ducks/documentGroups/types';
@@ -111,6 +114,7 @@ export default function PatientCaptureForm(props: RouteComponentProps<IPageParam
   const history = useHistory();
   const careState = useSelector((state: ApplicationState) => state.cares);
   const documentGroupsState = useSelector((state: ApplicationState) => state.documentGroups);
+  const documentState = useSelector((state: ApplicationState) => state.documents);
 
   const { params } = props.match;
   const { state } = props.location;
@@ -118,6 +122,7 @@ export default function PatientCaptureForm(props: RouteComponentProps<IPageParam
   const userSessionId = localStorage.getItem(LOCALSTORAGE.USER_ID) || '';
 
   const [care, setCare] = useState<CareInterface>();
+  const [document, setDocument] = useState<DocumentInterface>();
   const [documentGroups, setDocumentGroups] = useState<DocumentGroupList>();
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const [historyModalOpen, setHistoryModalOpen] = useState(false);
@@ -126,17 +131,18 @@ export default function PatientCaptureForm(props: RouteComponentProps<IPageParam
   const [captureNewModalOpen, setCaptureNewModalOpen] = useState(false);
   const [finishEnable, setFinishEnable] = useState(false);
   const [modalPrint, setModalPrint] = useState(false);
-  const [documentHistory, setDocumentHistory] = useState<any[]>([]);
+  const [documentHistory, setDocumentHistory] = useState<any>([]);
 
   const [modalAnexo, setModalAnexo] = useState(false);
   const [file, setFile] = useState({ error: false });
   const [captureData, setCaptureData] = useState<ICaptureData | any>({});
-  const [patientArray, setpatientArray] = useState<any>();
-  
+
+
 
   useEffect(() => {
     getCare(params.id);
     dispatch(healthInsuranceRequest());
+    setDocumentHistory([])
   }, []);
 
   useEffect(() => {
@@ -157,6 +163,29 @@ export default function PatientCaptureForm(props: RouteComponentProps<IPageParam
   useEffect(() => {
     setDocumentGroups(documentGroupsState.list);
   }, [documentGroupsState.list]);
+
+  useEffect(() => {
+    // if(careState.data.status){
+    //   let document_group_id = careState.data.documents_id? careState.data.documents_id[0].document_group_id._id : ""
+    //   dispatch(loadRequestGetByScore({
+    //     page: '1',
+    //     limit: '100',
+    //     total: 100,
+    //     patient: careState.data.patient_id?._id,
+    //     document_group_id: document_group_id
+    //   }));
+    //   console.log("ds", careState.data);
+    // }
+    // if(careState.data.status){
+    //   console.log("d", documentGroupsState.list.data);
+    // }
+    if(documentState.success){
+      setDocumentHistory(documentState.list);
+      console.log("t", documentState.list)
+    }
+   
+
+  }, [documentState]);
 
   const readFile = (file: any) => {
     return new Promise((resolve, reject) => {
@@ -328,27 +357,30 @@ export default function PatientCaptureForm(props: RouteComponentProps<IPageParam
     (document_id) ? history.push(`${routes[id]}/${document_id}`, { katzIsDone }) : history.push((routes[id]), { katzIsDone });
   }, [care]);
 
-  const toggleHistoryModal = (patient: string, document_group_id: string) => {
+  const toggleHistoryModal = useCallback((patient: any, document_group_id: any) => {
     handleCloseRowMenu();
-    console.log("Teste", patient, document_group_id);
-    if (care?.documents_id) {
-      const filtredDocuments = care?.documents_id.filter(doc => doc.document_group_id._id === document_group_id);
 
-      setDocumentHistory(filtredDocuments);
-    }
+    //let document_group_id = careState.data.documents_id? careState.data.documents_id[0].document_group_id._id : ""
+    dispatch(loadRequestGetByScore({
+      page: '1',
+      limit: '100',
+      total: 100,
+      patient: patient,
+      document_group_id: document_group_id,
+    }));
 
-    isDone(document_group_id);
-
+    //setDocumentHistory(documentState.list);
+    //isDone(patient, document_group_id);
 
     setHistoryModalOpen(!historyModalOpen);
-  };
 
-  const isDone = useCallback((care: any) => {
-    let patientId = _.filter(careState.list2.data, { patient_id: { _id: care } });
-    console.log("teste", patientId);
-    setpatientArray(patientId);
-    //console.log(patientArray);
-  }, [careState]);
+  }, []);
+
+  const toggleHistoryModal_2 = useCallback(() => {
+    console.log('tt', documentState)
+    setDocumentHistory(documentState.list.data);
+
+  }, [documentState]);
 
   const handleCheckDocument = (documentId: string, documents: Array<any>) => {
     const found = documents.find(doc => (
@@ -739,33 +771,35 @@ export default function PatientCaptureForm(props: RouteComponentProps<IPageParam
             <DialogContentText
               id="scroll-dialog-description"
               tabIndex={-1}
-            >
-              <Grid container style={{ display: "flex", flexDirection: "row", justifyContent: "space-between" }}>
-                <Grid item md={1} style={{ padding: "0" }}>
-                  <AccountCircleIcon style={{ color: '#0899BA', fontSize: '30pt' }} />
-                </Grid>
-                <Grid item md={11} style={{ padding: "0", paddingTop: "0.4rem" }}>
-                  <h3 style={{ color: '#333333' }}>{care?.patient_id?.name}</h3>
-                </Grid>
+            >{
+              documentState.loading ? (<Loading />) : (<><Grid container style={{ display: "flex", flexDirection: "row", justifyContent: "space-between" }}>
+              <Grid item md={1} style={{ padding: "0" }}>
+                <AccountCircleIcon style={{ color: '#0899BA', fontSize: '30pt' }} />
               </Grid>
+              <Grid item md={11} style={{ padding: "0", paddingTop: "0.4rem" }}>
+                <h3 style={{ color: '#333333' }}>{care?.patient_id?.name}</h3>
+              </Grid>
+            </Grid>
 
-              <Tables
-                tableCells={[
-                  { name: 'Tipo', align: 'left', },
-                  { name: 'Complexidade', align: 'left' },
-                  { name: 'Adicionado em', align: 'left' },
-                  { name: 'Status', align: 'left' },
-                ]}
-              >
-                {documentHistory.map((doc: any, index: number) => (
-                  <TableRow key={`doc_${index}`}>
-                    <TableCell>{doc.document_group_id.name}</TableCell>
-                    <TableCell>{handleComplexityLabel(doc.name, doc.complexity)}</TableCell>
-                    <TableCell>{formatDate(doc.created_at, 'DD/MM/YYYY HH:mm:ss')}</TableCell>
-                    <TableCell>{doc.status}</TableCell>
-                  </TableRow>
-                ))}
-              </Tables>
+            <Tables
+              tableCells={[
+                { name: 'Tipo', align: 'left', },
+                { name: 'Complexidade', align: 'left' },
+                { name: 'Adicionado em', align: 'left' },
+                { name: 'Status', align: 'left' },
+              ]}
+            >
+              {documentHistory.map((doc: any, index: number) => (
+                <TableRow key={`doc_${index}`}>
+                  <TableCell>{doc.document_group_id.name}</TableCell>
+                  <TableCell>{handleComplexityLabel(doc.name, doc.complexity)}</TableCell>
+                  <TableCell>{formatDate(doc.created_at, 'DD/MM/YYYY HH:mm:ss')}</TableCell>
+                  <TableCell>{doc.status}</TableCell>
+                </TableRow>
+              ))}
+            </Tables> </>)
+            }
+              
 
 
             </DialogContentText>
