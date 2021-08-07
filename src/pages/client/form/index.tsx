@@ -375,7 +375,6 @@ export default function ClientForm(props: RouteComponentProps<IPageParams>) {
     if (state.cellphone) {
       var cellphone = state.cellphone.replace('(', '').replace(')', '').replace(' ', '').replace(' ', '').replace('-', '');
       isValidCellPhoneNumber = validator.isMobilePhone(cellphone, 'pt-BR');
-
       return (isValidCellPhoneNumber)
     }
   }
