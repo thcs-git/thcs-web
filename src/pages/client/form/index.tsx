@@ -444,7 +444,6 @@ export default function ClientForm(props: RouteComponentProps<IPageParams>) {
   }
 
   if (validatePhone() == true && validateCellPhone() == true) {
-
     formValid = true;
   }
 
