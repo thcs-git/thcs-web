@@ -19,6 +19,7 @@ import CompanyForm from '../pages/company/form';
 
 import CustomerList from '../pages/customer/list';
 import CustomerForm from '../pages/customer/form';
+import ClientForm from '../pages/client/form'
 
 import SpecialtyList from '../pages/specialty/list';
 import SpecialtyForm from '../pages/specialty/form';
@@ -86,6 +87,7 @@ const Routes = () => (
       <PrivateRoute path="/customer" component={CustomerList} exact />
       <PrivateRoute path="/customer/:id/:mode/edit" component={CustomerForm} />
       <PrivateRoute path="/customer/create" component={CustomerForm} />
+      <PrivateRoute path="/client/:id/:mode" component={ClientForm} />
 
       {/* Empresas */}
       <PrivateRoute path="/company" component={CompanyList} exact />
