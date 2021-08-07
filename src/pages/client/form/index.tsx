@@ -411,7 +411,6 @@ export default function ClientForm(props: RouteComponentProps<IPageParams>) {
   }, [state.address.postal_code]);
 
   function isEquals() {
-
     return _.isEqual(state, customerState.data);
   }
 
