@@ -455,7 +455,7 @@ export default function ClientForm(props: RouteComponentProps<IPageParams>) {
     },
     {
       name: "CONFIGURAÇÕES DE PERMISSÕES",
-      components: ['ClientFormHeader'],
+      components: ['TabList'],
     }
   ]
 
@@ -479,10 +479,20 @@ export default function ClientForm(props: RouteComponentProps<IPageParams>) {
   // const User = 'Tascom'
   const User = 'Client'
 
+  const tableCells = [
+    {name: "Nome da Permissão", align: "left"},
+    {name: "Estado", align: "left"},
+    {name: "Adicionado em", align: "center"},
+    {name: "Vizualizar", align: "center"},
+    {name: "Editar", align: "center"},
+  ]
+
+
   return (
     <Sidebar>
       {customerState.loading && <Loading/>}
-      <TabTittle tittle={'Clientes'} icon={!canEdit && <ButtonEdit setCanEdit={setCanEdit} canEdit={canEdit}/>}/>
+      <TabTittle tittle={'Clientes'} icon={!canEdit &&
+      <ButtonEdit setCanEdit={() => setCanEdit(!canEdit)} canEdit={canEdit}>Editar</ButtonEdit>}/>
       <TabForm
         navItems={NavItems}
         state={state}
@@ -493,6 +503,8 @@ export default function ClientForm(props: RouteComponentProps<IPageParams>) {
         cepStatus={customerState.errorCep}
         getAddress={getAddress}
         user={User}
+        customerState={customerState}
+        tableCells={tableCells}
       />
       <ButtonTabs canEdit={canEdit} buttons={buttons}/>
     </Sidebar>

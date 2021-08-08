@@ -8,6 +8,8 @@ import _ from 'lodash';
 import CepForm from "../Inputs/Forms/CepForm";
 import ResponsibleForm from "../Inputs/Forms/ResponsibleForm";
 import ToggleActive from "../Button/ToggleActive";
+import TabList from "../List/TabList";
+
 
 interface ITabrops {
   navItems: INavItems[],
@@ -20,6 +22,8 @@ interface ITabrops {
   getAddress: any;
   cepStatus: any;
   user?: string;
+  customerState?: any;
+  tableCells: any;
 }
 
 interface INavItems {
@@ -79,7 +83,19 @@ const useStyles = makeStyles((theme: Theme) => ({
 
 
 const TabForm = (props: ITabrops) => {
-  const {navItems, state, setState, setValidations, fieldsValidation, canEdit, cepStatus, getAddress, user} = props;
+  const {
+    navItems,
+    state,
+    setState,
+    setValidations,
+    fieldsValidation,
+    canEdit,
+    cepStatus,
+    getAddress,
+    user,
+    customerState,
+    tableCells
+  } = props;
   const classes = useStyles();
   const handleChange = (event: React.ChangeEvent<{}>, newValue: number) => {
     setValue(newValue);
@@ -116,6 +132,11 @@ const TabForm = (props: ITabrops) => {
           fieldsValidation={fieldsValidation}
           canEdit={canEdit}
           user={user}
+        />
+      case 'TabList':
+        return <TabList
+          cells={tableCells}
+          customerState={customerState}
         />
       case 'ToggleActive':
         return <ToggleActive
