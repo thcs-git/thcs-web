@@ -56,6 +56,9 @@ import validator from 'validator';
 import {Autocomplete} from '@material-ui/lab';
 import {toast} from 'react-toastify';
 import TabForm from "../../../components/Tabs";
+import TabTittle from "../../../components/Text/TabTittle";
+import ButtonEdit from "../../../components/Button/ButtonEdit";
+import ButtonTabs from "../../../components/Button/ButtonTabs";
 
 
 interface IFormFields extends CustomerInterface {
@@ -268,9 +271,9 @@ export default function ClientForm(props: RouteComponentProps<IPageParams>) {
     }));
   }, [customerState.data?.address]);
 
-  useEffect(() => {
-    if (customerState.success && customerState.data?._id && !customerState.isRegistrationCompleted) history.push('/customer');
-  }, [customerState.success])
+  // useEffect(() => {
+  //   if (customerState.success && customerState.data?._id && !customerState.isRegistrationCompleted) history.push('/customer');
+  // }, [customerState.success])
 
 
   useEffect(() => {
@@ -438,7 +441,7 @@ export default function ClientForm(props: RouteComponentProps<IPageParams>) {
   function handleCancelForm() {
     dispatch(cleanAction());
     setOpenModalCancel(false);
-    history.push('/customer');
+    history.push('/dashboard');
   }
 
   if (validatePhone() == true && validateCellPhone() == true) {
@@ -448,7 +451,7 @@ export default function ClientForm(props: RouteComponentProps<IPageParams>) {
   const NavItems = [
     {
       name: "DADOS DO CLIENTE",
-      components: ['ClientFormHeader', 'ClientFormHeader'],
+      components: ['ClientFormHeader', 'CepForm', 'ResponsibleForm'],
     },
     {
       name: "CONFIGURAÇÕES DE PERMISSÕES",
@@ -456,17 +459,42 @@ export default function ClientForm(props: RouteComponentProps<IPageParams>) {
     }
   ]
 
+  const buttons = [
+    {
+      name: 'Dashboard',
+      onClick: handleCancelForm,
+      variant: 'outlined',
+      background: 'success_rounded',
+      show: true,
+    },
+    {
+      name: 'Salvar',
+      onClick: handleSaveFormCustomer,
+      variant: 'contained',
+      background: 'success',
+      show: false,
+    }
+  ]
+
+  // const User = 'Tascom'
+  const User = 'Client'
+
   return (
     <Sidebar>
       {customerState.loading && <Loading/>}
+      <TabTittle tittle={'Clientes'} icon={!canEdit && <ButtonEdit setCanEdit={setCanEdit} canEdit={canEdit}/>}/>
       <TabForm
-        NavItems={NavItems}
+        navItems={NavItems}
         state={state}
         setState={setState}
         setValidations={setFieldValidations}
         fieldsValidation={fieldsValidation}
-        canEdit={true}>
-      </TabForm>
+        canEdit={canEdit}
+        cepStatus={customerState.errorCep}
+        getAddress={getAddress}
+        user={User}
+      />
+      <ButtonTabs canEdit={canEdit} buttons={buttons}/>
     </Sidebar>
   );
 }

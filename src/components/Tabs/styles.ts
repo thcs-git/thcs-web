@@ -41,7 +41,7 @@ export const TabBody = styled.div`
 
   padding: 40px 15px 15px 15px;
 
-  height: 550px;
+  //height: 750px;
 
   overflow-x: hidden;
 `;

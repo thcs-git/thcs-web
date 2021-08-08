@@ -5,15 +5,21 @@ import {Badge, Divider, Grid} from "@material-ui/core";
 import {TabBody, TabBodyItem, TabContent, TabNav, TabNavItem} from './styles';
 import ClientFormHeader from "../Inputs/Forms/ClientName";
 import _ from 'lodash';
+import CepForm from "../Inputs/Forms/CepForm";
+import ResponsibleForm from "../Inputs/Forms/ResponsibleForm";
+import ToggleActive from "../Button/ToggleActive";
 
 interface ITabrops {
-  NavItems: INavItems[],
-  children: ReactNode;
+  navItems: INavItems[],
+  children?: ReactNode;
   state: any;
   setState: Function;
   setValidations: Function;
   fieldsValidation: any;
   canEdit: boolean;
+  getAddress: any;
+  cepStatus: any;
+  user?: string;
 }
 
 interface INavItems {
@@ -56,6 +62,7 @@ function a11yProps(index: any) {
 const useStyles = makeStyles((theme: Theme) => ({
   root: {
     flexGrow: 1,
+    width: '100%',
     backgroundColor: theme.palette.background.paper,
   },
   indicator: {
@@ -72,7 +79,7 @@ const useStyles = makeStyles((theme: Theme) => ({
 
 
 const TabForm = (props: ITabrops) => {
-  const {NavItems, state, setState, setValidations, fieldsValidation, canEdit} = props;
+  const {navItems, state, setState, setValidations, fieldsValidation, canEdit, cepStatus, getAddress, user} = props;
   const classes = useStyles();
   const handleChange = (event: React.ChangeEvent<{}>, newValue: number) => {
     setValue(newValue);
@@ -90,8 +97,35 @@ const TabForm = (props: ITabrops) => {
           fieldsValidation={fieldsValidation}
           canEdit={canEdit}
         />
+      case 'CepForm':
+        return <CepForm
+          index={index}
+          state={state}
+          setState={setState}
+          setValidations={setValidations}
+          canEdit={canEdit}
+          cepStatus={cepStatus}
+          getAddress={getAddress}
+        />
+      case 'ResponsibleForm':
+        return <ResponsibleForm
+          index={index}
+          state={state}
+          setState={setState}
+          setValidations={setValidations}
+          fieldsValidation={fieldsValidation}
+          canEdit={canEdit}
+          user={user}
+        />
+      case 'ToggleActive':
+        return <ToggleActive
+          index={index}
+          state={state}
+          setState={setState}
+          canEdit={canEdit}
+        />
       default:
-        return <TabBodyItem></TabBodyItem>
+        return <TabBodyItem>Not found!</TabBodyItem>
     }
   }
 
@@ -100,10 +134,12 @@ const TabForm = (props: ITabrops) => {
       <TabContent position="static">
         <TabNav value={value}
                 onChange={handleChange}
-                aria-label="wrapped label tabs"
+                variant="scrollable"
+                scrollButtons="auto"
+                aria-label="scrollable auto tabs example"
                 TabIndicatorProps={{className: classes.indicator}}
         >
-          {NavItems.map(({name, badge}: INavItems, index: number) => (
+          {navItems.map(({name, badge}: INavItems, index: number) => (
             <TabNavItem
               value={index}
               label={
@@ -118,7 +154,7 @@ const TabForm = (props: ITabrops) => {
           ))}
         </TabNav>
       </TabContent>
-      {NavItems.map(({name, components, badge}: INavItems, index: number) => {
+      {navItems.map(({name, components, badge}: INavItems, index: number) => {
         const last = _.findLastIndex(components)
         return (
           <TabPanel value={value} index={index}>
