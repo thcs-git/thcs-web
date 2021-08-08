@@ -1,6 +1,5 @@
 import React from 'react';
 import {Button, Grid, Menu, MenuItem, TableCell, TableRow} from "@material-ui/core";
-import {Edit, MoreVert} from "@material-ui/icons";
 import {ItemTable, ListItemStatus, ListLink} from "../../../pages/customer/list/styles";
 import {formatDate} from "../../../helpers/date";
 import Table from "../../Table";
