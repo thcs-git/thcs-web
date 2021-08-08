@@ -1,5 +1,5 @@
 import React from 'react';
-import {Button, TableCell, TableRow} from "@material-ui/core";
+import {TableCell, TableRow} from "@material-ui/core";
 import {ItemTable, ListItemStatus, ListLink} from "../../../pages/customer/list/styles";
 import {formatDate} from "../../../helpers/date";
 import Table from "../../Table";
