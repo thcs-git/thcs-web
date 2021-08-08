@@ -66,6 +66,10 @@ production:
 
     interruptible: true
 
+    environment:
+      name: Production
+      url: https://sollar.app/
+
 staging:
     stage: staging
     image: node:13.10.1-alpine3.10
@@ -83,6 +87,10 @@ staging:
         - staging
 
     interruptible: true
+
+    environment:
+      name: staging
+      url: https://staging.sollar.app/
 
 dev:
     stage: dev
@@ -102,6 +110,10 @@ dev:
 
     interruptible: true
 
+    environment:
+      name: Dev
+      url: https://dev.sollar.app/
+
 presentation:
     stage: presentation
     image: node:13.10.1-alpine3.10
@@ -119,3 +131,7 @@ presentation:
         - presentation
 
     interruptible: true
+
+    environment:
+      name: Presentation
+      url: https://presentation.sollar.app/
