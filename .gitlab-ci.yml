@@ -1,121 +1,113 @@
+# You can override the included template(s) by including variable overrides
+# SAST customization: https://docs.gitlab.com/ee/user/application_security/sast/#customizing-the-sast-settings
+# Secret Detection customization: https://docs.gitlab.com/ee/user/application_security/secret_detection/#customizing-settings
+# Dependency Scanning customization: https://docs.gitlab.com/ee/user/application_security/dependency_scanning/#customizing-the-dependency-scanning-settings
+# Note that environment variables can be set in several places
+# See https://docs.gitlab.com/ee/ci/variables/#cicd-variable-precedence
 image: node:13.10.1-alpine3.10
-
 before_script:
-    - apk add curl
-    - npm i -g vercel
-
+- apk add curl
+- npm i -g vercel
 stages:
-    - automation
-    - staging
-    - production
-    - dev
-    - presentation
-    - merge
-    #- test
-
+- automation
+- staging
+- production
+- dev
+- presentation
+- merge
+- test
 automation:
-    stage: automation
-    image: ruby:latest
-
-    rules:
-      - if: '$CI_MERGE_REQUEST_TARGET_BRANCH_NAME == "dev"'
-
-    before_script:
-      - ''
-
-    script:
-        - if [[ "$CI_MERGE_REQUEST_TITLE" =~ SOLLAR-[0-9]+ ]]; then echo "Título do merge dentro do padrão"; else curl -X PUT -H "Authorization:Bearer $GITLAB_API_TOKEN" -H "Content-Type:application/json" https://gitlab.com/api/v4/projects/$CI_PROJECT_ID/merge_requests/$CI_MERGE_REQUEST_IID -d '{"title":"'"$CI_MERGE_REQUEST_SOURCE_BRANCH_NAME - $CI_MERGE_REQUEST_TITLE"'"}' &&  curl -X POST -H "Authorization:Bearer $GITLAB_API_TOKEN" -H "Content-Type:application/json" https://gitlab.com/api/v4/projects/$CI_PROJECT_ID/merge_requests/$CI_MERGE_REQUEST_IID/notes -d '{"body":"'"Automação Devops":" Nome do Título :robot":"<br/><br/>- Seu título no merge request está fora do padrão {+ (SOLLAR-000)+}❌<br/>- Titulo do merge alterado para o {+ nome da branch+} seguido pelo {+ título+} anterior<br/>- Novo título":" {+ $CI_MERGE_REQUEST_SOURCE_BRANCH_NAME - $CI_MERGE_REQUEST_TITLE+}"'"}'; fi
-
-    interruptible: true
-
+  stage: automation
+  image: ruby:latest
+  rules:
+  - if: $CI_MERGE_REQUEST_TARGET_BRANCH_NAME == "dev"
+  before_script:
+  - ''
+  script:
+  - if [[ "$CI_MERGE_REQUEST_TITLE" =~ SOLLAR-[0-9]+ ]]; then echo "Título do merge
+    dentro do padrão"; else curl -X PUT -H "Authorization:Bearer $GITLAB_API_TOKEN"
+    -H "Content-Type:application/json" https://gitlab.com/api/v4/projects/$CI_PROJECT_ID/merge_requests/$CI_MERGE_REQUEST_IID
+    -d '{"title":"'"$CI_MERGE_REQUEST_SOURCE_BRANCH_NAME - $CI_MERGE_REQUEST_TITLE"'"}'
+    &&  curl -X POST -H "Authorization:Bearer $GITLAB_API_TOKEN" -H "Content-Type:application/json"
+    https://gitlab.com/api/v4/projects/$CI_PROJECT_ID/merge_requests/$CI_MERGE_REQUEST_IID/notes
+    -d '{"body":"'"Automação Devops":" Nome do Título :robot":"<br/><br/>- Seu título
+    no merge request está fora do padrão {+ (SOLLAR-000)+}❌<br/>- Titulo do merge
+    alterado para o {+ nome da branch+} seguido pelo {+ título+} anterior<br/>- Novo
+    título":" {+ $CI_MERGE_REQUEST_SOURCE_BRANCH_NAME - $CI_MERGE_REQUEST_TITLE+}"'"}';
+    fi
+  interruptible: true
 merge:
-    stage: merge
-    image: node:13.10.1-alpine3.10
-
-    rules:
-      #- if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
-      - if: '$CI_MERGE_REQUEST_TARGET_BRANCH_NAME == "dev"'
-
-    variables:
-        #PREVIEW_URL: $CI_PROJECT_NAME-master.vercel.app
-        PREVIEW_URL: dev-$CI_MERGE_REQUEST_IID-$CI_MERGE_REQUEST_SOURCE_BRANCH_NAME-$CI_MERGE_REQUEST_TARGET_BRANCH_NAME.sollar.app
-
-    script:
-        - DEPLOYMENT_URL=$(vercel -t $VERCEL_TOKEN --build-env REACT_APP_BASE_API=https://sollar-backend-dev.herokuapp.com/api --confirm)
-        - echo $DEPLOYMENT_URL >vercel_deployment_url.txt
-        - vercel alias set $DEPLOYMENT_URL $PREVIEW_URL -t $VERCEL_TOKEN
-        - curl -X POST -H "Authorization:Bearer $GITLAB_API_TOKEN" -H "Content-Type:application/json" https://gitlab.com/api/v4/projects/$CI_PROJECT_ID/merge_requests/$CI_MERGE_REQUEST_IID/notes -d '{"body":"'"Automação Devops":" Deploy Vercel :robot":"<br/><br/>- A Vercel está implantando o Deploy desse merge request automaticamente.<br/>- Para ver a url de seu Deploy, clique no ícone de status abaixo.<br/><br/> ":white_check_mark:" Preview":" https://$PREVIEW_URL"'"}'
-
-    interruptible: true
-
+  stage: merge
+  image: node:13.10.1-alpine3.10
+  rules:
+  - if: $CI_MERGE_REQUEST_TARGET_BRANCH_NAME == "dev"
+  variables:
+    PREVIEW_URL: dev-$CI_MERGE_REQUEST_IID-$CI_MERGE_REQUEST_SOURCE_BRANCH_NAME-$CI_MERGE_REQUEST_TARGET_BRANCH_NAME.sollar.app
+  script:
+  - DEPLOYMENT_URL=$(vercel -t $VERCEL_TOKEN --build-env REACT_APP_BASE_API=https://sollar-backend-dev.herokuapp.com/api
+    --confirm)
+  - echo $DEPLOYMENT_URL >vercel_deployment_url.txt
+  - vercel alias set $DEPLOYMENT_URL $PREVIEW_URL -t $VERCEL_TOKEN
+  - curl -X POST -H "Authorization:Bearer $GITLAB_API_TOKEN" -H "Content-Type:application/json"
+    https://gitlab.com/api/v4/projects/$CI_PROJECT_ID/merge_requests/$CI_MERGE_REQUEST_IID/notes
+    -d '{"body":"'"Automação Devops":" Deploy Vercel :robot":"<br/><br/>- A Vercel
+    está implantando o Deploy desse merge request automaticamente.<br/>- Para ver
+    a url de seu Deploy, clique no ícone de status abaixo.<br/><br/> ":white_check_mark:"
+    Preview":" https://$PREVIEW_URL"'"}'
+  interruptible: true
 production:
-    stage: production
-    image: node:13.10.1-alpine3.10
-
-    variables:
-        #PREVIEW_URL: $CI_PROJECT_NAME-master.vercel.app
-        PREVIEW_URL: sollar.app
-
-    script:
-        - DEPLOYMENT_URL=$(vercel -t $VERCEL_TOKEN --build-env REACT_APP_BASE_API=https://sollar-backend-master.herokuapp.com/api --confirm --prod)
-        - echo $DEPLOYMENT_URL >vercel_deployment_url.txt
-        - vercel alias set $DEPLOYMENT_URL $PREVIEW_URL -t $VERCEL_TOKEN
-
-    only:
-        - master
-
-    interruptible: true
-
+  stage: production
+  image: node:13.10.1-alpine3.10
+  variables:
+    PREVIEW_URL: sollar.app
+  script:
+  - DEPLOYMENT_URL=$(vercel -t $VERCEL_TOKEN --build-env REACT_APP_BASE_API=https://sollar-backend-master.herokuapp.com/api
+    --confirm --prod)
+  - echo $DEPLOYMENT_URL >vercel_deployment_url.txt
+  - vercel alias set $DEPLOYMENT_URL $PREVIEW_URL -t $VERCEL_TOKEN
+  only:
+  - master
+  interruptible: true
 staging:
-    stage: staging
-    image: node:13.10.1-alpine3.10
-
-    variables:
-        #PREVIEW_URL: $CI_PROJECT_NAME-master.vercel.app
-        PREVIEW_URL: staging.sollar.app
-
-    script:
-        - DEPLOYMENT_URL=$(vercel -t $VERCEL_TOKEN --build-env REACT_APP_BASE_API=https://sollar-backend-staging.herokuapp.com/api --confirm)
-        - echo $DEPLOYMENT_URL >vercel_deployment_url.txt
-        - vercel alias set $DEPLOYMENT_URL $PREVIEW_URL -t $VERCEL_TOKEN
-
-    only:
-        - staging
-
-    interruptible: true
-
+  stage: staging
+  image: node:13.10.1-alpine3.10
+  variables:
+    PREVIEW_URL: staging.sollar.app
+  script:
+  - DEPLOYMENT_URL=$(vercel -t $VERCEL_TOKEN --build-env REACT_APP_BASE_API=https://sollar-backend-staging.herokuapp.com/api
+    --confirm)
+  - echo $DEPLOYMENT_URL >vercel_deployment_url.txt
+  - vercel alias set $DEPLOYMENT_URL $PREVIEW_URL -t $VERCEL_TOKEN
+  only:
+  - staging
+  interruptible: true
 dev:
-    stage: dev
-    image: node:13.10.1-alpine3.10
-
-    variables:
-        #PREVIEW_URL: $CI_PROJECT_NAME-master.vercel.app
-        PREVIEW_URL: dev.sollar.app
-
-    script:
-        - DEPLOYMENT_URL=$(vercel -t $VERCEL_TOKEN --build-env REACT_APP_BASE_API=https://sollar-backend-dev.herokuapp.com/api --confirm)
-        - echo $DEPLOYMENT_URL >vercel_deployment_url.txt
-        - vercel alias set $DEPLOYMENT_URL $PREVIEW_URL -t $VERCEL_TOKEN
-
-    only:
-        - dev
-
-    interruptible: true
-
+  stage: dev
+  image: node:13.10.1-alpine3.10
+  variables:
+    PREVIEW_URL: dev.sollar.app
+  script:
+  - DEPLOYMENT_URL=$(vercel -t $VERCEL_TOKEN --build-env REACT_APP_BASE_API=https://sollar-backend-dev.herokuapp.com/api
+    --confirm)
+  - echo $DEPLOYMENT_URL >vercel_deployment_url.txt
+  - vercel alias set $DEPLOYMENT_URL $PREVIEW_URL -t $VERCEL_TOKEN
+  only:
+  - dev
+  interruptible: true
 presentation:
-    stage: presentation
-    image: node:13.10.1-alpine3.10
-
-    variables:
-        #PREVIEW_URL: $CI_PROJECT_NAME-master.vercel.app
-        PREVIEW_URL: presentation.sollar.app
-
-    script:
-        - DEPLOYMENT_URL=$(vercel -t $VERCEL_TOKEN --build-env REACT_APP_BASE_API=https://sollar-backend-presentation.herokuapp.com/api --confirm)
-        - echo $DEPLOYMENT_URL >vercel_deployment_url.txt
-        - vercel alias set $DEPLOYMENT_URL $PREVIEW_URL -t $VERCEL_TOKEN
-
-    only:
-        - presentation
-
-    interruptible: true
+  stage: presentation
+  image: node:13.10.1-alpine3.10
+  variables:
+    PREVIEW_URL: presentation.sollar.app
+  script:
+  - DEPLOYMENT_URL=$(vercel -t $VERCEL_TOKEN --build-env REACT_APP_BASE_API=https://sollar-backend-presentation.herokuapp.com/api
+    --confirm)
+  - echo $DEPLOYMENT_URL >vercel_deployment_url.txt
+  - vercel alias set $DEPLOYMENT_URL $PREVIEW_URL -t $VERCEL_TOKEN
+  only:
+  - presentation
+  interruptible: true
+sast:
+  stage: test
+include:
+- template: Security/SAST.gitlab-ci.yml
