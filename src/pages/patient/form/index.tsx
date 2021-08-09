@@ -1,4 +1,4 @@
- import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import Tab from '@material-ui/core/Tab';
 import InputMask,{ Props }  from 'react-input-mask';
 import { cpf } from 'cpf-cnpj-validator';
@@ -27,7 +27,7 @@ import { SearchOutlined, Edit, AddAlertSharp } from '@material-ui/icons';
 import Autocomplete from '@material-ui/lab/Autocomplete';
 
 import { useDispatch, useSelector } from 'react-redux';
-import { createPatientRequest, updatePatientRequest, getAddress as getAddressAction, loadPatientById, loadFailure, cleanAction} from '../../../store/ducks/patients/actions';
+import { createPatientRequest, updatePatientRequest, getAddress as getAddressAction, loadPatientById, loadFailure } from '../../../store/ducks/patients/actions';
 import { PatientInterface } from '../../../store/ducks/patients/types';
 
 import { loadRequest as getAreasAction } from '../../../store/ducks/areas/actions';
@@ -318,14 +318,9 @@ export default function PatientForm(props: RouteComponentProps<IPageParams>) {
 
   }
 
-   //////////////////////  useEffect   //////////////////////
-   useEffect(() => {
-     console.log('useState', state)
-    dispatch(cleanAction());
-  }, []);
-
   useEffect(() => {
     const field = patientState.errorCep ? 'input-postal-code' : 'input-address-number';
+
 
     patientState.errorCep && setState(prevState => ({
       ...prevState,
@@ -340,61 +335,50 @@ export default function PatientForm(props: RouteComponentProps<IPageParams>) {
       }
     }));
 
-    document.getElementById(field)?.focus();
+    document.getElementById('input-social-client')?.focus();
   }, [patientState.errorCep]);
 
 
 
   useEffect(() => {
-    console.log('cleanAction ' ,state.phones);
-    console.log('cleanModifi', modifi.phones);
-
     dispatch(getAreasAction());
 
     if (params.id) {
       dispatch(loadPatientById(params.id));
-      dispatch(cleanAction())
-     } else {
-       dispatch(loadFailure());
-       dispatch(cleanAction())
-     }
+    } else {
+      dispatch(loadFailure());
+    }
   }, [dispatch, params]);
-
-/////// useEffect Quebrado!!!!!
-  // useEffect(() => {
-  //   if (params.id) {
-  //     setState(patientState.data);
-  //     if(params.mode && params.mode ==='view'){
-  //        setCanEdit(!canEdit);
-  //     }
-  //   } else {
-  //     if (areaState.list.data.length > 1) {
-  //       setState(prevState=>({
-  //         ...prevState,
-  //         area_id: areaState.list.data[0]._id
-  //       }))
-  //     }
-  //   }
 
   useEffect(() => {
     if (params.id) {
+      setState(patientState.data);
       if(params.mode && params.mode ==='view'){
-          setCanEdit(false);
+         setCanEdit(false);
+      }
+
+    }else{
+      if (areaState.list.data.length > 1) {
+        setState(prevState=>({
+          ...prevState,
+          area_id: areaState.list.data[0]._id
+        }))
       }
     }
-  }, [params.id]);
 
-    // useEffect(() => {
-    //   setState(prevState => {
-    //     return {
-    //       ...prevState,
-    //       address_id: {
-    //         ...prevState.address_id,
-    //         ...patientState.data.address_id
-    //       }
-    //     }
-    //   });
-    // }, [patientState.data.address_id]);
+  }, [patientState.data, areaState.list.data]);
+
+  useEffect(() => {
+    setState(prevState => {
+      return {
+        ...prevState,
+        address_id: {
+          ...prevState.address_id,
+          ...patientState.data.address_id
+        }
+      }
+    });
+  }, [patientState.data.address_id]);
 
   const getAddress = useCallback(() => {
     dispatch(getAddressAction(state.address_id.postal_code));
@@ -403,60 +387,57 @@ export default function PatientForm(props: RouteComponentProps<IPageParams>) {
 
 
 
-
   function isEquals(){
 
    return _.isEqual(modifi,patientState.data);
   }
-////// Quebrado !!! //////
-
-  // useEffect(() => {
-  //   if (params.id) {
-  //     if(params.mode === "view"){
-  //       setCanEdit(false)
-  //     }
-
-  //      const uf = States.find(uf => uf.sigla === patientState.data.address_id.state) || null;
-
-  //     setState(prevState =>({
-  //       ...prevState,
-  //       form:{uf:uf}
-  //     }));
-  //     setState(prevState=>{
-  //       return{
-  //         ...prevState,
-  //         ...patientState.data
-  //       }
-  //       });
-  //       setInputPhone(prev =>({
-  //         ...prev,
-  //         value:patientState.data.phones[0]?.number || ''
-  //       }));
-  //       setInputCellPhone(prev =>({
-  //         ...prev,
-  //         value:patientState.data.phones[0]?.cellnumber || ''
-  //       }));
-
-  //     setFieldValidations({
-  //       name:true,
-  //       social_name:true,
-  //       fiscal_number:true,
-  //       responsible_user:true,
-  //       postal_code: true,
-  //       street: true,
-  //       number: true,
-  //       district:true,
-  //       city:true,
-  //       state:true,
-  //       email:true,
-  //       phone:true
-  //      })
-
-  //   }
-  // }, [patientState, params.id]);
 
   useEffect(() => {
+    if (params.id) {
+      if(params.mode === "view"){
+        setCanEdit(false)
+      }
 
+        const uf = States.find(uf => uf.sigla === patientState.data.address_id.state) || null;
+
+      setState(prevState =>({
+        ...prevState,
+        form:{uf:uf}
+      }));
+      setState(prevState=>{
+        return{
+          ...prevState,
+          ...patientState.data
+        }
+        });
+        setInputPhone(prev =>({
+          ...prev,
+          value:patientState.data.phones[0]?.number || ''
+        }));
+        setInputCellPhone(prev =>({
+          ...prev,
+          value:patientState.data.phones[0]?.cellnumber || ''
+        }));
+
+      setFieldValidations({
+        name:true,
+        social_name:true,
+        fiscal_number:true,
+        responsible_user:true,
+        postal_code: true,
+        street: true,
+        number: true,
+        district:true,
+        city:true,
+        state:true,
+        email:true,
+        phone:true
+       })
+
+    }
+  }, [patientState, params.id]);
+
+  useEffect(() => {
     if (patientState.error) {
 
       setState(prev => ({
@@ -472,20 +453,6 @@ export default function PatientForm(props: RouteComponentProps<IPageParams>) {
         },
       }))
     }
-
-    const uf = States.find(uf => uf.sigla === patientState.data.address_id.state) || null;
-
-      setState(prevState =>({
-        ...prevState,
-        form:{uf:uf}
-      }));
-      setState(prevState=>{
-        return{
-          ...prevState,
-          ...patientState.data
-        }
-        });
-
 
     setState(prevState => {
       return {
@@ -506,7 +473,6 @@ export default function PatientForm(props: RouteComponentProps<IPageParams>) {
       state: !validator.isEmpty(patientState.data.address_id.state),
       complement: !validator.isEmpty(patientState.data.address_id.complement),
     }));
-
   }, [patientState.data?.address_id]);
 
   const handleBloodType = useCallback((event: any, newValue: any) => {
@@ -519,7 +485,7 @@ export default function PatientForm(props: RouteComponentProps<IPageParams>) {
       ...prevState,
       blood_type: newValue,
     }));
-  }, [patientState, params.id]);
+  }, [state.blood_type]);
 
 
   const selectPatientArea = useCallback(() => {
@@ -582,7 +548,7 @@ export default function PatientForm(props: RouteComponentProps<IPageParams>) {
 
     if(isEquals()){
       handleCancelForm()
-
+      console.log(isEquals());
     }else{
       setOpenModalCancel(true);
     }
@@ -596,8 +562,6 @@ export default function PatientForm(props: RouteComponentProps<IPageParams>) {
   function handleCancelForm() {
     setOpenModalCancel(false);
     history.push(`/patient`);
-    dispatch(cleanAction())
-
   }
 
   const handleChangeRegistryType = useCallback((element) => {
@@ -606,21 +570,31 @@ export default function PatientForm(props: RouteComponentProps<IPageParams>) {
 
 
   const handleSaveFormPatient = useCallback(() => {
-    const patientData = {
-      ...state,
-      phones: [
-        { whatsapp: false, telegram: false, number: state.phones[0]?.number },
-        { whatsapp: false, telegram: false, cellnumber: state.phones[0]?.cellnumber },
-      ]
-    };
-
     if (state?._id) {
+      const patientData = {
+        ...state,
+        phones: [
+          { whatsapp: false, telegram: false, number: state.phones[0]?.number },
+          { whatsapp: false, telegram: false, cellnumber: state.phones[0]?.cellnumber },
+        ]
+      };
 
       dispatch(updatePatientRequest(patientData));
-      dispatch(cleanAction())
       history.push('/patient');
-
     } else {
+
+      const date = new Date
+
+      const patientData = {
+        ...state,
+        phones: [
+          { whatsapp: false, telegram: false, number: state.phones[0]?.number },
+          { whatsapp: false, telegram: false, cellnumber: state.phones[0]?.cellnumber },
+        ],
+        created_at: date.toISOString()
+      };
+
+      console.log(patientData)
 
       dispatch(createPatientRequest(patientData));
     }
@@ -639,8 +613,8 @@ export default function PatientForm(props: RouteComponentProps<IPageParams>) {
           <div style={{ display: 'flex', alignItems: 'center', flexDirection: 'row' }}>
             <FormTitle>Cadastro de Paciente</FormTitle>
 
-            {params.id && params.mode == 'view' && !canEdit && (
-              <Button style={{ marginTop: -20, marginLeft: 15, color: '#0899BA' }} onClick={() => setCanEdit(true)}>
+            {params.id && (
+              <Button style={{ marginTop: -20, marginLeft: 15, color: '#0899BA' }} onClick={() => setCanEdit(!canEdit)}>
                 <Edit style={{ marginRight: 5, width: 18 }} />
               Editar
               </Button>
@@ -934,7 +908,6 @@ export default function PatientForm(props: RouteComponentProps<IPageParams>) {
                         Digite um CEP válido
                       </p>
                     )}
-
                       </Grid>
 
                       <Grid item md={9} xs={12}>
@@ -1105,7 +1078,7 @@ export default function PatientForm(props: RouteComponentProps<IPageParams>) {
                           <InputLabel htmlFor="search-input">Celular</InputLabel>
                           <InputMask
                             mask="(99) 9 9999-9999"
-                            value={state.phones[0]?.cellnumber? state.phones[0]?.cellnumber : state.phones[1]?.cellnumber}
+                            value={state.phones[1]?.cellnumber}
                             onChange={(element) => {
                               {setState(prevState => ({
                                 ...prevState,
