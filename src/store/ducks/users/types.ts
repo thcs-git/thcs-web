@@ -58,6 +58,7 @@ export enum UserTypes {
 export interface Phones {
   _id: string;
   number: string;
+  cellnumber: string;
   whatapp: string;
   telegram: string;
 }
@@ -146,6 +147,12 @@ export interface UserInterface {
     geolocation?: { latitude: number; longitude: number };
   };
   email: string; // email
+  phones: [{
+    cellnumber?: string;
+    number?: string;
+    telegram: boolean;
+    whatsapp: boolean;
+  }];
   phone: string;
   cellphone: string;
   user_type_id: string | UserTypeInterface;

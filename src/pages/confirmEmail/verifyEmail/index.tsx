@@ -42,6 +42,12 @@ export default function VerifyEmailForm(props: RouteComponentProps<IPageParams>)
       state: "",
       complement: "",
     },
+    phones: [{
+      cellnumber: "",
+      number: "",
+      telegram: false,
+      whatsapp: false,
+    }],
     email: "",
     phone: "",
     cellphone: "",
