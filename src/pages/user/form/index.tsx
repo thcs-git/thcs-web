@@ -142,6 +142,12 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
       state: "",
       complement: "",
     },
+    phones: [{
+      cellnumber: "",
+      number: "",
+      telegram: false,
+      whatsapp: false,
+    }],
     email: "",
     phone: "",
     cellphone: "",
@@ -200,6 +206,10 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
       state: false,
       complement: true,
     },
+    phones:[{
+      number: false,
+      cellnumber: false,
+    }],
     email: false,
     phone: false,
     cellphone: false,
@@ -233,8 +243,8 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
 
   const validatePhone = () => {
 
-    if (state.phone) {
-      const landline = state.phone.replace('(', '').replace(')', '9').replace(' ', '').replace(' ', '').replace('-', '');
+    if (state.phones[0]?.number) {
+      const landline = state.phones[0]?.number.replace('(', '').replace(')', '9').replace(' ', '').replace(' ', '').replace('-', '');
 
       isValidPhoneNumber = validator.isMobilePhone(landline, 'pt-BR');
 
@@ -242,20 +252,29 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
     }
   }
 
+  const validateCellPhone = () => {
+    if (state.phones[0]?.cellnumber) {
+      const landline = state.phones[0]?.cellnumber.replace('(', '').replace(')', '').replace(' ', '').replace(' ', '').replace('-', '');
+
+      isValidCellPhoneNumber = validator.isMobilePhone(landline, 'pt-BR');
+
+      return (isValidCellPhoneNumber)
+    }
+  }
   const checkIsCpfValid = useCallback(() => {
     return !!cpf.isValid(state.fiscal_number);
   }, [state.fiscal_number]);
 
 
-  const validateCellPhone = () => {
-    try {
-      var cellphone = state.cellphone.replace('(', '').replace(')', '').replace(' ', '').replace(' ', '').replace('-', '');
-      isValidCellPhoneNumber = validator.isMobilePhone(cellphone, 'pt-BR');
-      return (isValidCellPhoneNumber)
-    } catch {
+  // const validateCellPhone = () => {
+  //   try {
+  //     var cellphone = state.phones[0]?.cellnumber.replace('(', '').replace(')', '').replace(' ', '').replace(' ', '').replace('-', '');
+  //     isValidCellPhoneNumber = validator.isMobilePhone(cellphone, 'pt-BR');
+  //     return (isValidCellPhoneNumber)
+  //   } catch {
 
-    }
-  }
+  //   }
+  // }
 
   if (validatePhone() == true && validateCellPhone() == true) {
     formValid = true;
@@ -599,6 +618,9 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
           return item._id === state.profession_id._id;
         }
       });
+
+
+
 
       return selected[0] ? selected[0] : {_id: '', name: ''}
     }
@@ -1402,14 +1424,19 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
                             <InputMask
                               mask="(99) 9999-9999"
                               disabled={!canEdit}
-                              value={state.phone}
-                              onChange={(element) => {
-                                setState({...state, phone: element.target.value});
-                                setFieldValidations((prevState: any) => ({
+                              value={state.phones[0]?.number}
+                              onChange={(element) =>{
+                                {setState(prevState => ({
                                   ...prevState,
-                                  phone: !validator.isEmpty(element.target.value),
-                                }));
-                              }}
+                                  phone: element.target.value,
+                                  phones: [
+                                    {
+                                    ...prevState.phones[0],
+                                    number : element.target.value
+                                    }
+                                ]
+                                }))
+                              }}}
                               onBlur={validatePhone}
                             >
                               {(inputProps: any) => (
@@ -1421,13 +1448,13 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
                                   variant="outlined"
                                   size="small"
                                   placeholder="0000-0000"
-                                  error={!validateCellPhone() && state.cellphone != ''}
+                                  error={!validatePhone() && state.phones[0]?.number != ''}
 
                                   fullWidth
                                 />
                               )}
                             </InputMask>
-                            {!validatePhone() && state.phone && (
+                            {!validatePhone() && state.phones[0]?.number && (
                               <p style={{color: '#f44336', margin: '-10px 5px 10px'}}>
                                 Por favor insira um número válido
                               </p>
@@ -1437,18 +1464,20 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
                             <InputMask
                               mask="(99) 99999-9999"
                               disabled={!canEdit}
-                              value={state.cellphone}
-                              onChange={(element) => {
-                                setState({
-                                  ...state,
-                                  cellphone: element.target.value,
-                                });
-                                setFieldValidations((prevState: any) => ({
+                              value={state.phones[0]?.cellnumber}
+                              onChange={(element) =>{
+                                {setState(prevState => ({
                                   ...prevState,
-                                  cellphone: !validator.isEmpty(element.target.value),
+                                  // cellphone: element.target.value,
+                                  phones: [
+                                    {
+                                    ...prevState.phones[0],
+                                    cellnumber : element.target.value
+                                    }
 
-                                }));
-                              }}
+                                ]
+                                }))
+                              }}}
                               onBlur={validateCellPhone}
                             >
                               {(inputProps: any) => (
@@ -1460,13 +1489,12 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
                                   variant="outlined"
                                   size="small"
                                   placeholder="(00) 0 0000-0000"
-                                  error={!validateCellPhone() && state.cellphone != ''}
-
+                                  error={!validateCellPhone() && state.phones[0]?.cellnumber  != ''}
                                   fullWidth
                                 />
                               )}
                             </InputMask>
-                            {!validateCellPhone() && state.cellphone && (
+                            {!validateCellPhone() && state.phones[0]?.cellnumber && (
                               <p style={{color: '#f44336', margin: '-10px 5px 10px'}}>
                                 Por favor insira um número válido
                               </p>
@@ -2576,18 +2604,24 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
                               disabled={!canEdit}
                             />
                           </Grid>
+                          {/* Phone */}
                           <Grid item md={3} xs={12}>
                             <InputMask
                               mask="(99) 9999-9999"
                               disabled={!canEdit}
-                              value={state.phone}
-                              onChange={(element) => {
-                                setState({...state, phone: element.target.value});
-                                setFieldValidations((prevState: any) => ({
+                              value={state.phones[0]?.number}
+                              onChange={(element) =>{
+                                {setState(prevState => ({
                                   ...prevState,
-                                  phone: !validator.isEmpty(element.target.value),
-                                }));
-                              }}
+                                  phone: element.target.value,
+                                  phones: [
+                                    {
+                                    ...prevState.phones[0],
+                                    number : element.target.value
+                                    }
+                                ]
+                                }))
+                              }}}
                               onBlur={validatePhone}
                             >
                               {(inputProps: any) => (
@@ -2599,34 +2633,37 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
                                   variant="outlined"
                                   size="small"
                                   placeholder="0000-0000"
-                                  error={!validateCellPhone() && state.cellphone != ''}
+                                  error={!validatePhone() && state.phones[0]?.number != ''}
 
                                   fullWidth
                                 />
                               )}
                             </InputMask>
-                            {!validatePhone() && state.phone && (
+                            {!validatePhone() && state.phones[0]?.number && (
                               <p style={{color: '#f44336', margin: '-10px 5px 10px'}}>
                                 Por favor insira um número válido
                               </p>
                             )}
                           </Grid>
+
+                          {/* Cellphone */}
                           <Grid item md={3} xs={12}>
                             <InputMask
                               mask="(99) 99999-9999"
                               disabled={!canEdit}
-                              value={state.cellphone}
-                              onChange={(element) => {
-                                setState({
-                                  ...state,
-                                  cellphone: element.target.value,
-                                });
-                                setFieldValidations((prevState: any) => ({
+                              value={state.phones[0]?.cellnumber}
+                              onChange={(element) =>{
+                                {setState(prevState => ({
                                   ...prevState,
-                                  cellphone: !validator.isEmpty(element.target.value),
-
-                                }));
-                              }}
+                                  phone: element.target.value,
+                                  phones: [
+                                    {
+                                    ...prevState.phones[0],
+                                    cellnumber : element.target.value
+                                    }
+                                ]
+                                }))
+                              }}}
                               onBlur={validateCellPhone}
                             >
                               {(inputProps: any) => (
@@ -2638,13 +2675,13 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
                                   variant="outlined"
                                   size="small"
                                   placeholder="(00) 0 0000-0000"
-                                  error={!validateCellPhone() && state.cellphone != ''}
+                                  error={!validateCellPhone() && state.phones[0]?.cellnumber != ''}
 
                                   fullWidth
                                 />
                               )}
                             </InputMask>
-                            {!validateCellPhone() && state.cellphone && (
+                            {!validateCellPhone() && state.phones[0]?.cellnumber && (
                               <p style={{color: '#f44336', margin: '-10px 5px 10px'}}>
                                 Por favor insira um número válido
                               </p>

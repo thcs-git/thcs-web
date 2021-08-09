@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useCallback, ChangeEvent } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory, Link } from 'react-router-dom';
-import { Container, Button, Menu, Grid, MenuItem, TableRow, TableCell, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Tooltip } from '@material-ui/core';
+import { Container, Button, Menu, MenuItem, TableRow, TableCell, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle } from '@material-ui/core';
 import { MoreVert } from '@material-ui/icons';
 import debounce from 'lodash.debounce';
 
@@ -19,8 +19,6 @@ import Table from '../../../components/Table';
 
 import AddIcon from '@material-ui/icons/Add';
 
-import MoreHorizTwoToneIcon from '@material-ui/icons/MoreHorizTwoTone';
-
 import { FormTitle } from '../../../styles/components/Form';
 
 import ListItem from '@material-ui/core/ListItem';
@@ -34,8 +32,6 @@ import {
   ListItemTitle,
 } from './styles';
 import { formatDate } from '../../../helpers/date';
-
-import { GoogleMap, InfoWindow, LoadScript, Marker, MarkerProps } from '@react-google-maps/api';
 
 const token = window.localStorage.getItem('token');
 
@@ -102,10 +98,10 @@ export default function UserList() {
           <Table
             tableCells={[
               { name: 'Prestador', align: 'left', },
-              { name: 'CPF', align: 'left' },
+              {name: 'CPF', align: 'left'},
               { name: 'Função', align: 'left' },
               { name: 'Especialidades', align: 'left' },
-              // { name: '', align: 'left' },
+              { name: '', align: 'left' },
               { name: 'Adicionado em', align: 'left' },
               { name: 'Status', align: 'left' },
               { name: '', align: 'left' },
@@ -122,16 +118,32 @@ export default function UserList() {
                 <TableCell>
                   {user.profession_id?.name}
                 </TableCell>
-                <TableCell align="left">
-
-                  <div style={{display: 'flex'}}>
-                    <p style={{ marginTop:'0.3rem'}}>{user.main_specialty_id?.name}</p>
-                  {user.specialties.length > 0 ? (<Tooltip style={{ fontSize: '10pt', marginTop: '0.8rem' }} title={user.specialties.map((specialty, index) => (
-                      `${specialty.name}${index < (user.specialties.length - 1) ? ',' : ''}`
-                    ))}><MoreHorizTwoToneIcon /></Tooltip>
-                    ) : (null)}
-                  </div>
-
+                <TableCell>
+                  {user?.main_specialty_id?.name}
+                </TableCell>
+                <TableCell align="center">
+                  {user.specialties.length > 0 ? (
+                    <ListItem>
+                      <Button onClick={() => toggleHistoryModal(index)}>
+                        <AddIcon style={{ color: '#0899BA', cursor: "pointer" }} />
+                      </Button>
+                      {/* <Menu
+                        id={`user-speciality${index}`}
+                        anchorEl={anchorEl}
+                        keepMounted
+                        open={anchorEl?.id === `btn_user-speciality${index}`}
+                        onClose={handleCloseRowMenu}
+                      >
+                        <MenuItem style={{ cursor: "default", fontSize: "13pt", fontFamily: "Open Sans Bold" }}><h4>Principal</h4></MenuItem>
+                        <MenuItem style={{ cursor: "default", fontSize: "10pt", fontFamily: "Open Sans Regular"}}>{user.main_specialty_id.name}</MenuItem>
+                        <MenuItem style={{ cursor: "default", fontSize: "13pt", fontFamily: "Open Sans Bold"}}><h4>Secundária</h4></MenuItem>
+                        <MenuItem style={{ cursor: "default", fontSize: "10pt", fontFamily: "Open Sans Regular"}}>{user.specialties.map((specialty, index) => (
+                          `${specialty.name}${index < (user.specialties.length - 1) ? ',' : ''}`
+                        ))}</MenuItem>
+                      </Menu> */}
+                    </ListItem>
+                  ) : (null)
+                  }
                 </TableCell>
                 <TableCell>
                   {formatDate(user.created_at, 'DD/MM/YYYY')}
@@ -197,7 +209,7 @@ export default function UserList() {
             }))}
           />
         </Container>
-        {/* Especialidades
+        {/*Especialidades*/}
         <Dialog
 
           maxWidth="lg"
@@ -227,9 +239,9 @@ export default function UserList() {
               <h3 style={{ color: '#0899BA', fontSize: '11pt' }}>Fechar</h3>
             </Button>
           </DialogActions>
-        </Dialog> */}
+        </Dialog>
 
-      </Sidebar >
+      </Sidebar>
     </>
   );
 }
