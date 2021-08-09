@@ -49,7 +49,7 @@ export function* getCustomerById({ payload: { id: _id } }: any) {
         }
       });
     }
-    console.log(response.data.cellphone);
+
     yield put(loadSuccessCustomerById(response.data));
   } catch (error) {
     toast.error("Não foi possível carregar o cliente");
@@ -84,7 +84,7 @@ export function* updateCompanyCustomer({ payload: { data } }: any) {
   try {
     const phones = [];
 
-    console.log("data", data);
+
     if (data?.phone?.length > 0) {
       phones.push({
         whatsapp: false,
@@ -102,7 +102,7 @@ export function* updateCompanyCustomer({ payload: { data } }: any) {
     }
 
     data.phones = phones;
-    console.log("phone",data.phones);
+
 
     const response: AxiosResponse = yield call(
       apiSollar.put,
@@ -116,10 +116,11 @@ export function* updateCompanyCustomer({ payload: { data } }: any) {
     toast.error("Não foi possível atualizar os dados do cliente");
     yield put(loadFailure());
   }
+
 }
 
 export function* getAddress({ payload }: any) {
-  try {
+  // try {
     const { data }: AxiosResponse<ViacepDataInterface> = yield call(
       viacep.get,
       `${payload.postalCode}/json`
@@ -131,9 +132,9 @@ export function* getAddress({ payload }: any) {
     }
 
     yield put(successGetAddress(data));
-  } catch (error) {
-    yield put(loadFailure());
-  }
+  // } catch (error) {
+    // yield put(loadFailure());
+  // }
 }
 
 export function* searchCustomer({ payload: { value } }: any) {
