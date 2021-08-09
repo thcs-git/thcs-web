@@ -12,3 +12,6 @@ export const createDocumentSuccess = (data: DocumentInterface) => action(Documen
 
 export const loadRequestGetByCareId = (care_id: string) => action(DocumentTypes.LOAD_REQUEST_BY_CARE_ID, { care_id });
 export const loadSuccessGetByCareId = (data: any) => action(DocumentTypes.LOAD_SUCCESS_BY_CARE_ID, { data });
+
+export const loadRequestGetByScore = (params: any) => action(DocumentTypes.LOAD_REQUEST_GET_BY_SCORE, { params });
+export const loadSuccessGetByScore = (data: DocumentInterface) => action(DocumentTypes.LOAD_SUCCESS_GET_BY_SCORE, { data });

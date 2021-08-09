@@ -48,3 +48,17 @@ export function* getByCareId({ payload }: any) {
     yield put(loadFailure());
   }
 }
+
+export function* getByScore({ payload }: any) {
+  const {params} = payload;
+  console.log('saga docu', params);
+  
+  const response: AxiosResponse = yield call(apiSollar.get, `/documents/getbyScore?patient_id=${params.patient}&document_group_id=${params.document_group_id}`);
+  console.log("id_patient", params.patient);
+  console.log(response.data);
+  try {
+    yield put(loadSuccessGetByCareId(response.data))
+  } catch (error) {
+    yield put(loadFailure());
+  }
+}
