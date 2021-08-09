@@ -208,39 +208,39 @@ export default function CompanyForm(props: RouteComponentProps<IPageParams>) {
     }
   }, [dispatch]);
 
-  // useEffect(() => {
-  //   if (params.id) {
+  useEffect(() => {
+    if (params.id) {
 
-  //     // if(params.mode === "view"){
-  //     //   setCanEdit(false)
-  //     // }
+      // if(params.mode === "view"){
+      //   setCanEdit(false)
+      // }
 
-  //     setState(prevState => {
-  //       return {
-  //         ...prevState,
-  //         ...companyState.data
-  //       }
-  //     });
+      setState(prevState => {
+        return {
+          ...prevState,
+          ...companyState.data
+        }
+      });
 
-  //     // Força o validador em 'true' quando entrar na tela para editar
-  //     setFieldValidations({
-  //       name: true,
-  //       fantasy_name: true,
-  //       fiscal_number: true,
-  //       postal_code: true,
-  //       street: true,
-  //       number: true,
-  //       district: true,
-  //       city: true,
-  //       state: true,
-  //       complement: true,
-  //       responsable_name: true,
-  //       email: true,
-  //       phone: true,
-  //       cellphone: true,
-  //     })
-  //   }
-  // }, [companyState, params.id]);
+      // Força o validador em 'true' quando entrar na tela para editar
+      setFieldValidations({
+        name: true,
+        fantasy_name: true,
+        fiscal_number: true,
+        postal_code: true,
+        street: true,
+        number: true,
+        district: true,
+        city: true,
+        state: true,
+        complement: true,
+        responsable_name: true,
+        email: true,
+        phone: true,
+        cellphone: true,
+      })
+    }
+  }, [companyState, params.id]);
 
   useEffect(() => {
     if (companyState.success && companyState.data?._id) history.push('/company');
@@ -249,16 +249,6 @@ export default function CompanyForm(props: RouteComponentProps<IPageParams>) {
   useEffect(() => {
     setCustomers(customerState.list.data);
   }, [customerState]);
-
-  useEffect(() => {
-    setState(prevState => {
-      return {
-        ...prevState,
-        ...companyState.data
-      }
-    });
-
-  },[params.id])
 
   const setCustomer = useCallback(({ _id: customer_id }: any) => {
     setState(prevState => ({
