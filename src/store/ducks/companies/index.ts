@@ -56,15 +56,13 @@ const reducer: Reducer<CompanyState> = (state = INITIAL_STATE, action) => {
         list: INITIAL_STATE.list,
         loading: false,
         error: true,
-        success: false,
-        errorCep:true,
+        success: false
       };
     case CompanyTypes.LOAD_RESPONSE_ADDRESS:
       return {
         ...state,
         loading: false,
         error: false,
-        errorCep: false,
         data: {
           ...state.data,
           address: {

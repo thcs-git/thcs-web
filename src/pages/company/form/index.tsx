@@ -114,6 +114,8 @@ export default function CompanyForm(props: RouteComponentProps<IPageParams>) {
 
   useEffect(() => {
     const field = companyState.errorCep ? 'input-postal-code' : 'input-address-number';
+    console.log(companyState.errorCep);
+
 
     companyState.errorCep && setState(prevState => ({
       ...prevState,
@@ -128,7 +130,7 @@ export default function CompanyForm(props: RouteComponentProps<IPageParams>) {
       }
     }));
 
-    document.getElementById(field)?.focus();
+    document.getElementById('input-social-client')?.focus();
   }, [companyState.errorCep]);
 
   useEffect(() => {
@@ -209,11 +211,11 @@ export default function CompanyForm(props: RouteComponentProps<IPageParams>) {
   }, [dispatch]);
 
   useEffect(() => {
-    // if (params.id) {
+    if (params.id) {
 
-      // if(params.mode === "view"){
-      //   setCanEdit(false)
-      // }
+      if(params.mode === "view"){
+        setCanEdit(false)
+      }
 
       setState(prevState => {
         return {
@@ -239,14 +241,8 @@ export default function CompanyForm(props: RouteComponentProps<IPageParams>) {
         phone: true,
         cellphone: true,
       })
-    // }
-  }, [companyState.data]);
-
-  useEffect(() => {
-    if(params.mode === "view"){
-      setCanEdit(false)
     }
-  },[params.id])
+  }, [companyState, params.id]);
 
   useEffect(() => {
     if (companyState.success && companyState.data?._id) history.push('/company');

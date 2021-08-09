@@ -27,15 +27,7 @@ export const INITIAL_STATE: PatientState = {
       complement: "",
     },
     area_id: "",
-    phones: [{
-        cellnumber:"",
-        number:""
-    },
-    {
-      cellnumber:"",
-      number:""
-    }
-  ],
+    phones: [],
     email: "",
     sus_card: "FIELD_NOT_EXISTS_IN_PATIENT_REGISTRATION",
     blood_type: "",
@@ -78,7 +70,7 @@ const reducer: Reducer<PatientState> = (state = INITIAL_STATE, action) => {
         ...state,
         list: action.payload.data,
         loading: false,
-        success: true,
+        success: false,
         error: false,
       };
     case PatientTypes.LOAD_REQUEST_PATIENT_BY_ID:
@@ -114,10 +106,9 @@ const reducer: Reducer<PatientState> = (state = INITIAL_STATE, action) => {
       };
     case PatientTypes.LOAD_FAILURE:
       return {
-        ...state,
+        ...INITIAL_STATE,
         loading: false,
         error: true,
-        errorCep: true,
         success: false,
         list: {
           data: [],
@@ -151,10 +142,6 @@ const reducer: Reducer<PatientState> = (state = INITIAL_STATE, action) => {
     case PatientTypes.LOAD_RESPONSE_ADDRESS:
       return {
         ...state,
-        loading: false,
-        error: false,
-        success: true,
-        errorCep: false,
         data: {
           ...state.data,
           address_id: {
@@ -168,6 +155,9 @@ const reducer: Reducer<PatientState> = (state = INITIAL_STATE, action) => {
             complement: action.payload.data.complemento,
           },
         },
+        loading: false,
+        error: false,
+        success: false,
       };
     case PatientTypes.LOAD_PATIENT_CAPTURE:
       return { ...state, loading: true, success: false };
@@ -181,11 +171,8 @@ const reducer: Reducer<PatientState> = (state = INITIAL_STATE, action) => {
       };
     case PatientTypes.SEARCH_REQUEST:
       return { ...state, loading: true, error: false };
-
-    case PatientTypes.CLEAN:
-      return INITIAL_STATE;
     default:
-        return state;
+      return state;
   }
 };
 
