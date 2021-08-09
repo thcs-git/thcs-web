@@ -60,6 +60,7 @@ import {
   store as storeDocuments,
   getByCareId as getDocumentsByCareId,
   get as getDocuments,
+  getByScore as getByScoreDocuments,
 } from "./documents/sagas";
 
 import { DocumentGroupTypes } from "./documentGroups/types";
@@ -236,6 +237,7 @@ export default function* rootSaga() {
     takeLatest(DocumentTypes.LOAD_REQUEST, getDocuments),
     takeLatest(DocumentTypes.CREATE_DOCUMENT_REQUEST, storeDocuments),
     takeLatest(DocumentTypes.LOAD_REQUEST_BY_CARE_ID, getDocumentsByCareId),
+    takeLatest(DocumentTypes.LOAD_REQUEST_GET_BY_SCORE, getByScoreDocuments),
 
     // Document Groups
     takeLatest(DocumentGroupTypes.LOAD_REQUEST, getDocumentGroups),
