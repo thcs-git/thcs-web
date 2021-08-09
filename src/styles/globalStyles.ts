@@ -44,9 +44,9 @@ export default createGlobalStyle`
     font-size: 14px !important;
   }
 
-  .MuiTypography-colorError {
+  /* .MuiTypography-colorError {
     color: var(--danger);
-  }
+  } */
 
   :root {
     --primary: #16679A;
