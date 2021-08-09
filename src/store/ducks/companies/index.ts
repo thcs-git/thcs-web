@@ -64,6 +64,7 @@ const reducer: Reducer<CompanyState> = (state = INITIAL_STATE, action) => {
         ...state,
         loading: false,
         error: false,
+        errorCep: false,
         data: {
           ...state.data,
           address: {

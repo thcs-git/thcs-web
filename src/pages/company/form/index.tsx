@@ -209,7 +209,7 @@ export default function CompanyForm(props: RouteComponentProps<IPageParams>) {
   }, [dispatch]);
 
   useEffect(() => {
-    if (params.id) {
+    // if (params.id) {
 
       // if(params.mode === "view"){
       //   setCanEdit(false)
@@ -239,8 +239,14 @@ export default function CompanyForm(props: RouteComponentProps<IPageParams>) {
         phone: true,
         cellphone: true,
       })
+    // }
+  }, [companyState.data]);
+
+  useEffect(() => {
+    if(params.mode === "view"){
+      setCanEdit(false)
     }
-  }, [companyState, params.id]);
+  },[params.id])
 
   useEffect(() => {
     if (companyState.success && companyState.data?._id) history.push('/company');
