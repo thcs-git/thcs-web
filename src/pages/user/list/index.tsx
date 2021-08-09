@@ -88,8 +88,9 @@ export default function UserList() {
 
   return (
     <>
-      {userState.loading && <Loading />}
       <Sidebar>
+        {userState.loading && <Loading />}
+
         <Container>
           <FormTitle>Meus Profissionais</FormTitle>
 
@@ -101,12 +102,12 @@ export default function UserList() {
           />
           <Table
             tableCells={[
-              { name: 'Prestador', align: 'left', },
+              { name: 'Prestador', align: 'left', width: '150px' },
               { name: 'CPF', align: 'left' },
               { name: 'Função', align: 'left' },
-              { name: 'Especialidades', align: 'left' },
+              { name: 'Especialidades', align: 'left', width: '250px' },
               // { name: '', align: 'left' },
-              { name: 'Adicionado em', align: 'left' },
+              { name: 'Adicionado em', align: 'left', width: '150px'},
               { name: 'Status', align: 'left' },
               { name: '', align: 'left' },
             ]}
