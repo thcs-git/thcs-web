@@ -525,8 +525,8 @@ export default function PatientCaptureForm(props: RouteComponentProps<IPageParam
                         <div>
                           <p className="title">{care?.patient_id?.name}</p>
                           <div className="subTitle">
-                            <a
-                              className="patientInfo">{care?.patient_id?.birthdate ? age(care?.patient_id?.birthdate) : ''} |
+
+                            <a  className="patientInfo">{care?.patient_id?.birthdate ? age(care?.patient_id?.birthdate) : ''} |
                               CPF: {care?.patient_id.fiscal_number} | Mãe: {care?.patient_id?.mother_name} | </a>
                             {
                               (care?.patient_id?.gender != 'Masculino') ?

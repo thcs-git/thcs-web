@@ -14,7 +14,7 @@ import {
   DialogContent,
   DialogContentText,
   DialogTitle,
-  Grid, 
+  Grid,
   Tooltip
 } from '@material-ui/core';
 import {MoreVert} from '@material-ui/icons';
@@ -87,7 +87,7 @@ export default function UserDisengaged() {
         {userState.loading && <Loading/>}
         <Container>
           <FormTitle>
-            Lista de Profissionais Disvinculados
+            Lista de Profissionais Desvinculados
           </FormTitle>
           <SearchComponent
             handleButton={() => history.push('/company/create/')}
