@@ -1,5 +1,8 @@
 import validator from 'validator';
 
 export default function validatePhone(phone:string){
-  return validator.isNumeric(phone);
+  const landline = phone.replace('(', '').replace(')', '9').replace(' ', '').replace(' ', '').replace('-', '');
+  var isValidPhoneNumber =  validator.isMobilePhone(landline, 'pt-BR');
+
+  return (isValidPhoneNumber)
 }
