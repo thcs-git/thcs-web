@@ -66,6 +66,12 @@ export default function UserConfiguration(){
       state: "",
       complement: "",
     },
+    phones: [{
+      cellnumber: "",
+      number: "",
+      telegram: false,
+      whatsapp: false,
+    }],
     email: "",
     phone: "",
     cellphone: "",
@@ -95,34 +101,22 @@ export default function UserConfiguration(){
     name: localStorage.getItem(LOCALSTORAGE.USERNAME),
     companySelected: handleCompanySelected()
   });
-  const [companies, setCompanies] = useState<any>([]);
-
-  useEffect(() => {
-    dispatch(loadUserById(user.id))
-  }, []);
-
-  useEffect(() => {
-    const { companies: userCompanies } = userState.data
-
-    if (userCompanies.length > 0) {
-      userCompanies?.forEach(function (item) {
-        let customer = item?.customer_id?.name ? item?.customer_id?.name : ''
-        let company = item?.name ? item?.name : ''
-        Object.assign(item, {customer: customer + ' - ' + company});
-      })
-      // console.log(userCompanies);
-      setCompanies(userCompanies);
-    }
-  }, [userState.data]);
-
-  const selectCompany = useCallback(() => {
-    const selected = companies.filter((item: any) => item._id === user.companySelected);
-    return (selected[0]) ? selected[0] : null;
-  }, [companies, user]);
-
   const currentUser = window.localStorage.getItem(LOCALSTORAGE.USER_ID);
   const currentCustomer = window.localStorage.getItem(LOCALSTORAGE.CUSTOMER_NAME);
+  const [companies, setCompanies] = useState<any>([]);
 
+  let currentCompany = localStorage.getItem(LOCALSTORAGE.COMPANY_SELECTED);
+  useEffect(()=>{
+    dispatch(cleanAction());
+    if(currentUser){
+       dispatch(loadUserById(currentUser));
+    }
+  },[]);
+  const selectCompany = useCallback(() => {
+    currentCompany = localStorage.getItem(LOCALSTORAGE.COMPANY_SELECTED);
+    const selected = userState.data.companies.filter((item: any) => item._id === currentCompany);
+    return (selected[0]) ? selected[0] : null;
+  }, [userState]);
 
   const changeCompany = useCallback((company: any) => {
     localStorage.setItem(LOCALSTORAGE.COMPANY_SELECTED, company._id);
@@ -134,9 +128,22 @@ export default function UserConfiguration(){
       ...prevState,
       companySelected: company._id
     }))
-  }, [user]);
+    selectCompany();
+  }, [userState.data]);
 
+  useEffect(() => {
+    const { companies: userCompanies } = userState?.data
 
+    if (userCompanies.length > 0) {
+      userCompanies?.forEach(function (item) {
+        let customer = item?.customer_id?.name ? item?.customer_id?.name : ''
+        let company = item?.name ? item?.name : ''
+        Object.assign(item, {customer: customer + ' - ' + company});
+      })
+      // console.log(userCompanies);
+      setCompanies(userCompanies);
+    }
+  }, [userState.data]);
   function handlePushUser() {
     const user_id = localStorage.getItem(LOCALSTORAGE.USER_ID)
     console.log(user_id)
@@ -215,7 +222,7 @@ export default function UserConfiguration(){
                   id="combo-box-change-company"
                   options={companies}
                   getOptionLabel={(option: any) => option.customer}
-                  getOptionSelected={(option, value) => option._id === user.companySelected}
+                  getOptionSelected={(option, value) => option._id === currentCompany}
                   value={selectCompany()}
                   renderInput={(params) => <TextField {...params} label="Empresa" variant="outlined" autoComplete="off" />}
                   size="small"
@@ -387,7 +394,7 @@ export default function UserConfiguration(){
                   id="combo-box-change-company"
                   options={companies}
                   getOptionLabel={(option: any) => option.customer}
-                  getOptionSelected={(option, value) => option._id === user.companySelected}
+                  getOptionSelected={(option, value) => option._id === currentCompany}
                   value={selectCompany()}
                   renderInput={(params) => <TextField {...params} label="Empresa" variant="outlined" autoComplete="off" />}
                   size="small"

@@ -327,7 +327,7 @@ export default function PatientList() {
                   return (
                     <TableRow key={`patient_${index}`}>
                       <TableCell >
-                        <p>{patient?.capture?.created_at ? formatDate(patient?.created_at, 'DD/MM/YYYY') : '-'}</p>
+                        <p>{patient?.capture?.finished_at ? formatDate(patient?.finished_at, 'DD/MM/YYYY') : '-'}</p>
                       </TableCell>
                       <TableCell align="center">
                         <p>{handleType(patient)}</p>
@@ -393,8 +393,8 @@ export default function PatientList() {
                 {patientArray?.map((patient: any, index: number) => {
                   return (
                     <TableRow key={`patient_${index}`}>
-                      <TableCell align="center">
-                        <p>-</p>
+                      <TableCell >
+                      <p>{patient?.started_at ? formatDate(patient?.started_at ?? "", "DD/MM/YYYY") : "-"}</p>
                       </TableCell>
                       <TableCell align="center">
                         <p>{patient?._id}</p>
