@@ -320,7 +320,6 @@ export default function PatientForm(props: RouteComponentProps<IPageParams>) {
 
    //////////////////////  useEffect   //////////////////////
    useEffect(() => {
-     console.log('useState', state)
     dispatch(cleanAction());
   }, []);
 
@@ -346,8 +345,6 @@ export default function PatientForm(props: RouteComponentProps<IPageParams>) {
 
 
   useEffect(() => {
-    console.log('cleanAction ' ,state.phones);
-    console.log('cleanModifi', modifi.phones);
 
     dispatch(getAreasAction());
 
@@ -355,8 +352,8 @@ export default function PatientForm(props: RouteComponentProps<IPageParams>) {
       dispatch(loadPatientById(params.id));
       dispatch(cleanAction())
      } else {
-       dispatch(loadFailure());
        dispatch(cleanAction())
+      //  dispatch(loadFailure());
      }
   }, [dispatch, params]);
 
@@ -393,6 +390,7 @@ export default function PatientForm(props: RouteComponentProps<IPageParams>) {
     //         ...patientState.data.address_id
     //       }
     //     }
+
     //   });
     // }, [patientState.data.address_id]);
 
@@ -484,7 +482,7 @@ export default function PatientForm(props: RouteComponentProps<IPageParams>) {
           ...prevState,
           ...patientState.data
         }
-        });
+      });
 
 
     setState(prevState => {
