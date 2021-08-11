@@ -275,6 +275,7 @@ export default function CouncilList() {
                   <h3 style={{ color: '#333333' }}>{careState.list.data[careIndex]?.patient_id.name}</h3>
                 </Grid>
               </Grid>
+              {console.log("asasd", careState.cid[careIndex])}
               <Table
                 tableCells={[
                   { name: 'Data do Atendimento', align: 'left' },
