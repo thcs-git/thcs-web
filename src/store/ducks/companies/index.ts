@@ -62,11 +62,12 @@ const reducer: Reducer<CompanyState> = (state = INITIAL_STATE, action) => {
     case CompanyTypes.LOAD_RESPONSE_ADDRESS:
       return {
         ...state,
+        success: true,
         loading: false,
         error: false,
         errorCep: false,
         data: {
-          ...state.data,
+          // ...state.data,
           address: {
             ...state.data.address,
             postal_code: action.payload.data.cep,
