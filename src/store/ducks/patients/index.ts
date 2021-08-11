@@ -156,7 +156,6 @@ const reducer: Reducer<PatientState> = (state = INITIAL_STATE, action) => {
         success: true,
         errorCep: false,
         data: {
-          ...state.data,
           address_id: {
             ...state.data.address_id,
             postal_code: action.payload.data.cep,
