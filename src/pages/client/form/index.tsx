@@ -9,7 +9,7 @@ import {
   createCustomerRequest,
   cleanAction
 } from '../../../store/ducks/customers/actions';
-import {CustomerInterface} from '../../../store/ducks/customers/types';
+import {CustomerInterface, CustomerState} from '../../../store/ducks/customers/types';
 import {createUserRequest as createUserAction} from '../../../store/ducks/users/actions';
 import {UserInterface} from '../../../store/ducks/users/types';
 import {SearchOutlined, Edit, CodeOutlined, TrackChangesTwoTone} from '@material-ui/icons';
@@ -189,6 +189,7 @@ export default function ClientForm(props: RouteComponentProps<IPageParams>) {
         }
       }
     });
+    console.log('customerState', customerState)
   }, [customerState.data.address]);
 
   useEffect(() => {
@@ -498,7 +499,8 @@ export default function ClientForm(props: RouteComponentProps<IPageParams>) {
       <TabTittle tittle={'Cliente'} icon={!canEdit &&
       <ButtonEdit setCanEdit={() => setCanEdit(!canEdit)} canEdit={canEdit}>Editar</ButtonEdit>}/>
       {params.mode === 'permission' ? (
-        <></>
+        <>
+        </>
       ) : (
         <>
           <TabForm

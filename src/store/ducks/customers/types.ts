@@ -19,6 +19,9 @@ export enum CustomerTypes {
   LOAD_REQUEST_ADDRESS = "@customer/LOAD_REQUEST_ADDRESS",
   LOAD_RESPONSE_ADDRESS = "@customer/LOAD_RESPONSE_ADDRESS",
 
+  LOAD_REQUEST_PERMISSION = "@customer/LOAD_REQUEST_PERMISSION",
+  LOAD_RESPONSE_PERMISSION = "@customer/LOAD_RESPONSE_PERMISSION",
+
   SEARCH_REQUEST = "@customer/SEARCH_REQUEST",
 
   CLEAN = "@customer/CLEAN",
@@ -82,12 +85,19 @@ export interface CustomerDataItems {
   created_at: string;
 }
 
+export interface PermissionInterface {
+  _id: string;
+  active?: boolean;
+  front: {};
+}
+
 /**
  * State type
  */
 export interface CustomerState {
   data: CustomerInterface;
   list: CustomerList;
+  permission: PermissionInterface;
   loading: boolean;
   error: boolean;
   success: boolean;

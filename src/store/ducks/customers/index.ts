@@ -36,6 +36,11 @@ export const INITIAL_STATE: CustomerState = {
     page: "1",
     total: 0,
   },
+  permission: {
+    _id: "",
+    active: false,
+    front: {},
+  },
   error: false,
   loading: false,
   success: false,

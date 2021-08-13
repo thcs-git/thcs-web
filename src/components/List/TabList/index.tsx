@@ -13,16 +13,19 @@ interface IComponent {
 }
 
 interface ICells {
-  name: string,
-  align: 'right' | 'left' | 'center',
-  width?:string
+  name: string;
+  align: 'right' | 'left' | 'center';
+  width?:string;
 }
 
 interface Irows {
   _id: string;
+  permissions: string;
   active: boolean;
   created_at: string;
   name: string;
+  link?: string;
+  key?: string;
 }
 
 const TabList = (props: IComponent) => {
@@ -31,11 +34,11 @@ const TabList = (props: IComponent) => {
   return (
     <Table
       tableCells={cells}>
-      {customerState.data.usertypes?.map(({_id, active, created_at, name}: Irows, index: number) => (
+      {customerState.data.usertypes?.map(({_id, active, created_at, name, permissions}: Irows, index: number) => (
         <TableRow key={`${name}_${index}`}>
           <TableCell align="left">
             <ItemTable>
-              <ListLink key={_id} to={`/permission/${_id}/view/`}>
+              <ListLink key={permissions} to={`/permission/${permissions}/view/`}>
                 {name}
               </ListLink>
             </ItemTable>

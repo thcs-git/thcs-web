@@ -4,6 +4,7 @@ import {
   CustomerInterface,
   ViacepDataInterface,
   LoadRequestParams,
+  PermissionInterface,
 } from "./types";
 
 export const loadRequest = (params: LoadRequestParams = {}) =>
@@ -16,6 +17,11 @@ export const getAddress = (postalCode: string) =>
   action(CustomerTypes.LOAD_REQUEST_ADDRESS, { postalCode });
 export const successGetAddress = (data: ViacepDataInterface) =>
   action(CustomerTypes.LOAD_RESPONSE_ADDRESS, { data });
+
+export const getPermission = (id: string) =>
+  action(CustomerTypes.LOAD_REQUEST_PERMISSION, { id });
+export const successGetPermission = (data: PermissionInterface) =>
+  action(CustomerTypes.LOAD_RESPONSE_PERMISSION, { data });
 
 export const createCustomerRequest = (data: CustomerInterface) =>
   action(CustomerTypes.CREATE_CUSTOMER_REQUEST, { data });
