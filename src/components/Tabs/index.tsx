@@ -9,6 +9,7 @@ import CepForm from "../Inputs/Forms/CepForm";
 import ResponsibleForm from "../Inputs/Forms/ResponsibleForm";
 import ToggleActive from "../Button/ToggleActive";
 import TabList from "../List/TabList";
+import IntegrationForm from "../Inputs/Forms/IntegrationForm";
 
 
 interface ITabrops {
@@ -144,6 +145,10 @@ const TabForm = (props: ITabrops) => {
           state={state}
           setState={setState}
           canEdit={canEdit}
+        />
+      case 'IntegrationForm':
+        return <IntegrationForm
+          index={index}
         />
       default:
         return <TabBodyItem>Not found!</TabBodyItem>

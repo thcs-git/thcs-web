@@ -456,6 +456,10 @@ export default function ClientForm(props: RouteComponentProps<IPageParams>) {
     {
       name: "CONFIGURAÇÕES DE PERMISSÕES",
       components: ['TabList'],
+    },
+    {
+      name: "INTEGRAÇÃO",
+      components: ['IntegrationForm'],
     }
   ]
 
@@ -491,22 +495,28 @@ export default function ClientForm(props: RouteComponentProps<IPageParams>) {
   return (
     <Sidebar>
       {customerState.loading && <Loading/>}
-      <TabTittle tittle={'Clientes'} icon={!canEdit &&
+      <TabTittle tittle={'Cliente'} icon={!canEdit &&
       <ButtonEdit setCanEdit={() => setCanEdit(!canEdit)} canEdit={canEdit}>Editar</ButtonEdit>}/>
-      <TabForm
-        navItems={NavItems}
-        state={state}
-        setState={setState}
-        setValidations={setFieldValidations}
-        fieldsValidation={fieldsValidation}
-        canEdit={canEdit}
-        cepStatus={customerState.errorCep}
-        getAddress={getAddress}
-        user={User}
-        customerState={customerState}
-        tableCells={tableCells}
-      />
-      <ButtonTabs canEdit={canEdit} buttons={buttons}/>
+      {params.mode === 'permission' ? (
+        <></>
+      ) : (
+        <>
+          <TabForm
+            navItems={NavItems}
+            state={state}
+            setState={setState}
+            setValidations={setFieldValidations}
+            fieldsValidation={fieldsValidation}
+            canEdit={canEdit}
+            cepStatus={customerState.errorCep}
+            getAddress={getAddress}
+            user={User}
+            customerState={customerState}
+            tableCells={tableCells}
+          />
+          <ButtonTabs canEdit={canEdit} buttons={buttons}/>
+        </>
+      )}
     </Sidebar>
   );
 }
