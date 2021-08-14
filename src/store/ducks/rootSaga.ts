@@ -79,6 +79,11 @@ import {
   getPatientCapture,
 } from "./patients/sagas";
 
+import {LayoutTypes} from "./layout/types";
+import {
+  get as getLayout
+} from "./layout/sagas"
+
 import { UserTypes } from "./users/types";
 
 //import { CareTypes } from './cares/types';
@@ -285,5 +290,8 @@ export default function* rootSaga() {
     //  ),
     // takeLatest(UnconfirmedUserTypes.UPDATE_USER_REQUEST, updateUnconfirmedUser),
     // takeLatest(UnconfirmedUserTypes.SEARCH_REQUEST, searchUnconfirmedUser),
+
+    /** Layout */
+    takeLatest(LayoutTypes.LOAD_REQUEST, getLayout),
   ]);
 }

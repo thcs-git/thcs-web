@@ -64,6 +64,7 @@ import ConfigComponent from '../Configuration';
 import SESSIONSTORAGE from "../../helpers/constants/sessionStorage";
 import {toast} from "react-toastify";
 import _ from 'lodash';
+import {loadRequest} from "../../store/ducks/layout/actions";
 
 const drawerWidth = 270;
 
@@ -155,6 +156,8 @@ const Sibebar = (props: Props<any>) => {
   const classes = useStyles();
   const dispatch = useDispatch();
 
+  const layoutState = useSelector((state: ApplicationState) => state.layout);
+
   const [open, setOpen] = useState<Boolean>(() => {
     let toggleSidebar = localStorage.getItem(LOCALSTORAGE.TOGGLE_SIDEBAR) || 'false';
     return JSON.parse(toggleSidebar)
@@ -187,6 +190,8 @@ const Sibebar = (props: Props<any>) => {
     localStorage.removeItem('@sollar_company_selected');
     // localStorage.removeItem('@sollar_company_name');
     localStorage.removeItem('@sollar_customer');
+
+    sessionStorage.removeItem(SESSIONSTORAGE.MENU);
 
 
     window.location.reload();
@@ -245,122 +250,85 @@ const Sibebar = (props: Props<any>) => {
 
   useEffect(() => {
     let menu = JSON.parse(sessionStorage.getItem(SESSIONSTORAGE.MENU) ?? '[]')
+    console.log('menu', menu, menu.length, itemsMenu, itemsMenu.length)
+    if (itemsMenu.length <= 0 && menu.length <= 0) {
+      dispatch(loadRequest())
+    } else if (itemsMenu.length <= 0 && menu.length > 0) {
+      const items: itemsInterface[] = []
 
-    if (menu.length < 1) {
-      menu = [
-        {
-          icon: 'DashboardIcon',
-          id: 1,
-          name: 'Dashboard',
-          slug: '/',
-          color: '#fff'
-        },
-        {
-          icon: 'AssignmentIndIcon',
-          id: 2,
-          name: 'Clientes',
-          slug: '/customer',
-          color: '#fff'
-        },
-        {
-          icon: 'BusinessIcon',
-          id: 3,
-          name: 'Empresas',
-          slug: '/company',
-          color: '#fff'
-        },
-        {
-          icon: 'PersonIcon',
-          id: 4,
-          name: 'Meus Profissionais',
-          slug: '/user',
-          color: '#fff'
-        },
-        {
-          icon: 'StarRateIcon',
-          id: 5,
-          name: 'Banco de Talentos',
-          slug: '/userdesengaged',
-          color: '#fff'
-        },
-        {
-          icon: 'LocationOncon',
-          id: 6,
-          name: 'Área',
-          slug: '/area',
-          color: '#fff'
-        },
-        {
-          icon: 'GroupAddIcon',
-          id: 7,
-          name: 'Pacientes',
-          slug: '/patient',
-          color: '#fff'
-        },
-        {
-          icon: 'FavoriteIcon',
-          id: 8,
-          name: 'Avaliação',
-          slug: '/avaliation',
-          color: '#fff'
-        },
-        {
-          icon: 'LocalHospital',
-          id: 9,
-          name: 'Atendimento',
-          slug: '/care',
-          color: '#fff'
-        },
-        {
-          icon: 'SettingsIcon',
-          id: 100,
-          name: 'Configurações',
-          slug: "/userconfiguration",
-          color: '#fff'
-        },
-        {
-          icon: 'SettingsIcon',
-          id: 101,
-          name: 'Configurações Cliente',
-          slug: "/clientconfiguration",
-          color: '#fff',
-        },
-        {
-          icon: 'ExitToApp',
-          id: 1000,
-          name: 'Sair',
-          modal: true,
-          color: '#fff',
-        },
-      ]
-      sessionStorage.setItem(SESSIONSTORAGE.MENU, JSON.stringify(menu))
-    }
-
-    menu = _.sortBy(menu, ['id'])
-
-    const itemsMenu: itemsInterface[] = [
-      // {title: 'Dashboard', route: '/', icon: <DashboardIcon style={{color: '#fff'}}/>},
-      // {title: 'Clientes', route: '/customer', icon: <AssignmentIndIcon style={{color: '#fff'}}/>},
-      // {title: 'Empresas', route: '/company', icon: <BusinessIcon style={{color: '#fff'}}/>},
-      // {title: 'Meus Profissionais', route: "/user", icon: <PersonIcon style={{color: '#fff'}}/>},
-      // {title: 'Banco de Talentos', route: "/userdesengaged", icon: <StarRateIcon style={{color: '#fff'}}/>},
-      // {title: 'Área', route: '/area', icon: <LocationOncon style={{color: '#fff'}}/>},
-      // {title: 'Pacientes', route: '/patient', icon: <GroupAddIcon style={{color: '#fff'}}/>},
-      // {title: 'Avaliação', route: '/avaliation', icon: <FavoriteIcon style={{color: '#fff'}}/>},
-      // {title: 'Atendimento', route: '/care', icon: <LocalHospital style={{color: '#fff'}}/>},
-    ]
-
-    menu.map((item: any) => {
-      itemsMenu.push({
-        title: item.name,
-        route: item.slug,
-        modal: item.modal ? modalTypes[item.icon] : '',
-        icon: <IconComponent name={item.icon} style={{color: item.color}}/>
+      _.sortBy(menu, ['id']).map((item: any) => {
+        items.push({
+          title: item.name,
+          route: item.slug,
+          modal: item.modal ? modalTypes[item.icon] : '',
+          icon: <IconComponent name={item.icon} style={{color: item.color}}/>
+        })
       })
-    })
+      setItemsMenu(items)
+    }
+  }, [])
 
-    setItemsMenu(itemsMenu)
-  }, []);
+  useEffect(() => {
+    if (layoutState.success) {
+      sessionStorage.setItem(SESSIONSTORAGE.MENU, JSON.stringify(layoutState.data))
+
+      const items: itemsInterface[] = []
+
+      _.sortBy(layoutState.data, ['id']).map((item: any) => {
+        items.push({
+          title: item.name,
+          route: item.slug,
+          modal: item.modal ? modalTypes[item.icon] : '',
+          icon: <IconComponent name={item.icon} style={{color: item.color}}/>
+        })
+      })
+      setItemsMenu(items)
+    }
+  }, [layoutState])
+
+  // useEffect(() => {
+  //   let menu = JSON.parse(sessionStorage.getItem(SESSIONSTORAGE.MENU) ?? '[]')
+  //   console.log('menu', menu, !menu, menu.length <= 0, itemsMenu, itemsMenu.length)
+  //
+  //   if (itemsMenu.length <= 0) {
+  //     dispatch(loadRequest())
+  //   }
+  //
+  //   // if (!menu || menu.length <= 0) {
+  //   //   dispatch(loadRequest())
+  //   // }
+  //
+  //   // if (itemsMenu.length <= 0 && (menu || menu.length > 0)) {
+  //   //   setItemsMenu(menu)
+  //   // }
+  //
+  //   if (layoutState.success) {
+  //     sessionStorage.setItem(SESSIONSTORAGE.MENU, JSON.stringify(menu))
+  //     menu = _.sortBy(menu, ['id'])
+  //
+  //     const items: itemsInterface[] = [
+  //       // {title: 'Dashboard', route: '/', icon: <DashboardIcon style={{color: '#fff'}}/>},
+  //       // {title: 'Clientes', route: '/customer', icon: <AssignmentIndIcon style={{color: '#fff'}}/>},
+  //       // {title: 'Empresas', route: '/company', icon: <BusinessIcon style={{color: '#fff'}}/>},
+  //       // {title: 'Meus Profissionais', route: "/user", icon: <PersonIcon style={{color: '#fff'}}/>},
+  //       // {title: 'Banco de Talentos', route: "/userdesengaged", icon: <StarRateIcon style={{color: '#fff'}}/>},
+  //       // {title: 'Área', route: '/area', icon: <LocationOncon style={{color: '#fff'}}/>},
+  //       // {title: 'Pacientes', route: '/patient', icon: <GroupAddIcon style={{color: '#fff'}}/>},
+  //       // {title: 'Avaliação', route: '/avaliation', icon: <FavoriteIcon style={{color: '#fff'}}/>},
+  //       // {title: 'Atendimento', route: '/care', icon: <LocalHospital style={{color: '#fff'}}/>},
+  //     ]
+  //
+  //     menu.map((item: any) => {
+  //       items.push({
+  //         title: item.name,
+  //         route: item.slug,
+  //         modal: item.modal ? modalTypes[item.icon] : '',
+  //         icon: <IconComponent name={item.icon} style={{color: item.color}}/>
+  //       })
+  //     })
+  //     setItemsMenu(items)
+  //   }
+  // }, []);
 
   return (
     <div className={classes.root}>
@@ -417,7 +385,7 @@ const Sibebar = (props: Props<any>) => {
                   </ListItemIcon>
                   <ListItemText primary={item.title} style={{color: "#ffff", cursor: "pointer"}}/>
                 </ListItem>
-              ):(
+              ) : (
                 <ListItem className={classes.logOutButton} key={index} onClick={() => history.push(item.route)}>
                   <ListItemIcon>
                     {item.icon}

@@ -153,7 +153,7 @@ export default function Dashboard_user() {
         </>
       ) : (
         <>
-          <Sidebar_menu>
+          <Sidebar>
             <Container>
               <Title>Dashboard User (Desvinculado)</Title>
               <InfoSection>
@@ -173,7 +173,7 @@ export default function Dashboard_user() {
 
               </InfoSection>
             </Container>
-          </Sidebar_menu>
+          </Sidebar>
         </>
       )}
     </>

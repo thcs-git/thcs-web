@@ -159,35 +159,35 @@ export default function UserConfiguration(){
 
 
     <>
-    {currentCustomer != "SEM"?( <Sidebar>
+      <Sidebar>
         <BoxCustom>
-           <Grid container direction="column">
-              <Grid item md={6}>
-                <FeedbackTitle>
-                  Configurações
-                </FeedbackTitle>
-                <Card>
-                  <CardContent style={{display:"flex", flexDirection:"column"}}>
-                    <Grid container style={{display:"flex", flexDirection:"row", justifyContent:"space-between"}}>
-                      <Grid item md={1} style={{padding:"0"}}>
+          <Grid container direction="column">
+            <Grid item md={6}>
+              <FeedbackTitle>
+                Configurações
+              </FeedbackTitle>
+              <Card>
+                <CardContent style={{display:"flex", flexDirection:"column"}}>
+                  <Grid container style={{display:"flex", flexDirection:"row", justifyContent:"space-between"}}>
+                    <Grid item md={1} style={{padding:"0"}}>
                       <AccountCircle style={{ fontSize: 60 }} />
-                      </Grid>
-                      <Grid item md={4} style={{paddingLeft:"0px",paddingTop:"1.5rem"}}>
-                        <h3>{userState.data.name}</h3>
-                      </Grid>
-                      <Grid item md={3}>
-                        <ButtonComponent variant="outlined">
-                          <Button onClick={handlePushUser}>Atualizar Dados</Button>
-                        </ButtonComponent>
-                      </Grid>
-                      <Grid item md={2}>
-                        <ButtonComponent variant="contained">
-                          <Button onClick={handleBackUser}>Voltar</Button>
-                        </ButtonComponent>
-                      </Grid>
                     </Grid>
-                    <Grid container direction="column" >
-                        <Grid item style={{paddingLeft:"5rem"}}>
+                    <Grid item md={4} style={{paddingLeft:"0px",paddingTop:"1.5rem"}}>
+                      <h3>{userState.data.name}</h3>
+                    </Grid>
+                    <Grid item md={3}>
+                      <ButtonComponent variant="outlined">
+                        <Button onClick={handlePushUser}>Atualizar Dados</Button>
+                      </ButtonComponent>
+                    </Grid>
+                    <Grid item md={2}>
+                      <ButtonComponent variant="contained">
+                        <Button onClick={handleBackUser}>Voltar</Button>
+                      </ButtonComponent>
+                    </Grid>
+                  </Grid>
+                  <Grid container direction="column" >
+                    <Grid item style={{paddingLeft:"5rem"}}>
                       cpf:{userState.data.fiscal_number}
                     </Grid>
                     <Grid item style={{paddingLeft:"5rem"}}>
@@ -196,37 +196,37 @@ export default function UserConfiguration(){
                     <Grid item style={{paddingLeft:"5rem"}}>
                       telefone:{userState.data.phone}
                     </Grid>
-                    </Grid>
+                  </Grid>
+                </CardContent>
+              </Card>
+            </Grid>
+            <Grid item md={6} style={{paddingTop:"1rem"}} >
+              <Grid container>
+                <Card style={{borderRadius:"20px",  display:"flex",justifyContent:"center",alignItems:"center", height:"40px"}}>
+                  <CardContent style={{backgroundColor: "#0899BA",borderRadius:"20px", padding:"0.5rem", display:"flex",justifyContent:"center",alignItems:"center", height:"40px"}}>
+                    <HomeRoundedIcon style={{color:"#ffffff"}} />
                   </CardContent>
                 </Card>
-              </Grid>
-              <Grid item md={6} style={{paddingTop:"1rem"}} >
-                <Grid container>
-                  <Card style={{borderRadius:"20px",  display:"flex",justifyContent:"center",alignItems:"center", height:"40px"}}>
-                    <CardContent style={{backgroundColor: "#0899BA",borderRadius:"20px", padding:"0.5rem", display:"flex",justifyContent:"center",alignItems:"center", height:"40px"}}>
-                      <HomeRoundedIcon style={{color:"#ffffff"}} />
-                    </CardContent>
-                  </Card>
-                  <FeedbackTitle style={{paddingLeft:"1rem",paddingTop:"0.5rem"}}>
+                <FeedbackTitle style={{paddingLeft:"1rem",paddingTop:"0.5rem"}}>
                   Minhas Empresas
                 </FeedbackTitle>
-                </Grid>
+              </Grid>
               <Autocomplete
-                  style={{paddingTop:"1rem", paddingLeft:"4rem"}}
-                  id="combo-box-change-company"
-                  options={companies}
-                  getOptionLabel={(option: any) => option.customer}
-                  getOptionSelected={(option, value) => option._id === currentCompany}
-                  value={selectCompany()}
-                  renderInput={(params) => <TextField {...params} label="Empresa" variant="outlined" autoComplete="off" />}
-                  size="small"
-                  onChange={(event, value) => changeCompany(value)}
-                  noOptionsText="Nenhuma empresa encontrada"
-                  autoComplete={false}
-            />
+                style={{paddingTop:"1rem", paddingLeft:"4rem"}}
+                id="combo-box-change-company"
+                options={companies}
+                getOptionLabel={(option: any) => option.customer}
+                getOptionSelected={(option, value) => option._id === currentCompany}
+                value={selectCompany()}
+                renderInput={(params) => <TextField {...params} label="Empresa" variant="outlined" autoComplete="off" />}
+                size="small"
+                onChange={(event, value) => changeCompany(value)}
+                noOptionsText="Nenhuma empresa encontrada"
+                autoComplete={false}
+              />
             </Grid>
             <Grid item md={12} style={{paddingTop:"1rem"}}>
-            {/* <Grid container>
+              {/* <Grid container>
               <Card style={{borderRadius:"20px",  display:"flex",justifyContent:"center",alignItems:"center", height:"40px"}}>
                 <CardContent style={{backgroundColor: "#0899BA",borderRadius:"20px", padding:"0.5rem", display:"flex",justifyContent:"center",alignItems:"center", height:"40px"}}>
                   <FindReplaceRoundedIcon style={{color:"#ffffff"}} />
@@ -265,21 +265,21 @@ export default function UserConfiguration(){
               </List> */}
             </Grid>
             <Grid item md={12}>
-            <Grid container>
-              <Card style={{borderRadius:"20px",  display:"flex",justifyContent:"center",alignItems:"center", height:"40px"}}>
-                <CardContent style={{backgroundColor: "#0899BA",borderRadius:"20px", padding:"0.5rem", display:"flex",justifyContent:"center",alignItems:"center", height:"40px"}}>
-                  <LockRoundedIcon style={{color:"#ffffff"}} />
-                </CardContent>
-              </Card>
-              <FeedbackTitle style={{paddingLeft:"1rem",paddingTop:"0.5rem"}}>
-                Segurança
-              </FeedbackTitle>
-            </Grid>
+              <Grid container>
+                <Card style={{borderRadius:"20px",  display:"flex",justifyContent:"center",alignItems:"center", height:"40px"}}>
+                  <CardContent style={{backgroundColor: "#0899BA",borderRadius:"20px", padding:"0.5rem", display:"flex",justifyContent:"center",alignItems:"center", height:"40px"}}>
+                    <LockRoundedIcon style={{color:"#ffffff"}} />
+                  </CardContent>
+                </Card>
+                <FeedbackTitle style={{paddingLeft:"1rem",paddingTop:"0.5rem"}}>
+                  Segurança
+                </FeedbackTitle>
+              </Grid>
               <List>
                 <ListItem style={{paddingLeft:"4rem"}}>
-                   <FeedbackDescription>
-                     <Link to="/recoverypassmenu">Alterar minha senha
-                     </Link>
+                  <FeedbackDescription>
+                    <Link to="/recoverypassmenu">Alterar minha senha
+                    </Link>
 
                   </FeedbackDescription>
                 </ListItem>
@@ -287,16 +287,16 @@ export default function UserConfiguration(){
             </Grid>
 
             <Grid item md={12}>
-            <Grid container>
-              <Card style={{borderRadius:"20px",  display:"flex",justifyContent:"center",alignItems:"center", height:"40px"}}>
-                <CardContent style={{backgroundColor: "#0899BA",borderRadius:"20px", padding:"0.5rem", display:"flex",justifyContent:"center",alignItems:"center", height:"40px"}}>
-                  <LockRoundedIcon style={{color:"#ffffff"}} />
-                </CardContent>
-              </Card>
-              <FeedbackTitle style={{paddingLeft:"1rem",paddingTop:"0.5rem"}}>
-                Acessibilidade
-              </FeedbackTitle>
-            </Grid>
+              <Grid container>
+                <Card style={{borderRadius:"20px",  display:"flex",justifyContent:"center",alignItems:"center", height:"40px"}}>
+                  <CardContent style={{backgroundColor: "#0899BA",borderRadius:"20px", padding:"0.5rem", display:"flex",justifyContent:"center",alignItems:"center", height:"40px"}}>
+                    <LockRoundedIcon style={{color:"#ffffff"}} />
+                  </CardContent>
+                </Card>
+                <FeedbackTitle style={{paddingLeft:"1rem",paddingTop:"0.5rem"}}>
+                  Acessibilidade
+                </FeedbackTitle>
+              </Grid>
               <List style={{paddingLeft:"3rem"}}>
                 <ListItem>
                   Fontes Grande <Switch />
@@ -307,199 +307,370 @@ export default function UserConfiguration(){
               </List>
             </Grid>
             <Grid item md={12}>
-            <Grid container>
-              <Card style={{borderRadius:"20px",  display:"flex",justifyContent:"center",alignItems:"center", height:"40px"}}>
-                <CardContent style={{backgroundColor: "#0899BA",borderRadius:"20px", padding:"0.5rem", display:"flex",justifyContent:"center",alignItems:"center", height:"40px"}}>
-                  <InfoRoundedIcon style={{color:"#ffffff"}} />
-                </CardContent>
-              </Card>
-              <FeedbackTitle style={{paddingLeft:"1rem",paddingTop:"0.5rem"}}>
-                Sobre o Sollar
-              </FeedbackTitle>
-            </Grid>
+              <Grid container>
+                <Card style={{borderRadius:"20px",  display:"flex",justifyContent:"center",alignItems:"center", height:"40px"}}>
+                  <CardContent style={{backgroundColor: "#0899BA",borderRadius:"20px", padding:"0.5rem", display:"flex",justifyContent:"center",alignItems:"center", height:"40px"}}>
+                    <InfoRoundedIcon style={{color:"#ffffff"}} />
+                  </CardContent>
+                </Card>
+                <FeedbackTitle style={{paddingLeft:"1rem",paddingTop:"0.5rem"}}>
+                  Sobre o Sollar
+                </FeedbackTitle>
+              </Grid>
               <BoxCustomFoot style={{paddingLeft:"3rem"}}>
-              Sollar 2021 <br />
-              Versao 1.02 <br />
-              Powered by TASCOM informática
-            </BoxCustomFoot>
-          </Grid>
+                Sollar 2021 <br />
+                Versao 1.02 <br />
+                Powered by TASCOM informática
+              </BoxCustomFoot>
+            </Grid>
             <Grid item md={2}>
             </Grid>
-        </Grid>
+          </Grid>
         </BoxCustom>
 
 
       </Sidebar>
-      ):(
-      <Sidebar_menu>
-        <BoxCustom>
-           <Grid container direction="column">
-              <Grid item md={6}>
-                <FeedbackTitle>
-                  Configurações
-                </FeedbackTitle>
-                <Card>
-                  <CardContent style={{display:"flex", flexDirection:"column"}}>
-                    <Grid container style={{display:"flex", flexDirection:"row", justifyContent:"space-between"}}>
-                      <Grid item md={1} style={{padding:"0"}}>
-                      <AccountCircle style={{ fontSize: 60 }} />
-                      </Grid>
-                      <Grid item md={4} style={{paddingLeft:"0px",paddingTop:"1.5rem"}}>
-                        <h3>{userState.data.name}</h3>
-                      </Grid>
-                      <Grid item md={3}>
-                        <ButtonComponent variant="outlined">
-                          <Button onClick={handlePushUser}>Atualizar Dados</Button>
-                        </ButtonComponent>
-                      </Grid>
-                      <Grid item md={2}>
-                        <ButtonComponent variant="contained">
-                          <Button onClick={handleBackUser}>Voltar</Button>
-                        </ButtonComponent>
-                      </Grid>
-                    </Grid>
-                    <Grid container direction="column" >
-                        <Grid item style={{paddingLeft:"5rem"}}>
-                      cpf:{userState.data.fiscal_number}
-                    </Grid>
-                    <Grid item style={{paddingLeft:"5rem"}}>
-                      email:{userState.data.email}
-                    </Grid>
-                    <Grid item style={{paddingLeft:"5rem"}}>
-                      telefone:{userState.data.phone}
-                    </Grid>
-                    </Grid>
-                  </CardContent>
-                </Card>
-              </Grid>
-              <Grid item md={6} style={{paddingTop:"1rem"}} >
-                <Grid container>
-                  <Card style={{borderRadius:"20px",  display:"flex",justifyContent:"center",alignItems:"center", height:"40px"}}>
-                    <CardContent style={{backgroundColor: "#0899BA",borderRadius:"20px", padding:"0.5rem", display:"flex",justifyContent:"center",alignItems:"center", height:"40px"}}>
-                      <HomeRoundedIcon style={{color:"#ffffff"}} />
-                    </CardContent>
-                  </Card>
-                  <FeedbackTitle style={{paddingLeft:"1rem",paddingTop:"0.5rem"}}>
-                  Minhas Empresas
-                </FeedbackTitle>
-                </Grid>
-              <Autocomplete
-                  style={{paddingTop:"1rem", paddingLeft:"4rem"}}
-                  id="combo-box-change-company"
-                  options={companies}
-                  getOptionLabel={(option: any) => option.customer}
-                  getOptionSelected={(option, value) => option._id === currentCompany}
-                  value={selectCompany()}
-                  renderInput={(params) => <TextField {...params} label="Empresa" variant="outlined" autoComplete="off" />}
-                  size="small"
-                  onChange={(event, value) => changeCompany(value)}
-                  noOptionsText="Nenhuma empresa encontrada"
-                  autoComplete={false}
-            />
-            </Grid>
-            <Grid item md={12} style={{paddingTop:"1rem"}}>
-            {/* <Grid container>
-              <Card style={{borderRadius:"20px",  display:"flex",justifyContent:"center",alignItems:"center", height:"40px"}}>
-                <CardContent style={{backgroundColor: "#0899BA",borderRadius:"20px", padding:"0.5rem", display:"flex",justifyContent:"center",alignItems:"center", height:"40px"}}>
-                  <FindReplaceRoundedIcon style={{color:"#ffffff"}} />
-                </CardContent>
-              </Card>
-              <FeedbackTitle style={{paddingLeft:"1rem",paddingTop:"0.5rem"}}>
-                Auditoria
-              </FeedbackTitle>
-            </Grid> */}
-              {/* <List>
-                <ListItem style={{paddingLeft:"3.5rem"}}>
-                  <Grid item md={6} xs={11}>
-                    <FormGroupSection>
-                      <p>Abastecimento/dias</p>
-                        <div style={{ paddingLeft: 10 }}>
-                          <Slider
-                            marks={supplyIntervals}
-                          //  value={state.supply_days}
-                            defaultValue={0}
-                            getAriaValueText={value => `${value}`}
-                            aria-labelledby="discrete-slider-restrict"
-                            step={null}
-                            min={1}
-                            max={70}
-                            valueLabelDisplay="auto"
-                           // disabled={!canEdit}
-                            onChange={(event, value) =>{
-                              // handleChangeSupply(value);
+    {/*{currentCustomer != "SEM"?( <Sidebar>*/}
+    {/*    <BoxCustom>*/}
+    {/*       <Grid container direction="column">*/}
+    {/*          <Grid item md={6}>*/}
+    {/*            <FeedbackTitle>*/}
+    {/*              Configurações*/}
+    {/*            </FeedbackTitle>*/}
+    {/*            <Card>*/}
+    {/*              <CardContent style={{display:"flex", flexDirection:"column"}}>*/}
+    {/*                <Grid container style={{display:"flex", flexDirection:"row", justifyContent:"space-between"}}>*/}
+    {/*                  <Grid item md={1} style={{padding:"0"}}>*/}
+    {/*                  <AccountCircle style={{ fontSize: 60 }} />*/}
+    {/*                  </Grid>*/}
+    {/*                  <Grid item md={4} style={{paddingLeft:"0px",paddingTop:"1.5rem"}}>*/}
+    {/*                    <h3>{userState.data.name}</h3>*/}
+    {/*                  </Grid>*/}
+    {/*                  <Grid item md={3}>*/}
+    {/*                    <ButtonComponent variant="outlined">*/}
+    {/*                      <Button onClick={handlePushUser}>Atualizar Dados</Button>*/}
+    {/*                    </ButtonComponent>*/}
+    {/*                  </Grid>*/}
+    {/*                  <Grid item md={2}>*/}
+    {/*                    <ButtonComponent variant="contained">*/}
+    {/*                      <Button onClick={handleBackUser}>Voltar</Button>*/}
+    {/*                    </ButtonComponent>*/}
+    {/*                  </Grid>*/}
+    {/*                </Grid>*/}
+    {/*                <Grid container direction="column" >*/}
+    {/*                    <Grid item style={{paddingLeft:"5rem"}}>*/}
+    {/*                  cpf:{userState.data.fiscal_number}*/}
+    {/*                </Grid>*/}
+    {/*                <Grid item style={{paddingLeft:"5rem"}}>*/}
+    {/*                  email:{userState.data.email}*/}
+    {/*                </Grid>*/}
+    {/*                <Grid item style={{paddingLeft:"5rem"}}>*/}
+    {/*                  telefone:{userState.data.phone}*/}
+    {/*                </Grid>*/}
+    {/*                </Grid>*/}
+    {/*              </CardContent>*/}
+    {/*            </Card>*/}
+    {/*          </Grid>*/}
+    {/*          <Grid item md={6} style={{paddingTop:"1rem"}} >*/}
+    {/*            <Grid container>*/}
+    {/*              <Card style={{borderRadius:"20px",  display:"flex",justifyContent:"center",alignItems:"center", height:"40px"}}>*/}
+    {/*                <CardContent style={{backgroundColor: "#0899BA",borderRadius:"20px", padding:"0.5rem", display:"flex",justifyContent:"center",alignItems:"center", height:"40px"}}>*/}
+    {/*                  <HomeRoundedIcon style={{color:"#ffffff"}} />*/}
+    {/*                </CardContent>*/}
+    {/*              </Card>*/}
+    {/*              <FeedbackTitle style={{paddingLeft:"1rem",paddingTop:"0.5rem"}}>*/}
+    {/*              Minhas Empresas*/}
+    {/*            </FeedbackTitle>*/}
+    {/*            </Grid>*/}
+    {/*          <Autocomplete*/}
+    {/*              style={{paddingTop:"1rem", paddingLeft:"4rem"}}*/}
+    {/*              id="combo-box-change-company"*/}
+    {/*              options={companies}*/}
+    {/*              getOptionLabel={(option: any) => option.customer}*/}
+    {/*              getOptionSelected={(option, value) => option._id === currentCompany}*/}
+    {/*              value={selectCompany()}*/}
+    {/*              renderInput={(params) => <TextField {...params} label="Empresa" variant="outlined" autoComplete="off" />}*/}
+    {/*              size="small"*/}
+    {/*              onChange={(event, value) => changeCompany(value)}*/}
+    {/*              noOptionsText="Nenhuma empresa encontrada"*/}
+    {/*              autoComplete={false}*/}
+    {/*        />*/}
+    {/*        </Grid>*/}
+    {/*        <Grid item md={12} style={{paddingTop:"1rem"}}>*/}
+    {/*        /!* <Grid container>*/}
+    {/*          <Card style={{borderRadius:"20px",  display:"flex",justifyContent:"center",alignItems:"center", height:"40px"}}>*/}
+    {/*            <CardContent style={{backgroundColor: "#0899BA",borderRadius:"20px", padding:"0.5rem", display:"flex",justifyContent:"center",alignItems:"center", height:"40px"}}>*/}
+    {/*              <FindReplaceRoundedIcon style={{color:"#ffffff"}} />*/}
+    {/*            </CardContent>*/}
+    {/*          </Card>*/}
+    {/*          <FeedbackTitle style={{paddingLeft:"1rem",paddingTop:"0.5rem"}}>*/}
+    {/*            Auditoria*/}
+    {/*          </FeedbackTitle>*/}
+    {/*        </Grid> *!/*/}
+    {/*          /!* <List>*/}
+    {/*            <ListItem style={{paddingLeft:"3.5rem"}}>*/}
+    {/*              <Grid item md={6} xs={11}>*/}
+    {/*                <FormGroupSection>*/}
+    {/*                  <p>Abastecimento/dias</p>*/}
+    {/*                    <div style={{ paddingLeft: 10 }}>*/}
+    {/*                      <Slider*/}
+    {/*                        marks={supplyIntervals}*/}
+    {/*                      //  value={state.supply_days}*/}
+    {/*                        defaultValue={0}*/}
+    {/*                        getAriaValueText={value => `${value}`}*/}
+    {/*                        aria-labelledby="discrete-slider-restrict"*/}
+    {/*                        step={null}*/}
+    {/*                        min={1}*/}
+    {/*                        max={70}*/}
+    {/*                        valueLabelDisplay="auto"*/}
+    {/*                       // disabled={!canEdit}*/}
+    {/*                        onChange={(event, value) =>{*/}
+    {/*                          // handleChangeSupply(value);*/}
 
-                            }}
-                          />
-                        </div>
-                      </FormGroupSection>
-                  </Grid>
-                </ListItem>
-              </List> */}
-            </Grid>
-            <Grid item md={12}>
-            <Grid container>
-              <Card style={{borderRadius:"20px",  display:"flex",justifyContent:"center",alignItems:"center", height:"40px"}}>
-                <CardContent style={{backgroundColor: "#0899BA",borderRadius:"20px", padding:"0.5rem", display:"flex",justifyContent:"center",alignItems:"center", height:"40px"}}>
-                  <LockRoundedIcon style={{color:"#ffffff"}} />
-                </CardContent>
-              </Card>
-              <FeedbackTitle style={{paddingLeft:"1rem",paddingTop:"0.5rem"}}>
-                Segurança
-              </FeedbackTitle>
-            </Grid>
-              <List>
-                <ListItem style={{paddingLeft:"4rem"}}>
-                   <FeedbackDescription>
-                     <Link to="/recoverypassmenu">Alterar minha senha
-                     </Link>
+    {/*                        }}*/}
+    {/*                      />*/}
+    {/*                    </div>*/}
+    {/*                  </FormGroupSection>*/}
+    {/*              </Grid>*/}
+    {/*            </ListItem>*/}
+    {/*          </List> *!/*/}
+    {/*        </Grid>*/}
+    {/*        <Grid item md={12}>*/}
+    {/*        <Grid container>*/}
+    {/*          <Card style={{borderRadius:"20px",  display:"flex",justifyContent:"center",alignItems:"center", height:"40px"}}>*/}
+    {/*            <CardContent style={{backgroundColor: "#0899BA",borderRadius:"20px", padding:"0.5rem", display:"flex",justifyContent:"center",alignItems:"center", height:"40px"}}>*/}
+    {/*              <LockRoundedIcon style={{color:"#ffffff"}} />*/}
+    {/*            </CardContent>*/}
+    {/*          </Card>*/}
+    {/*          <FeedbackTitle style={{paddingLeft:"1rem",paddingTop:"0.5rem"}}>*/}
+    {/*            Segurança*/}
+    {/*          </FeedbackTitle>*/}
+    {/*        </Grid>*/}
+    {/*          <List>*/}
+    {/*            <ListItem style={{paddingLeft:"4rem"}}>*/}
+    {/*               <FeedbackDescription>*/}
+    {/*                 <Link to="/recoverypassmenu">Alterar minha senha*/}
+    {/*                 </Link>*/}
 
-                  </FeedbackDescription>
-                </ListItem>
-              </List>
-            </Grid>
+    {/*              </FeedbackDescription>*/}
+    {/*            </ListItem>*/}
+    {/*          </List>*/}
+    {/*        </Grid>*/}
 
-            <Grid item md={12}>
-            <Grid container>
-              <Card style={{borderRadius:"20px",  display:"flex",justifyContent:"center",alignItems:"center", height:"40px"}}>
-                <CardContent style={{backgroundColor: "#0899BA",borderRadius:"20px", padding:"0.5rem", display:"flex",justifyContent:"center",alignItems:"center", height:"40px"}}>
-                  <LockRoundedIcon style={{color:"#ffffff"}} />
-                </CardContent>
-              </Card>
-              <FeedbackTitle style={{paddingLeft:"1rem",paddingTop:"0.5rem"}}>
-                Acessibilidade
-              </FeedbackTitle>
-            </Grid>
-              <List style={{paddingLeft:"3rem"}}>
-                <ListItem>
-                  Fontes Grande <Switch />
-                </ListItem>
-                <ListItem>
-                  Alto Contraste <Switch />
-                </ListItem>
-              </List>
-            </Grid>
-            <Grid item md={12}>
-            <Grid container>
-              <Card style={{borderRadius:"20px",  display:"flex",justifyContent:"center",alignItems:"center", height:"40px"}}>
-                <CardContent style={{backgroundColor: "#0899BA",borderRadius:"20px", padding:"0.5rem", display:"flex",justifyContent:"center",alignItems:"center", height:"40px"}}>
-                  <InfoRoundedIcon style={{color:"#ffffff"}} />
-                </CardContent>
-              </Card>
-              <FeedbackTitle style={{paddingLeft:"1rem",paddingTop:"0.5rem"}}>
-                Sobre o Sollar
-              </FeedbackTitle>
-            </Grid>
-              <BoxCustomFoot style={{paddingLeft:"3rem"}}>
-              Sollar 2021 <br />
-              Versao 1.02 <br />
-              Powered by TASCOM informática
-            </BoxCustomFoot>
-          </Grid>
-            <Grid item md={2}>
-            </Grid>
-        </Grid>
-        </BoxCustom>
-      </Sidebar_menu>)}
+    {/*        <Grid item md={12}>*/}
+    {/*        <Grid container>*/}
+    {/*          <Card style={{borderRadius:"20px",  display:"flex",justifyContent:"center",alignItems:"center", height:"40px"}}>*/}
+    {/*            <CardContent style={{backgroundColor: "#0899BA",borderRadius:"20px", padding:"0.5rem", display:"flex",justifyContent:"center",alignItems:"center", height:"40px"}}>*/}
+    {/*              <LockRoundedIcon style={{color:"#ffffff"}} />*/}
+    {/*            </CardContent>*/}
+    {/*          </Card>*/}
+    {/*          <FeedbackTitle style={{paddingLeft:"1rem",paddingTop:"0.5rem"}}>*/}
+    {/*            Acessibilidade*/}
+    {/*          </FeedbackTitle>*/}
+    {/*        </Grid>*/}
+    {/*          <List style={{paddingLeft:"3rem"}}>*/}
+    {/*            <ListItem>*/}
+    {/*              Fontes Grande <Switch />*/}
+    {/*            </ListItem>*/}
+    {/*            <ListItem>*/}
+    {/*              Alto Contraste <Switch />*/}
+    {/*            </ListItem>*/}
+    {/*          </List>*/}
+    {/*        </Grid>*/}
+    {/*        <Grid item md={12}>*/}
+    {/*        <Grid container>*/}
+    {/*          <Card style={{borderRadius:"20px",  display:"flex",justifyContent:"center",alignItems:"center", height:"40px"}}>*/}
+    {/*            <CardContent style={{backgroundColor: "#0899BA",borderRadius:"20px", padding:"0.5rem", display:"flex",justifyContent:"center",alignItems:"center", height:"40px"}}>*/}
+    {/*              <InfoRoundedIcon style={{color:"#ffffff"}} />*/}
+    {/*            </CardContent>*/}
+    {/*          </Card>*/}
+    {/*          <FeedbackTitle style={{paddingLeft:"1rem",paddingTop:"0.5rem"}}>*/}
+    {/*            Sobre o Sollar*/}
+    {/*          </FeedbackTitle>*/}
+    {/*        </Grid>*/}
+    {/*          <BoxCustomFoot style={{paddingLeft:"3rem"}}>*/}
+    {/*          Sollar 2021 <br />*/}
+    {/*          Versao 1.02 <br />*/}
+    {/*          Powered by TASCOM informática*/}
+    {/*        </BoxCustomFoot>*/}
+    {/*      </Grid>*/}
+    {/*        <Grid item md={2}>*/}
+    {/*        </Grid>*/}
+    {/*    </Grid>*/}
+    {/*    </BoxCustom>*/}
+
+
+    {/*  </Sidebar>*/}
+    {/*  ):(*/}
+    {/*  <Sidebar>*/}
+    {/*    <BoxCustom>*/}
+    {/*       <Grid container direction="column">*/}
+    {/*          <Grid item md={6}>*/}
+    {/*            <FeedbackTitle>*/}
+    {/*              Configurações*/}
+    {/*            </FeedbackTitle>*/}
+    {/*            <Card>*/}
+    {/*              <CardContent style={{display:"flex", flexDirection:"column"}}>*/}
+    {/*                <Grid container style={{display:"flex", flexDirection:"row", justifyContent:"space-between"}}>*/}
+    {/*                  <Grid item md={1} style={{padding:"0"}}>*/}
+    {/*                  <AccountCircle style={{ fontSize: 60 }} />*/}
+    {/*                  </Grid>*/}
+    {/*                  <Grid item md={4} style={{paddingLeft:"0px",paddingTop:"1.5rem"}}>*/}
+    {/*                    <h3>{userState.data.name}</h3>*/}
+    {/*                  </Grid>*/}
+    {/*                  <Grid item md={3}>*/}
+    {/*                    <ButtonComponent variant="outlined">*/}
+    {/*                      <Button onClick={handlePushUser}>Atualizar Dados</Button>*/}
+    {/*                    </ButtonComponent>*/}
+    {/*                  </Grid>*/}
+    {/*                  <Grid item md={2}>*/}
+    {/*                    <ButtonComponent variant="contained">*/}
+    {/*                      <Button onClick={handleBackUser}>Voltar</Button>*/}
+    {/*                    </ButtonComponent>*/}
+    {/*                  </Grid>*/}
+    {/*                </Grid>*/}
+    {/*                <Grid container direction="column" >*/}
+    {/*                    <Grid item style={{paddingLeft:"5rem"}}>*/}
+    {/*                  cpf:{userState.data.fiscal_number}*/}
+    {/*                </Grid>*/}
+    {/*                <Grid item style={{paddingLeft:"5rem"}}>*/}
+    {/*                  email:{userState.data.email}*/}
+    {/*                </Grid>*/}
+    {/*                <Grid item style={{paddingLeft:"5rem"}}>*/}
+    {/*                  telefone:{userState.data.phone}*/}
+    {/*                </Grid>*/}
+    {/*                </Grid>*/}
+    {/*              </CardContent>*/}
+    {/*            </Card>*/}
+    {/*          </Grid>*/}
+    {/*          <Grid item md={6} style={{paddingTop:"1rem"}} >*/}
+    {/*            <Grid container>*/}
+    {/*              <Card style={{borderRadius:"20px",  display:"flex",justifyContent:"center",alignItems:"center", height:"40px"}}>*/}
+    {/*                <CardContent style={{backgroundColor: "#0899BA",borderRadius:"20px", padding:"0.5rem", display:"flex",justifyContent:"center",alignItems:"center", height:"40px"}}>*/}
+    {/*                  <HomeRoundedIcon style={{color:"#ffffff"}} />*/}
+    {/*                </CardContent>*/}
+    {/*              </Card>*/}
+    {/*              <FeedbackTitle style={{paddingLeft:"1rem",paddingTop:"0.5rem"}}>*/}
+    {/*              Minhas Empresas*/}
+    {/*            </FeedbackTitle>*/}
+    {/*            </Grid>*/}
+    {/*          <Autocomplete*/}
+    {/*              style={{paddingTop:"1rem", paddingLeft:"4rem"}}*/}
+    {/*              id="combo-box-change-company"*/}
+    {/*              options={companies}*/}
+    {/*              getOptionLabel={(option: any) => option.customer}*/}
+    {/*              getOptionSelected={(option, value) => option._id === currentCompany}*/}
+    {/*              value={selectCompany()}*/}
+    {/*              renderInput={(params) => <TextField {...params} label="Empresa" variant="outlined" autoComplete="off" />}*/}
+    {/*              size="small"*/}
+    {/*              onChange={(event, value) => changeCompany(value)}*/}
+    {/*              noOptionsText="Nenhuma empresa encontrada"*/}
+    {/*              autoComplete={false}*/}
+    {/*        />*/}
+    {/*        </Grid>*/}
+    {/*        <Grid item md={12} style={{paddingTop:"1rem"}}>*/}
+    {/*        /!* <Grid container>*/}
+    {/*          <Card style={{borderRadius:"20px",  display:"flex",justifyContent:"center",alignItems:"center", height:"40px"}}>*/}
+    {/*            <CardContent style={{backgroundColor: "#0899BA",borderRadius:"20px", padding:"0.5rem", display:"flex",justifyContent:"center",alignItems:"center", height:"40px"}}>*/}
+    {/*              <FindReplaceRoundedIcon style={{color:"#ffffff"}} />*/}
+    {/*            </CardContent>*/}
+    {/*          </Card>*/}
+    {/*          <FeedbackTitle style={{paddingLeft:"1rem",paddingTop:"0.5rem"}}>*/}
+    {/*            Auditoria*/}
+    {/*          </FeedbackTitle>*/}
+    {/*        </Grid> *!/*/}
+    {/*          /!* <List>*/}
+    {/*            <ListItem style={{paddingLeft:"3.5rem"}}>*/}
+    {/*              <Grid item md={6} xs={11}>*/}
+    {/*                <FormGroupSection>*/}
+    {/*                  <p>Abastecimento/dias</p>*/}
+    {/*                    <div style={{ paddingLeft: 10 }}>*/}
+    {/*                      <Slider*/}
+    {/*                        marks={supplyIntervals}*/}
+    {/*                      //  value={state.supply_days}*/}
+    {/*                        defaultValue={0}*/}
+    {/*                        getAriaValueText={value => `${value}`}*/}
+    {/*                        aria-labelledby="discrete-slider-restrict"*/}
+    {/*                        step={null}*/}
+    {/*                        min={1}*/}
+    {/*                        max={70}*/}
+    {/*                        valueLabelDisplay="auto"*/}
+    {/*                       // disabled={!canEdit}*/}
+    {/*                        onChange={(event, value) =>{*/}
+    {/*                          // handleChangeSupply(value);*/}
+
+    {/*                        }}*/}
+    {/*                      />*/}
+    {/*                    </div>*/}
+    {/*                  </FormGroupSection>*/}
+    {/*              </Grid>*/}
+    {/*            </ListItem>*/}
+    {/*          </List> *!/*/}
+    {/*        </Grid>*/}
+    {/*        <Grid item md={12}>*/}
+    {/*        <Grid container>*/}
+    {/*          <Card style={{borderRadius:"20px",  display:"flex",justifyContent:"center",alignItems:"center", height:"40px"}}>*/}
+    {/*            <CardContent style={{backgroundColor: "#0899BA",borderRadius:"20px", padding:"0.5rem", display:"flex",justifyContent:"center",alignItems:"center", height:"40px"}}>*/}
+    {/*              <LockRoundedIcon style={{color:"#ffffff"}} />*/}
+    {/*            </CardContent>*/}
+    {/*          </Card>*/}
+    {/*          <FeedbackTitle style={{paddingLeft:"1rem",paddingTop:"0.5rem"}}>*/}
+    {/*            Segurança*/}
+    {/*          </FeedbackTitle>*/}
+    {/*        </Grid>*/}
+    {/*          <List>*/}
+    {/*            <ListItem style={{paddingLeft:"4rem"}}>*/}
+    {/*               <FeedbackDescription>*/}
+    {/*                 <Link to="/recoverypassmenu">Alterar minha senha*/}
+    {/*                 </Link>*/}
+
+    {/*              </FeedbackDescription>*/}
+    {/*            </ListItem>*/}
+    {/*          </List>*/}
+    {/*        </Grid>*/}
+
+    {/*        <Grid item md={12}>*/}
+    {/*        <Grid container>*/}
+    {/*          <Card style={{borderRadius:"20px",  display:"flex",justifyContent:"center",alignItems:"center", height:"40px"}}>*/}
+    {/*            <CardContent style={{backgroundColor: "#0899BA",borderRadius:"20px", padding:"0.5rem", display:"flex",justifyContent:"center",alignItems:"center", height:"40px"}}>*/}
+    {/*              <LockRoundedIcon style={{color:"#ffffff"}} />*/}
+    {/*            </CardContent>*/}
+    {/*          </Card>*/}
+    {/*          <FeedbackTitle style={{paddingLeft:"1rem",paddingTop:"0.5rem"}}>*/}
+    {/*            Acessibilidade*/}
+    {/*          </FeedbackTitle>*/}
+    {/*        </Grid>*/}
+    {/*          <List style={{paddingLeft:"3rem"}}>*/}
+    {/*            <ListItem>*/}
+    {/*              Fontes Grande <Switch />*/}
+    {/*            </ListItem>*/}
+    {/*            <ListItem>*/}
+    {/*              Alto Contraste <Switch />*/}
+    {/*            </ListItem>*/}
+    {/*          </List>*/}
+    {/*        </Grid>*/}
+    {/*        <Grid item md={12}>*/}
+    {/*        <Grid container>*/}
+    {/*          <Card style={{borderRadius:"20px",  display:"flex",justifyContent:"center",alignItems:"center", height:"40px"}}>*/}
+    {/*            <CardContent style={{backgroundColor: "#0899BA",borderRadius:"20px", padding:"0.5rem", display:"flex",justifyContent:"center",alignItems:"center", height:"40px"}}>*/}
+    {/*              <InfoRoundedIcon style={{color:"#ffffff"}} />*/}
+    {/*            </CardContent>*/}
+    {/*          </Card>*/}
+    {/*          <FeedbackTitle style={{paddingLeft:"1rem",paddingTop:"0.5rem"}}>*/}
+    {/*            Sobre o Sollar*/}
+    {/*          </FeedbackTitle>*/}
+    {/*        </Grid>*/}
+    {/*          <BoxCustomFoot style={{paddingLeft:"3rem"}}>*/}
+    {/*          Sollar 2021 <br />*/}
+    {/*          Versao 1.02 <br />*/}
+    {/*          Powered by TASCOM informática*/}
+    {/*        </BoxCustomFoot>*/}
+    {/*      </Grid>*/}
+    {/*        <Grid item md={2}>*/}
+    {/*        </Grid>*/}
+    {/*    </Grid>*/}
+    {/*    </BoxCustom>*/}
+    {/*  </Sidebar>)}*/}
 
     </>
   );

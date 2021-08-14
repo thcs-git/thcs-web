@@ -2080,7 +2080,7 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
           </Dialog>
         </Sidebar>
       ) : (
-        <Sidebar_menu>
+        <Sidebar>
           {userState.loading && <Loading/>}
           <Container>
             {userState.success ? (
@@ -3231,7 +3231,7 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
               </Button>
             </DialogActions>
           </Dialog>
-        </Sidebar_menu>
+        </Sidebar>
       )}
 
     </>
