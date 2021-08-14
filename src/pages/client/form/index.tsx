@@ -60,6 +60,7 @@ import TabTittle from "../../../components/Text/TabTittle";
 import ButtonEdit from "../../../components/Button/ButtonEdit";
 import ButtonTabs from "../../../components/Button/ButtonTabs";
 
+import LOCALSTORAGE from "../../../helpers/constants/localStorage";
 
 interface IFormFields extends CustomerInterface {
   form?: {
@@ -177,6 +178,8 @@ export default function ClientForm(props: RouteComponentProps<IPageParams>) {
   var formValid: any;
   useEffect(() => {
     dispatch(cleanAction());
+    const currentCustomer = localStorage.getItem(LOCALSTORAGE.CUSTOMER) || '';
+    history.push(`/client/${currentCustomer}/view`)
   }, []);
 
   useEffect(() => {

@@ -84,11 +84,11 @@ export default function UserList() {
   }, []);
 
   const handleActive = useCallback((user) => {
-    return _.filter(user.companies_links, {companie_id: currentCompany})[0]?.active
+    return _.filter(user.companies_links, {companie_id: {_id: currentCompany}})[0]?.active
   }, []);
 
   const handleLinkedAt = useCallback((user) => {
-    return _.filter(user.companies_links, {companie_id: currentCompany})[0]?.linked_at
+    return _.filter(user.companies_links, {companie_id: {_id: currentCompany}})[0]?.linked_at
   }, []);
 
   const debounceSearchRequest = debounce(handleChangeInput, 900)
