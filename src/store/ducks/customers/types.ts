@@ -31,6 +31,13 @@ export enum CustomerTypes {
  * Data types
  */
 export interface CustomerInterface {
+  usertypes?: [{
+    _id?: string;
+    active: boolean;
+    name: string;
+    permission: string;
+    created_at?: string;
+  }];
   active: boolean;
   _id?: string;
   name: string;

@@ -13,7 +13,7 @@ import {
   Grid,
   FormControlLabel,
   makeStyles,
-  Collapse,
+  Collapse, FormControl, FormLabel, FormGroup, Checkbox,
 } from '@material-ui/core';
 import {AccountCircle, Edit} from '@material-ui/icons';
 import Autocomplete from '@material-ui/lab/Autocomplete';
@@ -35,7 +35,7 @@ import {
 import {
   UserInterface,
   ProfessionUserInterface,
-  CompanyUserInterface,
+  CompanyUserInterface, CompanyUserLinkInterface,
 } from "../../../store/ducks/users/types";
 
 import {loadRequest as getSpecialtiesAction} from "../../../store/ducks/specialties/actions";
@@ -90,6 +90,7 @@ import {BoxCustom} from "../../customer/form/styles";
 import _ from "lodash";
 // @ts-ignore
 import Sidebar_menu from "../../../components/Sidebar_menu";
+import moment from "moment";
 
 
 interface IFormFields {
@@ -115,6 +116,7 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
   const companyState = useSelector((state: ApplicationState) => state.companies);
   const customerState = useSelector((state: ApplicationState) => state.customers);
   const [canEdit, setCanEdit] = useState(true);
+  const [linkChecked, setLinkChecked] = useState(false);
   const {params} = props.match;
 
   const currentCompany = localStorage.getItem(LOCALSTORAGE.COMPANY_SELECTED) || '';
@@ -525,6 +527,7 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
   }
 
   function engagedUser() {
+    const companyLinkSelected: CompanyUserLinkInterface[] = [];
 
     if (customer && customer._id) {
       var com: CompanyUserInterface = {
@@ -536,20 +539,50 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
         }
       }
 
-      var link: any = {
-        companie_id: company._id,
-        user_type_id: "5fb81e21c7921937fdb79994",
-        active: true,
-        linked_at: new Date,
-        iat: 0
+      var companiesLinkSelected = [...state.companies_links];
+      const companyLinkFounded = companiesLinkSelected.findIndex((item: any) => {
+        return company._id === item.companie_id
+      })
+
+      if (companyLinkFounded > -1) {
+        let selected = companiesLinkSelected.splice(companyLinkFounded, 1)[0];
+        selected.permissions = state.user_type_id
+        selected.active = true
+        selected.linked_at = new Date
+
+        if (linkChecked) {
+          selected.exp = String(moment(companyLink).unix() + 86399)
+        } else {
+          selected.exp = '0'
+
+        }
+
+        companyLinkSelected.push(...companiesLinkSelected)
+        companyLinkSelected.push(selected)
+      } else {
+        let selected = linkChecked ? {
+          companie_id: company._id,
+          permissions: state.user_type_id,
+          active: true,
+          linked_at: new Date,
+          exp: String(moment(companyLink).unix() + 86399)
+        } : {
+          companie_id: company._id,
+          permissions: state.user_type_id,
+          active: true,
+          linked_at: new Date,
+          exp: '0'
+        };
+        companyLinkSelected.push(selected)
       }
     }
+
     if (company) {
       setState((prevState) => ({
         ...prevState,
         companies: [...prevState.companies, com],
         customer_id: company.customer_id,
-        companies_links: [...prevState.companies_links, link],
+        companies_links: companyLinkSelected,
       }));
     }
     setEngaged(true);
@@ -628,7 +661,6 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
           return item._id === state.profession_id._id;
         }
       });
-      console.log(selected);
 
 
       return selected[0] ? selected[0] : userState.data.professions[1];
@@ -760,16 +792,23 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
   }, [state.council_state]);
 
   const selectUserType = useCallback(() => {
-    if (!userState.data.user_types) {
+    if (!customerState.data.usertypes) {
       return null;
     }
 
-    const selected = userState.data.user_types.filter(
+    const selected = customerState.data.usertypes.filter(
       (item) => item._id === state.user_type_id
     );
 
     return selected[0] ? selected[0] : null;
   }, [state.user_type_id, state.user_types]);
+
+  const handleSelectUserType = useCallback((value: any) => {
+    setState((prevState) => ({
+      ...prevState,
+      user_type_id: value._id,
+    }));
+  }, []);
 
   //Empresas
   function handleSelectCompany(value: CompanyUserInterface) {
@@ -1824,7 +1863,7 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
                             <Grid item md={12} xs={12}>
                               <Divider></Divider>
                             </Grid>
-                            <Grid item style={{paddingTop: '20px'}}>
+                            <Grid item md={2} style={{paddingTop: '20px'}}>
                               <ButtonComponent style={{maxWidth: '10px'}} onClick={() => setAdd(!add)}>
                                 {add ? (<CheckCircleRoundedIcon fontSize={'large'}
                                                                 style={{color: '#4FC66A'}}></CheckCircleRoundedIcon>) : (
@@ -1837,7 +1876,7 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
                                 )}
                               </ButtonComponent>
                             </Grid>
-                            <Grid item>
+                            <Grid item md={7}>
                               <Grid container
                                     style={{flexDirection: 'column', paddingLeft: '10px', paddingTop: '20px'}}>
                                 <Grid item>
@@ -1908,46 +1947,71 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
                           </Grid> */}
                                     {(params.mode === 'link' && !checkCompany) && (
                                       <>
-                                        <Grid item md={12} xs={12}>
-                                          <ButtonComponent background="success_rounded" onClick={() => engagedUser()}>
-                                            Vincular este prestador a minha empresa
-                                          </ButtonComponent>
+                                        <Grid item md={12} xs={12} style={{padding: '0 12px 12px 0'}}>
+                                          <Autocomplete
+                                            id="combo-box-user-type"
+                                            options={customerState.data.usertypes || []}
+                                            getOptionLabel={(option) => option.name}
+                                            // disabled={!canEdit}
+                                            renderInput={(params) => (
+                                              <TextField {...params}
+                                                         label="Tipo do Usuário"
+                                                         variant="outlined"
+                                              />
+                                            )}
+                                            value={selectUserType()}
+                                            onChange={(event, value) => {
+                                              if (value) {
+                                                handleSelectUserType(value);
+                                              } else {
+                                                setState((prevState) => ({
+                                                  ...prevState,
+                                                  user_type_id: "",
+                                                }));
+                                              }
+                                            }}
+                                            getOptionSelected={(option, value) =>
+                                              option._id === state.user_type_id
+                                            }
+                                            size="small"
+                                            fullWidth
+                                          />
                                         </Grid>
 
-                                        <TextField
-                                          id="link-end"
-                                          type="date"
-                                          size="small"
-                                          label="Vínculo até"
-                                          variant="outlined"
-                                          InputLabelProps={{
-                                            shrink: true,
-                                          }}
-                                          onChange={e => setcompanyLink(e.target.value)}
-                                          value={companyLink}
-                                          fullWidth
-                                        />
-
-                                        <Autocomplete
-                                          id="combo-box-user-type"
-                                          options={userState.data.user_types || []}
-                                          getOptionLabel={(option) => option.name}
-                                          // disabled={!canEdit}
-                                          renderInput={(params) => (
-                                            <TextField {...params}
-                                                       disabled={!canEdit}
-                                                       label="Tipo do Usuário"
-                                                       variant="outlined"
+                                        <Grid item md={12} xs={12} style={{display: 'flex', padding: '0 12px 12px 0'}}>
+                                          <Grid item md={3} xs={12}>
+                                            <FormControlLabel
+                                              control={<Checkbox color="primary" checked={linkChecked} onChange={() => (
+                                                setLinkChecked(!linkChecked)
+                                              )} name="link"/>}
+                                              label="Temporário"
                                             />
+                                          </Grid>
+                                          {linkChecked && (
+                                            <Grid item md={9} xs={12}>
+                                              <TextField
+                                                id="link-end"
+                                                type="date"
+                                                size="small"
+                                                label="Vínculo até"
+                                                variant="outlined"
+                                                InputLabelProps={{
+                                                  shrink: true,
+                                                }}
+                                                onChange={e => setcompanyLink(e.target.value)}
+                                                value={companyLink}
+                                                fullWidth
+                                              />
+                                            </Grid>
                                           )}
-                                          value={selectUserType()}
-                                          getOptionSelected={(option, value) =>
-                                            option._id === state.user_type_id
-                                          }
-                                          size="small"
-                                          fullWidth
-                                        />
-
+                                        </Grid>
+                                        {((state.user_type_id && companyLink != '') || (state.user_type_id && !linkChecked)) && (
+                                          <Grid item md={12} xs={12} style={{padding: '0 12px 12px 0'}}>
+                                            <ButtonComponent background="success_rounded" onClick={() => engagedUser()}>
+                                              Vincular este prestador a minha empresa
+                                            </ButtonComponent>
+                                          </Grid>
+                                        )}
                                       </>
                                     )}
                                     {(params.mode === 'link' && checkCompany && !engaged) && (

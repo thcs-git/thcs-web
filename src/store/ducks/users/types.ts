@@ -92,12 +92,13 @@ export interface CompanyUserInterface {
 }
 
 export interface CompanyUserLinkInterface {
-  _id: string;
-  companie_id: string;
-  user_type_id: string;
-  active: boolean;
-  linked_at: string;
-  iat: number;
+  exp?: string;
+  permissions?: string | UserTypeInterface;
+  _id?: string;
+  companie_id?: string;
+  user_type_id?: string;
+  active?: boolean;
+  linked_at?: any;
 }
 
 export interface UserTypeInterface {
@@ -111,6 +112,7 @@ export interface MainSpecialtyInterface {
 }
 
 export interface UserListItems {
+  companies_links: CompanyUserLinkInterface[];
   _id: string;
   name: string;
   email: string;

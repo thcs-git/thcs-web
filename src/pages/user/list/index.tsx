@@ -1,16 +1,28 @@
-import React, { useState, useEffect, useCallback, ChangeEvent } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import { useHistory, Link } from 'react-router-dom';
-import { Container, Button, Menu, MenuItem, TableRow, TableCell, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle } from '@material-ui/core';
-import { MoreVert } from '@material-ui/icons';
+import React, {useState, useEffect, useCallback, ChangeEvent} from 'react';
+import {useDispatch, useSelector} from 'react-redux';
+import {useHistory, Link} from 'react-router-dom';
+import {
+  Container,
+  Button,
+  Menu,
+  MenuItem,
+  TableRow,
+  TableCell,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogContentText,
+  DialogTitle
+} from '@material-ui/core';
+import {MoreVert} from '@material-ui/icons';
 import debounce from 'lodash.debounce';
 
-import { UserInterface } from '../../../store/ducks/users/types';
+import {UserInterface} from '../../../store/ducks/users/types';
 
 import Loading from '../../../components/Loading';
 
-import { ApplicationState } from '../../../store';
-import { loadRequest, searchRequest, cleanAction } from '../../../store/ducks/users/actions';
+import {ApplicationState} from '../../../store';
+import {loadRequest, searchRequest, cleanAction} from '../../../store/ducks/users/actions';
 
 import PaginationComponent from '../../../components/Pagination';
 import Sidebar from '../../../components/Sidebar';
@@ -19,7 +31,7 @@ import Table from '../../../components/Table';
 
 import AddIcon from '@material-ui/icons/Add';
 
-import { FormTitle } from '../../../styles/components/Form';
+import {FormTitle} from '../../../styles/components/Form';
 
 import ListItem from '@material-ui/core/ListItem';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
@@ -31,9 +43,13 @@ import {
   ListItemStatus,
   ListItemTitle,
 } from './styles';
-import { formatDate } from '../../../helpers/date';
+import {formatDate} from '../../../helpers/date';
+
+import LOCALSTORAGE from "../../../helpers/constants/localStorage";
+import _ from 'lodash';
 
 const token = window.localStorage.getItem('token');
+const currentCompany = localStorage.getItem(LOCALSTORAGE.COMPANY_SELECTED) || '';
 
 export default function UserList() {
   const dispatch = useDispatch();
@@ -67,6 +83,14 @@ export default function UserList() {
     dispatch(searchRequest(event.target.value));
   }, []);
 
+  const handleActive = useCallback((user) => {
+    return _.filter(user.companies_links, {companie_id: currentCompany})[0].active
+  }, []);
+
+  const handleLinkedAt = useCallback((user) => {
+    return _.filter(user.companies_links, {companie_id: currentCompany})[0].linked_at
+  }, []);
+
   const debounceSearchRequest = debounce(handleChangeInput, 900)
 
   const toggleHistoryModal = (index: number) => {
@@ -76,15 +100,17 @@ export default function UserList() {
   };
 
   const handleCpf = (cpf: string) => {
-    cpf = cpf.replace('.', '')
-    cpf = cpf.replace('.', '')
-    cpf = cpf.replace('-', '')
-    return `${cpf[0]}${cpf[1]}${cpf[2]}.${cpf[3]}${cpf[4]}${cpf[5]}.${cpf[6]}${cpf[7]}${cpf[8]}-${cpf[9]}${cpf[10]}`
+    if (cpf) {
+      cpf = cpf.replace('.', '')
+      cpf = cpf.replace('.', '')
+      cpf = cpf.replace('-', '')
+      return `${cpf[0]}${cpf[1]}${cpf[2]}.${cpf[3]}${cpf[4]}${cpf[5]}.${cpf[6]}${cpf[7]}${cpf[8]}-${cpf[9]}${cpf[10]}`
+    }
   };
 
   return (
     <>
-      {userState.loading && <Loading />}
+      {userState.loading && <Loading/>}
       <Sidebar>
         <Container>
           <FormTitle>Meus Profissionais</FormTitle>
@@ -97,14 +123,14 @@ export default function UserList() {
           />
           <Table
             tableCells={[
-              { name: 'Prestador', align: 'left', },
+              {name: 'Prestador', align: 'left',},
               {name: 'CPF', align: 'left'},
-              { name: 'Função', align: 'left' },
-              { name: 'Especialidades', align: 'left' },
-              { name: '', align: 'left' },
-              { name: 'Adicionado em', align: 'left' },
-              { name: 'Status', align: 'left' },
-              { name: '', align: 'left' },
+              {name: 'Função', align: 'left'},
+              {name: 'Especialidades', align: 'left'},
+              {name: '', align: 'left'},
+              {name: 'Adicionado em', align: 'left'},
+              {name: 'Status', align: 'left'},
+              {name: '', align: 'left'},
             ]}
           >
             {userState?.list.data.map((user, index) => (
@@ -125,7 +151,7 @@ export default function UserList() {
                   {user.specialties.length > 0 ? (
                     <ListItem>
                       <Button onClick={() => toggleHistoryModal(index)}>
-                        <AddIcon style={{ color: '#0899BA', cursor: "pointer" }} />
+                        <AddIcon style={{color: '#0899BA', cursor: "pointer"}}/>
                       </Button>
                       {/* <Menu
                         id={`user-speciality${index}`}
@@ -146,14 +172,15 @@ export default function UserList() {
                   }
                 </TableCell>
                 <TableCell>
-                  {formatDate(user.created_at, 'DD/MM/YYYY')}
+                  {formatDate(handleLinkedAt(user), 'DD/MM/YYYY')}
                 </TableCell>
                 <TableCell>
-                  <ListItemStatus active={user.active}>{user.active ? 'Ativo' : 'Inativo'}</ListItemStatus>
+                  <ListItemStatus active={handleActive(user)}>{handleActive(user) ? 'Ativo' : 'Inativo'}</ListItemStatus>
                 </TableCell>
                 <TableCell align="center">
-                  <Button aria-controls={`user-menu${index}`} id={`btn_user-menu${index}`} aria-haspopup="true" onClick={handleOpenRowMenu}>
-                    <MoreVert style={{ color: '#0899BA' }} />
+                  <Button aria-controls={`user-menu${index}`} id={`btn_user-menu${index}`} aria-haspopup="true"
+                          onClick={handleOpenRowMenu}>
+                    <MoreVert style={{color: '#0899BA'}}/>
                   </Button>
                   <Menu
                     id={`user-menu${index}`}
@@ -224,19 +251,27 @@ export default function UserList() {
               id="scroll-dialog-description"
               tabIndex={-1}
             >
-              <p style={{ fontFamily: "Open Sans Bold" }}><h3>Principal</h3></p>
-              <br />
-              <p style={{ color: '#333333', fontSize: "10pt", fontFamily: "Open Sans Regular" }}>{userState.list.data[userIndex]?.main_specialty_id?.name}</p>
-              <br />
-              <p style={{ fontFamily: "Open Sans Bold" }}><h3>Secundária</h3></p>
-              <br />
-              <p style={{ color: '#333333', fontSize: "10pt", fontFamily: "Open Sans Regular" }}>{userState.list.data[userIndex]?.specialties.map((specialty, index) => (
+              <p style={{fontFamily: "Open Sans Bold"}}><h3>Principal</h3></p>
+              <br/>
+              <p style={{
+                color: '#333333',
+                fontSize: "10pt",
+                fontFamily: "Open Sans Regular"
+              }}>{userState.list.data[userIndex]?.main_specialty_id?.name}</p>
+              <br/>
+              <p style={{fontFamily: "Open Sans Bold"}}><h3>Secundária</h3></p>
+              <br/>
+              <p style={{
+                color: '#333333',
+                fontSize: "10pt",
+                fontFamily: "Open Sans Regular"
+              }}>{userState.list.data[userIndex]?.specialties.map((specialty, index) => (
                 `${specialty?.name}${index < (userState.list.data[userIndex].specialties.length - 1) ? ',' : ''}`))}</p>
             </DialogContentText>
           </DialogContent>
           <DialogActions>
             <Button onClick={() => setHistoryModalOpen(false)} color="primary">
-              <h3 style={{ color: '#0899BA', fontSize: '11pt' }}>Fechar</h3>
+              <h3 style={{color: '#0899BA', fontSize: '11pt'}}>Fechar</h3>
             </Button>
           </DialogActions>
         </Dialog>
