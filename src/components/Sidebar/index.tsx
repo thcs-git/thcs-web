@@ -197,6 +197,30 @@ const Sibebar = (props: Props<any>) => {
     window.location.reload();
   }, []);
 
+  const handleCustomerName = useCallback((name: string) => {
+    if (name.length > 25) {
+      return _.truncate(name, {
+        'length': 25,
+        'separator': ' ',
+        'omission': ' ...'
+      });
+    } else {
+      return name
+    }
+  }, []);
+
+  const handleCompanyName = useCallback((name: string) => {
+    if (name.length > 25) {
+      return _.truncate(name, {
+        'length': 25,
+        'separator': ' ',
+        'omission': ' ...'
+      });
+    } else {
+      return name
+    }
+  }, []);
+
   const handleOpenModalLogout = useCallback(() => {
     setOpenModalLogout(true);
   }, []);
@@ -250,7 +274,6 @@ const Sibebar = (props: Props<any>) => {
 
   useEffect(() => {
     let menu = JSON.parse(sessionStorage.getItem(SESSIONSTORAGE.MENU) ?? '[]')
-    console.log('menu', menu, menu.length, itemsMenu, itemsMenu.length)
     if (itemsMenu.length <= 0 && menu.length <= 0) {
       dispatch(loadRequest())
     } else if (itemsMenu.length <= 0 && menu.length > 0) {
@@ -288,7 +311,6 @@ const Sibebar = (props: Props<any>) => {
 
   // useEffect(() => {
   //   let menu = JSON.parse(sessionStorage.getItem(SESSIONSTORAGE.MENU) ?? '[]')
-  //   console.log('menu', menu, !menu, menu.length <= 0, itemsMenu, itemsMenu.length)
   //
   //   if (itemsMenu.length <= 0) {
   //     dispatch(loadRequest())
@@ -366,8 +388,8 @@ const Sibebar = (props: Props<any>) => {
                 <ListItemText style={{color: "#ffff", cursor: "pointer"}}>
                   <div
                     style={{display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center',}}>
-                    <h4 style={{color: '#ffffff', marginLeft: 10}}>{customer.name}</h4>
-                    <h4 style={{color: '#ffffff', marginLeft: 10}}>{company.name}</h4>
+                    <h4 style={{color: '#ffffff', marginLeft: 10}}>{handleCustomerName(customer.name)}</h4>
+                    <h4 style={{color: '#ffffff', marginLeft: 10}}>{handleCompanyName(customer.name)}</h4>
                   </div>
                 </ListItemText>
                 <EditIcon style={{color: '#fff', fontSize: '14px', marginLeft: '10px'}}/>

@@ -343,7 +343,6 @@ export default function CareForm(props: RouteComponentProps<IPageParams>) {
       started_at: new Date().toISOString(),
       care_type_id: selectCareType()?._id
     };
-    // console.log(assignSelectCheckbox);
 
     dispatch(updateCareRequest(assignSelectCheckbox));
   }
@@ -1143,7 +1142,6 @@ export default function CareForm(props: RouteComponentProps<IPageParams>) {
                         size="small"
                         onChange={(event, value) => {
                           if (value) {
-                            // console.log(value);
                             setState((prevState) => ({
                               ...prevState,
                               care_type_id: value._id,
@@ -1188,7 +1186,6 @@ export default function CareForm(props: RouteComponentProps<IPageParams>) {
                     size="small"
                     onKeyUp={debounceSearchCidData}
                     onChange={(event, value) => {
-                      // console.log('asdasd')
                       if (value) {
                         handleSelectCid({
                           _id: value._id || "",

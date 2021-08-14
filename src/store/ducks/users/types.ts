@@ -1,6 +1,3 @@
-import { CustomerInterface } from "./../customers/types";
-import { CompanyInterface } from "./../companies/types";
-
 /**
  * Action types
  */
@@ -88,14 +85,14 @@ export interface CustomerUserInterface {
 export interface CompanyUserInterface {
   _id: string;
   name: string;
-  customer_id: CustomerUserInterface;
+  customer_id?: CustomerUserInterface;
 }
 
 export interface CompanyUserLinkInterface {
   exp?: string;
   permissions?: string | UserTypeInterface;
   _id?: string;
-  companie_id?: string;
+  companie_id?: string | CompanyUserInterface;
   user_type_id?: string;
   active?: boolean;
   linked_at?: any;

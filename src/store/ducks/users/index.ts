@@ -196,7 +196,6 @@ const reducer: Reducer<UserState> = (state = INITIAL_STATE, action) => {
       };
 
     case UserTypes.LOAD_RESPONSE_PROFESSION:
-      console.log("action", action);
       return {
         ...state,
         data: {
