@@ -10,12 +10,14 @@ import ButtonView from "../../Button/ButtonView";
 interface IComponent {
   cells: ICells[];
   customerState: any;
+  rows: [];
+  rowsItems: [string];
 }
 
 interface ICells {
   name: string;
   align: 'right' | 'left' | 'center';
-  width?:string;
+  width?: string;
 }
 
 interface Irows {
@@ -29,11 +31,25 @@ interface Irows {
 }
 
 const TabList = (props: IComponent) => {
-  const {cells, customerState} = props;
+  const {cells, customerState, rows, rowsItems} = props;
+  console.log(rowsItems)
 
   return (
     <Table
       tableCells={cells}>
+      {/*{rows?.map((row: any, index: number) => (*/}
+      {/*  <>*/}
+      {/*    {rowsItems.map((item:string, index:number) => (*/}
+      {/*      <>*/}
+      {/*        <TableCell align="center">*/}
+      {/*          <ListItemStatus active={row[item]}>*/}
+      {/*            {row[item] ? 'Ativo' : 'Inativo'}*/}
+      {/*          </ListItemStatus>*/}
+      {/*        </TableCell>*/}
+      {/*      </>*/}
+      {/*    ))}*/}
+      {/*  </>*/}
+      {/*))}*/}
       {customerState.data.usertypes?.map(({_id, active, created_at, name, permissions}: Irows, index: number) => (
         <TableRow key={`${name}_${index}`}>
           <TableCell align="left">

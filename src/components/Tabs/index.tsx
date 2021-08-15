@@ -10,6 +10,7 @@ import ResponsibleForm from "../Inputs/Forms/ResponsibleForm";
 import ToggleActive from "../Button/ToggleActive";
 import TabList from "../List/TabList";
 import IntegrationForm from "../Inputs/Forms/IntegrationForm";
+import PermissionList from "../List/PermissionList";
 
 
 interface ITabrops {
@@ -25,6 +26,8 @@ interface ITabrops {
   user?: string;
   customerState?: any;
   tableCells: any;
+  mode: string;
+  initialTab: number;
 }
 
 interface INavItems {
@@ -95,13 +98,14 @@ const TabForm = (props: ITabrops) => {
     getAddress,
     user,
     customerState,
-    tableCells
+    mode,
+    initialTab,
   } = props;
   const classes = useStyles();
   const handleChange = (event: React.ChangeEvent<{}>, newValue: number) => {
     setValue(newValue);
   };
-  const [value, setValue] = useState(0);
+  const [value, setValue] = useState(initialTab);
 
   function handleComponents(component: string, index: number) {
     switch (component) {
@@ -134,10 +138,10 @@ const TabForm = (props: ITabrops) => {
           canEdit={canEdit}
           user={user}
         />
-      case 'TabList':
-        return <TabList
-          cells={tableCells}
+      case 'PermissionList':
+        return <PermissionList
           customerState={customerState}
+          mode={mode}
         />
       case 'ToggleActive':
         return <ToggleActive

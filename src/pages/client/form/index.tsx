@@ -61,6 +61,7 @@ import ButtonEdit from "../../../components/Button/ButtonEdit";
 import ButtonTabs from "../../../components/Button/ButtonTabs";
 
 import LOCALSTORAGE from "../../../helpers/constants/localStorage";
+import PermissionForm from "../../../components/Inputs/Forms/PermisionForm";
 
 interface IFormFields extends CustomerInterface {
   form?: {
@@ -104,6 +105,9 @@ export default function ClientForm(props: RouteComponentProps<IPageParams>) {
   const {params} = props.match;
 
   const [canEdit, setCanEdit] = useState(true);
+  const [canEditPermission, setCanEditPermission] = useState(true);
+  const [initialTab, setInitialTab] = useState(0);
+
   const [fieldsValidation, setFieldValidations] = useState<any>({
     name: false,
     social_name: false,
@@ -178,8 +182,15 @@ export default function ClientForm(props: RouteComponentProps<IPageParams>) {
   var formValid: any;
   useEffect(() => {
     dispatch(cleanAction());
-    const currentCustomer = localStorage.getItem(LOCALSTORAGE.CUSTOMER) || '';
-    history.push(`/client/${currentCustomer}/view`)
+    if (params.id === ':id') {
+      const currentCustomer = localStorage.getItem(LOCALSTORAGE.CUSTOMER) || '';
+      history.push(`/client/${currentCustomer}/view`)
+    }
+
+    if (_.split(window.location.pathname, '/').slice(-2)[0] === 'view') {
+      setCanEditPermission(false)
+    }
+
   }, []);
 
   useEffect(() => {
@@ -192,7 +203,6 @@ export default function ClientForm(props: RouteComponentProps<IPageParams>) {
         }
       }
     });
-    console.log('customerState', customerState)
   }, [customerState.data.address]);
 
   useEffect(() => {
@@ -302,7 +312,6 @@ export default function ClientForm(props: RouteComponentProps<IPageParams>) {
 
   useEffect(() => {
     const field = customerState.errorCep ? 'input-postal-code' : 'input-address-number';
-    console.log(customerState.errorCep);
 
 
     customerState.errorCep && setState(prevState => ({
@@ -321,7 +330,7 @@ export default function ClientForm(props: RouteComponentProps<IPageParams>) {
   }, [customerState.errorCep]);
 
   const handleSaveFormCustomer = useCallback(() => {
-    console.log(fieldsValidation);
+    // console.log(fieldsValidation);
 
     // if (!fieldsValidation.name || !fieldsValidation.social_name  || !fieldsValidation.fiscal_number || !fieldsValidation.responsible_user ||
     //   !fieldsValidation.phone || !fieldsValidation.email || !fieldsValidation.phone || !fieldsValidation.postal_code  || !fieldsValidation.street ) {
@@ -448,6 +457,18 @@ export default function ClientForm(props: RouteComponentProps<IPageParams>) {
     history.push('/dashboard');
   }
 
+  function handlePermissionReturn() {
+    const currentCustomer = localStorage.getItem(LOCALSTORAGE.CUSTOMER) || '';
+
+    setInitialTab(1)
+
+    if (canEdit) {
+      history.push(`/client/${currentCustomer}/edit`)
+    } else {
+      history.push(`/client/${currentCustomer}/view`)
+    }
+  }
+
   if (validatePhone() == true && validateCellPhone() == true) {
     formValid = true;
   }
@@ -459,7 +480,7 @@ export default function ClientForm(props: RouteComponentProps<IPageParams>) {
     },
     {
       name: "CONFIGURAÇÕES DE PERMISSÕES",
-      components: ['TabList'],
+      components: ['PermissionList'],
     },
     {
       name: "INTEGRAÇÃO",
@@ -484,6 +505,23 @@ export default function ClientForm(props: RouteComponentProps<IPageParams>) {
     }
   ]
 
+  const buttonsPermission = [
+    {
+      name: 'Voltar',
+      onClick: handlePermissionReturn,
+      variant: 'outlined',
+      background: 'success_rounded',
+      show: true,
+    },
+    {
+      name: 'Salvar',
+      // onClick: {() => (false)},
+      variant: 'contained',
+      background: 'success',
+      show: false,
+    }
+  ]
+
   // const User = 'Tascom'
   const User = 'Client'
 
@@ -499,13 +537,17 @@ export default function ClientForm(props: RouteComponentProps<IPageParams>) {
   return (
     <Sidebar>
       {customerState.loading && <Loading/>}
-      <TabTittle tittle={'Cliente'} icon={!canEdit &&
-      <ButtonEdit setCanEdit={() => setCanEdit(!canEdit)} canEdit={canEdit}>Editar</ButtonEdit>}/>
       {params.mode === 'permission' ? (
         <>
+          <TabTittle tittle={'Permissões Do Cliente'} icon={!canEditPermission &&
+          <ButtonEdit setCanEdit={() => setCanEditPermission(!canEditPermission)} canEdit={canEditPermission}>Editar</ButtonEdit>}/>
+          <PermissionForm/>
+          <ButtonTabs canEdit={canEditPermission} buttons={buttonsPermission}/>
         </>
       ) : (
         <>
+          <TabTittle tittle={'Cliente'} icon={!canEdit &&
+          <ButtonEdit setCanEdit={() => setCanEdit(!canEdit)} canEdit={canEdit}>Editar</ButtonEdit>}/>
           <TabForm
             navItems={NavItems}
             state={state}
@@ -518,6 +560,8 @@ export default function ClientForm(props: RouteComponentProps<IPageParams>) {
             user={User}
             customerState={customerState}
             tableCells={tableCells}
+            mode={params.mode ? params?.mode : ''}
+            initialTab={initialTab}
           />
           <ButtonTabs canEdit={canEdit} buttons={buttons}/>
         </>
