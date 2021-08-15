@@ -62,6 +62,7 @@ import ButtonTabs from "../../../components/Button/ButtonTabs";
 
 import LOCALSTORAGE from "../../../helpers/constants/localStorage";
 import PermissionForm from "../../../components/Inputs/Forms/PermisionForm";
+import {Theme} from "@material-ui/core/styles";
 
 interface IFormFields extends CustomerInterface {
   form?: {
@@ -91,6 +92,9 @@ export default function ClientForm(props: RouteComponentProps<IPageParams>) {
       borderColor: 'var(--danger-hover)',
       color: 'var(--danger-hover)',
       contrastText: "#fff"
+    },
+    root: {
+      maxWidth: '1280px',
     },
 
   }))
@@ -175,6 +179,12 @@ export default function ClientForm(props: RouteComponentProps<IPageParams>) {
     responsible_user: '',
     active: true,
 
+  });
+
+  const [permissionState, setPermissionState] = useState({
+    active: false,
+    name: "",
+    rights: []
   });
 
   var isValidPhoneNumber: any;
@@ -469,6 +479,10 @@ export default function ClientForm(props: RouteComponentProps<IPageParams>) {
     }
   }
 
+  function handleSavePermission() {
+    console.log(permissionState)
+  }
+
   if (validatePhone() == true && validateCellPhone() == true) {
     formValid = true;
   }
@@ -515,7 +529,7 @@ export default function ClientForm(props: RouteComponentProps<IPageParams>) {
     },
     {
       name: 'Salvar',
-      // onClick: {() => (false)},
+      onClick: handleSavePermission,
       variant: 'contained',
       background: 'success',
       show: false,
@@ -537,11 +551,15 @@ export default function ClientForm(props: RouteComponentProps<IPageParams>) {
   return (
     <Sidebar>
       {customerState.loading && <Loading/>}
+      <Container>
       {params.mode === 'permission' ? (
         <>
           <TabTittle tittle={'Permissões Do Cliente'} icon={!canEditPermission &&
           <ButtonEdit setCanEdit={() => setCanEditPermission(!canEditPermission)} canEdit={canEditPermission}>Editar</ButtonEdit>}/>
-          <PermissionForm/>
+          <PermissionForm
+            state={permissionState}
+            setState={setPermissionState}
+          />
           <ButtonTabs canEdit={canEditPermission} buttons={buttonsPermission}/>
         </>
       ) : (
@@ -566,6 +584,7 @@ export default function ClientForm(props: RouteComponentProps<IPageParams>) {
           <ButtonTabs canEdit={canEdit} buttons={buttons}/>
         </>
       )}
+      </Container>
     </Sidebar>
   );
 }
