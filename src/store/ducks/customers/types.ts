@@ -21,6 +21,10 @@ export enum CustomerTypes {
 
   LOAD_REQUEST_PERMISSION = "@customer/LOAD_REQUEST_PERMISSION",
   LOAD_RESPONSE_PERMISSION = "@customer/LOAD_RESPONSE_PERMISSION",
+  CREATE_PERMISSION_REQUEST = "@customer/CREATE_PERMISSION_REQUEST",
+  CREATE_PERMISSION_SUCCESS = "@customer/CREATE_PERMISSION_SUCCESS",
+  UPDATE_PERMISSION_REQUEST = "@customer/UPDATE_PERMISSION_REQUEST",
+  UPDATE_PERMISSION_SUCCESS = "@customer/UPDATE_PERMISSION_SUCCESS",
 
   SEARCH_REQUEST = "@customer/SEARCH_REQUEST",
 
@@ -93,9 +97,11 @@ export interface CustomerDataItems {
 }
 
 export interface PermissionInterface {
-  _id: string;
+  _id?: string;
+  rights?: string[];
+  customer_id?: string;
+  name?: string;
   active?: boolean;
-  front: {};
 }
 
 /**
@@ -110,6 +116,8 @@ export interface CustomerState {
   success: boolean;
   errorCep?: boolean;
   isRegistrationCompleted?: boolean;
+  permissionSuccess?: boolean;
+  permissionLoad?: boolean;
 }
 
 export type LoadRequestParams = Partial<Omit<CustomerList, "data">>;

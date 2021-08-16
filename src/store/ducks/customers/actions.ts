@@ -39,6 +39,19 @@ export const loadCustomerById = (id: string) =>
 export const loadSuccessCustomerById = (data: CustomerInterface) =>
   action(CustomerTypes.LOAD_SUCCESS_BY_ID, { data });
 
+export const loadPermissionRequest = (id: string) =>
+  action(CustomerTypes.LOAD_REQUEST_PERMISSION, { id });
+export const loadPermissionSuccess = (data: PermissionInterface) =>
+  action(CustomerTypes.LOAD_RESPONSE_PERMISSION, { data });
+export const updatePermissionRequest = (data: PermissionInterface) =>
+  action(CustomerTypes.UPDATE_PERMISSION_REQUEST, { data });
+export const updatePermissionSuccess = (data: PermissionInterface) =>
+  action(CustomerTypes.UPDATE_PERMISSION_SUCCESS, { data });
+export const createPermissionRequest = (data: PermissionInterface) =>
+  action(CustomerTypes.CREATE_PERMISSION_REQUEST, { data });
+export const createPermissionSuccess = (data: PermissionInterface) =>
+  action(CustomerTypes.CREATE_PERMISSION_SUCCESS, { data });
+
 export const loadFailure = () => action(CustomerTypes.LOAD_FAILURE);
 export const loadFailureCep = () => action(CustomerTypes.LOAD_FAILURE_CEP);
 

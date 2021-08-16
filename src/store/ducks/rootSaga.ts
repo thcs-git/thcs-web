@@ -25,6 +25,7 @@ import {
   createCompanyCustomer,
   updateCompanyCustomer,
   searchCustomer,
+  createPermission, loadPermission, updatePermissionCustomer,
 } from "./customers/sagas";
 
 import { CompanyTypes } from "./companies/types";
@@ -236,7 +237,9 @@ export default function* rootSaga() {
     takeLatest(CustomerTypes.CREATE_CUSTOMER_REQUEST, createCompanyCustomer),
     takeLatest(CustomerTypes.UPDATE_CUSTOMER_REQUEST, updateCompanyCustomer),
     takeLatest(CustomerTypes.SEARCH_REQUEST, searchCustomer),
-    takeLatest(CustomerTypes.LOAD_REQUEST_PERMISSION, searchCustomer),
+    takeLatest(CustomerTypes.LOAD_REQUEST_PERMISSION, loadPermission),
+    takeLatest(CustomerTypes.UPDATE_PERMISSION_REQUEST, updatePermissionCustomer),
+    takeLatest(CustomerTypes.CREATE_PERMISSION_REQUEST, createPermission),
 
     // Documents
     takeLatest(DocumentTypes.LOAD_REQUEST, getDocuments),

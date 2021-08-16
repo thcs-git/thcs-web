@@ -1,5 +1,10 @@
 import styled from "styled-components";
 import Button from "../../../styles/components/Button";
+import {Link} from "@material-ui/core";
+
+export const ListLink = styled(Link)`
+  text-decoration: none;
+`;
 
 export const ButtonStyle = styled(Button).attrs({
   background: "success",

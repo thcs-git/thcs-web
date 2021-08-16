@@ -38,13 +38,17 @@ export const INITIAL_STATE: CustomerState = {
   },
   permission: {
     _id: "",
+    rights: [],
+    customer_id: "",
+    name: "",
     active: false,
-    front: {},
   },
   error: false,
   loading: false,
   success: false,
   errorCep: false,
+  permissionLoad: false,
+  permissionSuccess: false,
 };
 
 const reducer: Reducer<CustomerState> = (state = INITIAL_STATE, action) => {
@@ -138,6 +142,37 @@ const reducer: Reducer<CustomerState> = (state = INITIAL_STATE, action) => {
       };
     case CustomerTypes.SEARCH_REQUEST:
       return { ...state, loading: true, error: false };
+
+    case CustomerTypes.LOAD_REQUEST_PERMISSION:
+      return {
+        ...state,
+        loading: true,
+        error: false,
+        success: false,
+        permissionLoad: false,
+      };
+    case CustomerTypes.LOAD_RESPONSE_PERMISSION:
+      return {
+        ...state,
+        permission: action.payload.data,
+        loading: false,
+        permissionLoad: true,
+      };
+    case CustomerTypes.UPDATE_PERMISSION_SUCCESS:
+      return {
+        ...state,
+        permission: action.payload.data,
+        loading: false,
+        error: false,
+        permissionSuccess: true
+      };
+    case CustomerTypes.CREATE_PERMISSION_SUCCESS:
+      return {
+        ...state,
+        permission: action.payload.data,
+        loading: false,
+        permissionSuccess: true
+      };
 
     case CustomerTypes.CLEAN:
       return INITIAL_STATE;

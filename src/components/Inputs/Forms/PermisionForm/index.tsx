@@ -13,6 +13,7 @@ import {loadCustomerById} from "../../../../store/ducks/customers/actions";
 interface IComponent {
   state: any;
   setState: any;
+  customerState: any;
 }
 
 interface TabPanelProps {
@@ -69,7 +70,7 @@ const CustomCheckbox = withStyles({
 })((props: CheckboxProps) => <Checkbox color="default" {...props} />);
 
 const PermissionForm = (props: IComponent) => {
-  const {state, setState} = props;
+  const {state, setState, customerState} = props;
   const classes = useStyles();
 
   interface rightsInterface {
@@ -84,6 +85,7 @@ const PermissionForm = (props: IComponent) => {
   }
 
   const mode = _.split(window.location.pathname, '/').slice(-2)[0]
+  const _id = _.split(window.location.pathname, '/').slice(-3)[0]
 
   const rows = [
     {
@@ -176,28 +178,49 @@ const PermissionForm = (props: IComponent) => {
     },
   ]
 
-  function handleActive() {
-    if (mode === 'create') {
-      return true
-    }
-    return state.active
+  function handleChecked(name: string, crud: string) {
+    return _.indexOf(state.rights, `${name}.${crud}`) > -1;
   }
 
   useEffect(() => {
     if (mode === 'create') {
       setState((prevState: any) => ({
         ...prevState,
-        active: true
+        active: true,
+        mode: mode,
+        _id: _id,
+        customer_id: customerState.data._id,
+      }))
+    } else {
+      setState((prevState: any) => ({
+        ...prevState,
+        mode: mode,
+        _id: _id,
+        customer_id: customerState.data._id,
       }))
     }
   }, []);
 
+  useEffect(() => {
+    if (customerState.permissionLoad && mode != 'create') {
+      const permission = _.find(customerState.data.usertypes, {permissions: customerState.permission._id})
+      setState((prevState: any) => ({
+        ...prevState,
+        active: permission.active,
+        name: permission.name,
+        rights: customerState.permission.rights,
+      }))
+    }
+  }, [customerState.permissionLoad]);
+
   return (
     <div className={classes.root}>
+      {/*{console.log(customerState.permission)}*/}
       <TabPanel value={0} index={0}>
         <Grid container>
           <Grid item md={9} xs={12}>
             <TextField
+              disabled={mode === 'create' || mode === 'view'}
               label="Nome"
               variant="outlined"
               size="small"
@@ -238,7 +261,7 @@ const PermissionForm = (props: IComponent) => {
               {rights.map(({crud, label}: rightsInterface, index: number) => (
                 <FormControlLabel
                   value={crud}
-                  control={<CustomCheckbox/>}
+                  control={<CustomCheckbox checked={handleChecked(name, crud)}/>}
                   label={label}
                   labelPlacement="end"
                   disabled={mode === 'view'}

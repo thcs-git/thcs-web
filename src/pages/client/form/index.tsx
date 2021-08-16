@@ -7,7 +7,8 @@ import {
   getAddress as getAddressAction,
   updateCustomerRequest,
   createCustomerRequest,
-  cleanAction
+  createPermissionRequest,
+  cleanAction, updatePermissionRequest
 } from '../../../store/ducks/customers/actions';
 import {CustomerInterface, CustomerState} from '../../../store/ducks/customers/types';
 import {createUserRequest as createUserAction} from '../../../store/ducks/users/actions';
@@ -184,7 +185,10 @@ export default function ClientForm(props: RouteComponentProps<IPageParams>) {
   const [permissionState, setPermissionState] = useState({
     active: false,
     name: "",
-    rights: []
+    rights: [],
+    mode: "",
+    _id: "",
+    customer_id: "",
   });
 
   var isValidPhoneNumber: any;
@@ -200,7 +204,6 @@ export default function ClientForm(props: RouteComponentProps<IPageParams>) {
     if (_.split(window.location.pathname, '/').slice(-2)[0] === 'view') {
       setCanEditPermission(false)
     }
-
   }, []);
 
   useEffect(() => {
@@ -306,6 +309,12 @@ export default function ClientForm(props: RouteComponentProps<IPageParams>) {
 
     }
   }, [dispatch, params]);
+
+  useEffect(() => {
+    if (params.id) {
+      dispatch(loadCustomerById(params.id))
+    }
+  }, [customerState.permissionSuccess]);
 
 
   const handleValidateFields = useCallback(() => {
@@ -479,9 +488,14 @@ export default function ClientForm(props: RouteComponentProps<IPageParams>) {
     }
   }
 
-  function handleSavePermission() {
-    console.log(permissionState)
-  }
+  const handleSavePermission = useCallback(() => {
+    if (permissionState.mode === 'create') {
+      dispatch(createPermissionRequest(permissionState))
+    } else if (permissionState.mode === 'edit') {
+      dispatch(updatePermissionRequest(permissionState))
+    }
+    handlePermissionReturn()
+  }, [permissionState]);
 
   if (validatePhone() == true && validateCellPhone() == true) {
     formValid = true;
@@ -559,6 +573,7 @@ export default function ClientForm(props: RouteComponentProps<IPageParams>) {
           <PermissionForm
             state={permissionState}
             setState={setPermissionState}
+            customerState={customerState}
           />
           <ButtonTabs canEdit={canEditPermission} buttons={buttonsPermission}/>
         </>
