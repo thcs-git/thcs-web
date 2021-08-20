@@ -119,6 +119,17 @@ const PermissionForm = (props: IComponent) => {
       ]
     },
     {
+      legend: 'Todos Profissionais',
+      name: 'userclient',
+      rights: [
+        {crud: 'view', label: 'Visualizar'},
+        {crud: 'edit', label: 'Editar'},
+        {crud: 'status', label: 'Desativar'},
+        {crud: 'create', label: 'Criar'},
+        {crud: 'history', label: 'Histórico'},
+      ]
+    },
+    {
       legend: 'Meus Profissionais',
       name: 'user',
       rights: [

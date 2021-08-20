@@ -187,19 +187,6 @@ const reducer: Reducer<UserState> = (state = INITIAL_STATE, action) => {
         ...state,
         data: {
           ...state.data,
-          professions: action.payload.data.data,
-        },
-        loading: false,
-        error: false,
-        success: false,
-        successRecovery: false,
-      };
-
-    case UserTypes.LOAD_RESPONSE_PROFESSION:
-      return {
-        ...state,
-        data: {
-          ...state.data,
           professions: action.payload.data,
         },
         loading: false,

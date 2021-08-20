@@ -178,7 +178,7 @@ export default function UserConfiguration() {
                     </Grid>
                     <Grid item md={3}>
                       <ButtonComponent variant="outlined">
-                        <Button onClick={handlePushUser}>Atualizar Dados</Button>
+                        <Button onClick={handlePushUser}>Vizualizar Dados</Button>
                       </ButtonComponent>
                     </Grid>
                     <Grid item md={2}>
@@ -317,40 +317,40 @@ export default function UserConfiguration() {
               </List>
             </Grid>
 
-            <Grid item md={12}>
-              <Grid container>
-                <Card style={{
-                  borderRadius: "20px",
-                  display: "flex",
-                  justifyContent: "center",
-                  alignItems: "center",
-                  height: "40px"
-                }}>
-                  <CardContent style={{
-                    backgroundColor: "#0899BA",
-                    borderRadius: "20px",
-                    padding: "0.5rem",
-                    display: "flex",
-                    justifyContent: "center",
-                    alignItems: "center",
-                    height: "40px"
-                  }}>
-                    <LockRoundedIcon style={{color: "#ffffff"}}/>
-                  </CardContent>
-                </Card>
-                <FeedbackTitle style={{paddingLeft: "1rem", paddingTop: "0.5rem"}}>
-                  Acessibilidade
-                </FeedbackTitle>
-              </Grid>
-              <List style={{paddingLeft: "3rem"}}>
-                <ListItem>
-                  Fontes Grande <Switch/>
-                </ListItem>
-                <ListItem>
-                  Alto Contraste <Switch/>
-                </ListItem>
-              </List>
-            </Grid>
+            {/*<Grid item md={12}>*/}
+            {/*  <Grid container>*/}
+            {/*    <Card style={{*/}
+            {/*      borderRadius: "20px",*/}
+            {/*      display: "flex",*/}
+            {/*      justifyContent: "center",*/}
+            {/*      alignItems: "center",*/}
+            {/*      height: "40px"*/}
+            {/*    }}>*/}
+            {/*      <CardContent style={{*/}
+            {/*        backgroundColor: "#0899BA",*/}
+            {/*        borderRadius: "20px",*/}
+            {/*        padding: "0.5rem",*/}
+            {/*        display: "flex",*/}
+            {/*        justifyContent: "center",*/}
+            {/*        alignItems: "center",*/}
+            {/*        height: "40px"*/}
+            {/*      }}>*/}
+            {/*        <LockRoundedIcon style={{color: "#ffffff"}}/>*/}
+            {/*      </CardContent>*/}
+            {/*    </Card>*/}
+            {/*    <FeedbackTitle style={{paddingLeft: "1rem", paddingTop: "0.5rem"}}>*/}
+            {/*      Acessibilidade*/}
+            {/*    </FeedbackTitle>*/}
+            {/*  </Grid>*/}
+            {/*  <List style={{paddingLeft: "3rem"}}>*/}
+            {/*    <ListItem>*/}
+            {/*      Fontes Grande <Switch/>*/}
+            {/*    </ListItem>*/}
+            {/*    <ListItem>*/}
+            {/*      Alto Contraste <Switch/>*/}
+            {/*    </ListItem>*/}
+            {/*  </List>*/}
+            {/*</Grid>*/}
             <Grid item md={12}>
               <Grid container>
                 <Card style={{
