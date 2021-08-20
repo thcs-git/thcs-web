@@ -192,6 +192,7 @@ const Sibebar = (props: Props<any>) => {
     localStorage.removeItem('@sollar_customer');
 
     sessionStorage.removeItem(SESSIONSTORAGE.MENU);
+    sessionStorage.removeItem(SESSIONSTORAGE.RIGHTS);
 
 
     window.location.reload();
@@ -293,11 +294,12 @@ const Sibebar = (props: Props<any>) => {
 
   useEffect(() => {
     if (layoutState.success) {
-      sessionStorage.setItem(SESSIONSTORAGE.MENU, JSON.stringify(layoutState.data))
+      sessionStorage.setItem(SESSIONSTORAGE.MENU, JSON.stringify(layoutState.data.menu))
+      sessionStorage.setItem(SESSIONSTORAGE.RIGHTS, JSON.stringify(layoutState.data.rights))
 
       const items: itemsInterface[] = []
 
-      _.sortBy(layoutState.data, ['id']).map((item: any) => {
+      _.sortBy(layoutState.data.menu, ['id']).map((item: any) => {
         items.push({
           title: item.name,
           route: item.slug,

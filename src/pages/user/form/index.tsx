@@ -520,7 +520,7 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
     if (params?.mode == 'config') {
       history.push(`/userconfiguration`);
     } else if (params?.mode == 'link') {
-      history.push(`/userdesengaged`)
+      history.push(`/user`)
     } else {
       history.push(`/user`);
     }
@@ -546,7 +546,7 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
 
       if (companyLinkFounded > -1) {
         let selected = companiesLinkSelected.splice(companyLinkFounded, 1)[0];
-        selected.permissions = state.user_type_id
+        selected.function = viewProfession()
         selected.active = true
         selected.linked_at = new Date
 
@@ -562,13 +562,15 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
       } else {
         let selected = linkChecked ? {
           companie_id: company._id,
-          permissions: state.user_type_id,
+          customer_id: customer._id,
+          function: viewProfession(),
           active: true,
           linked_at: new Date,
           exp: String(moment(companyLink).unix() + 86399)
         } : {
           companie_id: company._id,
-          permissions: state.user_type_id,
+          customer_id: customer._id,
+          function: viewProfession(),
           active: true,
           linked_at: new Date,
           exp: '0'
@@ -595,7 +597,7 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
       return company._id === item._id
     })
     const companyLinkFounded = companiesLinkSelected.findIndex((item: any) => {
-      return company._id === item.companie_id
+      return company._id === item.companie_id._id
     })
 
     if (companyFounded > -1) {
@@ -608,7 +610,6 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
         ...prevState,
         companies: companiesSelected
       }))
-      setEngaged(true);
     }
 
     if (companyLinkFounded > -1) {
@@ -621,8 +622,9 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
         ...prevState,
         companies_links: companiesLinkSelected,
       }))
-      setEngaged(true);
     }
+    setEngaged(true);
+
   }, [state.companies]);
 
   function handlerReturn() {
@@ -901,7 +903,7 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
 
     if (state?._id) {
       if (params.mode == 'link' || params.mode === "linking") {
-        history.push('/userdesengaged');
+        history.push('/user');
       } else if (params.mode == 'view') {
         history.push('/user');
       } else if (params.mode == 'config') {
@@ -1947,36 +1949,36 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
                           </Grid> */}
                                     {(params.mode === 'link' && !checkCompany) && (
                                       <>
-                                        <Grid item md={12} xs={12} style={{padding: '0 12px 12px 0'}}>
-                                          <Autocomplete
-                                            id="combo-box-user-type"
-                                            options={customerState.data.usertypes || []}
-                                            getOptionLabel={(option) => option.name}
-                                            // disabled={!canEdit}
-                                            renderInput={(params) => (
-                                              <TextField {...params}
-                                                         label="Tipo do Usuário"
-                                                         variant="outlined"
-                                              />
-                                            )}
-                                            value={selectUserType()}
-                                            onChange={(event, value) => {
-                                              if (value) {
-                                                handleSelectUserType(value);
-                                              } else {
-                                                setState((prevState) => ({
-                                                  ...prevState,
-                                                  user_type_id: "",
-                                                }));
-                                              }
-                                            }}
-                                            getOptionSelected={(option, value) =>
-                                              option._id === state.user_type_id
-                                            }
-                                            size="small"
-                                            fullWidth
-                                          />
-                                        </Grid>
+                                        {/*<Grid item md={12} xs={12} style={{padding: '0 12px 12px 0'}}>*/}
+                                        {/*  <Autocomplete*/}
+                                        {/*    id="combo-box-user-type"*/}
+                                        {/*    options={customerState.data.usertypes || []}*/}
+                                        {/*    getOptionLabel={(option) => option.name}*/}
+                                        {/*    // disabled={!canEdit}*/}
+                                        {/*    renderInput={(params) => (*/}
+                                        {/*      <TextField {...params}*/}
+                                        {/*                 label="Tipo do Usuário"*/}
+                                        {/*                 variant="outlined"*/}
+                                        {/*      />*/}
+                                        {/*    )}*/}
+                                        {/*    value={selectUserType()}*/}
+                                        {/*    onChange={(event, value) => {*/}
+                                        {/*      if (value) {*/}
+                                        {/*        handleSelectUserType(value);*/}
+                                        {/*      } else {*/}
+                                        {/*        setState((prevState) => ({*/}
+                                        {/*          ...prevState,*/}
+                                        {/*          user_type_id: "",*/}
+                                        {/*        }));*/}
+                                        {/*      }*/}
+                                        {/*    }}*/}
+                                        {/*    getOptionSelected={(option, value) =>*/}
+                                        {/*      option._id === state.user_type_id*/}
+                                        {/*    }*/}
+                                        {/*    size="small"*/}
+                                        {/*    fullWidth*/}
+                                        {/*  />*/}
+                                        {/*</Grid>*/}
 
                                         <Grid item md={12} xs={12} style={{display: 'flex', padding: '0 12px 12px 0'}}>
                                           <Grid item md={3} xs={12}>
@@ -2005,7 +2007,8 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
                                             </Grid>
                                           )}
                                         </Grid>
-                                        {((state.user_type_id && companyLink != '') || (state.user_type_id && !linkChecked)) && (
+                                        {/*{((state.user_type_id && companyLink != '') || (state.user_type_id && !linkChecked)) && (*/}
+                                        {((linkChecked && companyLink != '') || (!linkChecked)) && (
                                           <Grid item md={12} xs={12} style={{padding: '0 12px 12px 0'}}>
                                             <ButtonComponent background="success_rounded" onClick={() => engagedUser()}>
                                               Vincular este prestador a minha empresa

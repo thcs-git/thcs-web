@@ -11,12 +11,13 @@ import {
   loadFailure,
 } from "./actions"
 
-const token = localStorage.getItem("token");
+const token = localStorage.getItem(LOCALSTORAGE.TOKEN);
+const customer_id = localStorage.getItem(LOCALSTORAGE.CUSTOMER);
 
 export function* get() {
   try {
     const response: AxiosResponse = yield call(apiSollar.get, `/layout`, {
-      headers: { token },
+      headers: { token, customer_id },
     });
     yield put(loadSuccess(response.data));
   } catch (error) {

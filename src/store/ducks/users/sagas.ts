@@ -132,7 +132,6 @@ export async function* registerUser({ payload: { data } }: any) {
         data.address.geolocation = { latitude, longitude };
       }
     } catch (e) {
-      console.error("Get google maps data", e.message);
     }
   }
 
@@ -152,7 +151,6 @@ export async function* registerUser({ payload: { data } }: any) {
 }
 
 export function* createUser({ payload: { data } }: any) {
-  console.log(data);
   const phones = [];
 
   if (data.phone.length > 0) {
@@ -255,8 +253,6 @@ export function* updateUser({ payload: { data } }: any) {
       { headers: { token } }
     );
 
-    console.log(response.data);
-
     toast.success("Usuário atualizado com sucesso!");
     yield put(updateUserSuccess(response.data));
   } catch (error) {
@@ -288,8 +284,6 @@ export function* getProfessions() {
     const response: AxiosResponse = yield call(apiSollar.get, `/profession`, {
       headers: { token },
     });
-    console.log(response);
-
     yield put(loadProfessionsSuccess(response.data));
   } catch (error) {
     yield put(loadFailure());
@@ -343,7 +337,6 @@ export function* checkEmail({ payload: { token } }: any) {
       apiSollar.get,
       `/email?token=${token}`
     );
-    console.log(response.data);
     yield put(loadCheckSuccess(response.data));
   } catch (error) {
     yield put(loadFailure());
@@ -362,7 +355,6 @@ export function* recoveryPassword({ payload: { data } }: any) {
       `/users/recoverypassword`,
       { ...data }
     );
-    console.log(response.data);
     yield put(loadRecoverySuccess(response.data));
   } catch (error) {
     yield put(loadFailure());
@@ -375,7 +367,6 @@ export function* recoverypasswordiftoken({ payload: { data } }: any) {
       `/users/recoverypasswordiftoken`,
       { ...data }
     );
-    console.log(response.data);
     yield put(loadRecoverySuccess(response.data));
   } catch (error) {
     yield put(loadFailure());
@@ -387,7 +378,6 @@ export function* loadConfirmUser({ payload: { token } }: any) {
       apiSollar.get,
       `/user/confirm?token=${token}`
     );
-    console.log(response.data);
     yield put(loadSuccessConfirm(response.data));
   } catch (error) {
     yield put(loadFailure());

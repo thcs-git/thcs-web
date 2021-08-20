@@ -89,6 +89,7 @@ export interface CompanyUserInterface {
 }
 
 export interface CompanyUserLinkInterface {
+  function: string | null | undefined;
   exp?: string;
   permissions?: string | UserTypeInterface;
   _id?: string;

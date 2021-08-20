@@ -49,6 +49,7 @@ export const INITIAL_STATE: CustomerState = {
   errorCep: false,
   permissionLoad: false,
   permissionSuccess: false,
+  requestSucess: false,
 };
 
 const reducer: Reducer<CustomerState> = (state = INITIAL_STATE, action) => {
@@ -73,6 +74,8 @@ const reducer: Reducer<CustomerState> = (state = INITIAL_STATE, action) => {
         loading: false,
         success: false,
         list: INITIAL_STATE.list,
+        requestSucess: true,
+        permissionSuccess: false,
       };
     case CustomerTypes.LOAD_FAILURE:
       return {

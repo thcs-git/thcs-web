@@ -23,6 +23,7 @@ export interface MenuInterface {
 
 export interface LayoutInterface {
   menu?: MenuInterface[];
+  rights: [];
 }
 
 /**

@@ -171,7 +171,6 @@ export function* loadPermission({ payload: { id: _id } }: any) {
 
 export function* updatePermissionCustomer({ payload: { data } }: any) {
   try {
-    console.log(data)
     const response: AxiosResponse = yield call(
       apiSollar.put,
       `/permission/${data._id}`,

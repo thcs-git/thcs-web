@@ -118,6 +118,7 @@ export interface CustomerState {
   isRegistrationCompleted?: boolean;
   permissionSuccess?: boolean;
   permissionLoad?: boolean;
+  requestSucess?: boolean;
 }
 
 export type LoadRequestParams = Partial<Omit<CustomerList, "data">>;

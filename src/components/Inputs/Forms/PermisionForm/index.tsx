@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, {useCallback, useEffect, useState} from 'react';
 import {makeStyles, Theme, withStyles} from "@material-ui/core/styles";
 import {TabBody, TabBodyItem} from "../../../Tabs/styles";
 import ButtonEdit from "../../../Button/ButtonEdit";
@@ -8,7 +8,12 @@ import {Checkbox, CheckboxProps, FormControl, FormControlLabel, FormGroup, FormL
 import {FormLabelComponent} from "./styles"
 import {SwitchComponent as Switch} from "../../../Button/ToggleActive/styles";
 import {InputFiled as TextField} from "../IntegrationForm/styles";
-import {loadCustomerById} from "../../../../store/ducks/customers/actions";
+import {loadCustomerById, loadPermissionRequest} from "../../../../store/ducks/customers/actions";
+import Autocomplete from "@material-ui/lab/Autocomplete";
+import {loadProfessionsRequest as getProfessionsAction} from "../../../../store/ducks/users/actions";
+import {useDispatch, useSelector} from "react-redux";
+import {ApplicationState} from "../../../../store";
+import {ProfessionUserInterface} from "../../../../store/ducks/users/types";
 
 interface IComponent {
   state: any;
@@ -71,7 +76,9 @@ const CustomCheckbox = withStyles({
 
 const PermissionForm = (props: IComponent) => {
   const {state, setState, customerState} = props;
+  const userState = useSelector((state: ApplicationState) => state.users);
   const classes = useStyles();
+  const dispatch = useDispatch();
 
   interface rightsInterface {
     crud: string;
@@ -86,6 +93,7 @@ const PermissionForm = (props: IComponent) => {
 
   const mode = _.split(window.location.pathname, '/').slice(-2)[0]
   const _id = _.split(window.location.pathname, '/').slice(-3)[0]
+  const customer_id = _.split(window.location.pathname, '/').slice(-5)[0]
 
   const rows = [
     {
@@ -182,6 +190,24 @@ const PermissionForm = (props: IComponent) => {
     return _.indexOf(state.rights, `${name}.${crud}`) > -1;
   }
 
+  function handleSelectProfession(value: ProfessionUserInterface) {
+    setState((prevState: any) => ({
+      ...prevState,
+      name: value.name,
+    }));
+  }
+
+  const selectProfession = useCallback(() => {
+
+    if (userState.data.professions) {
+      const selected = userState.data.professions.filter((item) => {
+        return item.name === state.name;
+      });
+      return selected[0] ? selected[0] : {_id: "0", name: ""};
+    }
+
+  }, [state, state.name, userState.data.professions]);
+
   useEffect(() => {
     if (mode === 'create') {
       setState((prevState: any) => ({
@@ -199,23 +225,30 @@ const PermissionForm = (props: IComponent) => {
         customer_id: customerState.data._id,
       }))
     }
+
+    if (!customerState.data.usertypes) {
+      dispatch(loadCustomerById(customer_id))
+    }
+    dispatch(getProfessionsAction());
   }, []);
 
   useEffect(() => {
     if (customerState.permissionLoad && mode != 'create') {
       const permission = _.find(customerState.data.usertypes, {permissions: customerState.permission._id})
-      setState((prevState: any) => ({
-        ...prevState,
-        active: permission.active,
-        name: permission.name,
-        rights: customerState.permission.rights,
-      }))
+
+      if (permission) {
+        setState((prevState: any) => ({
+          ...prevState,
+          active: permission.active,
+          name: permission.name,
+          rights: customerState.permission.rights,
+        }))
+      }
     }
-  }, [customerState.permissionLoad]);
+  }, [customerState]);
 
   return (
     <div className={classes.root}>
-      {/*{console.log(customerState.permission)}*/}
       <TabPanel value={0} index={0}>
         <Grid container>
           <Grid item md={9} xs={12}>
@@ -233,6 +266,29 @@ const PermissionForm = (props: IComponent) => {
               }}
               fullWidth
             />
+
+            <Autocomplete
+              id="combo-box-profession"
+              disabled={mode === 'create' || mode === 'view'}
+              options={userState.data.professions}
+              getOptionLabel={(option) => option.name}
+              renderInput={(params) =>
+                <TextField {...params} label="Função" variant="outlined"/>}
+              getOptionSelected={(option, value) =>
+                option._id ==
+                userState.data.professions[0]._id
+              }
+              // defaultValue={selectProfession()}
+              value={selectProfession()}
+              onChange={(event, value) => {
+                if (value) {
+                  handleSelectProfession(value);
+                }
+              }}
+              size="small"
+              fullWidth
+            />
+
           </Grid>
           <Grid item md={3} xs={12}>
             <FormControlLabel

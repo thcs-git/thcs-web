@@ -8,7 +8,7 @@ import {
   updateCustomerRequest,
   createCustomerRequest,
   createPermissionRequest,
-  cleanAction, updatePermissionRequest
+  cleanAction, updatePermissionRequest, loadPermissionRequest
 } from '../../../store/ducks/customers/actions';
 import {CustomerInterface, CustomerState} from '../../../store/ducks/customers/types';
 import {createUserRequest as createUserAction} from '../../../store/ducks/users/actions';
@@ -244,7 +244,7 @@ export default function ClientForm(props: RouteComponentProps<IPageParams>) {
         ...prev,
         value: customerState.data.phones[0]?.cellphone || ''
       }));
-
+      // console.log(customerState)
       // setFieldValidations({
       //   name: true,
       //   social_name: true,
@@ -304,16 +304,19 @@ export default function ClientForm(props: RouteComponentProps<IPageParams>) {
 
 
   useEffect(() => {
-    if (params.id) {
+    if (params.mode === 'permission'){
+      dispatch(loadPermissionRequest(_.split(window.location.pathname, '/').slice(-3)[0]))
+    }
+     else if (params.id && !permissionState.mode && params.id != ':id') {
       dispatch(loadCustomerById(params.id))
-
     }
   }, [dispatch, params]);
 
   useEffect(() => {
-    if (params.id) {
+    if (params.id && params.mode != 'permission' && customerState.permissionSuccess) {
       dispatch(loadCustomerById(params.id))
     }
+
   }, [customerState.permissionSuccess]);
 
 

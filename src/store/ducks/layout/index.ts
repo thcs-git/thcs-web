@@ -3,7 +3,9 @@ import {LayoutState, LayoutTypes} from "./types"
 import {UserTypes} from "../users/types";
 
 export const INITIAL_STATE: LayoutState = {
-  data: {},
+  data: {
+    rights: [],
+  },
   success: false,
   error: false,
   loading: false,

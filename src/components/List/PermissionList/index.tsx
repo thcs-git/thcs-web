@@ -46,7 +46,7 @@ const PermissionList = (props: IComponent) => {
                 {/*</ListLink>*/}
                 <ListLink onClick={() => {
                   history.push(`/client/${customerState.data._id}/permission/${permissions}/view/`)
-                  dispatch(loadPermissionRequest(permissions))
+                  // dispatch(loadPermissionRequest(permissions))
                 }}>
                   {name}
                 </ListLink>
@@ -59,7 +59,7 @@ const PermissionList = (props: IComponent) => {
               <ButtonView canEdit={true}
                           setCanEdit={() => {
                             history.push(`/client/${customerState.data._id}/permission/${permissions}/view/`)
-                            dispatch(loadPermissionRequest(permissions))
+                            // dispatch(loadPermissionRequest(permissions))
                           }}>
               </ButtonView>
             </TableCell>
@@ -67,7 +67,7 @@ const PermissionList = (props: IComponent) => {
               <ButtonEdit canEdit={true}
                           setCanEdit={() => {
                             history.push(`/client/${customerState.data._id}/permission/${permissions}/edit/`)
-                            dispatch(loadPermissionRequest(permissions))
+                            // dispatch(loadPermissionRequest(permissions))
                           }}>
               </ButtonEdit>
             </TableCell>
