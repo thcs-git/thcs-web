@@ -11,23 +11,33 @@ import ToggleActive from "../Button/ToggleActive";
 import TabList from "../List/TabList";
 import IntegrationForm from "../Inputs/Forms/IntegrationForm";
 import PermissionList from "../List/PermissionList";
+import UserContactForm from "../Inputs/Forms/UserContactForm";
+import UserProfessionForm from "../Inputs/Forms/UserProfessionForm";
+import UserForm from "../Inputs/Forms/UserForm";
+import UserCompanyForm from "../Inputs/Forms/UserCompanyForm";
 
 
-interface ITabrops {
+interface ITabprops {
   navItems: INavItems[],
   children?: ReactNode;
-  state: any;
-  setState: Function;
-  setValidations: Function;
-  fieldsValidation: any;
-  canEdit: boolean;
-  getAddress: any;
-  cepStatus: any;
+  state?: any;
+  setState?: Function;
+  setValidations?: Function;
+  fieldsValidation?: any;
+  canEdit?: boolean;
+  getAddress?: any;
+  cepStatus?: any;
   user?: string;
   customerState?: any;
-  tableCells: any;
-  mode: string;
+  tableCells?: any;
+  mode?: string;
   initialTab: number;
+  params: IPageParams;
+}
+
+interface IPageParams {
+  id?: string,
+  mode?: string;
 }
 
 interface INavItems {
@@ -86,7 +96,7 @@ const useStyles = makeStyles((theme: Theme) => ({
 }));
 
 
-const TabForm = (props: ITabrops) => {
+const TabForm = (props: ITabprops) => {
   const {
     navItems,
     state,
@@ -100,7 +110,9 @@ const TabForm = (props: ITabrops) => {
     customerState,
     mode,
     initialTab,
+    params,
   } = props;
+
   const classes = useStyles();
   const handleChange = (event: React.ChangeEvent<{}>, newValue: number) => {
     setValue(newValue);
@@ -113,42 +125,75 @@ const TabForm = (props: ITabrops) => {
         return <ClientFormHeader
           index={index}
           state={state}
-          setState={setState}
-          setValidations={setValidations}
+          setState={setState ? setState : () => false}
+          setValidations={setValidations ? setValidations : () => false}
           fieldsValidation={fieldsValidation}
-          canEdit={canEdit}
+          canEdit={canEdit ? canEdit : false}
         />
       case 'CepForm':
         return <CepForm
           index={index}
           state={state}
-          setState={setState}
-          setValidations={setValidations}
-          canEdit={canEdit}
+          setState={setState ? setState : () => false}
+          setValidations={setValidations ? setValidations : () => false}
+          canEdit={canEdit ? canEdit : false}
           cepStatus={cepStatus}
           getAddress={getAddress}
+          params={params}
+        />
+      case 'UserForm':
+        return <UserForm
+          state={state}
+          setState={setState ? setState : () => false}
+          setValidations={setValidations ? setValidations : () => false}
+          canEdit={canEdit ? canEdit : false}
+          params={params}
+        />
+      case 'UserCompanyForm':
+        return <UserCompanyForm
+          state={state}
+          setState={setState ? setState : () => false}
+          setValidations={setValidations ? setValidations : () => false}
+          canEdit={canEdit ? canEdit : false}
+          params={params}
+        />
+      case 'UserContactForm':
+        return <UserContactForm
+          state={state}
+          setState={setState ? setState : () => false}
+          setValidations={setValidations ? setValidations : () => false}
+          canEdit={canEdit ? canEdit : false}
+          params={params}
+        />
+      case 'UserProfessionForm':
+        return <UserProfessionForm
+          state={state}
+          setState={setState ? setState : () => false}
+          setValidations={setValidations ? setValidations : () => false}
+          canEdit={canEdit ? canEdit : false}
+          params={params}
         />
       case 'ResponsibleForm':
         return <ResponsibleForm
           index={index}
           state={state}
-          setState={setState}
-          setValidations={setValidations}
+          setState={setState ? setState : () => false}
+          setValidations={setValidations ? setValidations : () => false}
           fieldsValidation={fieldsValidation}
-          canEdit={canEdit}
+          canEdit={canEdit ? canEdit : false}
           user={user}
         />
       case 'PermissionList':
         return <PermissionList
           customerState={customerState}
-          mode={mode}
+          mode={mode ? mode : ''}
         />
       case 'ToggleActive':
         return <ToggleActive
           index={index}
           state={state}
-          setState={setState}
-          canEdit={canEdit}
+          setState={setState ? setState : () => false}
+          canEdit={canEdit ? canEdit : false}
         />
       case 'IntegrationForm':
         return <IntegrationForm

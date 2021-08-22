@@ -136,7 +136,7 @@ export default function UserList() {
             {userState?.list.data.map((user, index) => (
               <TableRow key={`user_${index}`}>
                 <TableCell align="left">
-                  <Link key={index} to={`/user/${user._id}/view/edit`}>{user?.name}</Link>
+                  <Link key={index} to={`/userclient/${user._id}/view/edit`}>{user?.name}</Link>
                 </TableCell>
                 <TableCell>
                   {handleCpf(user?.fiscal_number)}
@@ -190,7 +190,7 @@ export default function UserList() {
                     onClose={handleCloseRowMenu}
                   >
                     {/*<MenuItem onClick={() => history.push(`/user/${user._id}/edit/edit`)}>Editar</MenuItem>*/}
-                    <MenuItem onClick={() => history.push(`/user/${user._id}/view/edit`)}>Visualizar</MenuItem>
+                    <MenuItem onClick={() => history.push(`/userclient/${user._id}/view/edit`)}>Visualizar</MenuItem>
                   </Menu>
                 </TableCell>
               </TableRow>

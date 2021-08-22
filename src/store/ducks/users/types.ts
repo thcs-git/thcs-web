@@ -210,6 +210,7 @@ export interface UserState {
   loading: boolean;
   error: boolean;
   success: boolean;
+  errorCep?: boolean;
   successRecovery: boolean;
 }
 

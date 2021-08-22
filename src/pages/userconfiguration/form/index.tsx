@@ -143,7 +143,8 @@ export default function UserConfiguration() {
 
   function handlePushUser() {
     const user_id = localStorage.getItem(LOCALSTORAGE.USER_ID)
-    history.push(`/user/${user_id}/config/edit`)
+    // history.push(`/user/${user_id}/config/edit`)
+    history.push(`/userclient/${user_id}/view`)
   }
 
   function handleBackUser() {

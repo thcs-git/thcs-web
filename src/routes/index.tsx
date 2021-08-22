@@ -33,7 +33,8 @@ import AreaForm from '../pages/area/form';
 import UserList from '../pages/user/list';
 import UserForm from '../pages/user/form';
 
-import UserClient from '../pages/userclient/list/index';
+import UserClientList from '../pages/userclient/list/index';
+import UserClientForm from '../pages/userclient/form/index';
 import UserDisengaged from '../pages/user_disengaged/list/index';
 import UserConfiguration from '../pages/userconfiguration/form/index';
 import ClientConfiguration from '../pages/clientconfiguration/form/index';
@@ -116,7 +117,8 @@ const Routes = () => (
       <PrivateRoute path="/user/:id/:mode/edit" component={UserForm} />
       <PrivateRoute path="/user/:mode/create" component={UserForm} />
       <PrivateRoute path="/userdesengaged" component={UserDisengaged} />
-      <PrivateRoute path="/UserClient" component={UserClient} />
+      <PrivateRoute path="/userclient" component={UserClientList} exact/>
+      <PrivateRoute path="/userclient/:id/:mode" component={UserClientForm} />
 
 
       {/* Patient */}

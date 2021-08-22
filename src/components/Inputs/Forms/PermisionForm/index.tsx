@@ -209,7 +209,6 @@ const PermissionForm = (props: IComponent) => {
   }
 
   const selectProfession = useCallback(() => {
-
     if (userState.data.professions) {
       const selected = userState.data.professions.filter((item) => {
         return item.name === state.name;

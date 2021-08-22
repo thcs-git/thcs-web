@@ -560,7 +560,7 @@ export default function ClientForm(props: RouteComponentProps<IPageParams>) {
     {name: "Nome da Permissão", align: "left"},
     {name: "Estado", align: "left"},
     {name: "Adicionado em", align: "center"},
-    {name: "Vizualizar", align: "center"},
+    {name: "Visualizar", align: "center"},
     {name: "Editar", align: "center"},
   ]
 
@@ -598,6 +598,7 @@ export default function ClientForm(props: RouteComponentProps<IPageParams>) {
             tableCells={tableCells}
             mode={params.mode ? params?.mode : ''}
             initialTab={initialTab}
+            params={params}
           />
           <ButtonTabs canEdit={canEdit} buttons={buttons}/>
         </>

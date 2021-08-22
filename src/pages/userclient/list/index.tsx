@@ -51,7 +51,7 @@ import _ from 'lodash';
 const token = window.localStorage.getItem('token');
 const currentCompany = localStorage.getItem(LOCALSTORAGE.COMPANY_SELECTED) || '';
 
-export default function UserList() {
+export default function UserClientList() {
   const dispatch = useDispatch();
   const history = useHistory();
   const userState = useSelector((state: ApplicationState) => state.users);
@@ -113,14 +113,14 @@ export default function UserList() {
       {userState.loading && <Loading/>}
       <Sidebar>
         <Container>
-          <FormTitle>Meus Profissionais</FormTitle>
+          <FormTitle>Todos Os Profissionais</FormTitle>
 
-          <SearchComponent
-            handleButton={() => history.push('/user/edit/create/')}
-            buttonTitle=""
-            inputPlaceholder="Pesquise por prestador, especialidades, status, etc..."
-            onChangeInput={debounceSearchRequest}
-          />
+          {/*<SearchComponent*/}
+          {/*  handleButton={() => history.push('/user/edit/create/')}*/}
+          {/*  buttonTitle=""*/}
+          {/*  inputPlaceholder="Pesquise por prestador, especialidades, status, etc..."*/}
+          {/*  onChangeInput={debounceSearchRequest}*/}
+          {/*/>*/}
           <Table
             tableCells={[
               {name: 'Prestador', align: 'left',},
@@ -136,7 +136,7 @@ export default function UserList() {
             {userState?.list.data.map((user, index) => (
               <TableRow key={`user_${index}`}>
                 <TableCell align="left">
-                  <Link key={index} to={`/user/${user._id}/view/edit`}>{user?.name}</Link>
+                  <Link key={index} to={`/userclient/${user._id}/view`}>{user?.name}</Link>
                 </TableCell>
                 <TableCell>
                   {handleCpf(user?.fiscal_number)}
@@ -190,7 +190,7 @@ export default function UserList() {
                     onClose={handleCloseRowMenu}
                   >
                     {/*<MenuItem onClick={() => history.push(`/user/${user._id}/edit/edit`)}>Editar</MenuItem>*/}
-                    <MenuItem onClick={() => history.push(`/user/${user._id}/view/edit`)}>Visualizar</MenuItem>
+                    <MenuItem onClick={() => history.push(`/userclient/${user._id}/view`)}>Visualizar</MenuItem>
                   </Menu>
                 </TableCell>
               </TableRow>

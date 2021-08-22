@@ -45,6 +45,7 @@ export const INITIAL_STATE: UserState = {
   error: false,
   loading: false,
   successRecovery: false,
+  errorCep: false,
 };
 
 const reducer: Reducer<UserState> = (state = INITIAL_STATE, action) => {
@@ -159,6 +160,7 @@ const reducer: Reducer<UserState> = (state = INITIAL_STATE, action) => {
         loading: false,
         error: true,
         success: false,
+        errorCep: true,
       };
     case UserTypes.LOAD_RESPONSE_ADDRESS:
       return {
@@ -179,6 +181,7 @@ const reducer: Reducer<UserState> = (state = INITIAL_STATE, action) => {
         loading: false,
         error: false,
         success: false,
+        errorCep: false,
       };
     case UserTypes.SEARCH_REQUEST:
       return { ...state, loading: true, error: false };
@@ -187,7 +190,7 @@ const reducer: Reducer<UserState> = (state = INITIAL_STATE, action) => {
         ...state,
         data: {
           ...state.data,
-          professions: action.payload.data,
+          professions: action.payload.data.data,
         },
         loading: false,
         error: false,
