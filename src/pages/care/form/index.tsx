@@ -87,6 +87,7 @@ import {
   FormGroupSection,
   OutlinedInputFiled
 } from "./styles";
+import { push } from "react-router-redux";
 
 interface IFormFields extends CareInterface {
   form?: {
@@ -155,6 +156,7 @@ export default function CareForm(props: RouteComponentProps<IPageParams>) {
   const [currentStep, setCurrentStep] = useState(0);
   const [openModalCancel, setOpenModalCancel] = useState(false);
   const [firstCall, setFirstcall] = useState(true);
+  const [checked, setChecked] = useState(false);
 
   const classes = useStyles();
 
@@ -480,7 +482,9 @@ export default function CareForm(props: RouteComponentProps<IPageParams>) {
           <FormContent>
             {startStep && (
               <BoxCustom>
-                <Grid container>
+                <Grid container
+                style={{justifyContent: "flex-end"}}
+                >
 
 
                   <Table>
@@ -503,14 +507,23 @@ export default function CareForm(props: RouteComponentProps<IPageParams>) {
                             checked={selectCheckbox?._id === care?._id}
                             onChange={(element) => {
                               //  selectPatient();
+                              if(element.target.checked){
+                                setChecked(true);
+                              }else{
+                                setChecked(false);
+                              }
                               if (care._id && care._id === element.target.value) {
-
+                                  console.log(setSelectCheckbox)
                                 setSelectCheckbox(care);
                               } else {
                                 setSelectCheckbox(care);
-                                selectPatient(care);
+                                // selectPatient(care);
+                                console.log('else')
 
                               }
+                              console.log('care',care)
+                              console.log('element',element)
+                              // setSelectCheckbox(care)
                             }}
                             inputProps={{"aria-label": "primary checkbox"}}
                           />
@@ -545,9 +558,21 @@ export default function CareForm(props: RouteComponentProps<IPageParams>) {
                     ))}
                     </tbody>
                   </Table>
-                  <Button variant="outlined" className={classes.sucess_round} onClick={() => {
-                    history.push('/care')
-                  }}>Voltar</Button>
+                    <div style={{justifyContent: "flex-end"}}>
+                      <Button variant="outlined" className={classes.sucess_round} onClick={() => {
+                        history.push('/care')
+                      }}>Voltar</Button>
+                      <Button
+                        style={{marginLeft: 15}}
+                        background="success"
+                        onClick={(element) => {
+                          if(checked){
+                            selectPatient(selectCheckbox? selectCheckbox : careState.list.data[0] )}
+                          }}
+                          >
+                        Selecionar Paciente
+                      </Button>
+                    </div>
                 </Grid>
               </BoxCustom>
 
