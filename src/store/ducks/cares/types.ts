@@ -166,6 +166,7 @@ export interface CareList {
   status?: string;
 }
 
+
 /**
  * State type
  */

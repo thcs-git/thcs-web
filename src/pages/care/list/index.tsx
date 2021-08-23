@@ -24,7 +24,7 @@ import { MoreVert, AccountCircle as AccountCircleIcon, Visibility as VisibilityI
 import debounce from "lodash.debounce";
 import _ from 'lodash';
 
-import { CareInterface } from "../../../store/ducks/cares/types";
+import { CareInterface, CareState } from "../../../store/ducks/cares/types";
 
 import { useDispatch, useSelector } from "react-redux";
 import { ApplicationState } from "../../../store/";
@@ -44,6 +44,9 @@ import { FormTitle } from "../../../styles/components/Form";
 import { ComplexityStatus } from "../../../styles/components/Table";
 
 import { formatDate } from "../../../helpers/date";
+import { uniqBy } from "cypress/types/lodash";
+import { createInterface } from "readline";
+import { any } from "cypress/types/bluebird";
 
 export default function CouncilList() {
   const history = useHistory();
@@ -60,6 +63,12 @@ export default function CouncilList() {
     }));
   }, []);
 
+  useEffect(() => {
+    let array = _.uniqBy(careState.list.data, 'patient_id.name');
+    setCareFilter(array);
+
+  }, [careState.list.data])
+
   const [search, setSearch] = useState("");
 
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
@@ -70,7 +79,7 @@ export default function CouncilList() {
 
   const [patientArray, setpatientArray] = useState<any>();
 
-
+  const [careFilter , setCareFilter] = useState<any>([]);
 
   const handleOpenRowMenu = useCallback(
     (event: React.MouseEvent<HTMLButtonElement>) => {
@@ -143,7 +152,7 @@ export default function CouncilList() {
               { name: " ", align: "left" },
             ]}
           >
-            {careState.list.data.map((care: CareInterface, index: number) => (
+            {careFilter.map((care: CareInterface, index: number) => (
               <TableRow key={`care_${index}`}>
                 <TableCell>
                   <Link to={`/care/${care._id}/overview`}>
@@ -289,7 +298,7 @@ export default function CouncilList() {
                   return (
                     <TableRow key={`patient_${index}`}>
                       <TableCell >
-                        <p>{patient?.started_at ? formatDate(patient?.started_at ?? "", "DD/MM/YYYY") : "-"}</p>
+                        <p>{patient?.started_at ? formatDate(patient?.started_at ?? "", "DD/MM/YYYY") : ""}</p>
                       </TableCell>
                       <TableCell align="center">
                         <p>{patient?._id}</p>

@@ -388,3 +388,19 @@ export function* loadConfirmUser({ payload: { token } }: any) {
     yield put(loadFailure());
   }
 }
+
+export function* getByClient({ payload }: any) {
+  try {
+    const { params } = payload;
+    const response: AxiosResponse = yield call(
+      apiSollar.get,
+      `/user/getByClient?limit=${params.limit ?? 10}&page=${params.page || 1}${
+        params.search ? "&search=" + params.search : ""
+      }${params.profession_id ? "&profession_id=" + params.profession_id : ""}`
+    );
+
+    yield put(loadSuccess(response.data));
+  } catch (error) {
+    yield put(loadFailure());
+  }
+}

@@ -4,6 +4,7 @@ import { UserState, UserTypes } from "./types";
 export const INITIAL_STATE: UserState = {
   data: {
     companies: [],
+    companies_links: [],
     name: "",
     birthdate: "",
     gender: "",
@@ -56,6 +57,7 @@ export const INITIAL_STATE: UserState = {
   error: false,
   loading: false,
   successRecovery: false,
+  errorCep: false,
 };
 
 const reducer: Reducer<UserState> = (state = INITIAL_STATE, action) => {
@@ -170,6 +172,7 @@ const reducer: Reducer<UserState> = (state = INITIAL_STATE, action) => {
         loading: false,
         error: true,
         success: false,
+        errorCep: true,
       };
     case UserTypes.LOAD_RESPONSE_ADDRESS:
       return {
@@ -190,6 +193,7 @@ const reducer: Reducer<UserState> = (state = INITIAL_STATE, action) => {
         loading: false,
         error: false,
         success: false,
+        errorCep: false,
       };
     case UserTypes.SEARCH_REQUEST:
       return { ...state, loading: true, error: false };
@@ -199,20 +203,6 @@ const reducer: Reducer<UserState> = (state = INITIAL_STATE, action) => {
         data: {
           ...state.data,
           professions: action.payload.data.data,
-        },
-        loading: false,
-        error: false,
-        success: false,
-        successRecovery: false,
-      };
-
-    case UserTypes.LOAD_RESPONSE_PROFESSION:
-      console.log("action", action);
-      return {
-        ...state,
-        data: {
-          ...state.data,
-          professions: action.payload.data,
         },
         loading: false,
         error: false,
