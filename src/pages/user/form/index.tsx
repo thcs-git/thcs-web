@@ -541,8 +541,9 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
 
       var companiesLinkSelected = [...state.companies_links];
       const companyLinkFounded = companiesLinkSelected.findIndex((item: any) => {
-        return company._id === item.companie_id
+        return company._id === item.companie_id._id
       })
+
 
       if (companyLinkFounded > -1) {
         let selected = companiesLinkSelected.splice(companyLinkFounded, 1)[0];
@@ -575,6 +576,7 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
           linked_at: new Date,
           exp: '0'
         };
+        companyLinkSelected.push(...companiesLinkSelected)
         companyLinkSelected.push(selected)
       }
     }
@@ -886,7 +888,6 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
       toast.error("Existem campos que precisam ser preenchidos para continuar");
       return;
     }
-
     if (state?._id) {
       dispatch(updateUserRequest(state));
       if (params.mode == 'link' || params.mode === "linking") {

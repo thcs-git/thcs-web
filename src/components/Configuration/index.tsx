@@ -10,6 +10,7 @@ import LOCALSTORAGE from '../../helpers/constants/localStorage';
 import {handleCompanySelected} from '../../helpers/localStorage';
 import {CompanyUserLinkInterface} from "../../store/ducks/users/types";
 import _ from 'lodash';
+import {loadRequest} from "../../store/ducks/layout/actions";
 
 export default function Configuration() {
   const dispatch = useDispatch();
@@ -55,6 +56,7 @@ export default function Configuration() {
         ...prevState,
         companySelected: company.companie_id._id
       }))
+      dispatch(loadRequest())
     }
   }, [user]);
 
