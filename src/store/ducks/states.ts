@@ -38,6 +38,9 @@ import { ProfessionState, ProfessionTypes } from "./professions/types";
 import { INITIAL_STATE as INITIAL_STATE_UNCONFIRMEDUSER } from "./unconfirmeduser";
 import { UnconfirmedUserState } from "./unconfirmeduser/types";
 
+import { INITIAL_STATE as INITIAL_STATE_LAYOUT } from "./layout";
+import { LayoutState, LayoutTypes } from "./layout/types";
+
 /**
  * Initial state tree interface
  */
@@ -54,6 +57,7 @@ export interface IInitialState {
   patients: Readonly<PatientState>;
   users: Readonly<UserState>;
   profession: Readonly<ProfessionState>;
+  layout: Readonly<LayoutState>;
 }
 
 /**
@@ -72,4 +76,5 @@ export const InitialState: IInitialState = {
   patients: INITIAL_STATE_PATIENT,
   users: INITIAL_STATE_USER,
   profession: INITIAL_STATE_PROFESSION,
+  layout: INITIAL_STATE_LAYOUT,
 };

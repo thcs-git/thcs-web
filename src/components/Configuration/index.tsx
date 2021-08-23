@@ -1,13 +1,16 @@
-import React, { useState, useEffect, useCallback } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import { Grid, TextField } from '@material-ui/core';
-import { Autocomplete } from '@material-ui/lab';
+import React, {useState, useEffect, useCallback} from 'react';
+import {useDispatch, useSelector} from 'react-redux';
+import {Grid, TextField} from '@material-ui/core';
+import {Autocomplete} from '@material-ui/lab';
 
-import { ApplicationState } from '../../store';
-import { loadUserById } from '../../store/ducks/users/actions';
+import {ApplicationState} from '../../store';
+import {loadUserById} from '../../store/ducks/users/actions';
 
 import LOCALSTORAGE from '../../helpers/constants/localStorage';
-import { handleCompanySelected } from '../../helpers/localStorage';
+import {handleCompanySelected} from '../../helpers/localStorage';
+import {CompanyUserLinkInterface} from "../../store/ducks/users/types";
+import _ from 'lodash';
+import {loadRequest} from "../../store/ducks/layout/actions";
 
 export default function Configuration() {
   const dispatch = useDispatch();
@@ -26,30 +29,35 @@ export default function Configuration() {
   }, []);
 
   useEffect(() => {
-    const { companies: userCompanies } = userState.data
+    const {companies_links: userCompanies} = userState.data
 
-    userCompanies.forEach(function (item) {
-      Object.assign(item, {customer: item['customer_id']['name'] + ' - ' + item['name']});
+    userCompanies.forEach(function (item: CompanyUserLinkInterface) {
+      if (typeof item.companie_id === 'object') {
+        Object.assign(item, {customer: item.companie_id?.customer_id?.name + ' - ' + item.companie_id?.name});
+      }
     })
 
-    setCompanies(userCompanies);
+    setCompanies(_.filter(userCompanies,{active: true}));
   }, [userState]);
 
   const selectCompany = useCallback(() => {
-    const selected = companies.filter((item: any) => item._id === user.companySelected);
+    const selected = companies.filter((item: any) => item.companie_id._id === user.companySelected);
     return (selected[0]) ? selected[0] : null;
   }, [companies, user]);
 
   const changeCompany = useCallback((company: any) => {
-    localStorage.setItem(LOCALSTORAGE.COMPANY_SELECTED, company._id);
-    localStorage.setItem(LOCALSTORAGE.COMPANY_NAME, company.name);
-    localStorage.setItem(LOCALSTORAGE.CUSTOMER, company.customer_id._id);
-    localStorage.setItem(LOCALSTORAGE.CUSTOMER_NAME, company.customer_id.name);
+    if (company) {
+      localStorage.setItem(LOCALSTORAGE.COMPANY_SELECTED, company.companie_id._id);
+      localStorage.setItem(LOCALSTORAGE.COMPANY_NAME, company.companie_id.name);
+      localStorage.setItem(LOCALSTORAGE.CUSTOMER, company.companie_id.customer_id._id);
+      localStorage.setItem(LOCALSTORAGE.CUSTOMER_NAME, company.companie_id.customer_id.name);
 
-    setUser(prevState => ({
-      ...prevState,
-      companySelected: company._id
-    }))
+      setUser(prevState => ({
+        ...prevState,
+        companySelected: company.companie_id._id
+      }))
+      dispatch(loadRequest())
+    }
   }, [user]);
 
   return (
@@ -57,21 +65,22 @@ export default function Configuration() {
       <div>
         <h2>Olá, {user.name}</h2>
 
-        <br />
+        <br/>
 
         <p>Você está trabalhando nesta empresa, mas você pode mudar quando quiser</p>
 
-        <br />
-
+        <br/>
         <Grid container>
-          <Grid item sm={4} md={4} lg={10}>
+          <Grid item sm={4} md={12} lg={10}>
             <Autocomplete
               id="combo-box-change-company"
               options={companies}
               getOptionLabel={(option: any) => option.customer}
-              getOptionSelected={(option, value) => option._id === user.companySelected}
+              getOptionSelected={(option, value) => {
+                return (option.companie_id._id === user.companySelected)
+                }}
               value={selectCompany()}
-              renderInput={(params) => <TextField {...params} label="Empresa" variant="outlined" autoComplete="off" />}
+              renderInput={(params) => <TextField {...params} label="Empresa" variant="outlined" autoComplete="off"/>}
               size="small"
               onChange={(event, value) => changeCompany(value)}
               noOptionsText="Nenhuma empresa encontrada"

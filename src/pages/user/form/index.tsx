@@ -13,7 +13,7 @@ import {
   Grid,
   FormControlLabel,
   makeStyles,
-  Collapse,
+  Collapse, FormControl, FormLabel, FormGroup, Checkbox,
 } from '@material-ui/core';
 import {AccountCircle, Edit} from '@material-ui/icons';
 import Autocomplete from '@material-ui/lab/Autocomplete';
@@ -35,7 +35,7 @@ import {
 import {
   UserInterface,
   ProfessionUserInterface,
-  CompanyUserInterface,
+  CompanyUserInterface, CompanyUserLinkInterface,
 } from "../../../store/ducks/users/types";
 
 import {loadRequest as getSpecialtiesAction} from "../../../store/ducks/specialties/actions";
@@ -90,6 +90,7 @@ import {BoxCustom} from "../../customer/form/styles";
 import _ from "lodash";
 // @ts-ignore
 import Sidebar_menu from "../../../components/Sidebar_menu";
+import moment from "moment";
 
 
 interface IFormFields {
@@ -115,6 +116,7 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
   const companyState = useSelector((state: ApplicationState) => state.companies);
   const customerState = useSelector((state: ApplicationState) => state.customers);
   const [canEdit, setCanEdit] = useState(true);
+  const [linkChecked, setLinkChecked] = useState(false);
   const {params} = props.match;
 
   const currentCompany = localStorage.getItem(LOCALSTORAGE.COMPANY_SELECTED) || '';
@@ -122,9 +124,11 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
 
   const [currentTab, setCurrentTab] = useState(0);
   const [engaged, setEngaged] = useState(false);
+  const [companyLink, setcompanyLink] = useState('');
   const [add, setAdd] = useState(false);
   const [state, setState] = useState<UserInterface>({
     companies: [],
+    companies_links: [],
     name: "",
     birthdate: "",
     gender: "",
@@ -535,13 +539,14 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
     if (params?.mode == 'config') {
       history.push(`/userconfiguration`);
     } else if (params?.mode == 'link') {
-      history.push(`/userdesengaged`)
+      history.push(`/user`)
     } else {
       history.push(`/user`);
     }
   }
 
   function engagedUser() {
+    const companyLinkSelected: CompanyUserLinkInterface[] = [];
 
     if (customer && customer._id) {
       var com: CompanyUserInterface = {
@@ -552,12 +557,55 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
           name: customer.name
         }
       }
+
+      var companiesLinkSelected = [...state.companies_links];
+      const companyLinkFounded = companiesLinkSelected.findIndex((item: any) => {
+        return company._id === item.companie_id._id
+      })
+
+
+      if (companyLinkFounded > -1) {
+        let selected = companiesLinkSelected.splice(companyLinkFounded, 1)[0];
+        selected.function = viewProfession()
+        selected.active = true
+        selected.linked_at = new Date
+
+        if (linkChecked) {
+          selected.exp = String(moment(companyLink).unix() + 86399)
+        } else {
+          selected.exp = '0'
+
+        }
+
+        companyLinkSelected.push(...companiesLinkSelected)
+        companyLinkSelected.push(selected)
+      } else {
+        let selected = linkChecked ? {
+          companie_id: company._id,
+          customer_id: customer._id,
+          function: viewProfession(),
+          active: true,
+          linked_at: new Date,
+          exp: String(moment(companyLink).unix() + 86399)
+        } : {
+          companie_id: company._id,
+          customer_id: customer._id,
+          function: viewProfession(),
+          active: true,
+          linked_at: new Date,
+          exp: '0'
+        };
+        companyLinkSelected.push(...companiesLinkSelected)
+        companyLinkSelected.push(selected)
+      }
     }
+
     if (company) {
       setState((prevState) => ({
         ...prevState,
         companies: [...prevState.companies, com],
-        customer_id: company.customer_id
+        customer_id: company.customer_id,
+        companies_links: companyLinkSelected,
       }));
     }
     setEngaged(true);
@@ -565,9 +613,14 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
 
   const dengagedUser = useCallback((company: CompanyInterface) => {
     let companiesSelected = [...state.companies];
+    let companiesLinkSelected = [...state.companies_links];
     const companyFounded = companiesSelected.findIndex((item: any) => {
       return company._id === item._id
     })
+    const companyLinkFounded = companiesLinkSelected.findIndex((item: any) => {
+      return company._id === item.companie_id._id
+    })
+
     if (companyFounded > -1) {
       const companyData = companiesSelected.find((item: any) => {
         return company._id === item._id
@@ -578,9 +631,21 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
         ...prevState,
         companies: companiesSelected
       }))
-      setEngaged(true);
-
     }
+
+    if (companyLinkFounded > -1) {
+      let companyLink = companiesLinkSelected.splice(companyLinkFounded, 1)[0];
+      companyLink.active = false
+
+      companiesLinkSelected.push(companyLink)
+
+      setState(prevState => ({
+        ...prevState,
+        companies_links: companiesLinkSelected,
+      }))
+    }
+    setEngaged(true);
+
   }, [state.companies]);
 
   function handlerReturn() {
@@ -749,16 +814,23 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
   }, [state.council_state]);
 
   const selectUserType = useCallback(() => {
-    if (!userState.data.user_types) {
+    if (!customerState.data.usertypes) {
       return null;
     }
 
-    const selected = userState.data.user_types.filter(
+    const selected = customerState.data.usertypes.filter(
       (item) => item._id === state.user_type_id
     );
 
     return selected[0] ? selected[0] : null;
   }, [state.user_type_id, state.user_types]);
+
+  const handleSelectUserType = useCallback((value: any) => {
+    setState((prevState) => ({
+      ...prevState,
+      user_type_id: value._id,
+    }));
+  }, []);
 
   //Empresas
   function handleSelectCompany(value: CompanyUserInterface) {
@@ -834,7 +906,6 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
       toast.error("Existem campos que precisam ser preenchidos para continuar");
       return;
     }
-
     if (state?._id) {
       dispatch(updateUserRequest(state));
       if (params.mode == 'link' || params.mode === "linking") {
@@ -851,7 +922,7 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
 
     if (state?._id) {
       if (params.mode == 'link' || params.mode === "linking") {
-        history.push('/userdesengaged');
+        history.push('/user');
       } else if (params.mode == 'view') {
         history.push('/user');
       } else if (params.mode == 'config') {
@@ -1828,7 +1899,7 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
                             <Grid item md={12} xs={12}>
                               <Divider></Divider>
                             </Grid>
-                            <Grid item style={{paddingTop: '20px'}}>
+                            <Grid item md={2} style={{paddingTop: '20px'}}>
                               <ButtonComponent style={{maxWidth: '10px'}} onClick={() => setAdd(!add)}>
                                 {add ? (<CheckCircleRoundedIcon fontSize={'large'}
                                                                 style={{color: '#4FC66A'}}></CheckCircleRoundedIcon>) : (
@@ -1841,7 +1912,7 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
                                 )}
                               </ButtonComponent>
                             </Grid>
-                            <Grid item>
+                            <Grid item md={7}>
                               <Grid container
                                     style={{flexDirection: 'column', paddingLeft: '10px', paddingTop: '20px'}}>
                                 <Grid item>
@@ -1911,12 +1982,74 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
                             </ChipList>
                           </Grid> */}
                                     {(params.mode === 'link' && !checkCompany) && (
+                                      <>
+                                        {/*<Grid item md={12} xs={12} style={{padding: '0 12px 12px 0'}}>*/}
+                                        {/*  <Autocomplete*/}
+                                        {/*    id="combo-box-user-type"*/}
+                                        {/*    options={customerState.data.usertypes || []}*/}
+                                        {/*    getOptionLabel={(option) => option.name}*/}
+                                        {/*    // disabled={!canEdit}*/}
+                                        {/*    renderInput={(params) => (*/}
+                                        {/*      <TextField {...params}*/}
+                                        {/*                 label="Tipo do Usuário"*/}
+                                        {/*                 variant="outlined"*/}
+                                        {/*      />*/}
+                                        {/*    )}*/}
+                                        {/*    value={selectUserType()}*/}
+                                        {/*    onChange={(event, value) => {*/}
+                                        {/*      if (value) {*/}
+                                        {/*        handleSelectUserType(value);*/}
+                                        {/*      } else {*/}
+                                        {/*        setState((prevState) => ({*/}
+                                        {/*          ...prevState,*/}
+                                        {/*          user_type_id: "",*/}
+                                        {/*        }));*/}
+                                        {/*      }*/}
+                                        {/*    }}*/}
+                                        {/*    getOptionSelected={(option, value) =>*/}
+                                        {/*      option._id === state.user_type_id*/}
+                                        {/*    }*/}
+                                        {/*    size="small"*/}
+                                        {/*    fullWidth*/}
+                                        {/*  />*/}
+                                        {/*</Grid>*/}
 
-                                      <Grid item md={12} xs={12}>
-                                        <ButtonComponent background="success_rounded" onClick={() => engagedUser()}>
-                                          Vincular este prestador a minha empresa
-                                        </ButtonComponent>
-                                      </Grid>
+                                        <Grid item md={12} xs={12} style={{display: 'flex', padding: '0 12px 12px 0'}}>
+                                          <Grid item md={3} xs={12}>
+                                            <FormControlLabel
+                                              control={<Checkbox color="primary" checked={linkChecked} onChange={() => (
+                                                setLinkChecked(!linkChecked)
+                                              )} name="link"/>}
+                                              label="Temporário"
+                                            />
+                                          </Grid>
+                                          {linkChecked && (
+                                            <Grid item md={9} xs={12}>
+                                              <TextField
+                                                id="link-end"
+                                                type="date"
+                                                size="small"
+                                                label="Vínculo até"
+                                                variant="outlined"
+                                                InputLabelProps={{
+                                                  shrink: true,
+                                                }}
+                                                onChange={e => setcompanyLink(e.target.value)}
+                                                value={companyLink}
+                                                fullWidth
+                                              />
+                                            </Grid>
+                                          )}
+                                        </Grid>
+                                        {/*{((state.user_type_id && companyLink != '') || (state.user_type_id && !linkChecked)) && (*/}
+                                        {((linkChecked && companyLink != '') || (!linkChecked)) && (
+                                          <Grid item md={12} xs={12} style={{padding: '0 12px 12px 0'}}>
+                                            <ButtonComponent background="success_rounded" onClick={() => engagedUser()}>
+                                              Vincular este prestador a minha empresa
+                                            </ButtonComponent>
+                                          </Grid>
+                                        )}
+                                      </>
                                     )}
                                     {(params.mode === 'link' && checkCompany && !engaged) && (
 
@@ -2048,7 +2181,7 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
           </Dialog>
         </Sidebar>
       ) : (
-        <Sidebar_menu>
+        <Sidebar>
           {userState.loading && <Loading/>}
           <Container>
             {userState.success ? (
@@ -3221,7 +3354,7 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
               </Button>
             </DialogActions>
           </Dialog>
-        </Sidebar_menu>
+        </Sidebar>
       )}
 
     </>
