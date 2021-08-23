@@ -38,6 +38,7 @@ export default function RecoveryPasswordPage(props: RouteComponentProps<IPagePar
   })
   const [state, setState] = useState<UserInterface>({
     companies: [],
+    companies_links: [],
     name: "",
     birthdate: "",
     gender: "",

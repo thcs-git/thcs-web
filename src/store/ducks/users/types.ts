@@ -1,6 +1,3 @@
-import { CustomerInterface } from "./../customers/types";
-import { CompanyInterface } from "./../companies/types";
-
 /**
  * Action types
  */
@@ -8,6 +5,8 @@ export enum UserTypes {
   LOAD_REQUEST = "@user/LOAD_REQUEST",
   LOAD_SUCCESS = "@user/LOAD_SUCCESS",
   LOAD_FAILURE = "@user/LOAD_FAILURE",
+
+  LOAD_REQUEST_BY_CLIENT = "@user/LOAD_REQUEST_BY_CLIENT",
 
   CREATE_USER_REQUEST = "@user/CREATE_USER_REQUEST",
   REGISTER_USER_REQUEST = "@user/REGISTER_USER_REQUEST",
@@ -89,7 +88,18 @@ export interface CustomerUserInterface {
 export interface CompanyUserInterface {
   _id: string;
   name: string;
-  customer_id: CustomerUserInterface;
+  customer_id?: CustomerUserInterface;
+}
+
+export interface CompanyUserLinkInterface {
+  function: string | null | undefined;
+  exp?: string;
+  permissions?: string | UserTypeInterface;
+  _id?: string;
+  companie_id?: string | CompanyUserInterface;
+  user_type_id?: string;
+  active?: boolean;
+  linked_at?: any;
 }
 
 export interface UserTypeInterface {
@@ -103,6 +113,7 @@ export interface MainSpecialtyInterface {
 }
 
 export interface UserListItems {
+  companies_links: CompanyUserLinkInterface[];
   _id: string;
   name: string;
   email: string;
@@ -127,6 +138,7 @@ export interface UserListItems {
 export interface UserInterface {
   _id?: string;
   companies: CompanyUserInterface[];
+  companies_links: CompanyUserLinkInterface[];
   customer_id?: string;
   name: string; // name
   birthdate: string;
@@ -205,6 +217,7 @@ export interface UserState {
   loading: boolean;
   error: boolean;
   success: boolean;
+  errorCep?: boolean;
   successRecovery: boolean;
 }
 
