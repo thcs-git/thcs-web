@@ -59,7 +59,13 @@ export default function UserClientForm(props: RouteComponentProps<IPageParams>) 
     council_number: "",
     verified: "",
     active: true,
-    professions: []
+    professions: [],
+    phones: [{
+      cellnumber: "",
+      number: "",
+      telegram: false,
+      whatsapp: false,
+    }],
   });
 
   const [fieldsValidation, setFieldValidations] = useState<any>({
