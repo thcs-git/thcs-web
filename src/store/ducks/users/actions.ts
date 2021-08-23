@@ -12,6 +12,9 @@ export const loadRequest = (params: LoadRequestParams = {}) =>
 export const loadSuccess = (data: UserInterface) =>
   action(UserTypes.LOAD_SUCCESS, { data });
 
+export const loadRequestByClient = (params: LoadRequestParams = {}) =>
+  action(UserTypes.LOAD_REQUEST_BY_CLIENT, { params });
+
 export const getAddress = (postalCode: string) =>
   action(UserTypes.LOAD_REQUEST_ADDRESS, { postalCode });
 export const successGetAddress = (data: ViacepDataInterface) =>

@@ -25,6 +25,7 @@ import {
   createCompanyCustomer,
   updateCompanyCustomer,
   searchCustomer,
+  createPermission, loadPermission, updatePermissionCustomer,
 } from "./customers/sagas";
 
 import { CompanyTypes } from "./companies/types";
@@ -80,6 +81,11 @@ import {
   getPatientCapture,
 } from "./patients/sagas";
 
+import {LayoutTypes} from "./layout/types";
+import {
+  get as getLayout
+} from "./layout/sagas"
+
 import { UserTypes } from "./users/types";
 
 //import { CareTypes } from './cares/types';
@@ -97,7 +103,7 @@ import {
   checkEmail,
   getUserByEmail,
   recoveryPassword,
-  recoverypasswordiftoken,
+  recoverypasswordiftoken, getByClient,
 } from "./users/sagas";
 
 import { CareTypes } from "./cares/types";
@@ -232,6 +238,9 @@ export default function* rootSaga() {
     takeLatest(CustomerTypes.CREATE_CUSTOMER_REQUEST, createCompanyCustomer),
     takeLatest(CustomerTypes.UPDATE_CUSTOMER_REQUEST, updateCompanyCustomer),
     takeLatest(CustomerTypes.SEARCH_REQUEST, searchCustomer),
+    takeLatest(CustomerTypes.LOAD_REQUEST_PERMISSION, loadPermission),
+    takeLatest(CustomerTypes.UPDATE_PERMISSION_REQUEST, updatePermissionCustomer),
+    takeLatest(CustomerTypes.CREATE_PERMISSION_REQUEST, createPermission),
 
     // Documents
     takeLatest(DocumentTypes.LOAD_REQUEST, getDocuments),
@@ -273,6 +282,10 @@ export default function* rootSaga() {
       UserTypes.LOAD_REQUEST_RECOVERY_PASSWORD_TOKEN,
       recoverypasswordiftoken
     ),
+    takeLatest(
+      UserTypes.LOAD_REQUEST_BY_CLIENT,
+      getByClient
+    ),
 
     /** Profession */
     takeLatest(ProfessionTypes.LOAD_REQUEST, getProfession),
@@ -286,5 +299,8 @@ export default function* rootSaga() {
     //  ),
     // takeLatest(UnconfirmedUserTypes.UPDATE_USER_REQUEST, updateUnconfirmedUser),
     // takeLatest(UnconfirmedUserTypes.SEARCH_REQUEST, searchUnconfirmedUser),
+
+    /** Layout */
+    takeLatest(LayoutTypes.LOAD_REQUEST, getLayout),
   ]);
 }

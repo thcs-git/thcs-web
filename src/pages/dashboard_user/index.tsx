@@ -29,6 +29,7 @@ export default function Dashboard_user() {
   const [firstCall, setFirstcall] = useState(false);
   const [state, setState] = useState<UserInterface>({
     companies: [],
+    companies_links: [],
     name: "",
     birthdate: "",
     gender: "",
@@ -158,7 +159,7 @@ export default function Dashboard_user() {
         </>
       ) : (
         <>
-          <Sidebar_menu>
+          <Sidebar>
             <Container>
               <Title>Dashboard User (Desvinculado)</Title>
               <InfoSection>
@@ -178,7 +179,7 @@ export default function Dashboard_user() {
 
               </InfoSection>
             </Container>
-          </Sidebar_menu>
+          </Sidebar>
         </>
       )}
     </>
