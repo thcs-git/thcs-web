@@ -203,6 +203,7 @@ export default function RegisterForm() {
 
   const [state, setState] = useState<UserInterface>({
     companies: [],
+    companies_links: [],
     name: "",
     birthdate: "",
     gender: "",

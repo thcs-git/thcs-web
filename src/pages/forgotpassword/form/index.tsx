@@ -63,6 +63,7 @@ export default function ForgotPasswordPage(props: RouteComponentProps<IPageParam
   const userState = useSelector((state: ApplicationState) => state.users);
   const [state, setState] = useState<UserInterface>({
     companies: [],
+    companies_links: [],
     name: "",
     birthdate: "",
     gender: "",
