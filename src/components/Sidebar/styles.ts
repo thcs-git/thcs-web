@@ -17,11 +17,11 @@ export const AccordionMenu = styled(Accordion)`
 `;
 
 export const Logo = styled(SollarLogo)`
-  margin: 10px 15px;
+  margin: 10px 30px;
 `;
 
 export const UserContent = styled.div`
-  padding: 10px;
+  //padding: 14px;
   margin: 20px auto;
 
   display: flex;
