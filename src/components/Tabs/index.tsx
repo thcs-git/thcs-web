@@ -15,6 +15,7 @@ import UserContactForm from "../Inputs/Forms/UserContactForm";
 import UserProfessionForm from "../Inputs/Forms/UserProfessionForm";
 import UserForm from "../Inputs/Forms/UserForm";
 import UserCompanyForm from "../Inputs/Forms/UserCompanyForm";
+import CheckListForm from "../Inputs/Forms/CheckListForm";
 
 
 interface ITabprops {
@@ -33,6 +34,8 @@ interface ITabprops {
   mode?: string;
   initialTab: number;
   params: IPageParams;
+  rowsPortal?: any;
+  rowsApp?: any;
 }
 
 interface IPageParams {
@@ -111,6 +114,8 @@ const TabForm = (props: ITabprops) => {
     mode,
     initialTab,
     params,
+    rowsPortal,
+    rowsApp,
   } = props;
 
   const classes = useStyles();
@@ -187,6 +192,18 @@ const TabForm = (props: ITabprops) => {
         return <PermissionList
           customerState={customerState}
           mode={mode ? mode : ''}
+        />
+      case 'CheckListFormPortal':
+        return <CheckListForm
+          state={state}
+          setState={setState}
+          rows={rowsPortal}
+        />
+      case 'CheckListFormApp':
+        return <CheckListForm
+          state={state}
+          setState={setState}
+          rows={rowsApp}
         />
       case 'ToggleActive':
         return <ToggleActive

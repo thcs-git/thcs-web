@@ -36,7 +36,6 @@ export default function Configuration() {
         Object.assign(item, {customer: item.companie_id?.customer_id?.name + ' - ' + item.companie_id?.name});
       }
     })
-
     setCompanies(_.filter(userCompanies,{active: true}));
   }, [userState]);
 
