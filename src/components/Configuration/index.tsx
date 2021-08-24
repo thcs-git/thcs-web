@@ -37,7 +37,10 @@ export default function Configuration() {
       }
     })
 
-    setCompanies(_.filter(userCompanies,{active: true}));
+    const filter = _.filter(userCompanies,{active: true});
+    //console.log(filter);
+
+    setCompanies(_.filter(filter,{companie_id: {active : true}}));
   }, [userState]);
 
   const selectCompany = useCallback(() => {
