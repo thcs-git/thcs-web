@@ -133,7 +133,8 @@ export default function UserConfiguration() {
         companySelected: company.companie_id._id
       }))
     }
-  }, [user]);
+    selectCompany();
+  }, [userState.data]);
 
   useEffect(() => {
     const {companies_links: userCompanies} = userState.data

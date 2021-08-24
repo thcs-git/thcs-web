@@ -137,6 +137,7 @@ export async function* registerUser({ payload: { data } }: any) {
   }
 
   try {
+
     const response: AxiosResponse = yield call(
       apiSollar.post,
       `/user/register`,
@@ -195,7 +196,7 @@ export function* createUser({ payload: { data } }: any) {
     yield put(createUserSuccess(response.data));
     toast.success("Usuário cadastrado com sucesso!");
   } catch (e) {
-    console.log("e", e);
+
     toast.error("Não foi possível cadastrar o usuário");
     yield put(loadFailure());
   }
