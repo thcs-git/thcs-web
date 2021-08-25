@@ -13,9 +13,11 @@ import {ApplicationState} from "../../../store";
 import {UserInterface} from "../../../store/ducks/users/types";
 import {getAddress as getAddressAction} from "../../../store/ducks/customers/actions";
 import {
-  cleanAction,
-  loadUserById,
+  cleanAction, createUserRequest, loadRequestByClient,
+  loadUserById, updateUserRequest,
 } from "../../../store/ducks/users/actions";
+import ButtonTabs from "../../../components/Button/ButtonTabs";
+import {toast} from "react-toastify";
 
 interface IPageParams {
   id?: string;
@@ -139,6 +141,32 @@ export default function UserClientForm(props: RouteComponentProps<IPageParams>) 
     }
   ]
 
+  const handleSaveFormUser = useCallback(() => {
+    dispatch(updateUserRequest(state));
+    history.push('/userclient');
+  }, [state]);
+
+  const handleCancelFormUser = useCallback(() => {
+    history.push('/userclient');
+  }, []);
+
+  const buttons = [
+    {
+      name: 'Voltar',
+      onClick: handleCancelFormUser,
+      variant: 'outlined',
+      background: 'success_rounded',
+      show: true,
+    },
+    {
+      name: 'Salvar',
+      onClick: handleSaveFormUser,
+      variant: 'contained',
+      background: 'success',
+      show: true,
+    }
+  ]
+
   return (
     <>
       <Sidebar>
@@ -158,6 +186,7 @@ export default function UserClientForm(props: RouteComponentProps<IPageParams>) 
                 getAddress={getAddress}
                 params={params}
               />
+              <ButtonTabs canEdit={canEdit} buttons={buttons}/>
             </>
           ) : (
             <NotFound backOnclick={() => history.push('/userclient')}/>

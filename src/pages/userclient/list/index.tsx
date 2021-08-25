@@ -12,7 +12,7 @@ import {
   DialogActions,
   DialogContent,
   DialogContentText,
-  DialogTitle
+  DialogTitle, Tooltip
 } from '@material-ui/core';
 import {MoreVert} from '@material-ui/icons';
 import debounce from 'lodash.debounce';
@@ -47,6 +47,7 @@ import {formatDate} from '../../../helpers/date';
 
 import LOCALSTORAGE from "../../../helpers/constants/localStorage";
 import _ from 'lodash';
+import MoreHorizTwoToneIcon from "@material-ui/icons/MoreHorizTwoTone";
 
 const token = window.localStorage.getItem('token');
 const currentCompany = localStorage.getItem(LOCALSTORAGE.COMPANY_SELECTED) || '';
@@ -110,8 +111,8 @@ export default function UserClientList() {
 
   return (
     <>
-      {userState.loading && <Loading/>}
       <Sidebar>
+        {userState.loading && <Loading/>}
         <Container>
           <FormTitle>Todos Os Profissionais</FormTitle>
 
@@ -127,7 +128,7 @@ export default function UserClientList() {
               {name: 'CPF', align: 'left'},
               {name: 'Função', align: 'left'},
               {name: 'Especialidades', align: 'left'},
-              {name: '', align: 'left'},
+              // {name: '', align: 'left'},
               {name: 'Adicionado em', align: 'left'},
               {name: 'Status', align: 'left'},
               {name: '', align: 'left'},
@@ -144,33 +145,42 @@ export default function UserClientList() {
                 <TableCell>
                   {user?.profession_id?.name}
                 </TableCell>
-                <TableCell>
-                  {user?.main_specialty_id?.name}
+                <TableCell align="left">
+                  <div style={{display: 'flex'}}>
+                    <p style={{ marginTop:'0.3rem'}}>{user.main_specialty_id?.name}</p>
+                    {user.specialties.length > 0 ? (<Tooltip style={{ fontSize: '10pt', marginTop: '0.8rem' }} title={user.specialties.map((specialty, index) => (
+                        `${specialty.name}${index < (user.specialties.length - 1) ? ',' : ''}`
+                      ))}><MoreHorizTwoToneIcon /></Tooltip>
+                    ) : (null)}
+                  </div>
                 </TableCell>
-                <TableCell align="center">
-                  {user.specialties.length > 0 ? (
-                    <ListItem>
-                      <Button onClick={() => toggleHistoryModal(index)}>
-                        <AddIcon style={{color: '#0899BA', cursor: "pointer"}}/>
-                      </Button>
-                      {/* <Menu
-                        id={`user-speciality${index}`}
-                        anchorEl={anchorEl}
-                        keepMounted
-                        open={anchorEl?.id === `btn_user-speciality${index}`}
-                        onClose={handleCloseRowMenu}
-                      >
-                        <MenuItem style={{ cursor: "default", fontSize: "13pt", fontFamily: "Open Sans Bold" }}><h4>Principal</h4></MenuItem>
-                        <MenuItem style={{ cursor: "default", fontSize: "10pt", fontFamily: "Open Sans Regular"}}>{user.main_specialty_id.name}</MenuItem>
-                        <MenuItem style={{ cursor: "default", fontSize: "13pt", fontFamily: "Open Sans Bold"}}><h4>Secundária</h4></MenuItem>
-                        <MenuItem style={{ cursor: "default", fontSize: "10pt", fontFamily: "Open Sans Regular"}}>{user.specialties.map((specialty, index) => (
-                          `${specialty.name}${index < (user.specialties.length - 1) ? ',' : ''}`
-                        ))}</MenuItem>
-                      </Menu> */}
-                    </ListItem>
-                  ) : (null)
-                  }
-                </TableCell>
+                {/*<TableCell>*/}
+                {/*  {user?.main_specialty_id?.name}*/}
+                {/*</TableCell>*/}
+                {/*<TableCell align="center">*/}
+                {/*  {user.specialties.length > 0 ? (*/}
+                {/*    <ListItem>*/}
+                {/*      <Button onClick={() => toggleHistoryModal(index)}>*/}
+                {/*        <AddIcon style={{color: '#0899BA', cursor: "pointer"}}/>*/}
+                {/*      </Button>*/}
+                {/*      /!* <Menu*/}
+                {/*        id={`user-speciality${index}`}*/}
+                {/*        anchorEl={anchorEl}*/}
+                {/*        keepMounted*/}
+                {/*        open={anchorEl?.id === `btn_user-speciality${index}`}*/}
+                {/*        onClose={handleCloseRowMenu}*/}
+                {/*      >*/}
+                {/*        <MenuItem style={{ cursor: "default", fontSize: "13pt", fontFamily: "Open Sans Bold" }}><h4>Principal</h4></MenuItem>*/}
+                {/*        <MenuItem style={{ cursor: "default", fontSize: "10pt", fontFamily: "Open Sans Regular"}}>{user.main_specialty_id.name}</MenuItem>*/}
+                {/*        <MenuItem style={{ cursor: "default", fontSize: "13pt", fontFamily: "Open Sans Bold"}}><h4>Secundária</h4></MenuItem>*/}
+                {/*        <MenuItem style={{ cursor: "default", fontSize: "10pt", fontFamily: "Open Sans Regular"}}>{user.specialties.map((specialty, index) => (*/}
+                {/*          `${specialty.name}${index < (user.specialties.length - 1) ? ',' : ''}`*/}
+                {/*        ))}</MenuItem>*/}
+                {/*      </Menu> *!/*/}
+                {/*    </ListItem>*/}
+                {/*  ) : (null)*/}
+                {/*  }*/}
+                {/*</TableCell>*/}
                 <TableCell>
                   {formatDate(handleLinkedAt(user), 'DD/MM/YYYY')}
                 </TableCell>
@@ -236,7 +246,7 @@ export default function UserClientList() {
             }))}
           />
         </Container>
-        {/*Especialidades*/}
+        {/*Especialidades
         <Dialog
 
           maxWidth="lg"
@@ -274,7 +284,7 @@ export default function UserClientList() {
               <h3 style={{color: '#0899BA', fontSize: '11pt'}}>Fechar</h3>
             </Button>
           </DialogActions>
-        </Dialog>
+        </Dialog>*/}
 
       </Sidebar>
     </>
