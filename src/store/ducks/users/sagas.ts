@@ -29,7 +29,6 @@ const token = localStorage.getItem("token");
 
 export function* get({ payload }: any) {
   const { params } = payload;
-
   try {
     const response: AxiosResponse = yield call(
       apiSollar.get,
@@ -295,19 +294,22 @@ export function* getProfessions() {
   }
 }
 
-export function* searchUser({ payload: { data } }: any) {
+export function* searchUser({ payload : {data}}: any) {
+  const params = data;
+  console.log(data)
   try {
     const response: AxiosResponse = yield call(
       apiSollar.get,
-      `/user/?limit=10&page=1`,
-      { params: data }
+      `/user/?limit=10${!!data? "&search=" + data : ""}`,
+
     );
     yield put(loadSuccess(response.data));
   } catch (error) {
-    toast.info("Não foi possível buscar os dados do usuário");
+    toast.error(" Não foi possível buscar os dados do usuário");
     yield put(loadFailure());
   }
 }
+
 
 export function* searchUserDisengaged({ payload: { value } }: any) {
   try {

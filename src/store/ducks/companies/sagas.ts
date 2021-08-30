@@ -159,6 +159,7 @@ export function* update({ payload: { data } }: any) {
 
 export function* searchCompany({ payload: { value } }: any) {
   try {
+    value = value.replace(/^\d{2}\.\d{3}\.\d{3}\/\d{4}\-\d{2}$/,'_')
     const response: AxiosResponse = yield call(
       apiSollar.get,
       `/companies/?limit=10${!!value ? "&search=" + value : ""}`
