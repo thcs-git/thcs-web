@@ -29,6 +29,7 @@ export const INITIAL_STATE: CompanyState = {
       telegram: false,
       whatsapp: false,
     }],
+    tipo: '',
   },
   list: {
     data: [],

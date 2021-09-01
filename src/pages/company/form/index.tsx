@@ -100,6 +100,7 @@ export default function CompanyForm(props: RouteComponentProps<IPageParams>) {
       telegram: false,
       whatsapp: false,
     }],
+    tipo: '',
   });
   const [customers, setCustomers] = useState<CustomerDataItems[]>([]);
 

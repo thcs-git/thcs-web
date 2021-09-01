@@ -194,6 +194,7 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
         telegram: false,
         whatsapp: false,
       }],
+      tipo: '',
     });
 
   const [customer, setCustomer] = useState<CustomerInterface>();
