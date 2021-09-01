@@ -2,6 +2,7 @@ import styled from 'styled-components';
 import { TextField, OutlinedInput, Button, Stepper, Step } from '@material-ui/core';
 import { ReactComponent as NoData } from '../../../assets/img/no-data.svg';
 import Box from '@material-ui/core/Box';
+
 export const ButtonsContent = styled.div`
   display: flex;
   justify-content: flex-end;
@@ -20,7 +21,6 @@ export const BoxCustom = styled(Box)`
   align-items: center;
   padding: 15px 0;
   margin: 20px 10%;
-
 `;
 export const FormSection = styled.div`
   display: flex;
@@ -165,4 +165,5 @@ export const NoDataIcon = styled(NoData)`
 
   margin-bottom: 15px;
 `
+
 
