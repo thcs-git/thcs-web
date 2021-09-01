@@ -179,7 +179,7 @@ export default function ClientForm(props: RouteComponentProps<IPageParams>) {
     // phone:'',
     responsible_user: '',
     active: true,
-
+    integration: '',
   });
 
   const [permissionState, setPermissionState] = useState({
@@ -367,6 +367,7 @@ export default function ClientForm(props: RouteComponentProps<IPageParams>) {
     //   dispatch(createCustomerRequest(state));
     //
     // }
+    console.log('state', state)
     if (params.id && ModifiCondition()) {
 
       dispatch(updateCustomerRequest(state));

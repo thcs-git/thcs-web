@@ -7,6 +7,7 @@ import {ApplicationState} from '../../store';
 import {loadUserById} from '../../store/ducks/users/actions';
 
 import LOCALSTORAGE from '../../helpers/constants/localStorage';
+import SESSIONSTORAGE from '../../helpers/constants/sessionStorage';
 import {handleCompanySelected} from '../../helpers/localStorage';
 import {CompanyUserLinkInterface} from "../../store/ducks/users/types";
 import _ from 'lodash';
@@ -36,6 +37,7 @@ export default function Configuration() {
         Object.assign(item, {customer: item.companie_id?.customer_id?.name + ' - ' + item.companie_id?.name});
       }
     })
+
     setCompanies(_.filter(userCompanies,{active: true}));
   }, [userState]);
 
@@ -50,6 +52,12 @@ export default function Configuration() {
       localStorage.setItem(LOCALSTORAGE.COMPANY_NAME, company.companie_id.name);
       localStorage.setItem(LOCALSTORAGE.CUSTOMER, company.companie_id.customer_id._id);
       localStorage.setItem(LOCALSTORAGE.CUSTOMER_NAME, company.companie_id.customer_id.name);
+
+      if (company.companie_id.customer_id.integration) {
+        sessionStorage.setItem(SESSIONSTORAGE.INTEGRATION, company.companie_id.customer_id.integration);
+      } else {
+        sessionStorage.removeItem(SESSIONSTORAGE.INTEGRATION);
+      }
 
       setUser(prevState => ({
         ...prevState,

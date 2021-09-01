@@ -193,6 +193,7 @@ const Sibebar = (props: Props<any>) => {
 
     sessionStorage.removeItem(SESSIONSTORAGE.MENU);
     sessionStorage.removeItem(SESSIONSTORAGE.RIGHTS);
+    sessionStorage.removeItem(SESSIONSTORAGE.INTEGRATION);
 
 
     window.location.reload();

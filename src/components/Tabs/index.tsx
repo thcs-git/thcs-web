@@ -215,6 +215,9 @@ const TabForm = (props: ITabprops) => {
       case 'IntegrationForm':
         return <IntegrationForm
           index={index}
+          state={state}
+          setState={setState ? setState : () => false}
+          canEdit={canEdit ? canEdit : false}
         />
       default:
         return <TabBodyItem>Not found!</TabBodyItem>

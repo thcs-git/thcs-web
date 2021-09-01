@@ -69,6 +69,7 @@ export interface CustomerInterface {
   cellphone?: string;
   phone?: string;
   responsible_user: string;
+  integration?: string;
 }
 
 export interface ViacepDataInterface {
