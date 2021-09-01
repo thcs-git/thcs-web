@@ -39,28 +39,51 @@ function a11yProps(name: string, index: number) {
 const CompanyForm = (props: IComponent) => {
   const {index, state, setState, setValidations, canEdit, getAddress, cepStatus, params} = props;
 
-  // console.log(state.phones)
-  // console.log(_.some(state.phones, function(o) { return o }))
+  const rows = []
+
+  if (state.name?.length > 0) {
+    rows.push({name: "Razão Social", value: state.name})
+  }
+  if (state.fiscal_number?.length > 0) {
+    rows.push({name: "CNPJ", value: state.fiscal_number})
+  }
+  if (state.address?.street?.length > 0) {
+    rows.push({name: "Endereço", value: state.address.street})
+  }
+  if (state.address?.number?.length > 0) {
+    rows.push({name: "Número", value: state.address.number})
+  }
+  if (state.address?.complement?.length > 0) {
+    rows.push({name: "Complemento", value: state.address.complement})
+  }
+  if (state.address?.district?.length > 0) {
+    rows.push({name: "Bairro", value: state.address.district})
+  }
+  if (state.address?.city?.length > 0) {
+    rows.push({name: "Cidade", value: state.address.city})
+  }
+  if (state.address?.state?.length > 0) {
+    rows.push({name: "UF", value: state.address.state})
+  }
+  if (state.responsable_name?.length > 0) {
+    rows.push({name: "Nome do responsável", value: state.responsable_name})
+  }
+  if (state.email?.length > 0) {
+    rows.push({name: "E-mail", value: state.email})
+  }
+  if (state.phone?.length > 0) {
+    rows.push({name: "Telefone", value: state.phone})
+  }
+  if (state.tipo?.length > 0) {
+    rows.push({name: "Tipo", value: state.tipo})
+  }
 
   const content = {
     tittle: state.fantasy_name,
     // icon: <InfoRoundedIcon style={{color: "#ffffff"}}/>,
-    rows: [
-      {name: "Razão Social", value: state.name},
-      // {name: "Nome Fantasia", value: state.fantasy_name},
-      {name: "CNPJ", value: state.fiscal_number, placeholder: '00.000.000/0000-00'},
-      {name: "Endereço", value: state.address.street},
-      {name: "Número", value: state.address.number},
-      {name: "Complemento", value: state.address.complement},
-      {name: "Bairro", value: state.address.district},
-      {name: "Cidade", value: state.address.city},
-      {name: "UF", value: state.address.state},
-      {name: "Nome do responsável", value: state.responsable_name},
-      {name: "E-mail", value: state.email},
-      {name: "Telefone", value: state.phone},
-      {name: "Tipo", value: state.tipo},
-    ]
+    rows: rows
   }
+
 
   return (
     <FormGroupSection>
