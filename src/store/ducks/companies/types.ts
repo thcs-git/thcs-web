@@ -77,6 +77,12 @@ export interface CompanyInterface {
   active: boolean;
   created_by: { _id: string };
   created_at?: string;
+  phones: [{
+    cellnumber?: string;
+    number?: string;
+    telegram: boolean;
+    whatsapp: boolean;
+  }];
 }
 
 export interface ViacepDataInterface {

@@ -45,12 +45,14 @@ const CepForm = (props: IComponent) => {
       {name: "CEP", value: state.address.postal_code},
       {name: "Endereço", value: state.address.street},
       {name: "Número", value: state.address.number},
-      {name: "Complemento", value: state.address.complement},
+      // {name: "Complemento", value: state.address.complement} ,
       {name: "Bairro", value: state.address.district},
       {name: "Cidade", value: state.address.city},
       {name: "UF", value: state.address.state},
     ]
   }
+
+  console.log('here', state.address.complement === '')
 
   return (
     <FormGroupSection>
@@ -145,7 +147,6 @@ const CepForm = (props: IComponent) => {
                 {...a11yProps("input-address-number", index)}
               />
             </Grid>
-
             <Grid item md={10} xs={12}>
               <TextField
                 label="Complemento"

@@ -63,7 +63,7 @@ const ResponsibleForm = (props: IComponent) => {
         <Grid item md={4} xs={12}>
           <InputMask
             mask="(99) 9999-9999"
-            value={state.phone? state.phone : state.phones[0]?.phone}
+            value={state?.phone? state?.phone : state?.phones.len > 0 ? state?.phones[0]?.phone : ''}
             disabled={!canEdit}
             onChange={(element) =>{
               {setState((prevState: { phones: any[]; }) => ({

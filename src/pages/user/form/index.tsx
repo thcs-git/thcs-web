@@ -187,7 +187,13 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
       phone: '',
       cellphone: '',
       active: true,
-      created_by: {_id: localStorage.getItem(LOCALSTORAGE.USER_ID) || ''}
+      created_by: {_id: localStorage.getItem(LOCALSTORAGE.USER_ID) || ''},
+      phones: [{
+        cellnumber: "",
+        number: "",
+        telegram: false,
+        whatsapp: false,
+      }],
     });
 
   const [customer, setCustomer] = useState<CustomerInterface>();

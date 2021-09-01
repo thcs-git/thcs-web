@@ -16,6 +16,7 @@ import UserProfessionForm from "../Inputs/Forms/UserProfessionForm";
 import UserForm from "../Inputs/Forms/UserForm";
 import UserCompanyForm from "../Inputs/Forms/UserCompanyForm";
 import CheckListForm from "../Inputs/Forms/CheckListForm";
+import CompanyForm from "../Inputs/Forms/CompanyForm";
 
 
 interface ITabprops {
@@ -137,6 +138,17 @@ const TabForm = (props: ITabprops) => {
         />
       case 'CepForm':
         return <CepForm
+          index={index}
+          state={state}
+          setState={setState ? setState : () => false}
+          setValidations={setValidations ? setValidations : () => false}
+          canEdit={canEdit ? canEdit : false}
+          cepStatus={cepStatus}
+          getAddress={getAddress}
+          params={params}
+        />
+      case 'CompanyForm':
+        return <CompanyForm
           index={index}
           state={state}
           setState={setState ? setState : () => false}
