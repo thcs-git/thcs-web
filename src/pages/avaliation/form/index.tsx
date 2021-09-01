@@ -111,6 +111,7 @@ export default function AreaForm(props: RouteComponentProps<IPageParams>) {
 
     dispatch(getAreasAction());
     dispatch(getUsersAction());
+    //COLOCAR AQUIIIII ,modifAVALATION
   }, [dispatch]);
 
   useEffect(() => {

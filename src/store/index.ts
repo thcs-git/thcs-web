@@ -15,6 +15,7 @@ import { LoginState } from "./ducks/login/types";
 import { PatientState } from "./ducks/patients/types";
 import { UserState } from "./ducks/users/types";
 import { LayoutState } from "./ducks/layout/types";
+import { ModifyState } from "./ducks/modify/types";
 
 import { InitialState } from "./ducks/states";
 import combinedReducers from "./ducks/rootReducer";
@@ -35,6 +36,7 @@ export interface ApplicationState {
   users: UserState;
   profession: ProfessionState;
   layout: LayoutState;
+  modify: ModifyState;
 }
 
 const sagaMiddleware = createSagaMiddleware();

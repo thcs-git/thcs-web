@@ -285,6 +285,7 @@ const Sibebar = (props: Props<any>) => {
           title: item.name,
           route: item.slug,
           modal: item.modal ? modalTypes[item.icon] : '',
+          //ex: item.name
           icon: <IconComponent name={item.icon} style={{color: item.color}}/>
         })
       })

@@ -447,8 +447,9 @@ export default function CustomerForm(props: RouteComponentProps<IPageParams>) {
 
   return (
     <Sidebar>
-      {customerState.loading && <Loading />}
+      
       <Container>
+      {customerState.loading && <Loading />}
 
       {customerState.isRegistrationCompleted ? (
           <FeedbackComponent
