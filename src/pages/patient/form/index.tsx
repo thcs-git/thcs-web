@@ -381,18 +381,18 @@ export default function PatientForm(props: RouteComponentProps<IPageParams>) {
     }
   }, [params.id]);
 
-    // useEffect(() => {
-    //   setState(prevState => {
-    //     return {
-    //       ...prevState,
-    //       address_id: {
-    //         ...prevState.address_id,
-    //         ...patientState.data.address_id
-    //       }
-    //     }
+    useEffect(() => {
+      setState(prevState => {
+        return {
+          ...prevState,
+          address_id: {
+            ...prevState.address_id,
+            ...patientState.data.address_id
+          }
+        }
 
-    //   });
-    // }, [patientState.data.address_id]);
+      });
+    }, [patientState.data.address_id]);
 
   const getAddress = useCallback(() => {
     dispatch(getAddressAction(state.address_id.postal_code));
