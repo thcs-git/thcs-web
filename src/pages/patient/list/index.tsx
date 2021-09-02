@@ -1,5 +1,5 @@
-import React, { useState, useEffect, useCallback, ChangeEvent } from 'react';
-import { useHistory, Link } from 'react-router-dom';
+import React, {useState, useEffect, useCallback, ChangeEvent} from 'react';
+import {useHistory, Link} from 'react-router-dom';
 import {
   Container,
   Button,
@@ -21,15 +21,22 @@ import {
   Grid,
   Box
 } from '@material-ui/core';
-import { FiberManualRecord, Visibility as VisibilityIcon, ErrorOutline, MoreVert, Check as CheckIcon, AccountCircle as AccountCircleIcon } from '@material-ui/icons';
+import {
+  FiberManualRecord,
+  Visibility as VisibilityIcon,
+  ErrorOutline,
+  MoreVert,
+  Check as CheckIcon,
+  AccountCircle as AccountCircleIcon
+} from '@material-ui/icons';
 import debounce from 'lodash.debounce';
 import _ from 'lodash';
 
-import { useDispatch, useSelector } from 'react-redux';
-import { ApplicationState } from '../../../store/';
-import { loadRequest, searchRequest, setIfRegistrationCompleted } from '../../../store/ducks/patients/actions';
+import {useDispatch, useSelector} from 'react-redux';
+import {ApplicationState} from '../../../store/';
+import {loadRequest, searchRequest, setIfRegistrationCompleted} from '../../../store/ducks/patients/actions';
 
-import { formatDate } from '../../../helpers/date';
+import {formatDate} from '../../../helpers/date';
 
 import Loading from '../../../components/Loading';
 import Sidebar from '../../../components/Sidebar';
@@ -37,16 +44,17 @@ import SearchComponent from '../../../components/List/Search';
 import PaginationComponent from '../../../components/Pagination';
 import Table from '../../../components/Table';
 
-import { FormTitle } from '../../../styles/components/Form';
+import {FormTitle} from '../../../styles/components/Form';
 
-import { loadRequestPopUp } from '../../../store/ducks/cares/actions';
-import { CareInterface } from "../../../store/ducks/cares/types";
+import {loadRequestPopUp} from '../../../store/ducks/cares/actions';
+import {CareInterface} from "../../../store/ducks/cares/types";
 
-import { PatientInterface } from "../../../store/ducks/patients/types";
+import {PatientInterface} from "../../../store/ducks/patients/types";
 
-import { HighComplexityLabel, LowerComplexityLabel, MediumComplexityLabel } from "../../../styles/components/Text";
+import {HighComplexityLabel, LowerComplexityLabel, MediumComplexityLabel} from "../../../styles/components/Text";
 
-import { ListItemCaptureStatus, CaptionList } from '../../avaliation/list/styles';
+import {ListItemCaptureStatus, CaptionList} from '../../avaliation/list/styles';
+import SESSIONSTORAGE from "../../../helpers/constants/sessionStorage";
 
 export default function PatientList() {
   const history = useHistory();
@@ -93,7 +101,7 @@ export default function PatientList() {
   }, [])
 
   const isDone = useCallback((care: any) => {
-    let patientId = _.filter(careState.list2.data, { patient_id: { _id: care } });
+    let patientId = _.filter(careState.list2.data, {patient_id: {_id: care}});
     console.log("teste", patientId);
     setpatientArray(patientId);
     //console.log(patientArray);
@@ -198,58 +206,97 @@ export default function PatientList() {
     }
   }, [careState]);
 
+  const integration = sessionStorage.getItem(SESSIONSTORAGE.INTEGRATION)
+
   return (
     <>
       <Sidebar>
-        {patientState.loading && <Loading />}
+        {patientState.loading && <Loading/>}
         <Container>
           <FormTitle>Lista de Pacientes</FormTitle>
+          {integration ? (
+            <>
+              <Table
+                tableCells={[
+                  {name: 'Prontuário', align: 'left'},
+                  {name: 'Paciente', align: 'left'},
+                  {name: 'Data de Nascimento', align: 'center'},
+                  {name: 'CPF', align: 'center'},
+                  {name: 'Mãe', align: 'left'},
+                ]}
+              >
+                {patientState.list.data.map((patient: PatientInterface, index: number) => (
+                  <TableRow key={`patient_${index}`}>
+                    <TableCell align="left">
+                      <Link key={index}
+                            to={`/patient/${patient?._id}/view/edit`}>{patient._id}</Link>
+                    </TableCell>
+                    <TableCell align="left">
+                      <Link key={index}
+                            to={`/patient/${patient?._id}/view/edit`}>{patient.name}</Link>
+                    </TableCell>
+                    <TableCell align="center">{formatDate(patient.birthdate, 'DD/MM/YYYY')}</TableCell>
+                    <TableCell align="center">{patient.fiscal_number ? patient.fiscal_number : '-'}</TableCell>
+                    <TableCell align="left">{patient.mother_name}</TableCell>
+                  </TableRow>
+                ))}
+              </Table>
+            </>
+          ) : (
+            <>
+              <SearchComponent
+                handleButton={handleClickButton}
+                inputPlaceholder="Pesquise por nome, CPF, data, etc..."
+                buttonTitle="Novo"
+                onChangeInput={debounceSearchRequest}
+              />
 
-          <SearchComponent
-            handleButton={handleClickButton}
-            inputPlaceholder="Pesquise por nome, CPF, data, etc..."
-            buttonTitle="Novo"
-            onChangeInput={debounceSearchRequest}
-          />
-
-          <Table
-            tableCells={[
-              { name: 'Paciente', align: 'left', },
-              { name: 'CPF', align: 'left' },
-              { name: 'Mãe', align: 'left' },
-              { name: 'Data de cadastro', align: 'left' },
-              { name: '', align: 'left' },
-            ]}
-          >
-            {patientState.list.data.map((patient: PatientInterface, index: number) => (
-              <TableRow key={`patient_${index}`}>
-                <TableCell align="left">
-                  <Link key={index} to={`/patient/${patient?._id}/view/edit`}>{patient.social_name || patient.name}</Link>
-                </TableCell>
-                <TableCell align="left">{patient.fiscal_number}</TableCell>
-                <TableCell align="left">{patient.mother_name}</TableCell>
-                <TableCell align="left">{formatDate(patient.created_at, 'DD/MM/YYYY HH:mm:ss')}</TableCell>
-                <TableCell align="center">
-                  <Button aria-controls={`patient-menu${index}`} id={`btn_patient-menu${index}`} aria-haspopup="true" onClick={handleOpenRowMenu}>
-                    <MoreVert style={{ color: '#0899BA' }} />
-                  </Button>
-                  <Menu
-                    id={`patient-menu${index}`}
-                    anchorEl={anchorEl}
-                    keepMounted
-                    open={anchorEl?.id === `btn_patient-menu${index}`}
-                    onClose={handleCloseRowMenu}
-                  >
-                    <MenuItem onClick={() => history.push(`/patient/${patient._id}/edit/edit`)}>Editar</MenuItem>
-                    <MenuItem onClick={() => history.push(`/patient/${patient._id}/view/edit`)}>Visualizar</MenuItem>
-                    <MenuItem onClick={() => history.push(`/patient/capture/create?patient_id=${patient._id}`)}>Iniciar captação</MenuItem>
-                    <MenuItem onClick={() => toggleHistoryModal(index, patient?._id)}>Histórico de captação</MenuItem>
-                    <MenuItem onClick={() => toggleHistoryModal_2(index, patient?._id)}>Histórico de atendimento</MenuItem>
-                  </Menu>
-                </TableCell>
-              </TableRow>
-            ))}
-          </Table>
+              <Table
+                tableCells={[
+                  {name: 'Paciente', align: 'left',},
+                  {name: 'CPF', align: 'left'},
+                  {name: 'Mãe', align: 'left'},
+                  {name: 'Data de cadastro', align: 'left'},
+                  {name: '', align: 'left'},
+                ]}
+              >
+                {patientState.list.data.map((patient: PatientInterface, index: number) => (
+                  <TableRow key={`patient_${index}`}>
+                    <TableCell align="left">
+                      <Link key={index}
+                            to={`/patient/${patient?._id}/view/edit`}>{patient.social_name || patient.name}</Link>
+                    </TableCell>
+                    <TableCell align="left">{patient.fiscal_number}</TableCell>
+                    <TableCell align="left">{patient.mother_name}</TableCell>
+                    <TableCell align="left">{formatDate(patient.created_at, 'DD/MM/YYYY HH:mm:ss')}</TableCell>
+                    <TableCell align="center">
+                      <Button aria-controls={`patient-menu${index}`} id={`btn_patient-menu${index}`}
+                              aria-haspopup="true" onClick={handleOpenRowMenu}>
+                        <MoreVert style={{color: '#0899BA'}}/>
+                      </Button>
+                      <Menu
+                        id={`patient-menu${index}`}
+                        anchorEl={anchorEl}
+                        keepMounted
+                        open={anchorEl?.id === `btn_patient-menu${index}`}
+                        onClose={handleCloseRowMenu}
+                      >
+                        <MenuItem onClick={() => history.push(`/patient/${patient._id}/edit/edit`)}>Editar</MenuItem>
+                        <MenuItem
+                          onClick={() => history.push(`/patient/${patient._id}/view/edit`)}>Visualizar</MenuItem>
+                        <MenuItem onClick={() => history.push(`/patient/capture/create?patient_id=${patient._id}`)}>Iniciar
+                          captação</MenuItem>
+                        <MenuItem onClick={() => toggleHistoryModal(index, patient?._id)}>Histórico de
+                          captação</MenuItem>
+                        <MenuItem onClick={() => toggleHistoryModal_2(index, patient?._id)}>Histórico de
+                          atendimento</MenuItem>
+                      </Menu>
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </Table>
+            </>
+          )}
 
           <PaginationComponent
             page={patientState.list.page}
@@ -306,27 +353,27 @@ export default function PatientList() {
               id="scroll-dialog-description"
               tabIndex={-1}
             >
-              <Grid container style={{ display: "flex", flexDirection: "row", justifyContent: "space-between" }}>
-                <Grid item md={1} style={{ padding: "0" }}>
-                  <AccountCircleIcon style={{ color: '#0899BA', fontSize: '30pt' }} />
+              <Grid container style={{display: "flex", flexDirection: "row", justifyContent: "space-between"}}>
+                <Grid item md={1} style={{padding: "0"}}>
+                  <AccountCircleIcon style={{color: '#0899BA', fontSize: '30pt'}}/>
                 </Grid>
-                <Grid item md={11} style={{ padding: "0", paddingTop: "0.4rem" }}>
-                  <h3 style={{ color: '#333333' }}>{patientState.list.data[patientIndex]?.name}</h3>
+                <Grid item md={11} style={{padding: "0", paddingTop: "0.4rem"}}>
+                  <h3 style={{color: '#333333'}}>{patientState.list.data[patientIndex]?.name}</h3>
                 </Grid>
               </Grid>
               <Table
                 tableCells={[
-                  { name: 'Data da captação', align: 'left' },
-                  { name: 'Tipo', align: 'center' },
-                  { name: 'Complexidade', align: 'center' },
-                  { name: 'Status', align: 'center' },
-                  { name: 'Visualizar', align: 'left' }
+                  {name: 'Data da captação', align: 'left'},
+                  {name: 'Tipo', align: 'center'},
+                  {name: 'Complexidade', align: 'center'},
+                  {name: 'Status', align: 'center'},
+                  {name: 'Visualizar', align: 'left'}
                 ]}
               >
                 {patientArray?.map((patient: any, index: number) => {
                   return (
                     <TableRow key={`patient_${index}`}>
-                      <TableCell >
+                      <TableCell>
                         <p>{patient?.capture?.finished_at ? formatDate(patient?.finished_at, 'DD/MM/YYYY') : '-'}</p>
                       </TableCell>
                       <TableCell align="center">
@@ -337,12 +384,12 @@ export default function PatientList() {
                       </TableCell>
                       <TableCell align="center">
                         <ListItemCaptureStatus status={patient?.capture?.status || ''}>
-                          <FiberManualRecord /> {patient?.capture?.status}
+                          <FiberManualRecord/> {patient?.capture?.status}
                         </ListItemCaptureStatus>
                       </TableCell>
                       <TableCell align="center">
                         <Button onClick={() => history.push(`/patient/capture/${patient._id}/overview`)}>
-                          <VisibilityIcon style={{ color: '#0899BA' }} />
+                          <VisibilityIcon style={{color: '#0899BA'}}/>
                         </Button>
                       </TableCell>
                     </TableRow>
@@ -353,7 +400,7 @@ export default function PatientList() {
           </DialogContent>
           <DialogActions>
             <Button onClick={() => setHistoryModalOpen(false)} color="primary">
-              <h3 style={{ color: '#0899BA', fontSize: '11pt' }}>Fechar</h3>
+              <h3 style={{color: '#0899BA', fontSize: '11pt'}}>Fechar</h3>
             </Button>
           </DialogActions>
         </Dialog>
@@ -373,28 +420,28 @@ export default function PatientList() {
               id="scroll-dialog-description"
               tabIndex={-1}
             >
-              <Grid container style={{ display: "flex", flexDirection: "row", justifyContent: "space-between" }}>
-                <Grid item md={1} style={{ padding: "0" }}>
-                  <AccountCircleIcon style={{ color: '#0899BA', fontSize: '30pt' }} />
+              <Grid container style={{display: "flex", flexDirection: "row", justifyContent: "space-between"}}>
+                <Grid item md={1} style={{padding: "0"}}>
+                  <AccountCircleIcon style={{color: '#0899BA', fontSize: '30pt'}}/>
                 </Grid>
-                <Grid item md={11} style={{ padding: "0", paddingTop: "0.4rem" }}>
-                  <h3 style={{ color: '#333333' }}>{patientState.list.data[patientIndex]?.name}</h3>
+                <Grid item md={11} style={{padding: "0", paddingTop: "0.4rem"}}>
+                  <h3 style={{color: '#333333'}}>{patientState.list.data[patientIndex]?.name}</h3>
                 </Grid>
               </Grid>
               <Table
                 tableCells={[
-                  { name: 'Data do Atendimento', align: 'left' },
-                  { name: 'Atendimento', align: 'left' },
-                  { name: 'Data da Alta', align: 'left' },
-                  { name: 'Tipo', align: 'center' },
-                  { name: 'Visualizar', align: 'center' }
+                  {name: 'Data do Atendimento', align: 'left'},
+                  {name: 'Atendimento', align: 'left'},
+                  {name: 'Data da Alta', align: 'left'},
+                  {name: 'Tipo', align: 'center'},
+                  {name: 'Visualizar', align: 'center'}
                 ]}
               >
                 {patientArray?.map((patient: any, index: number) => {
                   return (
                     <TableRow key={`patient_${index}`}>
-                      <TableCell >
-                      <p>{patient?.started_at ? formatDate(patient?.started_at ?? "", "DD/MM/YYYY") : "-"}</p>
+                      <TableCell>
+                        <p>{patient?.started_at ? formatDate(patient?.started_at ?? "", "DD/MM/YYYY") : "-"}</p>
                       </TableCell>
                       <TableCell align="center">
                         <p>{patient?._id}</p>
@@ -409,7 +456,7 @@ export default function PatientList() {
                       </TableCell>
                       <TableCell align="center">
                         <Button onClick={() => history.push(`/care/${patient?._id}/overview`)}>
-                          <VisibilityIcon style={{ color: '#0899BA' }} />
+                          <VisibilityIcon style={{color: '#0899BA'}}/>
                         </Button>
                       </TableCell>
                     </TableRow>
@@ -420,7 +467,7 @@ export default function PatientList() {
           </DialogContent>
           <DialogActions>
             <Button onClick={() => setHistoryModalOpen_2(false)} color="primary">
-              <h3 style={{ color: '#0899BA', fontSize: '11pt' }}>Fechar</h3>
+              <h3 style={{color: '#0899BA', fontSize: '11pt'}}>Fechar</h3>
             </Button>
           </DialogActions>
         </Dialog>

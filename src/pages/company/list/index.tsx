@@ -61,13 +61,6 @@ export default function CompanyList() {
         <Container>
           <FormTitle>Lista de Empresas</FormTitle>
 
-          {/*<SearchComponent*/}
-          {/*  handleButton={() => history.push('/company/create/')}*/}
-          {/*  inputPlaceholder="Pesquise por nome fantasia, CNPJ, status, etc..."*/}
-          {/*  buttonTitle="Novo"*/}
-          {/*  onChangeInput={debounceSearchRequest}*/}
-          {/*/>*/}
-
           {integration ? (
             <Table
               tableCells={[
@@ -97,46 +90,55 @@ export default function CompanyList() {
               ))}
             </Table>
           ) : (
-            <Table
-              tableCells={[
-                {name: 'Empresa', align: 'left',},
-                {name: 'CNPJ', align: 'left'},
-                {name: 'Status', align: 'left'},
-                {name: 'Adicionado em', align: 'left'},
-                {name: '', align: 'left'},
-              ]}
-            >
-              {companyState.list.data.map((company: CompanyInterface, index: number) => (
-                <TableRow key={`patient_${index}`}>
-                  <TableCell align="left">
-                    <Link key={index} to={`/company/${company._id}/view`}>{company.fantasy_name}</Link>
-                  </TableCell>
-                  <TableCell>
-                    {company.fiscal_number}
-                  </TableCell>
-                  <TableCell>
-                    <ListItemStatus active={company.active}>{company.active ? 'Ativo' : 'Inativo'}</ListItemStatus>
-                  </TableCell>
-                  <TableCell align="left">{formatDate(company.created_at, 'DD/MM/YYYY HH:mm:ss')}</TableCell>
-                  <TableCell align="center">
-                    <Button aria-controls={`patient-menu${index}`} id={`btn_patient-menu${index}`} aria-haspopup="true"
-                            onClick={handleOpenRowMenu}>
-                      <MoreVert style={{color: '#0899BA'}}/>
-                    </Button>
-                    <Menu
-                      id={`patient-menu${index}`}
-                      anchorEl={anchorEl}
-                      keepMounted
-                      open={anchorEl?.id === `btn_patient-menu${index}`}
-                      onClose={handleCloseRowMenu}
-                    >
-                      <MenuItem onClick={() => history.push(`/company/${company._id}/edit`)}>Editar</MenuItem>
-                      <MenuItem onClick={() => history.push(`/company/${company._id}/view`)}>Visualizar</MenuItem>
-                    </Menu>
-                  </TableCell>
-                </TableRow>
-              ))}
-            </Table>
+            <>
+              <SearchComponent
+                handleButton={() => history.push('/company/create/')}
+                inputPlaceholder="Pesquise por nome fantasia, CNPJ, status, etc..."
+                buttonTitle="Novo"
+                onChangeInput={debounceSearchRequest}
+              />
+              <Table
+                tableCells={[
+                  {name: 'Empresa', align: 'left',},
+                  {name: 'CNPJ', align: 'left'},
+                  {name: 'Status', align: 'left'},
+                  {name: 'Adicionado em', align: 'left'},
+                  {name: '', align: 'left'},
+                ]}
+              >
+                {companyState.list.data.map((company: CompanyInterface, index: number) => (
+                  <TableRow key={`patient_${index}`}>
+                    <TableCell align="left">
+                      <Link key={index} to={`/company/${company._id}/view`}>{company.fantasy_name}</Link>
+                    </TableCell>
+                    <TableCell>
+                      {company.fiscal_number}
+                    </TableCell>
+                    <TableCell>
+                      <ListItemStatus active={company.active}>{company.active ? 'Ativo' : 'Inativo'}</ListItemStatus>
+                    </TableCell>
+                    <TableCell align="left">{formatDate(company.created_at, 'DD/MM/YYYY HH:mm:ss')}</TableCell>
+                    <TableCell align="center">
+                      <Button aria-controls={`patient-menu${index}`} id={`btn_patient-menu${index}`}
+                              aria-haspopup="true"
+                              onClick={handleOpenRowMenu}>
+                        <MoreVert style={{color: '#0899BA'}}/>
+                      </Button>
+                      <Menu
+                        id={`patient-menu${index}`}
+                        anchorEl={anchorEl}
+                        keepMounted
+                        open={anchorEl?.id === `btn_patient-menu${index}`}
+                        onClose={handleCloseRowMenu}
+                      >
+                        <MenuItem onClick={() => history.push(`/company/${company._id}/edit`)}>Editar</MenuItem>
+                        <MenuItem onClick={() => history.push(`/company/${company._id}/view`)}>Visualizar</MenuItem>
+                      </Menu>
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </Table>
+            </>
           )}
           <PaginationComponent
             page={companyState.list.page}
