@@ -185,7 +185,12 @@ export default function PatientForm(props: RouteComponentProps<IPageParams>) {
       complement: "",
     },
     area_id: "",
-    phones: [],
+    phones: [{
+      cellphone: '',
+      phone:'',
+      telegram: false,
+      whatsapp: false,
+    }],
     email: "",
     sus_card: "FIELD_NOT_EXISTS_IN_PATIENT_REGISTRATION",
     blood_type: "",
@@ -226,7 +231,9 @@ export default function PatientForm(props: RouteComponentProps<IPageParams>) {
     email: '',
     phones: [{
       cellnumber: '',
-      number: ''
+      number: '',
+      telegram: false,
+      whatsapp: false
     }],
     responsable: {
       name: '',
@@ -295,12 +302,13 @@ export default function PatientForm(props: RouteComponentProps<IPageParams>) {
     isValidCellPhoneNumber = validator.isMobilePhone(cellphone, 'pt-BR');
 
     return (isValidCellPhoneNumber)
-   }else if (state.phones[1]?.cellnumber){
-    var cellphone =  state.phones[1]?.cellnumber.replace('(','').replace(')','').replace(' ','').replace(' ','').replace('-','');
-    isValidCellPhoneNumber = validator.isMobilePhone(cellphone, 'pt-BR');
-
-    return (isValidCellPhoneNumber)
    }
+  //  else if (state.phones[1]?.cellnumber){
+  //   var cellphone =  state.phones[1]?.cellnumber.replace('(','').replace(')','').replace(' ','').replace(' ','').replace('-','');
+  //   isValidCellPhoneNumber = validator.isMobilePhone(cellphone, 'pt-BR');
+
+  //   return (isValidCellPhoneNumber)
+  //  }
 }
 
   const validateResponsableCellPhone = () => {
@@ -381,18 +389,18 @@ export default function PatientForm(props: RouteComponentProps<IPageParams>) {
     }
   }, [params.id]);
 
-    useEffect(() => {
-      setState(prevState => {
-        return {
-          ...prevState,
-          address_id: {
-            ...prevState.address_id,
-            ...patientState.data.address_id
-          }
-        }
+    // useEffect(() => {
+    //   setState(prevState => {
+    //     return {
+    //       ...prevState,
+    //       address_id: {
+    //         ...prevState.address_id,
+    //         ...patientState.data.address_id
+    //       }
+    //     }
 
-      });
-    }, [patientState.data.address_id]);
+    //   });
+    // }, [patientState.data.address_id]);
 
   const getAddress = useCallback(() => {
     dispatch(getAddressAction(state.address_id.postal_code));
@@ -606,10 +614,10 @@ export default function PatientForm(props: RouteComponentProps<IPageParams>) {
   const handleSaveFormPatient = useCallback(() => {
     const patientData = {
       ...state,
-      phones: [
-        { whatsapp: false, telegram: false, number: state.phones[0]?.number },
-        { whatsapp: false, telegram: false, cellnumber: state.phones[0]?.cellnumber },
-      ]
+      // phones: [
+      //   { whatsapp: false, telegram: false, number: state.phones[0]?.number },
+      //   { whatsapp: false, telegram: false, cellnumber: state.phones[0]?.cellnumber },
+      // ]
     };
 
     if (state?._id) {
@@ -630,7 +638,7 @@ export default function PatientForm(props: RouteComponentProps<IPageParams>) {
   return (
     <Sidebar>
       {patientState.loading && <Loading />}
-      {(patientState.isRegistrationCompleted &&  !state?._id) ? (
+      {(patientState.isRegistrationCompleted ) ? (
         <RegistrationCompleted {...props} />
       ) : (
         <Container>
@@ -1103,7 +1111,8 @@ export default function PatientForm(props: RouteComponentProps<IPageParams>) {
                           <InputLabel htmlFor="search-input">Celular</InputLabel>
                           <InputMask
                             mask="(99) 9 9999-9999"
-                            value={state.phones[0]?.cellnumber? state.phones[0]?.cellnumber : state.phones[1]?.cellnumber}
+                            // value={state.phones[0]?.cellnumber? state.phones[0]?.cellnumber : state.phones[1]?.cellnumber}
+                            value={state.phones[0]?.cellnumber}
                             onChange={(element) => {
                               {setState(prevState => ({
                                 ...prevState,
