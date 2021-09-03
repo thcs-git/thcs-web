@@ -49,6 +49,7 @@ import FeedbackComponent from '../../../components/Feedback';
 import validator from 'validator';
 import { Autocomplete } from '@material-ui/lab';
 import { toast } from 'react-toastify';
+import { modify_customer } from '../../../store/ducks/modify/actions';
 
 
 interface IFormFields extends CustomerInterface {
@@ -179,6 +180,7 @@ export default function CustomerForm(props: RouteComponentProps<IPageParams>) {
         }
       }
     });
+    dispatch(modify_customer());
   }, [customerState.data.address]);
 
   useEffect(() => {

@@ -34,6 +34,7 @@ import {
   InputFiled as TextField,
   FormGroupSection
 } from './styles';
+import { modify_speciality } from '../../../store/ducks/modify/actions';
 
 interface IPageParams {
   id?: string;
@@ -64,6 +65,8 @@ export default function SpecialtyForm(props: RouteComponentProps<IPageParams>) {
     if (params.id) {
       dispatch(loadSpecialtyById(params.id))
     }
+
+    dispatch(modify_speciality());
   }, [dispatch, params]);
 
   useEffect(() => {

@@ -91,6 +91,7 @@ import _ from "lodash";
 // @ts-ignore
 import Sidebar_menu from "../../../components/Sidebar_menu";
 import moment from "moment";
+import { modify_user } from "../../../store/ducks/modify/actions";
 
 
 interface IFormFields {
@@ -316,6 +317,8 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
       dispatch(loadCustomerById(currentCustomer));
     }
 
+    dispatch(modify_user());
+
 
   }, [currentCustomer]);
   const currentC = window.localStorage.getItem(LOCALSTORAGE.CUSTOMER_NAME);
@@ -325,6 +328,8 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
     } else {
       dispatch(cleanAction());
     }
+
+    
   }, [params]);
 
   useEffect(() => {

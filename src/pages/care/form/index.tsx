@@ -88,6 +88,7 @@ import {
   OutlinedInputFiled
 } from "./styles";
 import { push } from "react-router-redux";
+import { modify_care } from "../../../store/ducks/modify/actions";
 
 interface IFormFields extends CareInterface {
   form?: {
@@ -211,6 +212,7 @@ export default function CareForm(props: RouteComponentProps<IPageParams>) {
     dispatch(AccommodationTypeRequest());
     dispatch(careTypeRequest());
     dispatch(getCares({status: "Pre-Atendimento", "capture.status": "Aprovado", 'patient_id.active': true}));
+    dispatch(modify_care());
   }, [dispatch]);
 
   useEffect(() => {

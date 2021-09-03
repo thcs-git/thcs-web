@@ -49,6 +49,7 @@ import {
   NoDataIcon,
   PatientNotFound
 } from './styles';
+import { modify_avaliation } from '../../../store/ducks/modify/actions';
 
 interface IFormFields extends CareInterface {
   form?: {
@@ -111,7 +112,7 @@ export default function AreaForm(props: RouteComponentProps<IPageParams>) {
 
     dispatch(getAreasAction());
     dispatch(getUsersAction());
-    //COLOCAR AQUIIIII ,modifAVALATION
+    dispatch(modify_avaliation());
   }, [dispatch]);
 
   useEffect(() => {

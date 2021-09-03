@@ -32,6 +32,7 @@ import {
   InputFiled as TextField,
   FormGroupSection
 } from './styles';
+import { modify_council } from '../../../store/ducks/modify/actions';
 
 interface IFormFields extends CouncilInterface { }
 
@@ -63,6 +64,8 @@ const EspecialtyForm = (props: RouteComponentProps<IPageParams>) => {
     if (params.id) {
       dispatch(loadCouncilById(params.id))
     }
+
+    dispatch(modify_council());
   }, [dispatch, params]);
 
   useEffect(() => {

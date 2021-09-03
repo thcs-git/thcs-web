@@ -48,6 +48,7 @@ import {
   FormGroupSection
 } from './styles';
 import _ from "lodash";
+import { modify_company } from '../../../store/ducks/modify/actions';
 
 interface IPageParams {
   id?: string;
@@ -206,6 +207,7 @@ export default function CompanyForm(props: RouteComponentProps<IPageParams>) {
     if (params.id) {
       dispatch(loadCompanyById(params.id))
     }
+    dispatch(modify_company());
   }, [dispatch]);
 
   useEffect(() => {
