@@ -113,6 +113,7 @@ export enum CareTypes {
  */
 
 export interface CareInterface {
+  tipo?: string;
   _id?: string;
   name?: string;
   patient_id?: any; // *

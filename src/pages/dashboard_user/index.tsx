@@ -88,7 +88,7 @@ export default function Dashboard_user() {
   useEffect(() => {
     dispatch(cleanAction());
     if (user?.id) {
-      dispatch(loadUserById(user.id));
+      dispatch(loadUserById(user.id, ''));
     }
   }, [user]);
 

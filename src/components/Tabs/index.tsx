@@ -136,6 +136,7 @@ const TabForm = (props: ITabprops) => {
           setValidations={setValidations ? setValidations : () => false}
           fieldsValidation={fieldsValidation}
           canEdit={canEdit ? canEdit : false}
+          params={params}
         />
       case 'CepForm':
         return <CepForm
@@ -211,6 +212,7 @@ const TabForm = (props: ITabprops) => {
           fieldsValidation={fieldsValidation}
           canEdit={canEdit ? canEdit : false}
           user={user}
+          params={params}
         />
       case 'PermissionList':
         return <PermissionList

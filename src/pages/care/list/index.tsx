@@ -56,12 +56,15 @@ export default function CouncilList() {
 
   useEffect(() => {
     dispatch(getCares({status: "Atendimento"}));
-    dispatch(loadRequestPopUp({
-      page: '1',
-      limit: '1000',
-      total: 1000,
-      search
-    }));
+
+    if (!(sessionStorage.getItem(SESSIONSTORAGE.INTEGRATION))) {
+      dispatch(loadRequestPopUp({
+        page: '1',
+        limit: '1000',
+        total: 1000,
+        search
+      }));
+    }
   }, []);
 
   useEffect(() => {
@@ -130,6 +133,10 @@ export default function CouncilList() {
 
   const integration = sessionStorage.getItem(SESSIONSTORAGE.INTEGRATION)
 
+  function handleEmpty(value: any) {
+    return value ? value : '-'
+  }
+
   return (
     <>
       <Sidebar>
@@ -143,55 +150,30 @@ export default function CouncilList() {
                 tableCells={[
                   {name: "Atendimento", align: "left"},
                   {name: "Paciente", align: "left"},
-                  {name: "Tipo", align: "left"},
-                  {name: "CPF", align: "left"},
-                  {name: "Data de Atendimento", align: "left"},
+                  {name: "Tipo", align: "center"},
+                  {name: "CPF", align: "center"},
+                  {name: "Data de Atendimento", align: "center"},
                 ]}
               >
                 {careState.list.data.map((care: CareInterface, index: number) => (
                   <TableRow key={`care_${index}`}>
                     <TableCell>
                       <Link to={`/care/${care._id}/overview`}>
-                        {care._id}
+                        {handleEmpty(care._id)}
                       </Link>
                     </TableCell>
-                    <TableCell>{care?.patient_id?.name}</TableCell>
-                    <TableCell>{care.patient_id?.fiscal_number}</TableCell>
                     <TableCell>
-                      {typeof care?.care_type_id === "object"
-                        ? care?.care_type_id.name
-                        : care?.care_type_id}
+                      <Link to={`/care/${care._id}/overview`}>
+                        {handleEmpty(care?.patient_id?.name)}
+                      </Link>
                     </TableCell>
-                    <TableCell align="left">
-                      <ComplexityStatus
-                        status={care?.complexity || care?.capture?.complexity}
-                      >
-                        <p>{handleComplexity(care?.complexity || care?.capture?.complexity)}</p>
-                      </ComplexityStatus>
-                    </TableCell>
+                    <TableCell align="center">{handleEmpty(care?.tipo)}</TableCell>
+                    <TableCell align="center">{handleEmpty(care.patient_id?.fiscal_number)}</TableCell>
                     <TableCell align="center">
-                      {care?.started_at ? formatDate(care?.started_at ?? "", "DD/MM/YYYY HH:mm:ss") : "-"}
-                    </TableCell>
-                    <TableCell>
-                      <Button
-                        aria-controls={`simple-menu${index}`}
-                        id={`btn_simple-menu${index}`}
-                        aria-haspopup="true"
-                        onClick={handleOpenRowMenu}
-                      >
-                        <MoreVert style={{color: '#0899BA'}}/>
-                      </Button>
-                      <Menu
-                        id={`simple-menu${index}`}
-                        anchorEl={anchorEl}
-                        keepMounted
-                        open={anchorEl?.id === `btn_simple-menu${index}`}
-                        onClose={handleCloseRowMenu}
-                      >
-                        <MenuItem onClick={() => toggleHistoryModal(index, care)}>Histórico</MenuItem>
-                      </Menu>
+                      {care?.created_at ? formatDate(care?.created_at ?? "", "DD/MM/YYYY HH:mm:ss") : "-"}
                     </TableCell>
                   </TableRow>
+
                 ))}
               </Table>
             </>

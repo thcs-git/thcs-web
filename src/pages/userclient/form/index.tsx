@@ -18,6 +18,7 @@ import {
 } from "../../../store/ducks/users/actions";
 import ButtonTabs from "../../../components/Button/ButtonTabs";
 import {toast} from "react-toastify";
+import SESSIONSTORAGE from "../../../helpers/constants/sessionStorage";
 
 interface IPageParams {
   id?: string;
@@ -107,7 +108,7 @@ export default function UserClientForm(props: RouteComponentProps<IPageParams>) 
 
   useEffect(() => {
     if (params.id) {
-      dispatch(loadUserById(params.id));
+      dispatch(loadUserById(params.id, 'userclient'));
     } else {
       dispatch(cleanAction());
     }
@@ -150,6 +151,8 @@ export default function UserClientForm(props: RouteComponentProps<IPageParams>) 
     history.push('/userclient');
   }, []);
 
+  const integration = sessionStorage.getItem(SESSIONSTORAGE.INTEGRATION)
+
   const buttons = [
     {
       name: 'Voltar',
@@ -158,14 +161,19 @@ export default function UserClientForm(props: RouteComponentProps<IPageParams>) 
       background: 'success_rounded',
       show: true,
     },
-    {
-      name: 'Salvar',
-      onClick: handleSaveFormUser,
-      variant: 'contained',
-      background: 'success',
-      show: true,
-    }
   ]
+
+  if (!(integration)) {
+    buttons.push(
+      {
+        name: 'Salvar',
+        onClick: handleSaveFormUser,
+        variant: 'contained',
+        background: 'success',
+        show: true,
+      },
+    )
+  }
 
   return (
     <>

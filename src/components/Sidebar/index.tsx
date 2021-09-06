@@ -194,6 +194,7 @@ const Sibebar = (props: Props<any>) => {
     sessionStorage.removeItem(SESSIONSTORAGE.MENU);
     sessionStorage.removeItem(SESSIONSTORAGE.RIGHTS);
     sessionStorage.removeItem(SESSIONSTORAGE.INTEGRATION);
+    sessionStorage.removeItem(SESSIONSTORAGE.INTEGRATION_NAME);
 
 
     window.location.reload();
@@ -297,6 +298,8 @@ const Sibebar = (props: Props<any>) => {
     if (layoutState.success) {
       sessionStorage.setItem(SESSIONSTORAGE.MENU, JSON.stringify(layoutState.data.menu))
       sessionStorage.setItem(SESSIONSTORAGE.RIGHTS, JSON.stringify(layoutState.data.rights))
+      layoutState.data.integration ? sessionStorage.setItem(SESSIONSTORAGE.INTEGRATION, layoutState.data.integration) : sessionStorage.removeItem(SESSIONSTORAGE.INTEGRATION)
+      layoutState.data.integration_name ? sessionStorage.setItem(SESSIONSTORAGE.INTEGRATION_NAME, layoutState.data.integration_name) : sessionStorage.removeItem(SESSIONSTORAGE.INTEGRATION_NAME)
 
       const items: itemsInterface[] = []
 

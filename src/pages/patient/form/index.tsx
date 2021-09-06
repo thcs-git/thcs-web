@@ -86,6 +86,8 @@ interface IFormFields {
 interface IPageParams {
   id?: string;
   mode?: string;
+  callback?: string;
+  callback_id?: string;
 }
 
 interface TabPanelProps {
@@ -601,9 +603,12 @@ export default function PatientForm(props: RouteComponentProps<IPageParams>) {
 
   function handleCancelForm() {
     setOpenModalCancel(false);
-    history.push(`/patient`);
+    if (params.callback === 'care') {
+      history.push(`/care/${params.callback_id}/overview`);
+    } else {
+      history.push(`/patient`);
+    }
     dispatch(cleanAction())
-
   }
 
   const handleChangeRegistryType = useCallback((element) => {
@@ -658,7 +663,7 @@ export default function PatientForm(props: RouteComponentProps<IPageParams>) {
         <Container>
           {params.mode === 'view' ? (
             <>
-              <TabTittle tittle={'Empresa'}/>
+              <TabTittle tittle={'Paciente'}/>
               <TabForm
                 navItems={NavItems}
                 initialTab={0}

@@ -5,6 +5,8 @@ import {UserTypes} from "../users/types";
 export const INITIAL_STATE: LayoutState = {
   data: {
     rights: [],
+    integration: null,
+    integration_name: null,
   },
   success: false,
   error: false,
@@ -26,9 +28,10 @@ const reducer: Reducer<LayoutState> = (state = INITIAL_STATE, action) => {
     case LayoutTypes.LOAD_FAILURE:
       return {
         ...state,
+        data: action.payload.data,
         loading: false,
         error: true,
-        success: false,
+        success: true,
       };
     case UserTypes.CLEAN:
       return INITIAL_STATE;

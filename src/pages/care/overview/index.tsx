@@ -5,14 +5,16 @@ import Card from '@material-ui/core/Card';
 import {useHistory} from "react-router-dom";
 
 import QueueIcon from '@material-ui/icons/Queue';
+import CropFreeIcon from '@material-ui/icons/CropFree';
 import TodayRoundedIcon from '@material-ui/icons/TodayRounded';
 import {FormTitle} from '../../../styles/components/Form';
 import Sidebar from '../../../components/Sidebar';
 
 import {loadCareById} from '../../../store/ducks/cares/actions';
 
-import {ReactComponent as IconProfile} from '../../../assets/img/icon-profile.svg';
-import {ReactComponent as IconProntuario} from '../../../assets/img/icon-prontuario.svg';
+import IconProfile from '../../../assets/img/icon-profile.svg';
+import IconProntuario from '../../../assets/img/icon-prontuario.svg';
+import {ReactComponent as SuccessImage} from '../../../assets/img/illustration-token.svg';
 import IconMultidisciplinar from '../../../assets/img/icon-equipe-medica.svg';
 import IconDadosPessoais from '../../../assets/img/icon-dados-pessoais.svg';
 import IconPlanoInternacoes from '../../../assets/img/icon-plano-internacoes.svg';
@@ -102,7 +104,7 @@ export default function PatientOverview(props: RouteComponentProps<IPageParams>)
                 <Box mb={2} mt={2} paddingLeft={5} paddingRight={5} display="flex" justifyContent="space-between"
                      alignItems="center">
                   <Profile>
-                    <IconProfile/>
+                    <img src={IconProfile} alt="Profile"/>
                     <div>
                       <h5>{careState.data.patient_id?.name}</h5>
                       <p>{careState.data.patient_id?.birthdate ? age(careState.data.patient_id?.birthdate) : ''}</p>
@@ -110,8 +112,8 @@ export default function PatientOverview(props: RouteComponentProps<IPageParams>)
                   </Profile>
                 </Box>
               </Card>
-              <Grid container xs={12} style={{justifyContent: 'center'}}>
-                <Grid container md={8} xs={8} spacing={2} style={{marginTop: '2%'}}>
+              <Grid container xs={12} style={{justifyContent: 'space-evenly'}}>
+                <Grid container xs={12} md={7} lg={8} spacing={2} style={{marginTop: '2%', minWidth: '480px'}}>
                   {/* Dados pessoais */}
                   <Grid item xs={12} sm={12} md={6} lg={6}>
                     <Card className="card-styles">
@@ -130,7 +132,7 @@ export default function PatientOverview(props: RouteComponentProps<IPageParams>)
                           onClose={handleCloseRowMenu}
                         >
                           <MenuItem
-                            onClick={() => history.push(`/patient/${careState.data.patient_id._id}/view/edit`)}>
+                            onClick={() => history.push(`/patient/${careState.data.patient_id._id}/view/care/${careState.data._id}`)}>
                             Visualizar Paciente
                           </MenuItem>
                           <Divider/>
@@ -255,12 +257,12 @@ export default function PatientOverview(props: RouteComponentProps<IPageParams>)
                       </footer>
                     </Card>
                   </Grid>
-                  {/* Equipe Multidisciplinar */}
+                  {/* Antibióticos */}
                   <Grid item xs={12} sm={12} md={6} lg={6}>
                     <Card className="card-styles">
                       <Box display="flex" alignItems="center" justifyContent="space-between" padding={2}>
-                        <img src={IconMultidisciplinar} alt="Equipe médica"/>
-                        <h5>Equipe multidisciplinar</h5>
+                        <img src={IconUltimosProced} alt="Antibióticos"/>
+                        <h5>Antibióticos</h5>
                         <Button className="btn-dropwdown" aria-controls={`menu-prontuario`} id={`btn_menu-prontuario`}
                                 aria-haspopup="true">
                           <MoreVert/>
@@ -294,8 +296,8 @@ export default function PatientOverview(props: RouteComponentProps<IPageParams>)
                     </Card>
                   </Grid>
                 </Grid>
-                <Grid container md={4} xs={4} spacing={2} style={{marginTop: '2%'}}>
-                  {/* Equipe Multidisciplinar */}
+                <Grid container xs={12} md={5} lg={4} spacing={2} style={{marginTop: '2%', minWidth: '280px'}}>
+                  {/* Agenda */}
                   <Grid item xs={12} sm={12} md={12} lg={12}>
                     <Card className="card-styles">
                       <ButtonComponent onClick={() => history.push(`/care/${params.id}/overview/schedule`)}
@@ -303,22 +305,19 @@ export default function PatientOverview(props: RouteComponentProps<IPageParams>)
                         <TodayRoundedIcon/>
                         <p>Agenda</p>
                       </ButtonComponent>
-                      {careState.data._id && (
-                        <Card style={{display: "flex", flexDirection: "row", justifyContent: "center"}}>
-                          <p style={{paddingTop: "1.6rem"}}>
-                            <QRCode value={JSON.stringify(careState.data._id)}/>
-                          </p>
-                        </Card>
-                      )}
+                      <Card style={{display: "flex", flexDirection: "row", justifyContent: "center"}}>
+                        <p style={{paddingTop: "1.6rem"}}>
+                          <SuccessImage style={{height: '258px'}}/>
+                        </p>
+                      </Card>
                     </Card>
                   </Grid>
-                  {/* Equipe Multidisciplinar */}
+                  {/* QR Code */}
                   <Grid item xs={12} sm={12} md={12} lg={12}>
                     <Card className="card-styles">
-                      <ButtonComponent onClick={() => history.push(`/care/${params.id}/overview/schedule`)}
-                                       background="primary" fullWidth>
-                        <TodayRoundedIcon/>
-                        <p>Agenda</p>
+                      <ButtonComponent background="primary" fullWidth>
+                        <CropFreeIcon/>
+                        <p>QR Code</p>
                       </ButtonComponent>
                       {careState.data._id && (
                         <Card style={{display: "flex", flexDirection: "row", justifyContent: "center"}}>
@@ -332,44 +331,12 @@ export default function PatientOverview(props: RouteComponentProps<IPageParams>)
                 </Grid>
               </Grid>
 
-              {/*<Grid container md={4} xs={12} style={{marginTop: '2%'}}> /!** Aside *!/*/}
-              {/*  <Grid item md={12}>*/}
-              {/*    <ButtonComponent onClick={() => history.push(`/care/${params.id}/overview/schedule`)}*/}
-              {/*                     background="primary" fullWidth>*/}
-              {/*      <TodayRoundedIcon/>*/}
-              {/*      <p>Agenda</p>*/}
-              {/*    </ButtonComponent>*/}
-              {/*    {careState.data._id && (*/}
-              {/*      <Card style={{display: "flex", flexDirection: "row", justifyContent: "center"}}>*/}
-              {/*        <p style={{paddingTop: "1.6rem"}}>*/}
-              {/*          <QRCode value={JSON.stringify(careState.data._id)}/>*/}
-              {/*        </p>*/}
-              {/*      </Card>*/}
-              {/*    )}*/}
-              {/*  </Grid>*/}
-              {/*  <Grid item md={12} style={{marginTop: '20px'}}>*/}
-              {/*    <ButtonComponent onClick={() => history.push(`/care/${params.id}/overview/schedule`)}*/}
-              {/*                     background="primary" fullWidth>*/}
-              {/*      <TodayRoundedIcon/>*/}
-              {/*      <p>Agenda</p>*/}
-              {/*    </ButtonComponent>*/}
-              {/*    {careState.data._id && (*/}
-              {/*      <Card style={{display: "flex", flexDirection: "row", justifyContent: "center"}}>*/}
-              {/*        <p style={{paddingTop: "1.6rem"}}>*/}
-              {/*          <QRCode value={JSON.stringify(careState.data._id)}/>*/}
-              {/*        </p>*/}
-              {/*      </Card>*/}
-              {/*    )}*/}
-              {/*  </Grid>*/}
-              {/*</Grid>*/}
               {/* Ultimos procedimentos */}
               <Grid item md={12} xs={12} style={{marginTop: '20px'}}>
                 <Card className="card-styles">
                   <Box display="flex" alignItems="center" justifyContent="space-between" padding={2}>
-                    <img src={IconUltimosProced} style={{marginLeft: '2%'}} alt="Dados pessoais"/>
-                    <div className="card-styles-footer">
-                      <h5>Últimos procedimentos</h5>
-                    </div>
+                    <img src={IconProntuario} alt="Procedimentos"/>
+                    <h5>Prescrição</h5>
                     <Button className="btn-dropwdown" aria-controls={`menu-prontuario`} id={`btn_menu-prontuario`}
                             aria-haspopup="true">
                       <MoreVert/>
@@ -380,6 +347,12 @@ export default function PatientOverview(props: RouteComponentProps<IPageParams>)
                     <Grid item md={4} xs={12} style={{paddingLeft: '6%'}}>
                     </Grid>
                   </Grid>
+
+                  <footer>
+                    <Typography variant="caption" color="textSecondary">
+                      Placeholder
+                    </Typography>
+                  </footer>
                 </Card>
               </Grid>
             </>
@@ -389,7 +362,7 @@ export default function PatientOverview(props: RouteComponentProps<IPageParams>)
                 <Box mb={2} mt={2} paddingLeft={5} paddingRight={5} display="flex" justifyContent="space-between"
                      alignItems="center">
                   <Profile>
-                    <IconProfile/>
+                    <img src={IconProfile} alt="Profile"/>
                     <div>
                       <h5>{careState.data.patient_id?.name}</h5>
                       <p>{careState.data.patient_id?.birthdate ? age(careState.data.patient_id?.birthdate) : ''}</p>
@@ -411,7 +384,7 @@ export default function PatientOverview(props: RouteComponentProps<IPageParams>)
                   <Grid item md={6} xs={12} style={{paddingRight: '10px'}}>
                     <Card className="card-styles">
                       <Box display="flex" alignItems="center" justifyContent="space-between" padding={2}>
-                        <IconProntuario/>
+                        <img src={IconProntuario} alt="Procedimentos"/>
                         <h5>Avaliação do paciente</h5>
                         <Button className="btn-dropwdown" aria-controls={`menu-prontuario`} id={`btn_menu-prontuario`}
                                 aria-haspopup="true" onClick={handleOpenRowMenu}>

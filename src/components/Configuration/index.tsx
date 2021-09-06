@@ -26,7 +26,7 @@ export default function Configuration() {
   const [companies, setCompanies] = useState<any>([]);
 
   useEffect(() => {
-    dispatch(loadUserById(user.id))
+    dispatch(loadUserById(user.id, 'sidebar'))
   }, []);
 
   useEffect(() => {

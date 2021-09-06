@@ -52,8 +52,6 @@ const CepForm = (props: IComponent) => {
     ]
   }
 
-  console.log('here', state.address.complement === '')
-
   return (
     <FormGroupSection>
       <Grid container>

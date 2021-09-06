@@ -3,6 +3,7 @@ import { CareState, CareTypes } from './types';
 
 export const INITIAL_STATE: CareState = {
   data: {
+    tipo: '',
     health_insurance_id: '',
     health_plan_id: '',
     health_sub_plan_id: '',

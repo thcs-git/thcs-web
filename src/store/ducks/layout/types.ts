@@ -16,14 +16,16 @@ export interface MenuInterface {
   icon: string;
   id: number;
   name: string;
-  slug: string;
+  slug?: string;
   color: string;
   modal?: any;
 }
 
 export interface LayoutInterface {
   menu?: MenuInterface[];
-  rights: [];
+  rights?: string[];
+  integration?: string | null;
+  integration_name?: string | null;
 }
 
 /**

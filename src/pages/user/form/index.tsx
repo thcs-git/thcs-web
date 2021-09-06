@@ -328,7 +328,7 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
   const currentC = window.localStorage.getItem(LOCALSTORAGE.CUSTOMER_NAME);
   useEffect(() => {
     if (params.id) {
-      dispatch(loadUserById(params.id));
+      dispatch(loadUserById(params.id, 'user'));
     } else {
       dispatch(cleanAction());
     }

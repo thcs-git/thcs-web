@@ -77,6 +77,7 @@ export default function AreaForm(props: RouteComponentProps<IPageParams>) {
   const { params } = props.match;
 
   const [state, setState] = useState<IFormFields>({
+    tipo: '',
     health_insurance_id: '',
     health_plan_id: '',
     health_sub_plan_id: '',

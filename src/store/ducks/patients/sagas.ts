@@ -28,14 +28,13 @@ export function* get({ payload }: any) {
   const { params } = payload;
   const integration = sessionStorage.getItem(SESSIONSTORAGE.INTEGRATION)
 
-  const response: AxiosResponse = yield call(
-    integration ? apiIntegra(integration).get:apiSollar.get,
-    `/patient?limit=${params.limit ?? 10}&page=${params.page || 1}${
-      params.search ? "&search=" + params.search : ""
-    }`
-  );
-
   try {
+    const response: AxiosResponse = yield call(
+      integration ? apiIntegra(integration).get:apiSollar.get,
+      `/patient?limit=${params.limit ?? 10}&page=${params.page || 1}${
+        params.search ? "&search=" + params.search : ""
+      }`
+    );
     yield put(loadSuccess(response.data));
   } catch (error) {
     yield put(loadFailure());

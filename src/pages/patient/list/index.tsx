@@ -229,11 +229,11 @@ export default function PatientList() {
                   <TableRow key={`patient_${index}`}>
                     <TableCell align="left">
                       <Link key={index}
-                            to={`/patient/${patient?._id}/view/edit`}>{patient._id}</Link>
+                            to={`/patient/${patient?._id}/view`}>{patient._id}</Link>
                     </TableCell>
                     <TableCell align="left">
                       <Link key={index}
-                            to={`/patient/${patient?._id}/view/edit`}>{patient.name}</Link>
+                            to={`/patient/${patient?._id}/view`}>{patient.name}</Link>
                     </TableCell>
                     <TableCell align="center">{formatDate(patient.birthdate, 'DD/MM/YYYY')}</TableCell>
                     <TableCell align="center">{patient.fiscal_number ? patient.fiscal_number : '-'}</TableCell>
