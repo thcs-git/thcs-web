@@ -395,7 +395,7 @@ const Sibebar = (props: Props<any>) => {
                   <div
                     style={{display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center',}}>
                     <h4 style={{color: '#ffffff', marginLeft: 10}}>{handleCustomerName(customer.name)}</h4>
-                    <h4 style={{color: '#ffffff', marginLeft: 10}}>{handleCompanyName(customer.name)}</h4>
+                    <h4 style={{color: '#ffffff', marginLeft: 10}}>{handleCompanyName(company.name)}</h4>
                   </div>
                 </ListItemText>
                 <EditIcon style={{color: '#fff', fontSize: '14px', marginLeft: '10px'}}/>

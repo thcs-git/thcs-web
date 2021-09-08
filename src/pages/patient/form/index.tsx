@@ -622,7 +622,8 @@ export default function PatientForm(props: RouteComponentProps<IPageParams>) {
       phones: [
         {whatsapp: false, telegram: false, number: state.phones[0]?.number},
         {whatsapp: false, telegram: false, cellnumber: state.phones[0]?.cellnumber},
-      ]
+      ],
+      created_at: Date.now().toString()
     };
 
     if (state?._id) {
