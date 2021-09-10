@@ -114,6 +114,7 @@ export enum CareTypes {
 
 export interface CareInterface {
   tipo?: string;
+  speciality?: string;
   _id?: string;
   name?: string;
   patient_id?: any; // *
@@ -132,6 +133,7 @@ export interface CareInterface {
   area_id?: any;
   user_id?: string; // *
   status?: string; // * Pre-Atendimento, Em atendimento, Cancelado, Finalizado
+  mot_alta?: string;
   complexity?: string;
   started_at?: string;
   created_at?: string;

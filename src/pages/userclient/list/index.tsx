@@ -146,12 +146,12 @@ export default function UserClientList() {
                   </TableCell>
                   <TableCell align="left">
                     <div style={{display: 'flex'}}>
-                      <p style={{marginTop: '0.3rem'}}>{user.main_specialty_id?.name}</p>
+                      <p style={{marginTop: '0.3rem'}}>{user.main_specialty_id?.name ? user.main_specialty_id?.name : '-'}</p>
                       {user.specialties.length > 0 ? (<Tooltip style={{fontSize: '10pt', marginTop: '0.8rem'}}
                                                                title={user.specialties.map((specialty, index) => (
                                                                  `${specialty.name}${index < (user.specialties.length - 1) ? ',' : ''}`
                                                                ))}><MoreHorizTwoToneIcon/></Tooltip>
-                      ) : ('-')}
+                      ) : ('')}
                     </div>
                   </TableCell>
                 </TableRow>

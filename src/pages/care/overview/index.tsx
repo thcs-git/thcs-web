@@ -1,8 +1,20 @@
-import React, {useCallback, useEffect} from 'react';
+import React, {useCallback, useEffect, useState} from 'react';
 import {useDispatch, useSelector} from 'react-redux';
-import {Box, Divider, Grid, List, ListItem, ListItemText, Menu, MenuItem, Tooltip, Typography} from '@material-ui/core';
+import {
+  Box,
+  Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle,
+  Divider,
+  Grid,
+  List,
+  ListItem,
+  ListItemText,
+  Menu,
+  MenuItem, TableCell, TableRow,
+  Tooltip,
+  Typography
+} from '@material-ui/core';
 import Card from '@material-ui/core/Card';
-import {useHistory} from "react-router-dom";
+import {Link, useHistory} from "react-router-dom";
 
 import QueueIcon from '@material-ui/icons/Queue';
 import CropFreeIcon from '@material-ui/icons/CropFree';
@@ -28,7 +40,13 @@ import IconStatus from '../../../assets/img/icon-status.svg';
 import {ContainerStyle as Container, Profile} from './styles';
 import ButtonComponent from '../../../styles/components/Button';
 import Button from '../../../styles/components/Button';
-import {MoreVert, Check as CheckIcon, Close as CloseIcon, Add as AddIcon} from '@material-ui/icons';
+import {
+  MoreVert,
+  Check as CheckIcon,
+  Close as CloseIcon,
+  Add as AddIcon,
+  AccountCircle as AccountCircleIcon, Visibility as VisibilityIcon
+} from '@material-ui/icons';
 import {ApplicationState} from '../../../store';
 import {RouteComponentProps} from 'react-router-dom';
 import {age, formatDate} from '../../../helpers/date';
@@ -36,6 +54,8 @@ import mask from '../../../utils/mask';
 import Loading from '../../../components/Loading';
 import QRCode from "react-qr-code";
 import SESSIONSTORAGE from "../../../helpers/constants/sessionStorage";
+import Table from "../../../components/Table";
+import ViewCard from "../../../components/Card/ViewCard";
 
 interface IPageParams {
   id?: string;
@@ -90,6 +110,30 @@ export default function PatientOverview(props: RouteComponentProps<IPageParams>)
   }, [careState]);
 
   const integration = sessionStorage.getItem(SESSIONSTORAGE.INTEGRATION)
+  const [careModalOpen, setCareModalOpen] = useState(false);
+
+  const rows = []
+  careState?.data?.tipo && rows.push({name: "Tipo de Atendimento", value: careState?.data?.tipo})
+  careState?.data?._id && rows.push({name: "Código", value: careState?.data?._id})
+  careState?.data?.capture?.health_insurance_id && rows.push({name: "Convênio", value: careState?.data?.capture?.health_insurance_id})
+  careState?.data?.capture?.health_plan_id && rows.push({name: "Plano", value: careState?.data?.capture?.health_plan_id})
+  careState?.data?.capture?.health_sub_plan_id && rows.push({name: "Subplano", value: careState?.data?.capture?.health_sub_plan_id})
+  careState?.data?.capture?.assistant_doctor && rows.push({name: "Médico Assistente", value: careState?.data?.capture?.assistant_doctor})
+  careState?.data?.capture?.unity && rows.push({name: "Unidade", value: careState?.data?.capture?.unity})
+  careState?.data?.capture?.sector && rows.push({name: "Setor", value: careState?.data?.capture?.sector})
+  careState?.data?.capture?.type && rows.push({name: "Acomodação", value: careState?.data?.capture?.type})
+  careState?.data?.capture?.bed && rows.push({name: "Leito", value: careState?.data?.capture?.bed})
+  careState?.data?.created_at && rows.push({name: "Data de Atendimento", value: careState?.data?.created_at})
+  careState?.data?.mot_alta && rows.push({name: "Motivo de Alta", value: careState?.data?.mot_alta})
+  careState?.data?.health_plan_card_number && rows.push({name: "Número da carteira", value: careState?.data?.health_plan_card_number})
+  careState?.data?.health_plan_card_validate && rows.push({name: "Data de validade", value: careState?.data?.health_plan_card_validate})
+  careState?.data?.speciality && rows.push({name: "Especialidade do Atendimento", value: careState?.data?.speciality})
+
+  const content = {
+    tittle: '',
+    // icon: <InfoRoundedIcon style={{color: "#ffffff"}}/>,
+    rows: rows
+  }
 
   return (
     <>
@@ -106,8 +150,10 @@ export default function PatientOverview(props: RouteComponentProps<IPageParams>)
                   <Profile>
                     <img src={IconProfile} alt="Profile"/>
                     <div>
-                      <h5>{careState.data.patient_id?.name}</h5>
-                      <p>{careState.data.patient_id?.birthdate ? age(careState.data.patient_id?.birthdate) : ''}</p>
+                      <h5>{careState?.data?.patient_id?.name}</h5>
+                      <h5 style={{fontWeight: 'normal'}}>{careState?.data?.cid_id && `CID: ${careState?.data?.cid_id}`}</h5>
+                      {/*<h5 style={{fontWeight: 'normal'}}>{careState?.data?.mot_alta && `CID: ${careState?.data?.mot_alta}`}</h5>*/}
+                      {/*<p>{careState.data.patient_id?.birthdate ? age(careState.data.patient_id?.birthdate) : ''}</p>*/}
                     </div>
                   </Profile>
                 </Box>
@@ -121,100 +167,149 @@ export default function PatientOverview(props: RouteComponentProps<IPageParams>)
                         <img src={IconDadosPessoais} alt="Dados pessoais"/>
                         <h5>Dados pessoais</h5>
                         <Button className="btn-dropwdown" aria-controls={`menu-prontuario`} id={`btn_menu-prontuario`}
-                                aria-haspopup="true" onClick={handleOpenRowMenu}>
-                          <MoreVert/>
+                                aria-haspopup="true">
+                          {/*<h5>Ver Mais</h5>*/}
                         </Button>
-                        <Menu
-                          id={`menu-prontuario`}
-                          anchorEl={anchorEl}
-                          keepMounted
-                          open={anchorEl?.id === `btn_menu-prontuario`}
-                          onClose={handleCloseRowMenu}
-                        >
-                          <MenuItem
-                            onClick={() => history.push(`/patient/${careState.data.patient_id._id}/view/care/${careState.data._id}`)}>
-                            Visualizar Paciente
-                          </MenuItem>
-                          <Divider/>
-                        </Menu>
                       </Box>
 
-                      {/*<List className="text-list" component="ul" aria-label="mailbox folders">*/}
-                      {/*  <ListItem>*/}
-                      {/*    <p>CPF: {mask(careState.data.patient_id?.fiscal_number, '###.###.###-##')}</p>*/}
-                      {/*  </ListItem>*/}
-                      {/*  <ListItem>*/}
-                      {/*    <p>RG: {mask(careState.data.patient_id?.national_id, '#.###.###')} {careState.data.patient_id?.issuing_organ.toString().toUpperCase()}</p>*/}
-                      {/*  </ListItem>*/}
-                      {/*  <ListItem>*/}
-                      {/*    <p>DN: {formatDate(careState.data.patient_id?.birthdate, ' DD/MM/YYYY')}</p>*/}
-                      {/*  </ListItem>*/}
-                      {/*  <ListItem>*/}
-                      {/*    <p>Mãe: {careState.data.patient_id?.mother_name}</p>*/}
-                      {/*  </ListItem>*/}
-                      {/*  <ListItem>*/}
-                      {/*    <p>Tipo Sanguíneo: {careState.data.patient_id?.blood_type}</p>*/}
-                      {/*  </ListItem>*/}
-                      {/*  <ListItem>*/}
-                      {/*    <p>Doador de órgãos: {careState.data.patient_id?.organ_donor ? 'Sim' : 'Não'}</p>*/}
-                      {/*  </ListItem>*/}
-                      {/*  <ListItem>*/}
-                      {/*    <p>Sexo: {careState.data.patient_id?.gender}</p>*/}
-                      {/*  </ListItem>*/}
-                      {/*  <ListItem>*/}
-                      {/*    <p>Telefone: {mask(getPatientPhone(), '(##) #####-####')}</p>*/}
-                      {/*  </ListItem>*/}
-                      {/*</List>*/}
+                      <List className="text-list" component="ul" aria-label="mailbox folders">
+                        {careState?.data?.patient_id?.name && (
+                          <ListItem>
+                            <p>Nome: {careState.data.patient_id.name}</p>
+                          </ListItem>
+                        )}
+                        {careState?.data?.patient_id?.birthdate && (
+                          <ListItem>
+                            <p>Data de Nascimento: {formatDate(careState.data.patient_id.birthdate,"DD/MM/YYYY")}</p>
+                          </ListItem>
+                        )}
+                        {careState?.data?.patient_id?.birthdate && (
+                          <ListItem>
+                            <p>Idade: {age(careState.data.patient_id.birthdate)}</p>
+                          </ListItem>
+                        )}
+                        {careState?.data?.patient_id?.fiscal_number && (
+                          <ListItem>
+                            <p>CPF: {careState.data.patient_id.fiscal_number}</p>
+                          </ListItem>
+                        )}
+                        {careState?.data?.patient_id?.patient_gender && (
+                          <ListItem>
+                            <p>Sexo: {careState.data.patient_id.patient_gender}</p>
+                          </ListItem>
+                        )}
+                        {careState?.data?.patient_id?.name && (
+                          <ListItem>
+                            <p>Nome da Mãe: {careState.data.patient_id.name}</p>
+                          </ListItem>
+                        )}
+                        {/*<ListItem>*/}
+                        {/*  <p>CPF: {mask(careState.data.patient_id?.fiscal_number, '###.###.###-##')}</p>*/}
+                        {/*</ListItem>*/}
+                      </List>
 
                       <footer>
                         <Typography variant="caption" color="textSecondary">
-                          Última avaliação
-                          {/*{formatDate(careState.data.patient_id?.created_at, ' DD/MM/YYYY [às] HH:mm')}*/}
-                          {/* {formatDate(state?.started_at ?? '', 'DD/MM/YYYY HH:mm:ss')} */}
+                          <Button className="btn-dropwdown" aria-controls={`menu-prontuario`} id={`btn_menu-prontuario`}
+                                  aria-haspopup="true" onClick={() => history.push(`/patient/${careState?.data?.patient_id?._id}/view/care/${careState?.data?._id}`)}>
+                            <h5>Ver Mais</h5>
+                          </Button>
                         </Typography>
                       </footer>
                     </Card>
                   </Grid>
-                  {/* Plano de internacao */}
+                  {/* Atendimento */}
                   <Grid item xs={12} sm={12} md={6} lg={6}>
                     <Card className="card-styles">
                       <Box display="flex" alignItems="center" justifyContent="space-between" padding={2}>
                         <img src={IconPlanoInternacoes} alt="Plano Internações"/>
-                        <h5>Plano e internação</h5>
+                        <h5>Atendimento</h5>
                         <Button className="btn-dropwdown" aria-controls={`menu-prontuario`} id={`btn_menu-prontuario`}
                                 aria-haspopup="true">
-                          <MoreVert/>
+                          {/*<MoreVert/>*/}
                         </Button>
                       </Box>
 
-                      {/*<List className="text-list" component="ul" aria-label="mailbox folders">*/}
-                      {/*  <ListItem>*/}
-                      {/*    <p>Hospital: {careState.data.capture?.hospital}</p>*/}
-                      {/*  </ListItem>*/}
-                      {/*  <ListItem>*/}
-                      {/*    <p>Unidade: {careState.data.capture?.unity}</p>*/}
-                      {/*  </ListItem>*/}
-                      {/*  <ListItem>*/}
-                      {/*    <p>Setor: {careState.data.capture?.sector}</p>*/}
-                      {/*  </ListItem>*/}
-                      {/*  <ListItem>*/}
-                      {/*    <p>Leito: {careState.data.capture?.bed}</p>*/}
-                      {/*  </ListItem>*/}
-                      {/*  <ListItem>*/}
-                      {/*    <p>Convênio: {careState.data.health_insurance_id?.name}</p>*/}
-                      {/*  </ListItem>*/}
-                      {/*  <ListItem>*/}
-                      {/*    <p>Plano: {careState.data.health_plan_id?.name}</p>*/}
-                      {/*  </ListItem>*/}
-                      {/*  <ListItem>*/}
-                      {/*    <p>Sub Plano: {careState.data.health_sub_plan_id?.name}</p>*/}
-                      {/*  </ListItem>*/}
-                      {/*</List>*/}
+                      <List className="text-list" component="ul" aria-label="mailbox folders">
+                        {/*<ListItem>*/}
+                        {/*  <p>Hospital: {careState.data.capture?.hospital}</p>*/}
+                        {/*</ListItem>*/}
+                        {/*<ListItem>*/}
+                        {/*  <p>Unidade: {careState.data.capture?.unity}</p>*/}
+                        {/*</ListItem>*/}
+                        {/*<ListItem>*/}
+                        {/*  <p>Setor: {careState.data.capture?.sector}</p>*/}
+                        {/*</ListItem>*/}
+                        {/*<ListItem>*/}
+                        {/*  <p>Leito: {careState.data.capture?.bed}</p>*/}
+                        {/*</ListItem>*/}
+                        {/*<ListItem>*/}
+                        {/*  <p>Convênio: {careState.data.health_insurance_id?.name}</p>*/}
+                        {/*</ListItem>*/}
+                        {/*<ListItem>*/}
+                        {/*  <p>Plano: {careState.data.health_plan_id?.name}</p>*/}
+                        {/*</ListItem>*/}
+                        {/*<ListItem>*/}
+                        {/*  <p>Sub Plano: {careState.data.health_sub_plan_id?.name}</p>*/}
+                        {/*</ListItem>*/}
+                        {careState?.data?.tipo && (
+                          <ListItem>
+                            <p>Tipo de Atendimento: {careState.data.tipo}</p>
+                          </ListItem>
+                        )}
+                        {careState?.data?._id && (
+                          <ListItem style={{fontWeight: 'bold'}}>
+                            <p>Código: {careState.data._id}</p>
+                          </ListItem>
+                        )}
+                        {careState?.data?.health_insurance_id && (
+                          <ListItem>
+                            <p>Convênio: {careState.data.health_insurance_id}</p>
+                          </ListItem>
+                        )}
+                        {/*{careState?.data?.health_plan_id && (*/}
+                        {/*  <ListItem>*/}
+                        {/*    <p>Plano: {careState.data.health_plan_id}</p>*/}
+                        {/*  </ListItem>*/}
+                        {/*)}*/}
+                        {/*{careState?.data?.health_sub_plan_id && (*/}
+                        {/*  <ListItem>*/}
+                        {/*    <p>Subplano: {careState.data.health_sub_plan_id}</p>*/}
+                        {/*  </ListItem>*/}
+                        {/*)}*/}
+                        {careState?.data?.capture?.assistant_doctor && (
+                          <ListItem>
+                            <p>Médico Assistente: {careState.data.capture.assistant_doctor}</p>
+                          </ListItem>
+                        )}
+                        {careState?.data?.capture?.unity && (
+                          <ListItem>
+                            <p>Unidade: {careState.data.capture.unity}</p>
+                          </ListItem>
+                        )}
+                        {careState?.data?.capture?.sector && (
+                          <ListItem>
+                            <p>Setor: {careState.data.capture.sector}</p>
+                          </ListItem>
+                        )}
+                        {careState?.data?.capture?.type && (
+                          <ListItem>
+                            <p>Acomodação: {careState.data.capture.type}</p>
+                          </ListItem>
+                        )}
+                        {careState?.data?.capture?.bed && (
+                          <ListItem>
+                            <p>Leito: {careState.data.capture.bed}</p>
+                          </ListItem>
+                        )}
+                      </List>
 
                       <footer>
                         <Typography variant="caption" color="textSecondary">
-                          Última avaliação
-                          {/*{formatDate(careState.data.updated_at, 'DD/MM/YYYY [às] HH:mm')}*/}
+                          <Button className="btn-dropwdown" aria-controls={`menu-prontuario`} id={`btn_menu-prontuario`}
+                                  aria-haspopup="true" onClick={() => setCareModalOpen(true)}>
+                            <h5>Ver Mais</h5>
+                          </Button>
                         </Typography>
                       </footer>
                     </Card>
@@ -227,7 +322,7 @@ export default function PatientOverview(props: RouteComponentProps<IPageParams>)
                         <h5>Equipe multidisciplinar</h5>
                         <Button className="btn-dropwdown" aria-controls={`menu-prontuario`} id={`btn_menu-prontuario`}
                                 aria-haspopup="true">
-                          <MoreVert/>
+                          {/*<MoreVert/>*/}
                         </Button>
                       </Box>
 
@@ -249,12 +344,12 @@ export default function PatientOverview(props: RouteComponentProps<IPageParams>)
                       {/*  </ListItem>*/}
                       {/*</List>*/}
 
-                      <footer>
-                        <Typography variant="caption" color="textSecondary">
-                          Última avaliação
-                          {/* {formatDate(state?.started_at ?? '', 'DD/MM/YYYY HH:mm:ss')} */}
-                        </Typography>
-                      </footer>
+                      {/*<footer>*/}
+                      {/*  <Typography variant="caption" color="textSecondary">*/}
+                      {/*    Última avaliação*/}
+                      {/*    /!* {formatDate(state?.started_at ?? '', 'DD/MM/YYYY HH:mm:ss')} *!/*/}
+                      {/*  </Typography>*/}
+                      {/*</footer>*/}
                     </Card>
                   </Grid>
                   {/* Antibióticos */}
@@ -265,7 +360,7 @@ export default function PatientOverview(props: RouteComponentProps<IPageParams>)
                         <h5>Antibióticos</h5>
                         <Button className="btn-dropwdown" aria-controls={`menu-prontuario`} id={`btn_menu-prontuario`}
                                 aria-haspopup="true">
-                          <MoreVert/>
+                          {/*<MoreVert/>*/}
                         </Button>
                       </Box>
 
@@ -287,12 +382,12 @@ export default function PatientOverview(props: RouteComponentProps<IPageParams>)
                       {/*  </ListItem>*/}
                       {/*</List>*/}
 
-                      <footer>
-                        <Typography variant="caption" color="textSecondary">
-                          Última avaliação
-                          {/* {formatDate(state?.started_at ?? '', 'DD/MM/YYYY HH:mm:ss')} */}
-                        </Typography>
-                      </footer>
+                      {/*<footer>*/}
+                      {/*  <Typography variant="caption" color="textSecondary">*/}
+                      {/*    Última avaliação*/}
+                      {/*    /!* {formatDate(state?.started_at ?? '', 'DD/MM/YYYY HH:mm:ss')} *!/*/}
+                      {/*  </Typography>*/}
+                      {/*</footer>*/}
                     </Card>
                   </Grid>
                 </Grid>
@@ -339,7 +434,7 @@ export default function PatientOverview(props: RouteComponentProps<IPageParams>)
                     <h5>Prescrição</h5>
                     <Button className="btn-dropwdown" aria-controls={`menu-prontuario`} id={`btn_menu-prontuario`}
                             aria-haspopup="true">
-                      <MoreVert/>
+                      {/*<MoreVert/>*/}
                     </Button>
                   </Box>
 
@@ -348,13 +443,40 @@ export default function PatientOverview(props: RouteComponentProps<IPageParams>)
                     </Grid>
                   </Grid>
 
-                  <footer>
-                    <Typography variant="caption" color="textSecondary">
-                      Placeholder
-                    </Typography>
-                  </footer>
+                  {/*<footer>*/}
+                  {/*  <Typography variant="caption" color="textSecondary">*/}
+                  {/*    Placeholder*/}
+                  {/*  </Typography>*/}
+                  {/*</footer>*/}
                 </Card>
               </Grid>
+              {/* {Histórico} */}
+              <Dialog
+                maxWidth="lg"
+                open={careModalOpen}
+                onClose={() => setCareModalOpen(false)}
+                aria-labelledby="scroll-dialog-title"
+                aria-describedby="scroll-dialog-description"
+              >
+                <DialogTitle id="scroll-dialog-title"><h3>Atendimento</h3></DialogTitle>
+                <DialogContent>
+                  <DialogContentText
+                    id="scroll-dialog-description"
+                    tabIndex={-1}
+                  >
+                    <Grid container style={{display: "flex", flexDirection: "row", justifyContent: "space-between"}}>
+                      <ViewCard
+                        content={content}
+                      />
+                    </Grid>
+                  </DialogContentText>
+                </DialogContent>
+                <DialogActions>
+                  <Button onClick={() => setCareModalOpen(false)} color="primary">
+                    <h3 style={{color: '#0899BA', fontSize: '11pt'}}>Fechar</h3>
+                  </Button>
+                </DialogActions>
+              </Dialog>
             </>
           ) : (
             <>

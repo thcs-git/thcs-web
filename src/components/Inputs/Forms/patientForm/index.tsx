@@ -51,6 +51,7 @@ const PatientForm = (props: IComponent) => {
   state.profissao && rows.push({name: "Profissão", value: state.profissao})
   state.mother_name && rows.push({name: "Nome da Mãe", value: state.mother_name})
   state.national_id && rows.push({name: "RG", value: state.national_id})
+  state.fiscal_number && rows.push({name: "CPF", value: state.fiscal_number})
   state.cd_uf_emissao_identidade && rows.push({name: "Emissor", value: state.cd_uf_emissao_identidade})
   state.phone && rows.push({name: "Telefone", value: state.phone})
   state.cellnumber && rows.push({name: "Celular", value: state.cellnumber})
