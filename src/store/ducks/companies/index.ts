@@ -22,7 +22,14 @@ export const INITIAL_STATE: CompanyState = {
     phone: '',
     cellphone: '',
     active: true,
-    created_by: { _id: '' }
+    created_by: { _id: '' },
+    phones: [{
+      cellnumber: "",
+      number: "",
+      telegram: false,
+      whatsapp: false,
+    }],
+    tipo: '',
   },
   list: {
     data: [],

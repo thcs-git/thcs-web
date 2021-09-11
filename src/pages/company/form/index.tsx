@@ -1,18 +1,24 @@
-import React, { useState, useEffect, useCallback } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import React, {useState, useEffect, useCallback} from 'react';
+import {useDispatch, useSelector} from 'react-redux';
 import InputMask from 'react-input-mask';
 import validator from 'validator';
-import { toast } from 'react-toastify';
+import {toast} from 'react-toastify';
 
-import { ApplicationState } from '../../../store';
+import {ApplicationState} from '../../../store';
 
-import { loadRequest as getCustomersAction } from '../../../store/ducks/customers/actions';
-import { CustomerDataItems } from '../../../store/ducks/customers/types';
+import {loadRequest as getCustomersAction} from '../../../store/ducks/customers/actions';
+import {CustomerDataItems} from '../../../store/ducks/customers/types';
 
-import { getAddress as getAddressAction, createCompanyRequest, updateCompanyRequest, loadCompanyById, cleanAction } from '../../../store/ducks/companies/actions';
-import { CompanyInterface } from '../../../store/ducks/companies/types';
+import {
+  getAddress as getAddressAction,
+  createCompanyRequest,
+  updateCompanyRequest,
+  loadCompanyById,
+  cleanAction
+} from '../../../store/ducks/companies/actions';
+import {CompanyInterface} from '../../../store/ducks/companies/types';
 
-import { useHistory, RouteComponentProps } from 'react-router-dom';
+import {useHistory, RouteComponentProps} from 'react-router-dom';
 import {
   Button,
   Dialog,
@@ -27,8 +33,8 @@ import {
   Container,
   FormControlLabel,
 } from '@material-ui/core';
-import { Edit, SearchOutlined } from '@material-ui/icons';
-import { validateCNPJ as validateCNPJHelper } from '../../../helpers/validateCNPJ';
+import {Edit, SearchOutlined} from '@material-ui/icons';
+import {validateCNPJ as validateCNPJHelper} from '../../../helpers/validateCNPJ';
 
 import LOCALSTORAGE from '../../../helpers/constants/localStorage';
 
@@ -36,8 +42,8 @@ import Loading from '../../../components/Loading';
 import Sidebar from '../../../components/Sidebar';
 
 import ButtonComponent from '../../../styles/components/Button';
-import { FormTitle } from '../../../styles/components/Form';
-import { SwitchComponent as Switch } from '../../../styles/components/Switch';
+import {FormTitle} from '../../../styles/components/Form';
+import {SwitchComponent as Switch} from '../../../styles/components/Switch';
 
 import {
   ButtonsContent,
@@ -48,10 +54,13 @@ import {
   FormGroupSection
 } from './styles';
 import _ from "lodash";
+import TabTittle from "../../../components/Text/TabTittle";
+import ButtonTabs from "../../../components/Button/ButtonTabs";
+import TabForm from "../../../components/Tabs";
 
 interface IPageParams {
   id?: string;
-  mode?:string;
+  mode?: string;
 }
 
 export default function CompanyForm(props: RouteComponentProps<IPageParams>) {
@@ -60,7 +69,7 @@ export default function CompanyForm(props: RouteComponentProps<IPageParams>) {
   const customerState = useSelector((state: ApplicationState) => state.customers);
   const companyState = useSelector((state: ApplicationState) => state.companies);
 
-  const { params } = props.match;
+  const {params} = props.match;
 
   const [canEdit, setCanEdit] = useState(true);
 
@@ -84,7 +93,14 @@ export default function CompanyForm(props: RouteComponentProps<IPageParams>) {
     phone: '',
     cellphone: '',
     active: true,
-    created_by: { _id: localStorage.getItem(LOCALSTORAGE.USER_ID) || '' }
+    created_by: {_id: localStorage.getItem(LOCALSTORAGE.USER_ID) || ''},
+    phones: [{
+      cellnumber: "",
+      number: "",
+      telegram: false,
+      whatsapp: false,
+    }],
+    tipo: '',
   });
   const [customers, setCustomers] = useState<CustomerDataItems[]>([]);
 
@@ -108,8 +124,7 @@ export default function CompanyForm(props: RouteComponentProps<IPageParams>) {
   //////////////// validacao do campos ///////////////////////
   var isValidPhoneNumber: any;
   var isValidCellPhoneNumber: any;
-  var formValid : any;
-
+  var formValid: any;
 
 
   useEffect(() => {
@@ -170,28 +185,29 @@ export default function CompanyForm(props: RouteComponentProps<IPageParams>) {
 
   const validatePhone = () => {
 
-    if ( state.phone){
-      const landline =  state.phone.replace('(','').replace(')','9').replace(' ','').replace(' ','').replace('-','');
+    if (state.phone) {
+      const landline = state.phone.replace('(', '').replace(')', '9').replace(' ', '').replace(' ', '').replace('-', '');
 
-     isValidPhoneNumber = validator.isMobilePhone(landline, 'pt-BR');
+      isValidPhoneNumber = validator.isMobilePhone(landline, 'pt-BR');
 
-      return (isValidPhoneNumber)}
+      return (isValidPhoneNumber)
+    }
 
 
-   }
+  }
 
   const validateCellPhone = () => {
-    if ( state.cellphone){
-      var cellphone =  state.cellphone.replace('(','').replace(')','').replace(' ','').replace(' ','').replace('-','');
+    if (state.cellphone) {
+      var cellphone = state.cellphone.replace('(', '').replace(')', '').replace(' ', '').replace(' ', '').replace('-', '');
       isValidCellPhoneNumber = validator.isMobilePhone(cellphone, 'pt-BR');
 
-    return (isValidCellPhoneNumber)
-}
-   }
+      return (isValidCellPhoneNumber)
+    }
+  }
 
-   if( validatePhone() == true && validateCellPhone()==true){
+  if (validatePhone() == true && validateCellPhone() == true) {
 
-   // formValid = true;
+    // formValid = true;
 
   }
 ///////////////////////////////
@@ -211,42 +227,42 @@ export default function CompanyForm(props: RouteComponentProps<IPageParams>) {
   useEffect(() => {
     // if (params.id) {
 
-      // if(params.mode === "view"){
-      //   setCanEdit(false)
-      // }
+    // if(params.mode === "view"){
+    //   setCanEdit(false)
+    // }
 
-      setState(prevState => {
-        return {
-          ...prevState,
-          ...companyState.data
-        }
-      });
+    setState(prevState => {
+      return {
+        ...prevState,
+        ...companyState.data
+      }
+    });
 
-      // Força o validador em 'true' quando entrar na tela para editar
-      setFieldValidations({
-        name: true,
-        fantasy_name: true,
-        fiscal_number: true,
-        postal_code: true,
-        street: true,
-        number: true,
-        district: true,
-        city: true,
-        state: true,
-        complement: true,
-        responsable_name: true,
-        email: true,
-        phone: true,
-        cellphone: true,
-      })
+    // Força o validador em 'true' quando entrar na tela para editar
+    setFieldValidations({
+      name: true,
+      fantasy_name: true,
+      fiscal_number: true,
+      postal_code: true,
+      street: true,
+      number: true,
+      district: true,
+      city: true,
+      state: true,
+      complement: true,
+      responsable_name: true,
+      email: true,
+      phone: true,
+      cellphone: true,
+    })
     // }
   }, [companyState.data]);
 
   useEffect(() => {
-    if(params.mode === "view"){
+    if (params.mode === "view") {
       setCanEdit(false)
     }
-  },[params.id])
+  }, [params.id])
 
   useEffect(() => {
     if (companyState.success && companyState.data?._id) history.push('/company');
@@ -256,7 +272,7 @@ export default function CompanyForm(props: RouteComponentProps<IPageParams>) {
     setCustomers(customerState.list.data);
   }, [customerState]);
 
-  const setCustomer = useCallback(({ _id: customer_id }: any) => {
+  const setCustomer = useCallback(({_id: customer_id}: any) => {
     setState(prevState => ({
       ...prevState,
       customer_id
@@ -276,23 +292,23 @@ export default function CompanyForm(props: RouteComponentProps<IPageParams>) {
 
   }, [fieldsValidation, state]);
 
-  function isEquals(){
+  function isEquals() {
 
-    return _.isEqual(state,customerState.data);
+    return _.isEqual(state, customerState.data);
   }
 
-  function ModifiCondition(){
-    if(!isEquals()){
+  function ModifiCondition() {
+    if (!isEquals()) {
       return true;
-    }else{
+    } else {
       return false;
     }
   }
 
   function handleOpenModalCancel() {
-    if(ModifiCondition() && canEdit){
+    if (ModifiCondition() && canEdit) {
       setOpenModalCancel(true);
-    }else{
+    } else {
       handleCancelForm();
     }
   }
@@ -333,380 +349,459 @@ export default function CompanyForm(props: RouteComponentProps<IPageParams>) {
   const validateCNPJField = useCallback((element) => {
 
     const isValidField = validateCNPJHelper(element.target.value) || false;
-      setFieldValidations((prevState: any) => ({
-        ...prevState,
-        fiscal_number: isValidField
-      }));
-    }, []);
+    setFieldValidations((prevState: any) => ({
+      ...prevState,
+      fiscal_number: isValidField
+    }));
+  }, []);
 
+  const buttons = [
+    {
+      name: 'Voltar',
+      onClick: handleCancelForm,
+      variant: 'outlined',
+      background: 'success_rounded',
+      show: true,
+    },
+  ]
+
+  const NavItems = [
+    {
+      name: "Dados da Empresa",
+      components: ['CompanyForm'],
+    },
+  ]
 
   return (
     <Sidebar>
-      {companyState.loading && <Loading />}
+      {companyState.loading && <Loading/>}
       <Container>
-        <FormSection>
-          <FormContent>
-            <div style={{ display: 'flex', alignItems: 'center', flexDirection: 'row' }}>
-            <FormTitle>Cadastro de Empresas</FormTitle>
+        {params.mode === 'view' ? (
+          <>
+            <TabTittle tittle={'Empresa'}/>
+            <TabForm
+              navItems={NavItems}
+              initialTab={0}
+              state={state}
+              setState={setState}
+              setValidations={setFieldValidations}
+              canEdit={canEdit}
+              cepStatus={companyState.errorCep}
+              getAddress={getAddress}
+              params={params}
+            />
+            <ButtonTabs canEdit={canEdit} buttons={buttons}/>
+          </>
+        ) : (
+          <>
+            <FormSection>
+              <FormContent>
+                <div style={{display: 'flex', alignItems: 'center', flexDirection: 'row'}}>
+                  <FormTitle>Cadastro de Empresas</FormTitle>
 
-              {(params.id && params.mode == 'view' && !canEdit)&& (
-                <Button style={{ marginTop: -20, marginLeft: 15, color: '#0899BA' }} onClick={() => setCanEdit(!canEdit)}>
-                  <Edit style={{ marginRight: 5, width: 18 }} />
-                  Editar
-                </Button>
-              )}
-            </div>
+                  {(params.id && params.mode == 'view' && !canEdit) && (
+                    <Button style={{marginTop: -20, marginLeft: 15, color: '#0899BA'}}
+                            onClick={() => setCanEdit(!canEdit)}>
+                      <Edit style={{marginRight: 5, width: 18}}/>
+                      Editar
+                    </Button>
+                  )}
+                </div>
 
-            <FormGroupSection>
-              <Grid container>
-                <Grid item md={12} xs={12}>
-                  <TextField
-                    id="input-customer"
-                    label="Cliente"
-                    variant="outlined"
-                    size="small"
-                    value={localStorage.getItem(LOCALSTORAGE.CUSTOMER_NAME)}
-                    fullWidth
-                    disabled={!canEdit}
-                  />
-                </Grid>
-              </Grid>
-              <Grid container>
-
-                <Grid item md={12} xs={12}>
-                  <TextField
-                    id="input-social-name"
-                    label="Razão Social"
-                    variant="outlined"
-                    size="small"
-                    value={state.name}
-                    onChange={(element) => {
-                      setState({ ...state, name: element.target.value })
-                      setFieldValidations((prevState: any) => ({ ...prevState, name: !validator.isEmpty(element.target.value) }));
-                    }}
-                    fullWidth
-                    disabled={!canEdit}
-                  />
-                </Grid>
-                <Grid item md={6} xs={12}>
-                  <TextField
-                    id="input-fantasy-name"
-                    label="Nome Fantasia"
-                    variant="outlined"
-                    size="small"
-                    value={state.fantasy_name}
-                    onChange={(element) => {
-                      setState({ ...state, fantasy_name: element.target.value })
-                      setFieldValidations((prevState: any) => ({ ...prevState, fantasy_name: !validator.isEmpty(element.target.value) }));
-                    }}
-
-                    fullWidth
-                    disabled={!canEdit}
-                  />
-                </Grid>
-
-                <Grid item md={6} xs={12}>
-                  <InputMask
-                    disabled={!canEdit}
-                    mask="99.999.999/9999-99"
-                    value={state.fiscal_number}
-                    onBlur={validateCNPJField}
-                    onChange={(element) => {
-                      setState({ ...state, fiscal_number: element.target.value })
-                      setFieldValidations((prevState: any) => ({ ...prevState, fiscal_number: !validator.isEmpty(element.target.value) }));
-                    }}
-                  >
-                    {(inputProps: any) => (
+                <FormGroupSection>
+                  <Grid container>
+                    <Grid item md={12} xs={12}>
                       <TextField
-                        disabled={!canEdit}
-                        {...inputProps}
-                        id="input-fiscal-number"
-                        label="CNPJ"
+                        id="input-customer"
+                        label="Cliente"
                         variant="outlined"
                         size="small"
-                        placeholder="00.000.000/0000-00"
+                        value={localStorage.getItem(LOCALSTORAGE.CUSTOMER_NAME)}
                         fullWidth
-                        error={!fieldsValidation.fiscal_number && state.fiscal_number != ''}
-                      />)}
-                  </InputMask>
-                  {!fieldsValidation.fiscal_number && state.fiscal_number && (
-                      <p style={{ color: '#f44336', margin:'-2px 5px 10px' }}>
-                        CNPJ Inválido ou inexistente
-                      </p>
-                    )}
-                </Grid>
+                        disabled={!canEdit}
+                      />
+                    </Grid>
+                  </Grid>
+                  <Grid container>
 
-                <Grid item md={10} />
-              </Grid>
-            </FormGroupSection>
+                    <Grid item md={12} xs={12}>
+                      <TextField
+                        id="input-social-name"
+                        label="Razão Social"
+                        variant="outlined"
+                        size="small"
+                        value={state.name}
+                        onChange={(element) => {
+                          setState({...state, name: element.target.value})
+                          setFieldValidations((prevState: any) => ({
+                            ...prevState,
+                            name: !validator.isEmpty(element.target.value)
+                          }));
+                        }}
+                        fullWidth
+                        disabled={!canEdit}
+                      />
+                    </Grid>
+                    <Grid item md={6} xs={12}>
+                      <TextField
+                        id="input-fantasy-name"
+                        label="Nome Fantasia"
+                        variant="outlined"
+                        size="small"
+                        value={state.fantasy_name}
+                        onChange={(element) => {
+                          setState({...state, fantasy_name: element.target.value})
+                          setFieldValidations((prevState: any) => ({
+                            ...prevState,
+                            fantasy_name: !validator.isEmpty(element.target.value)
+                          }));
+                        }}
 
-            <hr />
+                        fullWidth
+                        disabled={!canEdit}
+                      />
+                    </Grid>
 
-            {/*  */}
-            <FormGroupSection>
-              <Grid container>
-                <Grid item md={3} xs={12}>
-                  <FormControl variant="outlined" size="small" fullWidth>
-                    <InputLabel htmlFor="search-input">CEP</InputLabel>
+                    <Grid item md={6} xs={12}>
+                      <InputMask
+                        disabled={!canEdit}
+                        mask="99.999.999/9999-99"
+                        value={state.fiscal_number}
+                        onBlur={validateCNPJField}
+                        onChange={(element) => {
+                          setState({...state, fiscal_number: element.target.value})
+                          setFieldValidations((prevState: any) => ({
+                            ...prevState,
+                            fiscal_number: !validator.isEmpty(element.target.value)
+                          }));
+                        }}
+                      >
+                        {(inputProps: any) => (
+                          <TextField
+                            disabled={!canEdit}
+                            {...inputProps}
+                            id="input-fiscal-number"
+                            label="CNPJ"
+                            variant="outlined"
+                            size="small"
+                            placeholder="00.000.000/0000-00"
+                            fullWidth
+                            error={!fieldsValidation.fiscal_number && state.fiscal_number != ''}
+                          />)}
+                      </InputMask>
+                      {!fieldsValidation.fiscal_number && state.fiscal_number && (
+                        <p style={{color: '#f44336', margin: '-2px 5px 10px'}}>
+                          CNPJ Inválido ou inexistente
+                        </p>
+                      )}
+                    </Grid>
+
+                    <Grid item md={10}/>
+                  </Grid>
+                </FormGroupSection>
+
+                <hr/>
+
+                {/*  */}
+                <FormGroupSection>
+                  <Grid container>
+                    <Grid item md={3} xs={12}>
+                      <FormControl variant="outlined" size="small" fullWidth>
+                        <InputLabel htmlFor="search-input">CEP</InputLabel>
+                        <InputMask
+                          disabled={!canEdit}
+                          mask="99999-999"
+                          value={state.address.postal_code}
+                          onChange={(element) => setState({
+                            ...state,
+                            address: {...state.address, postal_code: element.target.value}
+                          })}
+                          onBlur={getAddress}
+
+                        >
+                          {(inputProps: any) => (
+                            <OutlinedInputFiled
+                              disabled={!canEdit}
+                              error={companyState.errorCep}
+                              id="input-postal-code"
+                              label="CEP"
+                              placeholder="00000-000"
+                              labelWidth={155}
+                              style={{marginRight: 12}}
+                              endAdornment={
+                                <InputAdornment position="end">
+                                  <SearchOutlined style={{color: 'var(--primary)'}}/>
+                                </InputAdornment>
+                              }
+                            />
+                          )}
+                        </InputMask>
+                      </FormControl>
+                      {companyState.error && state.address.postal_code != '' && (
+                        <p style={{color: '#f44336', margin: '-2px 5px 10px'}}>
+                          CEP inválido
+                        </p>
+                      )}
+                    </Grid>
+
+                    <Grid item md={9} xs={12}>
+                      <TextField
+                        id="input-address"
+                        label="Endereço"
+                        variant="outlined"
+                        size="small"
+                        value={state.address.street}
+                        onChange={(element) => {
+                          setState({...state, address: {...state.address, street: element.target.value}});
+                          setFieldValidations((prevState: any) => ({
+                            ...prevState,
+                            street: !validator.isEmpty(element.target.value)
+                          }));
+                        }}
+                        fullWidth
+                        disabled={!canEdit}
+                      />
+                    </Grid>
+
+                    <Grid item md={2} xs={12}>
+                      <TextField
+                        id="input-address-number"
+                        label="Número"
+                        variant="outlined"
+                        size="small"
+                        value={state.address.number}
+                        onChange={(element) => {
+                          setState({...state, address: {...state.address, number: element.target.value}});
+                          setFieldValidations((prevState: any) => ({
+                            ...prevState,
+                            number: !validator.isEmpty(element.target.value)
+                          }));
+                        }}
+                        fullWidth
+                        disabled={!canEdit}
+                      />
+                    </Grid>
+
+                    <Grid item md={10} xs={12}>
+                      <TextField
+                        id="input-address-complement"
+                        label="Complemento"
+                        variant="outlined"
+                        size="small"
+                        value={state.address.complement}
+                        onChange={(element) => {
+                          setState({...state, address: {...state.address, complement: element.target.value}});
+                          setFieldValidations((prevState: any) => ({
+                            ...prevState,
+                            complement: !validator.isEmpty(element.target.value)
+                          }));
+                        }}
+                        fullWidth
+                        disabled={!canEdit}
+                      />
+                    </Grid>
+
+                    <Grid item md={4} xs={12}>
+                      <TextField
+                        id="input-neighborhood"
+                        label="Bairro"
+                        variant="outlined"
+                        size="small"
+                        value={state.address.district}
+                        onChange={(element) => {
+                          setState({...state, address: {...state.address, district: element.target.value}});
+                          setFieldValidations((prevState: any) => ({
+                            ...prevState,
+                            district: !validator.isEmpty(element.target.value)
+                          }));
+                        }}
+                        fullWidth
+                        disabled={!canEdit}
+                      />
+                    </Grid>
+
+                    <Grid item md={7} xs={12}>
+                      <TextField
+                        id="input-city"
+                        label="Cidade"
+                        variant="outlined"
+                        size="small"
+                        value={state.address.city}
+                        onChange={(element) => {
+                          setState({...state, address: {...state.address, city: element.target.value}});
+                          setFieldValidations((prevState: any) => ({
+                            ...prevState,
+                            city: !validator.isEmpty(element.target.value)
+                          }));
+                        }}
+                        fullWidth
+                        disabled={!canEdit}
+                      />
+                    </Grid>
+
+                    <Grid item md={1} xs={12}>
+                      <TextField
+                        id="input-address-uf"
+                        label="UF"
+                        variant="outlined"
+                        size="small"
+                        value={state.address.state}
+                        onChange={(element) => {
+                          setState({...state, address: {...state.address, state: element.target.value}});
+                          setFieldValidations((prevState: any) => ({
+                            ...prevState,
+                            state: !validator.isEmpty(element.target.value)
+                          }));
+                        }}
+                        fullWidth
+                        disabled={!canEdit}
+                      />
+                    </Grid>
+                  </Grid>
+                </FormGroupSection>
+
+                <Grid container>
+                  <Grid item md={9} xs={12}>
+                    <TextField
+                      id="input-responsable-name"
+                      label="Nome do responsável"
+                      variant="outlined"
+                      size="small"
+                      value={state.responsable_name}
+                      onChange={(element) => {
+                        setState({...state, responsable_name: element.target.value})
+                        setFieldValidations((prevState: any) => ({
+                          ...prevState,
+                          responsable_name: !validator.isEmpty(element.target.value)
+                        }));
+                      }}
+                      fullWidth
+                      disabled={!canEdit}
+                    />
+                  </Grid>
+                  <Grid item md={3} xs={12}>
                     <InputMask
                       disabled={!canEdit}
-                      mask="99999-999"
-                      value={state.address.postal_code}
-                      onChange={(element) => setState({ ...state, address: { ...state.address, postal_code: element.target.value } })}
-                      onBlur={getAddress}
-
+                      mask="(99) 9999-9999"
+                      value={state.phone}
+                      onChange={(element) => {
+                        setState({...state, phone: element.target.value});
+                        setFieldValidations((prevState: any) => ({
+                          ...prevState,
+                          phone: !validator.isEmpty(element.target.value)
+                        }));
+                      }}
+                      onBlur={validatePhone}
                     >
                       {(inputProps: any) => (
-                        <OutlinedInputFiled
+                        <TextField
+                          {...inputProps}
+                          error={!validatePhone() && state.phone != ''}
+                          id="input-phone"
+                          label="Telefone"
+                          variant="outlined"
+                          size="small"
+                          placeholder="(00) 0000-0000"
+
+
+                          fullWidth
                           disabled={!canEdit}
-                          error={companyState.errorCep}
-                          id="input-postal-code"
-                          label="CEP"
-                          placeholder="00000-000"
-                          labelWidth={155}
-                          style={{ marginRight: 12 }}
-                          endAdornment={
-                            <InputAdornment position="end">
-                              <SearchOutlined style={{ color: 'var(--primary)' }} />
-                            </InputAdornment>
-                          }
                         />
                       )}
                     </InputMask>
-                  </FormControl>
-                  {companyState.error && state.address.postal_code != '' &&(
-                      <p style={{ color: '#f44336', margin:'-2px 5px 10px' }}>
-                        CEP inválido
+                    {!validatePhone() && state.phone && (
+                      <p style={{color: '#f44336', margin: '-10px 5px 10px'}}>
+                        Por favor insira um número válido
                       </p>
                     )}
-                </Grid>
-
-                <Grid item md={9} xs={12}>
-                  <TextField
-                    id="input-address"
-                    label="Endereço"
-                    variant="outlined"
-                    size="small"
-                    value={state.address.street}
-                    onChange={(element) => {
-                      setState({ ...state, address: { ...state.address, street: element.target.value } });
-                      setFieldValidations((prevState: any) => ({ ...prevState, street: !validator.isEmpty(element.target.value) }));
-                    }}
-                    fullWidth
-                    disabled={!canEdit}
-                  />
-                </Grid>
-
-                <Grid item md={2} xs={12}>
-                  <TextField
-                    id="input-address-number"
-                    label="Número"
-                    variant="outlined"
-                    size="small"
-                    value={state.address.number}
-                    onChange={(element) => {
-                      setState({ ...state, address: { ...state.address, number: element.target.value } });
-                      setFieldValidations((prevState: any) => ({ ...prevState, number: !validator.isEmpty(element.target.value) }));
-                    }}
-                    fullWidth
-                    disabled={!canEdit}
-                  />
-                </Grid>
-
-                <Grid item md={10} xs={12}>
-                  <TextField
-                    id="input-address-complement"
-                    label="Complemento"
-                    variant="outlined"
-                    size="small"
-                    value={state.address.complement}
-                    onChange={(element) => {
-                      setState({ ...state, address: { ...state.address, complement: element.target.value } });
-                      setFieldValidations((prevState: any) => ({ ...prevState, complement: !validator.isEmpty(element.target.value) }));
-                    }}
-                    fullWidth
-                    disabled={!canEdit}
-                  />
-                </Grid>
-
-                <Grid item md={4} xs={12}>
-                  <TextField
-                    id="input-neighborhood"
-                    label="Bairro"
-                    variant="outlined"
-                    size="small"
-                    value={state.address.district}
-                    onChange={(element) => {
-                      setState({ ...state, address: { ...state.address, district: element.target.value } });
-                      setFieldValidations((prevState: any) => ({ ...prevState, district: !validator.isEmpty(element.target.value) }));
-                    }}
-                    fullWidth
-                    disabled={!canEdit}
-                  />
-                </Grid>
-
-                <Grid item md={7} xs={12}>
-                  <TextField
-                    id="input-city"
-                    label="Cidade"
-                    variant="outlined"
-                    size="small"
-                    value={state.address.city}
-                    onChange={(element) => {
-                      setState({ ...state, address: { ...state.address, city: element.target.value } });
-                      setFieldValidations((prevState: any) => ({ ...prevState, city: !validator.isEmpty(element.target.value) }));
-                    }}
-                    fullWidth
-                    disabled={!canEdit}
-                  />
-                </Grid>
-
-                <Grid item md={1} xs={12}>
-                  <TextField
-                    id="input-address-uf"
-                    label="UF"
-                    variant="outlined"
-                    size="small"
-                    value={state.address.state}
-                    onChange={(element) => {
-                      setState({ ...state, address: { ...state.address, state: element.target.value } });
-                      setFieldValidations((prevState: any) => ({ ...prevState, state: !validator.isEmpty(element.target.value) }));
-                    }}
-                    fullWidth
-                    disabled={!canEdit}
-                  />
-                </Grid>
-              </Grid>
-            </FormGroupSection>
-
-            <Grid container>
-              <Grid item md={9} xs={12}>
-                <TextField
-                  id="input-responsable-name"
-                  label="Nome do responsável"
-                  variant="outlined"
-                  size="small"
-                  value={state.responsable_name}
-                  onChange={(element) => {
-                    setState({ ...state, responsable_name: element.target.value })
-                    setFieldValidations((prevState: any) => ({ ...prevState, responsable_name: !validator.isEmpty(element.target.value) }));
-                  }}
-                  fullWidth
-                  disabled={!canEdit}
-                />
-              </Grid>
-              <Grid item md={3} xs={12}>
-                <InputMask
-                  disabled={!canEdit}
-                  mask="(99) 9999-9999"
-                  value={state.phone}
-                  onChange={(element) => {
-                    setState({ ...state, phone: element.target.value });
-                    setFieldValidations((prevState: any) => ({ ...prevState, phone: !validator.isEmpty(element.target.value) }));
-                  }}
-                  onBlur={validatePhone}
-                >
-                  {(inputProps: any) => (
+                  </Grid>
+                  <Grid item md={9} xs={12}>
                     <TextField
-                      {...inputProps}
-                      error ={!validatePhone() && state.phone != ''}
-                      id="input-phone"
-                      label="Telefone"
+                      id="input-email"
+                      label="E-mail"
                       variant="outlined"
                       size="small"
-                      placeholder="(00) 0000-0000"
-
-
+                      value={state.email}
+                      onChange={(element) => {
+                        setState({...state, email: element.target.value});
+                        setFieldValidations((prevState: any) => ({
+                          ...prevState,
+                          email: validator.isEmail(element.target.value)
+                        }));
+                      }}
                       fullWidth
                       disabled={!canEdit}
                     />
-                  )}
-                </InputMask>
-                {!validatePhone() && state.phone &&(
-                      <p style={{ color: '#f44336', margin:'-10px 5px 10px' }}>
-                       Por favor insira um número válido
-                      </p>
-                    )}
-              </Grid>
-              <Grid item md={9} xs={12}>
-                <TextField
-                  id="input-email"
-                  label="E-mail"
-                  variant="outlined"
-                  size="small"
-                  value={state.email}
-                  onChange={(element) => {
-                    setState({ ...state, email: element.target.value });
-                    setFieldValidations((prevState: any) => ({ ...prevState, email: validator.isEmail(element.target.value) }));
-                  }}
-                  fullWidth
-                  disabled={!canEdit}
-                />
-              </Grid>
-              <Grid item md={3} xs={12}>
-                <InputMask
-                  disabled={!canEdit}
-                  mask="(99) 9 9999-9999"
-                  value={state.cellphone}
-                  onChange={(element) => {
-                    setState({ ...state, cellphone: element.target.value });
-                    setFieldValidations((prevState: any) => ({ ...prevState, cellphone: !validator.isMobilePhone(element.target.value, 'pt-BR') }));
-                  }}
-                  onBlur={validateCellPhone}
-                >
-                  {(inputProps: any) => (
-                    <TextField
-                      id="input-cellphone"
-                      label="Celular"
-                      variant="outlined"
-                      size="small"
-                      // value={state.cellphone}
-                      // onChange={(element) => setState({ ...state, cellphone: element.target.value })}
-                      placeholder="00000-0000"
-                      error ={!validateCellPhone() && state.cellphone != ''}
-
-                      fullWidth
+                  </Grid>
+                  <Grid item md={3} xs={12}>
+                    <InputMask
                       disabled={!canEdit}
-                    />
-                  )}
-                </InputMask>
-                {!validateCellPhone() && state.cellphone &&(
-                      <p style={{ color: '#f44336', margin:'-10px 5px 10px' }}>
-                       Por favor insira um número válido
+                      mask="(99) 9 9999-9999"
+                      value={state.cellphone}
+                      onChange={(element) => {
+                        setState({...state, cellphone: element.target.value});
+                        setFieldValidations((prevState: any) => ({
+                          ...prevState,
+                          cellphone: !validator.isMobilePhone(element.target.value, 'pt-BR')
+                        }));
+                      }}
+                      onBlur={validateCellPhone}
+                    >
+                      {(inputProps: any) => (
+                        <TextField
+                          id="input-cellphone"
+                          label="Celular"
+                          variant="outlined"
+                          size="small"
+                          // value={state.cellphone}
+                          // onChange={(element) => setState({ ...state, cellphone: element.target.value })}
+                          placeholder="00000-0000"
+                          error={!validateCellPhone() && state.cellphone != ''}
+
+                          fullWidth
+                          disabled={!canEdit}
+                        />
+                      )}
+                    </InputMask>
+                    {!validateCellPhone() && state.cellphone && (
+                      <p style={{color: '#f44336', margin: '-10px 5px 10px'}}>
+                        Por favor insira um número válido
                       </p>
                     )}
-              </Grid>
+                  </Grid>
 
-              {params.id && (
-                <Grid item md={3} xs={12}>
-                  <FormControlLabel
-                    control={(
-                      <Switch
-                        disabled={!canEdit}
-                        checked={state.active}
-                        onChange={(event) => {
-                          setState(prevState => ({
-                            ...prevState,
-                            active: event.target.checked
-                          }))
-                        }} />
-                    )}
-                    label="Ativo?"
-                    labelPlacement="start"
-                  />
+                  {params.id && (
+                    <Grid item md={3} xs={12}>
+                      <FormControlLabel
+                        control={(
+                          <Switch
+                            disabled={!canEdit}
+                            checked={state.active}
+                            onChange={(event) => {
+                              setState(prevState => ({
+                                ...prevState,
+                                active: event.target.checked
+                              }))
+                            }}/>
+                        )}
+                        label="Ativo?"
+                        labelPlacement="start"
+                      />
+                    </Grid>
+                  )}
                 </Grid>
-              )}
-            </Grid>
-          </FormContent>
-          <ButtonsContent>
-            <ButtonComponent background="default" onClick={handleOpenModalCancel}>
-              Voltar
-					  </ButtonComponent>
-            <ButtonComponent disabled={formValid} background="success" onClick={handleSaveFormCustomer}>
-              Salvar
-					  </ButtonComponent>
-          </ButtonsContent>
-        </FormSection>
+              </FormContent>
+              <ButtonsContent>
+                <ButtonComponent background="default" onClick={handleOpenModalCancel}>
+                  Voltar
+                </ButtonComponent>
+                <ButtonComponent disabled={formValid} background="success" onClick={handleSaveFormCustomer}>
+                  Salvar
+                </ButtonComponent>
+              </ButtonsContent>
+            </FormSection>
+          </>
+        )}
       </Container>
 
       <Dialog
@@ -719,15 +814,15 @@ export default function CompanyForm(props: RouteComponentProps<IPageParams>) {
         <DialogContent>
           <DialogContentText id="alert-dialog-description">
             Tem certeza que deseja cancelar este cadastro?
-					</DialogContentText>
+          </DialogContentText>
         </DialogContent>
         <DialogActions>
           <Button onClick={handleCloseModalCancel} color="primary">
             Não
-					</Button>
+          </Button>
           <Button onClick={handleCancelForm} color="primary" autoFocus>
             Sim
-					</Button>
+          </Button>
         </DialogActions>
       </Dialog>
     </Sidebar>

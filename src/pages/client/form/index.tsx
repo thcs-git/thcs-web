@@ -8,7 +8,7 @@ import {
   updateCustomerRequest,
   createCustomerRequest,
   createPermissionRequest,
-  cleanAction, updatePermissionRequest, loadPermissionRequest
+  cleanAction, updatePermissionRequest, loadPermissionRequest, cleanPermission
 } from '../../../store/ducks/customers/actions';
 import {CustomerInterface, CustomerState} from '../../../store/ducks/customers/types';
 import {createUserRequest as createUserAction} from '../../../store/ducks/users/actions';
@@ -179,7 +179,7 @@ export default function ClientForm(props: RouteComponentProps<IPageParams>) {
     // phone:'',
     responsible_user: '',
     active: true,
-
+    integration: '',
   });
 
   const [permissionState, setPermissionState] = useState({
@@ -304,7 +304,7 @@ export default function ClientForm(props: RouteComponentProps<IPageParams>) {
 
 
   useEffect(() => {
-    if (params.mode === 'permission'){
+    if (params.mode === 'permission' && _.split(window.location.pathname, '/').slice(-2)[0] != 'create'){
       dispatch(loadPermissionRequest(_.split(window.location.pathname, '/').slice(-3)[0]))
     }
      else if (params.id && !permissionState.mode && params.id != ':id') {
@@ -367,6 +367,7 @@ export default function ClientForm(props: RouteComponentProps<IPageParams>) {
     //   dispatch(createCustomerRequest(state));
     //
     // }
+    console.log('state', state)
     if (params.id && ModifiCondition()) {
 
       dispatch(updateCustomerRequest(state));
@@ -577,6 +578,8 @@ export default function ClientForm(props: RouteComponentProps<IPageParams>) {
             state={permissionState}
             setState={setPermissionState}
             customerState={customerState}
+            userState={userState}
+            params={params}
           />
           <ButtonTabs canEdit={canEditPermission} buttons={buttonsPermission}/>
         </>

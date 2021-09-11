@@ -2,7 +2,7 @@ import { AxiosResponse } from "axios";
 import { put, call } from "redux-saga/effects";
 import { toast } from "react-toastify";
 
-import { viacep, apiSollar } from "../../../services/axios";
+import {viacep, apiSollar, apiIntegra} from "../../../services/axios";
 
 import {
   loadSuccess,
@@ -13,14 +13,17 @@ import {
   updateCompanySuccess,
 } from "./actions";
 import { ViacepDataInterface } from "./types";
+import LOCALSTORAGE from "../../../helpers/constants/localStorage";
+import SESSIONSTORAGE from '../../../helpers/constants/sessionStorage';
 
 const token = localStorage.getItem("token");
 
 export function* get({ payload }: any) {
   const { params } = payload;
+  const integration = sessionStorage.getItem(SESSIONSTORAGE.INTEGRATION)
 
   const response: AxiosResponse = yield call(
-    apiSollar.get,
+    integration ? apiIntegra(integration).get:apiSollar.get,
     `/companies?limit=${params.limit ?? 10}&page=${params.page || 1}${
       params.search ? "&search=" + params.search : ""
     }`
@@ -94,9 +97,25 @@ export function* store({ payload: { data } }: any) {
 
 export function* getById({ payload: { id: _id } }: any) {
   try {
-    const response: AxiosResponse = yield call(apiSollar.get, `/companies`, {
-      params: { _id },
-    });
+    let response: AxiosResponse
+    const integration = sessionStorage.getItem(SESSIONSTORAGE.INTEGRATION)
+
+    if (integration) {
+      response = yield call(
+        apiIntegra(integration),
+        `/companies/${_id}`,
+        {
+        });
+    } else {
+      response = yield call(
+        apiSollar.get,
+        `/companies`,
+        {
+          params: { _id },
+        });
+    }
+
+
     const { phones = [] } = response.data;
 
     if (phones.length > 0) {

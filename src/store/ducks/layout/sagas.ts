@@ -21,7 +21,33 @@ export function* get() {
     });
     yield put(loadSuccess(response.data));
   } catch (error) {
-    toast.error("Não foi carregar o menu do usuário");
-    yield put(loadFailure());
+    const data = {
+      menu: [
+        {
+          icon: 'DashboardIcon',
+          id: 1,
+          name: 'Dashboard',
+          slug: '/',
+          color: '#fff'
+        },
+        {
+          icon: 'SettingsIcon',
+          id: 100,
+          name: 'Configurações',
+          slug: "/userconfiguration",
+          color: '#fff'
+        },
+        {
+          icon: 'ExitToApp',
+          id: 1000,
+          name: 'Sair',
+          modal: true,
+          color: '#fff',
+        },
+      ],
+      rights: [],
+    }
+    toast.error("Não foi possível carregar o menu do usuário");
+    yield put(loadFailure(data));
   }
 }
