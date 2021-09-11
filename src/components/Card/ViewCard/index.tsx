@@ -5,7 +5,8 @@ import InfoRoundedIcon from "@material-ui/icons/InfoRounded";
 import {CardIcon, BoxCustomFoot, CardTitle, FeedbackTitle} from "./styles";
 
 interface IProps {
-  content: Icontent
+  content: Icontent;
+  md?: any
 }
 
 interface Icontent {
@@ -20,10 +21,12 @@ interface Irows {
 }
 
 export default function ViewCard(props: IProps) {
-  const {content} = props;
+  const {content, md} = props;
+
+  const md_value = md ? md : 6
 
   return (
-    <Grid item md={6}>
+    <Grid item md={md_value}>
       <Grid container
             style={{flexDirection: 'column', paddingLeft: '10px', paddingTop: '20px'}}>
         <Grid item style={{paddingBottom: "10px"}}>

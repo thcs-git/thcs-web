@@ -137,6 +137,7 @@ export interface CareInterface {
   complexity?: string;
   started_at?: string;
   created_at?: string;
+  dt_alta?: string;
   created_by?: { _id: string };
   updated_at?: string;
   updated_by?: { _id: string };

@@ -114,20 +114,37 @@ export default function PatientOverview(props: RouteComponentProps<IPageParams>)
 
   const rows = []
   careState?.data?.tipo && rows.push({name: "Tipo de Atendimento", value: careState?.data?.tipo})
-  careState?.data?._id && rows.push({name: "Código", value: careState?.data?._id})
-  careState?.data?.capture?.health_insurance_id && rows.push({name: "Convênio", value: careState?.data?.capture?.health_insurance_id})
-  careState?.data?.capture?.health_plan_id && rows.push({name: "Plano", value: careState?.data?.capture?.health_plan_id})
-  careState?.data?.capture?.health_sub_plan_id && rows.push({name: "Subplano", value: careState?.data?.capture?.health_sub_plan_id})
-  careState?.data?.capture?.assistant_doctor && rows.push({name: "Médico Assistente", value: careState?.data?.capture?.assistant_doctor})
+  careState?.data?._id && rows.push({name: "Número do Atendimento", value: careState?.data?._id})
+  careState?.data?.cid_id && rows.push({name: "CID", value: careState?.data?.cid_id})
+  careState?.data?.health_insurance_id && rows.push({name: "Convênio", value: careState?.data?.health_insurance_id})
+  careState?.data?.health_plan_id && rows.push({name: "Plano", value: careState?.data?.health_plan_id})
+  careState?.data?.health_sub_plan_id && rows.push({name: "Subplano", value: careState?.data?.health_sub_plan_id})
+  careState?.data?.capture?.assistant_doctor && rows.push({
+    name: "Médico Assistente",
+    value: careState?.data?.capture?.assistant_doctor
+  })
   careState?.data?.capture?.unity && rows.push({name: "Unidade", value: careState?.data?.capture?.unity})
   careState?.data?.capture?.sector && rows.push({name: "Setor", value: careState?.data?.capture?.sector})
   careState?.data?.capture?.type && rows.push({name: "Acomodação", value: careState?.data?.capture?.type})
   careState?.data?.capture?.bed && rows.push({name: "Leito", value: careState?.data?.capture?.bed})
-  careState?.data?.created_at && rows.push({name: "Data de Atendimento", value: careState?.data?.created_at})
+  careState?.data?.created_at && rows.push({
+    name: "Data de Atendimento",
+    value: formatDate(careState?.data?.created_at, "DD/MM/YYYY HH:mm")
+  })
   careState?.data?.mot_alta && rows.push({name: "Motivo de Alta", value: careState?.data?.mot_alta})
-  careState?.data?.health_plan_card_number && rows.push({name: "Número da carteira", value: careState?.data?.health_plan_card_number})
-  careState?.data?.health_plan_card_validate && rows.push({name: "Data de validade", value: careState?.data?.health_plan_card_validate})
+  careState?.data?.health_plan_card_number && rows.push({
+    name: "Número da carteira",
+    value: careState?.data?.health_plan_card_number
+  })
+  careState?.data?.health_plan_card_validate && rows.push({
+    name: "Data de validade",
+    value: formatDate(careState?.data?.health_plan_card_validate, "DD/MM/YYYY")
+  })
   careState?.data?.speciality && rows.push({name: "Especialidade do Atendimento", value: careState?.data?.speciality})
+  careState?.data?.dt_alta && rows.push({
+    name: "Data de Alta",
+    value: formatDate(careState?.data?.dt_alta, "DD/MM/YYYY HH:mm")
+  })
 
   const content = {
     tittle: '',
@@ -151,7 +168,8 @@ export default function PatientOverview(props: RouteComponentProps<IPageParams>)
                     <img src={IconProfile} alt="Profile"/>
                     <div>
                       <h5>{careState?.data?.patient_id?.name}</h5>
-                      <h5 style={{fontWeight: 'normal'}}>{careState?.data?.cid_id && `CID: ${careState?.data?.cid_id}`}</h5>
+                      <h5
+                        style={{fontWeight: 'normal'}}>{careState?.data?.cid_id && `CID: ${careState?.data?.cid_id}`}</h5>
                       {/*<h5 style={{fontWeight: 'normal'}}>{careState?.data?.mot_alta && `CID: ${careState?.data?.mot_alta}`}</h5>*/}
                       {/*<p>{careState.data.patient_id?.birthdate ? age(careState.data.patient_id?.birthdate) : ''}</p>*/}
                     </div>
@@ -180,7 +198,7 @@ export default function PatientOverview(props: RouteComponentProps<IPageParams>)
                         )}
                         {careState?.data?.patient_id?.birthdate && (
                           <ListItem>
-                            <p>Data de Nascimento: {formatDate(careState.data.patient_id.birthdate,"DD/MM/YYYY")}</p>
+                            <p>Data de Nascimento: {formatDate(careState.data.patient_id.birthdate, "DD/MM/YYYY")}</p>
                           </ListItem>
                         )}
                         {careState?.data?.patient_id?.birthdate && (
@@ -211,7 +229,8 @@ export default function PatientOverview(props: RouteComponentProps<IPageParams>)
                       <footer>
                         <Typography variant="caption" color="textSecondary">
                           <Button className="btn-dropwdown" aria-controls={`menu-prontuario`} id={`btn_menu-prontuario`}
-                                  aria-haspopup="true" onClick={() => history.push(`/patient/${careState?.data?.patient_id?._id}/view/care/${careState?.data?._id}`)}>
+                                  aria-haspopup="true"
+                                  onClick={() => history.push(`/patient/${careState?.data?.patient_id?._id}/view/care/${careState?.data?._id}`)}>
                             <h5>Ver Mais</h5>
                           </Button>
                         </Typography>
@@ -259,7 +278,7 @@ export default function PatientOverview(props: RouteComponentProps<IPageParams>)
                         )}
                         {careState?.data?._id && (
                           <ListItem style={{fontWeight: 'bold'}}>
-                            <p>Código: {careState.data._id}</p>
+                            <p>Número do Atendimento: {careState.data._id}</p>
                           </ListItem>
                         )}
                         {careState?.data?.health_insurance_id && (
@@ -467,6 +486,7 @@ export default function PatientOverview(props: RouteComponentProps<IPageParams>)
                     <Grid container style={{display: "flex", flexDirection: "row", justifyContent: "space-between"}}>
                       <ViewCard
                         content={content}
+                        md={12}
                       />
                     </Grid>
                   </DialogContentText>
