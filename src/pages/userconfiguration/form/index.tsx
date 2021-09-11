@@ -44,6 +44,7 @@ import FindReplaceRoundedIcon from '@material-ui/icons/FindReplaceRounded';
 import ButtonComponent from '../../../components/Button';
 import Sidebar_menu from '../../../components/Sidebar_menu';
 import _ from "lodash";
+import {loadRequest} from "../../../store/ducks/layout/actions";
 
 export default function UserConfiguration() {
   const history = useHistory();
@@ -112,7 +113,7 @@ export default function UserConfiguration() {
   useEffect(() => {
     dispatch(cleanAction());
     if (currentUser) {
-      dispatch(loadUserById(currentUser));
+      dispatch(loadUserById(currentUser, 'userconfiguration'));
     }
   }, []);
 
@@ -127,6 +128,8 @@ export default function UserConfiguration() {
       localStorage.setItem(LOCALSTORAGE.COMPANY_NAME, company.companie_id.name);
       localStorage.setItem(LOCALSTORAGE.CUSTOMER, company.companie_id.customer_id._id);
       localStorage.setItem(LOCALSTORAGE.CUSTOMER_NAME, company.companie_id.customer_id.name);
+
+      dispatch(loadRequest())
 
       setUser(prevState => ({
         ...prevState,

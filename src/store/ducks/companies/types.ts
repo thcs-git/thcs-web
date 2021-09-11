@@ -28,6 +28,7 @@ export enum CompanyTypes {
  */
 
 export interface CompanyInterface {
+  tipo: string;
   _id?: string;
   customer_id: string;
   name: string;
@@ -77,6 +78,12 @@ export interface CompanyInterface {
   active: boolean;
   created_by: { _id: string };
   created_at?: string;
+  phones: [{
+    cellnumber?: string;
+    number?: string;
+    telegram: boolean;
+    whatsapp: boolean;
+  }];
 }
 
 export interface ViacepDataInterface {

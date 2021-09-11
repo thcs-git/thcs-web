@@ -8,17 +8,21 @@ import {Checkbox, CheckboxProps, FormControl, FormControlLabel, FormGroup, FormL
 import {FormLabelComponent} from "./styles"
 import {SwitchComponent as Switch} from "../../../Button/ToggleActive/styles";
 import {InputFiled as TextField} from "../IntegrationForm/styles";
-import {loadCustomerById, loadPermissionRequest} from "../../../../store/ducks/customers/actions";
+import {cleanPermission, loadCustomerById, loadPermissionRequest} from "../../../../store/ducks/customers/actions";
 import Autocomplete from "@material-ui/lab/Autocomplete";
 import {loadProfessionsRequest as getProfessionsAction} from "../../../../store/ducks/users/actions";
 import {useDispatch, useSelector} from "react-redux";
 import {ApplicationState} from "../../../../store";
 import {ProfessionUserInterface} from "../../../../store/ducks/users/types";
+import TabForm from "../../../Tabs";
+import {RouteComponentProps} from "react-router-dom";
 
 interface IComponent {
   state: any;
   setState: any;
   customerState: any;
+  userState: any;
+  params: any;
 }
 
 interface TabPanelProps {
@@ -75,8 +79,8 @@ const CustomCheckbox = withStyles({
 })((props: CheckboxProps) => <Checkbox color="default" {...props} />);
 
 const PermissionForm = (props: IComponent) => {
-  const {state, setState, customerState} = props;
-  const userState = useSelector((state: ApplicationState) => state.users);
+  const {state, setState, customerState, userState, params} = props;
+  // const userState = useSelector((state: ApplicationState) => state.users);
   const classes = useStyles();
   const dispatch = useDispatch();
 
@@ -95,7 +99,7 @@ const PermissionForm = (props: IComponent) => {
   const _id = _.split(window.location.pathname, '/').slice(-3)[0]
   const customer_id = _.split(window.location.pathname, '/').slice(-5)[0]
 
-  const rows = [
+  const rowsPortal = [
     {
       legend: 'Cliente',
       name: 'client',
@@ -197,6 +201,20 @@ const PermissionForm = (props: IComponent) => {
     },
   ]
 
+  const rowsApp = [
+    {
+      legend: 'Cliente',
+      name: 'app.client',
+      rights: [
+        {crud: 'view', label: 'Visualizar'},
+        {crud: 'edit', label: 'Editar'},
+        {crud: 'status', label: 'Desativar'},
+        {crud: 'create', label: 'Criar'},
+        {crud: 'history', label: 'Histórico'},
+      ]
+    },
+  ]
+
   function handleChecked(name: string, crud: string) {
     return _.indexOf(state.rights, `${name}.${crud}`) > -1;
   }
@@ -210,13 +228,33 @@ const PermissionForm = (props: IComponent) => {
 
   const selectProfession = useCallback(() => {
     if (userState.data.professions) {
-      const selected = userState.data.professions.filter((item) => {
+      const selected = userState.data.professions.filter((item: any) => {
         return item.name === state.name;
       });
       return selected[0] ? selected[0] : {_id: "0", name: ""};
     }
 
   }, [state, state.name, userState.data.professions]);
+
+  const handleProfessionList = useCallback(() => {
+    const list = [...userState.data.professions]
+    if (userState.data.professions.length > 0 && customerState.data.usertypes) {
+      const selected = userState.data.professions.filter((item: any) => {
+        return item.name === state.name;
+      });
+
+      customerState.data.usertypes.map((item: any, index: number) => {
+        _.remove(list, {name: item.name})
+      })
+
+      if (selected.length > 0) {
+        list.push(selected[0])
+      }
+    return list
+    }
+
+    return userState.data.professions
+  }, [userState.data.professions, customerState.data.usertypes, state])
 
   useEffect(() => {
     if (mode === 'create') {
@@ -236,10 +274,23 @@ const PermissionForm = (props: IComponent) => {
       }))
     }
 
-    if (!customerState.data.usertypes) {
+    if (mode ==='create') {
+      setState(() => ({
+        active: true,
+        name: "",
+        rights: [],
+        mode: "",
+        _id: "",
+        customer_id: "",
+      }))
+    }
+
+    if (!customerState.data.usertypes && mode != 'create') {
       dispatch(loadCustomerById(customer_id))
     }
-    dispatch(getProfessionsAction());
+    if (userState.data.professions.length <= 0) {
+      dispatch(getProfessionsAction());
+    }
   }, []);
 
   useEffect(() => {
@@ -257,30 +308,42 @@ const PermissionForm = (props: IComponent) => {
     }
   }, [customerState]);
 
+  const NavItems = [
+    {
+      name: "PORTAL",
+      components: ['CheckListFormPortal'],
+    },
+    {
+      name: "APLICATIVO",
+      components: ['CheckListFormApp'],
+    },
+  ]
+
   return (
     <div className={classes.root}>
       <TabPanel value={0} index={0}>
         <Grid container>
           <Grid item md={9} xs={12}>
-            <TextField
-              disabled={mode === 'create' || mode === 'view'}
-              label="Nome"
-              variant="outlined"
-              size="small"
-              value={state.name}
-              onChange={(event) => {
-                setState((prevState: any) => ({
-                  ...prevState,
-                  name: event.target.value
-                }))
-              }}
-              fullWidth
-            />
+            {/*<TextField*/}
+            {/*  // disabled={mode === 'create' || mode === 'view'}*/}
+            {/*  disabled={true}*/}
+            {/*  label="Nome"*/}
+            {/*  variant="outlined"*/}
+            {/*  size="small"*/}
+            {/*  value={state.name}*/}
+            {/*  onChange={(event) => {*/}
+            {/*    setState((prevState: any) => ({*/}
+            {/*      ...prevState,*/}
+            {/*      name: event.target.value*/}
+            {/*    }))*/}
+            {/*  }}*/}
+            {/*  fullWidth*/}
+            {/*/>*/}
 
             <Autocomplete
               id="combo-box-profession"
-              disabled={mode === 'create' || mode === 'view'}
-              options={userState.data.professions}
+              disabled={mode === 'view'}
+              options={handleProfessionList()}
               getOptionLabel={(option) => option.name}
               renderInput={(params) =>
                 <TextField {...params} label="Função" variant="outlined"/>}
@@ -320,39 +383,49 @@ const PermissionForm = (props: IComponent) => {
           </Grid>
         </Grid>
 
-        {rows.map(({legend, name, rights}: rowsInterface, index) => (
-          <FormControl component="fieldset" style={{marginBottom: '15px'}}>
-            <FormLabel className={classes.formLabel}>{legend}</FormLabel>
-            <FormGroup aria-label="position" row>
-              {rights.map(({crud, label}: rightsInterface, index: number) => (
-                <FormControlLabel
-                  value={crud}
-                  control={<CustomCheckbox checked={handleChecked(name, crud)}/>}
-                  label={label}
-                  labelPlacement="end"
-                  disabled={mode === 'view'}
-                  onChange={(event, value) => {
-                    const rights = [...state.rights];
-                    const right = `${name}.${crud}`
+        <TabForm
+          navItems={NavItems}
+          state={state}
+          setState={setState}
+          initialTab={0}
+          params={params}
+          rowsPortal={rowsPortal}
+          rowsApp={rowsApp}
+        />
 
-                    if (value) {
-                      setState((prevState: any) => ({
-                        ...prevState,
-                        rights: [...prevState.rights, right]
-                      }))
-                    } else {
-                      _.pull(rights, right);
-                      setState((prevState: any) => ({
-                        ...prevState,
-                        rights: rights
-                      }))
-                    }
-                  }}
-                />
-              ))}
-            </FormGroup>
-          </FormControl>
-        ))}
+        {/*{rows.map(({legend, name, rights}: rowsInterface, index) => (*/}
+        {/*  <FormControl component="fieldset" style={{marginBottom: '15px'}}>*/}
+        {/*    <FormLabel className={classes.formLabel}>{legend}</FormLabel>*/}
+        {/*    <FormGroup aria-label="position" row>*/}
+        {/*      {rights.map(({crud, label}: rightsInterface, index: number) => (*/}
+        {/*        <FormControlLabel*/}
+        {/*          value={crud}*/}
+        {/*          control={<CustomCheckbox checked={handleChecked(name, crud)}/>}*/}
+        {/*          label={label}*/}
+        {/*          labelPlacement="end"*/}
+        {/*          disabled={mode === 'view'}*/}
+        {/*          onChange={(event, value) => {*/}
+        {/*            const rights = [...state.rights];*/}
+        {/*            const right = `${name}.${crud}`*/}
+
+        {/*            if (value) {*/}
+        {/*              setState((prevState: any) => ({*/}
+        {/*                ...prevState,*/}
+        {/*                rights: [...prevState.rights, right]*/}
+        {/*              }))*/}
+        {/*            } else {*/}
+        {/*              _.pull(rights, right);*/}
+        {/*              setState((prevState: any) => ({*/}
+        {/*                ...prevState,*/}
+        {/*                rights: rights*/}
+        {/*              }))*/}
+        {/*            }*/}
+        {/*          }}*/}
+        {/*        />*/}
+        {/*      ))}*/}
+        {/*    </FormGroup>*/}
+        {/*  </FormControl>*/}
+        {/*))}*/}
       </TabPanel>
     </div>
   );

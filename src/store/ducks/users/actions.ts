@@ -44,8 +44,8 @@ export const updateUserRequest = (data: UserInterface) =>
 export const updateUserSuccess = (data: UserInterface) =>
   action(UserTypes.UPDATE_USER_SUCCESS, { data });
 
-export const loadUserById = (id: string) =>
-  action(UserTypes.LOAD_REQUEST_USER_BY_ID, { id });
+export const loadUserById = (id: string, page: string) =>
+  action(UserTypes.LOAD_REQUEST_USER_BY_ID, { id, page });
 
 export const loadUserByEmail = (email: string) =>
   action(UserTypes.LOAD_REQUEST_USER_BY_EMAIL, { email });
