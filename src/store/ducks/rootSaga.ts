@@ -86,6 +86,12 @@ import {
   get as getLayout
 } from "./layout/sagas"
 
+import {MessageTypes} from "./message/types";
+import {
+  get as getMessage,
+  getMessageById
+} from "./message/sagas"
+
 import { UserTypes } from "./users/types";
 
 //import { CareTypes } from './cares/types';
@@ -302,5 +308,9 @@ export default function* rootSaga() {
 
     /** Layout */
     takeLatest(LayoutTypes.LOAD_REQUEST, getLayout),
+
+    /** Message */
+    takeLatest(MessageTypes.LOAD_REQUEST, getMessage),
+    takeLatest(MessageTypes.LOAD_REQUEST_MESSAGE_BY_ID, getMessageById),
   ]);
 }

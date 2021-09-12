@@ -78,7 +78,7 @@ export default function Configuration() {
 
         <br/>
         <Grid container>
-          <Grid item sm={4} md={12} lg={10}>
+          <Grid item sm={12} md={12} lg={12}>
             <Autocomplete
               id="combo-box-change-company"
               options={companies}
