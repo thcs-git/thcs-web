@@ -2066,6 +2066,62 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
                                         em salva.
                                       </Grid>
                                     )}
+
+                                    {(params.mode === 'linking' && !checkCompany) && (
+                                      <>
+                                        <Grid item md={12} xs={12} style={{display: 'flex', padding: '0 12px 12px 0'}}>
+                                          <Grid item md={3} xs={12}>
+                                            <FormControlLabel
+                                              control={<Checkbox color="primary" checked={linkChecked} onChange={() => (
+                                                setLinkChecked(!linkChecked)
+                                              )} name="link"/>}
+                                              label="Temporário"
+                                            />
+                                          </Grid>
+                                          {linkChecked && (
+                                            <Grid item md={9} xs={12}>
+                                              <TextField
+                                                id="link-end"
+                                                type="date"
+                                                size="small"
+                                                label="Vínculo até"
+                                                variant="outlined"
+                                                InputLabelProps={{
+                                                  shrink: true,
+                                                }}
+                                                onChange={e => setcompanyLink(e.target.value)}
+                                                value={companyLink}
+                                                fullWidth
+                                              />
+                                            </Grid>
+                                          )}
+
+                                          {((linkChecked && companyLink != '') || (!linkChecked)) && (
+                                          <Grid item md={12} xs={12} style={{padding: '0 12px 12px 0'}}>
+                                            <ButtonComponent background="success_rounded" onClick={() => engagedUser()}>
+                                              Vincular este prestador a minha empresa
+                                            </ButtonComponent>
+                                          </Grid>
+                                        )}
+                                        </Grid>
+                                      </>
+                                    )}
+                                    {(params.mode === 'link' && checkCompany && !engaged) && (
+
+                                    <Grid item md={12} xs={12}>
+                                      Este prestador já está vinculado a sua empresa com este perfil profissional,
+                                      caso queira desvinculá-lo <Link to='/user'> clique aqui</Link>.
+                                    </Grid>
+                                    )}
+                                    {(params.mode === 'link' && checkCompany && engaged) && (
+
+                                    <Grid item md={12} xs={12}>
+                                      Agora este prestador foi vinculado a sua empresa, para confirmar esta operação
+                                      click
+                                      em salva.
+                                    </Grid>
+                                    )}
+
                                     {(params.mode === 'view' && !engaged) && (
                                       <Grid item md={12} xs={12}>
                                         <ButtonComponent className={classes.cancel}
