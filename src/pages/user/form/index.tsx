@@ -2113,14 +2113,14 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
                                         </Grid>
                                       </>
                                     )}
-                                    {(params.mode === 'link' && checkCompany && !engaged) && (
+                                    {(params.mode === 'linking' && checkCompany && !engaged) && (
 
                                     <Grid item md={12} xs={12}>
                                       Este prestador já está vinculado a sua empresa com este perfil profissional,
                                       caso queira desvinculá-lo <Link to='/user'> clique aqui</Link>.
                                     </Grid>
                                     )}
-                                    {(params.mode === 'link' && checkCompany && engaged) && (
+                                    {(params.mode === 'linking' && checkCompany && engaged) && (
 
                                     <Grid item md={12} xs={12}>
                                       Agora este prestador foi vinculado a sua empresa, para confirmar esta operação
