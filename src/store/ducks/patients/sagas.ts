@@ -2,7 +2,7 @@ import { put, call } from "redux-saga/effects";
 import { toast } from "react-toastify";
 import { AxiosResponse } from "axios";
 
-import { apiSollar, googleMaps, viacep } from "../../../services/axios";
+import {apiIntegra, apiSollar, googleMaps, viacep} from "../../../services/axios";
 
 import {
   loadSuccess,
@@ -20,20 +20,21 @@ import {
   ViacepDataInterface,
   LoadRequestParams,
 } from "./types";
+import SESSIONSTORAGE from "../../../helpers/constants/sessionStorage";
 
 const token = localStorage.getItem("token");
 
 export function* get({ payload }: any) {
   const { params } = payload;
-
-  const response: AxiosResponse = yield call(
-    apiSollar.get,
-    `/patient?limit=${params.limit ?? 10}&page=${params.page || 1}${
-      params.search ? "&search=" + params.search : ""
-    }`
-  );
+  const integration = sessionStorage.getItem(SESSIONSTORAGE.INTEGRATION)
 
   try {
+    const response: AxiosResponse = yield call(
+      integration ? apiIntegra(integration).get:apiSollar.get,
+      `/patient?limit=${params.limit ?? 10}&page=${params.page || 1}${
+        params.search ? "&search=" + params.search : ""
+      }`
+    );
     yield put(loadSuccess(response.data));
   } catch (error) {
     yield put(loadFailure());
@@ -42,10 +43,23 @@ export function* get({ payload }: any) {
 
 export function* getPatientById({ payload: { id: _id } }: any) {
   try {
-    const response: AxiosResponse = yield call(apiSollar.get, `/patient`, {
-      headers: { token },
-      params: { _id },
-    });
+    let response: AxiosResponse
+    const integration = sessionStorage.getItem(SESSIONSTORAGE.INTEGRATION)
+
+    if (integration) {
+      response = yield call(
+        apiIntegra(integration),
+        `/patient/${_id}`, {
+      });
+    } else {
+      response = yield call(
+        apiSollar.get,
+        `/patient`, {
+        headers: { token },
+        params: { _id },
+      });
+    }
+
     yield put(loadSuccessGetPatientById(response.data));
   } catch (error) {
     yield put(loadFailure());

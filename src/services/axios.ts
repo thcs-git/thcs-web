@@ -10,6 +10,15 @@ export const apiSollar = axios.create({
   baseURL: process.env.REACT_APP_BASE_API,
 });
 
+export function apiIntegra(url: string) {
+  return axios.create(
+    {
+      baseURL: url,
+    }
+  )
+};
+
+
 export const ibge = axios.create({
   baseURL: process.env.REACT_APP_IBGE_API,
 });
@@ -29,7 +38,7 @@ apiSollar.interceptors.request.use(
 
     if (token) {
       config.headers.token = `${token}`;
-      config.headers.user = JSON.stringify({ id: user_id, username });
+      config.headers.user = JSON.stringify({id: user_id, username});
       config.headers.company_id = company_id;
       config.headers.customer_id = customer_id;
     }
@@ -49,7 +58,7 @@ apiSollar.interceptors.response.use(
   error => {
     if (!error.response) return;
 
-    const { err } = error.response.data;
+    const {err} = error.response.data;
     if (err?.name === 'TokenExpiredError') {
       localStorage.removeItem(LOCALSTORAGE.TOKEN);
       localStorage.setItem(LOCALSTORAGE.EXPIRED_SESSION, JSON.stringify(err));
@@ -61,7 +70,7 @@ apiSollar.interceptors.response.use(
 
 
 googleMaps.interceptors.request.use(function (config) {
-  config.params = { ...config.params, key: process.env.REACT_APP_GOOGLE_API_KEY };
+  config.params = {...config.params, key: process.env.REACT_APP_GOOGLE_API_KEY};
   return config;
 
 }, function (error) {

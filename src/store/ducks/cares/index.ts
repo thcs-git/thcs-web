@@ -1,8 +1,11 @@
-import { Reducer } from 'redux';
-import { CareState, CareTypes } from './types';
+import {Reducer} from 'redux';
+import {CareState, CareTypes} from './types';
 
 export const INITIAL_STATE: CareState = {
   data: {
+    mot_alta: '',
+    speciality: '',
+    tipo: '',
     health_insurance_id: '',
     health_plan_id: '',
     health_sub_plan_id: '',
@@ -18,6 +21,7 @@ export const INITIAL_STATE: CareState = {
     area_id: '',
     status: '', // Pre-Atendimento, Em atendimento, Cancelado, Finalizad,
     created_at: '',
+    dt_alta: '',
     updated_at: '',
   },
   list: {
@@ -54,9 +58,9 @@ export const INITIAL_STATE: CareState = {
 const reducer: Reducer<CareState> = (state = INITIAL_STATE, action) => {
   switch (action.type) {
     case CareTypes.LOAD_REQUEST:
-      return { ...state, loading: true, success: false, };
+      return {...state, loading: true, success: false,};
     case CareTypes.LOAD_PATIENT_REQUEST:
-      return { ...state, loading: true, success: false, };
+      return {...state, loading: true, success: false,};
     case CareTypes.SEARCH_PATIENT_SUCCESS:
       return {
         ...state,
@@ -192,7 +196,7 @@ const reducer: Reducer<CareState> = (state = INITIAL_STATE, action) => {
     case CareTypes.LOAD_SUCCESS_CARE_BY_ID:
       return {
         ...state,
-        data: { ...action.payload.data },
+        data: {...action.payload.data},
         loading: false,
         error: false,
         success: false,

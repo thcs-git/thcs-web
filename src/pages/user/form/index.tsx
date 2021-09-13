@@ -187,7 +187,14 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
       phone: '',
       cellphone: '',
       active: true,
-      created_by: {_id: localStorage.getItem(LOCALSTORAGE.USER_ID) || ''}
+      created_by: {_id: localStorage.getItem(LOCALSTORAGE.USER_ID) || ''},
+      phones: [{
+        cellnumber: "",
+        number: "",
+        telegram: false,
+        whatsapp: false,
+      }],
+      tipo: '',
     });
 
   const [customer, setCustomer] = useState<CustomerInterface>();
@@ -321,7 +328,7 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
   const currentC = window.localStorage.getItem(LOCALSTORAGE.CUSTOMER_NAME);
   useEffect(() => {
     if (params.id) {
-      dispatch(loadUserById(params.id));
+      dispatch(loadUserById(params.id, 'user'));
     } else {
       dispatch(cleanAction());
     }

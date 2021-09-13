@@ -21,6 +21,8 @@ export enum CustomerTypes {
 
   LOAD_REQUEST_PERMISSION = "@customer/LOAD_REQUEST_PERMISSION",
   LOAD_RESPONSE_PERMISSION = "@customer/LOAD_RESPONSE_PERMISSION",
+  CLEAN_PERMISSION = "@customer/CLEAN_PERMISSION",
+
   CREATE_PERMISSION_REQUEST = "@customer/CREATE_PERMISSION_REQUEST",
   CREATE_PERMISSION_SUCCESS = "@customer/CREATE_PERMISSION_SUCCESS",
   UPDATE_PERMISSION_REQUEST = "@customer/UPDATE_PERMISSION_REQUEST",
@@ -67,6 +69,7 @@ export interface CustomerInterface {
   cellphone?: string;
   phone?: string;
   responsible_user: string;
+  integration?: string;
 }
 
 export interface ViacepDataInterface {

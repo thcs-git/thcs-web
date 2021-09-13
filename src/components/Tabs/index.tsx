@@ -15,6 +15,9 @@ import UserContactForm from "../Inputs/Forms/UserContactForm";
 import UserProfessionForm from "../Inputs/Forms/UserProfessionForm";
 import UserForm from "../Inputs/Forms/UserForm";
 import UserCompanyForm from "../Inputs/Forms/UserCompanyForm";
+import CheckListForm from "../Inputs/Forms/CheckListForm";
+import CompanyForm from "../Inputs/Forms/CompanyForm";
+import PatientForm from "../Inputs/Forms/patientForm";
 
 
 interface ITabprops {
@@ -33,6 +36,8 @@ interface ITabprops {
   mode?: string;
   initialTab: number;
   params: IPageParams;
+  rowsPortal?: any;
+  rowsApp?: any;
 }
 
 interface IPageParams {
@@ -111,6 +116,8 @@ const TabForm = (props: ITabprops) => {
     mode,
     initialTab,
     params,
+    rowsPortal,
+    rowsApp,
   } = props;
 
   const classes = useStyles();
@@ -129,9 +136,32 @@ const TabForm = (props: ITabprops) => {
           setValidations={setValidations ? setValidations : () => false}
           fieldsValidation={fieldsValidation}
           canEdit={canEdit ? canEdit : false}
+          params={params}
         />
       case 'CepForm':
         return <CepForm
+          index={index}
+          state={state}
+          setState={setState ? setState : () => false}
+          setValidations={setValidations ? setValidations : () => false}
+          canEdit={canEdit ? canEdit : false}
+          cepStatus={cepStatus}
+          getAddress={getAddress}
+          params={params}
+        />
+      case 'CompanyForm':
+        return <CompanyForm
+          index={index}
+          state={state}
+          setState={setState ? setState : () => false}
+          setValidations={setValidations ? setValidations : () => false}
+          canEdit={canEdit ? canEdit : false}
+          cepStatus={cepStatus}
+          getAddress={getAddress}
+          params={params}
+        />
+      case 'PatientForm':
+        return <PatientForm
           index={index}
           state={state}
           setState={setState ? setState : () => false}
@@ -182,11 +212,24 @@ const TabForm = (props: ITabprops) => {
           fieldsValidation={fieldsValidation}
           canEdit={canEdit ? canEdit : false}
           user={user}
+          params={params}
         />
       case 'PermissionList':
         return <PermissionList
           customerState={customerState}
           mode={mode ? mode : ''}
+        />
+      case 'CheckListFormPortal':
+        return <CheckListForm
+          state={state}
+          setState={setState}
+          rows={rowsPortal}
+        />
+      case 'CheckListFormApp':
+        return <CheckListForm
+          state={state}
+          setState={setState}
+          rows={rowsApp}
         />
       case 'ToggleActive':
         return <ToggleActive
@@ -198,6 +241,9 @@ const TabForm = (props: ITabprops) => {
       case 'IntegrationForm':
         return <IntegrationForm
           index={index}
+          state={state}
+          setState={setState ? setState : () => false}
+          canEdit={canEdit ? canEdit : false}
         />
       default:
         return <TabBodyItem>Not found!</TabBodyItem>

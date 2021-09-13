@@ -1,6 +1,6 @@
-import { put, call } from "redux-saga/effects";
-import { toast } from "react-toastify";
-import { AxiosResponse } from "axios";
+import {put, call} from "redux-saga/effects";
+import {toast} from "react-toastify";
+import {AxiosResponse} from "axios";
 
 import LOCALSTORAGE from "../../../helpers/constants/localStorage";
 
@@ -37,26 +37,33 @@ import {
   deleteScheduleSuccess,
 } from "./actions";
 
-import { apiSollar } from "../../../services/axios";
+import {apiIntegra, apiSollar} from "../../../services/axios";
 
-import { handleCompanySelected } from "../../../helpers/localStorage";
+import {handleCompanySelected} from "../../../helpers/localStorage";
+import SESSIONSTORAGE from "../../../helpers/constants/sessionStorage";
 
 const token = localStorage.getItem("token");
 
-export function* get({ payload }: any) {
+export function* get({payload}: any) {
   try {
-    const { params } = payload;
-
-    console.log(`/attendance/getAttendance?limit=${params.limit ?? 10}&page=${
-      params.page || 1
-    }${params.search ? "&search=" + params.search : ""}${params.status ? "&status=" + params.status : ""}${params.patient_id ? "&patient_id=" + params.patient_id : ""}`)
-
-    const response: AxiosResponse = yield call(
-      apiSollar.get,
-      `/attendance/getAttendance?limit=${params.limit ?? 10}&page=${
-        params.page || 1
-      }${params.search ? "&search=" + params.search : ""}${params.status ? "&status=" + params.status : ""}${params.patient_id ? "&patient_id=" + params.patient_id : ""}`
-    );
+    const {params} = payload;
+    let response: AxiosResponse
+    const integration = sessionStorage.getItem(SESSIONSTORAGE.INTEGRATION)
+    console.log('here')
+    if (integration) {
+      response = yield call(
+        apiIntegra(integration),
+        `/attendance?limit=${params.limit ?? 10}&page=${
+          params.page || 1}`
+      );
+    } else {
+      response = yield call(
+        apiSollar.get,
+        `/attendance/getAttendance?limit=${params.limit ?? 10}&page=${
+          params.page || 1
+        }${params.search ? "&search=" + params.search : ""}${params.status ? "&status=" + params.status : ""}${params.patient_id ? "&patient_id=" + params.patient_id : ""}`
+      );
+    }
 
     yield put(searchCareSuccess(response.data));
   } catch (error) {
@@ -65,19 +72,27 @@ export function* get({ payload }: any) {
   }
 }
 
-export function* getPopUp({ payload }: any) {
+export function* getPopUp({payload}: any) {
   try {
-    const { params } = payload;
+    const {params} = payload;
+    let response: AxiosResponse
+    const integration = sessionStorage.getItem(SESSIONSTORAGE.INTEGRATION)
 
-    // console.log(`/attendance/getAttendance?limit=${params.limit ?? 10}&page=${
-    //   params.page || 1
-    // }${params.search ? "&search=" + params.search : ""}${params.status ? "&status=" + params.status : ""}${params.patient_id ? "&patient_id=" + params.patient_id : ""}`)
-    const response: AxiosResponse = yield call(
-      apiSollar.get,
-      `/attendance/getAttendance?limit=${params.limit ?? 10}&page=${
-        params.page || 1
-      }${params.search ? "&search=" + params.search : ""}${params.status ? "&status=" + params.status : ""}${params.patient_id ? "&patient_id=" + params.patient_id : ""}`
-    );
+    if (integration) {
+      response = yield call(
+        apiSollar.get,
+        `/attendance/getAttendance?limit=${params.limit ?? 10}&page=${
+          params.page || 1
+        }${params.search ? "&search=" + params.search : ""}${params.status ? "&status=" + params.status : ""}${params.patient_id ? "&patient_id=" + params.patient_id : ""}`
+      );
+    } else {
+      response = yield call(
+        apiSollar.get,
+        `/attendance/getAttendance?limit=${params.limit ?? 10}&page=${
+          params.page || 1
+        }${params.search ? "&search=" + params.search : ""}${params.status ? "&status=" + params.status : ""}${params.patient_id ? "&patient_id=" + params.patient_id : ""}`
+      );
+    }
 
     yield put(searchPatientSuccess(response.data));
   } catch (error) {
@@ -87,21 +102,34 @@ export function* getPopUp({ payload }: any) {
 }
 
 
-export function* search({ payload }: any) {
+export function* search({payload}: any) {
   try {
-    const { params } = payload;
+    const {params} = payload;
     const searchParams = params;
+
+    let response: AxiosResponse
+    const integration = sessionStorage.getItem(SESSIONSTORAGE.INTEGRATION)
 
     delete searchParams.limit;
     delete searchParams.page;
 
-    const response: AxiosResponse = yield call(
-      apiSollar.get,
-      `/attendance/getAttendance?limit=${params.limit ?? 10}&page=${
-        params.page || 1
-      }`,
-      { params: searchParams }
-    );
+    if (integration) {
+      response = yield call(
+        apiIntegra(integration),
+        `/attendance?limit=${params.limit ?? 10}&page=${
+          params.page || 1
+        }`,
+        {params: searchParams}
+      );
+    } else {
+      response = yield call(
+        apiSollar.get,
+        `/attendance/getAttendance?limit=${params.limit ?? 10}&page=${
+          params.page || 1
+        }`,
+        {params: searchParams}
+      );
+    }
 
     yield put(loadSuccess(response.data));
   } catch (error) {
@@ -110,12 +138,22 @@ export function* search({ payload }: any) {
   }
 }
 
-export function* getCareById({ payload: { id: _id } }: any) {
+export function* getCareById({payload: {id: _id}}: any) {
   try {
-    const response: AxiosResponse = yield call(apiSollar.get, `/care`, {
-      headers: { token },
-      params: { _id },
-    });
+    let response: AxiosResponse
+    const integration = sessionStorage.getItem(SESSIONSTORAGE.INTEGRATION)
+
+    if (integration) {
+      response = yield call(
+        apiIntegra(integration),
+        `/attendance/${_id}`, {
+        });
+    } else {
+      response = yield call(apiSollar.get, `/care`, {
+        headers: {token},
+        params: {_id},
+      });
+    }
 
     yield put(loadSuccessGetCareById(response.data));
   } catch (error) {
@@ -123,7 +161,7 @@ export function* getCareById({ payload: { id: _id } }: any) {
   }
 }
 
-export function* createCare({ payload: { data } }: any) {
+export function* createCare({payload: {data}}: any) {
   try {
     const company = handleCompanySelected();
 
@@ -135,7 +173,7 @@ export function* createCare({ payload: { data } }: any) {
       apiSollar.post,
       `/care/store`,
       data,
-      { headers: { token } }
+      {headers: {token}}
     );
 
     yield put(createCareSuccess(response.data));
@@ -147,16 +185,16 @@ export function* createCare({ payload: { data } }: any) {
   }
 }
 
-export function* updateCare({ payload: { data } }: any) {
-  const { _id } = data;
+export function* updateCare({payload: {data}}: any) {
+  const {_id} = data;
 
   try {
     console.log(data);
     const response: AxiosResponse = yield call(
       apiSollar.put,
       `/care/${_id}/update`,
-      { ...data },
-      { headers: { token } }
+      {...data},
+      {headers: {token}}
     );
 
     toast.success("Atendimento atualizado com sucesso!");
@@ -176,7 +214,7 @@ export function* getDocumentGroupSocioAmbiental() {
     const response: AxiosResponse = yield call(
       apiSollar.get,
       `/documentsgroup?limit=1&page=1`,
-      { params: { _id: "5ffd79012f5d2b1d8ff6bea3" } }
+      {params: {_id: "5ffd79012f5d2b1d8ff6bea3"}}
     );
 
     yield put(actionDocumentGroupSocioAmbiental(response.data));
@@ -186,7 +224,7 @@ export function* getDocumentGroupSocioAmbiental() {
   }
 }
 
-export function* getDocumentSocioAmbiental({ payload }: any) {
+export function* getDocumentSocioAmbiental({payload}: any) {
   try {
     const searchParams = {
       ...payload,
@@ -199,7 +237,7 @@ export function* getDocumentSocioAmbiental({ payload }: any) {
     const response: AxiosResponse = yield call(
       apiSollar.get,
       `/documents?limit=${payload?.limit || 10}&page=${payload?.page || 1}`,
-      { params: searchParams }
+      {params: searchParams}
     );
 
     const data = response.data?.data ? response.data.data[0] : response.data;
@@ -212,12 +250,12 @@ export function* getDocumentSocioAmbiental({ payload }: any) {
   }
 }
 
-export function* storeDocumentSocioAmbiental({ payload }: any) {
+export function* storeDocumentSocioAmbiental({payload}: any) {
   try {
     const response: AxiosResponse = yield call(
       apiSollar.post,
       `/documents/store`,
-      { ...payload, document_group_id: "5ffd79012f5d2b1d8ff6bea3" }
+      {...payload, document_group_id: "5ffd79012f5d2b1d8ff6bea3"}
     );
 
     yield put(actionDocumentSocioAmbientalStore(response.data));
@@ -227,9 +265,9 @@ export function* storeDocumentSocioAmbiental({ payload }: any) {
   }
 }
 
-export function* updateDocumentSocioAmbiental({ payload }: any) {
+export function* updateDocumentSocioAmbiental({payload}: any) {
   try {
-    const { _id } = payload;
+    const {_id} = payload;
 
     console.log("payload", payload);
 
@@ -238,7 +276,7 @@ export function* updateDocumentSocioAmbiental({ payload }: any) {
     const response: AxiosResponse = yield call(
       apiSollar.put,
       `/documents/${_id}/update`,
-      { ...payload }
+      {...payload}
     );
 
     yield put(actionDocumentSocioAmbientalUpdate(response.data));
@@ -257,7 +295,7 @@ export function* getDocumentGroupAbemid() {
     const response: AxiosResponse = yield call(
       apiSollar.get,
       `/documentsgroup?limit=1&page=1`,
-      { params: { _id: "5ffd7acd2f5d2b1d8ff6bea4" } }
+      {params: {_id: "5ffd7acd2f5d2b1d8ff6bea4"}}
     );
 
     yield put(actionDocumentGroupAbemid(response.data));
@@ -267,7 +305,7 @@ export function* getDocumentGroupAbemid() {
   }
 }
 
-export function* getDocumentAbemid({ payload }: any) {
+export function* getDocumentAbemid({payload}: any) {
   try {
     const searchParams = {
       ...payload,
@@ -280,7 +318,7 @@ export function* getDocumentAbemid({ payload }: any) {
     const response: AxiosResponse = yield call(
       apiSollar.get,
       `/documents?limit=${payload?.limit || 10}&page=${payload?.page || 1}`,
-      { params: searchParams }
+      {params: searchParams}
     );
 
     const data = response.data?.data ? response.data.data[0] : response.data;
@@ -293,12 +331,12 @@ export function* getDocumentAbemid({ payload }: any) {
   }
 }
 
-export function* storeDocumentAbemid({ payload }: any) {
+export function* storeDocumentAbemid({payload}: any) {
   try {
     const response: AxiosResponse = yield call(
       apiSollar.post,
       `/documents/store`,
-      { ...payload, document_group_id: "5ffd7acd2f5d2b1d8ff6bea4" }
+      {...payload, document_group_id: "5ffd7acd2f5d2b1d8ff6bea4"}
     );
 
     yield put(actionDocumentAbemidStore(response.data));
@@ -308,9 +346,9 @@ export function* storeDocumentAbemid({ payload }: any) {
   }
 }
 
-export function* updateDocumentAbemid({ payload }: any) {
+export function* updateDocumentAbemid({payload}: any) {
   try {
-    const { _id } = payload;
+    const {_id} = payload;
 
     console.log("payload", payload);
 
@@ -319,7 +357,7 @@ export function* updateDocumentAbemid({ payload }: any) {
     const response: AxiosResponse = yield call(
       apiSollar.put,
       `/documents/${_id}/update`,
-      { ...payload }
+      {...payload}
     );
 
     yield put(actionDocumentAbemidUpdate(response.data));
@@ -338,7 +376,7 @@ export function* getDocumentGroupNead() {
     const response: AxiosResponse = yield call(
       apiSollar.get,
       `/documentsgroup?limit=1&page=1`,
-      { params: { _id: "5ff65469b4d4ac07d186e99f" } }
+      {params: {_id: "5ff65469b4d4ac07d186e99f"}}
     );
 
     yield put(actionDocumentGroupNead(response.data));
@@ -348,7 +386,7 @@ export function* getDocumentGroupNead() {
   }
 }
 
-export function* getDocumentNead({ payload }: any) {
+export function* getDocumentNead({payload}: any) {
   try {
     const searchParams = {
       ...payload,
@@ -361,7 +399,7 @@ export function* getDocumentNead({ payload }: any) {
     const response: AxiosResponse = yield call(
       apiSollar.get,
       `/documents?limit=${payload?.limit || 10}&page=${payload?.page || 1}`,
-      { params: searchParams }
+      {params: searchParams}
     );
 
     const data = response.data?.data ? response.data.data[0] : response.data;
@@ -374,12 +412,12 @@ export function* getDocumentNead({ payload }: any) {
   }
 }
 
-export function* storeDocumentNead({ payload }: any) {
+export function* storeDocumentNead({payload}: any) {
   try {
     const response: AxiosResponse = yield call(
       apiSollar.post,
       `/documents/store`,
-      { ...payload, document_group_id: "5ff65469b4d4ac07d186e99f" }
+      {...payload, document_group_id: "5ff65469b4d4ac07d186e99f"}
     );
 
     yield put(actionDocumentNeadStore(response.data));
@@ -389,9 +427,9 @@ export function* storeDocumentNead({ payload }: any) {
   }
 }
 
-export function* updateDocumentNead({ payload }: any) {
+export function* updateDocumentNead({payload}: any) {
   try {
-    const { _id } = payload;
+    const {_id} = payload;
 
     console.log("payload", payload);
 
@@ -400,7 +438,7 @@ export function* updateDocumentNead({ payload }: any) {
     const response: AxiosResponse = yield call(
       apiSollar.put,
       `/documents/${_id}/update`,
-      { ...payload }
+      {...payload}
     );
 
     yield put(actionDocumentNeadUpdate(response.data));
@@ -412,7 +450,7 @@ export function* updateDocumentNead({ payload }: any) {
 
 export function* getHealthInsurance() {
   try {
-    const { data }: AxiosResponse = yield call(
+    const {data}: AxiosResponse = yield call(
       apiSollar.get,
       "/healthinsurance"
     );
@@ -425,11 +463,11 @@ export function* getHealthInsurance() {
   }
 }
 
-export function* getHealthPlan({ payload }: any) {
-  const { id } = payload;
+export function* getHealthPlan({payload}: any) {
+  const {id} = payload;
 
   try {
-    const { data }: AxiosResponse = yield call(
+    const {data}: AxiosResponse = yield call(
       apiSollar.get,
       `/healthplan?health_insurance_id=${id}`
     );
@@ -442,11 +480,11 @@ export function* getHealthPlan({ payload }: any) {
   }
 }
 
-export function* getHealthSubPlan({ payload }: any) {
-  const { id } = payload;
+export function* getHealthSubPlan({payload}: any) {
+  const {id} = payload;
 
   try {
-    const { data }: AxiosResponse = yield call(
+    const {data}: AxiosResponse = yield call(
       apiSollar.get,
       `/healthsubplan?health_plan_id=${id}`
     );
@@ -461,7 +499,7 @@ export function* getHealthSubPlan({ payload }: any) {
 
 export function* getAccommodationType() {
   try {
-    const { data }: AxiosResponse = yield call(
+    const {data}: AxiosResponse = yield call(
       apiSollar.get,
       `/accomodationtype`
     );
@@ -476,7 +514,7 @@ export function* getAccommodationType() {
 
 export function* getCareType() {
   try {
-    const { data }: AxiosResponse = yield call(apiSollar.get, `/caretype`);
+    const {data}: AxiosResponse = yield call(apiSollar.get, `/caretype`);
 
     yield put(careTypeSuccess(data.data));
   } catch (error) {
@@ -486,11 +524,11 @@ export function* getCareType() {
   }
 }
 
-export function* searchCid({ payload }: any) {
-  const { cid } = payload;
+export function* searchCid({payload}: any) {
+  const {cid} = payload;
 
   try {
-    const { data }: AxiosResponse = yield call(
+    const {data}: AxiosResponse = yield call(
       apiSollar.get,
       `/cid?search=${cid}`
     );
@@ -503,11 +541,11 @@ export function* searchCid({ payload }: any) {
   }
 }
 
-export function* getDocumentById({ payload }: any) {
-  const { id } = payload;
+export function* getDocumentById({payload}: any) {
+  const {id} = payload;
 
   try {
-    const { data }: AxiosResponse = yield call(
+    const {data}: AxiosResponse = yield call(
       apiSollar.get,
       `/documents?_id=${id}`
     );
@@ -520,9 +558,9 @@ export function* getDocumentById({ payload }: any) {
   }
 }
 
-export function* getSchedule({ payload }: any) {
+export function* getSchedule({payload}: any) {
   try {
-    const { data }: AxiosResponse = yield call(apiSollar.get, `/schedule`, {
+    const {data}: AxiosResponse = yield call(apiSollar.get, `/schedule`, {
       ...payload,
     });
 
@@ -534,13 +572,13 @@ export function* getSchedule({ payload }: any) {
   }
 }
 
-export function* storeSchedule({ payload }: any) {
+export function* storeSchedule({payload}: any) {
   try {
     delete payload.exchange;
-    const { data }: AxiosResponse = yield call(
+    const {data}: AxiosResponse = yield call(
       apiSollar.post,
       `/schedule/store`,
-      { ...payload }
+      {...payload}
     );
 
     yield put(createScheduleSuccess(data));
@@ -553,9 +591,9 @@ export function* storeSchedule({ payload }: any) {
   }
 }
 
-export function* updateSchedule({ payload }: any) {
+export function* updateSchedule({payload}: any) {
   try {
-    const { _id, ...scheduleData } = payload;
+    const {_id, ...scheduleData} = payload;
     console.log(scheduleData);
 
     scheduleData.user_id = scheduleData.user_id._id;
@@ -574,10 +612,10 @@ export function* updateSchedule({ payload }: any) {
       );
     }
 
-    const { data }: AxiosResponse = yield call(
+    const {data}: AxiosResponse = yield call(
       apiSollar.put,
       `/schedule/${_id}/update`,
-      { ...scheduleData }
+      {...scheduleData}
     );
 
     // yield put(updateScheduleSuccess(data));
@@ -590,12 +628,12 @@ export function* updateSchedule({ payload }: any) {
   }
 }
 
-export function* deleteSchedule({ payload }: any) {
+export function* deleteSchedule({payload}: any) {
   try {
-    const { data }: AxiosResponse = yield call(
+    const {data}: AxiosResponse = yield call(
       apiSollar.delete,
       `/schedule/${payload.id}/delete`,
-      { params: { type: payload?.type } }
+      {params: {type: payload?.type}}
     );
 
     yield put(deleteScheduleSuccess(data));
