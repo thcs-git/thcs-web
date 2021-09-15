@@ -212,6 +212,7 @@ export default function PatientForm(props: RouteComponentProps<IPageParams>) {
   })
 
   const [state, setState] = useState<PatientInterface>({
+    social_status: false,
     companies: [], //empresa que vai vir do login
     name: '',
     social_name: '',

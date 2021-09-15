@@ -122,12 +122,12 @@ const Routes = () => (
 
 
       {/* Patient */}
-      <PrivateRoute path="/patient" component={PatientList} exact />
-      <PrivateRoute path="/patient/:id/:mode/:callback/:callback_id" component={PatientForm} />
-      <PrivateRoute path="/patient/:id/:mode" component={PatientForm} />
-      <PrivateRoute path="/patient/create" component={PatientForm} />
       <PrivateRoute path="/patient/capture/create" component={PatientCaptureCreate} />
-      <PrivateRoute path="/patient/capture/:id/overview" component={PatientCaptureOverview} />
+      <PrivateRoute path="/patient/capture/:id/overview" component={PatientCaptureOverview}/>
+      <PrivateRoute path="/patient" component={PatientList} exact />
+      <PrivateRoute path="/patient/:id/:mode/:callback/:callback_id" component={PatientForm} exact />
+      <PrivateRoute path="/patient/:id/:mode" component={PatientForm} />
+      <PrivateRoute path="/patient/create" component={PatientForm} exact />
 
       <PrivateRoute path="/patient/capture/:id/nead" component={PatientCaptureNead} exact />
       <PrivateRoute path="/patient/capture/:id/nead/:documentId" component={PatientCaptureNead} />

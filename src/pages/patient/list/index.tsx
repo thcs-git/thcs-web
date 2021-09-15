@@ -233,7 +233,7 @@ export default function PatientList() {
                     </TableCell>
                     <TableCell align="left">
                       <Link key={index}
-                            to={`/patient/${patient?._id}/view`}>{patient.name}</Link>
+                            to={`/patient/${patient?._id}/view`}>{patient.social_status ? patient.social_name : patient.name}</Link>
                     </TableCell>
                     <TableCell align="center">{formatDate(patient.birthdate, 'DD/MM/YYYY')}</TableCell>
                     <TableCell align="center">{patient.fiscal_number ? patient.fiscal_number : '-'}</TableCell>
