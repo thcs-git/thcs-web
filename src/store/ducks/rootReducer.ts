@@ -16,6 +16,7 @@ import patients from "./patients";
 import users from "./users";
 import profession from "./professions";
 import layout from "./layout"
+import sidebar from "./sidebar";
 
 export default combineReducers<IInitialState>({
   areas,
@@ -31,4 +32,5 @@ export default combineReducers<IInitialState>({
   users,
   profession,
   layout,
+  sidebar,
 });

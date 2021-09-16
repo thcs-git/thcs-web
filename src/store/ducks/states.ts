@@ -41,6 +41,9 @@ import { UnconfirmedUserState } from "./unconfirmeduser/types";
 import { INITIAL_STATE as INITIAL_STATE_LAYOUT } from "./layout";
 import { LayoutState, LayoutTypes } from "./layout/types";
 
+import { INITIAL_MODIFY_SIDEBAR } from "./sidebar";
+import { SidebarInterface } from "./sidebar/types";
+
 /**
  * Initial state tree interface
  */
@@ -58,6 +61,7 @@ export interface IInitialState {
   users: Readonly<UserState>;
   profession: Readonly<ProfessionState>;
   layout: Readonly<LayoutState>;
+  sidebar: Readonly<SidebarInterface>;
 }
 
 /**
@@ -77,4 +81,5 @@ export const InitialState: IInitialState = {
   users: INITIAL_STATE_USER,
   profession: INITIAL_STATE_PROFESSION,
   layout: INITIAL_STATE_LAYOUT,
+  sidebar: INITIAL_MODIFY_SIDEBAR,
 };
