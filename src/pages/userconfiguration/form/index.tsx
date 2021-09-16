@@ -45,6 +45,7 @@ import ButtonComponent from '../../../components/Button';
 import Sidebar_menu from '../../../components/Sidebar_menu';
 import _ from "lodash";
 import {loadRequest} from "../../../store/ducks/layout/actions";
+import SESSIONSTORAGE from "../../../helpers/constants/sessionStorage";
 
 export default function UserConfiguration() {
   const history = useHistory();
@@ -128,6 +129,14 @@ export default function UserConfiguration() {
       localStorage.setItem(LOCALSTORAGE.COMPANY_NAME, company.companie_id.name);
       localStorage.setItem(LOCALSTORAGE.CUSTOMER, company.companie_id.customer_id._id);
       localStorage.setItem(LOCALSTORAGE.CUSTOMER_NAME, company.companie_id.customer_id.name);
+
+      if (company.companie_id.customer_id.integration) {
+        sessionStorage.setItem(SESSIONSTORAGE.INTEGRATION, company.companie_id.customer_id.integration);
+        localStorage.setItem(LOCALSTORAGE.INTEGRATION_COMPANY_SELECTED, company.companie_id.id);
+      } else {
+        sessionStorage.removeItem(SESSIONSTORAGE.INTEGRATION);
+        localStorage.removeItem(LOCALSTORAGE.INTEGRATION_COMPANY_SELECTED);
+      }
 
       dispatch(loadRequest())
 

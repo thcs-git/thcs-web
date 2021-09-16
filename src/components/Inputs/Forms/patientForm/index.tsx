@@ -11,6 +11,7 @@ import {SwitchComponent as Switch} from "../../../../styles/components/Switch";
 import ViewCard from "../../../Card/ViewCard";
 import InfoRoundedIcon from "@material-ui/icons/InfoRounded";
 import _ from 'lodash';
+import {formatDate} from "../../../../helpers/date";
 
 
 interface IComponent {
@@ -45,7 +46,7 @@ const PatientForm = (props: IComponent) => {
   state.email && rows.push({name: "Email", value: state.email})
   state.gender && rows.push({name: "Gênero", value: state.gender})
   state.marital_status && rows.push({name: "Estado Civil", value: state.marital_status})
-  state.birthdate && rows.push({name: "Data de Nascimento", value: state.birthdate})
+  state.birthdate && rows.push({name: "Data de Nascimento", value: formatDate(state.birthdate, 'DD-MM-YYYY')})
   state.blood_type && rows.push({name: "tipo Sanguíneo", value: state.blood_type})
   state.nr_cpf && rows.push({name: "CPF", value: state.nr_cpf})
   state.profissao && rows.push({name: "Profissão", value: state.profissao})
@@ -69,7 +70,7 @@ const PatientForm = (props: IComponent) => {
   state.address?.state?.length > 0 && rows.push({name: "UF", value: state.address.state})
 
   const content = {
-    tittle: state.social_name,
+    tittle: state.social_status ? state.social_status : state.name,
     // icon: <InfoRoundedIcon style={{color: "#ffffff"}}/>,
     rows: rows
   }

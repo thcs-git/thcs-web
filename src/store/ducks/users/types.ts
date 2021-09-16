@@ -133,6 +133,7 @@ export interface UserListItems {
   specialties: SpecialtiesUserInterface[];
   active: boolean;
   fiscal_number: string;
+  username?: string;
 }
 
 export interface UserInterface {

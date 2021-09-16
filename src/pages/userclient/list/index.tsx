@@ -128,6 +128,7 @@ export default function UserClientList() {
             <Table
               tableCells={[
                 {name: 'Prestador', align: 'left',},
+                {name: 'Usuário', align: 'left',},
                 {name: 'CPF', align: 'left'},
                 {name: 'Função', align: 'left'},
                 {name: 'Especialidades', align: 'left'},
@@ -137,6 +138,9 @@ export default function UserClientList() {
                 <TableRow key={`user_${index}`}>
                   <TableCell align="left">
                     <Link key={index} to={`/userclient/${user._id}/view`}>{user?.name}</Link>
+                  </TableCell>
+                  <TableCell align="left">
+                    <Link key={index} to={`/userclient/${user._id}/view`}>{user?.username}</Link>
                   </TableCell>
                   <TableCell>
                     {handleEmpty(handleCpf(user?.fiscal_number))}
