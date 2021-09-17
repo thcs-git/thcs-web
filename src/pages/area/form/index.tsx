@@ -51,7 +51,9 @@ import _ from 'lodash';
 import { BoxCustom } from '../../customer/form/styles';
 import { Edit } from '@material-ui/icons';
 
-import {SidebarInterface} from "../../../store/ducks/sidebar/types"
+import {SidebarTypes} from "../../../store/ducks/sidebar/types";
+import { INITIAL_MODIFY_SIDEBAR } from '../../../store/ducks/sidebar';
+import { setModifySidebarArea } from '../../../store/ducks/sidebar/actions';
 
 interface IFormFields extends AreaInterface {
   form?: {
@@ -411,7 +413,7 @@ export default function AreaForm(props: RouteComponentProps<IPageParams>) {
   /////////////////////// Modification Tests /////////////////////////////////////////////
   function isEquals(){
     let areaS = {...areaState.data, form:{...state.form}};
-    return _.isEqual(state,areaS);
+    return _.isEqual(state , areaS);
   }
 
   function ModifiCondition(){
@@ -619,6 +621,12 @@ export default function AreaForm(props: RouteComponentProps<IPageParams>) {
     }))
     }
 
+  }
+
+  function handleModifySidebar () {
+      if(ModifiCondition() === true){
+          setOpenModalCancel(true)
+      }
   }
 
   return (
