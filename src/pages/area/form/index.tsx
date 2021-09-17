@@ -51,6 +51,7 @@ import _ from 'lodash';
 import { BoxCustom } from '../../customer/form/styles';
 import { Edit } from '@material-ui/icons';
 
+import {SidebarInterface} from "../../../store/ducks/sidebar/types"
 
 interface IFormFields extends AreaInterface {
   form?: {
