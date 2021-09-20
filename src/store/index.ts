@@ -19,6 +19,7 @@ import { LayoutState } from "./ducks/layout/types";
 import { InitialState } from "./ducks/states";
 import combinedReducers from "./ducks/rootReducer";
 import rootSaga from "./ducks/rootSaga";
+import { SidebarInterface } from "./ducks/sidebar/types";
 
 export interface ApplicationState {
   areas: AreaState;
@@ -35,6 +36,7 @@ export interface ApplicationState {
   users: UserState;
   profession: ProfessionState;
   layout: LayoutState;
+  sidebar: SidebarInterface;
 }
 
 const sagaMiddleware = createSagaMiddleware();

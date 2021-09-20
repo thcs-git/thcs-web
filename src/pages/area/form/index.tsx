@@ -413,19 +413,22 @@ export default function AreaForm(props: RouteComponentProps<IPageParams>) {
   /////////////////////// Modification Tests /////////////////////////////////////////////
   function isEquals(){
     let areaS = {...areaState.data, form:{...state.form}};
+    console.log('isEqual::',_.isEqual(state, areaS))
     return _.isEqual(state , areaS);
   }
 
   function ModifiCondition(){
     if(params.mode === "edit" && !isEquals()){
+      console.log('Modifi: true')
       return true;
     }else{
+      console.log('Modifi: false')
       return false;
     }
   }
 
-  /////////////////////////////Modification Tests  ////////////////////////////////////////
-  function handleOpenModalCancel() {
+  ///////////////////////////// Modification Tests  ////////////////////////////////////////
+  function handleOpenModalCancel() { console.log('cheguei aqui - tarcisio')
     if(ModifiCondition()){
      setOpenModalCancel(true);
     }

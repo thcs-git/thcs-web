@@ -65,8 +65,10 @@ import SESSIONSTORAGE from "../../helpers/constants/sessionStorage";
 import {toast} from "react-toastify";
 import _ from 'lodash';
 import {loadRequest} from "../../store/ducks/layout/actions";
+import {SidebarInterface} from "../../store/ducks/sidebar/types";
 
 const drawerWidth = 270;
+
 
 // const itemsMenu = [
 //   menu.map((item: any) => {
@@ -357,6 +359,45 @@ const Sibebar = (props: Props<any>) => {
   //     setItemsMenu(items)
   //   }
   // }, []);
+  const sidebar = useSelector((state: ApplicationState) => state.sidebar);
+
+  const [openModalCancel, setOpenModalCancel] = useState(false);
+
+
+  function openPopUp(item: any){
+  return (
+    <>
+    <Dialog
+    open={openModalCancel}
+    aria-labelledby="alert-dialog-title"
+    aria-namedby="alert-dialog-description"
+    >
+    <DialogTitle id="alert-dialog-title">Atenção</DialogTitle>
+    <DialogContent>
+      <DialogContentText id="alert-dialog-description">
+        Você editou alguns campos neste cadastro. Deseja realmente descartar as alterações?
+      </DialogContentText>
+    </DialogContent>
+    <DialogActions>
+      <Button color="primary">
+        Não
+      </Button>
+      <Button onClick={() => history.push(item.route)} color="secondary" autoFocus>
+        Sim
+      </Button>
+    </DialogActions>
+  </Dialog>
+
+  </>
+  )}
+
+  function modifySidebar () {
+    switch (sidebar) {
+      case areaEdit :
+        openPopUp(item)
+        break;
+    }
+  }
 
   return (
     <div className={classes.root}>
