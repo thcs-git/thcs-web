@@ -65,7 +65,7 @@ import SESSIONSTORAGE from "../../helpers/constants/sessionStorage";
 import {toast} from "react-toastify";
 import _ from 'lodash';
 import {loadRequest} from "../../store/ducks/layout/actions";
-import {SidebarInterface} from "../../store/ducks/sidebar/types";
+import {SidebarInterface, SidebarTypes} from "../../store/ducks/sidebar/types";
 
 const drawerWidth = 270;
 
@@ -360,7 +360,6 @@ const Sibebar = (props: Props<any>) => {
   //   }
   // }, []);
   const sidebar = useSelector((state: ApplicationState) => state.sidebar);
-
   const [openModalCancel, setOpenModalCancel] = useState(false);
 
 
@@ -387,15 +386,15 @@ const Sibebar = (props: Props<any>) => {
       </Button>
     </DialogActions>
   </Dialog>
-
   </>
   )}
 
-  function modifySidebar () {
-    switch (sidebar) {
-      case areaEdit :
-        openPopUp(item)
-        break;
+  function modifySidebar (item : any) {
+    if (!sidebar.areaEdit){
+      openPopUp(item)
+      history.push(item.route)
+    } else {
+      history.push(item.route)
     }
   }
 
