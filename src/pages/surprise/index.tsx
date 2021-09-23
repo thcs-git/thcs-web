@@ -25,7 +25,7 @@ export default function Surprise(props: RouteComponentProps<IPageParams>) {
                 <br/><br/>Amiga, tu és um ser admirável (sim, tudo que Bruno já te falou é consenso entre nós), rica em amor, sensibilidade, uma luz que irradia e dedicação aos que ama. O Universo está vibrando em alegria porque é teu aniversário, mais uma volta ao Sol, o encerramento de um ciclo bem vivido e cheio de aprendizados. E, o que seria de nós se não conseguíssemos aprender, amar e sofrer durante nossa trajetória na Terra? Você é evolução constante, amiga.
                 <br/><br/>Somos muito gratos em te ter presente em nossa vida. Obrigadx por tudo e feliz novo ciclo!
 
-                <br/><br/>Te amamos, coisa linda
+                <br/><br/>Te amamos, coisa linda 💙
 
                 <br/><br/>Grupo BBB.
               </h1>
