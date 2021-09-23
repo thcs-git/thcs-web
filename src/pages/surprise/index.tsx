@@ -17,10 +17,17 @@ export default function Surprise(props: RouteComponentProps<IPageParams>) {
       <Wrapper>
         {params.mode === 'message' ? (
           <>
-            <div style={{display: 'flex', flexDirection: 'column', alignItems: 'center'}}>
+            <div style={{display: 'flex', flexDirection: 'column', alignItems: 'center', padding: '100px'}}>
               <h1 style={{color: 'var(--white)', paddingBottom: '50px'}}>Feliz Aniversário</h1>
               <h1 style={{color: 'var(--white)'}}>
+                Cris,<br/><br/>
+                “Hoje é um dia especial: o seu dia!” (bem comercial de banco rsrs) Tu não sabes a importância que conquistasse em nossas vidas. Pois, é amiga! Começou com os almoços, depois as resenhas, as confissões e desabafos dos problemas diários, acabou sendo acolhida e nos acolheu.
+                <br/><br/>Amiga, tu és um ser admirável (sim, tudo que Bruno já te falou é consenso entre nós), rica em amor, sensibilidade, uma luz que irradia e dedicação aos que ama. O Universo está vibrando em alegria porque é teu aniversário, mais uma volta ao Sol, o encerramento de um ciclo bem vivido e cheio de aprendizados. E, o que seria de nós se não conseguíssemos aprender, amar e sofrer durante nossa trajetória na Terra? Você é evolução constante, amiga.
+                <br/><br/>Somos muito gratos em te ter presente em nossa vida. Obrigadx por tudo e feliz novo ciclo!
 
+                <br/><br/>Te amamos, coisa linda
+
+                <br/><br/>Grupo BBB.
               </h1>
               <ButtonsContent2>
                 <Button style={{color: 'var(--white)', background: 'var(--secondary)'}}
