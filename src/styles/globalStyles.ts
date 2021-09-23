@@ -16,6 +16,12 @@ export default createGlobalStyle`
     height: 100%;
     background-color: var(--background);
 
+    background-image: -webkit-gradient(radial, 50% 50%, 0, 50% 50%, 100, color-stop(0%, #374566), color-stop(100%, #010203));
+    background-image: -webkit-radial-gradient(#374566, #010203);
+    background-image: -moz-radial-gradient(#374566, #010203);
+    background-image: -o-radial-gradient(#374566, #010203);
+    background-image: radial-gradient(#374566, #010203);
+
   }
 
   *, button, input {
@@ -40,9 +46,9 @@ export default createGlobalStyle`
     color: var(--danger);
   }
 
-  p, button, span {
-    font-size: 14px !important;
-  }
+  //p, button, span {
+  //  font-size: 14px !important;
+  //}
 
   /* .MuiTypography-colorError {
     color: var(--danger);
