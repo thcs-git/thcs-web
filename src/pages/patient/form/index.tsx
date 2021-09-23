@@ -75,6 +75,7 @@ import {AreaInterface} from '../../../store/ducks/areas/types';
 import TabTittle from "../../../components/Text/TabTittle";
 import TabForm from "../../../components/Tabs";
 import ButtonTabs from "../../../components/Button/ButtonTabs";
+import ButtonEdit from "../../../components/Button/ButtonEdit";
 
 interface IFormFields {
   bloodType: string | null,
@@ -665,7 +666,10 @@ export default function PatientForm(props: RouteComponentProps<IPageParams>) {
         <Container>
           {params.mode === 'view' ? (
             <>
-              <TabTittle tittle={'Paciente'}/>
+              <TabTittle tittle={'Paciente'} icon={!canEdit && <ButtonEdit setCanEdit={() => {
+                setCanEdit(true)
+                history.push(`/patient/${params.id}/edit/edit`)
+              }} canEdit={canEdit}>Editar</ButtonEdit>}/>
               <TabForm
                 navItems={NavItems}
                 initialTab={0}
