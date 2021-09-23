@@ -162,8 +162,7 @@ export default function UserConfiguration() {
 
   function handlePushUser() {
     const user_id = localStorage.getItem(LOCALSTORAGE.USER_ID)
-    // history.push(`/user/${user_id}/config/edit`)
-    history.push(`/userclient/${user_id}/view`)
+    integration ? history.push(`/userclient/${user_id}/view/userconfiguration`) : history.push(`/user/${user_id}/config/edit`)
   }
 
   function handleBackUser() {
@@ -175,6 +174,8 @@ export default function UserConfiguration() {
       history.push('/dashboard_user')
     }
   }
+
+  const integration = sessionStorage.getItem(SESSIONSTORAGE.INTEGRATION)
 
   return (
 
@@ -198,7 +199,11 @@ export default function UserConfiguration() {
                     </Grid>
                     <Grid item md={3}>
                       <ButtonComponent variant="outlined">
-                        <Button onClick={handlePushUser}>Vizualizar Dados</Button>
+                        {integration ? (
+                          <Button onClick={handlePushUser}>Vizualizar Dados</Button>
+                        ):(
+                          <Button onClick={handlePushUser}>Editar Dados</Button>
+                        )}
                       </ButtonComponent>
                     </Grid>
                     <Grid item md={2}>

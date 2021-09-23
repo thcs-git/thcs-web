@@ -118,6 +118,7 @@ const Routes = () => (
       <PrivateRoute path="/user/:mode/create" component={UserForm} />
       <PrivateRoute path="/userdesengaged" component={UserDisengaged} />
       <PrivateRoute path="/userclient" component={UserClientList} exact/>
+      <PrivateRoute path="/userclient/:id/:mode/:callback" component={UserClientForm} />
       <PrivateRoute path="/userclient/:id/:mode" component={UserClientForm} />
 
 

@@ -121,7 +121,7 @@ export default function UserClientList() {
       <Sidebar>
         {userState.loading && <Loading/>}
         <Container>
-          <FormTitle>Todos Os Profissionais</FormTitle>
+          <FormTitle>Todos Profissionais</FormTitle>
 
           {integration ? (
             <>
