@@ -520,23 +520,28 @@ export default function SchedulePage(props: RouteComponentProps<IPageParams>) {
   }, [careState.schedule]);
 
   const renderEventStatus = (event: any) => {
+
     const today = dayjs();
     const eventDate = dayjs(event.start);
+
+
     const diffDate = eventDate.diff(today, 'm');
     const {extendedProps: eventData} = event;
+    console.log(eventData)
 
     if (!_.isEmpty(eventData.exchange)) {
+
       if (diffDate < 0 && (!eventData.checkin || eventData.checkin.length === 0)) {
         return <IconPermuta className="late"/>
       } else if (eventData?.checkin?.length > 0) {
-
         const checkins = eventData.checkin.sort().reverse();
-
         const {start_at: checkIn, end_at: checkOut} = checkins[0];
 
-        if (checkIn && !checkOut) {
+
+        if (checkins[0] && !checkins[1]) {
+
           return <IconPermuta className="visiting"/>
-        } else if (checkIn && checkOut) {
+        } else if (checkins[0] && checkins[1]) {
           return <IconPermuta className="complete"/>
         } else {
           return <IconPermuta className="future"/>
@@ -575,9 +580,9 @@ export default function SchedulePage(props: RouteComponentProps<IPageParams>) {
 
           const {start_at: checkIn, end_at: checkOut} = checkins[0];
 
-          if (checkIn && !checkOut) {
+          if (checkins[0] && !checkins[1]) {
             return <ScheduleEventStatus color="visiting" className="pulse"/>
-          } else if (checkIn && checkOut) {
+          } else if (checkins[0] && checkins[1]) {
             return <ScheduleEventStatus color="complete"/>
           } else {
             return <ScheduleEventStatus color="future"/>
