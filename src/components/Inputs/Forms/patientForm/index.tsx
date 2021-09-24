@@ -70,7 +70,7 @@ const PatientForm = (props: IComponent) => {
   state.address?.state?.length > 0 && rows.push({name: "UF", value: state.address.state})
 
   const content = {
-    tittle: state.social_status ? state.social_status : state.name,
+    tittle: state.social_name ? state.social_name : state.name,
     // icon: <InfoRoundedIcon style={{color: "#ffffff"}}/>,
     rows: rows
   }

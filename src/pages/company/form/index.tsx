@@ -58,6 +58,7 @@ import TabTittle from "../../../components/Text/TabTittle";
 import ButtonTabs from "../../../components/Button/ButtonTabs";
 import TabForm from "../../../components/Tabs";
 import ButtonEdit from "../../../components/Button/ButtonEdit";
+import SESSIONSTORAGE from "../../../helpers/constants/sessionStorage";
 
 interface IPageParams {
   id?: string;
@@ -373,16 +374,26 @@ export default function CompanyForm(props: RouteComponentProps<IPageParams>) {
     },
   ]
 
+  const integration = sessionStorage.getItem(SESSIONSTORAGE.INTEGRATION)
+
   return (
     <Sidebar>
       {companyState.loading && <Loading/>}
       <Container>
         {params.mode === 'view' ? (
           <>
-            <TabTittle tittle={'Empresa'} icon={!canEdit && <ButtonEdit setCanEdit={() => {
-              setCanEdit(true)
-              history.push(`/company/${params.id}/edit/edit`)
-            }} canEdit={canEdit}>Editar</ButtonEdit>}/>
+            {integration ? (
+              <>
+                <TabTittle tittle={'Empresa'} />
+              </>
+            ) : (
+              <>
+                <TabTittle tittle={'Empresa'} icon={!canEdit && <ButtonEdit setCanEdit={() => {
+                  setCanEdit(true)
+                  history.push(`/company/${params.id}/edit/edit`)
+                }} canEdit={canEdit}>Editar</ButtonEdit>}/>
+              </>
+            )}
             <TabForm
               navItems={NavItems}
               initialTab={0}

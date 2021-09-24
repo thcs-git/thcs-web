@@ -76,6 +76,7 @@ import TabTittle from "../../../components/Text/TabTittle";
 import TabForm from "../../../components/Tabs";
 import ButtonTabs from "../../../components/Button/ButtonTabs";
 import ButtonEdit from "../../../components/Button/ButtonEdit";
+import SESSIONSTORAGE from "../../../helpers/constants/sessionStorage";
 
 interface IFormFields {
   bloodType: string | null,
@@ -652,10 +653,12 @@ export default function PatientForm(props: RouteComponentProps<IPageParams>) {
 
   const NavItems = [
     {
-      name: "Dados do Usuário",
+      name: "Dados do Paciente",
       components: ['PatientForm'],
     },
   ]
+
+  const integration = sessionStorage.getItem(SESSIONSTORAGE.INTEGRATION)
 
   return (
     <Sidebar>
@@ -666,10 +669,18 @@ export default function PatientForm(props: RouteComponentProps<IPageParams>) {
         <Container>
           {params.mode === 'view' ? (
             <>
-              <TabTittle tittle={'Paciente'} icon={!canEdit && <ButtonEdit setCanEdit={() => {
-                setCanEdit(true)
-                history.push(`/patient/${params.id}/edit/edit`)
-              }} canEdit={canEdit}>Editar</ButtonEdit>}/>
+              {integration ? (
+                <>
+                  <TabTittle tittle={'Paciente'} />
+                </>
+              ) : (
+                <>
+                  <TabTittle tittle={'Paciente'} icon={!canEdit && <ButtonEdit setCanEdit={() => {
+                    setCanEdit(true)
+                    history.push(`/patient/${params.id}/edit/edit`)
+                  }} canEdit={canEdit}>Editar</ButtonEdit>}/>
+                </>
+              )}
               <TabForm
                 navItems={NavItems}
                 initialTab={0}
