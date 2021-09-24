@@ -1,6 +1,6 @@
-import {Reducer} from "redux";
-import {LayoutState, LayoutTypes} from "./types"
-import {UserTypes} from "../users/types";
+import { Reducer } from "redux";
+import { LayoutState, LayoutTypes } from "./types";
+import { UserTypes } from "../users/types";
 
 export const INITIAL_STATE: LayoutState = {
   data: {
@@ -38,5 +38,5 @@ const reducer: Reducer<LayoutState> = (state = INITIAL_STATE, action) => {
     default:
       return state;
   }
-}
+};
 export default reducer;

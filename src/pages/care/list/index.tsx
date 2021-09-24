@@ -43,11 +43,18 @@ import Table from "../../../components/Table";
 import {FormTitle} from "../../../styles/components/Form";
 import {ComplexityStatus} from "../../../styles/components/Table";
 
+<<<<<<< HEAD
 import {formatDate} from "../../../helpers/date";
 import {uniqBy} from "cypress/types/lodash";
 import {createInterface} from "readline";
 import {any} from "cypress/types/bluebird";
 import SESSIONSTORAGE from "../../../helpers/constants/sessionStorage";
+=======
+import { formatDate } from "../../../helpers/date";
+import { uniqBy } from "cypress/types/lodash";
+import { createInterface } from "readline";
+import { any } from "cypress/types/bluebird";
+>>>>>>> 8a57140741e935033fac293e8a3509d371c7b620
 
 export default function CouncilList() {
   const history = useHistory();

@@ -55,6 +55,8 @@ import LOCALSTORAGE from "../../../helpers/constants/localStorage";
 import _ from 'lodash';
 import SESSIONSTORAGE from "../../../helpers/constants/sessionStorage";
 
+
+
 const token = window.localStorage.getItem('token');
 const currentCompany = localStorage.getItem(LOCALSTORAGE.COMPANY_SELECTED) || '';
 

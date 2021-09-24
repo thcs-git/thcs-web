@@ -47,8 +47,11 @@ import {formatDate} from '../../../helpers/date';
 
 import LOCALSTORAGE from "../../../helpers/constants/localStorage";
 import _ from 'lodash';
+<<<<<<< HEAD
 import MoreHorizTwoToneIcon from "@material-ui/icons/MoreHorizTwoTone";
 import SESSIONSTORAGE from "../../../helpers/constants/sessionStorage";
+=======
+>>>>>>> 8a57140741e935033fac293e8a3509d371c7b620
 
 const token = window.localStorage.getItem('token');
 const currentCompany = localStorage.getItem(LOCALSTORAGE.COMPANY_SELECTED) || '';
@@ -110,6 +113,7 @@ export default function UserClientList() {
     }
   };
 
+<<<<<<< HEAD
   const integration = sessionStorage.getItem(SESSIONSTORAGE.INTEGRATION)
 
   function handleEmpty(value: any) {
@@ -255,6 +259,96 @@ export default function UserClientList() {
             </>
           )}
 
+=======
+  return (
+    <>
+      {userState.loading && <Loading/>}
+      <Sidebar>
+        <Container>
+          <FormTitle>Todos Os Profissionais</FormTitle>
+
+          {/*<SearchComponent*/}
+          {/*  handleButton={() => history.push('/user/edit/create/')}*/}
+          {/*  buttonTitle=""*/}
+          {/*  inputPlaceholder="Pesquise por prestador, especialidades, status, etc..."*/}
+          {/*  onChangeInput={debounceSearchRequest}*/}
+          {/*/>*/}
+          <Table
+            tableCells={[
+              {name: 'Prestador', align: 'left',},
+              {name: 'CPF', align: 'left'},
+              {name: 'Função', align: 'left'},
+              {name: 'Especialidades', align: 'left'},
+              {name: '', align: 'left'},
+              {name: 'Adicionado em', align: 'left'},
+              {name: 'Status', align: 'left'},
+              {name: '', align: 'left'},
+            ]}
+          >
+            {userState?.list.data.map((user, index) => (
+              <TableRow key={`user_${index}`}>
+                <TableCell align="left">
+                  <Link key={index} to={`/userclient/${user._id}/view`}>{user?.name}</Link>
+                </TableCell>
+                <TableCell>
+                  {handleCpf(user?.fiscal_number)}
+                </TableCell>
+                <TableCell>
+                  {user?.profession_id?.name}
+                </TableCell>
+                <TableCell>
+                  {user?.main_specialty_id?.name}
+                </TableCell>
+                <TableCell align="center">
+                  {user.specialties.length > 0 ? (
+                    <ListItem>
+                      <Button onClick={() => toggleHistoryModal(index)}>
+                        <AddIcon style={{color: '#0899BA', cursor: "pointer"}}/>
+                      </Button>
+                      {/* <Menu
+                        id={`user-speciality${index}`}
+                        anchorEl={anchorEl}
+                        keepMounted
+                        open={anchorEl?.id === `btn_user-speciality${index}`}
+                        onClose={handleCloseRowMenu}
+                      >
+                        <MenuItem style={{ cursor: "default", fontSize: "13pt", fontFamily: "Open Sans Bold" }}><h4>Principal</h4></MenuItem>
+                        <MenuItem style={{ cursor: "default", fontSize: "10pt", fontFamily: "Open Sans Regular"}}>{user.main_specialty_id.name}</MenuItem>
+                        <MenuItem style={{ cursor: "default", fontSize: "13pt", fontFamily: "Open Sans Bold"}}><h4>Secundária</h4></MenuItem>
+                        <MenuItem style={{ cursor: "default", fontSize: "10pt", fontFamily: "Open Sans Regular"}}>{user.specialties.map((specialty, index) => (
+                          `${specialty.name}${index < (user.specialties.length - 1) ? ',' : ''}`
+                        ))}</MenuItem>
+                      </Menu> */}
+                    </ListItem>
+                  ) : (null)
+                  }
+                </TableCell>
+                <TableCell>
+                  {formatDate(handleLinkedAt(user), 'DD/MM/YYYY')}
+                </TableCell>
+                <TableCell>
+                  <ListItemStatus active={handleActive(user)}>{handleActive(user) ? 'Ativo' : 'Inativo'}</ListItemStatus>
+                </TableCell>
+                <TableCell align="center">
+                  <Button aria-controls={`user-menu${index}`} id={`btn_user-menu${index}`} aria-haspopup="true"
+                          onClick={handleOpenRowMenu}>
+                    <MoreVert style={{color: '#0899BA'}}/>
+                  </Button>
+                  <Menu
+                    id={`user-menu${index}`}
+                    anchorEl={anchorEl}
+                    keepMounted
+                    open={anchorEl?.id === `btn_user-menu${index}`}
+                    onClose={handleCloseRowMenu}
+                  >
+                    {/*<MenuItem onClick={() => history.push(`/user/${user._id}/edit/edit`)}>Editar</MenuItem>*/}
+                    <MenuItem onClick={() => history.push(`/userclient/${user._id}/view`)}>Visualizar</MenuItem>
+                  </Menu>
+                </TableCell>
+              </TableRow>
+            ))}
+          </Table>
+>>>>>>> 8a57140741e935033fac293e8a3509d371c7b620
           <PaginationComponent
             page={userState.list.page}
             rowsPerPage={userState.list.limit}
@@ -295,7 +389,11 @@ export default function UserClientList() {
             }))}
           />
         </Container>
+<<<<<<< HEAD
         {/*Especialidades
+=======
+        {/*Especialidades*/}
+>>>>>>> 8a57140741e935033fac293e8a3509d371c7b620
         <Dialog
 
           maxWidth="lg"
@@ -333,7 +431,11 @@ export default function UserClientList() {
               <h3 style={{color: '#0899BA', fontSize: '11pt'}}>Fechar</h3>
             </Button>
           </DialogActions>
+<<<<<<< HEAD
         </Dialog>*/}
+=======
+        </Dialog>
+>>>>>>> 8a57140741e935033fac293e8a3509d371c7b620
 
       </Sidebar>
     </>

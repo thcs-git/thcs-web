@@ -367,7 +367,7 @@ export default function ClientForm(props: RouteComponentProps<IPageParams>) {
     //   dispatch(createCustomerRequest(state));
     //
     // }
-    console.log('state', state)
+
     if (params.id && ModifiCondition()) {
 
       dispatch(updateCustomerRequest(state));
@@ -578,8 +578,11 @@ export default function ClientForm(props: RouteComponentProps<IPageParams>) {
             state={permissionState}
             setState={setPermissionState}
             customerState={customerState}
+<<<<<<< HEAD
             userState={userState}
             params={params}
+=======
+>>>>>>> 8a57140741e935033fac293e8a3509d371c7b620
           />
           <ButtonTabs canEdit={canEditPermission} buttons={buttonsPermission}/>
         </>

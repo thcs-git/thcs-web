@@ -20,12 +20,14 @@ export const INITIAL_STATE: CustomerState = {
       complement: "",
     },
     email: "",
-    phones: [{
-      cellphone: "",
-      phone: "",
-      telegram: false,
-      whatsapp: false,
-    }],
+    phones: [
+      {
+        cellphone: "",
+        phone: "",
+        telegram: false,
+        whatsapp: false,
+      },
+    ],
     responsible_user: "",
     cellphone: "",
     phone: "",
@@ -180,14 +182,14 @@ const reducer: Reducer<CustomerState> = (state = INITIAL_STATE, action) => {
         permission: action.payload.data,
         loading: false,
         error: false,
-        permissionSuccess: true
+        permissionSuccess: true,
       };
     case CustomerTypes.CREATE_PERMISSION_SUCCESS:
       return {
         ...state,
         permission: action.payload.data,
         loading: false,
-        permissionSuccess: true
+        permissionSuccess: true,
       };
 
     case CustomerTypes.CLEAN:

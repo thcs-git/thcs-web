@@ -415,6 +415,52 @@ export default function PatientForm(props: RouteComponentProps<IPageParams>) {
 
     return _.isEqual(modifi, patientState.data);
   }
+////// Quebrado !!! //////
+
+  // useEffect(() => {
+  //   if (params.id) {
+  //     if(params.mode === "view"){
+  //       setCanEdit(false)
+  //     }
+
+  //      const uf = States.find(uf => uf.sigla === patientState.data.address_id.state) || null;
+
+  //     setState(prevState =>({
+  //       ...prevState,
+  //       form:{uf:uf}
+  //     }));
+  //     setState(prevState=>{
+  //       return{
+  //         ...prevState,
+  //         ...patientState.data
+  //       }
+  //       });
+  //       setInputPhone(prev =>({
+  //         ...prev,
+  //         value:patientState.data.phones[0]?.number || ''
+  //       }));
+  //       setInputCellPhone(prev =>({
+  //         ...prev,
+  //         value:patientState.data.phones[0]?.cellnumber || ''
+  //       }));
+
+  //     setFieldValidations({
+  //       name:true,
+  //       social_name:true,
+  //       fiscal_number:true,
+  //       responsible_user:true,
+  //       postal_code: true,
+  //       street: true,
+  //       number: true,
+  //       district:true,
+  //       city:true,
+  //       state:true,
+  //       email:true,
+  //       phone:true
+  //      })
+
+  //   }
+  // }, [patientState, params.id]);
 
 ////// Quebrado !!! //////
 

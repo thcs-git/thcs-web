@@ -37,13 +37,15 @@ export enum CustomerTypes {
  * Data types
  */
 export interface CustomerInterface {
-  usertypes?: [{
-    _id?: string;
-    active: boolean;
-    name: string;
-    permission: string;
-    created_at?: string;
-  }];
+  usertypes?: [
+    {
+      _id?: string;
+      active: boolean;
+      name: string;
+      permission: string;
+      created_at?: string;
+    }
+  ];
   active: boolean;
   _id?: string;
   name: string;
@@ -60,12 +62,14 @@ export interface CustomerInterface {
     complement: string;
   };
   email: string;
-  phones: [{
-    cellphone?: string;
-    phone?: string;
-    telegram: boolean;
-    whatsapp: boolean;
-  }];
+  phones: [
+    {
+      cellphone?: string;
+      phone?: string;
+      telegram: boolean;
+      whatsapp: boolean;
+    }
+  ];
   cellphone?: string;
   phone?: string;
   responsible_user: string;
