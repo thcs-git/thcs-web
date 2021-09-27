@@ -1225,8 +1225,7 @@ export default function PatientForm(props: RouteComponentProps<IPageParams>) {
                                       ]
                                     }));
                                     setModifi({...modifi, cellnumber: element.target.value})
-                                  }
-                                }}
+                                  }}}
                                 onBlur={validateCellPhone}
                               >
                                 {(inputProps: any) => (
