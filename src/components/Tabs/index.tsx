@@ -35,6 +35,7 @@ interface ITabprops {
   tableCells?: any;
   mode?: string;
   initialTab: number;
+  setInitialTab?: any;
   params: IPageParams;
   rowsPortal?: any;
   rowsApp?: any;
@@ -115,6 +116,7 @@ const TabForm = (props: ITabprops) => {
     customerState,
     mode,
     initialTab,
+    setInitialTab,
     params,
     rowsPortal,
     rowsApp,
@@ -123,6 +125,7 @@ const TabForm = (props: ITabprops) => {
   const classes = useStyles();
   const handleChange = (event: React.ChangeEvent<{}>, newValue: number) => {
     setValue(newValue);
+    setInitialTab && setInitialTab(newValue);
   };
   const [value, setValue] = useState(initialTab);
 

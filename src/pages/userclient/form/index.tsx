@@ -23,6 +23,7 @@ import SESSIONSTORAGE from "../../../helpers/constants/sessionStorage";
 interface IPageParams {
   id?: string;
   mode?: string;
+  callback?: string;
 }
 
 export default function UserClientForm(props: RouteComponentProps<IPageParams>) {
@@ -135,12 +136,17 @@ export default function UserClientForm(props: RouteComponentProps<IPageParams>) 
     {
       name: "Dados Profissionais",
       components: ['UserForm', 'UserProfessionForm'],
-    },
-    {
-      name: "Dados da Empresa",
-      components: ['UserForm', 'UserCompanyForm'],
     }
   ]
+
+  if (params.callback != 'userconfiguration') {
+    NavItems.push(
+      {
+        name: "Dados da Empresa",
+        components: ['UserForm', 'UserCompanyForm'],
+      }
+    )
+  }
 
   const handleSaveFormUser = useCallback(() => {
     dispatch(updateUserRequest(state));

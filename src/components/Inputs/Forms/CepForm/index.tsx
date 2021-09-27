@@ -38,18 +38,24 @@ function a11yProps(name: string, index: number) {
 const CepForm = (props: IComponent) => {
   const {index, state, setState, setValidations, canEdit, getAddress, cepStatus, params} = props;
 
+  const rows: any[] = []
+
+  function handleRows(state: any, name: string) {
+    state && rows.push({name: name, value: state})
+  }
+
+  handleRows(state.address.postal_code, 'CEP')
+  handleRows(state.address.street, 'Endereço')
+  handleRows(state.address.number, 'Número')
+  handleRows(state.address.complement, 'Complemento')
+  handleRows(state.address.district, 'Bairro')
+  handleRows(state.address.city, 'Cidade')
+  handleRows(state.address.state, 'UF')
+
   const content = {
     tittle: 'Endereço',
     // icon: <InfoRoundedIcon style={{color: "#ffffff"}}/>,
-    rows: [
-      {name: "CEP", value: state.address.postal_code},
-      {name: "Endereço", value: state.address.street},
-      {name: "Número", value: state.address.number},
-      // {name: "Complemento", value: state.address.complement} ,
-      {name: "Bairro", value: state.address.district},
-      {name: "Cidade", value: state.address.city},
-      {name: "UF", value: state.address.state},
-    ]
+    rows: rows
   }
 
   return (

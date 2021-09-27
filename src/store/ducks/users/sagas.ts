@@ -35,9 +35,10 @@ export function* get({payload}: any) {
     const integration = sessionStorage.getItem(SESSIONSTORAGE.INTEGRATION)
 
     if (integration) {
+      const company = localStorage.getItem(LOCALSTORAGE.INTEGRATION_COMPANY_SELECTED)
       response = yield call(
         apiIntegra(integration),
-        `/user/getUserByCompany/1?limit=${params.limit ?? 10}&page=${params.page || 1}`
+        `/user/getUserByCompany/${company}?limit=${params.limit ?? 10}&page=${params.page || 1}`
       );
     } else {
       response = yield call(

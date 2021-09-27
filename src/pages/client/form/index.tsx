@@ -585,8 +585,16 @@ export default function ClientForm(props: RouteComponentProps<IPageParams>) {
         </>
       ) : (
         <>
-          <TabTittle tittle={'Cliente'} icon={!canEdit &&
-          <ButtonEdit setCanEdit={() => setCanEdit(!canEdit)} canEdit={canEdit}>Editar</ButtonEdit>}/>
+          {initialTab === 1 ? (
+            <>
+              <TabTittle tittle={'Cliente'}/>
+            </>
+          ):(
+            <>
+              <TabTittle tittle={'Cliente'} icon={!canEdit &&
+              <ButtonEdit setCanEdit={() => setCanEdit(!canEdit)} canEdit={canEdit}>Editar</ButtonEdit>}/>
+            </>
+          )}
           <TabForm
             navItems={NavItems}
             state={state}
@@ -601,6 +609,7 @@ export default function ClientForm(props: RouteComponentProps<IPageParams>) {
             tableCells={tableCells}
             mode={params.mode ? params?.mode : ''}
             initialTab={initialTab}
+            setInitialTab={setInitialTab}
             params={params}
           />
           <ButtonTabs canEdit={canEdit} buttons={buttons}/>

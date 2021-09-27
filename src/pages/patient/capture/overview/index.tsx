@@ -108,6 +108,7 @@ interface ICaptureData {
 }
 
 export default function PatientCaptureForm(props: RouteComponentProps<IPageParams>) {
+  console.log('teste')
   const dispatch = useDispatch();
   const history = useHistory();
   const careState = useSelector((state: ApplicationState) => state.cares);
@@ -181,7 +182,7 @@ export default function PatientCaptureForm(props: RouteComponentProps<IPageParam
       setDocumentHistory(documentState.list);
       console.log("t", documentState.list)
     }
-   
+
 
   }, [documentState]);
 
@@ -797,7 +798,7 @@ export default function PatientCaptureForm(props: RouteComponentProps<IPageParam
               ))}
             </Tables> </>)
             }
-              
+
 
 
             </DialogContentText>

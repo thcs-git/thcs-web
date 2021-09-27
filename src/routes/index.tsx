@@ -118,16 +118,15 @@ const Routes = () => (
       <PrivateRoute path="/user/:mode/create" component={UserForm} />
       <PrivateRoute path="/userdesengaged" component={UserDisengaged} />
       <PrivateRoute path="/userclient" component={UserClientList} exact/>
+      <PrivateRoute path="/userclient/:id/:mode/:callback" component={UserClientForm} />
       <PrivateRoute path="/userclient/:id/:mode" component={UserClientForm} />
 
 
       {/* Patient */}
-      <PrivateRoute path="/patient" component={PatientList} exact />
-      <PrivateRoute path="/patient/:id/:mode/:callback/:callback_id" component={PatientForm} />
-      <PrivateRoute path="/patient/:id/:mode" component={PatientForm} />
-      <PrivateRoute path="/patient/create" component={PatientForm} />
       <PrivateRoute path="/patient/capture/create" component={PatientCaptureCreate} />
-      <PrivateRoute path="/patient/capture/:id/overview" component={PatientCaptureOverview} />
+      <PrivateRoute path="/patient/capture/:id/overview" component={PatientCaptureOverview}/>
+      <PrivateRoute path="/patient" component={PatientList} exact />
+      <PrivateRoute path="/patient/create" component={PatientForm} exact />
 
       <PrivateRoute path="/patient/capture/:id/nead" component={PatientCaptureNead} exact />
       <PrivateRoute path="/patient/capture/:id/nead/:documentId" component={PatientCaptureNead} />
@@ -137,6 +136,9 @@ const Routes = () => (
 
       <PrivateRoute path="/patient/capture/:id/socioambiental" component={PatientCaptureSocioAmbiental} exact />
       <PrivateRoute path="/patient/capture/:id/socioambiental/:documentId" component={PatientCaptureSocioAmbiental} />
+
+      <PrivateRoute path="/patient/:id/:mode/:callback/:callback_id" component={PatientForm} exact />
+      <PrivateRoute path="/patient/:id/:mode" component={PatientForm} />
 
       {/* Care */}
       <PrivateRoute path="/care" component={CareList} exact />
