@@ -144,7 +144,7 @@ export function* updatePatient({ payload: { data } }: any) {
 }
 
 export function* getAddress({ payload }: any) {
-  // try {
+  try {
     const { data }: AxiosResponse<ViacepDataInterface> = yield call(
       viacep.get,
       `${payload.postalCode}/json`
@@ -156,9 +156,9 @@ export function* getAddress({ payload }: any) {
     }
 
     yield put(successGetAddress(data));
-  // } catch (error) {
-  //   yield put(loadFailure());
-  // }
+  } catch (error) {
+    yield put(loadFailure());
+  }
 }
 
 export function* searchPatient({ payload: { params } }: any) {

@@ -69,7 +69,13 @@ export interface PatientInterface {
   address_id: PatientAddressInterface;
   area_id?: any;
   email: string;
-  phones: PatientPhonesInterface[] | [];
+  phones: [{
+    cellnumber?: string;
+    number?: string;
+    telegram: boolean;
+    whatsapp: boolean;
+  }];
+  // phones: PatientPhonesInterface[] | [];
   sus_card: string;
   blood_type: string;
   organ_donor: boolean;
