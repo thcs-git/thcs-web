@@ -313,8 +313,10 @@ export default function PatientForm(props: RouteComponentProps<IPageParams>) {
       var cellphone = state.phones[0]?.cellnumber.replace('(', '').replace(')', '').replace(' ', '').replace(' ', '').replace('-', '');
       isValidCellPhoneNumber = validator.isMobilePhone(cellphone, 'pt-BR');
 
-    return (isValidCellPhoneNumber)
-   }
+
+
+      return (isValidCellPhoneNumber)
+    }
   //  else if (state.phones[1]?.cellnumber){
   //   var cellphone =  state.phones[1]?.cellnumber.replace('(','').replace(')','').replace(' ','').replace(' ','').replace('-','');
   //   isValidCellPhoneNumber = validator.isMobilePhone(cellphone, 'pt-BR');
@@ -628,9 +630,10 @@ export default function PatientForm(props: RouteComponentProps<IPageParams>) {
     const patientData = {
       ...state,
       // phones: [
-      //   { whatsapp: false, telegram: false, number: state.phones[0]?.number },
-      //   { whatsapp: false, telegram: false, cellnumber: state.phones[0]?.cellnumber },
-      // ]
+      //   {whatsapp: false, telegram: false, number: state.phones[0]?.number},
+      //   {whatsapp: false, telegram: false, cellnumber: state.phones[0]?.cellnumber},
+      // ],
+      created_at: Date.now().toString()
     };
 
     if (state?._id) {
@@ -664,7 +667,7 @@ export default function PatientForm(props: RouteComponentProps<IPageParams>) {
 
   return (
     <Sidebar>
-      {patientState.loading && <Loading />}
+      {patientState.loading && <Loading/>}
       {(patientState.isRegistrationCompleted ) ? (
         <RegistrationCompleted {...props} />
       ) : (
@@ -1203,16 +1206,16 @@ export default function PatientForm(props: RouteComponentProps<IPageParams>) {
                                 Por favor insira um número válido
                               </p>
                             )}
-                      </Grid>
-                      <Grid item md={3} xs={12}>
-                        <FormControl variant="outlined" size="small" disabled={!canEdit} fullWidth>
-                          <InputLabel htmlFor="search-input">Celular</InputLabel>
-                          <InputMask
-                            mask="(99) 9 9999-9999"
-                            // value={state.phones[0]?.cellnumber? state.phones[0]?.cellnumber : state.phones[1]?.cellnumber}
-                            value={state.phones[0]?.cellnumber}
-                            onChange={(element) => {
-                                    {setState(prevState => ({
+                          </Grid>
+                          <Grid item md={3} xs={12}>
+                            <FormControl variant="outlined" size="small" disabled={!canEdit} fullWidth>
+                              <InputLabel htmlFor="search-input">Celular</InputLabel>
+                              <InputMask
+                                mask="(99) 9 9999-9999"
+                                //value={state.phones[0]?.cellnumber ? state.phones[0]?.cellnumber : state.phones[1]?.cellnumber}
+                                value={state.phones[0]?.cellnumber}onChange={(element) => {
+                                  {
+                                    setState(prevState => ({
                                       ...prevState,
                                       phones: [
                                         {
