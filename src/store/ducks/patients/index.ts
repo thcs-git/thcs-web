@@ -3,6 +3,7 @@ import { PatientState, PatientTypes } from "./types";
 
 export const INITIAL_STATE: PatientState = {
   data: {
+    social_status: false,
     companies: [],
     name: "",
     social_name: "",
@@ -29,13 +30,10 @@ export const INITIAL_STATE: PatientState = {
     area_id: "",
     phones: [{
         cellnumber:"",
-        number:""
-    },
-    {
-      cellnumber:"",
-      number:""
-    }
-  ],
+        number:"",
+        whatsapp: false,
+        telegram:false
+    }],
     email: "",
     sus_card: "FIELD_NOT_EXISTS_IN_PATIENT_REGISTRATION",
     blood_type: "",
@@ -139,6 +137,7 @@ const reducer: Reducer<PatientState> = (state = INITIAL_STATE, action) => {
         loading: true,
         error: false,
         success: false,
+        isRegistrationCompleted: true,
       };
     case PatientTypes.CREATE_PATIENT_SUCCESS:
       return {
@@ -147,6 +146,7 @@ const reducer: Reducer<PatientState> = (state = INITIAL_STATE, action) => {
         loading: false,
         error: false,
         success: true,
+        isRegistrationCompleted: true,
       };
     case PatientTypes.LOAD_RESPONSE_ADDRESS:
       return {

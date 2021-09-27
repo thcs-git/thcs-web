@@ -13,13 +13,17 @@ import {ApplicationState} from "../../../store";
 import {UserInterface} from "../../../store/ducks/users/types";
 import {getAddress as getAddressAction} from "../../../store/ducks/customers/actions";
 import {
-  cleanAction,
-  loadUserById,
+  cleanAction, createUserRequest, loadRequestByClient,
+  loadUserById, updateUserRequest,
 } from "../../../store/ducks/users/actions";
+import ButtonTabs from "../../../components/Button/ButtonTabs";
+import {toast} from "react-toastify";
+import SESSIONSTORAGE from "../../../helpers/constants/sessionStorage";
 
 interface IPageParams {
   id?: string;
   mode?: string;
+  callback?: string;
 }
 
 export default function UserClientForm(props: RouteComponentProps<IPageParams>) {
@@ -105,7 +109,7 @@ export default function UserClientForm(props: RouteComponentProps<IPageParams>) 
 
   useEffect(() => {
     if (params.id) {
-      dispatch(loadUserById(params.id));
+      dispatch(loadUserById(params.id, 'userclient'));
     } else {
       dispatch(cleanAction());
     }
@@ -132,12 +136,50 @@ export default function UserClientForm(props: RouteComponentProps<IPageParams>) 
     {
       name: "Dados Profissionais",
       components: ['UserForm', 'UserProfessionForm'],
-    },
-    {
-      name: "Dados da Empresa",
-      components: ['UserForm', 'UserCompanyForm'],
     }
   ]
+
+  if (params.callback != 'userconfiguration') {
+    NavItems.push(
+      {
+        name: "Dados da Empresa",
+        components: ['UserForm', 'UserCompanyForm'],
+      }
+    )
+  }
+
+  const handleSaveFormUser = useCallback(() => {
+    dispatch(updateUserRequest(state));
+    history.push('/userclient');
+  }, [state]);
+
+  const handleCancelFormUser = useCallback(() => {
+    history.push('/userclient');
+  }, []);
+
+  const integration = sessionStorage.getItem(SESSIONSTORAGE.INTEGRATION)
+
+  const buttons = [
+    {
+      name: 'Voltar',
+      onClick: handleCancelFormUser,
+      variant: 'outlined',
+      background: 'success_rounded',
+      show: true,
+    },
+  ]
+
+  if (!(integration)) {
+    buttons.push(
+      {
+        name: 'Salvar',
+        onClick: handleSaveFormUser,
+        variant: 'contained',
+        background: 'success',
+        show: true,
+      },
+    )
+  }
 
   return (
     <>
@@ -158,6 +200,7 @@ export default function UserClientForm(props: RouteComponentProps<IPageParams>) 
                 getAddress={getAddress}
                 params={params}
               />
+              <ButtonTabs canEdit={canEdit} buttons={buttons}/>
             </>
           ) : (
             <NotFound backOnclick={() => history.push('/userclient')}/>

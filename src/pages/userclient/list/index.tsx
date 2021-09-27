@@ -12,7 +12,7 @@ import {
   DialogActions,
   DialogContent,
   DialogContentText,
-  DialogTitle
+  DialogTitle, Tooltip
 } from '@material-ui/core';
 import {MoreVert} from '@material-ui/icons';
 import debounce from 'lodash.debounce';
@@ -47,6 +47,8 @@ import {formatDate} from '../../../helpers/date';
 
 import LOCALSTORAGE from "../../../helpers/constants/localStorage";
 import _ from 'lodash';
+import MoreHorizTwoToneIcon from "@material-ui/icons/MoreHorizTwoTone";
+import SESSIONSTORAGE from "../../../helpers/constants/sessionStorage";
 
 const token = window.localStorage.getItem('token');
 const currentCompany = localStorage.getItem(LOCALSTORAGE.COMPANY_SELECTED) || '';
@@ -108,94 +110,155 @@ export default function UserClientList() {
     }
   };
 
+  const integration = sessionStorage.getItem(SESSIONSTORAGE.INTEGRATION)
+
+  function handleEmpty(value: any) {
+    return value ? value : '-'
+  }
+
   return (
     <>
-      {userState.loading && <Loading/>}
       <Sidebar>
+        {userState.loading && <Loading/>}
         <Container>
-          <FormTitle>Todos Os Profissionais</FormTitle>
+          <FormTitle>Todos Profissionais</FormTitle>
 
-          {/*<SearchComponent*/}
-          {/*  handleButton={() => history.push('/user/edit/create/')}*/}
-          {/*  buttonTitle=""*/}
-          {/*  inputPlaceholder="Pesquise por prestador, especialidades, status, etc..."*/}
-          {/*  onChangeInput={debounceSearchRequest}*/}
-          {/*/>*/}
-          <Table
-            tableCells={[
-              {name: 'Prestador', align: 'left',},
-              {name: 'CPF', align: 'left'},
-              {name: 'Função', align: 'left'},
-              {name: 'Especialidades', align: 'left'},
-              {name: '', align: 'left'},
-              {name: 'Adicionado em', align: 'left'},
-              {name: 'Status', align: 'left'},
-              {name: '', align: 'left'},
-            ]}
-          >
-            {userState?.list.data.map((user, index) => (
-              <TableRow key={`user_${index}`}>
-                <TableCell align="left">
-                  <Link key={index} to={`/userclient/${user._id}/view`}>{user?.name}</Link>
-                </TableCell>
-                <TableCell>
-                  {handleCpf(user?.fiscal_number)}
-                </TableCell>
-                <TableCell>
-                  {user?.profession_id?.name}
-                </TableCell>
-                <TableCell>
-                  {user?.main_specialty_id?.name}
-                </TableCell>
-                <TableCell align="center">
-                  {user.specialties.length > 0 ? (
-                    <ListItem>
-                      <Button onClick={() => toggleHistoryModal(index)}>
-                        <AddIcon style={{color: '#0899BA', cursor: "pointer"}}/>
+          {integration ? (
+            <>
+            <Table
+              tableCells={[
+                {name: 'Prestador', align: 'left',},
+                {name: 'Usuário', align: 'left',},
+                {name: 'CPF', align: 'left'},
+                {name: 'Função', align: 'left'},
+                {name: 'Especialidades', align: 'left'},
+              ]}
+            >
+              {userState?.list.data.map((user, index) => (
+                <TableRow key={`user_${index}`}>
+                  <TableCell align="left">
+                    <Link key={index} to={`/userclient/${user._id}/view`}>{user?.name}</Link>
+                  </TableCell>
+                  <TableCell align="left">
+                    <Link key={index} to={`/userclient/${user._id}/view`}>{user?.username}</Link>
+                  </TableCell>
+                  <TableCell>
+                    {handleEmpty(handleCpf(user?.fiscal_number))}
+                  </TableCell>
+                  <TableCell>
+                    {handleEmpty(user?.profession_id?.name)}
+                  </TableCell>
+                  <TableCell align="left">
+                    <div style={{display: 'flex'}}>
+                      <p style={{marginTop: '0.3rem'}}>{user.main_specialty_id?.name ? user.main_specialty_id?.name : '-'}</p>
+                      {user.specialties.length > 0 ? (<Tooltip style={{fontSize: '10pt', marginTop: '0.8rem'}}
+                                                               title={user.specialties.map((specialty, index) => (
+                                                                 `${specialty.name}${index < (user.specialties.length - 1) ? ',' : ''}`
+                                                               ))}><MoreHorizTwoToneIcon/></Tooltip>
+                      ) : ('')}
+                    </div>
+                  </TableCell>
+                </TableRow>
+              ))}
+            </Table>
+            </>
+          ) : (
+            <>
+              {/*<SearchComponent*/}
+              {/*  handleButton={() => history.push('/user/edit/create/')}*/}
+              {/*  buttonTitle=""*/}
+              {/*  inputPlaceholder="Pesquise por prestador, especialidades, status, etc..."*/}
+              {/*  onChangeInput={debounceSearchRequest}*/}
+              {/*/>*/}
+              <Table
+                tableCells={[
+                  {name: 'Prestador', align: 'left',},
+                  {name: 'CPF', align: 'left'},
+                  {name: 'Função', align: 'left'},
+                  {name: 'Especialidades', align: 'left'},
+                  // {name: '', align: 'left'},
+                  {name: 'Adicionado em', align: 'left'},
+                  {name: 'Status', align: 'left'},
+                  {name: '', align: 'left'},
+                ]}
+              >
+                {userState?.list.data.map((user, index) => (
+                  <TableRow key={`user_${index}`}>
+                    <TableCell align="left">
+                      <Link key={index} to={`/userclient/${user._id}/view`}>{user?.name}</Link>
+                    </TableCell>
+                    <TableCell>
+                      {handleCpf(user?.fiscal_number)}
+                    </TableCell>
+                    <TableCell>
+                      {user?.profession_id?.name}
+                    </TableCell>
+                    <TableCell align="left">
+                      <div style={{display: 'flex'}}>
+                        <p style={{marginTop: '0.3rem'}}>{user.main_specialty_id?.name}</p>
+                        {user.specialties.length > 0 ? (<Tooltip style={{fontSize: '10pt', marginTop: '0.8rem'}}
+                                                                 title={user.specialties.map((specialty, index) => (
+                                                                   `${specialty.name}${index < (user.specialties.length - 1) ? ',' : ''}`
+                                                                 ))}><MoreHorizTwoToneIcon/></Tooltip>
+                        ) : (null)}
+                      </div>
+                    </TableCell>
+                    {/*<TableCell>*/}
+                    {/*  {user?.main_specialty_id?.name}*/}
+                    {/*</TableCell>*/}
+                    {/*<TableCell align="center">*/}
+                    {/*  {user.specialties.length > 0 ? (*/}
+                    {/*    <ListItem>*/}
+                    {/*      <Button onClick={() => toggleHistoryModal(index)}>*/}
+                    {/*        <AddIcon style={{color: '#0899BA', cursor: "pointer"}}/>*/}
+                    {/*      </Button>*/}
+                    {/*      /!* <Menu*/}
+                    {/*        id={`user-speciality${index}`}*/}
+                    {/*        anchorEl={anchorEl}*/}
+                    {/*        keepMounted*/}
+                    {/*        open={anchorEl?.id === `btn_user-speciality${index}`}*/}
+                    {/*        onClose={handleCloseRowMenu}*/}
+                    {/*      >*/}
+                    {/*        <MenuItem style={{ cursor: "default", fontSize: "13pt", fontFamily: "Open Sans Bold" }}><h4>Principal</h4></MenuItem>*/}
+                    {/*        <MenuItem style={{ cursor: "default", fontSize: "10pt", fontFamily: "Open Sans Regular"}}>{user.main_specialty_id.name}</MenuItem>*/}
+                    {/*        <MenuItem style={{ cursor: "default", fontSize: "13pt", fontFamily: "Open Sans Bold"}}><h4>Secundária</h4></MenuItem>*/}
+                    {/*        <MenuItem style={{ cursor: "default", fontSize: "10pt", fontFamily: "Open Sans Regular"}}>{user.specialties.map((specialty, index) => (*/}
+                    {/*          `${specialty.name}${index < (user.specialties.length - 1) ? ',' : ''}`*/}
+                    {/*        ))}</MenuItem>*/}
+                    {/*      </Menu> *!/*/}
+                    {/*    </ListItem>*/}
+                    {/*  ) : (null)*/}
+                    {/*  }*/}
+                    {/*</TableCell>*/}
+                    <TableCell>
+                      {formatDate(handleLinkedAt(user), 'DD/MM/YYYY')}
+                    </TableCell>
+                    <TableCell>
+                      <ListItemStatus
+                        active={handleActive(user)}>{handleActive(user) ? 'Ativo' : 'Inativo'}</ListItemStatus>
+                    </TableCell>
+                    <TableCell align="center">
+                      <Button aria-controls={`user-menu${index}`} id={`btn_user-menu${index}`} aria-haspopup="true"
+                              onClick={handleOpenRowMenu}>
+                        <MoreVert style={{color: '#0899BA'}}/>
                       </Button>
-                      {/* <Menu
-                        id={`user-speciality${index}`}
+                      <Menu
+                        id={`user-menu${index}`}
                         anchorEl={anchorEl}
                         keepMounted
-                        open={anchorEl?.id === `btn_user-speciality${index}`}
+                        open={anchorEl?.id === `btn_user-menu${index}`}
                         onClose={handleCloseRowMenu}
                       >
-                        <MenuItem style={{ cursor: "default", fontSize: "13pt", fontFamily: "Open Sans Bold" }}><h4>Principal</h4></MenuItem>
-                        <MenuItem style={{ cursor: "default", fontSize: "10pt", fontFamily: "Open Sans Regular"}}>{user.main_specialty_id.name}</MenuItem>
-                        <MenuItem style={{ cursor: "default", fontSize: "13pt", fontFamily: "Open Sans Bold"}}><h4>Secundária</h4></MenuItem>
-                        <MenuItem style={{ cursor: "default", fontSize: "10pt", fontFamily: "Open Sans Regular"}}>{user.specialties.map((specialty, index) => (
-                          `${specialty.name}${index < (user.specialties.length - 1) ? ',' : ''}`
-                        ))}</MenuItem>
-                      </Menu> */}
-                    </ListItem>
-                  ) : (null)
-                  }
-                </TableCell>
-                <TableCell>
-                  {formatDate(handleLinkedAt(user), 'DD/MM/YYYY')}
-                </TableCell>
-                <TableCell>
-                  <ListItemStatus active={handleActive(user)}>{handleActive(user) ? 'Ativo' : 'Inativo'}</ListItemStatus>
-                </TableCell>
-                <TableCell align="center">
-                  <Button aria-controls={`user-menu${index}`} id={`btn_user-menu${index}`} aria-haspopup="true"
-                          onClick={handleOpenRowMenu}>
-                    <MoreVert style={{color: '#0899BA'}}/>
-                  </Button>
-                  <Menu
-                    id={`user-menu${index}`}
-                    anchorEl={anchorEl}
-                    keepMounted
-                    open={anchorEl?.id === `btn_user-menu${index}`}
-                    onClose={handleCloseRowMenu}
-                  >
-                    {/*<MenuItem onClick={() => history.push(`/user/${user._id}/edit/edit`)}>Editar</MenuItem>*/}
-                    <MenuItem onClick={() => history.push(`/userclient/${user._id}/view`)}>Visualizar</MenuItem>
-                  </Menu>
-                </TableCell>
-              </TableRow>
-            ))}
-          </Table>
+                        {/*<MenuItem onClick={() => history.push(`/user/${user._id}/edit/edit`)}>Editar</MenuItem>*/}
+                        <MenuItem onClick={() => history.push(`/userclient/${user._id}/view`)}>Visualizar</MenuItem>
+                      </Menu>
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </Table>
+            </>
+          )}
+
           <PaginationComponent
             page={userState.list.page}
             rowsPerPage={userState.list.limit}
@@ -236,7 +299,7 @@ export default function UserClientList() {
             }))}
           />
         </Container>
-        {/*Especialidades*/}
+        {/*Especialidades
         <Dialog
 
           maxWidth="lg"
@@ -274,7 +337,7 @@ export default function UserClientList() {
               <h3 style={{color: '#0899BA', fontSize: '11pt'}}>Fechar</h3>
             </Button>
           </DialogActions>
-        </Dialog>
+        </Dialog>*/}
 
       </Sidebar>
     </>

@@ -51,6 +51,7 @@ export const createPermissionRequest = (data: PermissionInterface) =>
   action(CustomerTypes.CREATE_PERMISSION_REQUEST, { data });
 export const createPermissionSuccess = (data: PermissionInterface) =>
   action(CustomerTypes.CREATE_PERMISSION_SUCCESS, { data });
+export const cleanPermission = () => action(CustomerTypes.CLEAN_PERMISSION);
 
 export const loadFailure = () => action(CustomerTypes.LOAD_FAILURE);
 export const loadFailureCep = () => action(CustomerTypes.LOAD_FAILURE_CEP);

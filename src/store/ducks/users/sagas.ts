@@ -1,8 +1,8 @@
-import { put, call } from "redux-saga/effects";
-import { toast } from "react-toastify";
-import { AxiosResponse } from "axios";
+import {put, call} from "redux-saga/effects";
+import {toast} from "react-toastify";
+import {AxiosResponse} from "axios";
 
-import { apiSollar, viacep, googleMaps } from "../../../services/axios";
+import {apiSollar, viacep, googleMaps, apiIntegra} from "../../../services/axios";
 import LOCALSTORAGE from "../../../helpers/constants/localStorage";
 import {
   loadSuccess,
@@ -21,22 +21,33 @@ import {
   loadSuccessConfirm,
 } from "./actions";
 
-import { ViacepDataInterface } from "./types";
+import {ViacepDataInterface} from "./types";
 
-import { getGeolocation } from "../__globalReducer/saga";
+import {getGeolocation} from "../__globalReducer/saga";
+import SESSIONSTORAGE from "../../../helpers/constants/sessionStorage";
 
 const token = localStorage.getItem("token");
 
-export function* get({ payload }: any) {
-  const { params } = payload;
-
+export function* get({payload}: any) {
   try {
-    const response: AxiosResponse = yield call(
-      apiSollar.get,
-      `/user?limit=${params.limit ?? 10}&page=${params.page || 1}${
-        params.search ? "&search=" + params.search : ""
-      }${params.profession_id ? "&profession_id=" + params.profession_id : ""}`
-    );
+    const {params} = payload;
+    let response: AxiosResponse
+    const integration = sessionStorage.getItem(SESSIONSTORAGE.INTEGRATION)
+
+    if (integration) {
+      const company = localStorage.getItem(LOCALSTORAGE.INTEGRATION_COMPANY_SELECTED)
+      response = yield call(
+        apiIntegra(integration),
+        `/user/getUserByCompany/${company}?limit=${params.limit ?? 10}&page=${params.page || 1}`
+      );
+    } else {
+      response = yield call(
+        apiSollar.get,
+        `/user?limit=${params.limit ?? 10}&page=${params.page || 1}${
+          params.search ? "&search=" + params.search : ""
+        }${params.profession_id ? "&profession_id=" + params.profession_id : ""}`
+      );
+    }
     yield put(loadSuccess(response.data));
   } catch (error) {
     toast.error("Não foi possível atualizar os dados do usuario");
@@ -44,25 +55,33 @@ export function* get({ payload }: any) {
   }
 }
 
-export function* getUserById({ payload: { id: _id } }: any) {
+export function* getUserById({payload: {id: _id, page: page}}: any) {
   try {
-    const response: AxiosResponse = yield call(apiSollar.get, `/user`, {
-      headers: { token },
-      params: { _id },
-    });
+    let response: AxiosResponse
+    const integration = sessionStorage.getItem(SESSIONSTORAGE.INTEGRATION)
+
+    if (integration && !(page === 'sidebar' || page === 'userconfiguration')) {
+      response = yield call(apiIntegra(integration), `/user/${_id}`, {});
+    } else {
+      response = yield call(apiSollar.get, `/user`, {
+        headers: {token},
+        params: {_id},
+      });
+    }
+
     yield put(loadSuccessGetUserById(response.data));
   } catch (error) {
     yield put(loadFailure());
   }
 }
 
-export function* getUserByEmail({ payload: { email: email } }: any) {
+export function* getUserByEmail({payload: {email: email}}: any) {
   try {
     const response: AxiosResponse = yield call(
       apiSollar.get,
       `/user/confirmUserbyEmail`,
       {
-        params: { email },
+        params: {email},
       }
     );
 
@@ -72,8 +91,8 @@ export function* getUserByEmail({ payload: { email: email } }: any) {
   }
 }
 
-export function* loadGetUserDisengaged({ payload }: any) {
-  const { params } = payload;
+export function* loadGetUserDisengaged({payload}: any) {
+  const {params} = payload;
   try {
     const response: AxiosResponse = yield call(
       apiSollar.get,
@@ -81,7 +100,7 @@ export function* loadGetUserDisengaged({ payload }: any) {
         params.page || 1
       }`,
       {
-        headers: { token },
+        headers: {token},
       }
     );
     yield put(loadSuccessGetUserDisengaged(response.data));
@@ -90,7 +109,7 @@ export function* loadGetUserDisengaged({ payload }: any) {
   }
 }
 
-export async function* registerUser({ payload: { data } }: any) {
+export async function* registerUser({payload: {data}}: any) {
   // const phones = [];
 
   // if (data.phone.length > 0) {
@@ -114,13 +133,13 @@ export async function* registerUser({ payload: { data } }: any) {
 
   // data.phones = phones;
 
-  data.user_type_id = { _id: "5fc05d1803058800244bc41b" };
+  data.user_type_id = {_id: "5fc05d1803058800244bc41b"};
 
   if (data.address.postal_code) {
-    let { street, number, district, city, state } = data.address;
+    let {street, number, district, city, state} = data.address;
 
     try {
-      const { data: googleAddressData }: AxiosResponse = yield googleMaps.get(
+      const {data: googleAddressData}: AxiosResponse = yield googleMaps.get(
         `/geocode/json?address=${street},${number},${district},${city},${state}`
       );
 
@@ -129,7 +148,7 @@ export async function* registerUser({ payload: { data } }: any) {
           lat: latitude,
           lng: longitude,
         } = googleAddressData.results[0].geometry.location;
-        data.address.geolocation = { latitude, longitude };
+        data.address.geolocation = {latitude, longitude};
       }
     } catch (e) {
       console.error("Get google maps data", e.message);
@@ -142,7 +161,7 @@ export async function* registerUser({ payload: { data } }: any) {
       apiSollar.post,
       `/user/register`,
       data,
-      { headers: { token } }
+      {headers: {token}}
     );
     yield put(createUserSuccess(response.data));
     toast.success("Usuário cadastrado com sucesso!");
@@ -152,7 +171,7 @@ export async function* registerUser({ payload: { data } }: any) {
   }
 }
 
-export function* createUser({ payload: { data } }: any) {
+export function* createUser({payload: {data}}: any) {
 
   // const phones = [];
 
@@ -190,7 +209,7 @@ export function* createUser({ payload: { data } }: any) {
       apiSollar.post,
       `/user/store`,
       data,
-      { headers: { token } }
+      {headers: {token}}
     );
 
     yield put(createUserSuccess(response.data));
@@ -202,8 +221,8 @@ export function* createUser({ payload: { data } }: any) {
   }
 }
 
-export function* updateUser({ payload: { data } }: any) {
-  const { _id } = data;
+export function* updateUser({payload: {data}}: any) {
+  const {_id} = data;
 
   // const phones = [];
 
@@ -229,10 +248,10 @@ export function* updateUser({ payload: { data } }: any) {
   delete data.cellphone;
 
   if (data.address.postal_code) {
-    let { street, number, district, city, state } = data.address;
+    let {street, number, district, city, state} = data.address;
 
     try {
-      const { data: googleAddressData }: AxiosResponse = yield googleMaps.get(
+      const {data: googleAddressData}: AxiosResponse = yield googleMaps.get(
         `/geocode/json?address=${street},${number},${district},${city},${state}`
       );
 
@@ -241,7 +260,7 @@ export function* updateUser({ payload: { data } }: any) {
           lat: latitude,
           lng: longitude,
         } = googleAddressData.results[0].geometry.location;
-        data.address.geolocation = { latitude, longitude };
+        data.address.geolocation = {latitude, longitude};
       }
     } catch (e) {
       console.error("Get google maps data", e.message);
@@ -252,8 +271,8 @@ export function* updateUser({ payload: { data } }: any) {
     const response: AxiosResponse = yield call(
       apiSollar.put,
       `/user/${_id}/update`,
-      { ...data },
-      { headers: { token } }
+      {...data},
+      {headers: {token}}
     );
 
 
@@ -265,9 +284,9 @@ export function* updateUser({ payload: { data } }: any) {
   }
 }
 
-export function* getAddress({ payload }: any) {
+export function* getAddress({payload}: any) {
   try {
-    const { data }: AxiosResponse<ViacepDataInterface> = yield call(
+    const {data}: AxiosResponse<ViacepDataInterface> = yield call(
       viacep.get,
       `${payload.postalCode}/json`
     );
@@ -286,7 +305,7 @@ export function* getAddress({ payload }: any) {
 export function* getProfessions() {
   try {
     const response: AxiosResponse = yield call(apiSollar.get, `/profession`, {
-      headers: { token },
+      headers: {token},
     });
 
     yield put(loadProfessionsSuccess(response.data));
@@ -295,12 +314,12 @@ export function* getProfessions() {
   }
 }
 
-export function* searchUser({ payload: { data } }: any) {
+export function* searchUser({payload: {data}}: any) {
   try {
     const response: AxiosResponse = yield call(
       apiSollar.get,
       `/user/?limit=10&page=1`,
-      { params: data }
+      {params: data}
     );
     yield put(loadSuccess(response.data));
   } catch (error) {
@@ -309,7 +328,7 @@ export function* searchUser({ payload: { data } }: any) {
   }
 }
 
-export function* searchUserDisengaged({ payload: { value } }: any) {
+export function* searchUserDisengaged({payload: {value}}: any) {
   try {
     const response: AxiosResponse = yield call(
       apiSollar.get,
@@ -323,7 +342,8 @@ export function* searchUserDisengaged({ payload: { value } }: any) {
     yield put(loadFailure());
   }
 }
-export function* getUserTypes({ payload: { value } }: any) {
+
+export function* getUserTypes({payload: {value}}: any) {
   try {
     const response: AxiosResponse = yield call(
       apiSollar.get,
@@ -336,7 +356,7 @@ export function* getUserTypes({ payload: { value } }: any) {
   }
 }
 
-export function* checkEmail({ payload: { token } }: any) {
+export function* checkEmail({payload: {token}}: any) {
   try {
     const response: AxiosResponse = yield call(
       apiSollar.get,
@@ -347,7 +367,8 @@ export function* checkEmail({ payload: { token } }: any) {
     yield put(loadFailure());
   }
 }
-export function* recoveryPassword({ payload: { data } }: any) {
+
+export function* recoveryPassword({payload: {data}}: any) {
   localStorage.removeItem(LOCALSTORAGE.TOKEN);
   localStorage.removeItem(LOCALSTORAGE.USERNAME);
   localStorage.removeItem(LOCALSTORAGE.USER_ID);
@@ -358,26 +379,28 @@ export function* recoveryPassword({ payload: { data } }: any) {
     const response: AxiosResponse = yield call(
       apiSollar.post,
       `/users/recoverypassword`,
-      { ...data }
+      {...data}
     );
     yield put(loadRecoverySuccess(response.data));
   } catch (error) {
     yield put(loadFailure());
   }
 }
-export function* recoverypasswordiftoken({ payload: { data } }: any) {
+
+export function* recoverypasswordiftoken({payload: {data}}: any) {
   try {
     const response: AxiosResponse = yield call(
       apiSollar.post,
       `/users/recoverypasswordiftoken`,
-      { ...data }
+      {...data}
     );
     yield put(loadRecoverySuccess(response.data));
   } catch (error) {
     yield put(loadFailure());
   }
 }
-export function* loadConfirmUser({ payload: { token } }: any) {
+
+export function* loadConfirmUser({payload: {token}}: any) {
   try {
     const response: AxiosResponse = yield call(
       apiSollar.get,
@@ -389,15 +412,25 @@ export function* loadConfirmUser({ payload: { token } }: any) {
   }
 }
 
-export function* getByClient({ payload }: any) {
+export function* getByClient({payload}: any) {
   try {
-    const { params } = payload;
-    const response: AxiosResponse = yield call(
-      apiSollar.get,
-      `/user/getByClient?limit=${params.limit ?? 10}&page=${params.page || 1}${
-        params.search ? "&search=" + params.search : ""
-      }${params.profession_id ? "&profession_id=" + params.profession_id : ""}`
-    );
+    const {params} = payload;
+    let response: AxiosResponse
+    const integration = sessionStorage.getItem(SESSIONSTORAGE.INTEGRATION)
+
+    if (integration) {
+      response = yield call(
+        apiIntegra(integration),
+        `/user?limit=${params.limit ?? 10}&page=${params.page || 1}`
+      );
+    } else {
+      response = yield call(
+        apiSollar.get,
+        `/user/getByClient?limit=${params.limit ?? 10}&page=${params.page || 1}${
+          params.search ? "&search=" + params.search : ""
+        }${params.profession_id ? "&profession_id=" + params.profession_id : ""}`
+      );
+    }
 
     yield put(loadSuccess(response.data));
   } catch (error) {

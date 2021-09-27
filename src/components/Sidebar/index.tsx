@@ -30,13 +30,13 @@ import ExpansionPanelDetails from '@material-ui/core/ExpansionPanelDetails';
 import {
   Accordion,
   AccordionDetails,
-  AccordionSummary,
+  AccordionSummary, Badge,
   Button,
   Dialog,
   DialogActions,
   DialogContent,
   DialogContentText,
-  DialogTitle,
+  DialogTitle, Grid,
   MenuItem,
   Typography,
 } from '@material-ui/core';
@@ -55,6 +55,7 @@ import GroupAddIcon from '@material-ui/icons/GroupAdd';
 import LocalHospital from '@material-ui/icons/LocalHospital';
 import StarRateIcon from '@material-ui/icons/StarRate';
 import FavoriteIcon from '@material-ui/icons/Favorite';
+import NotificationsIcon from '@material-ui/icons/Notifications';
 
 import {Logo, UserContent} from './styles';
 import LOCALSTORAGE from '../../helpers/constants/localStorage';
@@ -65,6 +66,7 @@ import SESSIONSTORAGE from "../../helpers/constants/sessionStorage";
 import {toast} from "react-toastify";
 import _ from 'lodash';
 import {loadRequest} from "../../store/ducks/layout/actions";
+import Message from "../Message";
 
 const drawerWidth = 270;
 
@@ -137,6 +139,16 @@ const useStyles = makeStyles((theme: Theme) =>
       cursor: 'pointer',
       marginLeft: 5,
     },
+    indicator: {
+      borderBottom: "2px solid var(--secondary)",
+    },
+    padding: {
+      padding: theme.spacing(0, 1),
+    },
+    customBadge: {
+      backgroundColor: "var(--secondary)",
+      color: "white"
+    }
   })
 );
 
@@ -175,6 +187,7 @@ const Sibebar = (props: Props<any>) => {
 
   const [openModalLogout, setOpenModalLogout] = useState(false);
   const [openModalConfig, setOpenModalConfig] = useState(false);
+  const [openModalMessage, setOpenModalMessage] = useState(false);
 
   const handleDrawerClose = useCallback(() => {
     setOpen(prev => {
@@ -193,6 +206,8 @@ const Sibebar = (props: Props<any>) => {
 
     sessionStorage.removeItem(SESSIONSTORAGE.MENU);
     sessionStorage.removeItem(SESSIONSTORAGE.RIGHTS);
+    sessionStorage.removeItem(SESSIONSTORAGE.INTEGRATION);
+    sessionStorage.removeItem(SESSIONSTORAGE.INTEGRATION_NAME);
 
 
     window.location.reload();
@@ -296,6 +311,8 @@ const Sibebar = (props: Props<any>) => {
     if (layoutState.success) {
       sessionStorage.setItem(SESSIONSTORAGE.MENU, JSON.stringify(layoutState.data.menu))
       sessionStorage.setItem(SESSIONSTORAGE.RIGHTS, JSON.stringify(layoutState.data.rights))
+      layoutState.data.integration ? sessionStorage.setItem(SESSIONSTORAGE.INTEGRATION, layoutState.data.integration) : sessionStorage.removeItem(SESSIONSTORAGE.INTEGRATION)
+      layoutState.data.integration_name ? sessionStorage.setItem(SESSIONSTORAGE.INTEGRATION_NAME, layoutState.data.integration_name) : sessionStorage.removeItem(SESSIONSTORAGE.INTEGRATION_NAME)
 
       const items: itemsInterface[] = []
 
@@ -378,26 +395,65 @@ const Sibebar = (props: Props<any>) => {
         </div>
         {/* <Divider /> */}
 
-        <UserContent className={!open ? 'hide' : ''}>
+        <UserContent style={{marginBottom: '0px'}}>
           <AccountCircle/>
+        </UserContent>
 
-          <div>
-            <h3>{username}</h3>
-            <br/>
-            <div style={{display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center',}}>
-              <ListItem style={{padding: 0}} className={classes.logOutButton} onClick={() => setOpenModalConfig(true)}>
-                <BusinessIcon/>
-                <ListItemText style={{color: "#ffff", cursor: "pointer"}}>
-                  <div
-                    style={{display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center',}}>
-                    <h4 style={{color: '#ffffff', marginLeft: 10}}>{handleCustomerName(customer.name)}</h4>
-                    <h4 style={{color: '#ffffff', marginLeft: 10}}>{handleCompanyName(customer.name)}</h4>
-                  </div>
-                </ListItemText>
-                <EditIcon style={{color: '#fff', fontSize: '14px', marginLeft: '10px'}}/>
-              </ListItem>
-            </div>
-          </div>
+        <UserContent>
+          {open ? (
+            <>
+              <div>
+                <Grid container spacing={2} xs={12} md={12} style={{justifyContent: 'space-evenly'}}>
+                  <Grid item>
+                    <h3>{username}</h3>
+                  </Grid>
+                  <ListItem className={classes.logOutButton}
+                            onClick={() => setOpenModalMessage(true)}>
+                    <Grid item>
+                      <Badge classes={{badge: classes.customBadge}} className={classes.padding} color="primary"
+                             badgeContent={1} max={99}><NotificationsIcon/></Badge>
+                    </Grid>
+                  </ListItem>
+                </Grid>
+                <br/>
+                <div
+                  style={{display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center',}}>
+                  <ListItem style={{padding: 0}} className={classes.logOutButton}
+                            onClick={() => setOpenModalConfig(true)}>
+                    <BusinessIcon/>
+                    <ListItemText style={{color: "#ffff", cursor: "pointer"}}>
+                      <div
+                        style={{
+                          display: 'flex',
+                          flexDirection: 'column',
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                        }}>
+                        <h4 style={{color: '#ffffff', marginLeft: 10}}>{handleCustomerName(customer.name)}</h4>
+                        <h4 style={{color: '#ffffff', marginLeft: 10}}>{handleCompanyName(company.name)}</h4>
+                      </div>
+                    </ListItemText>
+                    <EditIcon style={{color: '#fff', fontSize: '14px', marginLeft: '10px'}}/>
+                  </ListItem>
+                </div>
+              </div>
+            </>
+          ) : (
+            <>
+              <div style={{paddingRight: '60px'}}>
+                <Grid container spacing={2} xs={12} md={12} style={{justifyContent: 'space-evenly'}}>
+                  <ListItem style={{padding: 0}} className={classes.logOutButton}
+                            onClick={() => setOpenModalMessage(true)}>
+                    <Grid item>
+                      <Badge classes={{badge: classes.customBadge}} className={classes.padding} color="primary"
+                             badgeContent={1} max={99}><NotificationsIcon/></Badge>
+                    </Grid>
+                  </ListItem>
+                </Grid>
+                <br/>
+              </div>
+            </>
+          )}
         </UserContent>
         <List>
           {itemsMenu.map((item: any, index: any) => (
@@ -463,7 +519,6 @@ const Sibebar = (props: Props<any>) => {
       </Dialog>
 
       <Dialog
-
         open={openModalConfig}
         // onClose={handleToggleModalConfig}
         aria-labelledby="alert-dialog-title"
@@ -478,6 +533,30 @@ const Sibebar = (props: Props<any>) => {
           <Button onClick={() => {
             setOpenModalConfig(false)
             history.push(`/dashboard`);
+            //location.reload()
+          }}
+                  color="primary"
+          >
+            Fechar
+          </Button>
+        </DialogActions>
+      </Dialog>
+
+      <Dialog
+        open={openModalMessage}
+        onClose={() => setOpenModalMessage(false)}
+        aria-labelledby="alert-dialog-title"
+        aria-describedby="alert-dialog-description"
+        TransitionComponent={Transition}
+      >
+        <DialogTitle id="alert-dialog-title">Mensagens</DialogTitle>
+        <DialogContent>
+          <Message/>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => {
+            setOpenModalMessage(false)
+            // history.push(`/dashboard`);
             //location.reload()
           }}
                   color="primary"

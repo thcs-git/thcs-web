@@ -1,4 +1,5 @@
 export interface PaginationProps {
+  rowsPerPageOptions?: any;
   handleChangePage?: () => void;
 
   // values

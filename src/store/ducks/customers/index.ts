@@ -161,6 +161,19 @@ const reducer: Reducer<CustomerState> = (state = INITIAL_STATE, action) => {
         loading: false,
         permissionLoad: true,
       };
+    case CustomerTypes.CLEAN_PERMISSION:
+      return {
+        ...state,
+        permission: {
+          _id: "",
+          rights: [],
+          customer_id: "",
+          name: "",
+          active: false,
+        },
+        loading: false,
+        permissionLoad: false,
+      };
     case CustomerTypes.UPDATE_PERMISSION_SUCCESS:
       return {
         ...state,
