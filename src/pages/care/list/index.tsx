@@ -164,7 +164,7 @@ export default function CouncilList() {
                     </TableCell>
                     <TableCell>
                       <Link to={`/care/${care._id}/overview`}>
-                        {handleEmpty(care?.patient_id?.name)}
+                        {care.patient_id?.social_status ? handleEmpty(care.patient_id.social_name) : handleEmpty(care.patient_id.name)}
                       </Link>
                     </TableCell>
                     <TableCell align="center">{handleEmpty(care?.tipo)}</TableCell>

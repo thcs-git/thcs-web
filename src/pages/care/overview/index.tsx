@@ -196,6 +196,11 @@ export default function PatientOverview(props: RouteComponentProps<IPageParams>)
                             <p>Nome: {careState.data.patient_id.name}</p>
                           </ListItem>
                         )}
+                        {careState?.data?.patient_id?._id && (
+                          <ListItem style={{fontWeight: 'bold'}}>
+                            <p>Código do Paciente: {careState.data.patient_id._id}</p>
+                          </ListItem>
+                        )}
                         {careState?.data?.patient_id?.birthdate && (
                           <ListItem>
                             <p>Data de Nascimento: {formatDate(careState.data.patient_id.birthdate, "DD/MM/YYYY")}</p>

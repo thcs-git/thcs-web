@@ -52,6 +52,7 @@ export interface PatientPhonesInterface {
 }
 
 export interface PatientInterface {
+  social_status: boolean;
   _id?: string;
   companies: [string] | [];
   name: string;

@@ -23,25 +23,37 @@ const UserForm = (props: IComponent) => {
 
   const birthdate = state.birthdate ? formatDate(state.birthdate, 'DD-MM-YYYY') : ''
 
+  const rows1: any[] = []
+  const rows2: any[] = []
+
+  function handleRows1(state: any, name: string) {
+    state && rows1.push({name: name, value: state})
+  }
+
+  function handleRows2(state: any, name: string) {
+    state && rows2.push({name: name, value: state})
+  }
+
+  handleRows1(state.name, 'Nome do usuário')
+  handleRows1(state.email, 'E-mail')
+  handleRows1(state.birthdate, 'Data de nascimento')
+  handleRows1(age(state.birthdate), 'Idade')
+  handleRows1(state.gender, 'Sexo')
+
+  handleRows2(state.fiscal_number, 'CPF')
+  handleRows2(state.national_id, 'RG')
+  handleRows2(state.issuing_organ, 'Órgão Emissor')
+  handleRows2(state.nationality, 'Nacionalidade')
+  handleRows2(state.mother_name, 'Nome da mãe')
+
   const content1 = {
     tittle: 'Contato',
-    rows: [
-      {name: "Nome do usuário", value: state.email},
-      {name: "Data de nascimento", value: birthdate},
-      {name: "Idade", value: age(state.birthdate)},
-      {name: "Sexo", value: state.gender},
-    ]
+    rows: rows1
   }
 
   const content2 = {
     tittle: 'Contato',
-    rows: [
-      {name: "CPF", value: state.fiscal_number},
-      {name: "RG", value: state.national_id},
-      {name: "Órgão Emissor", value: state.issuing_organ},
-      {name: "Nacionalidade", value: state.nationality},
-      {name: "Nome da mãe", value: state.mother_name},
-    ]
+    rows: rows2
   }
 
   return (

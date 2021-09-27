@@ -51,6 +51,7 @@ export default function Configuration() {
 
   const changeCompany = useCallback((company: any) => {
     if (company) {
+      console.log(company.companie_id.id)
       localStorage.setItem(LOCALSTORAGE.COMPANY_SELECTED, company.companie_id._id);
       localStorage.setItem(LOCALSTORAGE.COMPANY_NAME, company.companie_id.name);
       localStorage.setItem(LOCALSTORAGE.CUSTOMER, company.companie_id.customer_id._id);
@@ -58,8 +59,10 @@ export default function Configuration() {
 
       if (company.companie_id.customer_id.integration) {
         sessionStorage.setItem(SESSIONSTORAGE.INTEGRATION, company.companie_id.customer_id.integration);
+        localStorage.setItem(LOCALSTORAGE.INTEGRATION_COMPANY_SELECTED, company.companie_id.id);
       } else {
         sessionStorage.removeItem(SESSIONSTORAGE.INTEGRATION);
+        localStorage.removeItem(LOCALSTORAGE.INTEGRATION_COMPANY_SELECTED);
       }
 
       setUser(prevState => ({
@@ -81,7 +84,7 @@ export default function Configuration() {
 
         <br/>
         <Grid container>
-          <Grid item sm={4} md={12} lg={10}>
+          <Grid item sm={12} md={12} lg={12}>
             <Autocomplete
               id="combo-box-change-company"
               options={companies}
