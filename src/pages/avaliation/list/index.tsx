@@ -141,7 +141,8 @@ export default function AvaliationList() {
     let complexitiesArray: any = []
     let complexity: string = ""
     care?.documents_id?.map((field: any) => {
-      complexitiesArray.push(field.complexity);
+      // complexitiesArray.push(field.complexity);
+      complexitiesArray.push(care?.capture.complexity);
     })
     if (
       complexitiesArray.findIndex(
@@ -500,7 +501,7 @@ export default function AvaliationList() {
                   </Link>
                 </TableCell> {/* Paciente */}
                 <TableCell align="center">{handleType(care)}</TableCell> {/* Tipo */}
-                <TableCell align="center">{handleCoplexities(care)}</TableCell> {/* Complexidade */}
+                <TableCell align="center">{handleCoplexities(care)}</TableCell> {/*Complexidade*/}
                 <TableCell
                   align="center">{handleCheckDocument('5ffd79012f5d2b1d8ff6bea3', care?.documents_id || [])}</TableCell> {/* Socioambiental */}
                 <TableCell
