@@ -58,14 +58,14 @@ export default function CouncilList() {
   useEffect(() => {
     dispatch(getCares({status: "Atendimento"}));
 
-    if (!(sessionStorage.getItem(SESSIONSTORAGE.INTEGRATION))) {
-      dispatch(loadRequestPopUp({
-        page: '1',
-        limit: '1000',
-        total: 1000,
-        search
-      }));
-    }
+    // if (!(sessionStorage.getItem(SESSIONSTORAGE.INTEGRATION))) {
+    //   dispatch(loadRequestPopUp({
+    //     page: '1',
+    //     limit: '1000',
+    //     total: 1000,
+    //     search
+    //   }));
+    // }
   }, []);
 
   useEffect(() => {
@@ -140,6 +140,24 @@ export default function CouncilList() {
   function handleEmpty(value: any) {
     return value ? value : '-'
   }
+
+  const tableCells = [
+    {name: 'Data do Atendimento', align: 'left'},
+    {name: 'Atendimento', align: 'left'},
+    {name: 'Data da Alta', align: 'left'},
+    {name: 'Tipo', align: 'center'},
+    {name: 'Empresa', align: 'center'},
+    {name: 'Visualizar', align: 'center'}
+  ]
+
+  const tableRow = [
+    {name: 'Data do Atendimento', align: 'left'},
+    {name: 'Atendimento', align: 'left'},
+    {name: 'Data da Alta', align: 'left'},
+    {name: 'Tipo', align: 'center'},
+    {name: 'Empresa', align: 'center'},
+    {name: 'Visualizar', align: 'center'}
+  ]
 
   return (
     <>
@@ -318,6 +336,7 @@ export default function CouncilList() {
           modalOpen={historyModalOpen}
           setModalOpen={setHistoryModalOpen}
           historyPatient={historyPatient}
+          tableCells={tableCells}
         />
 
         {/*<Dialog*/}

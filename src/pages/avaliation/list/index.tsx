@@ -84,12 +84,12 @@ export default function AvaliationList() {
     dispatch(cleanAction());
     dispatch(getCares({}));
     dispatch(careTypeRequest());
-    dispatch(loadRequestPopUp({
-      page: '1',
-      limit: '1000',
-      total: 1000,
-      search
-    }));
+    // dispatch(loadRequestPopUp({
+    //   page: '1',
+    //   limit: '1000',
+    //   total: 1000,
+    //   search
+    // }));
 
   }, []);
 

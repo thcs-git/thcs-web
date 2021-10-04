@@ -181,7 +181,7 @@ export interface CareState {
   data: CareInterface;
   list: CareList;
   list2: CareList;
-  history: [];
+  history: CareInterface[];
   loading: boolean;
   error: boolean;
   success: boolean;

@@ -36,10 +36,11 @@ interface IDialogProps {
   modalOpen: any;
   setModalOpen: any;
   historyPatient: any;
+  tableCells: any;
 }
 
 export default function HistoryDialog(props: IDialogProps) {
-  const {modalOpen, setModalOpen, historyPatient} = props
+  const {modalOpen, setModalOpen, historyPatient, tableCells} = props
   const dispatch = useDispatch();
   const history = useHistory();
 
@@ -72,21 +73,14 @@ export default function HistoryDialog(props: IDialogProps) {
                 <AccountCircleIcon style={{color: '#0899BA', fontSize: '30pt'}}/>
               </Grid>
               <Grid item md={11} style={{padding: "0", paddingTop: "0.4rem"}}>
-                {/*<h3 style={{color: '#333333'}}>{careState.list.data[careIndex]?.patient_id.name}</h3>*/}
+                <h3 style={{color: '#333333'}}>{careState.history[0]?.patient_id.name}</h3>
               </Grid>
             </Grid>
             <Table
-              tableCells={[
-                {name: 'Data do Atendimento', align: 'left'},
-                {name: 'Atendimento', align: 'left'},
-                {name: 'Data da Alta', align: 'left'},
-                {name: 'Tipo', align: 'center'},
-                {name: 'Empresa', align: 'center'},
-                {name: 'Visualizar', align: 'center'}
-              ]}
+              tableCells={tableCells}
             >
               {careState?.history?.map((care: any, index: number) => {
-                console.log(care)
+
                 return (
                   <TableRow key={`patient_${index}`}>
                     <TableCell>
@@ -99,9 +93,11 @@ export default function HistoryDialog(props: IDialogProps) {
                       <p>-</p>
                     </TableCell>
                     <TableCell align="center">
-                      {typeof care?.care_type_id === "object"
-                        ? care?.care_type_id.name
-                        : care?.care_type_id}
+                      <p>
+                        {typeof care?.care_type_id === "object"
+                          ? care?.care_type_id.name
+                          : care?.care_type_id}
+                      </p>
                     </TableCell>
                     <TableCell align="center">
                       <p>{care?.company_id?.name}</p>
