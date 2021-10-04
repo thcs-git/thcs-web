@@ -142,7 +142,7 @@ import {
   getSchedule,
   storeSchedule,
   updateSchedule,
-  deleteSchedule,
+  deleteSchedule, getHistory,
 } from "./cares/sagas";
 
 import { get as getProfession } from "./professions/sagas";
@@ -214,6 +214,8 @@ export default function* rootSaga() {
     takeLatest(CareTypes.CREATE_SCHEDULE_REQUEST, storeSchedule),
     takeLatest(CareTypes.DELETE_SCHEDULE_REQUEST, deleteSchedule),
     takeLatest(CareTypes.UPDATE_SCHEDULE_REQUEST, updateSchedule),
+
+    takeLatest(CareTypes.LOAD_HISTORY_REQUEST, getHistory),
 
     // Council
     takeLatest(CouncilTypes.LOAD_REQUEST, getCouncils),

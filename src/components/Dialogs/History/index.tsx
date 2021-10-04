@@ -1,4 +1,4 @@
-import React, { useEffect, useCallback } from 'react';
+import React, {useEffect, useCallback} from 'react';
 import {
   Grid,
   Dialog,
@@ -12,19 +12,25 @@ import {
   TextField,
   TableRow, TableCell
 } from '@material-ui/core';
-import { Autocomplete } from '@material-ui/lab';
+import {Autocomplete} from '@material-ui/lab';
 
-import { useDispatch, useSelector } from 'react-redux';
-import { ApplicationState } from '../../../store';
-import { healthInsuranceRequest, healthPlanRequest, healthSubPlanRequest } from '../../../store/ducks/cares/actions';
+import {useDispatch, useSelector} from 'react-redux';
+import {ApplicationState} from '../../../store';
+import {
+  healthInsuranceRequest,
+  healthPlanRequest,
+  healthSubPlanRequest,
+  loadHistoryRequest
+} from '../../../store/ducks/cares/actions';
 
 import Loading from '../../Loading';
 
-import { FieldContent } from '../../../styles/components/Form';
+import {FieldContent} from '../../../styles/components/Form';
 import Button from '../../../styles/components/Button';
 import {AccountCircle as AccountCircleIcon, Visibility as VisibilityIcon} from "@material-ui/icons";
 import Table from "../../Table";
 import {formatDate} from "../../../helpers/date";
+import {useHistory} from "react-router-dom";
 
 interface IDialogProps {
   modalOpen: any;
@@ -35,19 +41,19 @@ interface IDialogProps {
 export default function HistoryDialog(props: IDialogProps) {
   const {modalOpen, setModalOpen, historyPatient} = props
   const dispatch = useDispatch();
+  const history = useHistory();
 
   const careState = useSelector((state: ApplicationState) => state.cares);
 
   useEffect(() => {
     if (historyPatient) {
-      console.log('historyPatient', historyPatient)
-      // dispatch(healthInsuranceRequest());
+      dispatch(loadHistoryRequest(historyPatient, 'Atendimento'));
     }
   }, [historyPatient]);
 
   return (
     <>
-      {careState.loading && <Loading />}
+      {careState.loading && <Loading/>}
       <Dialog
         maxWidth="lg"
         open={modalOpen}
@@ -75,9 +81,40 @@ export default function HistoryDialog(props: IDialogProps) {
                 {name: 'Atendimento', align: 'left'},
                 {name: 'Data da Alta', align: 'left'},
                 {name: 'Tipo', align: 'center'},
+                {name: 'Empresa', align: 'center'},
                 {name: 'Visualizar', align: 'center'}
               ]}
             >
+              {careState?.history?.map((care: any, index: number) => {
+                console.log(care)
+                return (
+                  <TableRow key={`patient_${index}`}>
+                    <TableCell>
+                      <p>{care?.started_at ? formatDate(care?.started_at ?? "", "DD/MM/YYYY") : ""}</p>
+                    </TableCell>
+                    <TableCell align="center">
+                      <p>{care?._id}</p>
+                    </TableCell>
+                    <TableCell align="center">
+                      <p>-</p>
+                    </TableCell>
+                    <TableCell align="center">
+                      {typeof care?.care_type_id === "object"
+                        ? care?.care_type_id.name
+                        : care?.care_type_id}
+                    </TableCell>
+                    <TableCell align="center">
+                      <p>{care?.company_id?.name}</p>
+                    </TableCell>
+                    <TableCell align="center">
+                      <Button onClick={() => history.push(`/care/${care?._id}/overview`)}>
+                        <VisibilityIcon style={{color: '#0899BA'}}/>
+                      </Button>
+                    </TableCell>
+                  </TableRow>
+                )
+              })}
+
               {/*{patientArray?.map((patient: any, index: number) => {*/}
               {/*  console.log(patient)*/}
               {/*  return (*/}

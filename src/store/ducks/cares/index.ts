@@ -36,6 +36,7 @@ export const INITIAL_STATE: CareState = {
     page: '1',
     total: 0
   },
+  history: [],
   error: false,
   loading: false,
   success: false,
@@ -534,7 +535,21 @@ const reducer: Reducer<CareState> = (state = INITIAL_STATE, action) => {
         error: false,
         success: true
       };
-
+    case CareTypes.LOAD_HISTORY_REQUEST:
+      return {
+        ...state,
+        loading: true,
+        error: false,
+        success: false
+      };
+    case CareTypes.LOAD_HISTORY_SUCCESS:
+      return {
+        ...state,
+        history: action.payload.data,
+        loading: false,
+        error: false,
+        success: true
+      };
     case CareTypes.CLEAN:
       return INITIAL_STATE;
     default:

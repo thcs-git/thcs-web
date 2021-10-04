@@ -106,6 +106,9 @@ export enum CareTypes {
 
   DELETE_SCHEDULE_REQUEST = "@care/DELETE_SCHEDULE_REQUEST",
   DELETE_SCHEDULE_SUCCESS = "@care/DELETE_SCHEDULE_SUCCESS",
+
+  LOAD_HISTORY_REQUEST = "@care/LOAD_HISTORY_REQUEST",
+  LOAD_HISTORY_SUCCESS = "@care/LOAD_HISTORY_SUCCESS",
 }
 
 /**
@@ -178,6 +181,7 @@ export interface CareState {
   data: CareInterface;
   list: CareList;
   list2: CareList;
+  history: [];
   loading: boolean;
   error: boolean;
   success: boolean;

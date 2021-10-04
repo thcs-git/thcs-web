@@ -35,6 +35,7 @@ import {
   createScheduleSuccess,
   updateScheduleSuccess,
   deleteScheduleSuccess,
+  loadHistorySuccess
 } from "./actions";
 
 import {apiIntegra, apiSollar} from "../../../services/axios";
@@ -642,6 +643,22 @@ export function* deleteSchedule({payload}: any) {
   } catch (error) {
     console.log(error);
     toast.error("Erro ao obter a agenda");
+    yield put(loadFailure());
+  }
+}
+
+export function* getHistory({payload}: any) {
+  try {
+    const {id, type} = payload;
+    const {data}: AxiosResponse = yield call(
+      apiSollar.get,
+      `/attendance/getHistory?patient_id=${id}${type ? "&status=" + type : ""}`,
+    );
+
+    yield put(loadHistorySuccess(data));
+  } catch (error) {
+    console.log(error);
+    toast.error("Erro ao obter o histórico");
     yield put(loadFailure());
   }
 }

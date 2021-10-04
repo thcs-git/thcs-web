@@ -190,6 +190,14 @@ export const loadDocumentSuccess = (data: any) =>
   action(CareTypes.LOAD_DOCUMENT_SUCCESS, { data });
 
 /**
+ * History
+ */
+export const loadHistoryRequest = (id: string, type: string) =>
+  action(CareTypes.LOAD_HISTORY_REQUEST, { id, type });
+export const loadHistorySuccess = (data: any) =>
+  action(CareTypes.LOAD_HISTORY_SUCCESS, { data });
+
+/**
  * Schedule
  */
 export const loadScheduleRequest = (params: any) =>
