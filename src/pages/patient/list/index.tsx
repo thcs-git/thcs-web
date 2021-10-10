@@ -55,6 +55,7 @@ import {HighComplexityLabel, LowerComplexityLabel, MediumComplexityLabel} from "
 
 import {ListItemCaptureStatus, CaptionList} from '../../avaliation/list/styles';
 import SESSIONSTORAGE from "../../../helpers/constants/sessionStorage";
+import HistoryDialog from "../../../components/Dialogs/History";
 
 export default function PatientList() {
   const history = useHistory();
@@ -70,14 +71,18 @@ export default function PatientList() {
   const [patientArray, setpatientArray] = useState<any>();
   const [patientIndex, setPatientIndex] = useState(0);
 
+  const [historyPatient, setHistoryPatient] = useState("");
+  const [historyPatientName, setHistoryPatientName] = useState("");
+
+
   useEffect(() => {
     dispatch(loadRequest());
-    dispatch(loadRequestPopUp({
-      page: '1',
-      limit: '1000',
-      total: 1000,
-      search
-    }));
+    // dispatch(loadRequestPopUp({
+    //   page: '1',
+    //   limit: '1000',
+    //   total: 1000,
+    //   search
+    // }));
   }, []);
 
   const handleOpenRowMenu = useCallback((event: React.MouseEvent<HTMLButtonElement>) => {
@@ -102,7 +107,7 @@ export default function PatientList() {
 
   const isDone = useCallback((care: any) => {
     let patientId = _.filter(careState.list2.data, {patient_id: {_id: care}});
-    console.log("teste", patientId);
+    // console.log("teste", patientId);
     setpatientArray(patientId);
     //console.log(patientArray);
   }, [careState]);
@@ -110,17 +115,20 @@ export default function PatientList() {
   const toggleHistoryModal = (index: number, patient: any) => {
     handleCloseRowMenu();
     setPatientIndex(index);
-    isDone(patient);
+    isDone(patient?._id);
     setHistoryModalOpen(!historyModalOpen);
+    setHistoryPatient(patient?._id);
+    setHistoryPatientName(patient?.name);
   };
 
   const toggleHistoryModal_2 = (index: number, patient: any) => {
     handleCloseRowMenu();
     setPatientIndex(index);
-    isDone(patient);
+    isDone(patient?._id);
     setHistoryModalOpen_2(!historyModalOpen_2);
+    setHistoryPatient(patient?._id);
+    setHistoryPatientName(patient?.name);
   };
-
 
   const handleType = useCallback((care: any) => {
     let complexitiesArray: any = []
@@ -208,6 +216,24 @@ export default function PatientList() {
 
   const integration = sessionStorage.getItem(SESSIONSTORAGE.INTEGRATION)
 
+  const tableCellsAvaliation = [
+    {name: 'Data do Atendimento', align: 'left'},
+    {name: 'Atendimento', align: 'left'},
+    {name: 'Data da Alta', align: 'left'},
+    {name: 'Tipo', align: 'center'},
+    {name: 'Empresa', align: 'center'},
+    {name: 'Visualizar', align: 'center'}
+  ]
+
+  const tableCellsCare = [
+    {name: 'Data da captação', align: 'left'},
+    {name: 'Tipo', align: 'center'},
+    {name: 'Complexidade', align: 'center'},
+    {name: 'Status', align: 'center'},
+    {name: 'Empresa', align: 'center'},
+    {name: 'Visualizar', align: 'left'}
+  ]
+
   return (
     <>
       <Sidebar>
@@ -286,9 +312,9 @@ export default function PatientList() {
                           onClick={() => history.push(`/patient/${patient._id}/view/edit`)}>Visualizar</MenuItem>
                         <MenuItem onClick={() => history.push(`/patient/capture/create?patient_id=${patient._id}`)}>Iniciar
                           captação</MenuItem>
-                        <MenuItem onClick={() => toggleHistoryModal(index, patient?._id)}>Histórico de
+                        <MenuItem onClick={() => toggleHistoryModal(index, patient)}>Histórico de
                           captação</MenuItem>
-                        <MenuItem onClick={() => toggleHistoryModal_2(index, patient?._id)}>Histórico de
+                        <MenuItem onClick={() => toggleHistoryModal_2(index, patient)}>Histórico de
                           atendimento</MenuItem>
                       </Menu>
                     </TableCell>
@@ -339,138 +365,154 @@ export default function PatientList() {
           />
         </Container>
         {/* Historico de Captação */}
-        <Dialog
+        <HistoryDialog
+          modalOpen={historyModalOpen_2}
+          setModalOpen={setHistoryModalOpen_2}
+          historyPatient={historyPatient}
+          historyPatientName={historyPatientName}
+          tableCells={tableCellsCare}
+          historyType={'care'}
+        />
+        {/*<Dialog*/}
 
-          maxWidth="lg"
-          open={historyModalOpen}
-          onClose={() => setHistoryModalOpen(false)}
-          aria-labelledby="scroll-dialog-title"
-          aria-describedby="scroll-dialog-description"
-        >
-          <DialogTitle id="scroll-dialog-title"><h3>Histórico de Captações</h3></DialogTitle>
-          <DialogContent>
-            <DialogContentText
-              id="scroll-dialog-description"
-              tabIndex={-1}
-            >
-              <Grid container style={{display: "flex", flexDirection: "row", justifyContent: "space-between"}}>
-                <Grid item md={1} style={{padding: "0"}}>
-                  <AccountCircleIcon style={{color: '#0899BA', fontSize: '30pt'}}/>
-                </Grid>
-                <Grid item md={11} style={{padding: "0", paddingTop: "0.4rem"}}>
-                  <h3 style={{color: '#333333'}}>{patientState.list.data[patientIndex]?.name}</h3>
-                </Grid>
-              </Grid>
-              <Table
-                tableCells={[
-                  {name: 'Data da captação', align: 'left'},
-                  {name: 'Tipo', align: 'center'},
-                  {name: 'Complexidade', align: 'center'},
-                  {name: 'Status', align: 'center'},
-                  {name: 'Visualizar', align: 'left'}
-                ]}
-              >
-                {patientArray?.map((patient: any, index: number) => {
-                  return (
-                    <TableRow key={`patient_${index}`}>
-                      <TableCell>
-                        <p>{patient?.capture?.finished_at ? formatDate(patient?.finished_at, 'DD/MM/YYYY') : '-'}</p>
-                      </TableCell>
-                      <TableCell align="center">
-                        <p>{handleType(patient)}</p>
-                      </TableCell>
-                      <TableCell align="center">
-                        <p>{handleCoplexities(patient)}</p>
-                      </TableCell>
-                      <TableCell align="center">
-                        <ListItemCaptureStatus status={patient?.capture?.status || ''}>
-                          <FiberManualRecord/> {patient?.capture?.status}
-                        </ListItemCaptureStatus>
-                      </TableCell>
-                      <TableCell align="center">
-                        <Button onClick={() => history.push(`/patient/capture/${patient._id}/overview`)}>
-                          <VisibilityIcon style={{color: '#0899BA'}}/>
-                        </Button>
-                      </TableCell>
-                    </TableRow>
-                  )
-                })}
-              </Table>
-            </DialogContentText>
-          </DialogContent>
-          <DialogActions>
-            <Button onClick={() => setHistoryModalOpen(false)} color="primary">
-              <h3 style={{color: '#0899BA', fontSize: '11pt'}}>Fechar</h3>
-            </Button>
-          </DialogActions>
-        </Dialog>
+        {/*  maxWidth="lg"*/}
+        {/*  open={historyModalOpen}*/}
+        {/*  onClose={() => setHistoryModalOpen(false)}*/}
+        {/*  aria-labelledby="scroll-dialog-title"*/}
+        {/*  aria-describedby="scroll-dialog-description"*/}
+        {/*>*/}
+        {/*  <DialogTitle id="scroll-dialog-title"><h3>Histórico de Captações</h3></DialogTitle>*/}
+        {/*  <DialogContent>*/}
+        {/*    <DialogContentText*/}
+        {/*      id="scroll-dialog-description"*/}
+        {/*      tabIndex={-1}*/}
+        {/*    >*/}
+        {/*      <Grid container style={{display: "flex", flexDirection: "row", justifyContent: "space-between"}}>*/}
+        {/*        <Grid item md={1} style={{padding: "0"}}>*/}
+        {/*          <AccountCircleIcon style={{color: '#0899BA', fontSize: '30pt'}}/>*/}
+        {/*        </Grid>*/}
+        {/*        <Grid item md={11} style={{padding: "0", paddingTop: "0.4rem"}}>*/}
+        {/*          <h3 style={{color: '#333333'}}>{patientState.list.data[patientIndex]?.name}</h3>*/}
+        {/*        </Grid>*/}
+        {/*      </Grid>*/}
+        {/*      <Table*/}
+        {/*        tableCells={[*/}
+        {/*          {name: 'Data da captação', align: 'left'},*/}
+        {/*          {name: 'Tipo', align: 'center'},*/}
+        {/*          {name: 'Complexidade', align: 'center'},*/}
+        {/*          {name: 'Status', align: 'center'},*/}
+        {/*          {name: 'Visualizar', align: 'left'}*/}
+        {/*        ]}*/}
+        {/*      >*/}
+        {/*        {patientArray?.map((patient: any, index: number) => {*/}
+        {/*          return (*/}
+        {/*            <TableRow key={`patient_${index}`}>*/}
+        {/*              <TableCell>*/}
+        {/*                <p>{patient?.capture?.finished_at ? formatDate(patient?.finished_at, 'DD/MM/YYYY') : '-'}</p>*/}
+        {/*              </TableCell>*/}
+        {/*              <TableCell align="center">*/}
+        {/*                <p>{handleType(patient)}</p>*/}
+        {/*              </TableCell>*/}
+        {/*              <TableCell align="center">*/}
+        {/*                <p>{handleCoplexities(patient)}</p>*/}
+        {/*              </TableCell>*/}
+        {/*              <TableCell align="center">*/}
+        {/*                <ListItemCaptureStatus status={patient?.capture?.status || ''}>*/}
+        {/*                  <FiberManualRecord/> {patient?.capture?.status}*/}
+        {/*                </ListItemCaptureStatus>*/}
+        {/*              </TableCell>*/}
+        {/*              <TableCell align="center">*/}
+        {/*                <Button onClick={() => history.push(`/patient/capture/${patient._id}/overview`)}>*/}
+        {/*                  <VisibilityIcon style={{color: '#0899BA'}}/>*/}
+        {/*                </Button>*/}
+        {/*              </TableCell>*/}
+        {/*            </TableRow>*/}
+        {/*          )*/}
+        {/*        })}*/}
+        {/*      </Table>*/}
+        {/*    </DialogContentText>*/}
+        {/*  </DialogContent>*/}
+        {/*  <DialogActions>*/}
+        {/*    <Button onClick={() => setHistoryModalOpen(false)} color="primary">*/}
+        {/*      <h3 style={{color: '#0899BA', fontSize: '11pt'}}>Fechar</h3>*/}
+        {/*    </Button>*/}
+        {/*  </DialogActions>*/}
+        {/*</Dialog>*/}
 
         {/* {Histórico de atendimento} */}
-        <Dialog
+        <HistoryDialog
+          modalOpen={historyModalOpen}
+          setModalOpen={setHistoryModalOpen}
+          historyPatient={historyPatient}
+          historyPatientName={historyPatientName}
+          tableCells={tableCellsAvaliation}
+          historyType={'avaliation'}
+        />
+        {/*<Dialog*/}
 
-          maxWidth="lg"
-          open={historyModalOpen_2}
-          onClose={() => setHistoryModalOpen_2(false)}
-          aria-labelledby="scroll-dialog-title"
-          aria-describedby="scroll-dialog-description"
-        >
-          <DialogTitle id="scroll-dialog-title"><h3>Histórico de Atendimento</h3></DialogTitle>
-          <DialogContent>
-            <DialogContentText
-              id="scroll-dialog-description"
-              tabIndex={-1}
-            >
-              <Grid container style={{display: "flex", flexDirection: "row", justifyContent: "space-between"}}>
-                <Grid item md={1} style={{padding: "0"}}>
-                  <AccountCircleIcon style={{color: '#0899BA', fontSize: '30pt'}}/>
-                </Grid>
-                <Grid item md={11} style={{padding: "0", paddingTop: "0.4rem"}}>
-                  <h3 style={{color: '#333333'}}>{patientState.list.data[patientIndex]?.name}</h3>
-                </Grid>
-              </Grid>
-              <Table
-                tableCells={[
-                  {name: 'Data do Atendimento', align: 'left'},
-                  {name: 'Atendimento', align: 'left'},
-                  {name: 'Data da Alta', align: 'left'},
-                  {name: 'Tipo', align: 'center'},
-                  {name: 'Visualizar', align: 'center'}
-                ]}
-              >
-                {patientArray?.map((patient: any, index: number) => {
-                  return (
-                    <TableRow key={`patient_${index}`}>
-                      <TableCell>
-                        <p>{patient?.started_at ? formatDate(patient?.started_at ?? "", "DD/MM/YYYY") : "-"}</p>
-                      </TableCell>
-                      <TableCell align="center">
-                        <p>{patient?._id}</p>
-                      </TableCell>
-                      <TableCell align="center">
-                        <p>-</p>
-                      </TableCell>
-                      <TableCell align="center">
-                        {typeof patient?.care_type_id === "object"
-                          ? patient?.care_type_id.name
-                          : patient?.care_type_id}
-                      </TableCell>
-                      <TableCell align="center">
-                        <Button onClick={() => history.push(`/care/${patient?._id}/overview`)}>
-                          <VisibilityIcon style={{color: '#0899BA'}}/>
-                        </Button>
-                      </TableCell>
-                    </TableRow>
-                  )
-                })}
-              </Table>
-            </DialogContentText>
-          </DialogContent>
-          <DialogActions>
-            <Button onClick={() => setHistoryModalOpen_2(false)} color="primary">
-              <h3 style={{color: '#0899BA', fontSize: '11pt'}}>Fechar</h3>
-            </Button>
-          </DialogActions>
-        </Dialog>
+        {/*  maxWidth="lg"*/}
+        {/*  open={historyModalOpen_2}*/}
+        {/*  onClose={() => setHistoryModalOpen_2(false)}*/}
+        {/*  aria-labelledby="scroll-dialog-title"*/}
+        {/*  aria-describedby="scroll-dialog-description"*/}
+        {/*>*/}
+        {/*  <DialogTitle id="scroll-dialog-title"><h3>Histórico de Atendimento</h3></DialogTitle>*/}
+        {/*  <DialogContent>*/}
+        {/*    <DialogContentText*/}
+        {/*      id="scroll-dialog-description"*/}
+        {/*      tabIndex={-1}*/}
+        {/*    >*/}
+        {/*      <Grid container style={{display: "flex", flexDirection: "row", justifyContent: "space-between"}}>*/}
+        {/*        <Grid item md={1} style={{padding: "0"}}>*/}
+        {/*          <AccountCircleIcon style={{color: '#0899BA', fontSize: '30pt'}}/>*/}
+        {/*        </Grid>*/}
+        {/*        <Grid item md={11} style={{padding: "0", paddingTop: "0.4rem"}}>*/}
+        {/*          <h3 style={{color: '#333333'}}>{patientState.list.data[patientIndex]?.name}</h3>*/}
+        {/*        </Grid>*/}
+        {/*      </Grid>*/}
+        {/*      <Table*/}
+        {/*        tableCells={[*/}
+        {/*          {name: 'Data do Atendimento', align: 'left'},*/}
+        {/*          {name: 'Atendimento', align: 'left'},*/}
+        {/*          {name: 'Data da Alta', align: 'left'},*/}
+        {/*          {name: 'Tipo', align: 'center'},*/}
+        {/*          {name: 'Visualizar', align: 'center'}*/}
+        {/*        ]}*/}
+        {/*      >*/}
+        {/*        {patientArray?.map((patient: any, index: number) => {*/}
+        {/*          return (*/}
+        {/*            <TableRow key={`patient_${index}`}>*/}
+        {/*              <TableCell>*/}
+        {/*                <p>{patient?.started_at ? formatDate(patient?.started_at ?? "", "DD/MM/YYYY") : "-"}</p>*/}
+        {/*              </TableCell>*/}
+        {/*              <TableCell align="center">*/}
+        {/*                <p>{patient?._id}</p>*/}
+        {/*              </TableCell>*/}
+        {/*              <TableCell align="center">*/}
+        {/*                <p>-</p>*/}
+        {/*              </TableCell>*/}
+        {/*              <TableCell align="center">*/}
+        {/*                {typeof patient?.care_type_id === "object"*/}
+        {/*                  ? patient?.care_type_id.name*/}
+        {/*                  : patient?.care_type_id}*/}
+        {/*              </TableCell>*/}
+        {/*              <TableCell align="center">*/}
+        {/*                <Button onClick={() => history.push(`/care/${patient?._id}/overview`)}>*/}
+        {/*                  <VisibilityIcon style={{color: '#0899BA'}}/>*/}
+        {/*                </Button>*/}
+        {/*              </TableCell>*/}
+        {/*            </TableRow>*/}
+        {/*          )*/}
+        {/*        })}*/}
+        {/*      </Table>*/}
+        {/*    </DialogContentText>*/}
+        {/*  </DialogContent>*/}
+        {/*  <DialogActions>*/}
+        {/*    <Button onClick={() => setHistoryModalOpen_2(false)} color="primary">*/}
+        {/*      <h3 style={{color: '#0899BA', fontSize: '11pt'}}>Fechar</h3>*/}
+        {/*    </Button>*/}
+        {/*  </DialogActions>*/}
+        {/*</Dialog>*/}
       </Sidebar>
     </>
   );

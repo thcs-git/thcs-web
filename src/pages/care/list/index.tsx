@@ -77,6 +77,7 @@ export default function CouncilList() {
   const [search, setSearch] = useState("");
 
   const [historyPatient, setHistoryPatient] = useState("");
+  const [historyPatientName, setHistoryPatientName] = useState("");
 
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
 
@@ -133,6 +134,7 @@ export default function CouncilList() {
     isDone(care);
     setHistoryModalOpen(!historyModalOpen);
     setHistoryPatient(care.patient_id._id)
+    setHistoryPatientName(care.patient_id.name)
   };
 
   const integration = sessionStorage.getItem(SESSIONSTORAGE.INTEGRATION)
@@ -142,15 +144,6 @@ export default function CouncilList() {
   }
 
   const tableCells = [
-    {name: 'Data do Atendimento', align: 'left'},
-    {name: 'Atendimento', align: 'left'},
-    {name: 'Data da Alta', align: 'left'},
-    {name: 'Tipo', align: 'center'},
-    {name: 'Empresa', align: 'center'},
-    {name: 'Visualizar', align: 'center'}
-  ]
-
-  const tableRow = [
     {name: 'Data do Atendimento', align: 'left'},
     {name: 'Atendimento', align: 'left'},
     {name: 'Data da Alta', align: 'left'},
@@ -336,7 +329,9 @@ export default function CouncilList() {
           modalOpen={historyModalOpen}
           setModalOpen={setHistoryModalOpen}
           historyPatient={historyPatient}
+          historyPatientName={historyPatientName}
           tableCells={tableCells}
+          historyType={'care'}
         />
 
         {/*<Dialog*/}

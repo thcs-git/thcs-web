@@ -27,28 +27,117 @@ import Loading from '../../Loading';
 
 import {FieldContent} from '../../../styles/components/Form';
 import Button from '../../../styles/components/Button';
-import {AccountCircle as AccountCircleIcon, Visibility as VisibilityIcon} from "@material-ui/icons";
+import {AccountCircle as AccountCircleIcon, FiberManualRecord, Visibility as VisibilityIcon} from "@material-ui/icons";
 import Table from "../../Table";
 import {formatDate} from "../../../helpers/date";
 import {useHistory} from "react-router-dom";
+import {ListItemCaptureStatus} from "../../../pages/avaliation/list/styles";
+import {HighComplexityLabel, LowerComplexityLabel, MediumComplexityLabel} from "../../../styles/components/Text";
 
 interface IDialogProps {
   modalOpen: any;
   setModalOpen: any;
   historyPatient: any;
-  tableCells: any;
+  historyPatientName?: any;
+  historyType?: any;
+  tableCells?: any;
 }
 
 export default function HistoryDialog(props: IDialogProps) {
-  const {modalOpen, setModalOpen, historyPatient, tableCells} = props
+  const {modalOpen, setModalOpen, historyPatient, historyPatientName, tableCells, historyType} = props
   const dispatch = useDispatch();
   const history = useHistory();
 
   const careState = useSelector((state: ApplicationState) => state.cares);
 
+  const handleType = useCallback((care: any) => {
+    let complexitiesArray: any = []
+    let complexity: string = ""
+    //console.log(care)
+    care?.documents_id?.map((field: any) => {
+      complexitiesArray.push(field.complexity);
+    })
+    if (
+      complexitiesArray.findIndex(
+        (item: string) => item === "Alta Complexidade"
+      ) > -1
+    ) {
+      complexity = "Internação";
+    } else if (
+      complexitiesArray.findIndex(
+        (item: string) => item === "Média Complexidade"
+      ) > -1
+    ) {
+      complexity = "Internação";
+    } else if (
+      complexitiesArray.findIndex(
+        (item: string) => item === "Baixa Complexidade"
+      ) > -1
+    ) {
+      complexity = "Internação";
+    } else if (
+      complexitiesArray.findIndex(
+        (item: string) => item === "Sem Complexidade"
+      ) > -1
+    ) {
+      complexity = "Atenção";
+    } else {
+      complexity = "-";
+    }
+
+    return complexity
+  }, [careState]);
+
+  const handleCoplexities = useCallback((care: any) => {
+    let complexitiesArray: any = []
+    let complexity: string = ""
+    care?.documents_id?.map((field: any) => {
+      // complexitiesArray.push(field.complexity);
+      complexitiesArray.push(care?.capture.complexity);
+    })
+    if (
+      complexitiesArray.findIndex(
+        (item: string) => item === "Alta Complexidade"
+      ) > -1
+    ) {
+      complexity = "Alta";
+    } else if (
+      complexitiesArray.findIndex(
+        (item: string) => item === "Média Complexidade"
+      ) > -1
+    ) {
+      complexity = "Média";
+    } else if (
+      complexitiesArray.findIndex(
+        (item: string) => item === "Baixa Complexidade"
+      ) > -1
+    ) {
+      complexity = "Baixa";
+    } else {
+      complexity = "-";
+    }
+
+    switch (complexity.toLocaleLowerCase()) {
+      case 'sem complexidade':
+        return '-';
+
+      case 'baixa':
+        return <LowerComplexityLabel>{complexity}</LowerComplexityLabel>;
+
+      case 'média':
+        return <MediumComplexityLabel>{complexity}</MediumComplexityLabel>;
+
+      case 'alta':
+        return <HighComplexityLabel>{complexity}</HighComplexityLabel>;
+
+      default:
+        return '-';
+    }
+  }, [careState]);
+
   useEffect(() => {
     if (historyPatient) {
-      dispatch(loadHistoryRequest(historyPatient, 'Atendimento'));
+      historyType === 'care' ? dispatch(loadHistoryRequest(historyPatient, 'Atendimento')) : dispatch(loadHistoryRequest(historyPatient, ''))
     }
   }, [historyPatient]);
 
@@ -62,7 +151,11 @@ export default function HistoryDialog(props: IDialogProps) {
         aria-labelledby="scroll-dialog-title"
         aria-describedby="scroll-dialog-description"
       >
-        <DialogTitle id="scroll-dialog-title"><h3>Histórico de Atendimento</h3></DialogTitle>
+        {historyType === 'care' ? (
+          <DialogTitle id="scroll-dialog-title"><h3>Histórico de Atendimento</h3></DialogTitle>
+        ) : (
+          <DialogTitle id="scroll-dialog-title"><h3>Histórico de Captações</h3></DialogTitle>
+        )}
         <DialogContent>
           <DialogContentText
             id="scroll-dialog-description"
@@ -73,7 +166,7 @@ export default function HistoryDialog(props: IDialogProps) {
                 <AccountCircleIcon style={{color: '#0899BA', fontSize: '30pt'}}/>
               </Grid>
               <Grid item md={11} style={{padding: "0", paddingTop: "0.4rem"}}>
-                <h3 style={{color: '#333333'}}>{careState.history[0]?.patient_id.name}</h3>
+                <h3 style={{color: '#333333'}}>{historyPatientName}</h3>
               </Grid>
             </Grid>
             <Table
@@ -82,32 +175,65 @@ export default function HistoryDialog(props: IDialogProps) {
               {careState?.history?.map((care: any, index: number) => {
 
                 return (
-                  <TableRow key={`patient_${index}`}>
-                    <TableCell>
-                      <p>{care?.started_at ? formatDate(care?.started_at ?? "", "DD/MM/YYYY") : ""}</p>
-                    </TableCell>
-                    <TableCell align="center">
-                      <p>{care?._id}</p>
-                    </TableCell>
-                    <TableCell align="center">
-                      <p>-</p>
-                    </TableCell>
-                    <TableCell align="center">
-                      <p>
-                        {typeof care?.care_type_id === "object"
-                          ? care?.care_type_id.name
-                          : care?.care_type_id}
-                      </p>
-                    </TableCell>
-                    <TableCell align="center">
-                      <p>{care?.company_id?.name}</p>
-                    </TableCell>
-                    <TableCell align="center">
-                      <Button onClick={() => history.push(`/care/${care?._id}/overview`)}>
-                        <VisibilityIcon style={{color: '#0899BA'}}/>
-                      </Button>
-                    </TableCell>
-                  </TableRow>
+                  <>
+                    {historyType === 'care' ? (
+                      <>
+                        <TableRow key={`patient_${index}`}>
+                          <TableCell>
+                            <p>{care?.started_at ? formatDate(care?.started_at ?? "", "DD/MM/YYYY") : ""}</p>
+                          </TableCell>
+                          <TableCell align="center">
+                            <p>{care?._id}</p>
+                          </TableCell>
+                          <TableCell align="center">
+                            <p>-</p>
+                          </TableCell>
+                          <TableCell align="center">
+                            <p>
+                              {typeof care?.care_type_id === "object"
+                                ? care?.care_type_id.name
+                                : care?.care_type_id}
+                            </p>
+                          </TableCell>
+                          <TableCell align="center">
+                            <p>{care?.company_id?.name}</p>
+                          </TableCell>
+                          <TableCell align="center">
+                            <Button onClick={() => history.push(`/care/${care?._id}/overview`)}>
+                              <VisibilityIcon style={{color: '#0899BA'}}/>
+                            </Button>
+                          </TableCell>
+                        </TableRow>
+                      </>
+                    ) : (
+                      <>
+                        <TableRow key={`patient_${index}`}>
+                          <TableCell align="center">
+                            <p>{care?.capture?.finished_at ? formatDate(care?.finished_at, 'DD/MM/YYYY') : '-'}</p>
+                          </TableCell>
+                          <TableCell align="center">
+                            <p>{handleType(care)}</p>
+                          </TableCell>
+                          <TableCell align="center">
+                            <p>{handleCoplexities(care)}</p>
+                          </TableCell>
+                          <TableCell align="center">
+                            <ListItemCaptureStatus status={care?.capture?.status || ''}>
+                              <FiberManualRecord/> {care?.capture?.status}
+                            </ListItemCaptureStatus>
+                          </TableCell>
+                          <TableCell align="center">
+                            <p>{care?.company_id?.name}</p>
+                          </TableCell>
+                          <TableCell align="center">
+                            <Button onClick={() => history.push(`/patient/capture/${care?._id}/overview`)}>
+                              <VisibilityIcon style={{color: '#0899BA'}}/>
+                            </Button>
+                          </TableCell>
+                        </TableRow>
+                      </>
+                    )}
+                  </>
                 )
               })}
 
