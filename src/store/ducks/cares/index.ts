@@ -46,6 +46,7 @@ export const INITIAL_STATE: CareState = {
   accommondation_type: [],
   care_type: [],
   cid: [],
+  release_reason: [],
   documentGroupSocioAmbiental: {},
   documentSocioAmbiental: {},
   documentGroupAbemid: {},
@@ -129,6 +130,13 @@ const reducer: Reducer<CareState> = (state = INITIAL_STATE, action) => {
         error: false
       };
     // CID
+    case CareTypes.LOAD_CID_REQUEST:
+      return {
+        ...state,
+        loading: true,
+        success: false,
+        error: false
+      };
     case CareTypes.SEARCH_CID_REQUEST:
       return {
         ...state,
@@ -140,6 +148,22 @@ const reducer: Reducer<CareState> = (state = INITIAL_STATE, action) => {
       return {
         ...state,
         cid: action.payload.data,
+        loading: false,
+        success: false,
+        error: false
+      };
+    // Release Reason
+    case CareTypes.LOAD_RELEASE_REASON_REQUEST:
+      return {
+        ...state,
+        loading: true,
+        success: false,
+        error: false
+      };
+    case CareTypes.RELEASE_REASON_SUCCESS:
+      return {
+        ...state,
+        release_reason: action.payload.data,
         loading: false,
         success: false,
         error: false

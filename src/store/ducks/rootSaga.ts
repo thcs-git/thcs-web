@@ -142,7 +142,7 @@ import {
   getSchedule,
   storeSchedule,
   updateSchedule,
-  deleteSchedule, getHistory,
+  deleteSchedule, getHistory, getAllCid, getReleaseReason,
 } from "./cares/sagas";
 
 import { get as getProfession } from "./professions/sagas";
@@ -208,6 +208,8 @@ export default function* rootSaga() {
     takeLatest(CareTypes.TYPE_ACCOMMODATION_REQUEST, getAccommodationType),
     takeLatest(CareTypes.CARE_TYPE_REQUEST, getCareType),
     takeLatest(CareTypes.SEARCH_CID_REQUEST, searchCid),
+    takeLatest(CareTypes.LOAD_CID_REQUEST, getAllCid),
+    takeLatest(CareTypes.LOAD_RELEASE_REASON_REQUEST, getReleaseReason),
     //takeLatest(CareTypes.LOAD_DOCUMENT_REQUEST, getDocumentById),
 
     takeLatest(CareTypes.LOAD_SCHEDULE_REQUEST, getSchedule),

@@ -1,4 +1,5 @@
-import { PatientInterface } from "../patients/types";
+import {PatientInterface} from "../patients/types";
+
 /**
  * Action types
  */
@@ -87,8 +88,13 @@ export enum CareTypes {
   CARE_TYPE_SUCCESS = "@care/CARE_TYPE_SUCCESS",
 
   // CID
+  LOAD_CID_REQUEST = "@care/LOAD_CID_REQUEST",
   SEARCH_CID_REQUEST = "@care/SEARCH_CID_REQUEST",
   SEARCH_CID_SUCCESS = "@care/SEARCH_CID_SUCCESS",
+
+  // Release Reason
+  LOAD_RELEASE_REASON_REQUEST = "@care/LOAD_RELEASE_REASON_REQUEST",
+  RELEASE_REASON_SUCCESS = "@care/RELEASE_REASON_SUCCESS",
 
   // Document
   LOAD_DOCUMENT_REQUEST = "@care/LOAD_DOCUMENT_REQUEST",
@@ -162,6 +168,10 @@ export interface CareInterface {
     health_plan_id?: string;
     health_sub_plan_id?: string;
   };
+  medical_release?: IMedicalReleaseData | null;
+  adm_release?: IAdmReleaseData;
+  medical_release_status?: boolean;
+  adm_release_status?: boolean;
 }
 
 export interface CareList {
@@ -191,6 +201,7 @@ export interface CareState {
   accommondation_type: HealthPlanInterface[];
   care_type: HealthPlanInterface[];
   cid: CidInterface[];
+  release_reason: ReleaseReasonInterface[];
   documentGroupSocioAmbiental: DocumentGroupInterface;
   documentGroupAbemid: DocumentGroupInterface;
   documentSocioAmbiental: DocumentState;
@@ -256,11 +267,18 @@ export interface CareTypeInterface {
   name: string;
   description: string;
 }
+
 export interface CidInterface {
   _id: string;
   name: string;
   cid: string;
   gender: string;
+  active: boolean;
+}
+
+export interface ReleaseReasonInterface {
+  _id: string;
+  name: string;
   active: boolean;
 }
 
@@ -340,6 +358,7 @@ interface DocumentGroupData {
   _id: string;
   name: string;
 }
+
 export interface DocumentList {
   data?: DocumentInterface[];
   fields?: any[];
@@ -347,6 +366,7 @@ export interface DocumentList {
   page?: string;
   total?: number;
 }
+
 export interface DocumentState {
   data?: DocumentInterface;
   list?: DocumentInterface[];
@@ -368,6 +388,42 @@ export interface ICaptureData {
   sector: string;
   bed: string;
   status: string;
+}
+
+export interface IMedicalReleaseData {
+  release_at: string;
+  release_reason: {
+    _id: string,
+    name: string,
+  };
+  release_cid: {
+    _id: string,
+    name: string,
+  };
+  release_referral: string;
+  release_observation: string;
+  release_responsible: {
+    _id: string,
+    name: string,
+  };
+}
+
+export interface IAdmReleaseData {
+  release_at: string;
+  release_reason: {
+    _id: string,
+    name: string,
+  };
+  release_cid: {
+    _id: string,
+    name: string,
+  };
+  release_referral: string;
+  release_observation: string;
+  release_responsible: {
+    _id: string,
+    name: string,
+  };
 }
 
 export type LoadRequestParams = Partial<Omit<CareList, "data">>;

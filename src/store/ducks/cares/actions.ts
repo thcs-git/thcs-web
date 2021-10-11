@@ -176,10 +176,21 @@ export const careTypeSuccess = (data: HealthPlanInterface) =>
 /**
  * CID
  */
+export const cidAllRequest = () =>
+  action(CareTypes.LOAD_CID_REQUEST);
 export const cidRequest = (cid: string) =>
   action(CareTypes.SEARCH_CID_REQUEST, { cid });
 export const cidSuccess = (data: HealthPlanInterface) =>
   action(CareTypes.SEARCH_CID_SUCCESS, { data });
+
+/**
+ * Release Reasons
+ */
+
+export const releaseReasonRequest = () =>
+  action(CareTypes.LOAD_RELEASE_REASON_REQUEST);
+export const releaseReasonSuccess = (data: HealthPlanInterface) =>
+  action(CareTypes.RELEASE_REASON_SUCCESS, { data });
 
 /**
  * Document

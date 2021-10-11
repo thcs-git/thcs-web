@@ -20,6 +20,6 @@ export const ButtonStyle = styled(Button).attrs({
   background: "success",
   variant: "contained",
 })`
-  width: 180px;
+  width: 200px;
   margin-left: 10px;
 `;

@@ -199,6 +199,7 @@ export default function CouncilList() {
                 buttonTitle="Novo Atendimento"
                 onChangeInput={debounceSearchRequest}
                 inputPlaceholder="Pesquise por paciente, CPF, complexidade, etc..."
+                switches={true}
               />
 
               <Table
