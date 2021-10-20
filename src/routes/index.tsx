@@ -1,5 +1,5 @@
 import React from 'react';
-import { BrowserRouter, Switch, Route } from 'react-router-dom';
+import {BrowserRouter, Switch, Route} from 'react-router-dom';
 
 import GuestRoute from './guest';
 import PrivateRoute from './private';
@@ -61,6 +61,10 @@ import QrCode from '../pages/qrcode/';
 import ProfessionForm from '../pages/profession/form/index';
 
 import Login from '../pages/login';
+import FlowMeterList from "../pages/flowmeter/list";
+import FlowMeterAlertList from "../pages/flowmeter/alert";
+import FlowMeterId from "../pages/flowmeter/id";
+import FlowMeterLogsList from "../pages/flowmeter/logs";
 //import Register from '../pages/register';
 
 const Routes = () => (
@@ -68,96 +72,95 @@ const Routes = () => (
     <Switch>
       {/* <GuestRoute path="/" component={Login} exact /> */}
       {/* <GuestRoute path="/register" component={Register} /> */}
-      <Route path="/" component={Login} exact />
-      <Route path="/login" component={Login} />
-      <Route path="/register" component={RegisterForm} />
-      <Route path="/:email/confirmemail" component={ConfirmEmail} />
-      <Route path="/confirmemail/:token" component={VerifyEmail} />
-      <Route path="/recoverypass/:token" component={RecoveryPassword}/>
-      <Route path="/forgotpassword" component={ForgotPassword}/>
+      <Route path="/" component={Dashboard} exact/>
+      <Route path="/dashboard" component={Dashboard} exact/>
+      {/*<Route path="/flowmeter" component={FlowMeterList} exact/>*/}
+      <Route path="/flowmeter" component={FlowMeterId}/>
+      <Route path="/logs/:id" component={FlowMeterLogsList}/>
+      <Route path="/alert" component={FlowMeterAlertList} exact/>
 
-      <PrivateRoute path="/recoverypassmenu" component={RecoveryPassMenu} />
-      <PrivateRoute path="/" component={Dashboard} exact />
-      <PrivateRoute path="/dashboard_user" component={Dashboard_user} exact />
-      <PrivateRoute path="/dashboard" component={Dashboard} />
+      {/*<PrivateRoute path="/recoverypassmenu" component={RecoveryPassMenu} />*/}
+      {/*<PrivateRoute path="/" component={Dashboard} exact />*/}
+      {/*<PrivateRoute path="/dashboard_user" component={Dashboard_user} exact />*/}
+      {/*<PrivateRoute path="/dashboard" component={Dashboard} />*/}
 
-      {/* Configuration */}
-      <PrivateRoute path="/userconfiguration" component={UserConfiguration} />
-      <PrivateRoute path="/clientconfiguration" component={ClientConfiguration} />
+      {/*/!* Configuration *!/*/}
+      {/*<PrivateRoute path="/userconfiguration" component={UserConfiguration} />*/}
+      {/*<PrivateRoute path="/clientconfiguration" component={ClientConfiguration} />*/}
 
-      {/* Clientes */}
-      <PrivateRoute path="/customer" component={CustomerList} exact />
-      <PrivateRoute path="/customer/:id/:mode/edit" component={CustomerForm} />
-      <PrivateRoute path="/customer/create" component={CustomerForm} />
-      <PrivateRoute path="/client/:id/:mode" component={ClientForm} />
+      {/*/!* Clientes *!/*/}
+      {/*<PrivateRoute path="/customer" component={CustomerList} exact />*/}
+      {/*<PrivateRoute path="/customer/:id/:mode/edit" component={CustomerForm} />*/}
+      {/*<PrivateRoute path="/customer/create" component={CustomerForm} />*/}
+      {/*<PrivateRoute path="/client/:id/:mode" component={ClientForm} />*/}
 
-      {/* Empresas */}
-      <PrivateRoute path="/company" component={CompanyList} exact />
-      <PrivateRoute path="/company/:id/:mode" component={CompanyForm} />
-      <PrivateRoute path="/company/create" component={CompanyForm} />
+      {/*/!* Empresas *!/*/}
+      {/*<PrivateRoute path="/company" component={CompanyList} exact />*/}
+      {/*<PrivateRoute path="/company/:id/:mode" component={CompanyForm} />*/}
+      {/*<PrivateRoute path="/company/create" component={CompanyForm} />*/}
 
-      {/* Especialidades */}
-      <PrivateRoute path="/specialty" component={SpecialtyList} exact />
-      <PrivateRoute path="/specialty/:id/edit" component={SpecialtyForm} />
-      <PrivateRoute path="/specialty/create" component={SpecialtyForm} />
+      {/*/!* Especialidades *!/*/}
+      {/*<PrivateRoute path="/specialty" component={SpecialtyList} exact />*/}
+      {/*<PrivateRoute path="/specialty/:id/edit" component={SpecialtyForm} />*/}
+      {/*<PrivateRoute path="/specialty/create" component={SpecialtyForm} />*/}
 
-      {/* Conselhos */}
-      <PrivateRoute path="/council" component={CouncilList} exact />
-      <PrivateRoute path="/council/:id/edit" component={CouncilForm} />
-      <PrivateRoute path="/council/create" component={CouncilForm} />
+      {/*/!* Conselhos *!/*/}
+      {/*<PrivateRoute path="/council" component={CouncilList} exact />*/}
+      {/*<PrivateRoute path="/council/:id/edit" component={CouncilForm} />*/}
+      {/*<PrivateRoute path="/council/create" component={CouncilForm} />*/}
 
-      {/* Areas */}
-      <PrivateRoute path="/area" component={AreaList} exact />
-      <PrivateRoute path="/area/:id/:mode/edit" component={AreaForm}/>
-      <PrivateRoute path="/area/create" component={AreaForm} />
-
-
-      {/* Usuário */}
-      <PrivateRoute path="/user" component={UserList} exact />
-      <PrivateRoute path="/user/:id/:mode/edit" component={UserForm} />
-      <PrivateRoute path="/user/:mode/create" component={UserForm} />
-      <PrivateRoute path="/userdesengaged" component={UserDisengaged} />
-      <PrivateRoute path="/userclient" component={UserClientList} exact/>
-      <PrivateRoute path="/userclient/:id/:mode/:callback" component={UserClientForm} />
-      <PrivateRoute path="/userclient/:id/:mode" component={UserClientForm} />
+      {/*/!* Areas *!/*/}
+      {/*<PrivateRoute path="/area" component={AreaList} exact />*/}
+      {/*<PrivateRoute path="/area/:id/:mode/edit" component={AreaForm}/>*/}
+      {/*<PrivateRoute path="/area/create" component={AreaForm} />*/}
 
 
-      {/* Patient */}
-      <PrivateRoute path="/patient/capture/create" component={PatientCaptureCreate} />
-      <PrivateRoute path="/patient/capture/:id/overview" component={PatientCaptureOverview}/>
-      <PrivateRoute path="/patient" component={PatientList} exact />
-      <PrivateRoute path="/patient/create" component={PatientForm} exact />
+      {/*/!* Usuário *!/*/}
+      {/*<PrivateRoute path="/user" component={UserList} exact />*/}
+      {/*<PrivateRoute path="/user/:id/:mode/edit" component={UserForm} />*/}
+      {/*<PrivateRoute path="/user/:mode/create" component={UserForm} />*/}
+      {/*<PrivateRoute path="/userdesengaged" component={UserDisengaged} />*/}
+      {/*<PrivateRoute path="/userclient" component={UserClientList} exact/>*/}
+      {/*<PrivateRoute path="/userclient/:id/:mode/:callback" component={UserClientForm} />*/}
+      {/*<PrivateRoute path="/userclient/:id/:mode" component={UserClientForm} />*/}
 
-      <PrivateRoute path="/patient/capture/:id/nead" component={PatientCaptureNead} exact />
-      <PrivateRoute path="/patient/capture/:id/nead/:documentId" component={PatientCaptureNead} />
 
-      <PrivateRoute path="/patient/capture/:id/abemid" component={PatientCaptureAbemid} exact />
-      <PrivateRoute path="/patient/capture/:id/abemid/:documentId" component={PatientCaptureAbemid} />
+      {/*/!* Patient *!/*/}
+      {/*<PrivateRoute path="/patient/capture/create" component={PatientCaptureCreate} />*/}
+      {/*<PrivateRoute path="/patient/capture/:id/overview" component={PatientCaptureOverview}/>*/}
+      {/*<PrivateRoute path="/patient" component={PatientList} exact />*/}
+      {/*<PrivateRoute path="/patient/create" component={PatientForm} exact />*/}
 
-      <PrivateRoute path="/patient/capture/:id/socioambiental" component={PatientCaptureSocioAmbiental} exact />
-      <PrivateRoute path="/patient/capture/:id/socioambiental/:documentId" component={PatientCaptureSocioAmbiental} />
+      {/*<PrivateRoute path="/patient/capture/:id/nead" component={PatientCaptureNead} exact />*/}
+      {/*<PrivateRoute path="/patient/capture/:id/nead/:documentId" component={PatientCaptureNead} />*/}
 
-      <PrivateRoute path="/patient/:id/:mode/:callback/:callback_id" component={PatientForm} exact />
-      <PrivateRoute path="/patient/:id/:mode" component={PatientForm} />
+      {/*<PrivateRoute path="/patient/capture/:id/abemid" component={PatientCaptureAbemid} exact />*/}
+      {/*<PrivateRoute path="/patient/capture/:id/abemid/:documentId" component={PatientCaptureAbemid} />*/}
 
-      {/* Care */}
-      <PrivateRoute path="/care" component={CareList} exact />
-      <PrivateRoute path="/care/:id/edit" component={CareForm} />
-      <PrivateRoute path="/care/create" component={CareForm} />
-      <PrivateRoute path="/care/:id/overview" exact component={CareOverview} />
-      <PrivateRoute path="/care/:id/overview/schedule" component={CareSchedule} />
-      <PrivateRoute path="/care/:id/medical-records/document/:documentId/print" component={PrintDocument} />
+      {/*<PrivateRoute path="/patient/capture/:id/socioambiental" component={PatientCaptureSocioAmbiental} exact />*/}
+      {/*<PrivateRoute path="/patient/capture/:id/socioambiental/:documentId" component={PatientCaptureSocioAmbiental} />*/}
 
-      {/* Register */}
-      <GuestRoute path="/register" component={RegisterForm} />
-      {/* avaliation */}
-      <PrivateRoute path="/avaliation" component={AvaliationList} exact />
-      {/* qrcode */}
-      <PrivateRoute path='/qrcode' component={QrCode} exact></PrivateRoute>
-      {/* <PrivateRoute path="/avaliation/:id/edit" component={CareForm} />
-      <PrivateRoute path="/avaliation/create" component={CareForm} /> */}
+      {/*<PrivateRoute path="/patient/:id/:mode/:callback/:callback_id" component={PatientForm} exact />*/}
+      {/*<PrivateRoute path="/patient/:id/:mode" component={PatientForm} />*/}
 
-      <Route component={NotFound} />
+      {/*/!* Care *!/*/}
+      {/*<PrivateRoute path="/care" component={CareList} exact />*/}
+      {/*<PrivateRoute path="/care/:id/edit" component={CareForm} />*/}
+      {/*<PrivateRoute path="/care/create" component={CareForm} />*/}
+      {/*<PrivateRoute path="/care/:id/overview" exact component={CareOverview} />*/}
+      {/*<PrivateRoute path="/care/:id/overview/schedule" component={CareSchedule} />*/}
+      {/*<PrivateRoute path="/care/:id/medical-records/document/:documentId/print" component={PrintDocument} />*/}
+
+      {/*/!* Register *!/*/}
+      {/*<GuestRoute path="/register" component={RegisterForm} />*/}
+      {/*/!* avaliation *!/*/}
+      {/*<PrivateRoute path="/avaliation" component={AvaliationList} exact />*/}
+      {/*/!* qrcode *!/*/}
+      {/*<PrivateRoute path='/qrcode' component={QrCode} exact></PrivateRoute>*/}
+      {/*/!* <PrivateRoute path="/avaliation/:id/edit" component={CareForm} />*/}
+      {/*<PrivateRoute path="/avaliation/create" component={CareForm} /> *!/*/}
+
+      <Route component={NotFound}/>
     </Switch>
   </BrowserRouter>
 );

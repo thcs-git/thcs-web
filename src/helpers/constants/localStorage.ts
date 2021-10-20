@@ -9,5 +9,6 @@ export default {
   COMPANY_NAME: `@sollar_company_name`,
   CUSTOMER: `@sollar_customer`,
   CUSTOMER_NAME: `@sollar_customer_name`,
-  INTEGRATION_COMPANY_SELECTED: `@sollar_integration_company_selected`
+  INTEGRATION_COMPANY_SELECTED: `@sollar_integration_company_selected`,
+  MQTT: `@mqtt`
 }

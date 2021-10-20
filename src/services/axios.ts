@@ -10,6 +10,10 @@ export const apiSollar = axios.create({
   baseURL: process.env.REACT_APP_BASE_API,
 });
 
+export const api = axios.create({
+  baseURL: 'https://o2-tscm.herokuapp.com/api',
+});
+
 export function apiIntegra(url: string) {
   return axios.create(
     {

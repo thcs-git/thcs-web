@@ -1,4 +1,5 @@
 import { createGlobalStyle } from "styled-components";
+import Image from '../assets/img/bgTexture.png'
 
 export default createGlobalStyle`
   * {
@@ -14,7 +15,8 @@ export default createGlobalStyle`
     max-width: 100vw;
     width: 100%;
     height: 100%;
-    background-color: var(--background);
+    //background-color: var(--background);
+    background-image: url(${Image}) !important;
 
   }
 

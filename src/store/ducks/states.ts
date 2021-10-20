@@ -41,6 +41,9 @@ import { UnconfirmedUserState } from "./unconfirmeduser/types";
 import { INITIAL_STATE as INITIAL_STATE_LAYOUT } from "./layout";
 import { LayoutState, LayoutTypes } from "./layout/types";
 
+import { INITIAL_STATE as INITIAL_STATE_LOGS } from "./logs";
+import { LogsState, LogsTypes } from "./logs/types";
+
 import { INITIAL_STATE as INITIAL_STATE_MESSAGE } from "./message";
 import { MessageState, MessageTypes } from "./message/types";
 
@@ -61,6 +64,7 @@ export interface IInitialState {
   users: Readonly<UserState>;
   profession: Readonly<ProfessionState>;
   layout: Readonly<LayoutState>;
+  logs: Readonly<LogsState>;
   message: Readonly<MessageState>;
 }
 
@@ -81,5 +85,6 @@ export const InitialState: IInitialState = {
   users: INITIAL_STATE_USER,
   profession: INITIAL_STATE_PROFESSION,
   layout: INITIAL_STATE_LAYOUT,
+  logs: INITIAL_STATE_LOGS,
   message: INITIAL_STATE_MESSAGE,
 };

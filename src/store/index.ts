@@ -15,6 +15,7 @@ import { LoginState } from "./ducks/login/types";
 import { PatientState } from "./ducks/patients/types";
 import { UserState } from "./ducks/users/types";
 import { LayoutState } from "./ducks/layout/types";
+import { LogsState } from "./ducks/logs/types";
 import { MessageState } from "./ducks/message/types";
 
 import { InitialState } from "./ducks/states";
@@ -36,6 +37,7 @@ export interface ApplicationState {
   users: UserState;
   profession: ProfessionState;
   layout: LayoutState;
+  logs: LogsState;
   message: MessageState;
 }
 

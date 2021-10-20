@@ -86,6 +86,10 @@ import {
   get as getLayout
 } from "./layout/sagas"
 
+import {
+  get as getLogs
+} from "./logs/sagas"
+
 import {MessageTypes} from "./message/types";
 import {
   get as getMessage,
@@ -147,6 +151,7 @@ import {
 
 import { get as getProfession } from "./professions/sagas";
 import { ProfessionTypes } from "./professions/types";
+import {LogsTypes} from "./logs/types";
 export default function* rootSaga() {
   return yield all([
     takeLatest(LoginTypes.LOAD_REQUEST, doLogin),
@@ -308,6 +313,8 @@ export default function* rootSaga() {
 
     /** Layout */
     takeLatest(LayoutTypes.LOAD_REQUEST, getLayout),
+
+    takeLatest(LogsTypes.LOAD_REQUEST, getLogs),
 
     /** Message */
     takeLatest(MessageTypes.LOAD_REQUEST, getMessage),

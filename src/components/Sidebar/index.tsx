@@ -21,6 +21,8 @@ import ListItemText from '@material-ui/core/ListItemText';
 import ExitToApp from '@material-ui/icons/ExitToApp';
 import AccountCircle from '@material-ui/icons/AccountCircle';
 import SettingsIcon from '@material-ui/icons/Settings';
+import DeviceHubIcon from '@material-ui/icons/DeviceHub';
+import NotificationsActiveIcon from "@material-ui/icons/NotificationsActive";
 import Slide from '@material-ui/core/Slide';
 import {TransitionProps} from '@material-ui/core/transitions';
 import ExpansionPanel from '@material-ui/core/ExpansionPanel';
@@ -56,6 +58,8 @@ import LocalHospital from '@material-ui/icons/LocalHospital';
 import StarRateIcon from '@material-ui/icons/StarRate';
 import FavoriteIcon from '@material-ui/icons/Favorite';
 import NotificationsIcon from '@material-ui/icons/Notifications';
+import HomeIcon from "@material-ui/icons/Home";
+
 
 import {Logo, UserContent} from './styles';
 import LOCALSTORAGE from '../../helpers/constants/localStorage';
@@ -170,10 +174,7 @@ const Sibebar = (props: Props<any>) => {
 
   const layoutState = useSelector((state: ApplicationState) => state.layout);
 
-  const [open, setOpen] = useState<Boolean>(() => {
-    let toggleSidebar = localStorage.getItem(LOCALSTORAGE.TOGGLE_SIDEBAR) || 'false';
-    return JSON.parse(toggleSidebar)
-  });
+  const [open, setOpen] = useState<Boolean>(true);
   const [username, setUsername] = useState(localStorage.getItem(LOCALSTORAGE.USERNAME) || '');
   const [company, setCompany] = useState({
     _id: localStorage.getItem(LOCALSTORAGE.COMPANY_SELECTED) || '',
@@ -288,78 +289,14 @@ const Sibebar = (props: Props<any>) => {
     return <Icon {...props} />;
   };
 
-  useEffect(() => {
-    let menu = JSON.parse(sessionStorage.getItem(SESSIONSTORAGE.MENU) ?? '[]')
-    if (itemsMenu.length <= 0 && menu.length <= 0) {
-      dispatch(loadRequest())
-    } else if (itemsMenu.length <= 0 && menu.length > 0) {
-      const items: itemsInterface[] = []
-
-      _.sortBy(menu, ['id']).map((item: any) => {
-        items.push({
-          title: item.name,
-          route: item.slug,
-          modal: item.modal ? modalTypes[item.icon] : '',
-          icon: <IconComponent name={item.icon} style={{color: item.color}}/>
-        })
-      })
-      setItemsMenu(items)
-    }
-  }, [])
-
-  useEffect(() => {
-    if (layoutState.success) {
-      sessionStorage.setItem(SESSIONSTORAGE.MENU, JSON.stringify(layoutState.data.menu))
-      sessionStorage.setItem(SESSIONSTORAGE.RIGHTS, JSON.stringify(layoutState.data.rights))
-      layoutState.data.integration ? sessionStorage.setItem(SESSIONSTORAGE.INTEGRATION, layoutState.data.integration) : sessionStorage.removeItem(SESSIONSTORAGE.INTEGRATION)
-      layoutState.data.integration_name ? sessionStorage.setItem(SESSIONSTORAGE.INTEGRATION_NAME, layoutState.data.integration_name) : sessionStorage.removeItem(SESSIONSTORAGE.INTEGRATION_NAME)
-
-      const items: itemsInterface[] = []
-
-      _.sortBy(layoutState.data.menu, ['id']).map((item: any) => {
-        items.push({
-          title: item.name,
-          route: item.slug,
-          modal: item.modal ? modalTypes[item.icon] : '',
-          icon: <IconComponent name={item.icon} style={{color: item.color}}/>
-        })
-      })
-      setItemsMenu(items)
-    }
-  }, [layoutState])
-
   // useEffect(() => {
   //   let menu = JSON.parse(sessionStorage.getItem(SESSIONSTORAGE.MENU) ?? '[]')
-  //
-  //   if (itemsMenu.length <= 0) {
+  //   if (itemsMenu.length <= 0 && menu.length <= 0) {
   //     dispatch(loadRequest())
-  //   }
+  //   } else if (itemsMenu.length <= 0 && menu.length > 0) {
+  //     const items: itemsInterface[] = []
   //
-  //   // if (!menu || menu.length <= 0) {
-  //   //   dispatch(loadRequest())
-  //   // }
-  //
-  //   // if (itemsMenu.length <= 0 && (menu || menu.length > 0)) {
-  //   //   setItemsMenu(menu)
-  //   // }
-  //
-  //   if (layoutState.success) {
-  //     sessionStorage.setItem(SESSIONSTORAGE.MENU, JSON.stringify(menu))
-  //     menu = _.sortBy(menu, ['id'])
-  //
-  //     const items: itemsInterface[] = [
-  //       // {title: 'Dashboard', route: '/', icon: <DashboardIcon style={{color: '#fff'}}/>},
-  //       // {title: 'Clientes', route: '/customer', icon: <AssignmentIndIcon style={{color: '#fff'}}/>},
-  //       // {title: 'Empresas', route: '/company', icon: <BusinessIcon style={{color: '#fff'}}/>},
-  //       // {title: 'Meus Profissionais', route: "/user", icon: <PersonIcon style={{color: '#fff'}}/>},
-  //       // {title: 'Banco de Talentos', route: "/userdesengaged", icon: <StarRateIcon style={{color: '#fff'}}/>},
-  //       // {title: 'Área', route: '/area', icon: <LocationOncon style={{color: '#fff'}}/>},
-  //       // {title: 'Pacientes', route: '/patient', icon: <GroupAddIcon style={{color: '#fff'}}/>},
-  //       // {title: 'Avaliação', route: '/avaliation', icon: <FavoriteIcon style={{color: '#fff'}}/>},
-  //       // {title: 'Atendimento', route: '/care', icon: <LocalHospital style={{color: '#fff'}}/>},
-  //     ]
-  //
-  //     menu.map((item: any) => {
+  //     _.sortBy(menu, ['id']).map((item: any) => {
   //       items.push({
   //         title: item.name,
   //         route: item.slug,
@@ -369,7 +306,63 @@ const Sibebar = (props: Props<any>) => {
   //     })
   //     setItemsMenu(items)
   //   }
-  // }, []);
+  // }, [])
+
+  // useEffect(() => {
+  //   if (layoutState.success) {
+  //     sessionStorage.setItem(SESSIONSTORAGE.MENU, JSON.stringify(layoutState.data.menu))
+  //     sessionStorage.setItem(SESSIONSTORAGE.RIGHTS, JSON.stringify(layoutState.data.rights))
+  //     layoutState.data.integration ? sessionStorage.setItem(SESSIONSTORAGE.INTEGRATION, layoutState.data.integration) : sessionStorage.removeItem(SESSIONSTORAGE.INTEGRATION)
+  //     layoutState.data.integration_name ? sessionStorage.setItem(SESSIONSTORAGE.INTEGRATION_NAME, layoutState.data.integration_name) : sessionStorage.removeItem(SESSIONSTORAGE.INTEGRATION_NAME)
+  //
+  //     const items: itemsInterface[] = []
+  //
+  //     _.sortBy(layoutState.data.menu, ['id']).map((item: any) => {
+  //       items.push({
+  //         title: item.name,
+  //         route: item.slug,
+  //         modal: item.modal ? modalTypes[item.icon] : '',
+  //         icon: <IconComponent name={item.icon} style={{color: item.color}}/>
+  //       })
+  //     })
+  //     setItemsMenu(items)
+  //   }
+  // }, [layoutState])
+
+  useEffect(() => {
+    let menu = JSON.parse(sessionStorage.getItem(SESSIONSTORAGE.MENU) ?? '[]')
+
+    // if (itemsMenu.length <= 0) {
+    //   dispatch(loadRequest())
+    // }
+
+    // if (!menu || menu.length <= 0) {
+    //   dispatch(loadRequest())
+    // }
+
+    // if (itemsMenu.length <= 0 && (menu || menu.length > 0)) {
+    //   setItemsMenu(menu)
+    // }
+
+    // sessionStorage.setItem(SESSIONSTORAGE.MENU, JSON.stringify(menu))
+    menu = _.sortBy(menu, ['id'])
+
+    const items: any[] = [
+      {title: 'Dashboard', route: '/dashboard', icon: <DashboardIcon style={{color: '#fff'}}/>},
+      {title: 'Fluxômetros', route: '/flowmeter', icon: <DeviceHubIcon style={{color: '#fff'}}/>},
+      {title: 'Alertas', route: '/alert', icon: <NotificationsActiveIcon style={{color: '#fff'}}/>},
+    ]
+
+    menu.map((item: any) => {
+      items.push({
+        title: item.name,
+        route: item.slug,
+        modal: item.modal ? modalTypes[item.icon] : '',
+        icon: <IconComponent name={item.icon} style={{color: item.color}}/>
+      })
+    })
+    setItemsMenu(items)
+  }, []);
 
   return (
     <div className={classes.root}>
@@ -387,16 +380,16 @@ const Sibebar = (props: Props<any>) => {
           }),
         }}
       >
-        <div className={classes.toolbar}>
-          <Logo/>
-          <IconButton onClick={handleDrawerClose}>
-            {open ? <ChevronLeftIcon style={{color: '#fff'}}/> : <MenuIcon style={{color: '#fff'}}/>}
-          </IconButton>
-        </div>
+        {/*<div className={classes.toolbar}>*/}
+        {/*  <Logo/>*/}
+        {/*  <IconButton onClick={handleDrawerClose}>*/}
+        {/*    {open ? <ChevronLeftIcon style={{color: '#fff'}}/> : <MenuIcon style={{color: '#fff'}}/>}*/}
+        {/*  </IconButton>*/}
+        {/*</div>*/}
         {/* <Divider /> */}
 
         <UserContent style={{marginBottom: '0px'}}>
-          <AccountCircle/>
+          <HomeIcon/>
         </UserContent>
 
         <UserContent>
@@ -405,37 +398,37 @@ const Sibebar = (props: Props<any>) => {
               <div>
                 <Grid container spacing={2} xs={12} md={12} style={{justifyContent: 'space-evenly'}}>
                   <Grid item>
-                    <h3>{username}</h3>
+                    <h3>{'Floxômetro'}</h3>
                   </Grid>
-                  <ListItem className={classes.logOutButton}
-                            onClick={() => setOpenModalMessage(true)}>
-                    <Grid item>
-                      <Badge classes={{badge: classes.customBadge}} className={classes.padding} color="primary"
-                             badgeContent={1} max={99}><NotificationsIcon/></Badge>
-                    </Grid>
-                  </ListItem>
+                  {/*<ListItem className={classes.logOutButton}*/}
+                  {/*          onClick={() => setOpenModalMessage(true)}>*/}
+                  {/*  <Grid item>*/}
+                  {/*    <Badge classes={{badge: classes.customBadge}} className={classes.padding} color="primary"*/}
+                  {/*           badgeContent={1} max={99}><NotificationsIcon/></Badge>*/}
+                  {/*  </Grid>*/}
+                  {/*</ListItem>*/}
                 </Grid>
                 <br/>
-                <div
-                  style={{display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center',}}>
-                  <ListItem style={{padding: 0}} className={classes.logOutButton}
-                            onClick={() => setOpenModalConfig(true)}>
-                    <BusinessIcon/>
-                    <ListItemText style={{color: "#ffff", cursor: "pointer"}}>
-                      <div
-                        style={{
-                          display: 'flex',
-                          flexDirection: 'column',
-                          alignItems: 'center',
-                          justifyContent: 'center',
-                        }}>
-                        <h4 style={{color: '#ffffff', marginLeft: 10}}>{handleCustomerName(customer.name)}</h4>
-                        <h4 style={{color: '#ffffff', marginLeft: 10}}>{handleCompanyName(company.name)}</h4>
-                      </div>
-                    </ListItemText>
-                    <EditIcon style={{color: '#fff', fontSize: '14px', marginLeft: '10px'}}/>
-                  </ListItem>
-                </div>
+                {/*<div*/}
+                {/*  style={{display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center',}}>*/}
+                {/*  <ListItem style={{padding: 0}} className={classes.logOutButton}*/}
+                {/*            onClick={() => setOpenModalConfig(true)}>*/}
+                {/*    <BusinessIcon/>*/}
+                {/*    <ListItemText style={{color: "#ffff", cursor: "pointer"}}>*/}
+                {/*      <div*/}
+                {/*        style={{*/}
+                {/*          display: 'flex',*/}
+                {/*          flexDirection: 'column',*/}
+                {/*          alignItems: 'center',*/}
+                {/*          justifyContent: 'center',*/}
+                {/*        }}>*/}
+                {/*        <h4 style={{color: '#ffffff', marginLeft: 10}}>{handleCustomerName(customer.name)}</h4>*/}
+                {/*        <h4 style={{color: '#ffffff', marginLeft: 10}}>{handleCompanyName(company.name)}</h4>*/}
+                {/*      </div>*/}
+                {/*    </ListItemText>*/}
+                {/*    <EditIcon style={{color: '#fff', fontSize: '14px', marginLeft: '10px'}}/>*/}
+                {/*  </ListItem>*/}
+                {/*</div>*/}
               </div>
             </>
           ) : (

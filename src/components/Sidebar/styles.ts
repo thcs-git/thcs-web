@@ -52,8 +52,8 @@ export const UserContent = styled.div`
 
   & > svg {
     margin-bottom: 10px;
-    width: 60px;
-    height: 60px;
+    width: 100px;
+    height: 100px;
 
     transition: 0.2s linear;
   }

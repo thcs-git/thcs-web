@@ -16,6 +16,7 @@ import patients from "./patients";
 import users from "./users";
 import profession from "./professions";
 import layout from "./layout"
+import logs from "./logs"
 import message from "./message"
 
 export default combineReducers<IInitialState>({
@@ -32,5 +33,6 @@ export default combineReducers<IInitialState>({
   users,
   profession,
   layout,
+  logs,
   message,
 });
