@@ -6,7 +6,7 @@ import {
   DocumentGroupInterface,
   DocumentInterface,
   HealthInsuranceInterface,
-  HealthPlanInterface,
+  HealthPlanInterface, ReleaseReasonInterface, ReleaseReferralInterface,
 } from "./types";
 
 export const loadRequest = (params: LoadRequestParams = {}) =>
@@ -189,8 +189,17 @@ export const cidSuccess = (data: HealthPlanInterface) =>
 
 export const releaseReasonRequest = () =>
   action(CareTypes.LOAD_RELEASE_REASON_REQUEST);
-export const releaseReasonSuccess = (data: HealthPlanInterface) =>
+export const releaseReasonSuccess = (data: ReleaseReasonInterface) =>
   action(CareTypes.RELEASE_REASON_SUCCESS, { data });
+
+/**
+ * Release Referral
+ */
+
+export const releaseReferralRequest = () =>
+  action(CareTypes.LOAD_RELEASE_REFERRAL_REQUEST);
+export const releaseReferralSuccess = (data: ReleaseReferralInterface) =>
+  action(CareTypes.RELEASE_REFERRAL_SUCCESS, { data });
 
 /**
  * Document

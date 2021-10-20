@@ -506,7 +506,8 @@ export default function PatientOverview(props: RouteComponentProps<IPageParams>)
                             <List className="text-list" component="ul" aria-label="mailbox folders">
                               {careState?.data?.medical_release?.release_at && (
                                 <ListItem>
-                                  <p>Data da Alta: {formatDate(careState.data.medical_release.release_at, 'YYYY-MM-DD HH:mm')}</p>
+                                  <p>Data da
+                                    Alta: {formatDate(careState.data.medical_release.release_at, 'YYYY-MM-DD HH:mm')}</p>
                                 </ListItem>
                               )}
                               {careState?.data?.medical_release?.release_reason && (
@@ -520,24 +521,56 @@ export default function PatientOverview(props: RouteComponentProps<IPageParams>)
                                 </ListItem>
                               )}
                             </List>
-                          <ButtonComponent onClick={() => setRevertMedicalReleaseModal(true)}
-                                           background="primary" style={{background: 'var(--alert)'}} fullWidth>
-                            <p>Desfazer Alta Médica</p>
-                          </ButtonComponent>
+
+                            <ButtonComponent onClick={() => setRevertMedicalReleaseModal(true)}
+                                             background="primary" style={{background: 'var(--alert)'}} disabled={careState.data.adm_release_status} fullWidth>
+                              <p>Desfazer Alta Médica</p>
+                            </ButtonComponent>
+
                           </>
-                        ):(
-                          <ButtonComponent onClick={() => setMedicalReleaseModal(true)}
-                                           background="primary" fullWidth>
-                            <p>Alta Médica</p>
-                          </ButtonComponent>
+                        ) : (
+                          <>
+                            <ButtonComponent onClick={() => setMedicalReleaseModal(true)}
+                                             background="primary" fullWidth>
+                              <p>Alta Médica</p>
+                            </ButtonComponent>
+                          </>
                         )}
 
                       </Grid>
                       <Grid item md={11} xs={12} style={{paddingLeft: '6%'}}>
-                        <ButtonComponent onClick={() => setAdmReleaseModal(true)}
-                                         background="primary" disabled={careState.data.medical_release ? false : true} fullWidth>
-                          <p>Alta Hospitalar</p>
-                        </ButtonComponent>
+                        {careState.data.adm_release ? (
+                          <>
+                            <List className="text-list" component="ul" aria-label="mailbox folders">
+                              {careState?.data?.adm_release?.release_at && (
+                                <ListItem>
+                                  <p>Data da
+                                    Alta: {formatDate(careState.data.adm_release.release_at, 'YYYY-MM-DD HH:mm')}</p>
+                                </ListItem>
+                              )}
+                              {careState?.data?.adm_release?.release_reason && (
+                                <ListItem>
+                                  <p>Motivo: {careState.data.adm_release.release_reason.name}</p>
+                                </ListItem>
+                              )}
+                              {careState?.data?.adm_release?.release_responsible && (
+                                <ListItem>
+                                  <p>Responsável: {careState.data.adm_release.release_responsible.name}</p>
+                                </ListItem>
+                              )}
+                            </List>
+                            <ButtonComponent onClick={() => setRevertAdmReleaseModal(true)}
+                                             background="primary" style={{background: 'var(--alert)'}} fullWidth>
+                              <p>Desfazer Alta Administrativa</p>
+                            </ButtonComponent>
+                          </>
+                        ) : (
+                          <ButtonComponent onClick={() => setAdmReleaseModal(true)}
+                                           background="primary" disabled={careState.data.medical_release ? false : true}
+                                           fullWidth>
+                            <p>Alta Administrativa</p>
+                          </ButtonComponent>
+                        )}
                       </Grid>
                     </Grid>
 
@@ -948,18 +981,56 @@ export default function PatientOverview(props: RouteComponentProps<IPageParams>)
             </DialogContent>
             <DialogActions>
               <Button onClick={() => setRevertMedicalReleaseModal(false)} color="primary">
-                Fechar
+                Sair
               </Button>
               <Button onClick={() => {
                 careState.data.medical_release = null
                 careState.data.medical_release_status = false
                 dispatch(updateCareRequest(careState.data));
                 setRevertMedicalReleaseModal(false)
+                setMedicalReleaseModal(true)
+              }} color="primary">
+                Desfazer
+              </Button>
+            </DialogActions>
+          </Dialog>
+
+          <Dialog
+            open={revertAdmReleaseModal}
+            onClose={() => setRevertAdmReleaseModal(false)}
+            aria-labelledby="scroll-dialog-title"
+            aria-describedby="scroll-dialog-description"
+            maxWidth="md"
+          >
+            <DialogTitle id="scroll-dialog-title">Deseja desfazer a alta administrativa?</DialogTitle>
+            <DialogContent>
+              <DialogContentText
+                id="scroll-dialog-description"
+                tabIndex={-1}
+              >texto de apoio.</DialogContentText>
+
+              <div>
+                <Grid container>
+                </Grid>
+              </div>
+            </DialogContent>
+            <DialogActions>
+              <Button onClick={() => setRevertAdmReleaseModal(false)} color="primary">
+                Fechar
+              </Button>
+              <Button onClick={() => {
+                careState.data.adm_release = null
+                careState.data.adm_release_status = false
+                careState.data.status = 'Atendimento'
+                careState.data.death = false
+                dispatch(updateCareRequest(careState.data));
+                setRevertAdmReleaseModal(false)
               }} color="primary">
                 Salvar
               </Button>
             </DialogActions>
           </Dialog>
+
         </Container>
       </Sidebar>
     </>

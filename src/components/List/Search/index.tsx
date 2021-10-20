@@ -12,9 +12,10 @@ interface SearchProps {
   buttonTitle?: string;
   inputPlaceholder?: string;
   switches?: boolean;
+  setTabIndex?: any;
 }
 
-const Search = ({ value, onChangeInput, buttonTitle, handleButton, inputPlaceholder, switches }: SearchProps) => {
+const Search = ({ value, onChangeInput, buttonTitle, handleButton, inputPlaceholder, switches, setTabIndex }: SearchProps) => {
   return (
     <div>
       <FormSearch noValidate autoComplete="off">
@@ -37,7 +38,9 @@ const Search = ({ value, onChangeInput, buttonTitle, handleButton, inputPlacehol
           />
         </FormControl>
         {switches && (
-          <ButtonSwitches/>
+          <ButtonSwitches
+            setTabIndex={setTabIndex}
+          />
         )}
         {buttonTitle && (
           <ButtonStyle onClick={handleButton}>{buttonTitle}</ButtonStyle>

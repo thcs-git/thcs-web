@@ -55,8 +55,17 @@ export default function CouncilList() {
   const dispatch = useDispatch();
   const careState = useSelector((state: ApplicationState) => state.cares);
 
+  const [tabIndex, setTabIndex] = useState(0);
+
   useEffect(() => {
-    dispatch(getCares({status: "Atendimento"}));
+    if (tabIndex === 0) {
+      dispatch(getCares({status: "Atendimento"}));
+    } else if (tabIndex === 1) {
+      dispatch(getCares({status: "Alta"}));
+    } else {
+      dispatch(getCares({status: "Todos"}));
+    }
+
 
     // if (!(sessionStorage.getItem(SESSIONSTORAGE.INTEGRATION))) {
     //   dispatch(loadRequestPopUp({
@@ -66,7 +75,7 @@ export default function CouncilList() {
     //     search
     //   }));
     // }
-  }, []);
+  }, [tabIndex]);
 
   useEffect(() => {
     let array = _.uniqBy(careState.list.data, 'patient_id.name');
@@ -200,6 +209,7 @@ export default function CouncilList() {
                 onChangeInput={debounceSearchRequest}
                 inputPlaceholder="Pesquise por paciente, CPF, complexidade, etc..."
                 switches={true}
+                setTabIndex={setTabIndex}
               />
 
               <Table

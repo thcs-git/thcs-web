@@ -96,6 +96,10 @@ export enum CareTypes {
   LOAD_RELEASE_REASON_REQUEST = "@care/LOAD_RELEASE_REASON_REQUEST",
   RELEASE_REASON_SUCCESS = "@care/RELEASE_REASON_SUCCESS",
 
+  // Release Referral
+  LOAD_RELEASE_REFERRAL_REQUEST = "@care/LOAD_RELEASE_REFERRAL_REQUEST",
+  RELEASE_REFERRAL_SUCCESS = "@care/RELEASE_REFERRAL_SUCCESS",
+
   // Document
   LOAD_DOCUMENT_REQUEST = "@care/LOAD_DOCUMENT_REQUEST",
   LOAD_DOCUMENT_SUCCESS = "@care/LOAD_DOCUMENT_SUCCESS",
@@ -122,6 +126,7 @@ export enum CareTypes {
  */
 
 export interface CareInterface {
+  death?: boolean;
   tipo?: string;
   speciality?: string;
   _id?: string;
@@ -169,7 +174,7 @@ export interface CareInterface {
     health_sub_plan_id?: string;
   };
   medical_release?: IMedicalReleaseData | null;
-  adm_release?: IAdmReleaseData;
+  adm_release?: IAdmReleaseData | null;
   medical_release_status?: boolean;
   adm_release_status?: boolean;
 }
@@ -202,6 +207,7 @@ export interface CareState {
   care_type: HealthPlanInterface[];
   cid: CidInterface[];
   release_reason: ReleaseReasonInterface[];
+  release_referral: ReleaseReferralInterface[];
   documentGroupSocioAmbiental: DocumentGroupInterface;
   documentGroupAbemid: DocumentGroupInterface;
   documentSocioAmbiental: DocumentState;
@@ -277,9 +283,17 @@ export interface CidInterface {
 }
 
 export interface ReleaseReasonInterface {
+  type?: string;
   _id: string;
   name: string;
-  active: boolean;
+  active?: boolean;
+}
+
+export interface ReleaseReferralInterface {
+  cid?: boolean;
+  _id: string;
+  name: string;
+  active?: boolean;
 }
 
 export interface DocumentGroupInterface {
@@ -400,7 +414,10 @@ export interface IMedicalReleaseData {
     _id: string,
     name: string,
   };
-  release_referral: string;
+  release_referral: {
+    _id: string,
+    name: string,
+  };
   release_observation: string;
   release_responsible: {
     _id: string,

@@ -22,10 +22,16 @@ import MuiPickersUtilsProvider, {DateTimePicker} from "@material-ui/pickers";
 import {formatDate} from "../../../../helpers/date";
 import moment from "moment";
 import {IMedicalReleaseData} from "../../../../store/ducks/cares/types";
-import {cidAllRequest, releaseReasonRequest, updateCareRequest} from "../../../../store/ducks/cares/actions";
+import {
+  cidAllRequest,
+  releaseReasonRequest,
+  releaseReferralRequest,
+  updateCareRequest
+} from "../../../../store/ducks/cares/actions";
 import {bloodTypes, releaseReferral} from "../../../../helpers/patient";
 
 import LOCALSTORAGE from "../../../../helpers/constants/localStorage";
+import {loadCompanyByCustomer} from "../../../../store/ducks/companies/actions";
 
 interface IDialogProps {
   modalOpen: any;
@@ -37,6 +43,7 @@ export default function MedicalReleaseDialog(props: IDialogProps) {
   const dispatch = useDispatch();
 
   const careState = useSelector((state: ApplicationState) => state.cares);
+  const companyState = useSelector((state: ApplicationState) => state.companies);
   const [captureData, setCaptureData] = useState<IMedicalReleaseData | any>({
     release_at: formatDate(new Date(), 'YYYY-MM-DDTHH:mm'),
     release_responsible: {
@@ -44,6 +51,7 @@ export default function MedicalReleaseDialog(props: IDialogProps) {
       name: localStorage.getItem(LOCALSTORAGE.USERNAME)
     }
   });
+  const [releaseType, setReleaseType] = useState<string>('')
 
   useEffect(() => {
     if (modalOpen) {
@@ -52,6 +60,12 @@ export default function MedicalReleaseDialog(props: IDialogProps) {
       }
       if (careState.release_reason.length <= 0) {
         dispatch(releaseReasonRequest());
+      }
+      if (careState.release_referral.length <= 0) {
+        dispatch(releaseReferralRequest());
+      }
+      if (companyState.list.data.length <= 0) {
+        dispatch(loadCompanyByCustomer('124'))
       }
     }
   }, [modalOpen]);
@@ -77,11 +91,30 @@ export default function MedicalReleaseDialog(props: IDialogProps) {
   }, [captureData.release_reason]);
 
   function handleSelectReleaseReason(value: any) {
+    setReleaseType(value.type)
     setCaptureData((prevState: any) => ({
       ...prevState,
       release_reason: {
         _id: value._id,
         name: value.name,
+        type: value.type,
+      },
+    }));
+  }
+
+
+  const selectReleaseReferral = useCallback(() => {
+    const selected = careState.release_referral.filter((item) => item._id === captureData.release_referral?._id);
+    return selected[0] ? selected[0] : null;
+  }, [captureData.release_referral]);
+
+  function handleSelectReleaseReferral(value: any) {
+    setCaptureData((prevState: any) => ({
+      ...prevState,
+      release_referral: {
+        _id: value._id,
+        name: value.name,
+        cid: value.cid || false,
       },
     }));
   }
@@ -165,6 +198,13 @@ export default function MedicalReleaseDialog(props: IDialogProps) {
                         handleSelectReleaseReason({
                           _id: value._id || "",
                           name: value.name,
+                          type: value.type,
+                        });
+                      } else {
+                        handleSelectReleaseReason({
+                          _id: "",
+                          name: "",
+                          type: "",
                         });
                       }
                     }}
@@ -175,70 +215,81 @@ export default function MedicalReleaseDialog(props: IDialogProps) {
                 </FieldContent>
               </Grid>
 
-              <Grid item md={12}>
-                <FieldContent style={{paddingRight: 15}}>
-                  <Autocomplete
-                    id="input-release-reason"
-                    options={careState.cid}
-                    getOptionLabel={(option) => option.name}
-                    value={selectCid()}
-                    // getOptionSelected={(option, value) => option._id === captureData.health_insurance_id}
-                    renderInput={(params) => (
-                      <TextField
-                        {...params}
-                        label="Diagnóstico de alta"
-                        variant="outlined"
-                      />
-                    )}
-                    onChange={(event, value) => {
-                      if (value) {
-                        handleSelectCid({
-                          _id: value._id || "",
-                          name: value.name,
-                        });
-                      }
-                    }}
-                    size="small"
-                    noOptionsText="Nenhum CID foi encontrado"
-                    fullWidth
-                  />
-                </FieldContent>
-              </Grid>
+              {releaseType === "ÓBITO" && (
+                <Grid item md={12}>
+                  <FieldContent style={{paddingRight: 15}}>
+                    <Autocomplete
+                      id="input-release-referral"
+                      options={careState.release_referral}
+                      getOptionLabel={(option) => option.name}
+                      value={selectReleaseReferral()}
+                      // getOptionSelected={(option, value) => option._id === captureData.health_insurance_id}
+                      renderInput={(params) => (
+                        <TextField
+                          {...params}
+                          label="Tipo de Encaminhamento"
+                          variant="outlined"
+                        />
+                      )}
+                      onChange={(event, value) => {
+                        if (value) {
+                          handleSelectReleaseReferral({
+                            _id: value._id || "",
+                            name: value.name,
+                            cid: value.cid,
+                          });
+                        } else {
+                          handleSelectReleaseReferral({
+                            _id: "",
+                            name: "",
+                            cid: "",
+                          });
+                        }
+                      }}
+                      size="small"
+                      noOptionsText="Nenhum resultado encontrado"
+                      fullWidth
+                    />
+                  </FieldContent>
+                </Grid>
+              )}
 
-              <Grid item md={12}>
-                <FieldContent style={{paddingRight: 15}}>
-                  <Autocomplete
-                    id="input-release-referral"
-                    options={releaseReferral}
-                    getOptionLabel={(option) => option}
-                    value={captureData.release_referral}
-                    // getOptionSelected={(option, value) => option._id === captureData.health_insurance_id}
-                    renderInput={(params) => (
-                      <TextField
-                        {...params}
-                        label="Tipo de Encaminhamento"
-                        variant="outlined"
-                      />
-                    )}
-                    onChange={(event, value) => {
-                      if (value) {
-                        setCaptureData((prevState: any) => ({
-                          ...prevState,
-                          release_referral: value
-                        }));
-                      } else {
-                        setCaptureData((prevState: any) => ({
-                          ...prevState,
-                          release_referral: ""
-                        }));
-                      }
-                    }}
-                    size="small"
-                    noOptionsText="Nenhum resultado encontrado"
-                    fullWidth
-                  />
-                </FieldContent>
-              </Grid>
+              {(releaseType != "ÓBITO" || captureData?.release_referral?.cid) && (
+                <Grid item md={12}>
+                  <FieldContent style={{paddingRight: 15}}>
+                    <Autocomplete
+                      id="input-release-reason"
+                      options={careState.cid}
+                      getOptionLabel={(option) => option.name}
+                      value={selectCid()}
+                      // getOptionSelected={(option, value) => option._id === captureData.health_insurance_id}
+                      renderInput={(params) => (
+                        <TextField
+                          {...params}
+                          label="Diagnóstico de alta"
+                          variant="outlined"
+                        />
+                      )}
+                      onChange={(event, value) => {
+                        if (value) {
+                          handleSelectCid({
+                            _id: value._id || "",
+                            name: value.name,
+                          });
+                        } else {
+                          handleSelectCid({
+                            _id: "",
+                            name: "",
+                          });
+                        }
+                      }}
+                      size="small"
+                      noOptionsText="Nenhum CID foi encontrado"
+                      fullWidth
+                    />
+                  </FieldContent>
+                </Grid>
+              )}
 
               <Grid item md={12}>
                 <FieldContent>

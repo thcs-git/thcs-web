@@ -35,7 +35,7 @@ import {
   createScheduleSuccess,
   updateScheduleSuccess,
   deleteScheduleSuccess,
-  loadHistorySuccess, releaseReasonSuccess
+  loadHistorySuccess, releaseReasonSuccess, releaseReferralSuccess
 } from "./actions";
 
 import {apiIntegra, apiSollar} from "../../../services/axios";
@@ -565,6 +565,21 @@ export function* getReleaseReason() {
     );
 
     yield put(releaseReasonSuccess(data));
+  } catch (error) {
+    console.log(error);
+    toast.error("Erro ao buscar CID");
+    yield put(loadFailure());
+  }
+}
+
+export function* getReleaseReferral() {
+  try {
+    const {data}: AxiosResponse = yield call(
+      apiSollar.get,
+      `/releaseReferrals/getAll`
+    );
+
+    yield put(releaseReferralSuccess(data));
   } catch (error) {
     console.log(error);
     toast.error("Erro ao buscar CID");

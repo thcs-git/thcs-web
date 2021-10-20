@@ -1,16 +1,21 @@
-import React, {useState} from "react"
+import React, {ChangeEvent, useState} from "react"
 import {Button} from "@material-ui/core";
 import {ButtonComponent, ButtonGroupComponent} from "./styles";
 import moment from "moment";
 import {formatDate} from "../../../helpers/date";
 
-export default function ButtonSwitches(props: any){
-  const {} = props
+interface switchesProps {
+  setTabIndex: any;
+}
+
+export default function   ButtonSwitches(props: switchesProps){
+  const {setTabIndex} = props;
 
   const [state, setState] = useState(0);
 
   const handleChange = (e: any) => {
     setState(e.target.tagName === 'BUTTON' ? e.target.tabIndex : e.target.parentElement.tabIndex);
+    setTabIndex(e.target.tagName === 'BUTTON' ? e.target.tabIndex : e.target.parentElement.tabIndex);
   };
 
   function handleValue(value: number) {

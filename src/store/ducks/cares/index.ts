@@ -47,6 +47,7 @@ export const INITIAL_STATE: CareState = {
   care_type: [],
   cid: [],
   release_reason: [],
+  release_referral: [],
   documentGroupSocioAmbiental: {},
   documentSocioAmbiental: {},
   documentGroupAbemid: {},
@@ -164,6 +165,22 @@ const reducer: Reducer<CareState> = (state = INITIAL_STATE, action) => {
       return {
         ...state,
         release_reason: action.payload.data,
+        loading: false,
+        success: false,
+        error: false
+      };
+    // Release Reason
+    case CareTypes.LOAD_RELEASE_REFERRAL_REQUEST:
+      return {
+        ...state,
+        loading: true,
+        success: false,
+        error: false
+      };
+    case CareTypes.RELEASE_REFERRAL_SUCCESS:
+      return {
+        ...state,
+        release_referral: action.payload.data,
         loading: false,
         success: false,
         error: false

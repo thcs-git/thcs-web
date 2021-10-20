@@ -35,7 +35,7 @@ import {
   store as createCompany,
   getById as getCompanyById,
   update as updateCompany,
-  searchCompany,
+  searchCompany, getCompaniesById,
 } from "./companies/sagas";
 
 import { SpecialtyTypes } from "./specialties/types";
@@ -142,7 +142,7 @@ import {
   getSchedule,
   storeSchedule,
   updateSchedule,
-  deleteSchedule, getHistory, getAllCid, getReleaseReason,
+  deleteSchedule, getHistory, getAllCid, getReleaseReason, getReleaseReferral,
 } from "./cares/sagas";
 
 import { get as getProfession } from "./professions/sagas";
@@ -210,6 +210,7 @@ export default function* rootSaga() {
     takeLatest(CareTypes.SEARCH_CID_REQUEST, searchCid),
     takeLatest(CareTypes.LOAD_CID_REQUEST, getAllCid),
     takeLatest(CareTypes.LOAD_RELEASE_REASON_REQUEST, getReleaseReason),
+    takeLatest(CareTypes.LOAD_RELEASE_REFERRAL_REQUEST, getReleaseReferral),
     //takeLatest(CareTypes.LOAD_DOCUMENT_REQUEST, getDocumentById),
 
     takeLatest(CareTypes.LOAD_SCHEDULE_REQUEST, getSchedule),
@@ -240,6 +241,7 @@ export default function* rootSaga() {
     takeLatest(CompanyTypes.CREATE_COMPANY_REQUEST, createCompany),
     takeLatest(CompanyTypes.UPDATE_COMPANY_REQUEST, updateCompany),
     takeLatest(CompanyTypes.SEARCH_REQUEST, searchCompany),
+    takeLatest(CompanyTypes.LOAD_REQUEST_CUSTOMER_BY_ID, getCompaniesById),
 
     /** Customers */
     takeLatest(CustomerTypes.LOAD_REQUEST, get),
