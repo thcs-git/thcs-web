@@ -32,6 +32,8 @@ import {bloodTypes, releaseReferral} from "../../../../helpers/patient";
 
 import LOCALSTORAGE from "../../../../helpers/constants/localStorage";
 import {loadCompanyByCustomer} from "../../../../store/ducks/companies/actions";
+import {CompanyInterface} from "../../../../store/ducks/companies/types";
+import _ from "lodash";
 
 interface IDialogProps {
   modalOpen: any;
@@ -51,6 +53,7 @@ export default function MedicalReleaseDialog(props: IDialogProps) {
       name: localStorage.getItem(LOCALSTORAGE.USERNAME)
     }
   });
+  const [companyData, setCompanyData] = useState<CompanyInterface | any>({});
   const [releaseType, setReleaseType] = useState<string>('')
 
   useEffect(() => {
@@ -65,7 +68,8 @@ export default function MedicalReleaseDialog(props: IDialogProps) {
         dispatch(releaseReferralRequest());
       }
       if (companyState.list.data.length <= 0) {
-        dispatch(loadCompanyByCustomer('124'))
+        const customer_id = localStorage.getItem(LOCALSTORAGE.CUSTOMER)
+        dispatch(loadCompanyByCustomer(customer_id ? customer_id : ''))
       }
     }
   }, [modalOpen]);
@@ -116,6 +120,20 @@ export default function MedicalReleaseDialog(props: IDialogProps) {
         name: value.name,
         cid: value.cid || false,
       },
+    }));
+  }
+
+  const selectCompany = useCallback(() => {
+    const selected = companyState.list.data.filter((item) => item._id === companyData._id);
+    return selected[0] ? selected[0] : null;
+  }, [companyData]);
+
+  function handleSelectCompany(value: any) {
+    setCompanyData((prevState: any) => ({
+      ...prevState,
+      _id: value._id,
+      name: value.name,
+      active: value.active,
     }));
   }
 
@@ -214,6 +232,45 @@ export default function MedicalReleaseDialog(props: IDialogProps) {
                   />
                 </FieldContent>
               </Grid>
+
+              {releaseType === "TRANSFERÊNCIA INTERNA" && (
+                <Grid item md={12}>
+                  <FieldContent style={{paddingRight: 15}}>
+                    <Autocomplete
+                      id="input-company-transfer"
+                      options={companyState.list.data}
+                      getOptionLabel={(option) => option.name}
+                      value={selectCompany()}
+                      // getOptionSelected={(option, value) => option._id === captureData.health_insurance_id}
+                      renderInput={(params) => (
+                        <TextField
+                          {...params}
+                          label="Empresa Para ser Transferida"
+                          variant="outlined"
+                        />
+                      )}
+                      onChange={(event, value) => {
+                        if (value) {
+                          handleSelectCompany({
+                            _id: value._id || "",
+                            name: value.name,
+                            active: value.active,
+                          });
+                        } else {
+                          handleSelectCompany({
+                            _id: "",
+                            name: "",
+                            active: "",
+                          });
+                        }
+                      }}
+                      size="small"
+                      noOptionsText="Nenhum resultado encontrado"
+                      fullWidth
+                    />
+                  </FieldContent>
+                </Grid>
+              )}
 
               {releaseType === "ÓBITO" && (
                 <Grid item md={12}>
