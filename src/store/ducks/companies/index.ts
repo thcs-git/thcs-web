@@ -136,6 +136,19 @@ const reducer: Reducer<CompanyState> = (state = INITIAL_STATE, action) => {
         error: false,
         success: true
       }
+    case CompanyTypes.LOAD_REQUEST_CUSTOMER_BY_ID:
+      return {
+        ...state,
+        loading: true,
+        error: false,
+        success: false
+      };
+    case CompanyTypes.LOAD_SUCCESS_CUSTOMER_BY_ID:
+      return {
+        ...state,
+        list: action.payload.data,
+        loading: false,
+      };
     case CompanyTypes.SEARCH_REQUEST:
       return { ...state, loading: true, error: false };
 

@@ -6,7 +6,7 @@ import {
   DocumentGroupInterface,
   DocumentInterface,
   HealthInsuranceInterface,
-  HealthPlanInterface,
+  HealthPlanInterface, ReleaseReasonInterface, ReleaseReferralInterface,
 } from "./types";
 
 export const loadRequest = (params: LoadRequestParams = {}) =>
@@ -26,6 +26,16 @@ export const updateCareRequest = (data: CareInterface) =>
   action(CareTypes.UPDATE_CARE_REQUEST, { data });
 export const updateCareSuccess = (data: CareInterface) =>
   action(CareTypes.UPDATE_CARE_SUCCESS, { data });
+
+export const transferCareRequest = (data: CareInterface) =>
+  action(CareTypes.TRANSFER_CARE_REQUEST, { data });
+export const transferCareSuccess = (data: CareInterface) =>
+  action(CareTypes.TRANSFER_CARE_SUCCESS, { data });
+
+export const deleteCareRequest = (id: string) =>
+  action(CareTypes.DELETE_CARE_REQUEST, { id });
+export const deleteCareSuccess = () =>
+  action(CareTypes.DELETE_CARE_SUCCESS);
 
 export const loadCareById = (id: string) =>
   action(CareTypes.LOAD_REQUEST_CARE_BY_ID, { id });
@@ -176,10 +186,30 @@ export const careTypeSuccess = (data: HealthPlanInterface) =>
 /**
  * CID
  */
+export const cidAllRequest = () =>
+  action(CareTypes.LOAD_CID_REQUEST);
 export const cidRequest = (cid: string) =>
   action(CareTypes.SEARCH_CID_REQUEST, { cid });
 export const cidSuccess = (data: HealthPlanInterface) =>
   action(CareTypes.SEARCH_CID_SUCCESS, { data });
+
+/**
+ * Release Reasons
+ */
+
+export const releaseReasonRequest = () =>
+  action(CareTypes.LOAD_RELEASE_REASON_REQUEST);
+export const releaseReasonSuccess = (data: ReleaseReasonInterface) =>
+  action(CareTypes.RELEASE_REASON_SUCCESS, { data });
+
+/**
+ * Release Referral
+ */
+
+export const releaseReferralRequest = () =>
+  action(CareTypes.LOAD_RELEASE_REFERRAL_REQUEST);
+export const releaseReferralSuccess = (data: ReleaseReferralInterface) =>
+  action(CareTypes.RELEASE_REFERRAL_SUCCESS, { data });
 
 /**
  * Document
@@ -188,6 +218,14 @@ export const loadDocumentRequest = (id: string) =>
   action(CareTypes.LOAD_DOCUMENT_REQUEST, { id });
 export const loadDocumentSuccess = (data: any) =>
   action(CareTypes.LOAD_DOCUMENT_SUCCESS, { data });
+
+/**
+ * History
+ */
+export const loadHistoryRequest = (id: string, type: string) =>
+  action(CareTypes.LOAD_HISTORY_REQUEST, { id, type });
+export const loadHistorySuccess = (data: any) =>
+  action(CareTypes.LOAD_HISTORY_SUCCESS, { data });
 
 /**
  * Schedule

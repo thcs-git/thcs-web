@@ -35,7 +35,7 @@ import {
   store as createCompany,
   getById as getCompanyById,
   update as updateCompany,
-  searchCompany,
+  searchCompany, getCompaniesById,
 } from "./companies/sagas";
 
 import { SpecialtyTypes } from "./specialties/types";
@@ -142,7 +142,7 @@ import {
   getSchedule,
   storeSchedule,
   updateSchedule,
-  deleteSchedule,
+  deleteSchedule, getHistory, getAllCid, getReleaseReason, getReleaseReferral, transferCare, deleteCare,
 } from "./cares/sagas";
 
 import { get as getProfession } from "./professions/sagas";
@@ -208,12 +208,19 @@ export default function* rootSaga() {
     takeLatest(CareTypes.TYPE_ACCOMMODATION_REQUEST, getAccommodationType),
     takeLatest(CareTypes.CARE_TYPE_REQUEST, getCareType),
     takeLatest(CareTypes.SEARCH_CID_REQUEST, searchCid),
+    takeLatest(CareTypes.LOAD_CID_REQUEST, getAllCid),
+    takeLatest(CareTypes.LOAD_RELEASE_REASON_REQUEST, getReleaseReason),
+    takeLatest(CareTypes.LOAD_RELEASE_REFERRAL_REQUEST, getReleaseReferral),
     //takeLatest(CareTypes.LOAD_DOCUMENT_REQUEST, getDocumentById),
 
     takeLatest(CareTypes.LOAD_SCHEDULE_REQUEST, getSchedule),
     takeLatest(CareTypes.CREATE_SCHEDULE_REQUEST, storeSchedule),
     takeLatest(CareTypes.DELETE_SCHEDULE_REQUEST, deleteSchedule),
     takeLatest(CareTypes.UPDATE_SCHEDULE_REQUEST, updateSchedule),
+
+    takeLatest(CareTypes.LOAD_HISTORY_REQUEST, getHistory),
+    takeLatest(CareTypes.TRANSFER_CARE_REQUEST, transferCare),
+    takeLatest(CareTypes.DELETE_CARE_REQUEST, deleteCare),
 
     // Council
     takeLatest(CouncilTypes.LOAD_REQUEST, getCouncils),
@@ -236,6 +243,7 @@ export default function* rootSaga() {
     takeLatest(CompanyTypes.CREATE_COMPANY_REQUEST, createCompany),
     takeLatest(CompanyTypes.UPDATE_COMPANY_REQUEST, updateCompany),
     takeLatest(CompanyTypes.SEARCH_REQUEST, searchCompany),
+    takeLatest(CompanyTypes.LOAD_REQUEST_CUSTOMER_BY_ID, getCompaniesById),
 
     /** Customers */
     takeLatest(CustomerTypes.LOAD_REQUEST, get),

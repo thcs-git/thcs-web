@@ -8,3 +8,9 @@ export const maritalStatus = [
   'Viúvo(a)',
   'União Estável',
 ];
+
+export const releaseReferral = [
+  'Doc. Óbito emitido pelo hospital',
+  'Corpo encaminhado para IML',
+  'Corpo encaminhado para o SVO',
+];

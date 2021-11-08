@@ -3,6 +3,7 @@ import { FormControl, IconButton, InputAdornment, InputLabel, OutlinedInput } fr
 import { SearchOutlined } from '@material-ui/icons';
 
 import { FormSearch, ButtonStyle } from './styles';
+import ButtonSwitches from "../../Button/ButtonSwitches";
 
 interface SearchProps {
   onChangeInput: (event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => void;
@@ -10,9 +11,11 @@ interface SearchProps {
   value?: string;
   buttonTitle?: string;
   inputPlaceholder?: string;
+  switches?: boolean;
+  setTabIndex?: any;
 }
 
-const Search = ({ value, onChangeInput, buttonTitle, handleButton, inputPlaceholder }: SearchProps) => {
+const Search = ({ value, onChangeInput, buttonTitle, handleButton, inputPlaceholder, switches, setTabIndex }: SearchProps) => {
   return (
     <div>
       <FormSearch noValidate autoComplete="off">
@@ -34,6 +37,11 @@ const Search = ({ value, onChangeInput, buttonTitle, handleButton, inputPlacehol
             labelWidth={390}
           />
         </FormControl>
+        {switches && (
+          <ButtonSwitches
+            setTabIndex={setTabIndex}
+          />
+        )}
         {buttonTitle && (
           <ButtonStyle onClick={handleButton}>{buttonTitle}</ButtonStyle>
         )}
