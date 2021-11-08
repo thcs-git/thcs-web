@@ -35,6 +35,7 @@ import {
   createScheduleSuccess,
   updateScheduleSuccess,
   deleteScheduleSuccess,
+  loadHistorySuccess, releaseReasonSuccess, releaseReferralSuccess, deleteCareSuccess
 } from "./actions";
 
 import {apiIntegra, apiSollar} from "../../../services/axios";
@@ -189,7 +190,6 @@ export function* updateCare({payload: {data}}: any) {
   const {_id} = data;
 
   try {
-    console.log(data);
     const response: AxiosResponse = yield call(
       apiSollar.put,
       `/care/${_id}/update`,
@@ -201,6 +201,41 @@ export function* updateCare({payload: {data}}: any) {
     yield put(updateCareSuccess(response.data));
   } catch (error) {
     toast.error("Não foi possível atualizar os dados do atendimento");
+    yield put(loadFailure());
+  }
+}
+
+export function* transferCare({payload: {data}}: any) {
+  const {_id} = data;
+
+  try {
+    const response: AxiosResponse = yield call(
+      apiSollar.put,
+      `/care/${_id}/transfer`,
+      {...data},
+      {headers: {token}}
+    );
+
+    toast.success("Atendimento transferido com sucesso!");
+    yield put(updateCareSuccess(response.data));
+  } catch (error) {
+    toast.error("Não foi possível atualizar os dados do atendimento");
+    yield put(loadFailure());
+  }
+}
+
+export function* deleteCare({payload: {id: _id}}: any) {
+  try {
+    const response: AxiosResponse = yield call(
+      apiSollar.delete,
+      `/care/${_id}/delete`,
+      {headers: {token}}
+    );
+
+    toast.success("Atendimento deletado com sucesso!");
+    yield put(deleteCareSuccess());
+  } catch (error) {
+    toast.error("Não foi possível deletar o dados do atendimento");
     yield put(loadFailure());
   }
 }
@@ -541,6 +576,51 @@ export function* searchCid({payload}: any) {
   }
 }
 
+export function* getAllCid() {
+  try {
+    const {data}: AxiosResponse = yield call(
+      apiSollar.get,
+      `/cid/getAll`
+    );
+
+    yield put(cidSuccess(data));
+  } catch (error) {
+    console.log(error);
+    toast.error("Erro ao buscar CID");
+    yield put(loadFailure());
+  }
+}
+
+export function* getReleaseReason() {
+  try {
+    const {data}: AxiosResponse = yield call(
+      apiSollar.get,
+      `/releaseReasons/getAll`
+    );
+
+    yield put(releaseReasonSuccess(data));
+  } catch (error) {
+    console.log(error);
+    toast.error("Erro ao buscar CID");
+    yield put(loadFailure());
+  }
+}
+
+export function* getReleaseReferral() {
+  try {
+    const {data}: AxiosResponse = yield call(
+      apiSollar.get,
+      `/releaseReferrals/getAll`
+    );
+
+    yield put(releaseReferralSuccess(data));
+  } catch (error) {
+    console.log(error);
+    toast.error("Erro ao buscar CID");
+    yield put(loadFailure());
+  }
+}
+
 export function* getDocumentById({payload}: any) {
   const {id} = payload;
 
@@ -642,6 +722,22 @@ export function* deleteSchedule({payload}: any) {
   } catch (error) {
     console.log(error);
     toast.error("Erro ao obter a agenda");
+    yield put(loadFailure());
+  }
+}
+
+export function* getHistory({payload}: any) {
+  try {
+    const {id, type} = payload;
+    const {data}: AxiosResponse = yield call(
+      apiSollar.get,
+      `/attendance/getHistory?patient_id=${id}${type ? "&status=" + type : ""}`,
+    );
+
+    yield put(loadHistorySuccess(data));
+  } catch (error) {
+    console.log(error);
+    toast.error("Erro ao obter o histórico");
     yield put(loadFailure());
   }
 }

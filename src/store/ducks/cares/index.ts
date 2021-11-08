@@ -36,6 +36,7 @@ export const INITIAL_STATE: CareState = {
     page: '1',
     total: 0
   },
+  history: [],
   error: false,
   loading: false,
   success: false,
@@ -45,6 +46,8 @@ export const INITIAL_STATE: CareState = {
   accommondation_type: [],
   care_type: [],
   cid: [],
+  release_reason: [],
+  release_referral: [],
   documentGroupSocioAmbiental: {},
   documentSocioAmbiental: {},
   documentGroupAbemid: {},
@@ -128,6 +131,13 @@ const reducer: Reducer<CareState> = (state = INITIAL_STATE, action) => {
         error: false
       };
     // CID
+    case CareTypes.LOAD_CID_REQUEST:
+      return {
+        ...state,
+        loading: true,
+        success: false,
+        error: false
+      };
     case CareTypes.SEARCH_CID_REQUEST:
       return {
         ...state,
@@ -139,6 +149,38 @@ const reducer: Reducer<CareState> = (state = INITIAL_STATE, action) => {
       return {
         ...state,
         cid: action.payload.data,
+        loading: false,
+        success: false,
+        error: false
+      };
+    // Release Reason
+    case CareTypes.LOAD_RELEASE_REASON_REQUEST:
+      return {
+        ...state,
+        loading: true,
+        success: false,
+        error: false
+      };
+    case CareTypes.RELEASE_REASON_SUCCESS:
+      return {
+        ...state,
+        release_reason: action.payload.data,
+        loading: false,
+        success: false,
+        error: false
+      };
+    // Release Reason
+    case CareTypes.LOAD_RELEASE_REFERRAL_REQUEST:
+      return {
+        ...state,
+        loading: true,
+        success: false,
+        error: false
+      };
+    case CareTypes.RELEASE_REFERRAL_SUCCESS:
+      return {
+        ...state,
+        release_referral: action.payload.data,
         loading: false,
         success: false,
         error: false
@@ -213,6 +255,38 @@ const reducer: Reducer<CareState> = (state = INITIAL_STATE, action) => {
       return {
         ...state,
         data: action.payload.data,
+        loading: false,
+        error: false,
+        success: true
+      }
+    case CareTypes.TRANSFER_CARE_REQUEST:
+      return {
+        ...state,
+        data: INITIAL_STATE.data,
+        loading: true,
+        error: false,
+        success: false
+      }
+    case CareTypes.TRANSFER_CARE_SUCCESS:
+      return {
+        ...state,
+        data: action.payload.data,
+        loading: false,
+        error: false,
+        success: true
+      }
+    case CareTypes.DELETE_CARE_REQUEST:
+      return {
+        ...state,
+        data: INITIAL_STATE.data,
+        loading: true,
+        error: false,
+        success: false
+      }
+    case CareTypes.DELETE_CARE_SUCCESS:
+      return {
+        ...state,
+        data: INITIAL_STATE.data,
         loading: false,
         error: false,
         success: true
@@ -534,7 +608,21 @@ const reducer: Reducer<CareState> = (state = INITIAL_STATE, action) => {
         error: false,
         success: true
       };
-
+    case CareTypes.LOAD_HISTORY_REQUEST:
+      return {
+        ...state,
+        loading: true,
+        error: false,
+        success: false
+      };
+    case CareTypes.LOAD_HISTORY_SUCCESS:
+      return {
+        ...state,
+        history: action.payload.data,
+        loading: false,
+        error: false,
+        success: true
+      };
     case CareTypes.CLEAN:
       return INITIAL_STATE;
     default:

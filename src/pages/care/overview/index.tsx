@@ -9,7 +9,7 @@ import {
   ListItem,
   ListItemText,
   Menu,
-  MenuItem, TableCell, TableRow,
+  MenuItem, TableCell, TableRow, TextField,
   Tooltip,
   Typography
 } from '@material-ui/core';
@@ -19,10 +19,10 @@ import {Link, useHistory} from "react-router-dom";
 import QueueIcon from '@material-ui/icons/Queue';
 import CropFreeIcon from '@material-ui/icons/CropFree';
 import TodayRoundedIcon from '@material-ui/icons/TodayRounded';
-import {FormTitle} from '../../../styles/components/Form';
+import {FieldContent, FormTitle} from '../../../styles/components/Form';
 import Sidebar from '../../../components/Sidebar';
 
-import {loadCareById} from '../../../store/ducks/cares/actions';
+import {deleteCareRequest, loadCareById, updateCareRequest} from '../../../store/ducks/cares/actions';
 
 import IconProfile from '../../../assets/img/icon-profile.svg';
 import IconProntuario from '../../../assets/img/icon-prontuario.svg';
@@ -56,6 +56,11 @@ import QRCode from "react-qr-code";
 import SESSIONSTORAGE from "../../../helpers/constants/sessionStorage";
 import Table from "../../../components/Table";
 import ViewCard from "../../../components/Card/ViewCard";
+import MedicalReleaseDialog from "../../../components/Dialogs/Release/Medical";
+import AdmReleaseDialog from "../../../components/Dialogs/Release/Adm";
+import moment from "moment";
+import {Autocomplete} from "@material-ui/lab";
+import {releaseReferral} from "../../../helpers/patient";
 
 interface IPageParams {
   id?: string;
@@ -67,13 +72,17 @@ export default function PatientOverview(props: RouteComponentProps<IPageParams>)
   const {params} = props.match;
   const careState = useSelector((state: ApplicationState) => state.cares);
 
+  const [medicalReleaseModal, setMedicalReleaseModal] = useState(false);
+  const [revertMedicalReleaseModal, setRevertMedicalReleaseModal] = useState(false);
+  const [admReleaseModal, setAdmReleaseModal] = useState(false);
+  const [revertAdmReleaseModal, setRevertAdmReleaseModal] = useState(false);
+
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
 
   useEffect(() => {
     if (params.id) {
       dispatch(loadCareById(params.id));
     }
-
   }, [dispatch]);
 
   const handleOpenRowMenu = useCallback((event: React.MouseEvent<HTMLButtonElement>) => {
@@ -159,7 +168,8 @@ export default function PatientOverview(props: RouteComponentProps<IPageParams>)
         <Container>
           <FormTitle>Overview de Paciente</FormTitle>
 
-          {integration ? (
+          {/*{integration ? (*/}
+          {true ? (
             <>
               <Card>
                 <Box mb={2} mt={2} paddingLeft={5} paddingRight={5} display="flex" justifyContent="space-between"
@@ -169,7 +179,7 @@ export default function PatientOverview(props: RouteComponentProps<IPageParams>)
                     <div>
                       <h5>{careState?.data?.patient_id?.name}</h5>
                       <h5
-                        style={{fontWeight: 'normal'}}>{careState?.data?.cid_id && `CID: ${careState?.data?.cid_id}`}</h5>
+                        style={{fontWeight: 'normal'}}>{careState?.data?.cid_id && `CID: ${typeof careState?.data?.cid_id === 'string' ? careState?.data?.cid_id : careState?.data?.cid_id?.name}`}</h5>
                       {/*<h5 style={{fontWeight: 'normal'}}>{careState?.data?.mot_alta && `CID: ${careState?.data?.mot_alta}`}</h5>*/}
                       {/*<p>{careState.data.patient_id?.birthdate ? age(careState.data.patient_id?.birthdate) : ''}</p>*/}
                     </div>
@@ -288,7 +298,7 @@ export default function PatientOverview(props: RouteComponentProps<IPageParams>)
                         )}
                         {careState?.data?.health_insurance_id && (
                           <ListItem>
-                            <p>Convênio: {careState.data.health_insurance_id}</p>
+                            <p>Convênio: {typeof careState.data.health_insurance_id === 'string' ? careState.data.health_insurance_id : careState.data.health_insurance_id.name}</p>
                           </ListItem>
                         )}
                         {/*{careState?.data?.health_plan_id && (*/}
@@ -450,30 +460,138 @@ export default function PatientOverview(props: RouteComponentProps<IPageParams>)
                 </Grid>
               </Grid>
 
-              {/* Ultimos procedimentos */}
-              <Grid item md={12} xs={12} style={{marginTop: '20px'}}>
-                <Card className="card-styles">
-                  <Box display="flex" alignItems="center" justifyContent="space-between" padding={2}>
-                    <img src={IconProntuario} alt="Procedimentos"/>
-                    <h5>Prescrição</h5>
-                    <Button className="btn-dropwdown" aria-controls={`menu-prontuario`} id={`btn_menu-prontuario`}
-                            aria-haspopup="true">
-                      {/*<MoreVert/>*/}
-                    </Button>
-                  </Box>
+              <Grid container xs={12} spacing={2} style={{justifyContent: 'space-evenly'}}>
+                {/* Ultimos procedimentos */}
+                <Grid item md={8} xs={8} style={{marginTop: '20px'}}>
+                  <Card className="card-styles">
+                    <Box display="flex" alignItems="center" justifyContent="space-between" padding={2}>
+                      <img src={IconProntuario} alt="Procedimentos"/>
+                      <h5>Prescrição</h5>
+                      <Button className="btn-dropwdown" aria-controls={`menu-prontuario`} id={`btn_menu-prontuario`}
+                              aria-haspopup="true">
+                        {/*<MoreVert/>*/}
+                      </Button>
+                    </Box>
 
-                  <Grid container>
-                    <Grid item md={4} xs={12} style={{paddingLeft: '6%'}}>
+                    <Grid container>
+                      <Grid item md={4} xs={12} style={{paddingLeft: '6%'}}>
+                      </Grid>
                     </Grid>
-                  </Grid>
 
-                  {/*<footer>*/}
-                  {/*  <Typography variant="caption" color="textSecondary">*/}
-                  {/*    Placeholder*/}
-                  {/*  </Typography>*/}
-                  {/*</footer>*/}
-                </Card>
+                    {/*<footer>*/}
+                    {/*  <Typography variant="caption" color="textSecondary">*/}
+                    {/*    Placeholder*/}
+                    {/*  </Typography>*/}
+                    {/*</footer>*/}
+                  </Card>
+                </Grid>
+
+                {/* Alta */}
+                <Grid item md={4} xs={4} style={{marginTop: '20px'}}>
+                  <Card className="card-styles">
+                    <Box display="flex" alignItems="center" justifyContent="space-between" padding={2}>
+                      <img src={IconProntuario} alt="Procedimentos"/>
+                      <h5>Alta</h5>
+                      <Button className="btn-dropwdown" aria-controls={`menu-prontuario`} id={`btn_menu-prontuario`}
+                              aria-haspopup="true">
+                        {/*<MoreVert/>*/}
+                      </Button>
+                    </Box>
+
+                    <Grid container spacing={2}>
+                      <Grid item md={11} xs={12} style={{paddingLeft: '6%'}}>
+                        {careState.data.medical_release ? (
+                          <>
+                            <List className="text-list" component="ul" aria-label="mailbox folders">
+                              {careState?.data?.medical_release?.release_at && (
+                                <ListItem>
+                                  <p>Data da
+                                    Alta: {formatDate(careState.data.medical_release.release_at, 'YYYY-MM-DD HH:mm')}</p>
+                                </ListItem>
+                              )}
+                              {careState?.data?.medical_release?.release_reason && (
+                                <ListItem>
+                                  <p>Motivo: {careState.data.medical_release.release_reason.name}</p>
+                                </ListItem>
+                              )}
+                              {careState?.data?.medical_release?.release_responsible && (
+                                <ListItem>
+                                  <p>Responsável: {careState.data.medical_release.release_responsible.name}</p>
+                                </ListItem>
+                              )}
+                            </List>
+
+                            <ButtonComponent onClick={() => setRevertMedicalReleaseModal(true)}
+                                             background="primary" style={{background: 'var(--alert)'}} disabled={careState.data.adm_release_status} fullWidth>
+                              <p>Desfazer Alta Médica</p>
+                            </ButtonComponent>
+
+                          </>
+                        ) : (
+                          <>
+                            <ButtonComponent onClick={() => setMedicalReleaseModal(true)}
+                                             background="primary" fullWidth>
+                              <p>Alta Médica</p>
+                            </ButtonComponent>
+                          </>
+                        )}
+
+                      </Grid>
+                      <Grid item md={11} xs={12} style={{paddingLeft: '6%'}}>
+                        {careState.data.adm_release ? (
+                          <>
+                            <List className="text-list" component="ul" aria-label="mailbox folders">
+                              {careState?.data?.adm_release?.release_at && (
+                                <ListItem>
+                                  <p>Data da
+                                    Alta: {formatDate(careState.data.adm_release.release_at, 'YYYY-MM-DD HH:mm')}</p>
+                                </ListItem>
+                              )}
+                              {careState?.data?.adm_release?.release_reason && (
+                                <ListItem>
+                                  <p>Motivo: {careState.data.adm_release.release_reason.name}</p>
+                                </ListItem>
+                              )}
+                              {careState?.data?.adm_release?.release_responsible && (
+                                <ListItem>
+                                  <p>Responsável: {careState.data.adm_release.release_responsible.name}</p>
+                                </ListItem>
+                              )}
+                            </List>
+                            <ButtonComponent onClick={() => setRevertAdmReleaseModal(true)}
+                                             background="primary" style={{background: 'var(--alert)'}} fullWidth>
+                              <p>Desfazer Alta Administrativa</p>
+                            </ButtonComponent>
+                          </>
+                        ) : (
+                          <ButtonComponent onClick={() => setAdmReleaseModal(true)}
+                                           background="primary" disabled={careState.data.medical_release ? false : true}
+                                           fullWidth>
+                            <p>Alta Administrativa</p>
+                          </ButtonComponent>
+                        )}
+                      </Grid>
+                    </Grid>
+
+                    {/*<footer>*/}
+                    {/*  <Typography variant="caption" color="textSecondary">*/}
+                    {/*    Placeholder*/}
+                    {/*  </Typography>*/}
+                    {/*</footer>*/}
+                  </Card>
+                </Grid>
               </Grid>
+
+              <MedicalReleaseDialog
+                modalOpen={medicalReleaseModal}
+                setModalOpen={setMedicalReleaseModal}
+              />
+
+              <AdmReleaseDialog
+                modalOpen={admReleaseModal}
+                setModalOpen={setAdmReleaseModal}
+              />
+
               {/* {Histórico} */}
               <Dialog
                 maxWidth="lg"
@@ -841,6 +959,80 @@ export default function PatientOverview(props: RouteComponentProps<IPageParams>)
               </Grid>
             </>
           )}
+          <Dialog
+            open={revertMedicalReleaseModal}
+            onClose={() => setRevertMedicalReleaseModal(false)}
+            aria-labelledby="scroll-dialog-title"
+            aria-describedby="scroll-dialog-description"
+            maxWidth="md"
+          >
+            <DialogTitle id="scroll-dialog-title">Deseja desfazer a alta médica?</DialogTitle>
+            <DialogContent>
+              <DialogContentText
+                id="scroll-dialog-description"
+                tabIndex={-1}
+              >texto de apoio.</DialogContentText>
+
+              <div>
+                <Grid container>
+                </Grid>
+              </div>
+            </DialogContent>
+            <DialogActions>
+              <Button onClick={() => setRevertMedicalReleaseModal(false)} color="primary">
+                Sair
+              </Button>
+              <Button onClick={() => {
+                if (careState.data?.medical_release?.release_reason?.type === 'TRANSFERÊNCIA INTERNA') {
+                    dispatch(deleteCareRequest(careState?.data?.transferred_from ? careState?.data?.transferred_from : ''))
+                }
+                careState.data.medical_release = null
+                careState.data.medical_release_status = false
+                dispatch(updateCareRequest(careState.data));
+                setRevertMedicalReleaseModal(false)
+                setMedicalReleaseModal(true)
+              }} color="primary">
+                Desfazer
+              </Button>
+            </DialogActions>
+          </Dialog>
+
+          <Dialog
+            open={revertAdmReleaseModal}
+            onClose={() => setRevertAdmReleaseModal(false)}
+            aria-labelledby="scroll-dialog-title"
+            aria-describedby="scroll-dialog-description"
+            maxWidth="md"
+          >
+            <DialogTitle id="scroll-dialog-title">Deseja desfazer a alta administrativa?</DialogTitle>
+            <DialogContent>
+              <DialogContentText
+                id="scroll-dialog-description"
+                tabIndex={-1}
+              >texto de apoio.</DialogContentText>
+
+              <div>
+                <Grid container>
+                </Grid>
+              </div>
+            </DialogContent>
+            <DialogActions>
+              <Button onClick={() => setRevertAdmReleaseModal(false)} color="primary">
+                Fechar
+              </Button>
+              <Button onClick={() => {
+                careState.data.adm_release = null
+                careState.data.adm_release_status = false
+                careState.data.status = 'Atendimento'
+                careState.data.death = false
+                dispatch(updateCareRequest(careState.data));
+                setRevertAdmReleaseModal(false)
+              }} color="primary">
+                Salvar
+              </Button>
+            </DialogActions>
+          </Dialog>
+
         </Container>
       </Sidebar>
     </>

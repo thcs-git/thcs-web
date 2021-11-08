@@ -1,4 +1,5 @@
-import { PatientInterface } from "../patients/types";
+import {PatientInterface} from "../patients/types";
+
 /**
  * Action types
  */
@@ -14,6 +15,12 @@ export enum CareTypes {
 
   UPDATE_CARE_REQUEST = "@care/UPDATE_CARE_REQUEST",
   UPDATE_CARE_SUCCESS = "@care/UPDATE_CARE_SUCCESS",
+
+  TRANSFER_CARE_REQUEST = "@care/TRANSFER_CARE_REQUEST",
+  TRANSFER_CARE_SUCCESS = "@care/TRANSFER_CARE_SUCCESS",
+
+  DELETE_CARE_REQUEST = "@care/DELETE_CARE_REQUEST",
+  DELETE_CARE_SUCCESS = "@care/DELETE_CARE_SUCCESS",
 
   LOAD_REQUEST_CARE_BY_ID = "@care/LOAD_REQUEST_CARE_BY_ID",
   LOAD_SUCCESS_CARE_BY_ID = "@care/LOAD_SUCCESS_CARE_BY_ID",
@@ -87,8 +94,17 @@ export enum CareTypes {
   CARE_TYPE_SUCCESS = "@care/CARE_TYPE_SUCCESS",
 
   // CID
+  LOAD_CID_REQUEST = "@care/LOAD_CID_REQUEST",
   SEARCH_CID_REQUEST = "@care/SEARCH_CID_REQUEST",
   SEARCH_CID_SUCCESS = "@care/SEARCH_CID_SUCCESS",
+
+  // Release Reason
+  LOAD_RELEASE_REASON_REQUEST = "@care/LOAD_RELEASE_REASON_REQUEST",
+  RELEASE_REASON_SUCCESS = "@care/RELEASE_REASON_SUCCESS",
+
+  // Release Referral
+  LOAD_RELEASE_REFERRAL_REQUEST = "@care/LOAD_RELEASE_REFERRAL_REQUEST",
+  RELEASE_REFERRAL_SUCCESS = "@care/RELEASE_REFERRAL_SUCCESS",
 
   // Document
   LOAD_DOCUMENT_REQUEST = "@care/LOAD_DOCUMENT_REQUEST",
@@ -106,6 +122,9 @@ export enum CareTypes {
 
   DELETE_SCHEDULE_REQUEST = "@care/DELETE_SCHEDULE_REQUEST",
   DELETE_SCHEDULE_SUCCESS = "@care/DELETE_SCHEDULE_SUCCESS",
+
+  LOAD_HISTORY_REQUEST = "@care/LOAD_HISTORY_REQUEST",
+  LOAD_HISTORY_SUCCESS = "@care/LOAD_HISTORY_SUCCESS",
 }
 
 /**
@@ -113,6 +132,8 @@ export enum CareTypes {
  */
 
 export interface CareInterface {
+  transferred_from?: string;
+  death?: boolean;
   tipo?: string;
   speciality?: string;
   _id?: string;
@@ -159,6 +180,10 @@ export interface CareInterface {
     health_plan_id?: string;
     health_sub_plan_id?: string;
   };
+  medical_release?: IMedicalReleaseData | null;
+  adm_release?: IAdmReleaseData | null;
+  medical_release_status?: boolean;
+  adm_release_status?: boolean;
 }
 
 export interface CareList {
@@ -178,6 +203,7 @@ export interface CareState {
   data: CareInterface;
   list: CareList;
   list2: CareList;
+  history: CareInterface[];
   loading: boolean;
   error: boolean;
   success: boolean;
@@ -187,6 +213,8 @@ export interface CareState {
   accommondation_type: HealthPlanInterface[];
   care_type: HealthPlanInterface[];
   cid: CidInterface[];
+  release_reason: ReleaseReasonInterface[];
+  release_referral: ReleaseReferralInterface[];
   documentGroupSocioAmbiental: DocumentGroupInterface;
   documentGroupAbemid: DocumentGroupInterface;
   documentSocioAmbiental: DocumentState;
@@ -252,12 +280,27 @@ export interface CareTypeInterface {
   name: string;
   description: string;
 }
+
 export interface CidInterface {
   _id: string;
   name: string;
   cid: string;
   gender: string;
   active: boolean;
+}
+
+export interface ReleaseReasonInterface {
+  type?: string;
+  _id: string;
+  name: string;
+  active?: boolean;
+}
+
+export interface ReleaseReferralInterface {
+  cid?: boolean;
+  _id: string;
+  name: string;
+  active?: boolean;
 }
 
 export interface DocumentGroupInterface {
@@ -336,6 +379,7 @@ interface DocumentGroupData {
   _id: string;
   name: string;
 }
+
 export interface DocumentList {
   data?: DocumentInterface[];
   fields?: any[];
@@ -343,6 +387,7 @@ export interface DocumentList {
   page?: string;
   total?: number;
 }
+
 export interface DocumentState {
   data?: DocumentInterface;
   list?: DocumentInterface[];
@@ -364,6 +409,46 @@ export interface ICaptureData {
   sector: string;
   bed: string;
   status: string;
+}
+
+export interface IMedicalReleaseData {
+  release_at: string;
+  release_reason: {
+    type?: string;
+    _id: string,
+    name: string,
+  };
+  release_cid: {
+    _id: string,
+    name: string,
+  };
+  release_referral: {
+    _id: string,
+    name: string,
+  };
+  release_observation: string;
+  release_responsible: {
+    _id: string,
+    name: string,
+  };
+}
+
+export interface IAdmReleaseData {
+  release_at: string;
+  release_reason: {
+    _id: string,
+    name: string,
+  };
+  release_cid: {
+    _id: string,
+    name: string,
+  };
+  release_referral: string;
+  release_observation: string;
+  release_responsible: {
+    _id: string,
+    name: string,
+  };
 }
 
 export type LoadRequestParams = Partial<Omit<CareList, "data">>;
