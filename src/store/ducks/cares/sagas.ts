@@ -35,7 +35,7 @@ import {
   createScheduleSuccess,
   updateScheduleSuccess,
   deleteScheduleSuccess,
-  loadHistorySuccess, releaseReasonSuccess, releaseReferralSuccess
+  loadHistorySuccess, releaseReasonSuccess, releaseReferralSuccess, deleteCareSuccess
 } from "./actions";
 
 import {apiIntegra, apiSollar} from "../../../services/axios";
@@ -190,7 +190,6 @@ export function* updateCare({payload: {data}}: any) {
   const {_id} = data;
 
   try {
-    console.log(data);
     const response: AxiosResponse = yield call(
       apiSollar.put,
       `/care/${_id}/update`,
@@ -202,6 +201,41 @@ export function* updateCare({payload: {data}}: any) {
     yield put(updateCareSuccess(response.data));
   } catch (error) {
     toast.error("Não foi possível atualizar os dados do atendimento");
+    yield put(loadFailure());
+  }
+}
+
+export function* transferCare({payload: {data}}: any) {
+  const {_id} = data;
+
+  try {
+    const response: AxiosResponse = yield call(
+      apiSollar.put,
+      `/care/${_id}/transfer`,
+      {...data},
+      {headers: {token}}
+    );
+
+    toast.success("Atendimento transferido com sucesso!");
+    yield put(updateCareSuccess(response.data));
+  } catch (error) {
+    toast.error("Não foi possível atualizar os dados do atendimento");
+    yield put(loadFailure());
+  }
+}
+
+export function* deleteCare({payload: {id: _id}}: any) {
+  try {
+    const response: AxiosResponse = yield call(
+      apiSollar.delete,
+      `/care/${_id}/delete`,
+      {headers: {token}}
+    );
+
+    toast.success("Atendimento deletado com sucesso!");
+    yield put(deleteCareSuccess());
+  } catch (error) {
+    toast.error("Não foi possível deletar o dados do atendimento");
     yield put(loadFailure());
   }
 }

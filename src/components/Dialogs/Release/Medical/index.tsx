@@ -23,9 +23,9 @@ import {formatDate} from "../../../../helpers/date";
 import moment from "moment";
 import {IMedicalReleaseData} from "../../../../store/ducks/cares/types";
 import {
-  cidAllRequest,
+  cidAllRequest, createCareRequest,
   releaseReasonRequest,
-  releaseReferralRequest,
+  releaseReferralRequest, transferCareRequest,
   updateCareRequest
 } from "../../../../store/ducks/cares/actions";
 import {bloodTypes, releaseReferral} from "../../../../helpers/patient";
@@ -55,6 +55,8 @@ export default function MedicalReleaseDialog(props: IDialogProps) {
   });
   const [companyData, setCompanyData] = useState<CompanyInterface | any>({});
   const [releaseType, setReleaseType] = useState<string>('')
+  const [transferModalOpen, setTransferModalOpen] = useState<boolean>(false)
+
 
   useEffect(() => {
     if (modalOpen) {
@@ -87,6 +89,20 @@ export default function MedicalReleaseDialog(props: IDialogProps) {
         name: value.name
       },
     }));
+  }
+
+  function handleTransfer() {
+    careState.data.medical_release = {
+      release_at: captureData.release_at,
+      release_reason: captureData.release_reason?._id,
+      release_cid: captureData.release_cid?._id,
+      release_referral: captureData.release_referral,
+      release_observation: captureData.release_observation,
+      release_responsible: captureData.release_responsible?._id,
+    }
+    careState.data.medical_release_status = true
+    careState.data.transferred_from = companyData._id
+    dispatch(transferCareRequest(careState.data))
   }
 
   const selectReleaseReason = useCallback(() => {
@@ -214,7 +230,7 @@ export default function MedicalReleaseDialog(props: IDialogProps) {
                     onChange={(event, value) => {
                       if (value) {
                         handleSelectReleaseReason({
-                          _id: value._id || "",
+                          _id: value._id,
                           name: value.name,
                           type: value.type,
                         });
@@ -393,13 +409,50 @@ export default function MedicalReleaseDialog(props: IDialogProps) {
             Fechar
           </Button>
           <Button onClick={() => {
-            handleSaveCare()
-            setModalOpen(false)
+            if (releaseType === "TRANSFERÊNCIA INTERNA") {
+              setTransferModalOpen(true)
+            } else {
+              handleSaveCare()
+              setModalOpen(false)
+            }
           }} color="primary">
             Salvar
           </Button>
         </DialogActions>
       </Dialog>
+
+      <Dialog
+        scroll="paper"
+        open={transferModalOpen}
+        onClose={() => setTransferModalOpen(false)}
+        aria-labelledby="scroll-dialog-title"
+        aria-describedby="scroll-dialog-description"
+      >
+        <DialogTitle id="scroll-dialog-title">Confirmação</DialogTitle>
+        <DialogContent>
+          <DialogContentText
+            id="scroll-dialog-description"
+            tabIndex={-1}
+          >
+            <p>{`Deseja transferir o paciente ${careState?.data?.patient_id?.name} para a empresa ${selectCompany()?.fantasy_name}`}</p>
+
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => setTransferModalOpen(false)} color="primary">
+            Não
+          </Button>
+          <Button onClick={() => {
+            // handleSaveCare()
+            handleTransfer()
+            setTransferModalOpen(false)
+            setModalOpen(false)
+          }} color="primary">
+            Sim
+          </Button>
+        </DialogActions>
+      </Dialog>
+
     </>
   );
 }

@@ -27,6 +27,16 @@ export const updateCareRequest = (data: CareInterface) =>
 export const updateCareSuccess = (data: CareInterface) =>
   action(CareTypes.UPDATE_CARE_SUCCESS, { data });
 
+export const transferCareRequest = (data: CareInterface) =>
+  action(CareTypes.TRANSFER_CARE_REQUEST, { data });
+export const transferCareSuccess = (data: CareInterface) =>
+  action(CareTypes.TRANSFER_CARE_SUCCESS, { data });
+
+export const deleteCareRequest = (id: string) =>
+  action(CareTypes.DELETE_CARE_REQUEST, { id });
+export const deleteCareSuccess = () =>
+  action(CareTypes.DELETE_CARE_SUCCESS);
+
 export const loadCareById = (id: string) =>
   action(CareTypes.LOAD_REQUEST_CARE_BY_ID, { id });
 export const loadSuccessGetCareById = (data: CareInterface) =>

@@ -16,6 +16,12 @@ export enum CareTypes {
   UPDATE_CARE_REQUEST = "@care/UPDATE_CARE_REQUEST",
   UPDATE_CARE_SUCCESS = "@care/UPDATE_CARE_SUCCESS",
 
+  TRANSFER_CARE_REQUEST = "@care/TRANSFER_CARE_REQUEST",
+  TRANSFER_CARE_SUCCESS = "@care/TRANSFER_CARE_SUCCESS",
+
+  DELETE_CARE_REQUEST = "@care/DELETE_CARE_REQUEST",
+  DELETE_CARE_SUCCESS = "@care/DELETE_CARE_SUCCESS",
+
   LOAD_REQUEST_CARE_BY_ID = "@care/LOAD_REQUEST_CARE_BY_ID",
   LOAD_SUCCESS_CARE_BY_ID = "@care/LOAD_SUCCESS_CARE_BY_ID",
 
@@ -126,6 +132,7 @@ export enum CareTypes {
  */
 
 export interface CareInterface {
+  transferred_from?: string;
   death?: boolean;
   tipo?: string;
   speciality?: string;
@@ -407,6 +414,7 @@ export interface ICaptureData {
 export interface IMedicalReleaseData {
   release_at: string;
   release_reason: {
+    type?: string;
     _id: string,
     name: string,
   };

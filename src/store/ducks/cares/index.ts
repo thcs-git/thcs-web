@@ -259,6 +259,38 @@ const reducer: Reducer<CareState> = (state = INITIAL_STATE, action) => {
         error: false,
         success: true
       }
+    case CareTypes.TRANSFER_CARE_REQUEST:
+      return {
+        ...state,
+        data: INITIAL_STATE.data,
+        loading: true,
+        error: false,
+        success: false
+      }
+    case CareTypes.TRANSFER_CARE_SUCCESS:
+      return {
+        ...state,
+        data: action.payload.data,
+        loading: false,
+        error: false,
+        success: true
+      }
+    case CareTypes.DELETE_CARE_REQUEST:
+      return {
+        ...state,
+        data: INITIAL_STATE.data,
+        loading: true,
+        error: false,
+        success: false
+      }
+    case CareTypes.DELETE_CARE_SUCCESS:
+      return {
+        ...state,
+        data: INITIAL_STATE.data,
+        loading: false,
+        error: false,
+        success: true
+      }
     case CareTypes.LOAD_FAILURE:
       return {
         ...state, loading: false, error: true, success: false,

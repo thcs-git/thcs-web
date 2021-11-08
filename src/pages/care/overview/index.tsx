@@ -22,7 +22,7 @@ import TodayRoundedIcon from '@material-ui/icons/TodayRounded';
 import {FieldContent, FormTitle} from '../../../styles/components/Form';
 import Sidebar from '../../../components/Sidebar';
 
-import {loadCareById, updateCareRequest} from '../../../store/ducks/cares/actions';
+import {deleteCareRequest, loadCareById, updateCareRequest} from '../../../store/ducks/cares/actions';
 
 import IconProfile from '../../../assets/img/icon-profile.svg';
 import IconProntuario from '../../../assets/img/icon-prontuario.svg';
@@ -83,7 +83,6 @@ export default function PatientOverview(props: RouteComponentProps<IPageParams>)
     if (params.id) {
       dispatch(loadCareById(params.id));
     }
-
   }, [dispatch]);
 
   const handleOpenRowMenu = useCallback((event: React.MouseEvent<HTMLButtonElement>) => {
@@ -984,6 +983,9 @@ export default function PatientOverview(props: RouteComponentProps<IPageParams>)
                 Sair
               </Button>
               <Button onClick={() => {
+                if (careState.data?.medical_release?.release_reason?.type === 'TRANSFERÊNCIA INTERNA') {
+                    dispatch(deleteCareRequest(careState?.data?.transferred_from ? careState?.data?.transferred_from : ''))
+                }
                 careState.data.medical_release = null
                 careState.data.medical_release_status = false
                 dispatch(updateCareRequest(careState.data));
