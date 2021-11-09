@@ -1,6 +1,7 @@
 import axios from 'axios';
 
 import LOCALSTORAGE from '../helpers/constants/localStorage';
+import SESSIONSTORAGE from '../helpers/constants/sessionStorage';
 
 export const viacep = axios.create({
   baseURL: process.env.REACT_APP_VIACEP_API,
@@ -35,12 +36,17 @@ apiSollar.interceptors.request.use(
     const user_id = localStorage.getItem(LOCALSTORAGE.USER_ID) || '';
     const company_id = localStorage.getItem(LOCALSTORAGE.COMPANY_SELECTED) || '';
     const customer_id = localStorage.getItem(LOCALSTORAGE.CUSTOMER) || '';
+    const integration_url = sessionStorage.getItem(SESSIONSTORAGE.INTEGRATION) || '';
 
     if (token) {
       config.headers.token = `${token}`;
       config.headers.user = JSON.stringify({id: user_id, username});
       config.headers.company_id = company_id;
       config.headers.customer_id = customer_id;
+    }
+
+    if (integration_url) {
+      config.headers.integration_url = integration_url;
     }
 
     return config;

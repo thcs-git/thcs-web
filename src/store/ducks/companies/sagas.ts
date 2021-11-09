@@ -24,8 +24,15 @@ export function* get({payload}: any) {
   const {params} = payload;
   const integration = sessionStorage.getItem(SESSIONSTORAGE.INTEGRATION)
 
+  // const response: AxiosResponse = yield call(
+  //   integration ? apiIntegra(integration).get : apiSollar.get,
+  //   `/companies?limit=${params.limit ?? 10}&page=${params.page || 1}${
+  //     params.search ? "&search=" + params.search : ""
+  //   }`
+  // );
+
   const response: AxiosResponse = yield call(
-    integration ? apiIntegra(integration).get : apiSollar.get,
+    apiSollar.get,
     `/companies?limit=${params.limit ?? 10}&page=${params.page || 1}${
       params.search ? "&search=" + params.search : ""
     }`
@@ -199,7 +206,7 @@ export function* getCompaniesById({payload: {id: _id}}: any) {
     );
 
     //filter
-    const filter = _.filter(response.data.data,{active: true});
+    const filter = _.filter(response.data.data, {active: true});
 
     const company_id = localStorage.getItem(LOCALSTORAGE.COMPANY_SELECTED)
     response.data.data = _.reject(filter, {_id: company_id})
