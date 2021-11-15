@@ -34,20 +34,20 @@ export function* get({payload}: any) {
     let response: AxiosResponse
     const integration = sessionStorage.getItem(SESSIONSTORAGE.INTEGRATION)
 
-    if (integration) {
-      const company = localStorage.getItem(LOCALSTORAGE.INTEGRATION_COMPANY_SELECTED)
-      response = yield call(
-        apiIntegra(integration),
-        `/user/getUserByCompany/${company}?limit=${params.limit ?? 10}&page=${params.page || 1}`
-      );
-    } else {
+    // if (integration) {
+    //   const company = localStorage.getItem(LOCALSTORAGE.INTEGRATION_COMPANY_SELECTED)
+    //   response = yield call(
+    //     apiIntegra(integration),
+    //     `/user/getUserByCompany/${company}?limit=${params.limit ?? 10}&page=${params.page || 1}`
+    //   );
+    // } else {
       response = yield call(
         apiSollar.get,
         `/user?limit=${params.limit ?? 10}&page=${params.page || 1}${
           params.search ? "&search=" + params.search : ""
         }${params.profession_id ? "&profession_id=" + params.profession_id : ""}`
       );
-    }
+    // }
     yield put(loadSuccess(response.data));
   } catch (error) {
     toast.error("Não foi possível atualizar os dados do usuario");
@@ -60,14 +60,14 @@ export function* getUserById({payload: {id: _id, page: page}}: any) {
     let response: AxiosResponse
     const integration = sessionStorage.getItem(SESSIONSTORAGE.INTEGRATION)
 
-    if (integration && !(page === 'sidebar' || page === 'userconfiguration')) {
-      response = yield call(apiIntegra(integration), `/user/${_id}`, {});
-    } else {
+    // if (integration && !(page === 'sidebar' || page === 'userconfiguration')) {
+    //   response = yield call(apiIntegra(integration), `/user/${_id}`, {});
+    // } else {
       response = yield call(apiSollar.get, `/user`, {
         headers: {token},
         params: {_id},
       });
-    }
+    // }
 
     yield put(loadSuccessGetUserById(response.data));
   } catch (error) {
@@ -418,19 +418,19 @@ export function* getByClient({payload}: any) {
     let response: AxiosResponse
     const integration = sessionStorage.getItem(SESSIONSTORAGE.INTEGRATION)
 
-    if (integration) {
-      response = yield call(
-        apiIntegra(integration),
-        `/user?limit=${params.limit ?? 10}&page=${params.page || 1}`
-      );
-    } else {
+    // if (integration) {
+    //   response = yield call(
+    //     apiIntegra(integration),
+    //     `/user?limit=${params.limit ?? 10}&page=${params.page || 1}`
+    //   );
+    // } else {
       response = yield call(
         apiSollar.get,
         `/user/getByClient?limit=${params.limit ?? 10}&page=${params.page || 1}${
           params.search ? "&search=" + params.search : ""
         }${params.profession_id ? "&profession_id=" + params.profession_id : ""}`
       );
-    }
+    // }
 
     yield put(loadSuccess(response.data));
   } catch (error) {

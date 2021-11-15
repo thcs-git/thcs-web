@@ -109,19 +109,19 @@ export function* getById({payload: {id: _id}}: any) {
     let response: AxiosResponse
     const integration = sessionStorage.getItem(SESSIONSTORAGE.INTEGRATION)
 
-    if (integration) {
-      response = yield call(
-        apiIntegra(integration),
-        `/companies/${_id}`,
-        {});
-    } else {
+    // if (integration) {
+    //   response = yield call(
+    //     apiIntegra(integration),
+    //     `/companies/${_id}`,
+    //     {});
+    // } else {
       response = yield call(
         apiSollar.get,
         `/companies`,
         {
           params: {_id},
         });
-    }
+    // }
 
 
     const {phones = []} = response.data;
