@@ -1,4 +1,4 @@
-import { createGlobalStyle } from "styled-components";
+import {createGlobalStyle} from "styled-components";
 
 export default createGlobalStyle`
   * {
@@ -7,6 +7,19 @@ export default createGlobalStyle`
     box-sizing: border-box;
 
     font-family: 'Open Sans', sans-serif !important;
+
+    *::-webkit-scrollbar {
+      width: .4em
+    }
+
+    *::-webkit-scrollbar-track {
+      -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.00)
+    }
+
+    *::-webkit-scrollbar-thumb {
+      background-color: var(--cyan);
+      outline: 1px solid var(--cyan);
+    }
   }
 
   html, body, #root {
@@ -50,25 +63,25 @@ export default createGlobalStyle`
 
   :root {
     --primary: #16679A;
-    --primary-foccus:#7AC7D8;
+    --primary-foccus: #7AC7D8;
     --primary-hover: #16679A99;
     --secondary: #0899BA;
-    --action:#4FC66A;
+    --action: #4FC66A;
     --gray: #CCCCCC;
     --gray-light: #EBEBEB;
     --gray-dark: #666666;
     --outline: #2F3336;
     --success: #4FC66A;
-    --sucess-button-hover:4EC86F0A;
+    --sucess-button-hover: 4 EC86F0A;
     --success-hover: #4FC66A99;
-    --button-hover:#4EC86F0A;
-    --alert:#B00020;
+    --button-hover: #4EC86F0A;
+    --alert: #B00020;
     --danger: #FF6565;
-    --danger-hover:#FF6568;
+    --danger-hover: #FF6568;
     --warning: #f9ca24;
     --white: #FFFFFF;
     --background: #FAFAFA;
-    --switch-hover: rgba(8, 153, 186, 0.04)
+    --switch-hover: rgba(8, 153, 186, 0.04);
     --black: #333333;
     --disable: #CCCCCC38;
     --purple: #6447C6;
@@ -97,4 +110,5 @@ export default createGlobalStyle`
   body .spinner-loading div {
     left: unset !important;
   }
+
 `;

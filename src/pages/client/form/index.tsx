@@ -224,7 +224,7 @@ export default function ClientForm(props: RouteComponentProps<IPageParams>) {
         setCanEdit(false)
       }
 
-      const uf = States.find(uf => uf.sigla === customerState.data.address.state) || null;
+      const uf = States.find(uf => uf.sigla === customerState.data?.address?.state) || null;
 
       setState(prevState => ({
         ...prevState,
@@ -287,15 +287,15 @@ export default function ClientForm(props: RouteComponentProps<IPageParams>) {
         }
       }
     });
-    setFieldValidations((prevState: any) => ({
-      ...prevState,
-      postal_code: !validator.isEmpty(customerState.data.address.postal_code),
-      street: !validator.isEmpty(customerState.data.address.street),
-      district: !validator.isEmpty(customerState.data.address.district),
-      city: !validator.isEmpty(customerState.data.address.city),
-      state: !validator.isEmpty(customerState.data.address.state),
-      complement: !validator.isEmpty(customerState.data.address.complement),
-    }));
+    // setFieldValidations((prevState: any) => ({
+    //   ...prevState,
+    //   postal_code: !validator.isEmpty(customerState.data.address?.postal_code),
+    //   street: !validator.isEmpty(customerState.data.address?.street),
+    //   district: !validator.isEmpty(customerState.data.address?.district),
+    //   city: !validator.isEmpty(customerState.data.address?.city),
+    //   state: !validator.isEmpty(customerState.data.address?.state),
+    //   complement: !validator.isEmpty(customerState.data.address?.complement),
+    // }));
   }, [customerState.data?.address]);
 
   // useEffect(() => {
