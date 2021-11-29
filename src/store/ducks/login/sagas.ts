@@ -8,7 +8,7 @@ import {AxiosResponse} from "axios";
 import LOCALSTORAGE from "../../../helpers/constants/localStorage";
 import SESSIONSTORAGE from "../../../helpers/constants/sessionStorage";
 
-import {loadSuccess, loadFailure} from "./actions";
+import {loadSuccess, loadFailure, emailSuccess, emailFailure} from "./actions";
 import _ from "lodash";
 
 export function* doLogin({payload}: any) {
@@ -29,7 +29,7 @@ export function* doLogin({payload}: any) {
     // localStorage.removeItem(LOCALSTORAGE.CUSTOMER);
     // localStorage.removeItem(LOCALSTORAGE.CUSTOMER_NAME);
 
-    localStorage.setItem(LOCALSTORAGE.TOKEN, data.token);
+    // localStorage.setItem(LOCALSTORAGE.TOKEN, data.token);
     localStorage.setItem(LOCALSTORAGE.USERNAME, data.name);
     localStorage.setItem(LOCALSTORAGE.USER_ID, data._id);
 
@@ -116,6 +116,25 @@ export function* doLogin({payload}: any) {
   } catch (err) {
     console.log("err", err);
     yield put(loadFailure());
+
+    toast.error("E-mail e/ou senha errada.");
+  }
+}
+
+export function* checkEmail({payload}: any) {
+  try {
+    const response: AxiosResponse = yield call(
+      apiSollar.post,
+      `/user/checkemail`,
+      payload.credentials
+    );
+
+    const {data} = response;
+    data.token.auth && localStorage.setItem(LOCALSTORAGE.TOKEN, data.token.token);
+    yield put(emailSuccess(data));
+  } catch (err) {
+    console.log("err", err);
+    yield put(emailFailure());
 
     toast.error("E-mail e/ou senha errada.");
   }

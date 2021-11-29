@@ -15,7 +15,7 @@ import {
 } from "./areas/sagas";
 
 import { LoginTypes } from "./login/types";
-import { doLogin } from "./login/sagas";
+import { doLogin, checkEmail as checkEmailLogin } from "./login/sagas";
 
 import { CustomerTypes } from "./customers/types";
 import {
@@ -150,6 +150,7 @@ import { ProfessionTypes } from "./professions/types";
 export default function* rootSaga() {
   return yield all([
     takeLatest(LoginTypes.LOAD_REQUEST, doLogin),
+    takeLatest(LoginTypes.EMAIL_REQUEST, checkEmailLogin),
     // takeLatest(AreaTypes.LOAD_REQUEST, getAreas),
     // takeLatest(EspecialtyTypes.LOAD_REQUEST, getEspecialty),
     // takeLatest(CouncilTypes.LOAD_REQUEST, getCouncil),

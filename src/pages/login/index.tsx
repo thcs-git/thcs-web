@@ -1,7 +1,7 @@
-import React, { useCallback, useState, useEffect, useRef } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import { loadRequest } from '../../store/ducks/login/actions';
-import { ApplicationState } from '../../store';
+import React, {useCallback, useState, useEffect, useRef} from 'react';
+import {useDispatch, useSelector} from 'react-redux';
+import {loadRequest, emailRequest} from '../../store/ducks/login/actions';
+import {ApplicationState} from '../../store';
 
 import Container from '@material-ui/core/Container';
 import Box from '@material-ui/core/Box';
@@ -21,9 +21,9 @@ import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Visibility from '@material-ui/icons/Visibility';
 import VisibilityOff from '@material-ui/icons/VisibilityOff';
 
-import { makeStyles } from '@material-ui/core/styles';
+import {makeStyles} from '@material-ui/core/styles';
 
-import { ContainerLogin, WelcomeTextWrapper, HomeIconLogo, LogoText, TextGray, TextBlue } from './styles';
+import {ContainerLogin, WelcomeTextWrapper, HomeIconLogo, LogoText, TextGray, TextBlue} from './styles';
 
 import Button from '../../styles/components/Button';
 import Alert from '../../components/Alert';
@@ -31,8 +31,8 @@ import Loading from '../../components/Loading';
 
 import validateEmail from '../../utils/validateEmail';
 import LOCALSTORAGE from '../../helpers/constants/localStorage';
-import { toast } from 'react-toastify';
-import { useHistory } from 'react-router-dom';
+import {toast} from 'react-toastify';
+import {useHistory} from 'react-router-dom';
 
 function Copyright() {
   return (
@@ -110,8 +110,8 @@ export default function SignIn() {
   const dispatch = useDispatch();
   const loginState = useSelector((state: ApplicationState) => state.login);
 
-  const [inputEmail, setInputEmail] = useState({ value: '', error: false });
-  const [inputPassword, setInputPassword] = useState({ value: '', error: false });
+  const [inputEmail, setInputEmail] = useState({value: '', error: false});
+  const [inputPassword, setInputPassword] = useState({value: '', error: false});
   const [showPassword, setShowPassword] = useState(false);
   const [rememberMe, setRememberMe] = useState(false);
   const classes = useStyles();
@@ -131,6 +131,14 @@ export default function SignIn() {
   const handleClickShowPassword = useCallback(() => {
     setShowPassword(prev => !prev);
   }, []);
+
+  const handleVerifyEmail = useCallback(async (event) => {
+    event.preventDefault();
+
+    if (inputEmail.error || inputPassword.error) return;
+
+    dispatch(emailRequest({email: inputEmail.value}));
+  }, [inputPassword, inputEmail]);
 
   const handleLogin = useCallback(async (event) => {
     event.preventDefault();
@@ -155,17 +163,17 @@ export default function SignIn() {
   }, [inputEmail]);
 
   const handlePasswordValitor = useCallback(() => {
-    setInputPassword(prev => ({ ...prev, error: !(inputPassword.value.length >= SIZE_INPUT_PASSWORD) }));
+    setInputPassword(prev => ({...prev, error: !(inputPassword.value.length >= SIZE_INPUT_PASSWORD)}));
   }, [inputPassword]);
 
   return (
     <>
-      {loginState.loading && <Loading />}
+      {loginState.loading && <Loading/>}
       <Container className={classes.container} maxWidth="xs">
-        <CssBaseline />
+        <CssBaseline/>
         <div className={classes.paper}>
           <Box display="flex" width={150} height={165} justifyContent="center" alignItems="center">
-            <HomeIconLogo />
+            <HomeIconLogo/>
           </Box>
 
           <WelcomeTextWrapper>
@@ -190,47 +198,81 @@ export default function SignIn() {
               }))}
               onBlur={handleEmailValidator}
             />
-            <FormControl fullWidth margin='normal' variant="outlined">
-              <InputLabel htmlFor="outlined-adornment-password">Senha</InputLabel>
-              <OutlinedInput
-                id="outlined-adornment-password"
-                type={showPassword ? 'text' : 'password'}
-                value={inputPassword.value}
-                onChange={inputValue => setInputPassword(prev => ({
-                  ...prev,
-                  value: inputValue.target.value
-                }))}
-                onBlur={handlePasswordValitor}
-                error={inputPassword.error}
-                endAdornment={
-                  <InputAdornment position="end">
-                    <IconButton
-                      aria-label="toggle password visibility"
-                      onClick={handleClickShowPassword}
-                      // onMouseDown={handleMouseDownPassword}
-                      edge="end"
+            {loginState.email.user && loginState.email.password ? (
+              <>
+                {loginState.email.password ? (
+                  <>
+                    <FormControl fullWidth margin='normal' variant="outlined">
+                      <InputLabel htmlFor="outlined-adornment-password">Senha</InputLabel>
+                      <OutlinedInput
+                        id="outlined-adornment-password"
+                        type={showPassword ? 'text' : 'password'}
+                        value={inputPassword.value}
+                        onChange={inputValue => setInputPassword(prev => ({
+                          ...prev,
+                          value: inputValue.target.value
+                        }))}
+                        onBlur={handlePasswordValitor}
+                        error={inputPassword.error}
+                        endAdornment={
+                          <InputAdornment position="end">
+                            <IconButton
+                              aria-label="toggle password visibility"
+                              onClick={handleClickShowPassword}
+                              // onMouseDown={handleMouseDownPassword}
+                              edge="end"
+                            >
+                              {showPassword ? <Visibility/> : <VisibilityOff/>}
+                            </IconButton>
+                          </InputAdornment>
+                        }
+                        labelWidth={70}
+                      />
+                    </FormControl>
+                    <FormControlLabel
+                      control={<Checkbox value="remember" color="primary"/>}
+                      label="Lembrar de mim neste computador"
+                    />
+                    <Button
+                      type="submit"
+                      fullWidth
+                      variant="contained"
+                      color="primary"
+                      className={classes.submit}
+                      onClick={handleLogin}
                     >
-                      {showPassword ? <Visibility /> : <VisibilityOff />}
-                    </IconButton>
-                  </InputAdornment>
-                }
-                labelWidth={70}
-              />
-            </FormControl>
-            <FormControlLabel
-              control={<Checkbox value="remember" color="primary" />}
-              label="Lembrar de mim neste computador"
-            />
-            <Button
-              type="submit"
-              fullWidth
-              variant="contained"
-              color="primary"
-              className={classes.submit}
-              onClick={handleLogin}
-            >
-              Entrar
-          </Button>
+                      Entrar
+                    </Button>
+                  </>
+                ) : (
+                  <>
+                    <Button
+                      type="submit"
+                      fullWidth
+                      variant="contained"
+                      color="primary"
+                      className={classes.submit}
+                      onClick={handleLogin}
+                    >
+                      Cadastrar
+                    </Button>
+                  </>
+                )}
+              </>
+            ) : (
+              <>
+                <Button
+                  type="submit"
+                  fullWidth
+                  variant="contained"
+                  color="primary"
+                  className={classes.submit}
+                  onClick={handleVerifyEmail}
+                >
+                  Verificar
+                </Button>
+              </>
+            )}
             <Button
               background="success_rounded"
               type="button"
@@ -240,7 +282,7 @@ export default function SignIn() {
               onClick={() => history.push('/register')}
             >
               Criar conta
-          </Button>
+            </Button>
             <Grid container>
               <Box textAlign="center" width="100%">
                 <TextGray>
@@ -257,7 +299,7 @@ export default function SignIn() {
           </form>
         </div>
         <Box mt={8}>
-          <Copyright />
+          <Copyright/>
         </Box>
       </Container>
       {/* <Snackbar
