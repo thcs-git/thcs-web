@@ -7,9 +7,9 @@ import {
   Grid,
   List,
   ListItem,
-  ListItemText,
+  ListItemText, makeStyles,
   Menu,
-  MenuItem, TableCell, TableRow, TextField,
+  MenuItem, Paper, TableCell, TableRow, TextField,
   Tooltip,
   Typography
 } from '@material-ui/core';
@@ -37,6 +37,15 @@ import IconCurativos from '../../../assets/img/icon-curativos.svg';
 import IconMedicacao from '../../../assets/img/icon-medicacao.svg';
 import IconStatus from '../../../assets/img/icon-status.svg';
 
+import {ReactComponent as IconAlergic} from '../../../assets/img/icon-alergic.svg';
+import {ReactComponent as IconAntibiotics} from '../../../assets/img/icon-antibiotics.svg';
+import {ReactComponent as IconEvolution} from '../../../assets/img/icon-diagnosis.svg';
+import {ReactComponent as IconHistory} from '../../../assets/img/icon-history.svg';
+import {ReactComponent as IconMeasurement} from '../../../assets/img/icon-measurement.svg';
+import {ReactComponent as IconPrescription} from '../../../assets/img/icon-prescription.svg';
+import {ReactComponent as IconHome} from '../../../assets/img/marca-sollar-home.svg';
+import IconAgenda from '../../../assets/img/agenda.png';
+
 import {ContainerStyle as Container, Profile} from './styles';
 import ButtonComponent from '../../../styles/components/Button';
 import Button from '../../../styles/components/Button';
@@ -61,15 +70,72 @@ import AdmReleaseDialog from "../../../components/Dialogs/Release/Adm";
 import moment from "moment";
 import {Autocomplete} from "@material-ui/lab";
 import {releaseReferral} from "../../../helpers/patient";
+import RoomIcon from '@material-ui/icons/Room';
 
 interface IPageParams {
   id?: string;
 }
 
+const useStyles = makeStyles((theme) => ({
+  root: {
+    display: 'flex',
+    // flexWrap: 'wrap',
+    justifyContent: 'space-evenly',
+    paddingTop: '25px',
+    '& > *': {
+      margin: theme.spacing(1),
+      width: theme.spacing(16),
+      height: theme.spacing(16),
+    },
+  },
+  itens: {
+    display: 'flex',
+    flexWrap: 'wrap',
+    justifyContent: 'space-evenly',
+    paddingTop: '25px',
+    '& > *': {
+      margin: theme.spacing(1),
+      width: theme.spacing(16),
+      height: theme.spacing(16),
+    },
+  },
+  item_button: {
+    height: '100px !important',
+    width: '150px !important',
+    maxHeight: '100px !important',
+    display: 'block',
+  },
+  item_box: {
+    display: 'flex',
+    width: '115px',
+    height: '105px',
+  },
+  item_svg: {
+    height: '25px',
+    width: '25px'
+  },
+  box: {
+    display: 'flex',
+    width: '125px',
+    height: '175px',
+  },
+  button: {
+    height: '175px !important',
+    width: '250px !important',
+    maxHeight: '175px !important',
+    display: 'block',
+  },
+  svg: {
+    height: '85px',
+    width: '100px'
+  }
+}));
+
 export default function PatientOverview(props: RouteComponentProps<IPageParams>) {
   const history = useHistory();
   const dispatch = useDispatch();
   const {params} = props.match;
+  const classes = useStyles();
   const careState = useSelector((state: ApplicationState) => state.cares);
 
   const [medicalReleaseModal, setMedicalReleaseModal] = useState(false);
@@ -391,12 +457,27 @@ export default function PatientOverview(props: RouteComponentProps<IPageParams>)
                     <Card className="card-styles">
                       <Box display="flex" alignItems="center" justifyContent="space-between" padding={2}>
                         <img src={IconUltimosProced} alt="Antibióticos"/>
-                        <h5>Antibióticos</h5>
+                        <h5>Acessos</h5>
                         <Button className="btn-dropwdown" aria-controls={`menu-prontuario`} id={`btn_menu-prontuario`}
                                 aria-haspopup="true">
                           {/*<MoreVert/>*/}
                         </Button>
                       </Box>
+
+                      <div className={classes.root}>
+                        <Paper elevation={4} className={classes.box}>
+                          <Button className={classes.button}>
+                            <RoomIcon style={{color: 'var(--primary)'}} className={classes.svg}/>
+                            <p>Check-In/Out</p>
+                          </Button>
+                        </Paper>
+                        <Paper elevation={4} className={classes.box}>
+                          <Button className={classes.button}>
+                            <QRCode value={JSON.stringify('careState.data._id')} size={96}/>
+                            <p>QR Code</p>
+                          </Button>
+                        </Paper>
+                      </div>
 
                       {/*<List className="text-list" component="ul" aria-label="mailbox folders">*/}
                       {/*  <ListItem>*/}
@@ -436,7 +517,8 @@ export default function PatientOverview(props: RouteComponentProps<IPageParams>)
                       </ButtonComponent>
                       <Card style={{display: "flex", flexDirection: "row", justifyContent: "center"}}>
                         <p style={{paddingTop: "1.6rem"}}>
-                          <SuccessImage style={{height: '258px'}}/>
+                          {/*<SuccessImage style={{height: '258px'}}/>*/}
+                          <img src={IconAgenda} style={{height: 'auto', width: '100%', marginTop: '-25px'}}/>
                         </p>
                       </Card>
                     </Card>
@@ -444,17 +526,28 @@ export default function PatientOverview(props: RouteComponentProps<IPageParams>)
                   {/* QR Code */}
                   <Grid item xs={12} sm={12} md={12} lg={12}>
                     <Card className="card-styles">
-                      <ButtonComponent background="primary" fullWidth>
-                        <CropFreeIcon/>
-                        <p>QR Code</p>
-                      </ButtonComponent>
-                      {careState.data._id && (
-                        <Card style={{display: "flex", flexDirection: "row", justifyContent: "center"}}>
-                          <p style={{paddingTop: "1.6rem"}}>
-                            <QRCode value={JSON.stringify(careState.data._id)}/>
-                          </p>
-                        </Card>
-                      )}
+                      <Box display="flex" alignItems="center" justifyContent="space-between" padding={2}>
+                        <IconHome/>
+                        <h5>Próximos Eventos</h5>
+                        <Button className="btn-dropwdown" aria-controls={`menu-prontuario`} id={`btn_menu-prontuario`}
+                                aria-haspopup="true">
+                          {/*<MoreVert/>*/}
+                        </Button>
+                      </Box>
+                      <List className="text-list" component="ul" aria-label="mailbox folders">
+                        <ListItem>
+                          <p>13/11/2020 - 7h às 19h15 - Cuidador 1</p>
+                        </ListItem>
+                        <ListItem>
+                          <p>20/11/2020 - 19h às 8h30 - Cuidador 2</p>
+                        </ListItem>
+                        <ListItem>
+                          <p>27/11/2020 - 14h às 15h - Médico 1</p>
+                        </ListItem>
+                        <ListItem>
+                          <p>02/12/2020 - 17h às 18h20 - Fisioterapia</p>
+                        </ListItem>
+                      </List>
                     </Card>
                   </Grid>
                 </Grid>
@@ -462,11 +555,11 @@ export default function PatientOverview(props: RouteComponentProps<IPageParams>)
 
               <Grid container xs={12} spacing={2} style={{justifyContent: 'space-evenly'}}>
                 {/* Ultimos procedimentos */}
-                <Grid item md={8} xs={8} style={{marginTop: '20px'}}>
+                <Grid item md={12} xs={12} style={{marginTop: '20px'}}>
                   <Card className="card-styles">
                     <Box display="flex" alignItems="center" justifyContent="space-between" padding={2}>
                       <img src={IconProntuario} alt="Procedimentos"/>
-                      <h5>Prescrição</h5>
+                      <h5>Prontuario</h5>
                       <Button className="btn-dropwdown" aria-controls={`menu-prontuario`} id={`btn_menu-prontuario`}
                               aria-haspopup="true">
                         {/*<MoreVert/>*/}
@@ -474,7 +567,45 @@ export default function PatientOverview(props: RouteComponentProps<IPageParams>)
                     </Box>
 
                     <Grid container>
-                      <Grid item md={4} xs={12} style={{paddingLeft: '6%'}}>
+                      <Grid item md={12} xs={12} style={{}}>
+                        <div className={classes.itens}>
+                          <Paper elevation={4} className={classes.item_box}>
+                            <Button className={classes.item_button}>
+                              <IconPrescription style={{color: 'var(--primary)'}}/>
+                              <h5>Prescrição</h5>
+                            </Button>
+                          </Paper>
+                          <Paper elevation={4} className={classes.item_box}>
+                            <Button className={classes.item_button}>
+                              <IconAlergic style={{color: 'var(--primary)'}}/>
+                              <h5>Alergia</h5>
+                            </Button>
+                          </Paper>
+                          <Paper elevation={4} className={classes.item_box}>
+                            <Button className={classes.item_button}>
+                              <IconMeasurement style={{color: 'var(--primary)'}}/>
+                              <h5>Aferição</h5>
+                            </Button>
+                          </Paper>
+                          <Paper elevation={4} className={classes.item_box}>
+                            <Button className={classes.item_button}>
+                              <IconEvolution style={{color: 'var(--primary)'}}/>
+                              <h5>Evolução</h5>
+                            </Button>
+                          </Paper>
+                          <Paper elevation={4} className={classes.item_box}>
+                            <Button className={classes.item_button}>
+                              <IconAntibiotics style={{color: 'var(--primary)'}}/>
+                              <h5>Antibióticos</h5>
+                            </Button>
+                          </Paper>
+                          <Paper elevation={4} className={classes.item_box}>
+                            <Button className={classes.item_button}>
+                              <IconHistory style={{color: 'var(--primary)'}}/>
+                              <h5>Relatórios</h5>
+                            </Button>
+                          </Paper>
+                        </div>
                       </Grid>
                     </Grid>
 
@@ -487,99 +618,100 @@ export default function PatientOverview(props: RouteComponentProps<IPageParams>)
                 </Grid>
 
                 {/* Alta */}
-                <Grid item md={4} xs={4} style={{marginTop: '20px'}}>
-                  <Card className="card-styles">
-                    <Box display="flex" alignItems="center" justifyContent="space-between" padding={2}>
-                      <img src={IconProntuario} alt="Procedimentos"/>
-                      <h5>Alta</h5>
-                      <Button className="btn-dropwdown" aria-controls={`menu-prontuario`} id={`btn_menu-prontuario`}
-                              aria-haspopup="true">
-                        {/*<MoreVert/>*/}
-                      </Button>
-                    </Box>
+                {/*<Grid item md={4} xs={4} style={{marginTop: '20px'}}>*/}
+                {/*  <Card className="card-styles">*/}
+                {/*    <Box display="flex" alignItems="center" justifyContent="space-between" padding={2}>*/}
+                {/*      <img src={IconProntuario} alt="Procedimentos"/>*/}
+                {/*      <h5>Alta</h5>*/}
+                {/*      <Button className="btn-dropwdown" aria-controls={`menu-prontuario`} id={`btn_menu-prontuario`}*/}
+                {/*              aria-haspopup="true">*/}
+                {/*        /!*<MoreVert/>*!/*/}
+                {/*      </Button>*/}
+                {/*    </Box>*/}
 
-                    <Grid container spacing={2}>
-                      <Grid item md={11} xs={12} style={{paddingLeft: '6%'}}>
-                        {careState.data.medical_release ? (
-                          <>
-                            <List className="text-list" component="ul" aria-label="mailbox folders">
-                              {careState?.data?.medical_release?.release_at && (
-                                <ListItem>
-                                  <p>Data da
-                                    Alta: {formatDate(careState.data.medical_release.release_at, 'YYYY-MM-DD HH:mm')}</p>
-                                </ListItem>
-                              )}
-                              {careState?.data?.medical_release?.release_reason && (
-                                <ListItem>
-                                  <p>Motivo: {careState.data.medical_release.release_reason.name}</p>
-                                </ListItem>
-                              )}
-                              {careState?.data?.medical_release?.release_responsible && (
-                                <ListItem>
-                                  <p>Responsável: {careState.data.medical_release.release_responsible.name}</p>
-                                </ListItem>
-                              )}
-                            </List>
+                {/*    <Grid container spacing={2}>*/}
+                {/*      <Grid item md={11} xs={12} style={{paddingLeft: '6%'}}>*/}
+                {/*        {careState.data.medical_release ? (*/}
+                {/*          <>*/}
+                {/*            <List className="text-list" component="ul" aria-label="mailbox folders">*/}
+                {/*              {careState?.data?.medical_release?.release_at && (*/}
+                {/*                <ListItem>*/}
+                {/*                  <p>Data da*/}
+                {/*                    Alta: {formatDate(careState.data.medical_release.release_at, 'YYYY-MM-DD HH:mm')}</p>*/}
+                {/*                </ListItem>*/}
+                {/*              )}*/}
+                {/*              {careState?.data?.medical_release?.release_reason && (*/}
+                {/*                <ListItem>*/}
+                {/*                  <p>Motivo: {careState.data.medical_release.release_reason.name}</p>*/}
+                {/*                </ListItem>*/}
+                {/*              )}*/}
+                {/*              {careState?.data?.medical_release?.release_responsible && (*/}
+                {/*                <ListItem>*/}
+                {/*                  <p>Responsável: {careState.data.medical_release.release_responsible.name}</p>*/}
+                {/*                </ListItem>*/}
+                {/*              )}*/}
+                {/*            </List>*/}
 
-                            <ButtonComponent onClick={() => setRevertMedicalReleaseModal(true)}
-                                             background="primary" style={{background: 'var(--alert)'}} disabled={careState.data.adm_release_status} fullWidth>
-                              <p>Desfazer Alta Médica</p>
-                            </ButtonComponent>
+                {/*            <ButtonComponent onClick={() => setRevertMedicalReleaseModal(true)}*/}
+                {/*                             background="primary" style={{background: 'var(--alert)'}}*/}
+                {/*                             disabled={careState.data.adm_release_status} fullWidth>*/}
+                {/*              <p>Desfazer Alta Médica</p>*/}
+                {/*            </ButtonComponent>*/}
 
-                          </>
-                        ) : (
-                          <>
-                            <ButtonComponent onClick={() => setMedicalReleaseModal(true)}
-                                             background="primary" fullWidth>
-                              <p>Alta Médica</p>
-                            </ButtonComponent>
-                          </>
-                        )}
+                {/*          </>*/}
+                {/*        ) : (*/}
+                {/*          <>*/}
+                {/*            <ButtonComponent onClick={() => setMedicalReleaseModal(true)}*/}
+                {/*                             background="primary" fullWidth>*/}
+                {/*              <p>Alta Médica</p>*/}
+                {/*            </ButtonComponent>*/}
+                {/*          </>*/}
+                {/*        )}*/}
 
-                      </Grid>
-                      <Grid item md={11} xs={12} style={{paddingLeft: '6%'}}>
-                        {careState.data.adm_release ? (
-                          <>
-                            <List className="text-list" component="ul" aria-label="mailbox folders">
-                              {careState?.data?.adm_release?.release_at && (
-                                <ListItem>
-                                  <p>Data da
-                                    Alta: {formatDate(careState.data.adm_release.release_at, 'YYYY-MM-DD HH:mm')}</p>
-                                </ListItem>
-                              )}
-                              {careState?.data?.adm_release?.release_reason && (
-                                <ListItem>
-                                  <p>Motivo: {careState.data.adm_release.release_reason.name}</p>
-                                </ListItem>
-                              )}
-                              {careState?.data?.adm_release?.release_responsible && (
-                                <ListItem>
-                                  <p>Responsável: {careState.data.adm_release.release_responsible.name}</p>
-                                </ListItem>
-                              )}
-                            </List>
-                            <ButtonComponent onClick={() => setRevertAdmReleaseModal(true)}
-                                             background="primary" style={{background: 'var(--alert)'}} fullWidth>
-                              <p>Desfazer Alta Administrativa</p>
-                            </ButtonComponent>
-                          </>
-                        ) : (
-                          <ButtonComponent onClick={() => setAdmReleaseModal(true)}
-                                           background="primary" disabled={careState.data.medical_release ? false : true}
-                                           fullWidth>
-                            <p>Alta Administrativa</p>
-                          </ButtonComponent>
-                        )}
-                      </Grid>
-                    </Grid>
+                {/*      </Grid>*/}
+                {/*      <Grid item md={11} xs={12} style={{paddingLeft: '6%'}}>*/}
+                {/*        {careState.data.adm_release ? (*/}
+                {/*          <>*/}
+                {/*            <List className="text-list" component="ul" aria-label="mailbox folders">*/}
+                {/*              {careState?.data?.adm_release?.release_at && (*/}
+                {/*                <ListItem>*/}
+                {/*                  <p>Data da*/}
+                {/*                    Alta: {formatDate(careState.data.adm_release.release_at, 'YYYY-MM-DD HH:mm')}</p>*/}
+                {/*                </ListItem>*/}
+                {/*              )}*/}
+                {/*              {careState?.data?.adm_release?.release_reason && (*/}
+                {/*                <ListItem>*/}
+                {/*                  <p>Motivo: {careState.data.adm_release.release_reason.name}</p>*/}
+                {/*                </ListItem>*/}
+                {/*              )}*/}
+                {/*              {careState?.data?.adm_release?.release_responsible && (*/}
+                {/*                <ListItem>*/}
+                {/*                  <p>Responsável: {careState.data.adm_release.release_responsible.name}</p>*/}
+                {/*                </ListItem>*/}
+                {/*              )}*/}
+                {/*            </List>*/}
+                {/*            <ButtonComponent onClick={() => setRevertAdmReleaseModal(true)}*/}
+                {/*                             background="primary" style={{background: 'var(--alert)'}} fullWidth>*/}
+                {/*              <p>Desfazer Alta Administrativa</p>*/}
+                {/*            </ButtonComponent>*/}
+                {/*          </>*/}
+                {/*        ) : (*/}
+                {/*          <ButtonComponent onClick={() => setAdmReleaseModal(true)}*/}
+                {/*                           background="primary" disabled={careState.data.medical_release ? false : true}*/}
+                {/*                           fullWidth>*/}
+                {/*            <p>Alta Administrativa</p>*/}
+                {/*          </ButtonComponent>*/}
+                {/*        )}*/}
+                {/*      </Grid>*/}
+                {/*    </Grid>*/}
 
-                    {/*<footer>*/}
-                    {/*  <Typography variant="caption" color="textSecondary">*/}
-                    {/*    Placeholder*/}
-                    {/*  </Typography>*/}
-                    {/*</footer>*/}
-                  </Card>
-                </Grid>
+                {/*    /!*<footer>*!/*/}
+                {/*    /!*  <Typography variant="caption" color="textSecondary">*!/*/}
+                {/*    /!*    Placeholder*!/*/}
+                {/*    /!*  </Typography>*!/*/}
+                {/*    /!*</footer>*!/*/}
+                {/*  </Card>*/}
+                {/*</Grid>*/}
               </Grid>
 
               <MedicalReleaseDialog
@@ -984,7 +1116,7 @@ export default function PatientOverview(props: RouteComponentProps<IPageParams>)
               </Button>
               <Button onClick={() => {
                 if (careState.data?.medical_release?.release_reason?.type === 'TRANSFERÊNCIA INTERNA') {
-                    dispatch(deleteCareRequest(careState?.data?.transferred_from ? careState?.data?.transferred_from : ''))
+                  dispatch(deleteCareRequest(careState?.data?.transferred_from ? careState?.data?.transferred_from : ''))
                 }
                 careState.data.medical_release = null
                 careState.data.medical_release_status = false
