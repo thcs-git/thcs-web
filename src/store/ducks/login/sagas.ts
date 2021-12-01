@@ -16,7 +16,7 @@ export function* doLogin({payload}: any) {
     const response: AxiosResponse = yield call(
       apiSollar.post,
       `/user/login`,
-      payload.credentials
+      payload?.credentials
     );
 
     const {data} = response;
