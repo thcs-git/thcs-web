@@ -273,16 +273,16 @@ export default function SignIn() {
                 </Button>
               </>
             )}
-            <Button
-              background="success_rounded"
-              type="button"
-              fullWidth
-              variant="contained"
-              className={classes.create_account}
-              onClick={() => history.push('/register')}
-            >
-              Criar conta
-            </Button>
+            {/*<Button*/}
+            {/*  background="success_rounded"*/}
+            {/*  type="button"*/}
+            {/*  fullWidth*/}
+            {/*  variant="contained"*/}
+            {/*  className={classes.create_account}*/}
+            {/*  onClick={() => history.push('/register')}*/}
+            {/*>*/}
+            {/*  Criar conta*/}
+            {/*</Button>*/}
             <Grid container>
               <Box textAlign="center" width="100%">
                 <TextGray>

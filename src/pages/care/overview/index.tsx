@@ -143,6 +143,8 @@ export default function PatientOverview(props: RouteComponentProps<IPageParams>)
   const [admReleaseModal, setAdmReleaseModal] = useState(false);
   const [revertAdmReleaseModal, setRevertAdmReleaseModal] = useState(false);
 
+  const [prescriptionModal, setPrescriptionModal] = useState(false);
+
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
 
   useEffect(() => {
@@ -570,7 +572,7 @@ export default function PatientOverview(props: RouteComponentProps<IPageParams>)
                       <Grid item md={12} xs={12} style={{}}>
                         <div className={classes.itens}>
                           <Paper elevation={4} className={classes.item_box}>
-                            <Button className={classes.item_button}>
+                            <Button className={classes.item_button} onClick={() => setPrescriptionModal(true)}>
                               <IconPrescription style={{color: 'var(--primary)'}}/>
                               <h5>Prescrição</h5>
                             </Button>
@@ -1091,6 +1093,73 @@ export default function PatientOverview(props: RouteComponentProps<IPageParams>)
               </Grid>
             </>
           )}
+
+          {/*PrescriptionModal*/}
+          <Dialog
+            open={revertMedicalReleaseModal}
+            onClose={() => setRevertMedicalReleaseModal(false)}
+            aria-labelledby="scroll-dialog-title"
+            aria-describedby="scroll-dialog-description"
+            maxWidth="md"
+          >
+            <DialogTitle id="scroll-dialog-title">Deseja desfazer a alta médica?</DialogTitle>
+            <DialogContent>
+              <DialogContentText
+                id="scroll-dialog-description"
+                tabIndex={-1}
+              >texto de apoio.</DialogContentText>
+
+              <div>
+                <Grid container>
+                </Grid>
+              </div>
+            </DialogContent>
+            <DialogActions>
+              <Button onClick={() => setRevertMedicalReleaseModal(false)} color="primary">
+                Sair
+              </Button>
+              <Button onClick={() => {
+                if (careState.data?.medical_release?.release_reason?.type === 'TRANSFERÊNCIA INTERNA') {
+                  dispatch(deleteCareRequest(careState?.data?.transferred_from ? careState?.data?.transferred_from : ''))
+                }
+                careState.data.medical_release = null
+                careState.data.medical_release_status = false
+                dispatch(updateCareRequest(careState.data));
+                setRevertMedicalReleaseModal(false)
+                setMedicalReleaseModal(true)
+              }} color="primary">
+                Desfazer
+              </Button>
+            </DialogActions>
+          </Dialog>
+
+          <Dialog
+            open={prescriptionModal}
+            onClose={() => setPrescriptionModal(false)}
+            aria-labelledby="dialog-prescription"
+            aria-describedby="dialog-prescription-description"
+            maxWidth="md"
+          >
+            <DialogTitle id="dialog-prescription-title">Title</DialogTitle>
+            <DialogContent>
+              <DialogContentText
+                id="dialog-prescription-description"
+                tabIndex={-1}
+              >texto de apoio.</DialogContentText>
+
+              <div>
+                <Grid container>
+                </Grid>
+              </div>
+            </DialogContent>
+            <DialogActions>
+              <Button onClick={() => setPrescriptionModal(false)} color="primary">
+                Fechar
+              </Button>
+            </DialogActions>
+          </Dialog>
+
+          {/*MedicalRelease*/}
           <Dialog
             open={revertMedicalReleaseModal}
             onClose={() => setRevertMedicalReleaseModal(false)}
