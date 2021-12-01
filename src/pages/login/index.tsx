@@ -20,6 +20,7 @@ import FormControlLabel from '@material-ui/core/FormControlLabel';
 
 import Visibility from '@material-ui/icons/Visibility';
 import VisibilityOff from '@material-ui/icons/VisibilityOff';
+import ArrowForwardIcon from '@material-ui/icons/ArrowForward';
 
 import {makeStyles} from '@material-ui/core/styles';
 
@@ -33,6 +34,7 @@ import validateEmail from '../../utils/validateEmail';
 import LOCALSTORAGE from '../../helpers/constants/localStorage';
 import {toast} from 'react-toastify';
 import {useHistory} from 'react-router-dom';
+import {CircularProgress, Fab} from "@material-ui/core";
 
 function Copyright() {
   return (
@@ -100,8 +102,38 @@ const useStyles = makeStyles((theme) => ({
     borderColor: 'var(--success-hover)',
     contrastText: "#fff"
 
-  }
+  },
+  wrapper: {
+    margin: theme.spacing(1),
+    position: 'relative',
+  },
+  buttonSuccess: {
+    backgroundColor: 'green[500]',
+    '&:hover': {
+      backgroundColor: 'green[700]',
+    },
+  },
+  fab: {
+    width: '35px',
+    height: '25px',
+  },
+  fabProgress: {
+    color: 'green[500]',
+    position: 'absolute',
+    top: -6,
+    left: -6,
+    zIndex: 1,
+  },
+  buttonProgress: {
+    color: 'green[500]',
+    position: 'absolute',
+    top: '50%',
+    left: '50%',
+    marginTop: -12,
+    marginLeft: -12,
+  },
 }));
+
 
 const SIZE_INPUT_PASSWORD = 3;
 
@@ -125,7 +157,7 @@ export default function SignIn() {
       toast.error('Sessão expirada');
     }
 
-    if (token) history.push('/dashboard');
+    // if (token) history.push('/dashboard');
   }, []);
 
   const handleClickShowPassword = useCallback(() => {
@@ -135,7 +167,7 @@ export default function SignIn() {
   const handleVerifyEmail = useCallback(async (event) => {
     event.preventDefault();
 
-    if (inputEmail.error || inputPassword.error) return;
+    if (inputEmail.error) return;
 
     dispatch(emailRequest({email: inputEmail.value}));
   }, [inputPassword, inputEmail]);
@@ -144,8 +176,7 @@ export default function SignIn() {
     event.preventDefault();
 
     if (inputEmail.error || inputPassword.error) return;
-
-    dispatch(loadRequest({ email: inputEmail.value, password: inputPassword.value }));
+    dispatch(loadRequest({email: inputEmail.value, password: inputPassword.value}));
   }, [inputPassword, inputEmail]);
 
   const handleEmailValidator = useCallback(() => {
@@ -182,22 +213,42 @@ export default function SignIn() {
             </TextGray>
           </WelcomeTextWrapper>
           <form className={classes.form} noValidate>
-            <TextField
-              error={inputEmail.error}
-              variant="outlined"
-              margin="normal"
-              required
-              fullWidth
-              label="E-mail"
-              name="email"
-              autoComplete="number"
-              autoFocus
-              onChange={inputValue => setInputEmail(prev => ({
-                ...prev,
-                value: inputValue.target.value
-              }))}
-              onBlur={handleEmailValidator}
-            />
+            <FormControl fullWidth margin='normal' variant="outlined">
+              <InputLabel htmlFor="outlined-adornment-email">Email</InputLabel>
+              <OutlinedInput
+                error={inputEmail.error}
+                required
+                fullWidth
+                label="E-mail"
+                name="email"
+                autoComplete="number"
+                autoFocus
+                onChange={inputValue => setInputEmail(prev => ({
+                  ...prev,
+                  value: inputValue.target.value
+                }))}
+                onBlur={handleEmailValidator}
+                id="outlined-adornment-email"
+                value={inputEmail.value}
+                endAdornment={
+                  <InputAdornment position="end">
+                    <div className={classes.wrapper}>
+                      <Fab className={classes.fab}
+                           aria-label="save"
+                        // color="secondary"
+                        // className={buttonClassname}
+                           onClick={handleVerifyEmail}
+                           style={{color: 'primary'}}
+                      >
+                        <ArrowForwardIcon/>
+                      </Fab>
+                      {/*<CircularProgress size={68} className={classes.fabProgress}/>*/}
+                    </div>
+                  </InputAdornment>
+                }
+                labelWidth={70}
+              />
+            </FormControl>
             {loginState.email.user && loginState.email.password ? (
               <>
                 {loginState.email.password ? (
@@ -261,16 +312,16 @@ export default function SignIn() {
               </>
             ) : (
               <>
-                <Button
-                  type="submit"
-                  fullWidth
-                  variant="contained"
-                  color="primary"
-                  className={classes.submit}
-                  onClick={handleVerifyEmail}
-                >
-                  Verificar
-                </Button>
+                {/*<Button*/}
+                {/*  type="submit"*/}
+                {/*  fullWidth*/}
+                {/*  variant="contained"*/}
+                {/*  color="primary"*/}
+                {/*  className={classes.submit}*/}
+                {/*  onClick={handleVerifyEmail}*/}
+                {/*>*/}
+                {/*  Verificar*/}
+                {/*</Button>*/}
               </>
             )}
             {/*<Button*/}
