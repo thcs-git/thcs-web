@@ -148,17 +148,17 @@ export default function SignIn() {
   const [rememberMe, setRememberMe] = useState(false);
   const classes = useStyles();
 
-  useEffect(() => {
-    const expired = localStorage.getItem(LOCALSTORAGE.EXPIRED_SESSION);
-    const token = localStorage.getItem(LOCALSTORAGE.TOKEN);
-
-    if (expired) {
-      localStorage.removeItem(LOCALSTORAGE.EXPIRED_SESSION);
-      toast.error('Sessão expirada');
-    }
-
-    // if (token) history.push('/dashboard');
-  }, []);
+  // useEffect(() => {
+  //   const expired = localStorage.getItem(LOCALSTORAGE.EXPIRED_SESSION);
+  //   const token = localStorage.getItem(LOCALSTORAGE.TOKEN);
+  //
+  //   if (expired) {
+  //     localStorage.removeItem(LOCALSTORAGE.EXPIRED_SESSION);
+  //     toast.error('Sessão expirada');
+  //   }
+  //
+  //   // if (token) history.push('/dashboard');
+  // }, []);
 
   const handleClickShowPassword = useCallback(() => {
     setShowPassword(prev => !prev);

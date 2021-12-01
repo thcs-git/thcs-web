@@ -148,6 +148,7 @@ import {
 import { get as getProfession } from "./professions/sagas";
 import { ProfessionTypes } from "./professions/types";
 export default function* rootSaga() {
+  console.log('here rootdsagas')
   return yield all([
     takeLatest(LoginTypes.LOAD_REQUEST, doLogin),
     takeLatest(LoginTypes.EMAIL_REQUEST, checkEmailLogin),
