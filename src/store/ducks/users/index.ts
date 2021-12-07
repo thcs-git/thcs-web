@@ -108,6 +108,14 @@ const reducer: Reducer<UserState> = (state = INITIAL_STATE, action) => {
         error: false,
         success: true,
       };
+    case UserTypes.UPDATE_USER_PASSWORD:
+      return {
+        ...state,
+        data: action.payload.data,
+        loading: true,
+        error: false,
+        success: true,
+      };
     case UserTypes.UPDATE_USER_SUCCESS:
       return {
         ...state,

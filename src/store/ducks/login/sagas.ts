@@ -104,7 +104,7 @@ export function* doLogin({payload}: any) {
     }
 
 
-    yield put(loadSuccess(data));
+    // yield put(loadSuccess(data));
 
     if (localStorage.getItem(LOCALSTORAGE.CUSTOMER_NAME) != "SEM") {
       history.push("/dashboard");

@@ -109,7 +109,7 @@ import {
   checkEmail,
   getUserByEmail,
   recoveryPassword,
-  recoverypasswordiftoken, getByClient,
+  recoverypasswordiftoken, getByClient, updateUserPassword,
 } from "./users/sagas";
 
 import { CareTypes } from "./cares/types";
@@ -148,10 +148,10 @@ import {
 import { get as getProfession } from "./professions/sagas";
 import { ProfessionTypes } from "./professions/types";
 export default function* rootSaga() {
-  console.log('here rootdsagas')
   return yield all([
     takeLatest(LoginTypes.LOAD_REQUEST, doLogin),
     takeLatest(LoginTypes.EMAIL_REQUEST, checkEmailLogin),
+    takeLatest(UserTypes.UPDATE_USER_PASSWORD, updateUserPassword),
     // takeLatest(AreaTypes.LOAD_REQUEST, getAreas),
     // takeLatest(EspecialtyTypes.LOAD_REQUEST, getEspecialty),
     // takeLatest(CouncilTypes.LOAD_REQUEST, getCouncil),

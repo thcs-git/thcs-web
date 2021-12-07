@@ -6,6 +6,7 @@ import {
   LoadRequestParams,
   UserRecoveryPassword,
 } from "./types";
+import {CredentialsInterface} from "../login/types";
 
 export const loadRequest = (params: LoadRequestParams = {}) =>
   action(UserTypes.LOAD_REQUEST, { params });
@@ -40,6 +41,9 @@ export const createUserSuccess = (data: UserInterface) =>
 
 export const updateUserRequest = (data: UserInterface) =>
   action(UserTypes.UPDATE_USER_REQUEST, { data });
+
+export const updateUserPasswordRequest = (data: CredentialsInterface) =>
+  action(UserTypes.UPDATE_USER_PASSWORD, { data });
 
 export const updateUserSuccess = (data: UserInterface) =>
   action(UserTypes.UPDATE_USER_SUCCESS, { data });

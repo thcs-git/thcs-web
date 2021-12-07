@@ -284,6 +284,22 @@ export function* updateUser({payload: {data}}: any) {
   }
 }
 
+export function* updateUserPassword({payload: {data}}: any) {
+  try {
+    const response: AxiosResponse = yield call(
+      apiSollar.patch,
+      `/user/updatepassword`,
+      {...data},
+      {headers: {token}}
+    );
+
+    yield put(updateUserSuccess(response.data));
+  } catch (error) {
+    // toast.error("Não foi possível atualizar os dados do usuario");
+    yield put(loadFailure());
+  }
+}
+
 export function* getAddress({payload}: any) {
   try {
     const {data}: AxiosResponse<ViacepDataInterface> = yield call(

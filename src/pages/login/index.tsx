@@ -34,7 +34,16 @@ import validateEmail from '../../utils/validateEmail';
 import LOCALSTORAGE from '../../helpers/constants/localStorage';
 import {toast} from 'react-toastify';
 import {useHistory} from 'react-router-dom';
-import {CircularProgress, Fab} from "@material-ui/core";
+import {
+  CircularProgress,
+  Dialog, DialogActions,
+  DialogContent,
+  DialogContentText,
+  DialogTitle,
+  Fab,
+  FormGroup
+} from "@material-ui/core";
+import {updateUserPasswordRequest} from "../../store/ducks/users/actions";
 
 function Copyright() {
   return (
@@ -144,8 +153,12 @@ export default function SignIn() {
 
   const [inputEmail, setInputEmail] = useState({value: '', error: false});
   const [inputPassword, setInputPassword] = useState({value: '', error: false});
+  const [inputConfirmPassword, setInputConfirmPassword] = useState({value: '', error: false});
+  const [checkPolicy, setCheckPolicy] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [rememberMe, setRememberMe] = useState(false);
+  const [valid, setValid] = useState(false);
+  const [openPolicyModal, setOpenPolicyModal] = useState(false);
   const classes = useStyles();
 
   // useEffect(() => {
@@ -169,7 +182,16 @@ export default function SignIn() {
 
     if (inputEmail.error) return;
 
+    // if (loginState.email.user) return;
+
     dispatch(emailRequest({email: inputEmail.value}));
+  }, [inputPassword, inputEmail]);
+
+  const handlePassword = useCallback(async (event) => {
+    event.preventDefault();
+
+    if (inputEmail.error || inputPassword.error) return;
+    dispatch(updateUserPasswordRequest({email: inputEmail.value, password: inputPassword.value}));
   }, [inputPassword, inputEmail]);
 
   const handleLogin = useCallback(async (event) => {
@@ -185,17 +207,38 @@ export default function SignIn() {
         ...prev,
         error: true
       }))
+      setValid(true)
     } else {
       setInputEmail(prev => ({
         ...prev,
         error: false
       }))
+      setValid(false)
     }
   }, [inputEmail]);
 
   const handlePasswordValitor = useCallback(() => {
-    setInputPassword(prev => ({...prev, error: !(inputPassword.value.length >= SIZE_INPUT_PASSWORD)}));
-  }, [inputPassword]);
+    let passwordError = false
+    let passwordConfirmError = false
+
+    passwordError = !(inputPassword.value.length >= SIZE_INPUT_PASSWORD)
+    passwordConfirmError = !(inputConfirmPassword.value.length >= SIZE_INPUT_PASSWORD)
+
+    if (inputPassword.value != inputConfirmPassword.value) {
+      passwordError = true
+      passwordConfirmError = true
+    }
+
+    setInputPassword(prev => ({
+      ...prev,
+      error: passwordError
+    }));
+    setInputConfirmPassword(prev => ({
+      ...prev,
+      error: passwordConfirmError
+    }));
+    setValid(passwordError && passwordConfirmError)
+  }, [inputPassword, inputConfirmPassword]);
 
   return (
     <>
@@ -227,7 +270,7 @@ export default function SignIn() {
                   ...prev,
                   value: inputValue.target.value
                 }))}
-                onBlur={handleEmailValidator}
+                // onBlur={handleEmailValidator}
                 id="outlined-adornment-email"
                 value={inputEmail.value}
                 endAdornment={
@@ -249,7 +292,7 @@ export default function SignIn() {
                 labelWidth={70}
               />
             </FormControl>
-            {loginState.email.user && loginState.email.password ? (
+            {loginState.email.user ? (
               <>
                 {loginState.email.password ? (
                   <>
@@ -263,7 +306,7 @@ export default function SignIn() {
                           ...prev,
                           value: inputValue.target.value
                         }))}
-                        onBlur={handlePasswordValitor}
+                        // onBlur={handlePasswordValitor}
                         error={inputPassword.error}
                         endAdornment={
                           <InputAdornment position="end">
@@ -297,13 +340,84 @@ export default function SignIn() {
                   </>
                 ) : (
                   <>
+                    <FormControl size="small" fullWidth margin='normal' variant="outlined">
+                      <InputLabel htmlFor="outlined-adornment-password">Senha</InputLabel>
+                      <OutlinedInput
+                        id="outlined-adornment-password"
+                        type={showPassword ? 'text' : 'password'}
+                        value={inputPassword.value}
+                        onChange={inputValue => setInputPassword(prev => ({
+                          ...prev,
+                          value: inputValue.target.value
+                        }))}
+                        // onBlur={handlePasswordValitor}
+                        error={inputPassword.error}
+                        endAdornment={
+                          <InputAdornment position="end">
+                            <IconButton
+                              aria-label="toggle password visibility"
+                              onClick={handleClickShowPassword}
+                              // onMouseDown={handleMouseDownPassword}
+                              edge="end"
+                            >
+                              {showPassword ? <Visibility/> : <VisibilityOff/>}
+                            </IconButton>
+                          </InputAdornment>
+                        }
+                        labelWidth={60}
+                      />
+                    </FormControl>
+                    <FormControl size="small" fullWidth margin='normal' variant="outlined">
+                      <InputLabel htmlFor="outlined-adornment-password-comfirm">Senha</InputLabel>
+                      <OutlinedInput
+                        id="outlined-adornment-password-comfirm"
+                        type={showPassword ? 'text' : 'password'}
+                        value={inputConfirmPassword.value}
+                        onChange={inputValue => setInputConfirmPassword(prev => ({
+                          ...prev,
+                          value: inputValue.target.value
+                        }))}
+                        // onBlur={handlePasswordValitor}
+                        error={inputConfirmPassword.error}
+                        endAdornment={
+                          <InputAdornment position="end">
+                            <IconButton
+                              aria-label="toggle password visibility"
+                              onClick={handleClickShowPassword}
+                              // onMouseDown={handleMouseDownPassword}
+                              edge="end"
+                            >
+                              {showPassword ? <Visibility/> : <VisibilityOff/>}
+                            </IconButton>
+                          </InputAdornment>
+                        }
+                        labelWidth={60}
+                      />
+                    </FormControl>
+                    <FormGroup row style={{alignItems: 'center'}}>
+                      <Checkbox
+                        checked={checkPolicy}
+                        // onBlur={handleValidator}
+                        onChange={() => setCheckPolicy(!checkPolicy)}
+                        name="checkedB"
+                        color="primary"
+                      />
+                      <TextGray>
+                        Li e concordo com os {' '}
+                        <TextBlue onClick={() => setOpenPolicyModal(true)}>
+                          termos e politicas {' '}
+                        </TextBlue>
+                        de privacidade
+                      </TextGray>
+                    </FormGroup>
                     <Button
                       type="submit"
                       fullWidth
                       variant="contained"
                       color="primary"
                       className={classes.submit}
-                      onClick={handleLogin}
+                      onClick={handlePassword}
+                      disabled={valid}
                     >
                       Cadastrar
                     </Button>
@@ -353,6 +467,38 @@ export default function SignIn() {
           <Copyright/>
         </Box>
       </Container>
+      <Dialog
+        open={openPolicyModal}
+        onClose={() => setOpenPolicyModal(false)}
+        scroll={"paper"}
+        aria-labelledby="scroll-dialog-title"
+        aria-describedby="scroll-dialog-description"
+      >
+        <DialogTitle id="scroll-dialog-title">Subscribe</DialogTitle>
+        <DialogContent dividers={true}>
+                    <DialogContentText
+                      id="scroll-dialog-description"
+                      tabIndex={-1}
+                    >
+                      {[...new Array(500)]
+                        .map(
+                          () => `Cras mattis. Asdasd asd.`,
+                        )
+                        .join('\n')}
+                    </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => setOpenPolicyModal(false)} color="primary">
+            Não Aceitar
+          </Button>
+          <Button onClick={()=>{
+            setOpenPolicyModal(false)
+            setCheckPolicy(true)
+          }} color="primary">
+            Aceitar
+          </Button>
+        </DialogActions>
+      </Dialog>
       {/* <Snackbar
         autoHideDuration={2000}
         anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}

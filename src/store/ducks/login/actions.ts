@@ -8,7 +8,7 @@ export const loadRequest = (credentials: CredentialsInterface) =>
 export const loadSuccess = (credentials: CredentialsInterface) =>
   action(LoginTypes.LOAD_SUCCESS, {credentials});
 
-export const loadFailure = () => action(LoginTypes.LOAD_FAILURE);
+export const loadFailure = () => action(LoginTypes.EMAIL_FAILURE);
 
 //Email
 export const emailRequest = (credentials: CredentialsInterface) =>
