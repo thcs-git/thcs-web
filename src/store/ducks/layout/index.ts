@@ -4,6 +4,7 @@ import {UserTypes} from "../users/types";
 
 export const INITIAL_STATE: LayoutState = {
   data: {
+    token: '',
     rights: [],
     integration: null,
     integration_name: null,
