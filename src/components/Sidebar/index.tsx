@@ -309,6 +309,8 @@ const Sibebar = (props: Props<any>) => {
 
   useEffect(() => {
     if (layoutState.success) {
+      localStorage.setItem(LOCALSTORAGE.TOKEN, layoutState.data.token)
+
       sessionStorage.setItem(SESSIONSTORAGE.MENU, JSON.stringify(layoutState.data.menu))
       sessionStorage.setItem(SESSIONSTORAGE.RIGHTS, JSON.stringify(layoutState.data.rights))
       layoutState.data.integration ? sessionStorage.setItem(SESSIONSTORAGE.INTEGRATION, layoutState.data.integration) : sessionStorage.removeItem(SESSIONSTORAGE.INTEGRATION)

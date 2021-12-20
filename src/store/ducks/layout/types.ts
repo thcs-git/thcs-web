@@ -22,6 +22,7 @@ export interface MenuInterface {
 }
 
 export interface LayoutInterface {
+  token: string;
   menu?: MenuInterface[];
   rights?: string[];
   integration?: string | null;
