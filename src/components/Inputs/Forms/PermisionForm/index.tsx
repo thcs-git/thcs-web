@@ -274,16 +274,16 @@ const PermissionForm = (props: IComponent) => {
       }))
     }
 
-    if (mode ==='create') {
-      setState(() => ({
-        active: true,
-        name: "",
-        rights: [],
-        mode: "",
-        _id: "",
-        customer_id: "",
-      }))
-    }
+    // if (mode ==='create') {
+    //   setState(() => ({
+    //     active: true,
+    //     name: "",
+    //     rights: [],
+    //     mode: "",
+    //     _id: "",
+    //     customer_id: "",
+    //   }))
+    // }
 
     if (!customerState.data.usertypes && mode != 'create') {
       dispatch(loadCustomerById(customer_id))

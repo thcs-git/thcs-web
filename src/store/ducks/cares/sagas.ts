@@ -49,22 +49,22 @@ export function* get({payload}: any) {
   try {
     const {params} = payload;
     let response: AxiosResponse
-    const integration = sessionStorage.getItem(SESSIONSTORAGE.INTEGRATION)
-    console.log('here')
-    if (integration) {
-      response = yield call(
-        apiIntegra(integration),
-        `/attendance?limit=${params.limit ?? 10}&page=${
-          params.page || 1}`
-      );
-    } else {
-      response = yield call(
-        apiSollar.get,
-        `/attendance/getAttendance?limit=${params.limit ?? 10}&page=${
-          params.page || 1
-        }${params.search ? "&search=" + params.search : ""}${params.status ? "&status=" + params.status : ""}${params.patient_id ? "&patient_id=" + params.patient_id : ""}`
-      );
-    }
+    // const integration = sessionStorage.getItem(SESSIONSTORAGE.INTEGRATION)
+    // console.log('here')
+    // if (integration) {
+    //   response = yield call(
+    //     apiIntegra(integration),
+    //     `/attendance?limit=${params.limit ?? 10}&page=${
+    //       params.page || 1}`
+    //   );
+    // } else {
+    response = yield call(
+      apiSollar.get,
+      `/attendance/getAttendance?limit=${params.limit ?? 10}&page=${
+        params.page || 1
+      }${params.search ? "&search=" + params.search : ""}${params.status ? "&status=" + params.status : ""}${params.patient_id ? "&patient_id=" + params.patient_id : ""}`
+    );
+
 
     yield put(searchCareSuccess(response.data));
   } catch (error) {
@@ -77,23 +77,22 @@ export function* getPopUp({payload}: any) {
   try {
     const {params} = payload;
     let response: AxiosResponse
-    const integration = sessionStorage.getItem(SESSIONSTORAGE.INTEGRATION)
+    // const integration = sessionStorage.getItem(SESSIONSTORAGE.INTEGRATION)
 
-    if (integration) {
-      response = yield call(
-        apiSollar.get,
-        `/attendance/getAttendance?limit=${params.limit ?? 10}&page=${
-          params.page || 1
-        }${params.search ? "&search=" + params.search : ""}${params.status ? "&status=" + params.status : ""}${params.patient_id ? "&patient_id=" + params.patient_id : ""}`
-      );
-    } else {
-      response = yield call(
-        apiSollar.get,
-        `/attendance/getAttendance?limit=${params.limit ?? 10}&page=${
-          params.page || 1
-        }${params.search ? "&search=" + params.search : ""}${params.status ? "&status=" + params.status : ""}${params.patient_id ? "&patient_id=" + params.patient_id : ""}`
-      );
-    }
+    // if (integration) {
+    //   response = yield call(
+    //     apiSollar.get,
+    //     `/attendance/getAttendance?limit=${params.limit ?? 10}&page=${
+    //       params.page || 1
+    //     }${params.search ? "&search=" + params.search : ""}${params.status ? "&status=" + params.status : ""}${params.patient_id ? "&patient_id=" + params.patient_id : ""}`
+    //   );
+    // } else {
+    response = yield call(
+      apiSollar.get,
+      `/attendance/getAttendance?limit=${params.limit ?? 10}&page=${
+        params.page || 1
+      }${params.search ? "&search=" + params.search : ""}${params.status ? "&status=" + params.status : ""}${params.patient_id ? "&patient_id=" + params.patient_id : ""}`
+    );
 
     yield put(searchPatientSuccess(response.data));
   } catch (error) {
@@ -109,28 +108,27 @@ export function* search({payload}: any) {
     const searchParams = params;
 
     let response: AxiosResponse
-    const integration = sessionStorage.getItem(SESSIONSTORAGE.INTEGRATION)
+    // const integration = sessionStorage.getItem(SESSIONSTORAGE.INTEGRATION)
 
     delete searchParams.limit;
     delete searchParams.page;
 
-    if (integration) {
-      response = yield call(
-        apiIntegra(integration),
-        `/attendance?limit=${params.limit ?? 10}&page=${
-          params.page || 1
-        }`,
-        {params: searchParams}
-      );
-    } else {
-      response = yield call(
-        apiSollar.get,
-        `/attendance/getAttendance?limit=${params.limit ?? 10}&page=${
-          params.page || 1
-        }`,
-        {params: searchParams}
-      );
-    }
+    // if (integration) {
+    //   response = yield call(
+    //     apiIntegra(integration),
+    //     `/attendance?limit=${params.limit ?? 10}&page=${
+    //       params.page || 1
+    //     }`,
+    //     {params: searchParams}
+    //   );
+    // } else {
+    response = yield call(
+      apiSollar.get,
+      `/attendance/getAttendance?limit=${params.limit ?? 10}&page=${
+        params.page || 1
+      }`,
+      {params: searchParams}
+    );
 
     yield put(loadSuccess(response.data));
   } catch (error) {
@@ -142,19 +140,17 @@ export function* search({payload}: any) {
 export function* getCareById({payload: {id: _id}}: any) {
   try {
     let response: AxiosResponse
-    const integration = sessionStorage.getItem(SESSIONSTORAGE.INTEGRATION)
+    // const integration = sessionStorage.getItem(SESSIONSTORAGE.INTEGRATION)
 
-    if (integration) {
-      response = yield call(
-        apiIntegra(integration),
-        `/attendance/${_id}`, {
-        });
-    } else {
-      response = yield call(apiSollar.get, `/care`, {
-        headers: {token},
-        params: {_id},
-      });
-    }
+    // if (integration) {
+    //   response = yield call(
+    //     apiIntegra(integration),
+    //     `/attendance/${_id}`, {});
+    // } else {
+    response = yield call(apiSollar.get, `/care`, {
+      headers: {token},
+      params: {_id},
+    });
 
     yield put(loadSuccessGetCareById(response.data));
   } catch (error) {
