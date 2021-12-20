@@ -37,6 +37,7 @@ apiSollar.interceptors.request.use(
     const company_id = localStorage.getItem(LOCALSTORAGE.COMPANY_SELECTED) || '';
     const customer_id = localStorage.getItem(LOCALSTORAGE.CUSTOMER) || '';
     const integration_url = sessionStorage.getItem(SESSIONSTORAGE.INTEGRATION) || '';
+    const external_company_id = localStorage.getItem(LOCALSTORAGE.INTEGRATION_COMPANY_SELECTED) || '';
 
     if (token) {
       config.headers.token = `${token}`;
@@ -47,6 +48,7 @@ apiSollar.interceptors.request.use(
 
     if (integration_url) {
       config.headers.integration_url = integration_url;
+      config.headers.external_company_id = external_company_id;
     }
 
     return config;

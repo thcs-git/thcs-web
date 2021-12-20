@@ -8,6 +8,8 @@ export default createGlobalStyle`
 
     font-family: 'Open Sans', sans-serif !important;
 
+    cursor: auto;
+
     *::-webkit-scrollbar {
       width: .4em
     }
