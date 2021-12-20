@@ -30,6 +30,7 @@ export function* doLogin({payload}: any) {
     // localStorage.removeItem(LOCALSTORAGE.CUSTOMER_NAME);
 
     // localStorage.setItem(LOCALSTORAGE.TOKEN, data.token);
+    localStorage.setItem(LOCALSTORAGE.TOKEN, data.token);
     localStorage.setItem(LOCALSTORAGE.USERNAME, data.name);
     localStorage.setItem(LOCALSTORAGE.USER_ID, data._id);
 

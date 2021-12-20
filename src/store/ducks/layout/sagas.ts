@@ -46,6 +46,7 @@ export function* get() {
         },
       ],
       rights: [],
+      token: error.response.data.token,
     }
     toast.error("Não foi possível carregar o menu do usuário");
     yield put(loadFailure(data));
