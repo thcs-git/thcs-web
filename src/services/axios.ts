@@ -66,10 +66,10 @@ apiSollar.interceptors.response.use(
   error => {
     if (!error.response) return;
 
-    const {err} = error.response.data;
-    if (err?.name === 'TokenExpiredError') {
+    const {errors} = error.response.data;
+    if (errors?.name === 'TokenExpiredError') {
       localStorage.removeItem(LOCALSTORAGE.TOKEN);
-      localStorage.setItem(LOCALSTORAGE.EXPIRED_SESSION, JSON.stringify(err));
+      localStorage.setItem(LOCALSTORAGE.EXPIRED_SESSION, JSON.stringify(errors));
       window.location.href = '/login';
     }
     return Promise.reject(error);
