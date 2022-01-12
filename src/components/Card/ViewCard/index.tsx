@@ -16,7 +16,8 @@ import BusinessIcon from "@mui/icons-material/Business";
 import AssignmentIndIcon from "@mui/icons-material/AssignmentInd";
 import { data } from "cypress/types/jquery";
 
-// import { ReactComponent as Company2Icon } from "src/assets/img/icon-company-1.svg";
+import { ReactComponent as Company2Icon } from "../../../assets/img/icon-company2.svg";
+import { ReactComponent as ProfileIcon } from "../../../assets/img/icon-professional.svg";
 
 // import eee from "../../../assets/img/icon-company2.svg"
 
@@ -103,7 +104,7 @@ export default function ViewCard(props: IProps) {
         style={{
           flexDirection: "column",
           paddingLeft: "10px",
-          paddingTop: "20px",
+          // paddingTop: "10px",
         }}
       >
         {/* <Grid item style={{paddingBottom: "10px"}}>
@@ -111,8 +112,7 @@ export default function ViewCard(props: IProps) {
         </Grid> */}
         <WrapperTitleData>
           {/* <img src="../../../assets/img/icon-company2.svg" alt="icon company" /> */}
-          {/* <Company2Icon></Company2Icon> */}
-          <BusinessIcon sx={{ width: "24px" }} color="primary"></BusinessIcon>
+          <Company2Icon />
           <p>Dados da empresa</p>
         </WrapperTitleData>
         <WrapperContentData>
@@ -122,7 +122,7 @@ export default function ViewCard(props: IProps) {
         </WrapperContentData>
 
         <WrapperTitleData>
-          <AssignmentIndIcon color="primary"></AssignmentIndIcon>
+          <ProfileIcon />
           <p>Dados do Responsável</p>
         </WrapperTitleData>
         <WrapperContentData>

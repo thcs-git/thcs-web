@@ -34,10 +34,10 @@ export const WrapperTitleData = styled.div`
   align-items: center;
   gap: 8.45px;
   font-weight: bold;
-  margin-bottom: 7px;
-  margin-top: 21.8px;
+
+  margin: 21.8px 8.45px 7px 22px;
 `;
 
 export const WrapperContentData = styled.div`
-  margin-left: 33px;
+  margin-left: 44px;
 `;

@@ -334,8 +334,7 @@ const TabForm = (props: ITabprops) => {
       </TabContent>
       {navItems.map(({ name, components, badge }: INavItems, index: number) => {
         const last = _.findLastIndex(components);
-        if (components === ["CompanyForm"]) {
-        }
+
         return (
           <TabPanel value={value} index={index}>
             {components.map((component: string, sub_index: number) => (
