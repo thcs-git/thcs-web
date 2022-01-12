@@ -35,8 +35,16 @@ export default function ViewCard(props: IProps) {
 
   let dataCompany: Irows[] = [];
   let dataResponsible: Irows[] = [];
+  let addressData: Irows[] = [];
+  let addressFull: Irows[] = [
+    {
+      name: "Endereço",
+      value: "",
+    },
+  ];
 
   // console.log(dataCompany, dataResponsible);
+
   content.rows.forEach((e) => {
     switch (e.name) {
       case "Razão Social":
@@ -46,23 +54,23 @@ export default function ViewCard(props: IProps) {
         dataCompany.push(e);
         break;
       case "Endereço":
-        dataCompany.push(e);
+        addressData.push(e);
         break;
       case "Número":
-        dataCompany.push(e);
+        addressData.push(e);
         break;
       case "Bairro":
-        dataCompany.push(e);
+        addressData.push(e);
         break;
       case "Cidade":
-        dataCompany.push(e);
+        addressData.push(e);
         break;
       case "UF":
-        dataCompany.push(e);
+        addressData.push(e);
         break;
-      case "UF":
-        dataCompany.push(e);
-        break;
+      // case "UF":
+      //   dataCompany.push(e);
+      //   break;
       case "Nome do responsável":
         dataResponsible.push(e);
         break;
@@ -77,6 +85,15 @@ export default function ViewCard(props: IProps) {
         break;
     }
   });
+
+  addressData.forEach((e) => {
+    if (e.name === "UF") addressFull[0].value += e.value;
+    if (e.name !== "UF") addressFull[0].value += e.value + ", ";
+  });
+
+  console.log(addressFull);
+  dataCompany.push(addressFull[0]);
+
   // console.log(dataCompany);
 
   return (
@@ -93,7 +110,7 @@ export default function ViewCard(props: IProps) {
           <h3>{content.tittle}</h3>
         </Grid> */}
         <WrapperTitleData>
-          <img src="../../../assets/img/icon-company2.svg" alt="icon company" />
+          {/* <img src="../../../assets/img/icon-company2.svg" alt="icon company" /> */}
           <p>Dados da empresa</p>
         </WrapperTitleData>
 
