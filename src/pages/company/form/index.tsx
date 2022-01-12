@@ -171,7 +171,7 @@ export default function CompanyForm(props: RouteComponentProps<IPageParams>) {
         },
       }));
     }
-
+    // console.log(companyState);
     companyState.data &&
       setState((prevState) => {
         return {
@@ -182,6 +182,7 @@ export default function CompanyForm(props: RouteComponentProps<IPageParams>) {
         };
       });
     companyState.data &&
+      companyState.data.address &&
       setFieldValidations((prevState: any) => ({
         ...prevState,
         postal_code: !validator.isEmpty(companyState.data.address.postal_code),

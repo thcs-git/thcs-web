@@ -14,6 +14,7 @@ import { any } from "cypress/types/bluebird";
 import { RowingSharp } from "@material-ui/icons";
 import BusinessIcon from "@mui/icons-material/Business";
 import AssignmentIndIcon from "@mui/icons-material/AssignmentInd";
+import { data } from "cypress/types/jquery";
 
 // import eee from "../../../assets/img/icon-company2.svg"
 
@@ -92,7 +93,7 @@ export default function ViewCard(props: IProps) {
   });
 
   dataCompany.push(addressFull[0]);
-
+  // console.log(data);
   return (
     <Grid item md={md_value}>
       <Grid
