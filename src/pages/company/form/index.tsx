@@ -377,8 +377,8 @@ export default function CompanyForm(props: RouteComponentProps<IPageParams>) {
     {
       name: "Voltar",
       onClick: handleCancelForm,
-      variant: "outlined",
-      background: "success_rounded",
+      variant: "contained",
+      background: "primary",
       show: true,
     },
   ];

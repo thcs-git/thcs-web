@@ -8,9 +8,13 @@ import {
   CardTitle,
   FeedbackTitle,
   WrapperTitleData,
+  WrapperContentData,
 } from "./styles";
 import { any } from "cypress/types/bluebird";
 import { RowingSharp } from "@material-ui/icons";
+import BusinessIcon from "@mui/icons-material/Business";
+import AssignmentIndIcon from "@mui/icons-material/AssignmentInd";
+
 // import eee from "../../../assets/img/icon-company2.svg"
 
 interface IProps {
@@ -43,8 +47,6 @@ export default function ViewCard(props: IProps) {
     },
   ];
 
-  // console.log(dataCompany, dataResponsible);
-
   content.rows.forEach((e) => {
     switch (e.name) {
       case "Razão Social":
@@ -68,9 +70,6 @@ export default function ViewCard(props: IProps) {
       case "UF":
         addressData.push(e);
         break;
-      // case "UF":
-      //   dataCompany.push(e);
-      //   break;
       case "Nome do responsável":
         dataResponsible.push(e);
         break;
@@ -88,13 +87,11 @@ export default function ViewCard(props: IProps) {
 
   addressData.forEach((e) => {
     if (e.name === "UF") addressFull[0].value += e.value;
-    if (e.name !== "UF") addressFull[0].value += e.value + ", ";
+    else if (e.name === "Cidade") addressFull[0].value += e.value + " - ";
+    else addressFull[0].value += e.value + ", ";
   });
 
-  console.log(addressFull);
   dataCompany.push(addressFull[0]);
-
-  // console.log(dataCompany);
 
   return (
     <Grid item md={md_value}>
@@ -111,20 +108,24 @@ export default function ViewCard(props: IProps) {
         </Grid> */}
         <WrapperTitleData>
           {/* <img src="../../../assets/img/icon-company2.svg" alt="icon company" /> */}
+          <BusinessIcon sx={{ width: "24px" }} color="primary"></BusinessIcon>
           <p>Dados da empresa</p>
         </WrapperTitleData>
-
-        {dataCompany.map(({ name, value }: Irows, index: number) => (
-          <Grid item>{`${name}: ${value}`}</Grid>
-        ))}
+        <WrapperContentData>
+          {dataCompany.map(({ name, value }: Irows, index: number) => (
+            <Grid item>{`${name}: ${value}`}</Grid>
+          ))}
+        </WrapperContentData>
 
         <WrapperTitleData>
-          <p>Dados da Responsável</p>
+          <AssignmentIndIcon color="primary"></AssignmentIndIcon>
+          <p>Dados do Responsável</p>
         </WrapperTitleData>
-
-        {dataResponsible.map(({ name, value }: Irows, index: number) => (
-          <Grid item>{`${name}: ${value}`}</Grid>
-        ))}
+        <WrapperContentData>
+          {dataResponsible.map(({ name, value }: Irows, index: number) => (
+            <Grid item>{`${name}: ${value}`}</Grid>
+          ))}
+        </WrapperContentData>
       </Grid>
     </Grid>
   );

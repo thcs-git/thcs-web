@@ -31,7 +31,13 @@ export const FeedbackTitle = styled.h3`
 
 export const WrapperTitleData = styled.div`
   display: flex;
+  align-items: center;
+  gap: 8.45px;
   font-weight: bold;
   margin-bottom: 7px;
   margin-top: 21.8px;
+`;
+
+export const WrapperContentData = styled.div`
+  margin-left: 33px;
 `;
