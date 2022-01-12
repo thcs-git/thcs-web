@@ -16,6 +16,8 @@ import BusinessIcon from "@mui/icons-material/Business";
 import AssignmentIndIcon from "@mui/icons-material/AssignmentInd";
 import { data } from "cypress/types/jquery";
 
+// import { ReactComponent as Company2Icon } from "src/assets/img/icon-company-1.svg";
+
 // import eee from "../../../assets/img/icon-company2.svg"
 
 interface IProps {
@@ -109,6 +111,7 @@ export default function ViewCard(props: IProps) {
         </Grid> */}
         <WrapperTitleData>
           {/* <img src="../../../assets/img/icon-company2.svg" alt="icon company" /> */}
+          {/* <Company2Icon></Company2Icon> */}
           <BusinessIcon sx={{ width: "24px" }} color="primary"></BusinessIcon>
           <p>Dados da empresa</p>
         </WrapperTitleData>

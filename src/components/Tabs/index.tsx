@@ -2,7 +2,16 @@ import React, { useState, ReactNode } from "react";
 import { makeStyles, Theme } from "@material-ui/core/styles";
 import { Badge, Divider, Grid } from "@material-ui/core";
 
-import { TabBody, TabBodyItem, TabContent, TabNav, TabNavItem } from "./styles";
+import {
+  TabBody,
+  TabBodyItem,
+  TabContent,
+  TabNav,
+  TabNavItem,
+  TabNavItemCompany,
+  TabNavItemAlingRigth,
+  TabNavItemAlingLeft,
+} from "./styles";
 import ClientFormHeader from "../Inputs/Forms/ClientName";
 import _ from "lodash";
 import CepForm from "../Inputs/Forms/CepForm";
@@ -18,6 +27,10 @@ import UserCompanyForm from "../Inputs/Forms/UserCompanyForm";
 import CheckListForm from "../Inputs/Forms/CheckListForm";
 import CompanyForm from "../Inputs/Forms/CompanyForm";
 import PatientForm from "../Inputs/Forms/patientForm";
+
+import { ReactComponent as CompanyIcon } from "../../assets/img/icon-company.svg";
+import { ReactComponent as EmailIcon } from "../../assets/img/Icon-email.svg";
+import { ReactComponent as PrintIcon } from "../../assets/img/Icon-imprimir.svg";
 
 interface ITabprops {
   navItems: INavItems[];
@@ -280,33 +293,49 @@ const TabForm = (props: ITabprops) => {
           aria-label="scrollable auto tabs example"
           TabIndicatorProps={{ className: classes.indicator }}
         >
-          {navItems.map(({ name, badge }: INavItems, index: number) => (
-            <TabNavItem
-              value={index}
-              label={
-                badge ? (
-                  <Badge
-                    classes={{ badge: classes.customBadge }}
-                    className={classes.padding}
-                    color="primary"
-                    badgeContent={badge}
-                    max={99}
-                  >
-                    {name}
-                  </Badge>
-                ) : (
-                  name
-                )
-              }
-              wrapped
-              className={value === index ? "active" : ""}
-              {...a11yProps({ index })}
-            ></TabNavItem>
-          ))}
+          {navItems.map(
+            ({ name, badge, components }: INavItems, index: number) => (
+              <TabNavItem
+                value={index}
+                label={
+                  badge ? (
+                    <Badge
+                      classes={{ badge: classes.customBadge }}
+                      className={classes.padding}
+                      color="primary"
+                      badgeContent={badge}
+                      max={99}
+                    >
+                      {name}
+                    </Badge>
+                  ) : components[0] === "CompanyForm" ? (
+                    <TabNavItemCompany>
+                      <TabNavItemAlingLeft>
+                        <CompanyIcon />
+                        {name}
+                      </TabNavItemAlingLeft>
+
+                      <TabNavItemAlingRigth>
+                        <EmailIcon />
+                        <PrintIcon />
+                      </TabNavItemAlingRigth>
+                    </TabNavItemCompany>
+                  ) : (
+                    name
+                  )
+                }
+                wrapped
+                className={value === index ? "active" : ""}
+                {...a11yProps({ index })}
+              ></TabNavItem>
+            )
+          )}
         </TabNav>
       </TabContent>
       {navItems.map(({ name, components, badge }: INavItems, index: number) => {
         const last = _.findLastIndex(components);
+        if (components === ["CompanyForm"]) {
+        }
         return (
           <TabPanel value={value} index={index}>
             {components.map((component: string, sub_index: number) => (
