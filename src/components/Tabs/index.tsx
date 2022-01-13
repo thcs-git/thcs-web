@@ -75,6 +75,7 @@ function TabPanel(props: TabPanelProps) {
 
   return (
     <TabBody
+      style={{ padding: "0" }}
       role="tabpanel"
       hidden={value !== index}
       id={`wrapped-tabpanel-${index}`}

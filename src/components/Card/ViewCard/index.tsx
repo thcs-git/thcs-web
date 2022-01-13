@@ -103,7 +103,7 @@ export default function ViewCard(props: IProps) {
         container
         style={{
           flexDirection: "column",
-          paddingLeft: "10px",
+          paddingLeft: "24px",
           // paddingTop: "10px",
         }}
       >
