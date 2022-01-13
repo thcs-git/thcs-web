@@ -303,7 +303,7 @@ const TabForm = (props: ITabprops) => {
           {navItems.map(
             ({ name, badge, components }: INavItems, index: number) => (
               <TabNavItem_1
-                tabNavCompany={true}
+                // tabNavCompany={true}
                 value={index}
                 label={
                   <TabNavItemCompany>
@@ -321,7 +321,7 @@ const TabForm = (props: ITabprops) => {
                 wrapped
                 className={value === index ? "active" : ""}
                 {...a11yProps({ index })}
-              ></TabNavItem_1>
+              />
             )
           )}
         </TabNav>
