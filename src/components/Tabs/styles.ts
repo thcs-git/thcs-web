@@ -9,6 +9,7 @@ export const TabContent = styled(AppBar)`
   height: 48px;
   /* display: flex; */
   /* width: 100%; */
+  box-shadow: none;
 `;
 
 export const TabNav = styled(Tabs)`

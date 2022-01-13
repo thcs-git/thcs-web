@@ -102,6 +102,9 @@ const useStyles = makeStyles((theme: Theme) => ({
   indicator: {
     borderBottom: "2px solid var(--secondary)",
   },
+  indicatorCompany: {
+    borderBottom: "2px solid var(--black)",
+  },
   padding: {
     padding: theme.spacing(0, 2),
   },
@@ -132,6 +135,8 @@ const TabForm = (props: ITabprops) => {
   } = props;
 
   const classes = useStyles();
+  const indicatorCompany = classes.indicator;
+  console.log(classes);
   const handleChange = (event: React.ChangeEvent<{}>, newValue: number) => {
     setValue(newValue);
     setInitialTab && setInitialTab(newValue);
@@ -281,7 +286,7 @@ const TabForm = (props: ITabprops) => {
         return <TabBodyItem>Not found!</TabBodyItem>;
     }
   }
-
+  console.log(navItems[0].components);
   return (
     <div className={classes.root}>
       <TabContent position="static">
@@ -291,7 +296,13 @@ const TabForm = (props: ITabprops) => {
           variant="scrollable"
           scrollButtons="auto"
           aria-label="scrollable auto tabs example"
-          TabIndicatorProps={{ className: classes.indicator }}
+          TabIndicatorProps={
+            navItems[0].components[0] !== "CompanyForm"
+              ? { className: classes.indicator }
+              : {
+                  style: { display: "none" },
+                }
+          }
         >
           {navItems.map(
             ({ name, badge, components }: INavItems, index: number) => (
@@ -316,8 +327,8 @@ const TabForm = (props: ITabprops) => {
                       </TabNavItemAlingLeft>
 
                       <TabNavItemAlingRigth>
-                        <EmailIcon />
-                        <PrintIcon />
+                        <EmailIcon style={{ cursor: "pointer" }} />
+                        <PrintIcon style={{ cursor: "pointer" }} />
                       </TabNavItemAlingRigth>
                     </TabNavItemCompany>
                   ) : (
