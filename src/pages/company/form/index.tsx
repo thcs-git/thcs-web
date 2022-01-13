@@ -1,24 +1,24 @@
-import React, {useState, useEffect, useCallback} from 'react';
-import {useDispatch, useSelector} from 'react-redux';
-import InputMask from 'react-input-mask';
-import validator from 'validator';
-import {toast} from 'react-toastify';
+import React, { useState, useEffect, useCallback } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import InputMask from "react-input-mask";
+import validator from "validator";
+import { toast } from "react-toastify";
 
-import {ApplicationState} from '../../../store';
+import { ApplicationState } from "../../../store";
 
-import {loadRequest as getCustomersAction} from '../../../store/ducks/customers/actions';
-import {CustomerDataItems} from '../../../store/ducks/customers/types';
+import { loadRequest as getCustomersAction } from "../../../store/ducks/customers/actions";
+import { CustomerDataItems } from "../../../store/ducks/customers/types";
 
 import {
   getAddress as getAddressAction,
   createCompanyRequest,
   updateCompanyRequest,
   loadCompanyById,
-  cleanAction
-} from '../../../store/ducks/companies/actions';
-import {CompanyInterface} from '../../../store/ducks/companies/types';
+  cleanAction,
+} from "../../../store/ducks/companies/actions";
+import { CompanyInterface } from "../../../store/ducks/companies/types";
 
-import {useHistory, RouteComponentProps} from 'react-router-dom';
+import { useHistory, RouteComponentProps } from "react-router-dom";
 import {
   Button,
   Dialog,
@@ -32,18 +32,18 @@ import {
   InputAdornment,
   Container,
   FormControlLabel,
-} from '@material-ui/core';
-import {Edit, SearchOutlined} from '@material-ui/icons';
-import {validateCNPJ as validateCNPJHelper} from '../../../helpers/validateCNPJ';
+} from "@material-ui/core";
+import { Edit, SearchOutlined } from "@material-ui/icons";
+import { validateCNPJ as validateCNPJHelper } from "../../../helpers/validateCNPJ";
 
-import LOCALSTORAGE from '../../../helpers/constants/localStorage';
+import LOCALSTORAGE from "../../../helpers/constants/localStorage";
 
-import Loading from '../../../components/Loading';
-import Sidebar from '../../../components/Sidebar';
+import Loading from "../../../components/Loading";
+import Sidebar from "../../../components/Sidebar";
 
-import ButtonComponent from '../../../styles/components/Button';
-import {FormTitle} from '../../../styles/components/Form';
-import {SwitchComponent as Switch} from '../../../styles/components/Switch';
+import ButtonComponent from "../../../styles/components/Button";
+import { FormTitle } from "../../../styles/components/Form";
+import { SwitchComponent as Switch } from "../../../styles/components/Switch";
 
 import {
   ButtonsContent,
@@ -51,8 +51,8 @@ import {
   FormContent,
   InputFiled as TextField,
   OutlinedInputFiled,
-  FormGroupSection
-} from './styles';
+  FormGroupSection,
+} from "./styles";
 import _ from "lodash";
 import TabTittle from "../../../components/Text/TabTittle";
 import ButtonTabs from "../../../components/Button/ButtonTabs";
@@ -68,41 +68,47 @@ interface IPageParams {
 export default function CompanyForm(props: RouteComponentProps<IPageParams>) {
   const history = useHistory();
   const dispatch = useDispatch();
-  const customerState = useSelector((state: ApplicationState) => state.customers);
-  const companyState = useSelector((state: ApplicationState) => state.companies);
+  const customerState = useSelector(
+    (state: ApplicationState) => state.customers
+  );
+  const companyState = useSelector(
+    (state: ApplicationState) => state.companies
+  );
 
-  const {params} = props.match;
+  const { params } = props.match;
 
   const [canEdit, setCanEdit] = useState(true);
 
   const [state, setState] = useState<CompanyInterface>({
-    _id: params.id || '',
-    customer_id: localStorage.getItem(LOCALSTORAGE.CUSTOMER) || '',
-    name: '',
-    fantasy_name: '',
-    fiscal_number: '',
+    _id: params.id || "",
+    customer_id: localStorage.getItem(LOCALSTORAGE.CUSTOMER) || "",
+    name: "",
+    fantasy_name: "",
+    fiscal_number: "",
     address: {
-      postal_code: '',
-      street: '',
-      number: '',
-      district: '',
-      city: '',
-      state: '',
-      complement: '',
-    },
-    responsable_name: '',
-    email: '',
-    phone: '',
-    cellphone: '',
-    active: true,
-    created_by: {_id: localStorage.getItem(LOCALSTORAGE.USER_ID) || ''},
-    phones: [{
-      cellnumber: "",
+      postal_code: "",
+      street: "",
       number: "",
-      telegram: false,
-      whatsapp: false,
-    }],
-    tipo: '',
+      district: "",
+      city: "",
+      state: "",
+      complement: "",
+    },
+    responsable_name: "",
+    email: "",
+    phone: "",
+    cellphone: "",
+    active: true,
+    created_by: { _id: localStorage.getItem(LOCALSTORAGE.USER_ID) || "" },
+    phones: [
+      {
+        cellnumber: "",
+        number: "",
+        telegram: false,
+        whatsapp: false,
+      },
+    ],
+    tipo: "",
   });
   const [customers, setCustomers] = useState<CustomerDataItems[]>([]);
 
@@ -128,91 +134,100 @@ export default function CompanyForm(props: RouteComponentProps<IPageParams>) {
   var isValidCellPhoneNumber: any;
   var formValid: any;
 
-
   useEffect(() => {
-    const field = companyState.errorCep ? 'input-postal-code' : 'input-address-number';
+    const field = companyState.errorCep
+      ? "input-postal-code"
+      : "input-address-number";
 
-    companyState.errorCep && setState(prevState => ({
-      ...prevState,
-      address: {
-        ...prevState.address,
-        city: '',
-        complement: '',
-        district: '',
-        number: '',
-        state: '',
-        street: '',
-      }
-    }));
+    companyState.errorCep &&
+      setState((prevState) => ({
+        ...prevState,
+        address: {
+          ...prevState.address,
+          city: "",
+          complement: "",
+          district: "",
+          number: "",
+          state: "",
+          street: "",
+        },
+      }));
 
     document.getElementById(field)?.focus();
   }, [companyState.errorCep]);
 
   useEffect(() => {
     if (companyState.error) {
-      setState(prev => ({
+      setState((prev) => ({
         ...prev,
         address: {
           ...prev.address,
-          street: '',
-          number: '',
-          district: '',
-          city: '',
-          state: '',
-          complement: '',
+          street: "",
+          number: "",
+          district: "",
+          city: "",
+          state: "",
+          complement: "",
         },
-      }))
+      }));
     }
-
-    companyState.data && setState(prevState => {
-      return {
+    // console.log(companyState);
+    companyState.data &&
+      setState((prevState) => {
+        return {
+          ...prevState,
+          address: {
+            ...companyState.data.address,
+          },
+        };
+      });
+    companyState.data &&
+      companyState.data.address &&
+      setFieldValidations((prevState: any) => ({
         ...prevState,
-        address: {
-          ...companyState.data.address
-        }
-      }
-    });
-    companyState.data && setFieldValidations((prevState: any) => ({
-      ...prevState,
-      postal_code: !validator.isEmpty(companyState.data.address.postal_code),
-      street: !validator.isEmpty(companyState.data.address.street),
-      number: !validator.isEmpty(companyState.data.address.number),
-      district: !validator.isEmpty(companyState.data.address.district),
-      city: !validator.isEmpty(companyState.data.address.city),
-      state: !validator.isEmpty(companyState.data.address.state),
-      complement: !validator.isEmpty(companyState.data.address.complement),
-    }));
+        postal_code: !validator.isEmpty(companyState.data.address.postal_code),
+        street: !validator.isEmpty(companyState.data.address.street),
+        number: !validator.isEmpty(companyState.data.address.number),
+        district: !validator.isEmpty(companyState.data.address.district),
+        city: !validator.isEmpty(companyState.data.address.city),
+        state: !validator.isEmpty(companyState.data.address.state),
+        complement: !validator.isEmpty(companyState.data.address.complement),
+      }));
   }, [companyState.data?.address]);
 
-
   const validatePhone = () => {
-
     if (state.phone) {
-      const landline = state.phone.replace('(', '').replace(')', '9').replace(' ', '').replace(' ', '').replace('-', '');
+      const landline = state.phone
+        .replace("(", "")
+        .replace(")", "9")
+        .replace(" ", "")
+        .replace(" ", "")
+        .replace("-", "");
 
-      isValidPhoneNumber = validator.isMobilePhone(landline, 'pt-BR');
+      isValidPhoneNumber = validator.isMobilePhone(landline, "pt-BR");
 
-      return (isValidPhoneNumber)
+      return isValidPhoneNumber;
     }
-
-
-  }
+  };
 
   const validateCellPhone = () => {
     if (state.cellphone) {
-      var cellphone = state.cellphone.replace('(', '').replace(')', '').replace(' ', '').replace(' ', '').replace('-', '');
-      isValidCellPhoneNumber = validator.isMobilePhone(cellphone, 'pt-BR');
+      var cellphone = state.cellphone
+        .replace("(", "")
+        .replace(")", "")
+        .replace(" ", "")
+        .replace(" ", "")
+        .replace("-", "");
+      isValidCellPhoneNumber = validator.isMobilePhone(cellphone, "pt-BR");
 
-      return (isValidCellPhoneNumber)
+      return isValidCellPhoneNumber;
     }
-  }
+  };
 
   if (validatePhone() == true && validateCellPhone() == true) {
-
     // formValid = true;
-
   }
-///////////////////////////////
+  ///////////////////////////////
 
   useEffect(() => {
     dispatch(cleanAction());
@@ -222,7 +237,7 @@ export default function CompanyForm(props: RouteComponentProps<IPageParams>) {
     dispatch(getCustomersAction());
 
     if (params.id) {
-      dispatch(loadCompanyById(params.id))
+      dispatch(loadCompanyById(params.id));
     }
   }, [dispatch]);
 
@@ -233,11 +248,11 @@ export default function CompanyForm(props: RouteComponentProps<IPageParams>) {
     //   setCanEdit(false)
     // }
 
-    setState(prevState => {
+    setState((prevState) => {
       return {
         ...prevState,
-        ...companyState.data
-      }
+        ...companyState.data,
+      };
     });
 
     // Força o validador em 'true' quando entrar na tela para editar
@@ -256,30 +271,34 @@ export default function CompanyForm(props: RouteComponentProps<IPageParams>) {
       email: true,
       phone: true,
       cellphone: true,
-    })
+    });
     // }
   }, [companyState.data]);
 
   useEffect(() => {
     if (params.mode === "view") {
-      setCanEdit(false)
+      setCanEdit(false);
     }
-  }, [params.id])
+  }, [params.id]);
 
   useEffect(() => {
-    if (companyState.success && companyState.data?._id) history.push('/company');
-  }, [companyState.success])
+    if (companyState.success && companyState.data?._id)
+      history.push("/company");
+  }, [companyState.success]);
 
   useEffect(() => {
     setCustomers(customerState.list.data);
   }, [customerState]);
 
-  const setCustomer = useCallback(({_id: customer_id}: any) => {
-    setState(prevState => ({
-      ...prevState,
-      customer_id
-    }));
-  }, [customers]);
+  const setCustomer = useCallback(
+    ({ _id: customer_id }: any) => {
+      setState((prevState) => ({
+        ...prevState,
+        customer_id,
+      }));
+    },
+    [customers]
+  );
 
   const handleValidateFields = useCallback(() => {
     let isValid: boolean = true;
@@ -291,11 +310,9 @@ export default function CompanyForm(props: RouteComponentProps<IPageParams>) {
     }
 
     return isValid;
-
   }, [fieldsValidation, state]);
 
   function isEquals() {
-
     return _.isEqual(state, customerState.data);
   }
 
@@ -319,7 +336,6 @@ export default function CompanyForm(props: RouteComponentProps<IPageParams>) {
     setOpenModalCancel(false);
   }
 
-
   function handleCancelForm() {
     dispatch(cleanAction());
     setOpenModalCancel(false);
@@ -331,8 +347,10 @@ export default function CompanyForm(props: RouteComponentProps<IPageParams>) {
   }, [state.address.postal_code]);
 
   const selectCustomer = useCallback(() => {
-    const selected = customerState.list.data.filter(item => item._id === state.customer_id);
-    return (selected[0]) ? selected[0] : null;
+    const selected = customerState.list.data.filter(
+      (item) => item._id === state.customer_id
+    );
+    return selected[0] ? selected[0] : null;
   }, [state.customer_id]);
 
   const handleSaveFormCustomer = useCallback(() => {
@@ -349,49 +367,60 @@ export default function CompanyForm(props: RouteComponentProps<IPageParams>) {
   }, [state]);
 
   const validateCNPJField = useCallback((element) => {
-
     const isValidField = validateCNPJHelper(element.target.value) || false;
     setFieldValidations((prevState: any) => ({
       ...prevState,
-      fiscal_number: isValidField
+      fiscal_number: isValidField,
     }));
   }, []);
 
   const buttons = [
     {
-      name: 'Voltar',
+      name: "Voltar",
       onClick: handleCancelForm,
-      variant: 'outlined',
-      background: 'success_rounded',
+      variant: "contained",
+      background: "primary",
       show: true,
     },
-  ]
+  ];
 
   const NavItems = [
     {
-      name: "Dados da Empresa",
-      components: ['CompanyForm'],
+      name: state.fantasy_name,
+      components: ["CompanyForm"],
     },
-  ]
+  ];
 
-  const integration = sessionStorage.getItem(SESSIONSTORAGE.INTEGRATION)
+  const integration = sessionStorage.getItem(SESSIONSTORAGE.INTEGRATION);
 
   return (
     <Sidebar>
-      {companyState.loading && <Loading/>}
+      {companyState.loading && <Loading />}
       <Container>
-        {params.mode === 'view' ? (
+        {params.mode === "view" ? (
           <>
             {integration ? (
               <>
-                <TabTittle tittle={'Empresa'} />
+                <TabTittle tittle={"Detalhamento da Empresa"} />
               </>
             ) : (
               <>
-                <TabTittle tittle={'Empresa'} icon={!canEdit && <ButtonEdit setCanEdit={() => {
-                  setCanEdit(true)
-                  history.push(`/company/${params.id}/edit/edit`)
-                }} canEdit={canEdit}>Editar</ButtonEdit>}/>
+                <TabTittle
+                  tittle={"Detalhamento da empresa"}
+                  icon={
+                    !canEdit && (
+                      <ButtonEdit
+                        setCanEdit={() => {
+                          setCanEdit(true);
+                          history.push(`/company/${params.id}/edit/edit`);
+                        }}
+                        canEdit={canEdit}
+                      >
+                        Editar
+                      </ButtonEdit>
+                    )
+                  }
+                />
               </>
             )}
             <TabForm
@@ -405,19 +434,31 @@ export default function CompanyForm(props: RouteComponentProps<IPageParams>) {
               getAddress={getAddress}
               params={params}
             />
-            <ButtonTabs canEdit={canEdit} buttons={buttons}/>
+            <ButtonTabs canEdit={canEdit} buttons={buttons} />
           </>
         ) : (
           <>
             <FormSection>
               <FormContent>
-                <div style={{display: 'flex', alignItems: 'center', flexDirection: 'row'}}>
+                <div
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                    flexDirection: "row",
+                  }}
+                >
                   <FormTitle>Cadastro de Empresas</FormTitle>
 
-                  {(params.id && params.mode == 'view' && !canEdit) && (
-                    <Button style={{marginTop: -20, marginLeft: 15, color: '#0899BA'}}
-                            onClick={() => setCanEdit(!canEdit)}>
-                      <Edit style={{marginRight: 5, width: 18}}/>
+                  {params.id && params.mode == "view" && !canEdit && (
+                    <Button
+                      style={{
+                        marginTop: -20,
+                        marginLeft: 15,
+                        color: "#0899BA",
+                      }}
+                      onClick={() => setCanEdit(!canEdit)}
+                    >
+                      <Edit style={{ marginRight: 5, width: 18 }} />
                       Editar
                     </Button>
                   )}
@@ -438,7 +479,6 @@ export default function CompanyForm(props: RouteComponentProps<IPageParams>) {
                     </Grid>
                   </Grid>
                   <Grid container>
-
                     <Grid item md={12} xs={12}>
                       <TextField
                         id="input-social-name"
@@ -447,10 +487,10 @@ export default function CompanyForm(props: RouteComponentProps<IPageParams>) {
                         size="small"
                         value={state.name}
                         onChange={(element) => {
-                          setState({...state, name: element.target.value})
+                          setState({ ...state, name: element.target.value });
                           setFieldValidations((prevState: any) => ({
                             ...prevState,
-                            name: !validator.isEmpty(element.target.value)
+                            name: !validator.isEmpty(element.target.value),
                           }));
                         }}
                         fullWidth
@@ -465,13 +505,17 @@ export default function CompanyForm(props: RouteComponentProps<IPageParams>) {
                         size="small"
                         value={state.fantasy_name}
                         onChange={(element) => {
-                          setState({...state, fantasy_name: element.target.value})
+                          setState({
+                            ...state,
+                            fantasy_name: element.target.value,
+                          });
                           setFieldValidations((prevState: any) => ({
                             ...prevState,
-                            fantasy_name: !validator.isEmpty(element.target.value)
+                            fantasy_name: !validator.isEmpty(
+                              element.target.value
+                            ),
                           }));
                         }}
-
                         fullWidth
                         disabled={!canEdit}
                       />
@@ -484,10 +528,15 @@ export default function CompanyForm(props: RouteComponentProps<IPageParams>) {
                         value={state.fiscal_number}
                         onBlur={validateCNPJField}
                         onChange={(element) => {
-                          setState({...state, fiscal_number: element.target.value})
+                          setState({
+                            ...state,
+                            fiscal_number: element.target.value,
+                          });
                           setFieldValidations((prevState: any) => ({
                             ...prevState,
-                            fiscal_number: !validator.isEmpty(element.target.value)
+                            fiscal_number: !validator.isEmpty(
+                              element.target.value
+                            ),
                           }));
                         }}
                       >
@@ -501,21 +550,30 @@ export default function CompanyForm(props: RouteComponentProps<IPageParams>) {
                             size="small"
                             placeholder="00.000.000/0000-00"
                             fullWidth
-                            error={!fieldsValidation.fiscal_number && state.fiscal_number != ''}
-                          />)}
+                            error={
+                              !fieldsValidation.fiscal_number &&
+                              state.fiscal_number != ""
+                            }
+                          />
+                        )}
                       </InputMask>
                       {!fieldsValidation.fiscal_number && state.fiscal_number && (
-                        <p style={{color: '#f44336', margin: '-2px 5px 10px'}}>
+                        <p
+                          style={{
+                            color: "#f44336",
+                            margin: "-2px 5px 10px",
+                          }}
+                        >
                           CNPJ Inválido ou inexistente
                         </p>
                       )}
                     </Grid>
 
-                    <Grid item md={10}/>
+                    <Grid item md={10} />
                   </Grid>
                 </FormGroupSection>
 
-                <hr/>
+                <hr />
 
                 {/*  */}
                 <FormGroupSection>
@@ -527,12 +585,16 @@ export default function CompanyForm(props: RouteComponentProps<IPageParams>) {
                           disabled={!canEdit}
                           mask="99999-999"
                           value={state.address.postal_code}
-                          onChange={(element) => setState({
-                            ...state,
-                            address: {...state.address, postal_code: element.target.value}
-                          })}
+                          onChange={(element) =>
+                            setState({
+                              ...state,
+                              address: {
+                                ...state.address,
+                                postal_code: element.target.value,
+                              },
+                            })
+                          }
                           onBlur={getAddress}
-
                         >
                           {(inputProps: any) => (
                             <OutlinedInputFiled
@@ -542,18 +604,25 @@ export default function CompanyForm(props: RouteComponentProps<IPageParams>) {
                               label="CEP"
                               placeholder="00000-000"
                               labelWidth={155}
-                              style={{marginRight: 12}}
+                              style={{ marginRight: 12 }}
                               endAdornment={
                                 <InputAdornment position="end">
-                                  <SearchOutlined style={{color: 'var(--primary)'}}/>
+                                  <SearchOutlined
+                                    style={{ color: "var(--primary)" }}
+                                  />
                                 </InputAdornment>
                               }
                             />
                           )}
                         </InputMask>
                       </FormControl>
-                      {companyState.error && state.address.postal_code != '' && (
-                        <p style={{color: '#f44336', margin: '-2px 5px 10px'}}>
+                      {companyState.error && state.address.postal_code != "" && (
+                        <p
+                          style={{
+                            color: "#f44336",
+                            margin: "-2px 5px 10px",
+                          }}
+                        >
                           CEP inválido
                         </p>
                       )}
@@ -567,10 +636,16 @@ export default function CompanyForm(props: RouteComponentProps<IPageParams>) {
                         size="small"
                         value={state.address.street}
                         onChange={(element) => {
-                          setState({...state, address: {...state.address, street: element.target.value}});
+                          setState({
+                            ...state,
+                            address: {
+                              ...state.address,
+                              street: element.target.value,
+                            },
+                          });
                           setFieldValidations((prevState: any) => ({
                             ...prevState,
-                            street: !validator.isEmpty(element.target.value)
+                            street: !validator.isEmpty(element.target.value),
                           }));
                         }}
                         fullWidth
@@ -586,10 +661,16 @@ export default function CompanyForm(props: RouteComponentProps<IPageParams>) {
                         size="small"
                         value={state.address.number}
                         onChange={(element) => {
-                          setState({...state, address: {...state.address, number: element.target.value}});
+                          setState({
+                            ...state,
+                            address: {
+                              ...state.address,
+                              number: element.target.value,
+                            },
+                          });
                           setFieldValidations((prevState: any) => ({
                             ...prevState,
-                            number: !validator.isEmpty(element.target.value)
+                            number: !validator.isEmpty(element.target.value),
                           }));
                         }}
                         fullWidth
@@ -605,10 +686,18 @@ export default function CompanyForm(props: RouteComponentProps<IPageParams>) {
                         size="small"
                         value={state.address.complement}
                         onChange={(element) => {
-                          setState({...state, address: {...state.address, complement: element.target.value}});
+                          setState({
+                            ...state,
+                            address: {
+                              ...state.address,
+                              complement: element.target.value,
+                            },
+                          });
                           setFieldValidations((prevState: any) => ({
                             ...prevState,
-                            complement: !validator.isEmpty(element.target.value)
+                            complement: !validator.isEmpty(
+                              element.target.value
+                            ),
                           }));
                         }}
                         fullWidth
@@ -624,10 +713,16 @@ export default function CompanyForm(props: RouteComponentProps<IPageParams>) {
                         size="small"
                         value={state.address.district}
                         onChange={(element) => {
-                          setState({...state, address: {...state.address, district: element.target.value}});
+                          setState({
+                            ...state,
+                            address: {
+                              ...state.address,
+                              district: element.target.value,
+                            },
+                          });
                           setFieldValidations((prevState: any) => ({
                             ...prevState,
-                            district: !validator.isEmpty(element.target.value)
+                            district: !validator.isEmpty(element.target.value),
                           }));
                         }}
                         fullWidth
@@ -643,10 +738,16 @@ export default function CompanyForm(props: RouteComponentProps<IPageParams>) {
                         size="small"
                         value={state.address.city}
                         onChange={(element) => {
-                          setState({...state, address: {...state.address, city: element.target.value}});
+                          setState({
+                            ...state,
+                            address: {
+                              ...state.address,
+                              city: element.target.value,
+                            },
+                          });
                           setFieldValidations((prevState: any) => ({
                             ...prevState,
-                            city: !validator.isEmpty(element.target.value)
+                            city: !validator.isEmpty(element.target.value),
                           }));
                         }}
                         fullWidth
@@ -662,10 +763,16 @@ export default function CompanyForm(props: RouteComponentProps<IPageParams>) {
                         size="small"
                         value={state.address.state}
                         onChange={(element) => {
-                          setState({...state, address: {...state.address, state: element.target.value}});
+                          setState({
+                            ...state,
+                            address: {
+                              ...state.address,
+                              state: element.target.value,
+                            },
+                          });
                           setFieldValidations((prevState: any) => ({
                             ...prevState,
-                            state: !validator.isEmpty(element.target.value)
+                            state: !validator.isEmpty(element.target.value),
                           }));
                         }}
                         fullWidth
@@ -684,10 +791,15 @@ export default function CompanyForm(props: RouteComponentProps<IPageParams>) {
                       size="small"
                       value={state.responsable_name}
                       onChange={(element) => {
-                        setState({...state, responsable_name: element.target.value})
+                        setState({
+                          ...state,
+                          responsable_name: element.target.value,
+                        });
                         setFieldValidations((prevState: any) => ({
                           ...prevState,
-                          responsable_name: !validator.isEmpty(element.target.value)
+                          responsable_name: !validator.isEmpty(
+                            element.target.value
+                          ),
                         }));
                       }}
                       fullWidth
@@ -700,10 +812,10 @@ export default function CompanyForm(props: RouteComponentProps<IPageParams>) {
                       mask="(99) 9999-9999"
                       value={state.phone}
                       onChange={(element) => {
-                        setState({...state, phone: element.target.value});
+                        setState({ ...state, phone: element.target.value });
                         setFieldValidations((prevState: any) => ({
                           ...prevState,
-                          phone: !validator.isEmpty(element.target.value)
+                          phone: !validator.isEmpty(element.target.value),
                         }));
                       }}
                       onBlur={validatePhone}
@@ -711,21 +823,19 @@ export default function CompanyForm(props: RouteComponentProps<IPageParams>) {
                       {(inputProps: any) => (
                         <TextField
                           {...inputProps}
-                          error={!validatePhone() && state.phone != ''}
+                          error={!validatePhone() && state.phone != ""}
                           id="input-phone"
                           label="Telefone"
                           variant="outlined"
                           size="small"
                           placeholder="(00) 0000-0000"
-
-
                           fullWidth
                           disabled={!canEdit}
                         />
                       )}
                     </InputMask>
                     {!validatePhone() && state.phone && (
-                      <p style={{color: '#f44336', margin: '-10px 5px 10px'}}>
+                      <p style={{ color: "#f44336", margin: "-10px 5px 10px" }}>
                         Por favor insira um número válido
                       </p>
                     )}
@@ -738,10 +848,10 @@ export default function CompanyForm(props: RouteComponentProps<IPageParams>) {
                       size="small"
                       value={state.email}
                       onChange={(element) => {
-                        setState({...state, email: element.target.value});
+                        setState({ ...state, email: element.target.value });
                         setFieldValidations((prevState: any) => ({
                           ...prevState,
-                          email: validator.isEmail(element.target.value)
+                          email: validator.isEmail(element.target.value),
                         }));
                       }}
                       fullWidth
@@ -754,10 +864,13 @@ export default function CompanyForm(props: RouteComponentProps<IPageParams>) {
                       mask="(99) 9 9999-9999"
                       value={state.cellphone}
                       onChange={(element) => {
-                        setState({...state, cellphone: element.target.value});
+                        setState({ ...state, cellphone: element.target.value });
                         setFieldValidations((prevState: any) => ({
                           ...prevState,
-                          cellphone: !validator.isMobilePhone(element.target.value, 'pt-BR')
+                          cellphone: !validator.isMobilePhone(
+                            element.target.value,
+                            "pt-BR"
+                          ),
                         }));
                       }}
                       onBlur={validateCellPhone}
@@ -771,15 +884,14 @@ export default function CompanyForm(props: RouteComponentProps<IPageParams>) {
                           // value={state.cellphone}
                           // onChange={(element) => setState({ ...state, cellphone: element.target.value })}
                           placeholder="00000-0000"
-                          error={!validateCellPhone() && state.cellphone != ''}
-
+                          error={!validateCellPhone() && state.cellphone != ""}
                           fullWidth
                           disabled={!canEdit}
                         />
                       )}
                     </InputMask>
                     {!validateCellPhone() && state.cellphone && (
-                      <p style={{color: '#f44336', margin: '-10px 5px 10px'}}>
+                      <p style={{ color: "#f44336", margin: "-10px 5px 10px" }}>
                         Por favor insira um número válido
                       </p>
                     )}
@@ -788,17 +900,18 @@ export default function CompanyForm(props: RouteComponentProps<IPageParams>) {
                   {params.id && (
                     <Grid item md={3} xs={12}>
                       <FormControlLabel
-                        control={(
+                        control={
                           <Switch
                             disabled={!canEdit}
                             checked={state.active}
                             onChange={(event) => {
-                              setState(prevState => ({
+                              setState((prevState) => ({
                                 ...prevState,
-                                active: event.target.checked
-                              }))
-                            }}/>
-                        )}
+                                active: event.target.checked,
+                              }));
+                            }}
+                          />
+                        }
                         label="Ativo?"
                         labelPlacement="start"
                       />
@@ -807,10 +920,17 @@ export default function CompanyForm(props: RouteComponentProps<IPageParams>) {
                 </Grid>
               </FormContent>
               <ButtonsContent>
-                <ButtonComponent background="default" onClick={handleOpenModalCancel}>
+                <ButtonComponent
+                  background="default"
+                  onClick={handleOpenModalCancel}
+                >
                   Voltar
                 </ButtonComponent>
-                <ButtonComponent disabled={formValid} background="success" onClick={handleSaveFormCustomer}>
+                <ButtonComponent
+                  disabled={formValid}
+                  background="success"
+                  onClick={handleSaveFormCustomer}
+                >
                   Salvar
                 </ButtonComponent>
               </ButtonsContent>

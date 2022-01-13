@@ -1,4 +1,4 @@
-import {createGlobalStyle} from "styled-components";
+import { createGlobalStyle } from "styled-components";
 
 export default createGlobalStyle`
   * {
@@ -90,6 +90,7 @@ export default createGlobalStyle`
     --orange: #E57B00;
     --yellow: #EBB500;
     --cyan: #0899BA;
+    --black-intense: #333333;
   }
 
   .blur {
