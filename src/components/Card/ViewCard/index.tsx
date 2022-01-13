@@ -30,6 +30,7 @@ interface Icontent {
   tittle: string;
   icon?: any;
   rows: Irows[];
+  detailsCompanyIs?: boolean;
 }
 
 interface Irows {
@@ -40,7 +41,7 @@ interface Irows {
 export default function ViewCard(props: IProps) {
   const { content, md } = props;
   const md_value = md ? md : 6;
-
+  // console.log(content.detailsCompanyIs);
   let dataCompany: Irows[] = [];
   let dataResponsible: Irows[] = [];
   let addressData: Irows[] = [];
@@ -97,7 +98,7 @@ export default function ViewCard(props: IProps) {
 
   dataCompany.push(addressFull[0]);
   // console.log(data);
-  return (
+  return content.detailsCompanyIs ? (
     <Grid item md={md_value}>
       <Grid
         container
@@ -107,7 +108,7 @@ export default function ViewCard(props: IProps) {
           // paddingTop: "10px",
         }}
       >
-        {/* <Grid item style={{paddingBottom: "10px"}}>
+        {/* <Grid item style={{ paddingBottom: "10px" }}>
           <h3>{content.tittle}</h3>
         </Grid> */}
         <WrapperTitleData>
@@ -130,6 +131,24 @@ export default function ViewCard(props: IProps) {
             <Grid item>{`${name}: ${value}`}</Grid>
           ))}
         </WrapperContentData>
+      </Grid>
+    </Grid>
+  ) : (
+    <Grid item md={md_value}>
+      <Grid
+        container
+        style={{
+          flexDirection: "column",
+          paddingLeft: "10px",
+          paddingTop: "20px",
+        }}
+      >
+        <Grid item style={{ paddingBottom: "10px" }}>
+          <h3>{content.tittle}</h3>
+        </Grid>
+        {content.rows.map(({ name, value }: Irows, index: number) => (
+          <Grid item>{`${name}: ${value}`}</Grid>
+        ))}
       </Grid>
     </Grid>
   );

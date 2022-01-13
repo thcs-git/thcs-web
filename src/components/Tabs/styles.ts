@@ -27,7 +27,7 @@ export const TabNavItem = styled(Tab)`
   /* display: flex; */
 
   cursor: pointer;
-  width: 100%;
+
   max-width: 100%;
   box-shadow: none;
 
@@ -39,6 +39,27 @@ export const TabNavItem = styled(Tab)`
     outline: 0 !important;
   }
 `;
+
+export const TabNavItem_1 = styled(Tab)`
+  font-weight: bold;
+  color: var(--gray-dark);
+  /* display: flex; */
+  width: 100%;
+  cursor: pointer;
+
+  max-width: 100%;
+  box-shadow: none;
+
+  &.active {
+    color: var(--primary);
+  }
+
+  &:focus {
+    outline: 0 !important;
+  }
+`;
+
+// export const TabNavItem_1 = styled(Tab);
 
 export const TabBody = styled.div`
   background: var(--white);
@@ -72,7 +93,7 @@ export const TabNavItemCompany = styled.div`
   flex-direction: row;
   align-items: center;
   justify-content: space-between;
-  padding-left: 16px;
+  padding-left: 32px;
   gap: 8px;
   color: var(--black-intense);
   width: 100%;
@@ -99,5 +120,6 @@ export const TabNavItemAlingRigth = styled.div`
   justify-items: flex-end;
   align-items: center;
   gap: 30px;
+  margin-right: 21px;
   /* width: 100%; */
 `;

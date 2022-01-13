@@ -28,6 +28,7 @@ interface IComponent {
   getAddress: any;
   cepStatus: any;
   params: IPageParams;
+  detailsCompanyIs?: boolean;
 }
 
 interface IPageParams {
@@ -51,6 +52,7 @@ const CompanyForm = (props: IComponent) => {
     getAddress,
     cepStatus,
     params,
+    detailsCompanyIs,
   } = props;
 
   const rows = [];
@@ -94,6 +96,7 @@ const CompanyForm = (props: IComponent) => {
 
   const content = {
     tittle: state.fantasy_name,
+    detailsCompanyIs: true,
     // icon: <InfoRoundedIcon style={{color: "#ffffff"}}/>,
     rows: rows,
   };

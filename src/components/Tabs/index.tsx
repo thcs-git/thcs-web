@@ -8,6 +8,7 @@ import {
   TabContent,
   TabNav,
   TabNavItem,
+  TabNavItem_1,
   TabNavItemCompany,
   TabNavItemAlingRigth,
   TabNavItemAlingLeft,
@@ -75,7 +76,7 @@ function TabPanel(props: TabPanelProps) {
 
   return (
     <TabBody
-      style={{ padding: "0" }}
+      style={{ padding: "16px" }}
       role="tabpanel"
       hidden={value !== index}
       id={`wrapped-tabpanel-${index}`}
@@ -134,10 +135,10 @@ const TabForm = (props: ITabprops) => {
     rowsPortal,
     rowsApp,
   } = props;
-
+  // console.log(navItems[0].components);
   const classes = useStyles();
   const indicatorCompany = classes.indicator;
-  console.log(classes);
+  // console.log(classes);
   const handleChange = (event: React.ChangeEvent<{}>, newValue: number) => {
     setValue(newValue);
     setInitialTab && setInitialTab(newValue);
@@ -287,8 +288,8 @@ const TabForm = (props: ITabprops) => {
         return <TabBodyItem>Not found!</TabBodyItem>;
     }
   }
-  console.log(navItems[0].components);
-  return (
+  // console.log(navItems[0].components);
+  return navItems[0].components[0] === "CompanyForm" ? (
     <div className={classes.root}>
       <TabContent position="static">
         <TabNav
@@ -297,49 +298,30 @@ const TabForm = (props: ITabprops) => {
           variant="scrollable"
           scrollButtons="auto"
           aria-label="scrollable auto tabs example"
-          TabIndicatorProps={
-            navItems[0].components[0] !== "CompanyForm"
-              ? { className: classes.indicator }
-              : {
-                  style: { display: "none" },
-                }
-          }
+          TabIndicatorProps={{ style: { display: "none" } }}
         >
           {navItems.map(
             ({ name, badge, components }: INavItems, index: number) => (
-              <TabNavItem
+              <TabNavItem_1
+                tabNavCompany={true}
                 value={index}
                 label={
-                  badge ? (
-                    <Badge
-                      classes={{ badge: classes.customBadge }}
-                      className={classes.padding}
-                      color="primary"
-                      badgeContent={badge}
-                      max={99}
-                    >
+                  <TabNavItemCompany>
+                    <TabNavItemAlingLeft>
+                      <CompanyIcon />
                       {name}
-                    </Badge>
-                  ) : components[0] === "CompanyForm" ? (
-                    <TabNavItemCompany>
-                      <TabNavItemAlingLeft>
-                        <CompanyIcon />
-                        {name}
-                      </TabNavItemAlingLeft>
+                    </TabNavItemAlingLeft>
 
-                      <TabNavItemAlingRigth>
-                        <EmailIcon style={{ cursor: "pointer" }} />
-                        <PrintIcon style={{ cursor: "pointer" }} />
-                      </TabNavItemAlingRigth>
-                    </TabNavItemCompany>
-                  ) : (
-                    name
-                  )
+                    <TabNavItemAlingRigth>
+                      <EmailIcon style={{ cursor: "pointer" }} />
+                      <PrintIcon style={{ cursor: "pointer" }} />
+                    </TabNavItemAlingRigth>
+                  </TabNavItemCompany>
                 }
                 wrapped
                 className={value === index ? "active" : ""}
                 {...a11yProps({ index })}
-              ></TabNavItem>
+              ></TabNavItem_1>
             )
           )}
         </TabNav>
@@ -347,6 +329,60 @@ const TabForm = (props: ITabprops) => {
       {navItems.map(({ name, components, badge }: INavItems, index: number) => {
         const last = _.findLastIndex(components);
 
+        return (
+          <TabPanel value={value} index={index}>
+            {components.map((component: string, sub_index: number) => (
+              <>
+                {handleComponents(component, parseInt(`${index}${sub_index}`))}
+                {sub_index != last && (
+                  <Grid item md={12} xs={12}>
+                    <Divider style={{ marginBottom: 28, marginTop: 20 }} />
+                  </Grid>
+                )}
+              </>
+            ))}
+          </TabPanel>
+        );
+      })}
+    </div>
+  ) : (
+    <div className={classes.root}>
+      <TabContent position="static">
+        <TabNav
+          value={value}
+          onChange={handleChange}
+          variant="scrollable"
+          scrollButtons="auto"
+          aria-label="scrollable auto tabs example"
+          TabIndicatorProps={{ className: classes.indicator }}
+        >
+          {navItems.map(({ name, badge }: INavItems, index: number) => (
+            <TabNavItem
+              value={index}
+              label={
+                badge ? (
+                  <Badge
+                    classes={{ badge: classes.customBadge }}
+                    className={classes.padding}
+                    color="primary"
+                    badgeContent={badge}
+                    max={99}
+                  >
+                    {name}
+                  </Badge>
+                ) : (
+                  name
+                )
+              }
+              wrapped
+              className={value === index ? "active" : ""}
+              {...a11yProps({ index })}
+            ></TabNavItem>
+          ))}
+        </TabNav>
+      </TabContent>
+      {navItems.map(({ name, components, badge }: INavItems, index: number) => {
+        const last = _.findLastIndex(components);
         return (
           <TabPanel value={value} index={index}>
             {components.map((component: string, sub_index: number) => (
