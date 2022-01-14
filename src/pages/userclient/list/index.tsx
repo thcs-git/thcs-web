@@ -118,7 +118,6 @@ export default function UserClientList() {
     setUserIndex(index);
     setHistoryModalOpen(!historyModalOpen);
   };
-
   const handleCpf = (cpf: string) => {
     if (cpf) {
       cpf = cpf.replace(".", "");
@@ -127,13 +126,11 @@ export default function UserClientList() {
       return `${cpf[0]}${cpf[1]}${cpf[2]}.${cpf[3]}${cpf[4]}${cpf[5]}.${cpf[6]}${cpf[7]}${cpf[8]}-${cpf[9]}${cpf[10]}`;
     }
   };
-
   const integration = sessionStorage.getItem(SESSIONSTORAGE.INTEGRATION);
-
   function handleEmpty(value: any) {
     return value ? value : "-";
   }
-
+  // console.log(users);
   return (
     <>
       <Sidebar>
@@ -153,8 +150,13 @@ export default function UserClientList() {
                   { name: "Função", align: "left" },
                   { name: "Especialidades", align: "left" },
                 ]}
+                userState={userState}
+                handleEmpty={handleEmpty}
+                handleCpf={handleCpf}
+                integration={integration}
+                users={users}
               >
-                {userState?.list.data.map((user, index) => (
+                {/* {userState?.list.data.map((user, index) => (
                   <TableRow key={`user_${index}`}>
                     <TableCell align="left">
                       <Link key={index} to={`/userclient/${user._id}/view`}>
@@ -194,13 +196,14 @@ export default function UserClientList() {
                           >
                             <MoreHorizTwoToneIcon />
                           </Tooltip>
-                        ) : (
+                        ) 
+                        : (
                           ""
                         )}
                       </div>
                     </TableCell>
                   </TableRow>
-                ))}
+                ))} */}
               </Table>
             </>
           ) : (
@@ -222,8 +225,13 @@ export default function UserClientList() {
                   { name: "Status", align: "left" },
                   { name: "", align: "left" },
                 ]}
+                handleLinkedAt={handleLinkedAt}
+                handleActive={handleActive}
+                handleOpenRowMenu={handleOpenRowMenu}
+                integration={integration}
+                users={users}
               >
-                {userState?.list.data.map((user, index) => (
+                {/* {userState?.list.data.map((user, index) => (
                   <TableRow key={`user_${index}`}>
                     <TableCell align="left">
                       <Link key={index} to={`/userclient/${user._id}/view`}>
@@ -251,35 +259,35 @@ export default function UserClientList() {
                           </Tooltip>
                         ) : null}
                       </div>
-                    </TableCell>
-                    {/*<TableCell>*/}
-                    {/*  {user?.main_specialty_id?.name}*/}
-                    {/*</TableCell>*/}
-                    {/*<TableCell align="center">*/}
-                    {/*  {user.specialties.length > 0 ? (*/}
-                    {/*    <ListItem>*/}
-                    {/*      <Button onClick={() => toggleHistoryModal(index)}>*/}
-                    {/*        <AddIcon style={{color: '#0899BA', cursor: "pointer"}}/>*/}
-                    {/*      </Button>*/}
-                    {/*      /!* <Menu*/}
-                    {/*        id={`user-speciality${index}`}*/}
-                    {/*        anchorEl={anchorEl}*/}
-                    {/*        keepMounted*/}
-                    {/*        open={anchorEl?.id === `btn_user-speciality${index}`}*/}
-                    {/*        onClose={handleCloseRowMenu}*/}
-                    {/*      >*/}
-                    {/*        <MenuItem style={{ cursor: "default", fontSize: "13pt", fontFamily: "Open Sans Bold" }}><h4>Principal</h4></MenuItem>*/}
-                    {/*        <MenuItem style={{ cursor: "default", fontSize: "10pt", fontFamily: "Open Sans Regular"}}>{user.main_specialty_id.name}</MenuItem>*/}
-                    {/*        <MenuItem style={{ cursor: "default", fontSize: "13pt", fontFamily: "Open Sans Bold"}}><h4>Secundária</h4></MenuItem>*/}
-                    {/*        <MenuItem style={{ cursor: "default", fontSize: "10pt", fontFamily: "Open Sans Regular"}}>{user.specialties.map((specialty, index) => (*/}
-                    {/*          `${specialty.name}${index < (user.specialties.length - 1) ? ',' : ''}`*/}
-                    {/*        ))}</MenuItem>*/}
-                    {/*      </Menu> *!/*/}
-                    {/*    </ListItem>*/}
-                    {/*  ) : (null)*/}
-                    {/*  }*/}
-                    {/*</TableCell>*/}
-                    <TableCell>
+                    </TableCell> */}
+                {/*<TableCell>*/}
+                {/*  {user?.main_specialty_id?.name}*/}
+                {/*</TableCell>*/}
+                {/*<TableCell align="center">*/}
+                {/*  {user.specialties.length > 0 ? (*/}
+                {/*    <ListItem>*/}
+                {/*      <Button onClick={() => toggleHistoryModal(index)}>*/}
+                {/*        <AddIcon style={{color: '#0899BA', cursor: "pointer"}}/>*/}
+                {/*      </Button>*/}
+                {/*      /!* <Menu*/}
+                {/*        id={`user-speciality${index}`}*/}
+                {/*        anchorEl={anchorEl}*/}
+                {/*        keepMounted*/}
+                {/*        open={anchorEl?.id === `btn_user-speciality${index}`}*/}
+                {/*        onClose={handleCloseRowMenu}*/}
+                {/*      >*/}
+                {/*        <MenuItem style={{ cursor: "default", fontSize: "13pt", fontFamily: "Open Sans Bold" }}><h4>Principal</h4></MenuItem>*/}
+                {/*        <MenuItem style={{ cursor: "default", fontSize: "10pt", fontFamily: "Open Sans Regular"}}>{user.main_specialty_id.name}</MenuItem>*/}
+                {/*        <MenuItem style={{ cursor: "default", fontSize: "13pt", fontFamily: "Open Sans Bold"}}><h4>Secundária</h4></MenuItem>*/}
+                {/*        <MenuItem style={{ cursor: "default", fontSize: "10pt", fontFamily: "Open Sans Regular"}}>{user.specialties.map((specialty, index) => (*/}
+                {/*          `${specialty.name}${index < (user.specialties.length - 1) ? ',' : ''}`*/}
+                {/*        ))}</MenuItem>*/}
+                {/*      </Menu> *!/*/}
+                {/*    </ListItem>*/}
+                {/*  ) : (null)*/}
+                {/*  }*/}
+                {/*</TableCell>*/}
+                {/* <TableCell>
                       {formatDate(handleLinkedAt(user), "DD/MM/YYYY")}
                     </TableCell>
                     <TableCell>
@@ -302,9 +310,9 @@ export default function UserClientList() {
                         keepMounted
                         open={anchorEl?.id === `btn_user-menu${index}`}
                         onClose={handleCloseRowMenu}
-                      >
-                        {/*<MenuItem onClick={() => history.push(`/user/${user._id}/edit/edit`)}>Editar</MenuItem>*/}
-                        <MenuItem
+                      > */}
+                {/*<MenuItem onClick={() => history.push(`/user/${user._id}/edit/edit`)}>Editar</MenuItem>*/}
+                {/* <MenuItem
                           onClick={() =>
                             history.push(`/userclient/${user._id}/view`)
                           }
@@ -314,7 +322,7 @@ export default function UserClientList() {
                       </Menu>
                     </TableCell>
                   </TableRow>
-                ))}
+                ))} */}
               </Table>
             </>
           )}
