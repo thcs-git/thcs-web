@@ -51,7 +51,6 @@ const TableComponent = (props: ITableProps) => {
                 align={cell.align}
                 style={{
                   width: `${cell.width}`,
-                  fontSize: "12px",
                   color: "var(--gray-dark)",
                 }}
               >

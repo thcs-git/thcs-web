@@ -157,36 +157,29 @@ export default function UserClientList() {
                 {userState?.list.data.map((user, index) => (
                   <TableRow key={`user_${index}`}>
                     <TableCell align="left">
-                      <Link
-                        key={index}
-                        style={{ fontSize: "12px" }}
-                        to={`/userclient/${user._id}/view`}
-                      >
+                      <Link key={index} to={`/userclient/${user._id}/view`}>
                         {user?.name}
                       </Link>
                     </TableCell>
                     <TableCell align="left">
-                      <Link
-                        key={index}
-                        style={{ fontSize: "12px" }}
-                        to={`/userclient/${user._id}/view`}
-                      >
+                      <Link key={index} to={`/userclient/${user._id}/view`}>
                         {user?.username}
                       </Link>
                     </TableCell>
-                    <TableCell style={{ fontSize: "12px" }}>
+                    <TableCell>
                       {handleEmpty(handleCpf(user?.fiscal_number))}
                     </TableCell>
-                    <TableCell style={{ fontSize: "12px" }}>
+                    <TableCell>
                       {handleEmpty(user?.profession_id?.name)}
                     </TableCell>
-                    <TableCell align="left" style={{ fontSize: "12px" }}>
+                    <TableCell align="left">
                       <div style={{ display: "flex" }}>
-                        <SpecialtyCell style={{ marginTop: "0.3rem" }}>
+                        <p style={{ marginTop: "0.3rem" }}>
                           {user.main_specialty_id?.name
                             ? user.main_specialty_id?.name
                             : "-"}
-                        </SpecialtyCell>
+                        </p>
+
                         {user.specialties.length > 0 ? (
                           <Tooltip
                             style={{ fontSize: "10pt", marginTop: "0.8rem" }}

@@ -26,7 +26,6 @@ const Pagination = (props: PaginationProps) => {
       <tbody>
         <tr>
           <TablePagination
-            style={{ fontSize: "13px" }}
             rowsPerPageOptions={
               rowsPerPageOptions
                 ? rowsPerPageOptions
