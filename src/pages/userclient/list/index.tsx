@@ -230,6 +230,7 @@ export default function UserClientList() {
                 handleOpenRowMenu={handleOpenRowMenu}
                 integration={integration}
                 users={users}
+                userState={userState}
               >
                 {/* {userState?.list.data.map((user, index) => (
                   <TableRow key={`user_${index}`}>
