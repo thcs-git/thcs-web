@@ -184,6 +184,7 @@ export default function UserClientList() {
                 integration={integration}
                 users={users}
                 userState={userState}
+                handleCpf={handleCpf}
               >
                 {"filho sem integration"}
               </Table>

@@ -68,7 +68,7 @@ const TableComponent = (props: ITableProps) => {
   const handleClose = useCallback(() => {
     setAnchorEl(null);
   }, []);
-  console.log(Boolean(integration));
+  console.log(props);
   return (
     <TableContainer component={Paper}>
       <Table aria-label="simple table">
@@ -182,13 +182,14 @@ const TableComponent = (props: ITableProps) => {
             !integration &&
             userState?.list.data.map((user, index) => (
               <TableRow key={`user_${index}`}>
+                {" "}
                 <TableCell align="left">
                   <Link key={index} to={`/userclient/${user._id}/view`}>
                     {user?.name}
                   </Link>
                 </TableCell>
                 {handleCpf && (
-                  <TableCell>{handleCpf(user?.fiscal_number)}</TableCell>
+                  <TableCell>{handleCpf(user.fiscal_number)}</TableCell>
                 )}
                 <TableCell>{user?.profession_id?.name}</TableCell>
                 <TableCell align="left">
