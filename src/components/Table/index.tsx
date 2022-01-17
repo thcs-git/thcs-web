@@ -68,7 +68,6 @@ const TableComponent = (props: ITableProps) => {
   const handleClose = useCallback(() => {
     setAnchorEl(null);
   }, []);
-  console.log(props);
   return (
     <TableContainer component={Paper}>
       <Table aria-label="simple table">
@@ -191,7 +190,9 @@ const TableComponent = (props: ITableProps) => {
                 {handleCpf && (
                   <TableCell>{handleCpf(user.fiscal_number)}</TableCell>
                 )}
-                <TableCell>{user?.profession_id?.name}</TableCell>
+                <TableCell>
+                  {user?.profession_id?.name ? user.profession_id.name : "-"}
+                </TableCell>
                 <TableCell align="left">
                   <div style={{ display: "flex" }}>
                     <p style={{ marginTop: "0.3rem" }}>
