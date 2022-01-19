@@ -21,6 +21,7 @@ import MoreHorizTwoToneIcon from "@material-ui/icons/MoreHorizTwoTone";
 import { ListItemStatus } from "../../pages/userclient/list/styles";
 import { any } from "cypress/types/bluebird";
 import { formatDate } from "../../helpers/date";
+import { PatientState } from "../../store/ducks/patients/types";
 interface ICellProps {
   name: string;
   align: "right" | "left" | "center";
@@ -40,8 +41,9 @@ interface ITableProps {
   users?: UserInterface[];
   handleLinkedAt?: (user: any) => any;
   handleActive?: (user: any) => any;
-  handleOpenRowMenu?: (event: React.MouseEvent<HTMLButtonElement>) => void;
-  handleCloseRowMenu?: () => void;
+  patientState?: PatientState;
+  toggleHistoryModal?: (index: number, patient: any) => void;
+  toggleHistoryModal_2?: (index: number, patient: any) => void;
 }
 
 const TableComponent = (props: ITableProps) => {
@@ -53,8 +55,9 @@ const TableComponent = (props: ITableProps) => {
     integration,
     handleLinkedAt,
     handleActive,
-    handleOpenRowMenu,
-    handleCloseRowMenu,
+    patientState,
+    toggleHistoryModal,
+    toggleHistoryModal_2,
   } = props;
   const history = useHistory();
 
@@ -64,6 +67,17 @@ const TableComponent = (props: ITableProps) => {
     },
     []
   );
+
+  const handleOpenRowMenu = useCallback(
+    (event: React.MouseEvent<HTMLButtonElement>) => {
+      setAnchorEl(event.currentTarget);
+    },
+    [anchorEl]
+  );
+  console.log(patientState);
+  const handleCloseRowMenu = useCallback(() => {
+    setAnchorEl(null);
+  }, [anchorEl]);
 
   const handleClose = useCallback(() => {
     setAnchorEl(null);
@@ -124,6 +138,7 @@ const TableComponent = (props: ITableProps) => {
           </TableRow>
         </TableHead>
         <TableBody>
+          {/* table de user e userClient c/ integração */}
           {userState &&
             integration &&
             userState?.list.data.map((user, index) => (
@@ -176,6 +191,8 @@ const TableComponent = (props: ITableProps) => {
                 </TableCell>
               </TableRow>
             ))}
+
+          {/* table de user e userClient s/ integração */}
 
           {userState &&
             !integration &&
@@ -279,8 +296,109 @@ const TableComponent = (props: ITableProps) => {
                 </TableCell>
               </TableRow>
             ))}
+          {/* table de patient c/ integração */}
+          {patientState &&
+            integration &&
+            patientState.list.data.map((patient, index) => (
+              <TableRow key={`patient_${index}`}>
+                <TableCell align="left">
+                  <Link key={index} to={`/patient/${patient?._id}/view`}>
+                    {patient._id}
+                  </Link>
+                </TableCell>
+                <TableCell align="left">
+                  <Link key={index} to={`/patient/${patient?._id}/view`}>
+                    {patient.social_status ? patient.social_name : patient.name}
+                  </Link>
+                </TableCell>
+                <TableCell align="center">
+                  {formatDate(patient.birthdate, "DD/MM/YYYY")}
+                </TableCell>
+                <TableCell align="center">
+                  {patient.fiscal_number ? patient.fiscal_number : "-"}
+                </TableCell>
+                <TableCell align="left">{patient.mother_name}</TableCell>
+              </TableRow>
+            ))}
 
-          {!userState && props.children}
+          {/* table de patient c/ integração */}
+          {/* {console.log(integration, patientState?.list.data)} */}
+          {patientState &&
+            !integration &&
+            patientState.list.data.map((patient, index) => (
+              <TableRow key={`patient_${index}`}>
+                <TableCell align="left">
+                  <Link key={index} to={`/patient/${patient?._id}/view/edit`}>
+                    {patient.social_name || patient.name}
+                  </Link>
+                </TableCell>
+                <TableCell align="left">{patient.fiscal_number}</TableCell>
+                <TableCell align="left">{patient.mother_name}</TableCell>
+                <TableCell align="left">
+                  {formatDate(patient.created_at, "DD/MM/YYYY HH:mm:ss")}
+                </TableCell>
+                <TableCell align="center">
+                  {handleOpenRowMenu && (
+                    <Button
+                      aria-controls={`patient-menu${index}`}
+                      id={`btn_patient-menu${index}`}
+                      aria-haspopup="true"
+                      onClick={handleOpenRowMenu}
+                    >
+                      <MoreVert style={{ color: "#0899BA" }} />
+                    </Button>
+                  )}
+
+                  <Menu
+                    id={`patient-menu${index}`}
+                    anchorEl={anchorEl}
+                    keepMounted
+                    open={anchorEl?.id === `btn_patient-menu${index}`}
+                    onClose={handleCloseRowMenu}
+                  >
+                    <MenuItem
+                      onClick={() =>
+                        history.push(`/patient/${patient._id}/edit/edit`)
+                      }
+                    >
+                      Editar
+                    </MenuItem>
+                    <MenuItem
+                      onClick={() =>
+                        history.push(`/patient/${patient._id}/view/edit`)
+                      }
+                    >
+                      Visualizar
+                    </MenuItem>
+                    <MenuItem
+                      onClick={() =>
+                        history.push(
+                          `/patient/capture/create?patient_id=${patient._id}`
+                        )
+                      }
+                    >
+                      Iniciar captação
+                    </MenuItem>
+                    {toggleHistoryModal && (
+                      <MenuItem
+                        onClick={() => toggleHistoryModal(index, patient)}
+                      >
+                        Histórico de captação
+                      </MenuItem>
+                    )}
+                    {toggleHistoryModal_2 && (
+                      <MenuItem
+                        onClick={() => toggleHistoryModal_2(index, patient)}
+                      >
+                        Histórico de atendimento
+                      </MenuItem>
+                    )}
+                  </Menu>
+                </TableCell>
+              </TableRow>
+            ))}
+
+          {!userState && !patientState && props.children}
         </TableBody>
       </Table>
     </TableContainer>

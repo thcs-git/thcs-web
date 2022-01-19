@@ -180,7 +180,6 @@ export default function UserClientList() {
                 ]}
                 handleLinkedAt={handleLinkedAt}
                 handleActive={handleActive}
-                handleOpenRowMenu={handleOpenRowMenu}
                 integration={integration}
                 users={users}
                 userState={userState}

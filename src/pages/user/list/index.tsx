@@ -235,7 +235,6 @@ export default function UserList() {
                 users={users}
                 handleLinkedAt={handleLinkedAt}
                 handleActive={handleActive}
-                handleOpenRowMenu={handleOpenRowMenu}
               >
                 {/* {userState?.list.data.map((user, index) => (
                   <TableRow key={`user_${index}`}>
