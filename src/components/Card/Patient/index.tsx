@@ -1,20 +1,24 @@
-import React, { ComponentProps } from 'react';
-import { AccountCircle } from '@material-ui/icons';
+import React, { ComponentProps } from "react";
+import { AccountCircle } from "@material-ui/icons";
 
-import { PatientInterface } from '../../../store/ducks/patients/types'
+import { PatientInterface } from "../../../store/ducks/patients/types";
 
-import { age , formatDate} from '../../../helpers/date';
+import { age, formatDate } from "../../../helpers/date";
 
-import { PatientResume, PatientResumeContent, PatientData, MaleIconLogo, FemaleIconLogo} from './styles';
-
+import {
+  PatientResume,
+  PatientResumeContent,
+  PatientData,
+  MaleIconLogo,
+  FemaleIconLogo,
+} from "./styles";
 
 interface IProps {
-  patient: PatientInterface
+  patient: PatientInterface;
 }
 
 export default function PatientCard(props: any) {
-
-  const { patient , capture } = props;
+  const { patient, capture } = props;
 
   return (
     <PatientResume>
@@ -26,25 +30,27 @@ export default function PatientCard(props: any) {
           <div>
             <p className="title">{patient?.name}</p>
             <div className="subTitle">
-              <a>{patient?.birthdate ? age(patient?.birthdate) : ''} | CPF: {patient?.fiscal_number} | Mãe: {patient?.mother_name} | </a>
-              {
-                (patient?.gender != 'Masculino')?
-                (
-                  <>
-                  <a> Sexo:  </a> <FemaleIconLogo />
-                  </>
-                ):(
-                  <>
-                      <a>Sexo:  </a> <MaleIconLogo />
-                  </>
-                )
-              }
+              <a>
+                {patient?.birthdate ? age(patient?.birthdate) : ""} | CPF:{" "}
+                {patient?.fiscal_number} | Mãe: {patient?.mother_name} |{" "}
+              </a>
+              {patient?.gender != "Masculino" ? (
+                <>
+                  <a> Sexo: </a> <FemaleIconLogo />
+                </>
+              ) : (
+                <>
+                  <a>Sexo: </a> <MaleIconLogo />
+                </>
+              )}
               <p>Pedido: {capture?.order_number}</p>
-              <p>Data de Nascimento: {formatDate(patient?.birthdate, 'DD/MM/YYYY')}</p>
+              <p>
+                Data de Nascimento:{" "}
+                {formatDate(patient?.birthdate, "DD/MM/YYYY")}
+              </p>
             </div>
           </div>
         </PatientData>
-
       </PatientResumeContent>
     </PatientResume>
   );

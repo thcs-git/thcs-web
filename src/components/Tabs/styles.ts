@@ -88,7 +88,7 @@ export const TabBodyItem = styled.div`
   }
 `;
 
-export const TabNavItemCompany = styled.div`
+export const TabNavItemDetails = styled.div`
   display: flex;
   flex-direction: row;
   align-items: center;
