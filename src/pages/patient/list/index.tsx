@@ -282,21 +282,7 @@ export default function PatientList() {
                 toggleHistoryModal={toggleHistoryModal}
                 toggleHistoryModal_2={toggleHistoryModal_2}
               >
-                {/* {patientState.list.data.map((patient: PatientInterface, index: number) => (
-                  <TableRow key={`patient_${index}`}>
-                    <TableCell align="left">
-                      <Link key={index}
-                            to={`/patient/${patient?._id}/view`}>{patient._id}</Link>
-                    </TableCell>
-                    <TableCell align="left">
-                      <Link key={index}
-                            to={`/patient/${patient?._id}/view`}>{patient.social_status ? patient.social_name : patient.name}</Link>
-                    </TableCell>
-                    <TableCell align="center">{formatDate(patient.birthdate, 'DD/MM/YYYY')}</TableCell>
-                    <TableCell align="center">{patient.fiscal_number ? patient.fiscal_number : '-'}</TableCell>
-                    <TableCell align="left">{patient.mother_name}</TableCell>
-                  </TableRow>
-                ))} */}
+                {"pages/patient/list filho s/ integration"}
               </Table>
             </>
           ) : (
@@ -321,78 +307,7 @@ export default function PatientList() {
                 toggleHistoryModal={toggleHistoryModal}
                 toggleHistoryModal_2={toggleHistoryModal_2}
               >
-                {/* {patientState.list.data.map(
-                  (patient: PatientInterface, index: number) => (
-                    <TableRow key={`patient_${index}`}>
-                      <TableCell align="left">
-                        <Link
-                          key={index}
-                          to={`/patient/${patient?._id}/view/edit`}
-                        >
-                          {patient.social_name || patient.name}
-                        </Link>
-                      </TableCell>
-                      <TableCell align="left">
-                        {patient.fiscal_number}
-                      </TableCell>
-                      <TableCell align="left">{patient.mother_name}</TableCell>
-                      <TableCell align="left">
-                        {formatDate(patient.created_at, "DD/MM/YYYY HH:mm:ss")}
-                      </TableCell>
-                      <TableCell align="center">
-                        <Button
-                          aria-controls={`patient-menu${index}`}
-                          id={`btn_patient-menu${index}`}
-                          aria-haspopup="true"
-                          onClick={handleOpenRowMenu}
-                        >
-                          <MoreVert style={{ color: "#0899BA" }} />
-                        </Button>
-                        <Menu
-                          id={`patient-menu${index}`}
-                          anchorEl={anchorEl}
-                          keepMounted
-                          open={anchorEl?.id === `btn_patient-menu${index}`}
-                          onClose={handleCloseRowMenu}
-                        >
-                          <MenuItem
-                            onClick={() =>
-                              history.push(`/patient/${patient._id}/edit/edit`)
-                            }
-                          >
-                            Editar
-                          </MenuItem>
-                          <MenuItem
-                            onClick={() =>
-                              history.push(`/patient/${patient._id}/view/edit`)
-                            }
-                          >
-                            Visualizar
-                          </MenuItem>
-                          <MenuItem
-                            onClick={() =>
-                              history.push(
-                                `/patient/capture/create?patient_id=${patient._id}`
-                              )
-                            }
-                          >
-                            Iniciar captação
-                          </MenuItem>
-                          <MenuItem
-                            onClick={() => toggleHistoryModal(index, patient)}
-                          >
-                            Histórico de captação
-                          </MenuItem>
-                          <MenuItem
-                            onClick={() => toggleHistoryModal_2(index, patient)}
-                          >
-                            Histórico de atendimento
-                          </MenuItem>
-                        </Menu>
-                      </TableCell>
-                    </TableRow>
-                  )
-                )} */}
+                {"pages/patient/list filho s/ integration"}
               </Table>
             </>
           )}

@@ -165,48 +165,7 @@ export default function UserList() {
                 integration={integration}
                 users={users}
               >
-                {/* {userState?.list.data.map((user, index) => (
-                  <TableRow key={`user_${index}`}>
-                    <TableCell align="left">
-                      <Link key={index} to={`/userclient/${user._id}/view`}>
-                        {user?.name}
-                      </Link>
-                    </TableCell>
-                    <TableCell align="left">
-                      <Link key={index} to={`/userclient/${user._id}/view`}>
-                        {user?.username}
-                      </Link>
-                    </TableCell>
-                    <TableCell>
-                      {handleEmpty(handleCpf(user?.fiscal_number))}
-                    </TableCell>
-                    <TableCell>
-                      {handleEmpty(user?.profession_id?.name)}
-                    </TableCell>
-                    <TableCell align="left">
-                      <div style={{ display: "flex" }}>
-                        <p style={{ marginTop: "0.3rem" }}>
-                          {user.main_specialty_id?.name}
-                        </p>
-                        {user.specialties.length > 0 ? (
-                          <Tooltip
-                            style={{ fontSize: "10pt", marginTop: "0.8rem" }}
-                            title={user.specialties.map(
-                              (specialty, index) =>
-                                `${specialty.name}${
-                                  index < user.specialties.length - 1 ? "," : ""
-                                }`
-                            )}
-                          >
-                            <MoreHorizTwoToneIcon />
-                          </Tooltip>
-                        ) : (
-                          "-"
-                        )}
-                      </div>
-                    </TableCell>
-                  </TableRow>
-                ))} */}
+                {"pages/user/list filho c/ integration"}
               </Table>
             </>
           ) : (
@@ -236,74 +195,7 @@ export default function UserList() {
                 handleLinkedAt={handleLinkedAt}
                 handleActive={handleActive}
               >
-                {/* {userState?.list.data.map((user, index) => (
-                  <TableRow key={`user_${index}`}>
-                    <TableCell align="left">
-                      <Link
-                        key={index}
-                        to={`/userclient/${user._id}/view/edit`}
-                      >
-                        {user?.name}
-                      </Link>
-                    </TableCell>
-                    <TableCell>{handleCpf(user?.fiscal_number)}</TableCell>
-                    <TableCell>{user?.profession_id?.name}</TableCell>
-                    <TableCell align="left">
-                      <div style={{ display: "flex" }}>
-                        <p style={{ marginTop: "0.3rem" }}>
-                          {user.main_specialty_id?.name}
-                        </p>
-                        {user.specialties.length > 0 ? (
-                          <Tooltip
-                            style={{ fontSize: "10pt", marginTop: "0.8rem" }}
-                            title={user.specialties.map(
-                              (specialty, index) =>
-                                `${specialty.name}${
-                                  index < user.specialties.length - 1 ? "," : ""
-                                }`
-                            )}
-                          >
-                            <MoreHorizTwoToneIcon />
-                          </Tooltip>
-                        ) : null}
-                      </div>
-                    </TableCell>
-                    <TableCell>
-                      {formatDate(handleLinkedAt(user), "DD/MM/YYYY")}
-                    </TableCell>
-                    <TableCell>
-                      <ListItemStatus active={handleActive(user)}>
-                        {handleActive(user) ? "Ativo" : "Inativo"}
-                      </ListItemStatus>
-                    </TableCell>
-                    <TableCell align="center">
-                      <Button
-                        aria-controls={`user-menu${index}`}
-                        id={`btn_user-menu${index}`}
-                        aria-haspopup="true"
-                        onClick={handleOpenRowMenu}
-                      >
-                        <MoreVert style={{ color: "#0899BA" }} />
-                      </Button>
-                      <Menu
-                        id={`user-menu${index}`}
-                        anchorEl={anchorEl}
-                        keepMounted
-                        open={anchorEl?.id === `btn_user-menu${index}`}
-                        onClose={handleCloseRowMenu}
-                      > */}
-                {/*<MenuItem onClick={() => history.push(`/user/${user._id}/edit/edit`)}>Editar</MenuItem>*/}
-                {/* <MenuItem
-                          onClick={() =>
-                            history.push(`/userclient/${user._id}/view/edit`)
-                          }
-                        >
-                          Visualizar
-                        </MenuItem>
-                      </Menu>
-                    </TableCell>
-                  </TableRow>
-                ))} */}
+                {"pages/user/list filho s/ integration"}
               </Table>
             </>
           )}
