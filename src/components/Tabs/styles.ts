@@ -115,7 +115,7 @@ export const TabNavItemAlingLeft = styled.div`
     height: 14px;
   }
   svg {
-    min-width: 32px;
+    /* min-width: 32px; */
   }
 `;
 export const TabNavItemAlingRigth = styled.div`
