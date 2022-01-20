@@ -233,28 +233,37 @@ export default function CouncilList() {
 
               <Table
                 tableCells={[
-                  { name: "Paciente", align: "left" },
                   { name: "Atendimento", align: "left" },
-                  { name: "CPF", align: "left" },
+                  { name: "Paciente", align: "left" },
                   { name: "Tipo", align: "left" },
-                  { name: "Complexidade", align: "left" },
+                  { name: "CPF", align: "left" },
                   { name: "Último Atendimento", align: "left" },
+                  { name: "Complexidade", align: "left" },
                   { name: " ", align: "left" },
                 ]}
               >
                 {careFilter.map((care: CareInterface, index: number) => (
                   <TableRow key={`care_${index}`}>
+                    <TableCell>{care?._id}</TableCell>
                     <TableCell>
                       <Link to={`/care/${care._id}/overview`}>
                         {care.patient_id?.social_name || care.patient_id?.name}
                       </Link>
                     </TableCell>
-                    <TableCell>{care?._id}</TableCell>
-                    <TableCell>{care.patient_id?.fiscal_number}</TableCell>
                     <TableCell>
                       {typeof care?.care_type_id === "object"
                         ? care?.care_type_id.name
                         : care?.care_type_id}
+                    </TableCell>
+                    <TableCell>{care.patient_id?.fiscal_number}</TableCell>
+
+                    <TableCell align="center">
+                      {care?.started_at
+                        ? formatDate(
+                            care?.started_at ?? "",
+                            "DD/MM/YYYY HH:mm:ss"
+                          )
+                        : "-"}
                     </TableCell>
                     <TableCell align="left">
                       <ComplexityStatus
@@ -266,14 +275,6 @@ export default function CouncilList() {
                           )}
                         </p>
                       </ComplexityStatus>
-                    </TableCell>
-                    <TableCell align="center">
-                      {care?.started_at
-                        ? formatDate(
-                            care?.started_at ?? "",
-                            "DD/MM/YYYY HH:mm:ss"
-                          )
-                        : "-"}
                     </TableCell>
                     <TableCell>
                       <Button

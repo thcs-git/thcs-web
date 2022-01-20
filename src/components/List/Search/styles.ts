@@ -14,10 +14,6 @@ export const FormSearch = styled.form`
     width: 50%;
     background: #ffffff;
   }
-
-  > ButtonSwitches {
-    display: block;
-  }
 `;
 
 export const ButtonStyle = styled(Button).attrs({

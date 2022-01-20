@@ -49,7 +49,11 @@ const Search = ({
             }
             endAdornment={
               <InputAdornment position="end">
-                <IconButton aria-label="toggle password visibility" edge="end">
+                <IconButton
+                  aria-label="toggle password visibility"
+                  edge="end"
+                  color="primary"
+                >
                   <SearchOutlined />
                 </IconButton>
               </InputAdornment>
