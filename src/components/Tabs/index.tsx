@@ -33,6 +33,8 @@ import { ReactComponent as CompanyIcon } from "../../assets/img/icon-company.svg
 import { ReactComponent as EmailIcon } from "../../assets/img/Icon-email.svg";
 import { ReactComponent as PrintIcon } from "../../assets/img/Icon-imprimir.svg";
 import { ReactComponent as PatientIcon } from "../../assets/img/icon-pacient.svg";
+import { ReactComponent as MaleIcon } from "../../assets/img/icon-male-1.svg";
+import { ReactComponent as FemaleIcon } from "../../assets/img/ionic-md-female.svg";
 
 interface ITabprops {
   navItems: INavItems[];
@@ -369,6 +371,12 @@ const TabForm = (props: ITabprops) => {
                     <TabNavItemAlingLeft>
                       <PatientIcon />
                       {name}
+                      {state.gender.toLowerCase() === "masculino" && (
+                        <MaleIcon />
+                      )}
+                      {state.gender.toLowerCase() === "feminino" && (
+                        <FemaleIcon />
+                      )}
                     </TabNavItemAlingLeft>
                   </TabNavItemDetails>
                 }

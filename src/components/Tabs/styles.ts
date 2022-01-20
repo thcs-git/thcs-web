@@ -110,6 +110,10 @@ export const TabNavItemAlingLeft = styled.div`
   align-items: center;
   gap: 8px;
 
+  & MaleIcon {
+    width: 14px;
+    height: 14px;
+  }
   svg {
     min-width: 32px;
   }
