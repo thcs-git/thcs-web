@@ -15,8 +15,7 @@ export const ButtonComponent = styled(Button)`
     props.value === "selected" ? "var(--secondary)" : "var(--gray)"};
   box-shadow: none;
   border-radius: 26px;
-  margin-right: 14px;
-  margin-bottom: 14px;
+  margin: 8px 14px 14px 0;
   cursor: pointer;
   text-transform: none;
   font-weight: bold;
