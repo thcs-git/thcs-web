@@ -1,6 +1,6 @@
-import React, {useState, useEffect, useCallback, ChangeEvent} from 'react';
-import {useDispatch, useSelector} from 'react-redux';
-import {useHistory, Link} from 'react-router-dom';
+import React, { useState, useEffect, useCallback, ChangeEvent } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { useHistory, Link } from "react-router-dom";
 import {
   Container,
   Button,
@@ -12,53 +12,61 @@ import {
   DialogActions,
   DialogContent,
   DialogContentText,
-  DialogTitle, Tooltip
-} from '@material-ui/core';
-import {MoreVert} from '@material-ui/icons';
-import debounce from 'lodash.debounce';
+  DialogTitle,
+  Tooltip,
+} from "@material-ui/core";
+import { MoreVert } from "@material-ui/icons";
+import debounce from "lodash.debounce";
 
-import {UserInterface} from '../../../store/ducks/users/types';
+import { UserInterface } from "../../../store/ducks/users/types";
 
-import Loading from '../../../components/Loading';
+import Loading from "../../../components/Loading";
 
-import {ApplicationState} from '../../../store';
-import {loadRequest, searchRequest, cleanAction, loadRequestByClient} from '../../../store/ducks/users/actions';
+import { ApplicationState } from "../../../store";
+import {
+  loadRequest,
+  searchRequest,
+  cleanAction,
+  loadRequestByClient,
+} from "../../../store/ducks/users/actions";
 
-import PaginationComponent from '../../../components/Pagination';
-import Sidebar from '../../../components/Sidebar';
-import SearchComponent from '../../../components/List/Search';
-import Table from '../../../components/Table';
+import PaginationComponent from "../../../components/Pagination";
+import Sidebar from "../../../components/Sidebar";
+import SearchComponent from "../../../components/List/Search";
+import Table from "../../../components/Table";
 
-import AddIcon from '@material-ui/icons/Add';
+import AddIcon from "@material-ui/icons/Add";
 
-import {FormTitle} from '../../../styles/components/Form';
+import { FormTitle } from "../../../styles/components/Form";
 
-import ListItem from '@material-ui/core/ListItem';
-import ListItemIcon from '@material-ui/core/ListItemIcon';
-import ListItemText from '@material-ui/core/ListItemText';
+import ListItem from "@material-ui/core/ListItem";
+import ListItemIcon from "@material-ui/core/ListItemIcon";
+import ListItemText from "@material-ui/core/ListItemText";
 import {
   List,
   ListLink,
   ListItemContent,
   ListItemStatus,
   ListItemTitle,
-} from './styles';
-import {formatDate} from '../../../helpers/date';
+  SpecialtyCell,
+} from "./styles";
+import { formatDate } from "../../../helpers/date";
 
 import LOCALSTORAGE from "../../../helpers/constants/localStorage";
-import _ from 'lodash';
+import _ from "lodash";
 import MoreHorizTwoToneIcon from "@material-ui/icons/MoreHorizTwoTone";
 import SESSIONSTORAGE from "../../../helpers/constants/sessionStorage";
 
-const token = window.localStorage.getItem('token');
-const currentCompany = localStorage.getItem(LOCALSTORAGE.COMPANY_SELECTED) || '';
+const token = window.localStorage.getItem("token");
+const currentCompany =
+  localStorage.getItem(LOCALSTORAGE.COMPANY_SELECTED) || "";
 
 export default function UserClientList() {
   const dispatch = useDispatch();
   const history = useHistory();
   const userState = useSelector((state: ApplicationState) => state.users);
 
-  const [search, setSearch] = useState('');
+  const [search, setSearch] = useState("");
 
   const [users, setUsers] = useState<UserInterface[]>([]);
 
@@ -70,97 +78,86 @@ export default function UserClientList() {
   useEffect(() => {
     dispatch(cleanAction());
     dispatch(loadRequestByClient());
-  }, [])
+  }, []);
 
-  const handleOpenRowMenu = useCallback((event: React.MouseEvent<HTMLButtonElement>) => {
-    setAnchorEl(event.currentTarget);
-  }, [anchorEl]);
+  const handleOpenRowMenu = useCallback(
+    (event: React.MouseEvent<HTMLButtonElement>) => {
+      setAnchorEl(event.currentTarget);
+    },
+    [anchorEl]
+  );
 
   const handleCloseRowMenu = useCallback(() => {
     setAnchorEl(null);
   }, [anchorEl]);
 
-  const handleChangeInput = useCallback((event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-    setSearch(event.target.value)
-    dispatch(searchRequest(event.target.value));
-  }, []);
+  const handleChangeInput = useCallback(
+    (event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+      setSearch(event.target.value);
+      dispatch(searchRequest(event.target.value));
+    },
+    []
+  );
 
   const handleActive = useCallback((user) => {
-    return _.filter(user.companies_links, {companie_id: {_id: currentCompany}})[0]?.active
+    return _.filter(user.companies_links, {
+      companie_id: { _id: currentCompany },
+    })[0]?.active;
   }, []);
 
   const handleLinkedAt = useCallback((user) => {
-    return _.filter(user.companies_links, {companie_id: {_id: currentCompany}})[0]?.linked_at
+    return _.filter(user.companies_links, {
+      companie_id: { _id: currentCompany },
+    })[0]?.linked_at;
   }, []);
 
-  const debounceSearchRequest = debounce(handleChangeInput, 900)
+  const debounceSearchRequest = debounce(handleChangeInput, 900);
 
   const toggleHistoryModal = (index: number) => {
     handleCloseRowMenu();
     setUserIndex(index);
     setHistoryModalOpen(!historyModalOpen);
   };
-
   const handleCpf = (cpf: string) => {
     if (cpf) {
-      cpf = cpf.replace('.', '')
-      cpf = cpf.replace('.', '')
-      cpf = cpf.replace('-', '')
-      return `${cpf[0]}${cpf[1]}${cpf[2]}.${cpf[3]}${cpf[4]}${cpf[5]}.${cpf[6]}${cpf[7]}${cpf[8]}-${cpf[9]}${cpf[10]}`
+      cpf = cpf.replace(".", "");
+      cpf = cpf.replace(".", "");
+      cpf = cpf.replace("-", "");
+      return `${cpf[0]}${cpf[1]}${cpf[2]}.${cpf[3]}${cpf[4]}${cpf[5]}.${cpf[6]}${cpf[7]}${cpf[8]}-${cpf[9]}${cpf[10]}`;
     }
   };
-
-  const integration = sessionStorage.getItem(SESSIONSTORAGE.INTEGRATION)
-
+  const integration = sessionStorage.getItem(SESSIONSTORAGE.INTEGRATION);
   function handleEmpty(value: any) {
-    return value ? value : '-'
+    return value ? value : "-";
   }
-
+  // console.log(users);
   return (
     <>
       <Sidebar>
-        {userState.loading && <Loading/>}
+        {userState.loading && <Loading />}
         <Container>
-          <FormTitle>Todos Profissionais</FormTitle>
+          <FormTitle style={{ fontSize: "20px" }}>
+            Todos Profissionais
+          </FormTitle>
 
           {integration ? (
             <>
-            <Table
-              tableCells={[
-                {name: 'Prestador', align: 'left',},
-                {name: 'Usuário', align: 'left',},
-                {name: 'CPF', align: 'left'},
-                {name: 'Função', align: 'left'},
-                {name: 'Especialidades', align: 'left'},
-              ]}
-            >
-              {userState?.list.data.map((user, index) => (
-                <TableRow key={`user_${index}`}>
-                  <TableCell align="left">
-                    <Link key={index} to={`/userclient/${user._id}/view`}>{user?.name}</Link>
-                  </TableCell>
-                  <TableCell align="left">
-                    <Link key={index} to={`/userclient/${user._id}/view`}>{user?.username}</Link>
-                  </TableCell>
-                  <TableCell>
-                    {handleEmpty(handleCpf(user?.fiscal_number))}
-                  </TableCell>
-                  <TableCell>
-                    {handleEmpty(user?.profession_id?.name)}
-                  </TableCell>
-                  <TableCell align="left">
-                    <div style={{display: 'flex'}}>
-                      <p style={{marginTop: '0.3rem'}}>{user.main_specialty_id?.name ? user.main_specialty_id?.name : '-'}</p>
-                      {user.specialties.length > 0 ? (<Tooltip style={{fontSize: '10pt', marginTop: '0.8rem'}}
-                                                               title={user.specialties.map((specialty, index) => (
-                                                                 `${specialty.name}${index < (user.specialties.length - 1) ? ',' : ''}`
-                                                               ))}><MoreHorizTwoToneIcon/></Tooltip>
-                      ) : ('')}
-                    </div>
-                  </TableCell>
-                </TableRow>
-              ))}
-            </Table>
+              <Table
+                tableCells={[
+                  { name: "Profissional", align: "left" },
+                  { name: "Usuário", align: "left" },
+                  { name: "CPF", align: "left" },
+                  { name: "Função", align: "left" },
+                  { name: "Especialidades", align: "left" },
+                ]}
+                userState={userState}
+                handleEmpty={handleEmpty}
+                handleCpf={handleCpf}
+                integration={integration}
+                users={users}
+              >
+                {"filho integration"}{" "}
+              </Table>
             </>
           ) : (
             <>
@@ -172,89 +169,24 @@ export default function UserClientList() {
               {/*/>*/}
               <Table
                 tableCells={[
-                  {name: 'Prestador', align: 'left',},
-                  {name: 'CPF', align: 'left'},
-                  {name: 'Função', align: 'left'},
-                  {name: 'Especialidades', align: 'left'},
+                  { name: "Prestador", align: "left" },
+                  { name: "CPF", align: "left" },
+                  { name: "Função", align: "left" },
+                  { name: "Especialidades", align: "left" },
                   // {name: '', align: 'left'},
-                  {name: 'Adicionado em', align: 'left'},
-                  {name: 'Status', align: 'left'},
-                  {name: '', align: 'left'},
+                  { name: "Adicionado em", align: "left" },
+                  { name: "Status", align: "left" },
+                  { name: "", align: "left" },
                 ]}
+                handleLinkedAt={handleLinkedAt}
+                handleActive={handleActive}
+                handleOpenRowMenu={handleOpenRowMenu}
+                integration={integration}
+                users={users}
+                userState={userState}
+                handleCpf={handleCpf}
               >
-                {userState?.list.data.map((user, index) => (
-                  <TableRow key={`user_${index}`}>
-                    <TableCell align="left">
-                      <Link key={index} to={`/userclient/${user._id}/view`}>{user?.name}</Link>
-                    </TableCell>
-                    <TableCell>
-                      {handleCpf(user?.fiscal_number)}
-                    </TableCell>
-                    <TableCell>
-                      {user?.profession_id?.name}
-                    </TableCell>
-                    <TableCell align="left">
-                      <div style={{display: 'flex'}}>
-                        <p style={{marginTop: '0.3rem'}}>{user.main_specialty_id?.name}</p>
-                        {user.specialties.length > 0 ? (<Tooltip style={{fontSize: '10pt', marginTop: '0.8rem'}}
-                                                                 title={user.specialties.map((specialty, index) => (
-                                                                   `${specialty.name}${index < (user.specialties.length - 1) ? ',' : ''}`
-                                                                 ))}><MoreHorizTwoToneIcon/></Tooltip>
-                        ) : (null)}
-                      </div>
-                    </TableCell>
-                    {/*<TableCell>*/}
-                    {/*  {user?.main_specialty_id?.name}*/}
-                    {/*</TableCell>*/}
-                    {/*<TableCell align="center">*/}
-                    {/*  {user.specialties.length > 0 ? (*/}
-                    {/*    <ListItem>*/}
-                    {/*      <Button onClick={() => toggleHistoryModal(index)}>*/}
-                    {/*        <AddIcon style={{color: '#0899BA', cursor: "pointer"}}/>*/}
-                    {/*      </Button>*/}
-                    {/*      /!* <Menu*/}
-                    {/*        id={`user-speciality${index}`}*/}
-                    {/*        anchorEl={anchorEl}*/}
-                    {/*        keepMounted*/}
-                    {/*        open={anchorEl?.id === `btn_user-speciality${index}`}*/}
-                    {/*        onClose={handleCloseRowMenu}*/}
-                    {/*      >*/}
-                    {/*        <MenuItem style={{ cursor: "default", fontSize: "13pt", fontFamily: "Open Sans Bold" }}><h4>Principal</h4></MenuItem>*/}
-                    {/*        <MenuItem style={{ cursor: "default", fontSize: "10pt", fontFamily: "Open Sans Regular"}}>{user.main_specialty_id.name}</MenuItem>*/}
-                    {/*        <MenuItem style={{ cursor: "default", fontSize: "13pt", fontFamily: "Open Sans Bold"}}><h4>Secundária</h4></MenuItem>*/}
-                    {/*        <MenuItem style={{ cursor: "default", fontSize: "10pt", fontFamily: "Open Sans Regular"}}>{user.specialties.map((specialty, index) => (*/}
-                    {/*          `${specialty.name}${index < (user.specialties.length - 1) ? ',' : ''}`*/}
-                    {/*        ))}</MenuItem>*/}
-                    {/*      </Menu> *!/*/}
-                    {/*    </ListItem>*/}
-                    {/*  ) : (null)*/}
-                    {/*  }*/}
-                    {/*</TableCell>*/}
-                    <TableCell>
-                      {formatDate(handleLinkedAt(user), 'DD/MM/YYYY')}
-                    </TableCell>
-                    <TableCell>
-                      <ListItemStatus
-                        active={handleActive(user)}>{handleActive(user) ? 'Ativo' : 'Inativo'}</ListItemStatus>
-                    </TableCell>
-                    <TableCell align="center">
-                      <Button aria-controls={`user-menu${index}`} id={`btn_user-menu${index}`} aria-haspopup="true"
-                              onClick={handleOpenRowMenu}>
-                        <MoreVert style={{color: '#0899BA'}}/>
-                      </Button>
-                      <Menu
-                        id={`user-menu${index}`}
-                        anchorEl={anchorEl}
-                        keepMounted
-                        open={anchorEl?.id === `btn_user-menu${index}`}
-                        onClose={handleCloseRowMenu}
-                      >
-                        {/*<MenuItem onClick={() => history.push(`/user/${user._id}/edit/edit`)}>Editar</MenuItem>*/}
-                        <MenuItem onClick={() => history.push(`/userclient/${user._id}/view`)}>Visualizar</MenuItem>
-                      </Menu>
-                    </TableCell>
-                  </TableRow>
-                ))}
+                {"filho sem integration"}
               </Table>
             </>
           )}
@@ -263,40 +195,57 @@ export default function UserClientList() {
             page={userState.list.page}
             rowsPerPage={userState.list.limit}
             totalRows={userState.list.total}
-
-            handleFirstPage={() => dispatch(loadRequestByClient({
-              page: '1',
-              limit: userState.list.limit,
-              total: userState.list.total,
-              search
-            }))}
-
-            handleLastPage={() => dispatch(loadRequestByClient({
-              page: (Math.ceil(+userState.list.total / +userState.list.limit)).toString(),
-              limit: userState.list.limit,
-              total: userState.list.total,
-              search
-            }))}
-
-            handleNextPage={() => dispatch(loadRequestByClient({
-              page: (+userState.list.page + 1).toString(),
-              limit: userState.list.limit,
-              total: userState.list.total,
-              search
-            }))}
-
-            handlePreviosPage={() => dispatch(loadRequestByClient({
-              page: (+userState.list.page - 1).toString(),
-              limit: userState.list.limit,
-              total: userState.list.total,
-              search
-            }))}
-
-            handleChangeRowsPerPage={event => dispatch(loadRequestByClient({
-              limit: event.target.value,
-              page: '1',
-              search
-            }))}
+            handleFirstPage={() =>
+              dispatch(
+                loadRequestByClient({
+                  page: "1",
+                  limit: userState.list.limit,
+                  total: userState.list.total,
+                  search,
+                })
+              )
+            }
+            handleLastPage={() =>
+              dispatch(
+                loadRequestByClient({
+                  page: Math.ceil(
+                    +userState.list.total / +userState.list.limit
+                  ).toString(),
+                  limit: userState.list.limit,
+                  total: userState.list.total,
+                  search,
+                })
+              )
+            }
+            handleNextPage={() =>
+              dispatch(
+                loadRequestByClient({
+                  page: (+userState.list.page + 1).toString(),
+                  limit: userState.list.limit,
+                  total: userState.list.total,
+                  search,
+                })
+              )
+            }
+            handlePreviosPage={() =>
+              dispatch(
+                loadRequestByClient({
+                  page: (+userState.list.page - 1).toString(),
+                  limit: userState.list.limit,
+                  total: userState.list.total,
+                  search,
+                })
+              )
+            }
+            handleChangeRowsPerPage={(event) =>
+              dispatch(
+                loadRequestByClient({
+                  limit: event.target.value,
+                  page: "1",
+                  search,
+                })
+              )
+            }
           />
         </Container>
         {/*Especialidades
@@ -338,7 +287,6 @@ export default function UserClientList() {
             </Button>
           </DialogActions>
         </Dialog>*/}
-
       </Sidebar>
     </>
   );
