@@ -17,7 +17,11 @@ import AssignmentIndIcon from "@mui/icons-material/AssignmentInd";
 import { data } from "cypress/types/jquery";
 
 import { ReactComponent as Company2Icon } from "../../../assets/img/icon-company2.svg";
-import { ReactComponent as ProfileIcon } from "../../../assets/img/icon-professional.svg";
+import { ReactComponent as ProfessionalIcon } from "../../../assets/img/icon-professional.svg";
+import { ReactComponent as LocationIcon } from "../../../assets/img/icon-location.svg";
+import { ReactComponent as PhoneIcon } from "../../../assets/img/icon-phone-details.svg";
+import { ReactComponent as PacientDetailsIcon } from "../../../assets/img/icon-pacient-details.svg";
+import { ReactComponent as MaleIcon } from "../../../assets/img/icon-male.svg";
 
 // import eee from "../../../assets/img/icon-company2.svg"
 
@@ -31,6 +35,7 @@ interface Icontent {
   icon?: any;
   rows: Irows[];
   detailsCompanyIs?: boolean;
+  detailsPatientIs?: boolean;
 }
 
 interface Irows {
@@ -42,6 +47,10 @@ export default function ViewCard(props: IProps) {
   const { content, md } = props;
   const md_value = md ? md : 6;
   // console.log(content.detailsCompanyIs);
+
+  {
+    /* variaveis com informações da company */
+  }
   let dataCompany: Irows[] = [];
   let dataResponsible: Irows[] = [];
   let addressData: Irows[] = [];
@@ -51,6 +60,13 @@ export default function ViewCard(props: IProps) {
       value: "",
     },
   ];
+
+  {
+    /* variaveis com informações da company */
+  }
+  let patientData: Irows[] = [];
+  let patientAdress: Irows[] = [];
+  let patientContact: Irows[] = [];
 
   content.rows.forEach((e) => {
     switch (e.name) {
@@ -64,6 +80,9 @@ export default function ViewCard(props: IProps) {
         addressData.push(e);
         break;
       case "Número":
+        addressData.push(e);
+        break;
+      case "Complemento":
         addressData.push(e);
         break;
       case "Bairro":
@@ -80,12 +99,61 @@ export default function ViewCard(props: IProps) {
         break;
       case "E-mail":
         dataResponsible.push(e);
+        patientData.push(e);
         break;
       case "Telefone":
         dataResponsible.push(e);
         break;
       case "Tipo":
         dataResponsible.push(e);
+        break;
+      case "Nome":
+        patientData.push(e);
+        break;
+      case "Gênero":
+        patientData.push(e);
+        break;
+      case "Estado Civil":
+        patientData.push(e);
+        break;
+      case "Data de Nascimento":
+        patientData.push(e);
+        break;
+      case "tipo Sanguíneo":
+        patientData.push(e);
+        break;
+      case "CPF":
+        patientData.push(e);
+        break;
+      case "Profissão":
+        patientData.push(e);
+        break;
+      case "Nome da Mãe":
+        patientData.push(e);
+        break;
+      case "RG":
+        patientData.push(e);
+        break;
+      case "Emissor":
+        patientData.push(e);
+        break;
+      case "Telefone":
+        patientContact.push(e);
+        break;
+      case "Celular":
+        patientContact.push(e);
+        break;
+      case "Doador de Órgãos":
+        patientData.push(e);
+        break;
+      case "Nacionalidade":
+        patientData.push(e);
+        break;
+      case "Responsável":
+        patientData.push(e);
+        break;
+      case "CEP":
+        patientAdress.push(e);
         break;
     }
   });
@@ -95,8 +163,9 @@ export default function ViewCard(props: IProps) {
     else if (e.name === "Cidade") addressFull[0].value += e.value + " - ";
     else addressFull[0].value += e.value + ", ";
   });
+  content.detailsPatientIs && patientAdress.push(addressFull[0]);
 
-  dataCompany.push(addressFull[0]);
+  content.detailsCompanyIs && dataCompany.push(addressFull[0]);
   // console.log(data);
   return content.detailsCompanyIs ? (
     <Grid item md={md_value}>
@@ -123,11 +192,55 @@ export default function ViewCard(props: IProps) {
         </WrapperContentData>
 
         <WrapperTitleData>
-          <ProfileIcon />
+          <ProfessionalIcon />
           <p>Dados do Responsável</p>
         </WrapperTitleData>
         <WrapperContentData>
           {dataResponsible.map(({ name, value }: Irows, index: number) => (
+            <Grid item>{`${name}: ${value}`}</Grid>
+          ))}
+        </WrapperContentData>
+      </Grid>
+    </Grid>
+  ) : content.detailsPatientIs ? (
+    <Grid item md={md_value}>
+      <Grid
+        container
+        style={{
+          flexDirection: "column",
+          paddingLeft: "24px",
+          // paddingTop: "10px",
+        }}
+      >
+        {/* <Grid item style={{ paddingBottom: "10px" }}>
+          <h3>{content.tittle}</h3>
+        </Grid> */}
+        <WrapperTitleData>
+          {/* <img src="../../../assets/img/icon-company2.svg" alt="icon company" /> */}
+          <PacientDetailsIcon />
+          <p>Dados do Paciente</p>
+        </WrapperTitleData>
+        <WrapperContentData>
+          {patientData.map(({ name, value }: Irows, index: number) => (
+            <Grid item>{`${name}: ${value}`}</Grid>
+          ))}
+        </WrapperContentData>
+        <WrapperTitleData>
+          <LocationIcon />
+          <p>Endereço</p>
+        </WrapperTitleData>
+        <WrapperContentData>
+          {patientAdress.map(({ name, value }: Irows, index: number) => (
+            <Grid item>{`${name}: ${value}`}</Grid>
+          ))}
+        </WrapperContentData>
+
+        <WrapperTitleData>
+          <PhoneIcon />
+          <p>Contato</p>
+        </WrapperTitleData>
+        <WrapperContentData>
+          {patientContact.map(({ name, value }: Irows, index: number) => (
             <Grid item>{`${name}: ${value}`}</Grid>
           ))}
         </WrapperContentData>
