@@ -1,5 +1,5 @@
-import React, {useState, useEffect, useCallback, ChangeEvent} from "react";
-import {useHistory, Link} from "react-router-dom";
+import React, { useState, useEffect, useCallback, ChangeEvent } from "react";
+import { useHistory, Link } from "react-router-dom";
 import {
   Container,
   Button,
@@ -20,14 +20,18 @@ import {
   TextField,
   Grid,
 } from "@material-ui/core";
-import {MoreVert, AccountCircle as AccountCircleIcon, Visibility as VisibilityIcon} from "@material-ui/icons";
+import {
+  MoreVert,
+  AccountCircle as AccountCircleIcon,
+  Visibility as VisibilityIcon,
+} from "@material-ui/icons";
 import debounce from "lodash.debounce";
-import _ from 'lodash';
+import _ from "lodash";
 
-import {CareInterface, CareState} from "../../../store/ducks/cares/types";
+import { CareInterface, CareState } from "../../../store/ducks/cares/types";
 
-import {useDispatch, useSelector} from "react-redux";
-import {ApplicationState} from "../../../store/";
+import { useDispatch, useSelector } from "react-redux";
+import { ApplicationState } from "../../../store/";
 import {
   loadRequest,
   searchCareRequest as getCares,
@@ -40,13 +44,13 @@ import SearchComponent from "../../../components/List/Search";
 import Loading from "../../../components/Loading";
 import Table from "../../../components/Table";
 
-import {FormTitle} from "../../../styles/components/Form";
-import {ComplexityStatus} from "../../../styles/components/Table";
+import { FormTitle } from "../../../styles/components/Form";
+import { ComplexityStatus } from "../../../styles/components/Table";
 
-import {formatDate} from "../../../helpers/date";
-import {uniqBy} from "cypress/types/lodash";
-import {createInterface} from "readline";
-import {any} from "cypress/types/bluebird";
+import { formatDate } from "../../../helpers/date";
+import { uniqBy } from "cypress/types/lodash";
+import { createInterface } from "readline";
+import { any } from "cypress/types/bluebird";
 import SESSIONSTORAGE from "../../../helpers/constants/sessionStorage";
 import HistoryDialog from "../../../components/Dialogs/History";
 
@@ -59,13 +63,12 @@ export default function CouncilList() {
 
   useEffect(() => {
     if (tabIndex === 0) {
-      dispatch(getCares({status: "Atendimento"}));
+      dispatch(getCares({ status: "Atendimento" }));
     } else if (tabIndex === 1) {
-      dispatch(getCares({status: "Alta"}));
+      dispatch(getCares({ status: "Alta" }));
     } else {
-      dispatch(getCares({status: "Todos"}));
+      dispatch(getCares({ status: "Todos" }));
     }
-
 
     // if (!(sessionStorage.getItem(SESSIONSTORAGE.INTEGRATION))) {
     //   dispatch(loadRequestPopUp({
@@ -78,10 +81,9 @@ export default function CouncilList() {
   }, [tabIndex]);
 
   useEffect(() => {
-    let array = _.uniqBy(careState.list.data, 'patient_id.name');
+    let array = _.uniqBy(careState.list.data, "patient_id.name");
     setCareFilter(array);
-
-  }, [careState.list.data])
+  }, [careState.list.data]);
 
   const [search, setSearch] = useState("");
 
@@ -112,7 +114,7 @@ export default function CouncilList() {
   const handleChangeInput = useCallback(
     (event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
       setSearch(event.target.value);
-      dispatch(getCares({search: event.target.value, status: "Atendimento"}));
+      dispatch(getCares({ search: event.target.value, status: "Atendimento" }));
     },
     [search]
   );
@@ -120,51 +122,56 @@ export default function CouncilList() {
   const debounceSearchRequest = debounce(handleChangeInput, 900);
 
   const handleComplexity = (complexity: any) => {
-    if (complexity === 'Sem Complexidade' || complexity === '') {
-      return '-'
+    if (complexity === "Sem Complexidade" || complexity === "") {
+      return "-";
     }
-    return complexity
+    return complexity;
   };
 
   // const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
   //   setAnchorEl(event.currentTarget);
   // };
 
-  const isDone = useCallback((care: any) => {
-    let patientId = _.filter(careState.list2.data, {patient_id: {_id: care?.patient_id._id}});
-    //console.log("teste", patientId);
-    setpatientArray(patientId);
-    //console.log(patientArray);
-  }, [careState]);
+  const isDone = useCallback(
+    (care: any) => {
+      let patientId = _.filter(careState.list2.data, {
+        patient_id: { _id: care?.patient_id._id },
+      });
+      //console.log("teste", patientId);
+      setpatientArray(patientId);
+      //console.log(patientArray);
+    },
+    [careState]
+  );
 
   const toggleHistoryModal = (index: number, care: any) => {
     handleCloseRowMenu();
     setCareIndex(index);
     isDone(care);
     setHistoryModalOpen(!historyModalOpen);
-    setHistoryPatient(care.patient_id._id)
-    setHistoryPatientName(care.patient_id.name)
+    setHistoryPatient(care.patient_id._id);
+    setHistoryPatientName(care.patient_id.name);
   };
 
-  const integration = sessionStorage.getItem(SESSIONSTORAGE.INTEGRATION)
+  const integration = sessionStorage.getItem(SESSIONSTORAGE.INTEGRATION);
 
   function handleEmpty(value: any) {
-    return value ? value : '-'
+    return value ? value : "-";
   }
 
   const tableCells = [
-    {name: 'Data do Atendimento', align: 'left'},
-    {name: 'Atendimento', align: 'left'},
-    {name: 'Data da Alta', align: 'left'},
-    {name: 'Tipo', align: 'center'},
-    {name: 'Empresa', align: 'center'},
-    {name: 'Visualizar', align: 'center'}
-  ]
+    { name: "Data do Atendimento", align: "left" },
+    { name: "Atendimento", align: "left" },
+    { name: "Data da Alta", align: "left" },
+    { name: "Tipo", align: "center" },
+    { name: "Empresa", align: "center" },
+    { name: "Visualizar", align: "center" },
+  ];
 
   return (
     <>
       <Sidebar>
-        {careState.loading && <Loading/>}
+        {careState.loading && <Loading />}
         <Container>
           <FormTitle>Lista de Atendimentos</FormTitle>
 
@@ -172,33 +179,45 @@ export default function CouncilList() {
             <>
               <Table
                 tableCells={[
-                  {name: "Atendimento", align: "left"},
-                  {name: "Paciente", align: "left"},
-                  {name: "Tipo", align: "center"},
-                  {name: "CPF", align: "center"},
-                  {name: "Data de Atendimento", align: "center"},
+                  { name: "Atendimento", align: "left" },
+                  { name: "Paciente", align: "left" },
+                  { name: "Tipo", align: "center" },
+                  { name: "CPF", align: "center" },
+                  { name: "Data de Atendimento", align: "center" },
                 ]}
               >
-                {careState.list.data.map((care: CareInterface, index: number) => (
-                  <TableRow key={`care_${index}`}>
-                    <TableCell>
-                      <Link to={`/care/${care._id}/overview`}>
-                        {handleEmpty(care._id)}
-                      </Link>
-                    </TableCell>
-                    <TableCell>
-                      <Link to={`/care/${care._id}/overview`}>
-                        {care.patient_id?.social_status ? handleEmpty(care.patient_id.social_name) : handleEmpty(care.patient_id.name)}
-                      </Link>
-                    </TableCell>
-                    <TableCell align="center">{handleEmpty(care?.tipo)}</TableCell>
-                    <TableCell align="center">{handleEmpty(care.patient_id?.fiscal_number)}</TableCell>
-                    <TableCell align="center">
-                      {care?.created_at ? formatDate(care?.created_at ?? "", "DD/MM/YYYY HH:mm:ss") : "-"}
-                    </TableCell>
-                  </TableRow>
-
-                ))}
+                {careState.list.data.map(
+                  (care: CareInterface, index: number) => (
+                    <TableRow key={`care_${index}`}>
+                      <TableCell>
+                        <Link to={`/care/${care._id}/overview`}>
+                          {handleEmpty(care._id)}
+                        </Link>
+                      </TableCell>
+                      <TableCell>
+                        <Link to={`/care/${care._id}/overview`}>
+                          {care.patient_id?.social_status
+                            ? handleEmpty(care.patient_id.social_name)
+                            : handleEmpty(care.patient_id.name)}
+                        </Link>
+                      </TableCell>
+                      <TableCell align="center">
+                        {handleEmpty(care?.tipo)}
+                      </TableCell>
+                      <TableCell align="center">
+                        {handleEmpty(care.patient_id?.fiscal_number)}
+                      </TableCell>
+                      <TableCell align="center">
+                        {care?.created_at
+                          ? formatDate(
+                              care?.created_at ?? "",
+                              "DD/MM/YYYY HH:mm:ss"
+                            )
+                          : "-"}
+                      </TableCell>
+                    </TableRow>
+                  )
+                )}
               </Table>
             </>
           ) : (
@@ -214,38 +233,48 @@ export default function CouncilList() {
 
               <Table
                 tableCells={[
-                  {name: "Paciente", align: "left"},
-                  {name: "Atendimento", align: "left"},
-                  {name: "CPF", align: "left"},
-                  {name: "Tipo", align: "left"},
-                  {name: "Complexidade", align: "left"},
-                  {name: "Último Atendimento", align: "left"},
-                  {name: " ", align: "left"},
+                  { name: "Atendimento", align: "left" },
+                  { name: "Paciente", align: "left" },
+                  { name: "Tipo", align: "left" },
+                  { name: "CPF", align: "left" },
+                  { name: "Último Atendimento", align: "left" },
+                  { name: "Complexidade", align: "left" },
+                  { name: " ", align: "left" },
                 ]}
               >
                 {careFilter.map((care: CareInterface, index: number) => (
                   <TableRow key={`care_${index}`}>
+                    <TableCell>{care?._id}</TableCell>
                     <TableCell>
                       <Link to={`/care/${care._id}/overview`}>
                         {care.patient_id?.social_name || care.patient_id?.name}
                       </Link>
                     </TableCell>
-                    <TableCell>{care?._id}</TableCell>
-                    <TableCell>{care.patient_id?.fiscal_number}</TableCell>
                     <TableCell>
                       {typeof care?.care_type_id === "object"
                         ? care?.care_type_id.name
                         : care?.care_type_id}
                     </TableCell>
+                    <TableCell>{care.patient_id?.fiscal_number}</TableCell>
+
+                    <TableCell align="center">
+                      {care?.started_at
+                        ? formatDate(
+                            care?.started_at ?? "",
+                            "DD/MM/YYYY HH:mm:ss"
+                          )
+                        : "-"}
+                    </TableCell>
                     <TableCell align="left">
                       <ComplexityStatus
                         status={care?.complexity || care?.capture?.complexity}
                       >
-                        <p>{handleComplexity(care?.complexity || care?.capture?.complexity)}</p>
+                        <p>
+                          {handleComplexity(
+                            care?.complexity || care?.capture?.complexity
+                          )}
+                        </p>
                       </ComplexityStatus>
-                    </TableCell>
-                    <TableCell align="center">
-                      {care?.started_at ? formatDate(care?.started_at ?? "", "DD/MM/YYYY HH:mm:ss") : "-"}
                     </TableCell>
                     <TableCell>
                       <Button
@@ -254,7 +283,7 @@ export default function CouncilList() {
                         aria-haspopup="true"
                         onClick={handleOpenRowMenu}
                       >
-                        <MoreVert style={{color: '#0899BA'}}/>
+                        <MoreVert style={{ color: "#0899BA" }} />
                       </Button>
                       <Menu
                         id={`simple-menu${index}`}
@@ -263,7 +292,11 @@ export default function CouncilList() {
                         open={anchorEl?.id === `btn_simple-menu${index}`}
                         onClose={handleCloseRowMenu}
                       >
-                        <MenuItem onClick={() => toggleHistoryModal(index, care)}>Histórico</MenuItem>
+                        <MenuItem
+                          onClick={() => toggleHistoryModal(index, care)}
+                        >
+                          Histórico
+                        </MenuItem>
                       </Menu>
                     </TableCell>
                   </TableRow>
@@ -281,7 +314,7 @@ export default function CouncilList() {
                   page: "1",
                   limit: careState.list.limit,
                   total: careState.list.total,
-                  status: 'Atendimento',
+                  status: "Atendimento",
                   search,
                 })
               )
@@ -294,7 +327,7 @@ export default function CouncilList() {
                   ).toString(),
                   limit: careState.list.limit,
                   total: careState.list.total,
-                  status: 'Atendimento',
+                  status: "Atendimento",
                   search,
                 })
               )
@@ -305,7 +338,7 @@ export default function CouncilList() {
                   page: (+careState.list.page + 1).toString(),
                   limit: careState.list.limit,
                   total: careState.list.total,
-                  status: 'Atendimento',
+                  status: "Atendimento",
                   search,
                 })
               )
@@ -316,7 +349,7 @@ export default function CouncilList() {
                   page: (+careState.list.page - 1).toString(),
                   limit: careState.list.limit,
                   total: careState.list.total,
-                  status: 'Atendimento',
+                  status: "Atendimento",
                   search,
                 })
               )
@@ -326,7 +359,7 @@ export default function CouncilList() {
                 loadRequest({
                   limit: event.target.value,
                   page: "1",
-                  status: 'Atendimento',
+                  status: "Atendimento",
                   search,
                 })
               )
@@ -342,7 +375,7 @@ export default function CouncilList() {
           historyPatient={historyPatient}
           historyPatientName={historyPatientName}
           tableCells={tableCells}
-          historyType={'care'}
+          historyType={"care"}
         />
 
         {/*<Dialog*/}

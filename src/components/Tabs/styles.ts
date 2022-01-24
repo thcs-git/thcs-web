@@ -88,7 +88,7 @@ export const TabBodyItem = styled.div`
   }
 `;
 
-export const TabNavItemCompany = styled.div`
+export const TabNavItemDetails = styled.div`
   display: flex;
   flex-direction: row;
   align-items: center;
@@ -110,8 +110,12 @@ export const TabNavItemAlingLeft = styled.div`
   align-items: center;
   gap: 8px;
 
+  & MaleIcon {
+    width: 14px;
+    height: 14px;
+  }
   svg {
-    min-width: 32px;
+    /* min-width: 32px; */
   }
 `;
 export const TabNavItemAlingRigth = styled.div`
