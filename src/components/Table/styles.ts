@@ -19,6 +19,6 @@ export const MenuFilter = styled(Menu)`
   }
 
   ul > li {
-    padding: 0px !important;
+    /* padding: 0px !important; */
   }
 `;

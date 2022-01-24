@@ -156,7 +156,7 @@ export default function UserClientList() {
                 integration={integration}
                 users={users}
               >
-                {"filho integration"}{" "}
+                {"pages/userclient/list filho c/ integration"}
               </Table>
             </>
           ) : (
@@ -180,13 +180,12 @@ export default function UserClientList() {
                 ]}
                 handleLinkedAt={handleLinkedAt}
                 handleActive={handleActive}
-                handleOpenRowMenu={handleOpenRowMenu}
                 integration={integration}
                 users={users}
                 userState={userState}
                 handleCpf={handleCpf}
               >
-                {"filho sem integration"}
+                {"pages/userclient/list filho  s/ integration"}
               </Table>
             </>
           )}
