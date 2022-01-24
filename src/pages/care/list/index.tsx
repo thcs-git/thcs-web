@@ -177,6 +177,14 @@ export default function CouncilList() {
 
           {integration ? (
             <>
+              <SearchComponent
+                handleButton={() => history.push("/care/create/")}
+                buttonTitle=""
+                onChangeInput={debounceSearchRequest}
+                inputPlaceholder="Pesquise por nome, nº de atendimento, CPF, etc..."
+                switches={true}
+                setTabIndex={setTabIndex}
+              />
               <Table
                 tableCells={[
                   { name: "Atendimento", align: "left" },
@@ -226,7 +234,7 @@ export default function CouncilList() {
                 handleButton={() => history.push("/care/create/")}
                 buttonTitle="Novo Atendimento"
                 onChangeInput={debounceSearchRequest}
-                inputPlaceholder="Pesquise por paciente, CPF, complexidade, etc..."
+                inputPlaceholder="Pesquise por nome, nº de atendimento, CPF, etc..."
                 switches={true}
                 setTabIndex={setTabIndex}
               />
