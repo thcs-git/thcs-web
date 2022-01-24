@@ -58,16 +58,20 @@ export default function CouncilList() {
   const history = useHistory();
   const dispatch = useDispatch();
   const careState = useSelector((state: ApplicationState) => state.cares);
-
   const [tabIndex, setTabIndex] = useState(0);
+
+  let valueStatus: string;
 
   useEffect(() => {
     if (tabIndex === 0) {
       dispatch(getCares({ status: "Atendimento" }));
+      valueStatus = "Atendimento";
     } else if (tabIndex === 1) {
       dispatch(getCares({ status: "Alta" }));
+      valueStatus = "Alta";
     } else {
       dispatch(getCares({ status: "Todos" }));
+      valueStatus = "Todos";
     }
 
     // if (!(sessionStorage.getItem(SESSIONSTORAGE.INTEGRATION))) {
@@ -114,7 +118,7 @@ export default function CouncilList() {
   const handleChangeInput = useCallback(
     (event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
       setSearch(event.target.value);
-      dispatch(getCares({ search: event.target.value, status: "Atendimento" }));
+      dispatch(getCares({ search: event.target.value, status: valueStatus }));
     },
     [search]
   );
@@ -193,8 +197,10 @@ export default function CouncilList() {
                   { name: "CPF", align: "center" },
                   { name: "Data de Atendimento", align: "center" },
                 ]}
+                careState={careState}
+                careFilter={careFilter}
               >
-                {careState.list.data.map(
+                {/* {careState.list.data.map(
                   (care: CareInterface, index: number) => (
                     <TableRow key={`care_${index}`}>
                       <TableCell>
@@ -225,7 +231,7 @@ export default function CouncilList() {
                       </TableCell>
                     </TableRow>
                   )
-                )}
+                )} */}
               </Table>
             </>
           ) : (
@@ -249,8 +255,12 @@ export default function CouncilList() {
                   { name: "Complexidade", align: "left" },
                   { name: " ", align: "left" },
                 ]}
+                careState={careState}
+                careFilter={careFilter}
+                handleComplexity={handleComplexity}
+                toggleHistoryModal={toggleHistoryModal}
               >
-                {careFilter.map((care: CareInterface, index: number) => (
+                {/* {careFilter.map((care: CareInterface, index: number) => (
                   <TableRow key={`care_${index}`}>
                     <TableCell>{care?._id}</TableCell>
                     <TableCell>
@@ -308,10 +318,11 @@ export default function CouncilList() {
                       </Menu>
                     </TableCell>
                   </TableRow>
-                ))}
+                ))} */}
               </Table>
             </>
           )}
+
           <PaginationComponent
             page={careState.list.page}
             rowsPerPage={careState.list.limit}
@@ -322,7 +333,7 @@ export default function CouncilList() {
                   page: "1",
                   limit: careState.list.limit,
                   total: careState.list.total,
-                  status: "Atendimento",
+                  status: valueStatus,
                   search,
                 })
               )
@@ -335,7 +346,7 @@ export default function CouncilList() {
                   ).toString(),
                   limit: careState.list.limit,
                   total: careState.list.total,
-                  status: "Atendimento",
+                  status: valueStatus,
                   search,
                 })
               )
@@ -346,7 +357,7 @@ export default function CouncilList() {
                   page: (+careState.list.page + 1).toString(),
                   limit: careState.list.limit,
                   total: careState.list.total,
-                  status: "Atendimento",
+                  status: valueStatus,
                   search,
                 })
               )
@@ -357,7 +368,7 @@ export default function CouncilList() {
                   page: (+careState.list.page - 1).toString(),
                   limit: careState.list.limit,
                   total: careState.list.total,
-                  status: "Atendimento",
+                  status: valueStatus,
                   search,
                 })
               )
@@ -367,7 +378,7 @@ export default function CouncilList() {
                 loadRequest({
                   limit: event.target.value,
                   page: "1",
-                  status: "Atendimento",
+                  status: valueStatus,
                   search,
                 })
               )
