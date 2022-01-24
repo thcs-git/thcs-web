@@ -35,7 +35,7 @@ const Search = ({
   return (
     <div>
       <FormSearch noValidate autoComplete="off">
-        <FormControl variant="outlined" size="small">
+        <FormControl variant="outlined" size="small" color="secondary">
           <InputLabel htmlFor="search-input">
             {(inputPlaceholder = inputPlaceholder)}
           </InputLabel>
@@ -52,7 +52,7 @@ const Search = ({
                 <IconButton
                   aria-label="toggle password visibility"
                   edge="end"
-                  color="primary"
+                  color="secondary"
                 >
                   <SearchOutlined />
                 </IconButton>
