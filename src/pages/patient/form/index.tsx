@@ -1,10 +1,10 @@
-import React, {useState, useEffect, useCallback} from 'react';
-import Tab from '@material-ui/core/Tab';
-import InputMask, {Props} from 'react-input-mask';
-import {cpf} from 'cpf-cnpj-validator';
-import validator from 'validator';
-import {useHistory, RouteComponentProps} from 'react-router-dom';
-import _ from 'lodash';
+import React, { useState, useEffect, useCallback } from "react";
+import Tab from "@material-ui/core/Tab";
+import InputMask, { Props } from "react-input-mask";
+import { cpf } from "cpf-cnpj-validator";
+import validator from "validator";
+import { useHistory, RouteComponentProps } from "react-router-dom";
+import _ from "lodash";
 import {
   Button,
   Container,
@@ -21,38 +21,41 @@ import {
   InputAdornment,
   MenuItem,
   Radio,
-  RadioGroup
-} from '@material-ui/core';
-import {SearchOutlined, Edit, AddAlertSharp} from '@material-ui/icons';
-import Autocomplete from '@material-ui/lab/Autocomplete';
+  RadioGroup,
+} from "@material-ui/core";
+import { SearchOutlined, Edit, AddAlertSharp } from "@material-ui/icons";
+import Autocomplete from "@material-ui/lab/Autocomplete";
 
-import {useDispatch, useSelector} from 'react-redux';
+import { useDispatch, useSelector } from "react-redux";
 import {
   createPatientRequest,
   updatePatientRequest,
   getAddress as getAddressAction,
   loadPatientById,
   loadFailure,
-  cleanAction
-} from '../../../store/ducks/patients/actions';
-import {PatientInterface} from '../../../store/ducks/patients/types';
+  cleanAction,
+} from "../../../store/ducks/patients/actions";
+import { PatientInterface } from "../../../store/ducks/patients/types";
 
-import {loadRequest as getAreasAction} from '../../../store/ducks/areas/actions';
+import { loadRequest as getAreasAction } from "../../../store/ducks/areas/actions";
 
-import {ApplicationState} from '../../../store';
+import { ApplicationState } from "../../../store";
 
-import Sidebar from '../../../components/Sidebar';
-import Loading from '../../../components/Loading';
+import Sidebar from "../../../components/Sidebar";
+import Loading from "../../../components/Loading";
 
-import RegistrationCompleted from '../capture/registrationCompleted';
+import RegistrationCompleted from "../capture/registrationCompleted";
 
-import {FormTitle, SelectComponent as Select} from '../../../styles/components/Form';
-import {SwitchComponent as Switch} from '../../../styles/components/Switch';
-import DatePicker from '../../../styles/components/DatePicker';
-import ButtonComponent from '../../../styles/components/Button';
+import {
+  FormTitle,
+  SelectComponent as Select,
+} from "../../../styles/components/Form";
+import { SwitchComponent as Switch } from "../../../styles/components/Switch";
+import DatePicker from "../../../styles/components/DatePicker";
+import ButtonComponent from "../../../styles/components/Button";
 
-import {formatDate, age} from '../../../helpers/date';
-import {bloodTypes, maritalStatus} from '../../../helpers/patient';
+import { formatDate, age } from "../../../helpers/date";
+import { bloodTypes, maritalStatus } from "../../../helpers/patient";
 
 import {
   ButtonsContent,
@@ -64,14 +67,14 @@ import {
   FormGroupSection,
   TabCustom as Tabs,
   FormControlCustom,
-  BoxCustom
-} from './styles';
-import Box from '@material-ui/core/Box';
-import Typography from '@material-ui/core/Typography';
-import {loadSuccess} from '../../../store/ducks/areas/actions';
-import {objectValues} from 'react-toastify/dist/utils';
-import {createPrescriptionRequest} from '../../../store/ducks/prescripition/actions';
-import {AreaInterface} from '../../../store/ducks/areas/types';
+  BoxCustom,
+} from "./styles";
+import Box from "@material-ui/core/Box";
+import Typography from "@material-ui/core/Typography";
+import { loadSuccess } from "../../../store/ducks/areas/actions";
+import { objectValues } from "react-toastify/dist/utils";
+import { createPrescriptionRequest } from "../../../store/ducks/prescripition/actions";
+import { AreaInterface } from "../../../store/ducks/areas/types";
 import TabTittle from "../../../components/Text/TabTittle";
 import TabForm from "../../../components/Tabs";
 import ButtonTabs from "../../../components/Button/ButtonTabs";
@@ -79,10 +82,9 @@ import ButtonEdit from "../../../components/Button/ButtonEdit";
 import SESSIONSTORAGE from "../../../helpers/constants/sessionStorage";
 
 interface IFormFields {
-  bloodType: string | null,
-  cellphone: string,
-  phone: string,
-
+  bloodType: string | null;
+  cellphone: string;
+  phone: string;
 }
 
 interface IPageParams {
@@ -99,7 +101,7 @@ interface TabPanelProps {
 }
 
 function TabPanel(props: TabPanelProps) {
-  const {children, value, index, ...other} = props;
+  const { children, value, index, ...other } = props;
 
   return (
     <div
@@ -123,11 +125,14 @@ export default function PatientForm(props: RouteComponentProps<IPageParams>) {
   const dispatch = useDispatch();
   const patientState = useSelector((state: ApplicationState) => state.patients);
   const areaState = useSelector((state: ApplicationState) => state.areas);
-  const [inputPhone, setInputPhone] = useState({value: "", error: false});
+  const [inputPhone, setInputPhone] = useState({ value: "", error: false });
 
-  const [inputCellPhone, setInputCellPhone] = useState({value: "", error: false});
+  const [inputCellPhone, setInputCellPhone] = useState({
+    value: "",
+    error: false,
+  });
 
-  const {params} = props.match;
+  const { params } = props.match;
   const [fieldsValidation, setFieldValidations] = useState<any>({
     name: false,
     social_name: false,
@@ -141,38 +146,37 @@ export default function PatientForm(props: RouteComponentProps<IPageParams>) {
     city: false,
     state: false,
     email: false,
-    phone: false
-
+    phone: false,
   });
 
   const States = [
-    {id: 1, name: "São Paulo", sigla: 'SP'},
-    {id: 2, name: 'Paraná', sigla: 'PR'},
-    {id: 3, name: 'Santa Catarina', sigla: 'SC'},
-    {id: 4, name: 'Rio Garnde do Sul', sigla: 'RS'},
-    {id: 5, name: 'Mato Grosso do Sul', sigla: 'MS'},
-    {id: 6, name: 'Rondônia', sigla: 'RO'},
-    {id: 7, name: 'Acre', sigla: 'AC'},
-    {id: 8, name: 'Amazonas', sigla: 'AM'},
-    {id: 9, name: 'Roraima', sigla: 'RR'},
-    {id: 10, name: 'Pará', sigla: 'PA'},
-    {id: 11, name: 'Amapá', sigla: 'AP'},
-    {id: 12, name: 'Tocantins', sigla: 'TO'},
-    {id: 13, name: 'Maranhão', sigla: 'MA'},
-    {id: 14, name: 'Rio Grande do Norte', sigla: 'RN'},
-    {id: 15, name: 'Paraíba', sigla: 'PB'},
-    {id: 16, name: 'Pernambuco', sigla: 'PE'},
-    {id: 17, name: 'Alagoas', sigla: 'AL'},
-    {id: 18, name: 'Sergipe', sigla: 'SE'},
-    {id: 19, name: 'Bahia', sigla: 'BA'},
-    {id: 20, name: 'Minas Gerais', sigla: 'MG'},
-    {id: 21, name: 'Rio de Janeiro', sigla: 'RJ'},
-    {id: 22, name: 'Mato Grosso', sigla: 'MT'},
-    {id: 23, name: 'Goiás', sigla: 'GO'},
-    {id: 24, name: 'Distrito Federal', sigla: 'DF'},
-    {id: 25, name: 'Piauí', sigla: 'PI'},
-    {id: 26, name: 'Ceará', sigla: 'CE'},
-    {id: 27, name: 'Espírito Santo', sigla: 'ES'}
+    { id: 1, name: "São Paulo", sigla: "SP" },
+    { id: 2, name: "Paraná", sigla: "PR" },
+    { id: 3, name: "Santa Catarina", sigla: "SC" },
+    { id: 4, name: "Rio Garnde do Sul", sigla: "RS" },
+    { id: 5, name: "Mato Grosso do Sul", sigla: "MS" },
+    { id: 6, name: "Rondônia", sigla: "RO" },
+    { id: 7, name: "Acre", sigla: "AC" },
+    { id: 8, name: "Amazonas", sigla: "AM" },
+    { id: 9, name: "Roraima", sigla: "RR" },
+    { id: 10, name: "Pará", sigla: "PA" },
+    { id: 11, name: "Amapá", sigla: "AP" },
+    { id: 12, name: "Tocantins", sigla: "TO" },
+    { id: 13, name: "Maranhão", sigla: "MA" },
+    { id: 14, name: "Rio Grande do Norte", sigla: "RN" },
+    { id: 15, name: "Paraíba", sigla: "PB" },
+    { id: 16, name: "Pernambuco", sigla: "PE" },
+    { id: 17, name: "Alagoas", sigla: "AL" },
+    { id: 18, name: "Sergipe", sigla: "SE" },
+    { id: 19, name: "Bahia", sigla: "BA" },
+    { id: 20, name: "Minas Gerais", sigla: "MG" },
+    { id: 21, name: "Rio de Janeiro", sigla: "RJ" },
+    { id: 22, name: "Mato Grosso", sigla: "MT" },
+    { id: 23, name: "Goiás", sigla: "GO" },
+    { id: 24, name: "Distrito Federal", sigla: "DF" },
+    { id: 25, name: "Piauí", sigla: "PI" },
+    { id: 26, name: "Ceará", sigla: "CE" },
+    { id: 27, name: "Espírito Santo", sigla: "ES" },
   ];
 
   const [modifi, setModifi] = useState<any>({
@@ -199,12 +203,14 @@ export default function PatientForm(props: RouteComponentProps<IPageParams>) {
       complement: "",
     },
     area_id: "",
-    phones: [{
-      cellphone: '',
-      phone:'',
-      telegram: false,
-      whatsapp: false,
-    }],
+    phones: [
+      {
+        cellphone: "",
+        phone: "",
+        telegram: false,
+        whatsapp: false,
+      },
+    ],
     email: "",
     sus_card: "FIELD_NOT_EXISTS_IN_PATIENT_REGISTRATION",
     blood_type: "",
@@ -215,132 +221,139 @@ export default function PatientForm(props: RouteComponentProps<IPageParams>) {
       cellphone: "",
       relationship: "",
     },
-    active: true
-  })
+    active: true,
+  });
 
   const [state, setState] = useState<PatientInterface>({
     social_status: false,
     companies: [], //empresa que vai vir do login
-    name: '',
-    social_name: '',
-    birthdate: '',
-    gender: '',
-    mother_name: '',
-    nationality: '',
-    profession: 'FIELD_NOT_EXISTS_IN_PATIENT_REGISTRATION',
-    naturalness: 'FIELD_NOT_EXISTS_IN_PATIENT_REGISTRATION',
-    fiscal_number: '',
-    national_id: '',
-    issuing_organ: '',
-    marital_status: '',
+    name: "",
+    social_name: "",
+    birthdate: "",
+    gender: "",
+    mother_name: "",
+    nationality: "",
+    profession: "FIELD_NOT_EXISTS_IN_PATIENT_REGISTRATION",
+    naturalness: "FIELD_NOT_EXISTS_IN_PATIENT_REGISTRATION",
+    fiscal_number: "",
+    national_id: "",
+    issuing_organ: "",
+    marital_status: "",
     address_id: {
-      postal_code: '',
-      street: '',
-      number: '',
-      district: '',
-      city: '',
-      state: '',
-      complement: '',
+      postal_code: "",
+      street: "",
+      number: "",
+      district: "",
+      city: "",
+      state: "",
+      complement: "",
     },
-    area_id: '',
-    email: '',
-    phones: [{
-      cellnumber: '',
-      number: '',
-      telegram: false,
-      whatsapp: false
-    }],
+    area_id: "",
+    email: "",
+    phones: [
+      {
+        cellnumber: "",
+        number: "",
+        telegram: false,
+        whatsapp: false,
+      },
+    ],
     responsable: {
-      name: '',
-      phone: '',
-      cellphone: '',
-      relationship: ''
+      name: "",
+      phone: "",
+      cellphone: "",
+      relationship: "",
     },
     active: true,
-    sus_card: 'FIELD_NOT_EXISTS_IN_PATIENT_REGISTRATION',
-    blood_type: '',
+    sus_card: "FIELD_NOT_EXISTS_IN_PATIENT_REGISTRATION",
+    blood_type: "",
     organ_donor: false,
 
-
-    assistent_doctor: '',
-    convenio: '',
-    health_insurance: '',
-    hospital: '',
-    hospital_bed: '',
-    sector: '',
-    sub_health_insurance: '',
-    unit_health: '',
-    created_at: '',
+    assistent_doctor: "",
+    convenio: "",
+    health_insurance: "",
+    hospital: "",
+    hospital_bed: "",
+    sector: "",
+    sub_health_insurance: "",
+    unit_health: "",
+    created_at: "",
   });
 
   const [canEdit, setCanEdit] = useState(true);
 
   const [form, setForm] = useState<IFormFields>({
     bloodType: null,
-    phone: '',
-    cellphone: '',
-
+    phone: "",
+    cellphone: "",
   });
 
-  const [type, setType] = useState('registry');
+  const [type, setType] = useState("registry");
   const [openModalCancel, setOpenModalCancel] = useState(false);
-
 
   var isValidPhoneNumber: any;
   var isValidCellPhoneNumber: any;
   var isValidResponsableCellPhoneNumber: any;
   var formValid: any;
 
-
   const validatePhone = () => {
-
     if (state.phones[0]?.number) {
-      const landline = state.phones[0]?.number.replace('(', '').replace(')', '').replace(' ', '').replace(' ', '').replace('-', '');
+      const landline = state.phones[0]?.number
+        .replace("(", "")
+        .replace(")", "")
+        .replace(" ", "")
+        .replace(" ", "")
+        .replace("-", "");
 
-      isValidPhoneNumber = validator.isMobilePhone(landline, 'pt-BR');
+      isValidPhoneNumber = validator.isMobilePhone(landline, "pt-BR");
 
-      return (isValidPhoneNumber)
+      return isValidPhoneNumber;
     }
-
-
-  }
+  };
   var cpfIsValid: any;
   const checkIsCpfValid = useCallback(() => {
-
     return !!cpf.isValid(state.fiscal_number);
-
   }, [state.fiscal_number]);
 
   const validateCellPhone = () => {
     if (state.phones[0]?.cellnumber) {
-      var cellphone = state.phones[0]?.cellnumber.replace('(', '').replace(')', '').replace(' ', '').replace(' ', '').replace('-', '');
-      isValidCellPhoneNumber = validator.isMobilePhone(cellphone, 'pt-BR');
+      var cellphone = state.phones[0]?.cellnumber
+        .replace("(", "")
+        .replace(")", "")
+        .replace(" ", "")
+        .replace(" ", "")
+        .replace("-", "");
+      isValidCellPhoneNumber = validator.isMobilePhone(cellphone, "pt-BR");
 
-
-
-      return (isValidCellPhoneNumber)
+      return isValidCellPhoneNumber;
     }
-  //  else if (state.phones[1]?.cellnumber){
-  //   var cellphone =  state.phones[1]?.cellnumber.replace('(','').replace(')','').replace(' ','').replace(' ','').replace('-','');
-  //   isValidCellPhoneNumber = validator.isMobilePhone(cellphone, 'pt-BR');
+    //  else if (state.phones[1]?.cellnumber){
+    //   var cellphone =  state.phones[1]?.cellnumber.replace('(','').replace(')','').replace(' ','').replace(' ','').replace('-','');
+    //   isValidCellPhoneNumber = validator.isMobilePhone(cellphone, 'pt-BR');
 
-  //   return (isValidCellPhoneNumber)
-  //  }
-}
+    //   return (isValidCellPhoneNumber)
+    //  }
+  };
 
   const validateResponsableCellPhone = () => {
     if (state.responsable?.phone) {
-      var cellphone = state.responsable?.phone.replace('(', '').replace(')', '').replace(' ', '').replace(' ', '').replace('-', '');
-      isValidResponsableCellPhoneNumber = validator.isMobilePhone(cellphone, 'pt-BR');
+      var cellphone = state.responsable?.phone
+        .replace("(", "")
+        .replace(")", "")
+        .replace(" ", "")
+        .replace(" ", "")
+        .replace("-", "");
+      isValidResponsableCellPhoneNumber = validator.isMobilePhone(
+        cellphone,
+        "pt-BR"
+      );
 
-      return (isValidResponsableCellPhoneNumber)
+      return isValidResponsableCellPhoneNumber;
     }
-  }
+  };
 
   if (validatePhone() == true && validateCellPhone() == true) {
-
     formValid = true;
-
   }
 
   //////////////////////  useEffect   //////////////////////
@@ -349,39 +362,40 @@ export default function PatientForm(props: RouteComponentProps<IPageParams>) {
   }, []);
 
   useEffect(() => {
-    const field = patientState.errorCep ? 'input-postal-code' : 'input-address-number';
+    const field = patientState.errorCep
+      ? "input-postal-code"
+      : "input-address-number";
 
-    patientState.errorCep && setState(prevState => ({
-      ...prevState,
-      address_id: {
-        ...prevState.address_id,
-        city: '',
-        complement: '',
-        district: '',
+    patientState.errorCep &&
+      setState((prevState) => ({
+        ...prevState,
+        address_id: {
+          ...prevState.address_id,
+          city: "",
+          complement: "",
+          district: "",
 
-        state: '',
-        street: '',
-      }
-    }));
+          state: "",
+          street: "",
+        },
+      }));
 
     document.getElementById(field)?.focus();
   }, [patientState.errorCep]);
 
-
   useEffect(() => {
-
     dispatch(getAreasAction());
 
     if (params.id) {
       dispatch(loadPatientById(params.id));
-      dispatch(cleanAction())
+      dispatch(cleanAction());
     } else {
-      dispatch(cleanAction())
+      dispatch(cleanAction());
       //  dispatch(loadFailure());
     }
   }, [dispatch, params]);
 
-/////// useEffect Quebrado!!!!!
+  /////// useEffect Quebrado!!!!!
   // useEffect(() => {
   //   if (params.id) {
   //     setState(patientState.data);
@@ -399,7 +413,7 @@ export default function PatientForm(props: RouteComponentProps<IPageParams>) {
 
   useEffect(() => {
     if (params.id) {
-      if (params.mode && params.mode === 'view') {
+      if (params.mode && params.mode === "view") {
         setCanEdit(false);
       }
     }
@@ -420,16 +434,13 @@ export default function PatientForm(props: RouteComponentProps<IPageParams>) {
 
   const getAddress = useCallback(() => {
     dispatch(getAddressAction(state.address_id.postal_code));
-
   }, [state.address_id.postal_code]);
 
-
   function isEquals() {
-
     return _.isEqual(modifi, patientState.data);
   }
 
-////// Quebrado !!! //////
+  ////// Quebrado !!! //////
 
   // useEffect(() => {
   //   if (params.id) {
@@ -477,44 +488,44 @@ export default function PatientForm(props: RouteComponentProps<IPageParams>) {
   // }, [patientState, params.id]);
 
   useEffect(() => {
-
     if (patientState.error) {
-
-      setState(prev => ({
+      setState((prev) => ({
         ...prev,
         address_id: {
           ...prev.address_id,
-          street: '',
-          number: '',
-          district: '',
-          city: '',
-          state: '',
-          complement: '',
+          street: "",
+          number: "",
+          district: "",
+          city: "",
+          state: "",
+          complement: "",
         },
-      }))
+      }));
     }
 
-    const uf = States?.find(uf => uf.sigla === patientState?.data?.address_id?.state) || null;
+    const uf =
+      States?.find(
+        (uf) => uf.sigla === patientState?.data?.address_id?.state
+      ) || null;
 
-    setState(prevState => ({
+    setState((prevState) => ({
       ...prevState,
-      form: {uf: uf}
+      form: { uf: uf },
     }));
-    setState(prevState => {
+    setState((prevState) => {
       return {
         ...prevState,
-        ...patientState.data
-      }
+        ...patientState.data,
+      };
     });
 
-
-    setState(prevState => {
+    setState((prevState) => {
       return {
         ...prevState,
         address_id: {
-          ...patientState.data.address_id
+          ...patientState.data.address_id,
         },
-      }
+      };
     });
 
     // setFieldValidations((prevState: any) => ({
@@ -527,31 +538,30 @@ export default function PatientForm(props: RouteComponentProps<IPageParams>) {
     //   state: !validator.isEmpty(patientState?.data?.address_id?.state),
     //   complement: !validator.isEmpty(patientState?.data?.address_id?.complement),
     // }));
-
   }, [patientState.data?.address_id]);
 
-  const handleBloodType = useCallback((event: any, newValue: any) => {
-    setForm(prevState => ({
-      ...prevState,
-      bloodType: newValue,
-    }));
+  const handleBloodType = useCallback(
+    (event: any, newValue: any) => {
+      setForm((prevState) => ({
+        ...prevState,
+        bloodType: newValue,
+      }));
 
-    setState(prevState => ({
-      ...prevState,
-      blood_type: newValue,
-    }));
-  }, [patientState, params.id]);
-
+      setState((prevState) => ({
+        ...prevState,
+        blood_type: newValue,
+      }));
+    },
+    [patientState, params.id]
+  );
 
   const selectPatientArea = useCallback(() => {
-
-
-    const selected = areaState.list.data.filter(item => {
-      if (typeof state?.area_id === 'object') {
-        return item._id === state?.area_id._id
+    const selected = areaState.list.data.filter((item) => {
+      if (typeof state?.area_id === "object") {
+        return item._id === state?.area_id._id;
       }
-    })
-    return (selected[0]) ? selected[0] : areaState.list.data[0];
+    });
+    return selected[0] ? selected[0] : areaState.list.data[0];
 
     // if(canEdit){
 
@@ -564,7 +574,6 @@ export default function PatientForm(props: RouteComponentProps<IPageParams>) {
 
     //return (selected[0]) ? selected[0]: areaState.list.data[0];
     //}
-
   }, [state.area_id, areaState]);
 
   function handleOpenModalCancel() {
@@ -586,7 +595,7 @@ export default function PatientForm(props: RouteComponentProps<IPageParams>) {
         district: state.address_id.district,
         city: state.address_id.city,
         state: state.address_id.state,
-        complement: state.address_id.complement
+        complement: state.address_id.complement,
       },
       area_id: state.area_id,
       phones: [],
@@ -602,12 +611,10 @@ export default function PatientForm(props: RouteComponentProps<IPageParams>) {
     });
 
     if (isEquals()) {
-      handleCancelForm()
-
+      handleCancelForm();
     } else {
       setOpenModalCancel(true);
     }
-
   }
 
   function handleCloseModalCancel() {
@@ -616,18 +623,20 @@ export default function PatientForm(props: RouteComponentProps<IPageParams>) {
 
   function handleCancelForm() {
     setOpenModalCancel(false);
-    if (params.callback === 'care') {
+    if (params.callback === "care") {
       history.push(`/care/${params.callback_id}/overview`);
     } else {
       history.push(`/patient`);
     }
-    dispatch(cleanAction())
+    dispatch(cleanAction());
   }
 
-  const handleChangeRegistryType = useCallback((element) => {
-    setType(element.target.value);
-  }, [type]);
-
+  const handleChangeRegistryType = useCallback(
+    (element) => {
+      setType(element.target.value);
+    },
+    [type]
+  );
 
   const handleSaveFormPatient = useCallback(() => {
     const patientData = {
@@ -636,59 +645,67 @@ export default function PatientForm(props: RouteComponentProps<IPageParams>) {
       //   {whatsapp: false, telegram: false, number: state.phones[0]?.number},
       //   {whatsapp: false, telegram: false, cellnumber: state.phones[0]?.cellnumber},
       // ],
-      created_at: Date.now().toString()
+      created_at: Date.now().toString(),
     };
 
     if (state?._id) {
-
       dispatch(updatePatientRequest(patientData));
-      dispatch(cleanAction())
-      history.push('/patient');
-
+      dispatch(cleanAction());
+      history.push("/patient");
     } else {
-
       dispatch(createPatientRequest(patientData));
     }
   }, [state]);
 
   const buttons = [
     {
-      name: 'Voltar',
+      name: "Voltar",
       onClick: handleCancelForm,
-      variant: 'outlined',
-      background: 'success_rounded',
+      variant: "contained",
+      background: "primary",
       show: true,
     },
-  ]
+  ];
 
   const NavItems = [
     {
-      name: "Dados do Paciente",
-      components: ['PatientForm'],
+      name: state.name,
+      components: ["PatientForm"],
     },
-  ]
-
-  const integration = sessionStorage.getItem(SESSIONSTORAGE.INTEGRATION)
+  ];
+  const integration = sessionStorage.getItem(SESSIONSTORAGE.INTEGRATION);
 
   return (
     <Sidebar>
-      {patientState.loading && <Loading/>}
-      {(patientState.isRegistrationCompleted ) ? (
+      {patientState.loading && <Loading />}
+      {patientState.isRegistrationCompleted ? (
         <RegistrationCompleted {...props} />
       ) : (
         <Container>
-          {params.mode === 'view' ? (
+          {params.mode === "view" ? (
             <>
               {integration ? (
                 <>
-                  <TabTittle tittle={'Paciente'} />
+                  <TabTittle tittle={"Detalhamento do paciente"} />
                 </>
               ) : (
                 <>
-                  <TabTittle tittle={'Paciente'} icon={!canEdit && <ButtonEdit setCanEdit={() => {
-                    setCanEdit(true)
-                    history.push(`/patient/${params.id}/edit/edit`)
-                  }} canEdit={canEdit}>Editar</ButtonEdit>}/>
+                  <TabTittle
+                    tittle={"Detalhamento do paciente"}
+                    icon={
+                      !canEdit && (
+                        <ButtonEdit
+                          setCanEdit={() => {
+                            setCanEdit(true);
+                            history.push(`/patient/${params.id}/edit/edit`);
+                          }}
+                          canEdit={canEdit}
+                        >
+                          Editar
+                        </ButtonEdit>
+                      )
+                    }
+                  />
                 </>
               )}
               <TabForm
@@ -702,16 +719,25 @@ export default function PatientForm(props: RouteComponentProps<IPageParams>) {
                 getAddress={getAddress}
                 params={params}
               />
-              <ButtonTabs canEdit={canEdit} buttons={buttons}/>
+              <ButtonTabs canEdit={canEdit} buttons={buttons} />
             </>
           ) : (
             <>
-              <div style={{display: 'flex', alignItems: 'center', flexDirection: 'row'}}>
+              <div
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  flexDirection: "row",
+                }}
+              >
                 <FormTitle>Cadastro de Paciente</FormTitle>
 
-                {params.id && params.mode == 'view' && !canEdit && (
-                  <Button style={{marginTop: -20, marginLeft: 15, color: '#0899BA'}} onClick={() => setCanEdit(true)}>
-                    <Edit style={{marginRight: 5, width: 18}}/>
+                {params.id && params.mode == "view" && !canEdit && (
+                  <Button
+                    style={{ marginTop: -20, marginLeft: 15, color: "#0899BA" }}
+                    onClick={() => setCanEdit(true)}
+                  >
+                    <Edit style={{ marginRight: 5, width: 18 }} />
                     Editar
                   </Button>
                 )}
@@ -719,15 +745,18 @@ export default function PatientForm(props: RouteComponentProps<IPageParams>) {
 
               <Tabs
                 value={0}
-                onChange={() => {
-                }}
+                onChange={() => {}}
                 indicatorColor="primary"
                 textColor="primary"
               >
-                <Tab label="DADOS PESSOAIS" disabled/>
+                <Tab label="DADOS PESSOAIS" disabled />
               </Tabs>
               <TabPanel value={0} index={0}>
-                <BoxCustom style={{background: '#fff', marginTop: 0}} mt={5} padding={4}>
+                <BoxCustom
+                  style={{ background: "#fff", marginTop: 0 }}
+                  mt={5}
+                  padding={4}
+                >
                   <FormSection>
                     <FormContent>
                       <FormGroupSection>
@@ -740,8 +769,14 @@ export default function PatientForm(props: RouteComponentProps<IPageParams>) {
                               size="small"
                               value={state.name}
                               onChange={(element) => {
-                                setState({...state, name: element.target.value})
-                                setModifi({...modifi, name: element.target.value})
+                                setState({
+                                  ...state,
+                                  name: element.target.value,
+                                });
+                                setModifi({
+                                  ...modifi,
+                                  name: element.target.value,
+                                });
                               }}
                               autoComplete="false"
                               fullWidth
@@ -752,12 +787,21 @@ export default function PatientForm(props: RouteComponentProps<IPageParams>) {
                             <DatePicker
                               id="input-fiscal-birthdate"
                               label="Data de Nascimento"
-                              value={state.birthdate?.length > 10 ? formatDate(state?.birthdate, 'YYYY-MM-DD') : state?.birthdate}
+                              value={
+                                state.birthdate?.length > 10
+                                  ? formatDate(state?.birthdate, "YYYY-MM-DD")
+                                  : state?.birthdate
+                              }
                               onChange={(element) => {
-                                setState({...state, birthdate: element.target.value})
-                                setModifi({...modifi, birthdate: element.target.value})
+                                setState({
+                                  ...state,
+                                  birthdate: element.target.value,
+                                });
+                                setModifi({
+                                  ...modifi,
+                                  birthdate: element.target.value,
+                                });
                               }}
-
                               InputLabelProps={{
                                 shrink: true,
                               }}
@@ -786,8 +830,14 @@ export default function PatientForm(props: RouteComponentProps<IPageParams>) {
                               size="small"
                               value={state.social_name}
                               onChange={(element) => {
-                                setState({...state, social_name: element.target.value})
-                                setModifi({...modifi, social_name: element.target.value})
+                                setState({
+                                  ...state,
+                                  social_name: element.target.value,
+                                });
+                                setModifi({
+                                  ...modifi,
+                                  social_name: element.target.value,
+                                });
                               }}
                               fullWidth
                               disabled={!canEdit}
@@ -797,13 +847,19 @@ export default function PatientForm(props: RouteComponentProps<IPageParams>) {
                           <Grid item md={3} xs={12}>
                             <Autocomplete
                               id="combo-box-gender"
-                              options={['Masculino', 'Feminino', 'Indefinido']}
+                              options={["Masculino", "Feminino", "Indefinido"]}
                               getOptionLabel={(option) => option}
-                              renderInput={(params) => <TextField {...params} label="Sexo" variant="outlined"/>}
+                              renderInput={(params) => (
+                                <TextField
+                                  {...params}
+                                  label="Sexo"
+                                  variant="outlined"
+                                />
+                              )}
                               size="small"
                               onChange={(element, value) => {
-                                setState({...state, gender: value || ''})
-                                setModifi({...modifi, gender: value})
+                                setState({ ...state, gender: value || "" });
+                                setModifi({ ...modifi, gender: value });
                               }}
                               value={state?.gender}
                               noOptionsText="Nenhum resultado encontrado"
@@ -819,8 +875,14 @@ export default function PatientForm(props: RouteComponentProps<IPageParams>) {
                               size="small"
                               value={state.mother_name}
                               onChange={(element) => {
-                                setState({...state, mother_name: element.target.value})
-                                setModifi({...modifi, mother_name: element.target.value})
+                                setState({
+                                  ...state,
+                                  mother_name: element.target.value,
+                                });
+                                setModifi({
+                                  ...modifi,
+                                  mother_name: element.target.value,
+                                });
                               }}
                               fullWidth
                               disabled={!canEdit}
@@ -834,26 +896,43 @@ export default function PatientForm(props: RouteComponentProps<IPageParams>) {
                               size="small"
                               value={state.nationality}
                               onChange={(element) => {
-                                setState({...state, nationality: element.target.value})
-                                setModifi({...modifi, nationality: element.target.value})
+                                setState({
+                                  ...state,
+                                  nationality: element.target.value,
+                                });
+                                setModifi({
+                                  ...modifi,
+                                  nationality: element.target.value,
+                                });
                               }}
                               fullWidth
                               disabled={!canEdit}
                             />
                           </Grid>
-
                         </Grid>
                         <Grid container>
-
                           <Grid item md={3} xs={12}>
-                            <FormControl variant="outlined" size="small" disabled={!canEdit} fullWidth>
-                              <InputLabel htmlFor="search-input">CPF</InputLabel>
+                            <FormControl
+                              variant="outlined"
+                              size="small"
+                              disabled={!canEdit}
+                              fullWidth
+                            >
+                              <InputLabel htmlFor="search-input">
+                                CPF
+                              </InputLabel>
                               <InputMask
                                 mask="999.999.999-99"
                                 value={state.fiscal_number}
                                 onChange={(element) => {
-                                  setState({...state, fiscal_number: element.target.value})
-                                  setModifi({...modifi, fiscal_number: element.target.value})
+                                  setState({
+                                    ...state,
+                                    fiscal_number: element.target.value,
+                                  });
+                                  setModifi({
+                                    ...modifi,
+                                    fiscal_number: element.target.value,
+                                  });
                                 }}
                                 onBlur={checkIsCpfValid}
                               >
@@ -862,40 +941,66 @@ export default function PatientForm(props: RouteComponentProps<IPageParams>) {
                                     id="input-fiscal-number"
                                     placeholder="000.000.000-00"
                                     labelWidth={80}
-                                    style={{marginRight: 12}}
-                                    error={!!cpf.isValid(state.fiscal_number) == false && state.fiscal_number != "___.___.___-__" && !!state.fiscal_number}
+                                    style={{ marginRight: 12 }}
+                                    error={
+                                      !!cpf.isValid(state.fiscal_number) ==
+                                        false &&
+                                      state.fiscal_number != "___.___.___-__" &&
+                                      !!state.fiscal_number
+                                    }
                                   />
                                 )}
                               </InputMask>
-                              {!!cpf.isValid(state.fiscal_number) == false && state.fiscal_number != "___.___.___-__" && !!state.fiscal_number && (
-                                <p style={{color: '#f44336', margin: '1px 5px 20px'}}>
-                                  Por favor insira um cpf válido
-                                </p>
-                              )}
+                              {!!cpf.isValid(state.fiscal_number) == false &&
+                                state.fiscal_number != "___.___.___-__" &&
+                                !!state.fiscal_number && (
+                                  <p
+                                    style={{
+                                      color: "#f44336",
+                                      margin: "1px 5px 20px",
+                                    }}
+                                  >
+                                    Por favor insira um cpf válido
+                                  </p>
+                                )}
                             </FormControl>
                           </Grid>
                           <Grid item md={4} xs={12}>
-                            <FormControl variant="outlined" size="small" disabled={!canEdit} fullWidth>
+                            <FormControl
+                              variant="outlined"
+                              size="small"
+                              disabled={!canEdit}
+                              fullWidth
+                            >
                               <InputLabel htmlFor="search-input">RG</InputLabel>
                               <InputMask
                                 mask="9.999-999"
                                 value={state.national_id}
                                 onChange={(element) => {
-                                  setState({...state, national_id: element.target.value})
-                                  setModifi({...modifi, national_id: element.target.value})
+                                  setState({
+                                    ...state,
+                                    national_id: element.target.value,
+                                  });
+                                  setModifi({
+                                    ...modifi,
+                                    national_id: element.target.value,
+                                  });
                                 }}
-                                onBlur={(element) => setFieldValidations((prevState: any) => ({
-                                  ...prevState,
-                                  national_id: !!validator.isEmpty(element.target.value),
-                                }))}
+                                onBlur={(element) =>
+                                  setFieldValidations((prevState: any) => ({
+                                    ...prevState,
+                                    national_id: !!validator.isEmpty(
+                                      element.target.value
+                                    ),
+                                  }))
+                                }
                               >
                                 {(inputProps: any) => (
                                   <OutlinedInputFiled
                                     id="input-nation-id"
                                     placeholder="000.000.000-00"
                                     labelWidth={80}
-                                    style={{marginRight: 12}}
-
+                                    style={{ marginRight: 12 }}
                                   />
                                 )}
                               </InputMask>
@@ -910,8 +1015,14 @@ export default function PatientForm(props: RouteComponentProps<IPageParams>) {
                               size="small"
                               value={state.issuing_organ}
                               onChange={(element) => {
-                                setState({...state, issuing_organ: element.target.value})
-                                setModifi({...modifi, issuing_organ: element.target.value})
+                                setState({
+                                  ...state,
+                                  issuing_organ: element.target.value,
+                                });
+                                setModifi({
+                                  ...modifi,
+                                  issuing_organ: element.target.value,
+                                });
                               }}
                               fullWidth
                               disabled={!canEdit}
@@ -924,17 +1035,26 @@ export default function PatientForm(props: RouteComponentProps<IPageParams>) {
                                 id="combo-box-marital-status"
                                 options={maritalStatus}
                                 getOptionLabel={(option) => option}
-                                renderInput={(params) => <TextField {...params} label="Estado Civil" variant="outlined"
-                                                                    autoComplete="off"/>}
+                                renderInput={(params) => (
+                                  <TextField
+                                    {...params}
+                                    label="Estado Civil"
+                                    variant="outlined"
+                                    autoComplete="off"
+                                  />
+                                )}
                                 value={state?.marital_status}
                                 // getOptionSelected={(option, value) => option === state?.marital_status}
                                 onChange={(event: any, newValue) => {
                                   {
-                                    setState(prevState => ({
+                                    setState((prevState) => ({
                                       ...prevState,
-                                      marital_status: newValue || '',
+                                      marital_status: newValue || "",
                                     }));
-                                    setModifi({...modifi, marital_status: newValue})
+                                    setModifi({
+                                      ...modifi,
+                                      marital_status: newValue,
+                                    });
                                   }
                                 }}
                                 size="small"
@@ -953,13 +1073,21 @@ export default function PatientForm(props: RouteComponentProps<IPageParams>) {
                                 id="combo-box-blood-type"
                                 options={bloodTypes}
                                 getOptionLabel={(option) => option}
-                                renderInput={(params) => <TextField {...params} label="Tipo sanguíneo"
-                                                                    variant="outlined"/>}
+                                renderInput={(params) => (
+                                  <TextField
+                                    {...params}
+                                    label="Tipo sanguíneo"
+                                    variant="outlined"
+                                  />
+                                )}
                                 value={state?.blood_type}
                                 // getOptionSelected={(option, value) => value === state?.blood_type}
                                 onChange={(event: any, newValue) => {
                                   handleBloodType(event, newValue);
-                                  setModifi({...modifi, blood_type: newValue})
+                                  setModifi({
+                                    ...modifi,
+                                    blood_type: newValue,
+                                  });
                                 }}
                                 size="small"
                                 noOptionsText="Nenhum resultado encontrado"
@@ -970,28 +1098,55 @@ export default function PatientForm(props: RouteComponentProps<IPageParams>) {
                           </Grid>
 
                           <Grid item md={6} xs={6}>
-
                             <FormControlCustom>
-                              <FormLabel component="legend">Doador de Órgãos?</FormLabel>
+                              <FormLabel component="legend">
+                                Doador de Órgãos?
+                              </FormLabel>
                               <RadioGroup
                                 row
                                 aria-label="registry-type"
                                 name="registry-type"
                                 value={state.organ_donor}
                                 onChange={(element) => {
-                                  setState({...state, organ_donor: JSON.parse(element.target.value)})
-                                  setModifi({...modifi, organ_donor: JSON.parse(element.target.value)})
+                                  setState({
+                                    ...state,
+                                    organ_donor: JSON.parse(
+                                      element.target.value
+                                    ),
+                                  });
+                                  setModifi({
+                                    ...modifi,
+                                    organ_donor: JSON.parse(
+                                      element.target.value
+                                    ),
+                                  });
                                 }}
                               >
-                                <FormControlLabel value={true} control={<Radio color="primary" disabled={!canEdit}/>}
-                                                  label="Sim"/>
-                                <FormControlLabel value={false} control={<Radio color="primary" disabled={!canEdit}/>}
-                                                  label="Não"/>
+                                <FormControlLabel
+                                  value={true}
+                                  control={
+                                    <Radio
+                                      color="primary"
+                                      disabled={!canEdit}
+                                    />
+                                  }
+                                  label="Sim"
+                                />
+                                <FormControlLabel
+                                  value={false}
+                                  control={
+                                    <Radio
+                                      color="primary"
+                                      disabled={!canEdit}
+                                    />
+                                  }
+                                  label="Não"
+                                />
                               </RadioGroup>
                             </FormControlCustom>
                           </Grid>
 
-                          <Grid item md={10}/>
+                          <Grid item md={10} />
                         </Grid>
                       </FormGroupSection>
 
@@ -999,44 +1154,63 @@ export default function PatientForm(props: RouteComponentProps<IPageParams>) {
                       <FormGroupSection>
                         <Grid container>
                           <Grid item md={3} xs={12}>
-                            <FormControl variant="outlined" size="small" disabled={!canEdit} fullWidth>
-                              <InputLabel htmlFor="search-input">CEP</InputLabel>
+                            <FormControl
+                              variant="outlined"
+                              size="small"
+                              disabled={!canEdit}
+                              fullWidth
+                            >
+                              <InputLabel htmlFor="search-input">
+                                CEP
+                              </InputLabel>
                               <InputMask
                                 mask="99999-999"
                                 value={state.address_id.postal_code}
                                 onChange={(element) => {
                                   setState({
                                     ...state,
-                                    address_id: {...state.address_id, postal_code: element.target.value}
-                                  })
-                                  setModifi({...modifi.address_id, postal_code: element.target.value})
+                                    address_id: {
+                                      ...state.address_id,
+                                      postal_code: element.target.value,
+                                    },
+                                  });
+                                  setModifi({
+                                    ...modifi.address_id,
+                                    postal_code: element.target.value,
+                                  });
                                 }}
                                 onBlur={getAddress}
                               >
                                 {(inputProps: Props) => (
                                   <OutlinedInputFiled
-
                                     error={patientState.errorCep}
                                     id="input-postal-code"
                                     label="CEP"
                                     placeholder="00000-000"
                                     endAdornment={
                                       <InputAdornment position="end">
-                                        <SearchOutlined style={{color: 'var(--primary)'}}/>
+                                        <SearchOutlined
+                                          style={{ color: "var(--primary)" }}
+                                        />
                                       </InputAdornment>
                                     }
                                     labelWidth={155}
-                                    style={{marginRight: 12, marginBottom: 5}}
+                                    style={{ marginRight: 12, marginBottom: 5 }}
                                   />
                                 )}
                               </InputMask>
                             </FormControl>
-                            {patientState.errorCep && state.address_id.postal_code != '' && (
-                              <p style={{color: '#f44336', margin: '-2px 5px 10px'}}>
-                                Digite um CEP válido
-                              </p>
-                            )}
-
+                            {patientState.errorCep &&
+                              state.address_id.postal_code != "" && (
+                                <p
+                                  style={{
+                                    color: "#f44336",
+                                    margin: "-2px 5px 10px",
+                                  }}
+                                >
+                                  Digite um CEP válido
+                                </p>
+                              )}
                           </Grid>
 
                           <Grid item md={9} xs={12}>
@@ -1047,8 +1221,17 @@ export default function PatientForm(props: RouteComponentProps<IPageParams>) {
                               size="small"
                               value={state.address_id.street}
                               onChange={(element) => {
-                                setState({...state, address_id: {...state.address_id, street: element.target.value}})
-                                setModifi({...modifi.address_id, street: element.target.value})
+                                setState({
+                                  ...state,
+                                  address_id: {
+                                    ...state.address_id,
+                                    street: element.target.value,
+                                  },
+                                });
+                                setModifi({
+                                  ...modifi.address_id,
+                                  street: element.target.value,
+                                });
                               }}
                               fullWidth
                               disabled={!canEdit}
@@ -1058,14 +1241,22 @@ export default function PatientForm(props: RouteComponentProps<IPageParams>) {
                             <TextField
                               id="input-address-number"
                               label="Número"
-
                               variant="outlined"
                               size="small"
                               value={state.address_id.number}
                               onChange={(element) => {
                                 {
-                                  setState({...state, address_id: {...state.address_id, number: element.target.value}})
-                                  setModifi({...modifi.address_id, number: element.target.value})
+                                  setState({
+                                    ...state,
+                                    address_id: {
+                                      ...state.address_id,
+                                      number: element.target.value,
+                                    },
+                                  });
+                                  setModifi({
+                                    ...modifi.address_id,
+                                    number: element.target.value,
+                                  });
                                 }
                               }}
                               fullWidth
@@ -1083,9 +1274,15 @@ export default function PatientForm(props: RouteComponentProps<IPageParams>) {
                               onChange={(element) => {
                                 setState({
                                   ...state,
-                                  address_id: {...state.address_id, complement: element.target.value}
-                                })
-                                setModifi({...modifi.address_id, complement: element.target.value})
+                                  address_id: {
+                                    ...state.address_id,
+                                    complement: element.target.value,
+                                  },
+                                });
+                                setModifi({
+                                  ...modifi.address_id,
+                                  complement: element.target.value,
+                                });
                               }}
                               fullWidth
                               disabled={!canEdit}
@@ -1096,13 +1293,21 @@ export default function PatientForm(props: RouteComponentProps<IPageParams>) {
                             <TextField
                               id="input-neighborhood"
                               label="Bairro"
-
                               variant="outlined"
                               size="small"
                               value={state.address_id.district}
                               onChange={(element) => {
-                                setState({...state, address_id: {...state.address_id, district: element.target.value}})
-                                setModifi({...modifi.address_id, district: element.target.value})
+                                setState({
+                                  ...state,
+                                  address_id: {
+                                    ...state.address_id,
+                                    district: element.target.value,
+                                  },
+                                });
+                                setModifi({
+                                  ...modifi.address_id,
+                                  district: element.target.value,
+                                });
                               }}
                               fullWidth
                               disabled={!canEdit}
@@ -1114,12 +1319,20 @@ export default function PatientForm(props: RouteComponentProps<IPageParams>) {
                               id="input-city"
                               label="Cidade"
                               variant="outlined"
-
                               size="small"
                               value={state.address_id.city}
                               onChange={(element) => {
-                                setState({...state, address_id: {...state.address_id, city: element.target.value}})
-                                setModifi({...modifi.address_id, city: element.target.value})
+                                setState({
+                                  ...state,
+                                  address_id: {
+                                    ...state.address_id,
+                                    city: element.target.value,
+                                  },
+                                });
+                                setModifi({
+                                  ...modifi.address_id,
+                                  city: element.target.value,
+                                });
                               }}
                               fullWidth
                               disabled={!canEdit}
@@ -1134,8 +1347,17 @@ export default function PatientForm(props: RouteComponentProps<IPageParams>) {
                               size="small"
                               value={state.address_id.state}
                               onChange={(element) => {
-                                setState({...state, address_id: {...state.address_id, state: element.target.value}})
-                                setModifi({...modifi.address_id, state: element.target.value})
+                                setState({
+                                  ...state,
+                                  address_id: {
+                                    ...state.address_id,
+                                    state: element.target.value,
+                                  },
+                                });
+                                setModifi({
+                                  ...modifi.address_id,
+                                  state: element.target.value,
+                                });
                               }}
                               fullWidth
                               disabled={!canEdit}
@@ -1147,23 +1369,27 @@ export default function PatientForm(props: RouteComponentProps<IPageParams>) {
                               id="combo-box-areas"
                               options={areaState.list.data}
                               getOptionLabel={(option: any) => option.name}
-                              renderInput={(params) => <TextField {...params} label="Área" variant="outlined"/>}
+                              renderInput={(params) => (
+                                <TextField
+                                  {...params}
+                                  label="Área"
+                                  variant="outlined"
+                                />
+                              )}
                               size="small"
                               defaultValue={selectPatientArea()}
                               // value={selectPatientArea()}
                               onChange={(event: any, newValue) => {
                                 if (newValue) {
-                                  setState({...state, area_id: newValue._id})
+                                  setState({ ...state, area_id: newValue._id });
                                 }
                               }}
                               //  getOptionSelected={(option, value) => option._id === state?.area_id._id}
                               noOptionsText="Nenhum resultado encontrado"
                               fullWidth
                               disabled={!canEdit}
-
                             />
                           </Grid>
-
                         </Grid>
                         <Grid container>
                           <Grid item md={6} xs={12}>
@@ -1174,8 +1400,14 @@ export default function PatientForm(props: RouteComponentProps<IPageParams>) {
                               size="small"
                               value={state.email}
                               onChange={(element) => {
-                                setState({...state, email: element.target.value})
-                                setModifi({...modifi, email: element.target.value})
+                                setState({
+                                  ...state,
+                                  email: element.target.value,
+                                });
+                                setModifi({
+                                  ...modifi,
+                                  email: element.target.value,
+                                });
                               }}
                               type="email"
                               fullWidth
@@ -1183,25 +1415,34 @@ export default function PatientForm(props: RouteComponentProps<IPageParams>) {
                             />
                           </Grid>
                           <Grid item md={3} xs={12}>
-                            <FormControl variant="outlined" size="small" disabled={!canEdit} fullWidth>
-                              <InputLabel htmlFor="search-input">Telefone</InputLabel>
+                            <FormControl
+                              variant="outlined"
+                              size="small"
+                              disabled={!canEdit}
+                              fullWidth
+                            >
+                              <InputLabel htmlFor="search-input">
+                                Telefone
+                              </InputLabel>
                               <InputMask
                                 mask="(99) 9999-9999"
                                 value={state.phones[0]?.number}
-
                                 //onBlur={getAddress}
                                 onChange={(element) => {
                                   {
-                                    setState(prevState => ({
+                                    setState((prevState) => ({
                                       ...prevState,
                                       phones: [
                                         {
                                           ...prevState.phones[0],
-                                          number: element.target.value
-                                        }
-                                      ]
-                                    }))
-                                    setModifi({...modifi, phones: element.target.value})
+                                          number: element.target.value,
+                                        },
+                                      ],
+                                    }));
+                                    setModifi({
+                                      ...modifi,
+                                      phones: element.target.value,
+                                    });
                                   }
                                 }}
                                 onBlur={validatePhone}
@@ -1210,38 +1451,58 @@ export default function PatientForm(props: RouteComponentProps<IPageParams>) {
                                   <OutlinedInputFiled
                                     id="input-telefone"
                                     placeholder="(00) 0000-0000"
-                                    error={!validatePhone() && state.phones[0]?.number != ''}
+                                    error={
+                                      !validatePhone() &&
+                                      state.phones[0]?.number != ""
+                                    }
                                     labelWidth={80}
-                                    style={{marginRight: 12}}
+                                    style={{ marginRight: 12 }}
                                   />
                                 )}
                               </InputMask>
                             </FormControl>
                             {!validatePhone() && state.phones[0]?.number && (
-                              <p style={{color: '#f44336', margin: '1px 5px 20px'}}>
+                              <p
+                                style={{
+                                  color: "#f44336",
+                                  margin: "1px 5px 20px",
+                                }}
+                              >
                                 Por favor insira um número válido
                               </p>
                             )}
                           </Grid>
                           <Grid item md={3} xs={12}>
-                            <FormControl variant="outlined" size="small" disabled={!canEdit} fullWidth>
-                              <InputLabel htmlFor="search-input">Celular</InputLabel>
+                            <FormControl
+                              variant="outlined"
+                              size="small"
+                              disabled={!canEdit}
+                              fullWidth
+                            >
+                              <InputLabel htmlFor="search-input">
+                                Celular
+                              </InputLabel>
                               <InputMask
                                 mask="(99) 9 9999-9999"
                                 //value={state.phones[0]?.cellnumber ? state.phones[0]?.cellnumber : state.phones[1]?.cellnumber}
-                                value={state.phones[0]?.cellnumber}onChange={(element) => {
+                                value={state.phones[0]?.cellnumber}
+                                onChange={(element) => {
                                   {
-                                    setState(prevState => ({
+                                    setState((prevState) => ({
                                       ...prevState,
                                       phones: [
                                         {
                                           ...prevState.phones[0],
-                                          cellnumber: element.target.value
-                                        }
-                                      ]
+                                          cellnumber: element.target.value,
+                                        },
+                                      ],
                                     }));
-                                    setModifi({...modifi, cellnumber: element.target.value})
-                                  }}}
+                                    setModifi({
+                                      ...modifi,
+                                      cellnumber: element.target.value,
+                                    });
+                                  }
+                                }}
                                 onBlur={validateCellPhone}
                               >
                                 {(inputProps: any) => (
@@ -1249,17 +1510,26 @@ export default function PatientForm(props: RouteComponentProps<IPageParams>) {
                                     id="input-cellphone"
                                     placeholder="(00) 0 0000-0000"
                                     labelWidth={80}
-                                    style={{marginRight: 12}}
-                                    error={!validateCellPhone() && state.phones[0]?.cellnumber != ''}
+                                    style={{ marginRight: 12 }}
+                                    error={
+                                      !validateCellPhone() &&
+                                      state.phones[0]?.cellnumber != ""
+                                    }
                                   />
                                 )}
                               </InputMask>
                             </FormControl>
-                            {!validateCellPhone() && state.phones[0]?.cellnumber != '' && (
-                              <p style={{color: '#f44336', margin: '1px 5px 20px'}}>
-                                Por favor insira um número válido
-                              </p>
-                            )}
+                            {!validateCellPhone() &&
+                              state.phones[0]?.cellnumber != "" && (
+                                <p
+                                  style={{
+                                    color: "#f44336",
+                                    margin: "1px 5px 20px",
+                                  }}
+                                >
+                                  Por favor insira um número válido
+                                </p>
+                              )}
                           </Grid>
                         </Grid>
                       </FormGroupSection>
@@ -1273,8 +1543,17 @@ export default function PatientForm(props: RouteComponentProps<IPageParams>) {
                               size="small"
                               value={state.responsable?.name}
                               onChange={(element) => {
-                                setState({...state, responsable: {...state.responsable, name: element.target.value}})
-                                setModifi({...modifi.responsable, name: element.target.value})
+                                setState({
+                                  ...state,
+                                  responsable: {
+                                    ...state.responsable,
+                                    name: element.target.value,
+                                  },
+                                });
+                                setModifi({
+                                  ...modifi.responsable,
+                                  name: element.target.value,
+                                });
                               }}
                               placeholder=""
                               fullWidth
@@ -1282,14 +1561,30 @@ export default function PatientForm(props: RouteComponentProps<IPageParams>) {
                             />
                           </Grid>
                           <Grid item md={4} xs={6}>
-                            <FormControl variant="outlined" size="small" disabled={!canEdit} fullWidth>
-                              <InputLabel htmlFor="search-input">Celular</InputLabel>
+                            <FormControl
+                              variant="outlined"
+                              size="small"
+                              disabled={!canEdit}
+                              fullWidth
+                            >
+                              <InputLabel htmlFor="search-input">
+                                Celular
+                              </InputLabel>
                               <InputMask
                                 mask="(99) 9 9999-9999"
                                 value={state.responsable?.phone}
                                 onChange={(element) => {
-                                  setState({...state, responsable: {...state.responsable, phone: element.target.value}})
-                                  setModifi({...modifi.responsable, phone: element.target.value})
+                                  setState({
+                                    ...state,
+                                    responsable: {
+                                      ...state.responsable,
+                                      phone: element.target.value,
+                                    },
+                                  });
+                                  setModifi({
+                                    ...modifi.responsable,
+                                    phone: element.target.value,
+                                  });
                                 }}
                                 onBlur={validateResponsableCellPhone}
                               >
@@ -1298,17 +1593,26 @@ export default function PatientForm(props: RouteComponentProps<IPageParams>) {
                                     id="input-reponsable-phone"
                                     placeholder="(00) 0 0000-0000"
                                     labelWidth={80}
-                                    error={!validateResponsableCellPhone() && state.responsable?.phone != ''}
-                                    style={{marginRight: 12}}
+                                    error={
+                                      !validateResponsableCellPhone() &&
+                                      state.responsable?.phone != ""
+                                    }
+                                    style={{ marginRight: 12 }}
                                   />
                                 )}
                               </InputMask>
                             </FormControl>
-                            {!validateResponsableCellPhone() && state.responsable?.phone && (
-                              <p style={{color: '#f44336', margin: '1px 5px 10px'}}>
-                                Por favor insira um número válido
-                              </p>
-                            )}
+                            {!validateResponsableCellPhone() &&
+                              state.responsable?.phone && (
+                                <p
+                                  style={{
+                                    color: "#f44336",
+                                    margin: "1px 5px 10px",
+                                  }}
+                                >
+                                  Por favor insira um número válido
+                                </p>
+                              )}
                           </Grid>
                           <Grid item md={4} xs={6}>
                             <TextField
@@ -1320,9 +1624,15 @@ export default function PatientForm(props: RouteComponentProps<IPageParams>) {
                               onChange={(element) => {
                                 setState({
                                   ...state,
-                                  responsable: {...state.responsable, relationship: element.target.value}
-                                })
-                                setModifi({...modifi.responsable, relationship: element.target.value})
+                                  responsable: {
+                                    ...state.responsable,
+                                    relationship: element.target.value,
+                                  },
+                                });
+                                setModifi({
+                                  ...modifi.responsable,
+                                  relationship: element.target.value,
+                                });
                               }}
                               placeholder=""
                               fullWidth
@@ -1334,14 +1644,21 @@ export default function PatientForm(props: RouteComponentProps<IPageParams>) {
                       {params.id && (
                         <FormGroupSection>
                           <Grid item md={3} xs={6}>
-                            <FormControlLabel control={(
-                              <Switch checked={state.active} disabled={!canEdit} onChange={(event) => {
-                                setState(prevState => ({
-                                  ...prevState,
-                                  active: event.target.checked
-                                }))
-                              }}/>
-                            )} label="Ativo?"/>
+                            <FormControlLabel
+                              control={
+                                <Switch
+                                  checked={state.active}
+                                  disabled={!canEdit}
+                                  onChange={(event) => {
+                                    setState((prevState) => ({
+                                      ...prevState,
+                                      active: event.target.checked,
+                                    }));
+                                  }}
+                                />
+                              }
+                              label="Ativo?"
+                            />
                           </Grid>
                         </FormGroupSection>
                       )}
@@ -1349,11 +1666,19 @@ export default function PatientForm(props: RouteComponentProps<IPageParams>) {
                   </FormSection>
                 </BoxCustom>
                 <ButtonsContent>
-                  <ButtonComponent background="secondary" variant="outlined" onClick={() => handleOpenModalCancel()}>
+                  <ButtonComponent
+                    background="secondary"
+                    variant="outlined"
+                    onClick={() => handleOpenModalCancel()}
+                  >
                     Voltar
                   </ButtonComponent>
                   {canEdit && (
-                    <ButtonComponent disabled={!formValid} background="success" onClick={handleSaveFormPatient}>
+                    <ButtonComponent
+                      disabled={!formValid}
+                      background="success"
+                      onClick={handleSaveFormPatient}
+                    >
                       Salvar
                     </ButtonComponent>
                   )}
@@ -1374,7 +1699,8 @@ export default function PatientForm(props: RouteComponentProps<IPageParams>) {
         <DialogTitle id="alert-dialog-title">Atenção</DialogTitle>
         <DialogContent>
           <DialogContentText align="justify" id="alert-dialog-description">
-            Você editou alguns campos neste cadastro. Deseja realmente descartar as alterações?
+            Você editou alguns campos neste cadastro. Deseja realmente descartar
+            as alterações?
           </DialogContentText>
         </DialogContent>
         <DialogActions>

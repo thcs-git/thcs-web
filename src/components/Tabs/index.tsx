@@ -9,7 +9,7 @@ import {
   TabNav,
   TabNavItem,
   TabNavItem_1,
-  TabNavItemCompany,
+  TabNavItemDetails,
   TabNavItemAlingRigth,
   TabNavItemAlingLeft,
 } from "./styles";
@@ -32,6 +32,9 @@ import PatientForm from "../Inputs/Forms/patientForm";
 import { ReactComponent as CompanyIcon } from "../../assets/img/icon-company.svg";
 import { ReactComponent as EmailIcon } from "../../assets/img/Icon-email.svg";
 import { ReactComponent as PrintIcon } from "../../assets/img/Icon-imprimir.svg";
+import { ReactComponent as PatientIcon } from "../../assets/img/icon-pacient.svg";
+import { ReactComponent as MaleIcon } from "../../assets/img/icon-male-1.svg";
+import { ReactComponent as FemaleIcon } from "../../assets/img/ionic-md-female.svg";
 
 interface ITabprops {
   navItems: INavItems[];
@@ -196,6 +199,7 @@ const TabForm = (props: ITabprops) => {
             cepStatus={cepStatus}
             getAddress={getAddress}
             params={params}
+            detailsPatientIs={true}
           />
         );
       case "UserForm":
@@ -306,17 +310,17 @@ const TabForm = (props: ITabprops) => {
                 // tabNavCompany={true}
                 value={index}
                 label={
-                  <TabNavItemCompany>
+                  <TabNavItemDetails>
                     <TabNavItemAlingLeft>
                       <CompanyIcon />
                       {name}
                     </TabNavItemAlingLeft>
 
-                    <TabNavItemAlingRigth>
+                    {/* <TabNavItemAlingRigth>
                       <EmailIcon style={{ cursor: "pointer" }} />
                       <PrintIcon style={{ cursor: "pointer" }} />
-                    </TabNavItemAlingRigth>
-                  </TabNavItemCompany>
+                    </TabNavItemAlingRigth> */}
+                  </TabNavItemDetails>
                 }
                 wrapped
                 className={value === index ? "active" : ""}
@@ -329,6 +333,87 @@ const TabForm = (props: ITabprops) => {
       {navItems.map(({ name, components, badge }: INavItems, index: number) => {
         const last = _.findLastIndex(components);
 
+        return (
+          <TabPanel value={value} index={index}>
+            {components.map((component: string, sub_index: number) => (
+              <>
+                {handleComponents(component, parseInt(`${index}${sub_index}`))}
+                {sub_index != last && (
+                  <Grid item md={12} xs={12}>
+                    <Divider style={{ marginBottom: 28, marginTop: 20 }} />
+                  </Grid>
+                )}
+              </>
+            ))}
+          </TabPanel>
+        );
+      })}
+    </div>
+  ) : navItems[0].components[0] === "PatientForm" ? (
+    <div className={classes.root}>
+      <TabContent position="static">
+        <TabNav
+          value={value}
+          onChange={handleChange}
+          variant="scrollable"
+          scrollButtons="auto"
+          aria-label="scrollable auto tabs example"
+          // TabIndicatorProps={{ className: classes.indicator} }
+          TabIndicatorProps={{ style: { display: "none" } }}
+        >
+          {navItems.map(
+            ({ name, badge, components }: INavItems, index: number) => (
+              <TabNavItem_1
+                // tabNavCompany={true}
+                value={index}
+                label={
+                  <TabNavItemDetails>
+                    <TabNavItemAlingLeft>
+                      <PatientIcon />
+                      {name}
+                      {state.gender.toLowerCase() === "masculino" && (
+                        <MaleIcon />
+                      )}
+                      {state.gender.toLowerCase() === "feminino" && (
+                        <FemaleIcon />
+                      )}
+                    </TabNavItemAlingLeft>
+                  </TabNavItemDetails>
+                }
+                wrapped
+                className={value === index ? "active" : ""}
+                {...a11yProps({ index })}
+              />
+            )
+          )}
+
+          {/* {navItems.map(({ name, badge }: INavItems, index: number) => (
+            <TabNavItem
+              value={index}
+              label={
+                badge ? (
+                  <Badge
+                    classes={{ badge: classes.customBadge }}
+                    className={classes.padding}
+                    color="primary"
+                    badgeContent={badge}
+                    max={99}
+                  >
+                    {name}
+                  </Badge>
+                ) : (
+                  name
+                )
+              }
+              wrapped
+              className={value === index ? "active" : ""}
+              {...a11yProps({ index })}
+            ></TabNavItem>
+          ))} */}
+        </TabNav>
+      </TabContent>
+      {navItems.map(({ name, components, badge }: INavItems, index: number) => {
+        const last = _.findLastIndex(components);
         return (
           <TabPanel value={value} index={index}>
             {components.map((component: string, sub_index: number) => (
