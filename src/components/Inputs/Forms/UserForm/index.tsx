@@ -32,7 +32,7 @@ const UserForm = (props: IComponent) => {
 
   handleRows(state.name, "Nome do usuário");
   handleRows(state.mother_name, "Nome da mãe");
-  handleRows(state.birthdate, "Data de nascimento");
+  handleRows(birthdate, "Data de nascimento");
   handleRows(age(state.birthdate), "Idade");
   handleRows(state.national_id, "RG");
   handleRows(state.issuing_organ, "Órgão Emissor");

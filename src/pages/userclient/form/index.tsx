@@ -1,5 +1,5 @@
-import React, {useCallback, useEffect, useState} from "react";
-import {Container} from "@material-ui/core";
+import React, { useCallback, useEffect, useState } from "react";
+import { Container } from "@material-ui/core";
 
 import Loading from "../../../components/Loading";
 import Sidebar from "../../../components/Sidebar";
@@ -7,17 +7,20 @@ import TabForm from "../../../components/Tabs";
 import TabTittle from "../../../components/Text/TabTittle";
 import NotFound from "../../../components/Erros/NotFound";
 
-import {RouteComponentProps, useHistory} from "react-router-dom";
-import {useDispatch, useSelector} from "react-redux";
-import {ApplicationState} from "../../../store";
-import {UserInterface} from "../../../store/ducks/users/types";
-import {getAddress as getAddressAction} from "../../../store/ducks/customers/actions";
+import { RouteComponentProps, useHistory } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import { ApplicationState } from "../../../store";
+import { UserInterface } from "../../../store/ducks/users/types";
+import { getAddress as getAddressAction } from "../../../store/ducks/customers/actions";
 import {
-  cleanAction, createUserRequest, loadRequestByClient,
-  loadUserById, updateUserRequest,
+  cleanAction,
+  createUserRequest,
+  loadRequestByClient,
+  loadUserById,
+  updateUserRequest,
 } from "../../../store/ducks/users/actions";
 import ButtonTabs from "../../../components/Button/ButtonTabs";
-import {toast} from "react-toastify";
+import { toast } from "react-toastify";
 import SESSIONSTORAGE from "../../../helpers/constants/sessionStorage";
 
 interface IPageParams {
@@ -26,8 +29,10 @@ interface IPageParams {
   callback?: string;
 }
 
-export default function UserClientForm(props: RouteComponentProps<IPageParams>) {
-  const {params} = props.match;
+export default function UserClientForm(
+  props: RouteComponentProps<IPageParams>
+) {
+  const { params } = props.match;
 
   const dispatch = useDispatch();
   const history = useHistory();
@@ -64,12 +69,14 @@ export default function UserClientForm(props: RouteComponentProps<IPageParams>) 
     verified: "",
     active: true,
     professions: [],
-    phones: [{
-      cellnumber: "",
-      number: "",
-      telegram: false,
-      whatsapp: false,
-    }],
+    phones: [
+      {
+        cellnumber: "",
+        number: "",
+        telegram: false,
+        whatsapp: false,
+      },
+    ],
   });
 
   const [fieldsValidation, setFieldValidations] = useState<any>({
@@ -109,7 +116,7 @@ export default function UserClientForm(props: RouteComponentProps<IPageParams>) 
 
   useEffect(() => {
     if (params.id) {
-      dispatch(loadUserById(params.id, 'userclient'));
+      dispatch(loadUserById(params.id, "userclient"));
     } else {
       dispatch(cleanAction());
     }
@@ -122,8 +129,12 @@ export default function UserClientForm(props: RouteComponentProps<IPageParams>) 
       }));
     }
     if (params?.id) {
-      if (params.mode === "view" || params.mode === "link" || params.mode === "linking") {
-        setCanEdit(false)
+      if (
+        params.mode === "view" ||
+        params.mode === "link" ||
+        params.mode === "linking"
+      ) {
+        setCanEdit(false);
       }
     }
   }, [userState]);
@@ -131,64 +142,60 @@ export default function UserClientForm(props: RouteComponentProps<IPageParams>) 
   const NavItems = [
     {
       name: "Dados Pessoais",
-      components: ['UserForm', 'CepForm', 'UserContactForm'],
+      components: ["UserForm", "CepForm", "UserContactForm"],
     },
     {
       name: "Dados Profissionais",
-      components: ['UserForm', 'UserProfessionForm'],
-    }
-  ]
+      components: ["UserProfessionForm"],
+    },
+  ];
 
-  if (params.callback != 'userconfiguration') {
-    NavItems.push(
-      {
-        name: "Dados da Empresa",
-        components: ['UserForm', 'UserCompanyForm'],
-      }
-    )
+  if (params.callback != "userconfiguration") {
+    NavItems.push({
+      name: "Dados da Empresa",
+      components: ["UserCompanyForm"],
+    });
   }
 
   const handleSaveFormUser = useCallback(() => {
     dispatch(updateUserRequest(state));
-    history.push('/userclient');
+    history.push("/userclient");
   }, [state]);
 
   const handleCancelFormUser = useCallback(() => {
-    history.push('/userclient');
+    history.push("/userclient");
   }, []);
 
-  const integration = sessionStorage.getItem(SESSIONSTORAGE.INTEGRATION)
+  const integration = sessionStorage.getItem(SESSIONSTORAGE.INTEGRATION);
 
   const buttons = [
     {
-      name: 'Voltar',
+      name: "Voltar",
       onClick: handleCancelFormUser,
-      variant: 'outlined',
-      background: 'success_rounded',
+      variant: "contained",
+      background: "secondary",
       show: true,
     },
-  ]
+  ];
 
-  if (!(integration)) {
-    buttons.push(
-      {
-        name: 'Salvar',
-        onClick: handleSaveFormUser,
-        variant: 'contained',
-        background: 'success',
-        show: true,
-      },
-    )
+  if (!integration) {
+    buttons.push({
+      name: "Salvar",
+      onClick: handleSaveFormUser,
+      variant: "contained",
+      background: "success",
+      show: true,
+    });
   }
 
   return (
     <>
       <Sidebar>
         <Container>
-          {params.mode === 'view' ? (
+          {params.mode === "view" ? (
             <>
-              {userState.loading && <Loading/>}
-              <TabTittle tittle={'Dados do usuário'}/>
+              {userState.loading && <Loading />}
+              <TabTittle tittle={"Detalhamento do profissional"} />
               <TabForm
                 navItems={NavItems}
                 initialTab={0}
@@ -200,13 +207,13 @@ export default function UserClientForm(props: RouteComponentProps<IPageParams>) 
                 getAddress={getAddress}
                 params={params}
               />
-              <ButtonTabs canEdit={canEdit} buttons={buttons}/>
+              <ButtonTabs canEdit={canEdit} buttons={buttons} />
             </>
           ) : (
-            <NotFound backOnclick={() => history.push('/userclient')}/>
+            <NotFound backOnclick={() => history.push("/userclient")} />
           )}
         </Container>
       </Sidebar>
     </>
-  )
+  );
 }

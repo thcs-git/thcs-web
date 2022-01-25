@@ -12,6 +12,7 @@ import {
   TabNavItemDetails,
   TabNavItemAlingRigth,
   TabNavItemAlingLeft,
+  WrapperName,
 } from "./styles";
 import ClientFormHeader from "../Inputs/Forms/ClientName";
 import _ from "lodash";
@@ -35,6 +36,7 @@ import { ReactComponent as PrintIcon } from "../../assets/img/Icon-imprimir.svg"
 import { ReactComponent as PatientIcon } from "../../assets/img/icon-pacient.svg";
 import { ReactComponent as MaleIcon } from "../../assets/img/icon-male-1.svg";
 import { ReactComponent as FemaleIcon } from "../../assets/img/ionic-md-female.svg";
+import { ReactComponent as ProfileIcon } from "../../assets/img/icon-user-1.svg";
 
 interface ITabprops {
   navItems: INavItems[];
@@ -117,6 +119,9 @@ const useStyles = makeStyles((theme: Theme) => ({
     backgroundColor: "var(--secondary)",
     color: "white",
   },
+  colorSecondary: {
+    color: "var(--secondary)",
+  },
 }));
 
 const TabForm = (props: ITabprops) => {
@@ -138,10 +143,8 @@ const TabForm = (props: ITabprops) => {
     rowsPortal,
     rowsApp,
   } = props;
-  // console.log(navItems[0].components);
   const classes = useStyles();
   const indicatorCompany = classes.indicator;
-  // console.log(classes);
   const handleChange = (event: React.ChangeEvent<{}>, newValue: number) => {
     setValue(newValue);
     setInitialTab && setInitialTab(newValue);
@@ -292,7 +295,6 @@ const TabForm = (props: ITabprops) => {
         return <TabBodyItem>Not found!</TabBodyItem>;
     }
   }
-  // console.log(navItems[0].components);
   return navItems[0].components[0] === "CompanyForm" ? (
     <div className={classes.root}>
       <TabContent position="static">
@@ -440,6 +442,7 @@ const TabForm = (props: ITabprops) => {
           scrollButtons="auto"
           aria-label="scrollable auto tabs example"
           TabIndicatorProps={{ className: classes.indicator }}
+          style={{ fontSize: "13px" }}
         >
           {navItems.map(({ name, badge }: INavItems, index: number) => (
             <TabNavItem
@@ -449,7 +452,6 @@ const TabForm = (props: ITabprops) => {
                   <Badge
                     classes={{ badge: classes.customBadge }}
                     className={classes.padding}
-                    color="primary"
                     badgeContent={badge}
                     max={99}
                   >
@@ -466,18 +468,30 @@ const TabForm = (props: ITabprops) => {
           ))}
         </TabNav>
       </TabContent>
+
       {navItems.map(({ name, components, badge }: INavItems, index: number) => {
         const last = _.findLastIndex(components);
         return (
           <TabPanel value={value} index={index}>
+            {state.name && (
+              <>
+                <WrapperName>
+                  <ProfileIcon />
+                  {state.name}
+                  {state.gender?.toLowerCase() === "masculino" && <MaleIcon />}
+                  {state.gender?.toLowerCase() === "feminino" && <FemaleIcon />}
+                </WrapperName>
+                <Divider style={{ marginBottom: 0, marginTop: 16 }} />
+              </>
+            )}
             {components.map((component: string, sub_index: number) => (
               <>
                 {handleComponents(component, parseInt(`${index}${sub_index}`))}
-                {sub_index != last && (
+                {/* {sub_index != last && (
                   <Grid item md={12} xs={12}>
                     <Divider style={{ marginBottom: 28, marginTop: 20 }} />
                   </Grid>
-                )}
+                )} */}
               </>
             ))}
           </TabPanel>
