@@ -36,6 +36,7 @@ interface Icontent {
   rows: Irows[];
   detailsCompanyIs?: boolean;
   detailsPatientIs?: boolean;
+  details?: string;
 }
 
 interface Irows {
@@ -166,7 +167,7 @@ export default function ViewCard(props: IProps) {
   content.detailsPatientIs && patientAdress.push(addressFull[0]);
 
   content.detailsCompanyIs && dataCompany.push(addressFull[0]);
-  // console.log(data);
+  console.log(content);
   return content.detailsCompanyIs ? (
     <Grid item md={md_value}>
       <Grid
@@ -246,8 +247,30 @@ export default function ViewCard(props: IProps) {
         </WrapperContentData>
       </Grid>
     </Grid>
+  ) : content.details === "UserForm" ? (
+    <Grid item md={md_value}>
+      {console.log(content.details)}
+
+      <Grid
+        container
+        style={{
+          flexDirection: "column",
+          paddingLeft: "10px",
+          paddingTop: "20px",
+        }}
+      >
+        <Grid item style={{ paddingBottom: "10px" }}>
+          <h3>{content.tittle}</h3>
+        </Grid>
+        {content.rows.map(({ name, value }: Irows, index: number) => (
+          <Grid item>{`${name}: ${value}`}</Grid>
+        ))}
+      </Grid>
+    </Grid>
   ) : (
     <Grid item md={md_value}>
+      {/* {console.log(content.tittle)} */}
+
       <Grid
         container
         style={{
