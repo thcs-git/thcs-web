@@ -12,6 +12,7 @@ MenuItem;
 import FilterListIcon from "@material-ui/icons/FilterList";
 import Checkbox from "@material-ui/core/Checkbox";
 import { MoreVert } from "@material-ui/icons";
+import { ComplexityStatus } from "../../styles/components/Table";
 
 import Button from "../Button";
 import { MenuFilter as Menu, Th } from "./styles";
@@ -22,6 +23,7 @@ import { ListItemStatus } from "../../pages/userclient/list/styles";
 import { any } from "cypress/types/bluebird";
 import { formatDate } from "../../helpers/date";
 import { PatientState } from "../../store/ducks/patients/types";
+import { CareState, CareInterface } from "../../store/ducks/cares/types";
 interface ICellProps {
   name: string;
   align: "right" | "left" | "center";
@@ -42,22 +44,27 @@ interface ITableProps {
   handleLinkedAt?: (user: any) => any;
   handleActive?: (user: any) => any;
   patientState?: PatientState;
+  careState?: CareState;
+  careFilter?: any;
   toggleHistoryModal?: (index: number, patient: any) => void;
   toggleHistoryModal_2?: (index: number, patient: any) => void;
+  handleComplexity?: (complexity: any) => any;
 }
 
 const TableComponent = (props: ITableProps) => {
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const {
     userState,
+    patientState,
+    careState,
+    careFilter,
     handleCpf,
-    handleEmpty,
     integration,
     handleLinkedAt,
     handleActive,
-    patientState,
     toggleHistoryModal,
     toggleHistoryModal_2,
+    handleComplexity,
   } = props;
   const history = useHistory();
 
@@ -74,7 +81,10 @@ const TableComponent = (props: ITableProps) => {
     },
     [anchorEl]
   );
-  console.log(patientState);
+
+  function handleEmpty(value: any) {
+    return value ? value : "-";
+  }
   const handleCloseRowMenu = useCallback(() => {
     setAnchorEl(null);
   }, [anchorEl]);
@@ -153,16 +163,16 @@ const TableComponent = (props: ITableProps) => {
                     {user?.username}
                   </Link>
                 </TableCell>
-                {handleEmpty && handleCpf && (
+                {handleCpf && (
                   <TableCell>
                     {handleEmpty(handleCpf(user?.fiscal_number))}
                   </TableCell>
                 )}
-                {handleEmpty && (
+                {
                   <TableCell>
                     {handleEmpty(user?.profession_id?.name)}
                   </TableCell>
-                )}
+                }
 
                 <TableCell align="left">
                   <div style={{ display: "flex" }}>
@@ -398,7 +408,101 @@ const TableComponent = (props: ITableProps) => {
               </TableRow>
             ))}
 
-          {!userState && !patientState && props.children}
+          {/* table de care/list c/ integração */}
+          {/* {console.log(careFilter)} */}
+          {careState &&
+            integration &&
+            careState.list.data.map((care: CareInterface, index: number) => (
+              <TableRow key={`care_${index}`}>
+                <TableCell>
+                  <Link to={`/care/${care._id}/overview`}>
+                    {handleEmpty(care._id)}
+                  </Link>
+                </TableCell>
+                <TableCell>
+                  <Link to={`/care/${care._id}/overview`}>
+                    {care.patient_id?.social_status
+                      ? handleEmpty(care.patient_id.social_name)
+                      : handleEmpty(care.patient_id.name)}
+                  </Link>
+                </TableCell>
+                <TableCell align="center">{handleEmpty(care?.tipo)}</TableCell>
+                <TableCell align="center">
+                  {handleEmpty(care.patient_id?.fiscal_number)}
+                </TableCell>
+                <TableCell align="center">
+                  {care?.created_at
+                    ? formatDate(care?.created_at ?? "", "DD/MM/YYYY HH:mm:ss")
+                    : "-"}
+                </TableCell>
+              </TableRow>
+            ))}
+
+          {careFilter &&
+            !integration &&
+            careFilter.map((care: CareInterface, index: number) => (
+              <TableRow key={`care_${index}`}>
+                <TableCell>{care?._id}</TableCell>
+                <TableCell>
+                  <Link to={`/care/${care._id}/overview`}>
+                    {care.patient_id?.social_name || care.patient_id?.name}
+                  </Link>
+                </TableCell>
+                <TableCell>
+                  {typeof care?.care_type_id === "object"
+                    ? care?.care_type_id.name
+                    : care?.care_type_id}
+                </TableCell>
+                <TableCell>{care.patient_id?.fiscal_number}</TableCell>
+
+                <TableCell align="center">
+                  {care?.started_at
+                    ? formatDate(care?.started_at ?? "", "DD/MM/YYYY HH:mm:ss")
+                    : "-"}
+                </TableCell>
+                <TableCell align="left">
+                  <ComplexityStatus
+                    status={care?.complexity || care?.capture?.complexity}
+                  >
+                    <p>
+                      {handleComplexity &&
+                        handleComplexity(
+                          care?.complexity || care?.capture?.complexity
+                        )}
+                    </p>
+                  </ComplexityStatus>
+                </TableCell>
+                <TableCell>
+                  <Button
+                    aria-controls={`simple-menu${index}`}
+                    id={`btn_simple-menu${index}`}
+                    aria-haspopup="true"
+                    onClick={handleOpenRowMenu}
+                  >
+                    <MoreVert style={{ color: "#0899BA" }} />
+                  </Button>
+                  <Menu
+                    id={`simple-menu${index}`}
+                    anchorEl={anchorEl}
+                    keepMounted
+                    open={anchorEl?.id === `btn_simple-menu${index}`}
+                    onClose={handleCloseRowMenu}
+                  >
+                    {toggleHistoryModal && (
+                      <MenuItem onClick={() => toggleHistoryModal(index, care)}>
+                        Histórico
+                      </MenuItem>
+                    )}
+                  </Menu>
+                </TableCell>
+              </TableRow>
+            ))}
+
+          {!userState &&
+            !patientState &&
+            !careState &&
+            !careFilter &&
+            props.children}
         </TableBody>
       </Table>
     </TableContainer>

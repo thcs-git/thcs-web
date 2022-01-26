@@ -12,6 +12,7 @@ export const FormSearch = styled.form`
 
   > div {
     width: 50%;
+    min-width: 450px;
     background: #ffffff;
   }
 `;
