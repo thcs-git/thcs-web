@@ -189,19 +189,6 @@ export default function SignIn() {
     setShowPassword((prev) => !prev);
   }, []);
 
-  const handleVerifyEmail = useCallback(
-    async (event) => {
-      event.preventDefault();
-
-      if (inputEmail.error) return;
-
-      // if (loginState.email.user) return;
-
-      dispatch(emailRequest({ email: inputEmail.value }));
-    },
-    [inputPassword, inputEmail]
-  );
-
   const handlePassword = useCallback(
     async (event) => {
       event.preventDefault();
@@ -270,6 +257,24 @@ export default function SignIn() {
     setValid(passwordError && passwordConfirmError);
   }, [inputPassword, inputConfirmPassword]);
 
+  const handleVerifyEmail = useCallback(
+    async (event) => {
+      event.preventDefault();
+
+      if (inputEmail.error) return;
+
+      // if (loginState.email.user) return;
+
+      dispatch(emailRequest({ email: inputEmail.value }));
+    },
+    [inputPassword, inputEmail]
+  );
+
+  const handleKeyEnter = (e: any) => {
+    if (e.key === "Enter") {
+      handleVerifyEmail(e);
+    }
+  };
   return (
     <>
       {loginState.loading && <Loading />}
@@ -293,6 +298,7 @@ export default function SignIn() {
             <FormControl fullWidth margin="normal" variant="outlined">
               <InputLabel htmlFor="outlined-adornment-email">E-mail</InputLabel>
               <OutlinedInput
+                onKeyDown={handleKeyEnter}
                 error={inputEmail.error}
                 required
                 fullWidth
