@@ -199,6 +199,7 @@ export default function CouncilList() {
                 ]}
                 careState={careState}
                 careFilter={careFilter}
+                toggleHistoryModal={toggleHistoryModal}
               >
                 {/* {careState.list.data.map(
                   (care: CareInterface, index: number) => (

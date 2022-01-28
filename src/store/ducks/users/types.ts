@@ -72,6 +72,7 @@ export interface UserRecoveryPassword {
   _id: string;
   password: string;
 }
+
 export interface ProfessionUserInterface {
   _id: string;
   name: string;
@@ -81,6 +82,7 @@ export interface UserTypesInterface {
   _id: string;
   name: string;
 }
+
 export interface CustomerUserInterface {
   name: string;
   _id: string;
@@ -114,6 +116,9 @@ export interface MainSpecialtyInterface {
 }
 
 export interface UserListItems {
+  profession_external?: string;
+  main_specialty_external?: string;
+  specialties_external?: string;
   companies_links: CompanyUserLinkInterface[];
   _id: string;
   name: string;

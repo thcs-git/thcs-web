@@ -1,5 +1,5 @@
-import React, { ReactNode, useCallback } from "react";
-import { useHistory, Link } from "react-router-dom";
+import React, {ReactNode, useCallback} from "react";
+import {useHistory, Link} from "react-router-dom";
 
 import Table from "@material-ui/core/Table";
 import TableBody from "@material-ui/core/TableBody";
@@ -8,22 +8,24 @@ import TableContainer from "@material-ui/core/TableContainer";
 import TableHead from "@material-ui/core/TableHead";
 import TableRow from "@material-ui/core/TableRow";
 import Paper from "@material-ui/core/Paper";
+import {Visibility as VisibilityIcon} from "@material-ui/icons";
 MenuItem;
 import FilterListIcon from "@material-ui/icons/FilterList";
 import Checkbox from "@material-ui/core/Checkbox";
-import { MoreVert } from "@material-ui/icons";
-import { ComplexityStatus } from "../../styles/components/Table";
+import {MoreVert} from "@material-ui/icons";
+import {ComplexityStatus} from "../../styles/components/Table";
 
 import Button from "../Button";
-import { MenuFilter as Menu, Th } from "./styles";
-import { UserInterface, UserState } from "../../store/ducks/users/types";
-import { MenuItem, Tooltip } from "@material-ui/core";
+import {MenuFilter as Menu, Th} from "./styles";
+import {UserInterface, UserState} from "../../store/ducks/users/types";
+import {MenuItem, Tooltip} from "@material-ui/core";
 import MoreHorizTwoToneIcon from "@material-ui/icons/MoreHorizTwoTone";
-import { ListItemStatus } from "../../pages/userclient/list/styles";
-import { any } from "cypress/types/bluebird";
-import { formatDate } from "../../helpers/date";
-import { PatientState } from "../../store/ducks/patients/types";
-import { CareState, CareInterface } from "../../store/ducks/cares/types";
+import {ListItemStatus} from "../../pages/userclient/list/styles";
+import {any} from "cypress/types/bluebird";
+import {formatDate} from "../../helpers/date";
+import {PatientState} from "../../store/ducks/patients/types";
+import {CareState, CareInterface} from "../../store/ducks/cares/types";
+
 interface ICellProps {
   name: string;
   align: "right" | "left" | "center";
@@ -49,6 +51,7 @@ interface ITableProps {
   toggleHistoryModal?: (index: number, patient: any) => void;
   toggleHistoryModal_2?: (index: number, patient: any) => void;
   handleComplexity?: (complexity: any) => any;
+  attendanceHistory?: any;
 }
 
 const TableComponent = (props: ITableProps) => {
@@ -65,6 +68,7 @@ const TableComponent = (props: ITableProps) => {
     toggleHistoryModal,
     toggleHistoryModal_2,
     handleComplexity,
+    attendanceHistory,
   } = props;
   const history = useHistory();
 
@@ -85,6 +89,7 @@ const TableComponent = (props: ITableProps) => {
   function handleEmpty(value: any) {
     return value ? value : "-";
   }
+
   const handleCloseRowMenu = useCallback(() => {
     setAnchorEl(null);
   }, [anchorEl]);
@@ -118,7 +123,7 @@ const TableComponent = (props: ITableProps) => {
                   onClick={handleClick}
                   size="small"
                 >
-                  <FilterListIcon />
+                  <FilterListIcon/>
                 </Button>
                 <Menu
                   id="simple-menu"
@@ -138,7 +143,7 @@ const TableComponent = (props: ITableProps) => {
                   <p>Filtrar resultados por</p>
                   {props.fieldsFilter?.map((field, fieldIndex) => (
                     <li key={`fields_filter_${fieldIndex}`}>
-                      <Checkbox name={field} onChange={props.onChangeFilter} />
+                      <Checkbox name={field} onChange={props.onChangeFilter}/>
                       {field}
                     </li>
                   ))}
@@ -170,29 +175,24 @@ const TableComponent = (props: ITableProps) => {
                 )}
                 {
                   <TableCell>
-                    {handleEmpty(user?.profession_id?.name)}
+                    {handleEmpty(user?.profession_external)}
                   </TableCell>
                 }
 
                 <TableCell align="left">
-                  <div style={{ display: "flex" }}>
-                    <p style={{ marginTop: "0.3rem" }}>
-                      {user.main_specialty_id?.name
-                        ? user.main_specialty_id?.name
+                  <div style={{display: "flex"}}>
+                    <p style={{marginTop: "0.3rem"}}>
+                      {user.main_specialty_external
+                        ? user.main_specialty_external
                         : "-"}
                     </p>
 
-                    {user.specialties.length > 0 ? (
+                    {user?.specialties_external ? (
                       <Tooltip
-                        style={{ fontSize: "10pt", marginTop: "0.8rem" }}
-                        title={user.specialties.map(
-                          (specialty, index) =>
-                            `${specialty.name}${
-                              index < user.specialties.length - 1 ? ", " : ""
-                            }`
-                        )}
+                        style={{fontSize: "10pt", marginTop: "0.8rem"}}
+                        title={user.specialties_external}
                       >
-                        <MoreHorizTwoToneIcon />
+                        <MoreHorizTwoToneIcon/>
                       </Tooltip>
                     ) : (
                       ""
@@ -221,13 +221,13 @@ const TableComponent = (props: ITableProps) => {
                   {user?.profession_id?.name ? user.profession_id.name : "-"}
                 </TableCell>
                 <TableCell align="left">
-                  <div style={{ display: "flex" }}>
-                    <p style={{ marginTop: "0.3rem" }}>
+                  <div style={{display: "flex"}}>
+                    <p style={{marginTop: "0.3rem"}}>
                       {user.main_specialty_id?.name}
                     </p>
                     {user.specialties.length > 0 ? (
                       <Tooltip
-                        style={{ fontSize: "10pt", marginTop: "0.8rem" }}
+                        style={{fontSize: "10pt", marginTop: "0.8rem"}}
                         title={user.specialties.map(
                           (specialty, index) =>
                             `${specialty.name}${
@@ -235,7 +235,7 @@ const TableComponent = (props: ITableProps) => {
                             }`
                         )}
                       >
-                        <MoreHorizTwoToneIcon />
+                        <MoreHorizTwoToneIcon/>
                       </Tooltip>
                     ) : null}
                   </div>
@@ -285,7 +285,7 @@ const TableComponent = (props: ITableProps) => {
                     aria-haspopup="true"
                     onClick={handleOpenRowMenu}
                   >
-                    <MoreVert style={{ color: "#0899BA" }} />
+                    <MoreVert style={{color: "#0899BA"}}/>
                   </Button>
                   <Menu
                     id={`user-menu${index}`}
@@ -355,7 +355,7 @@ const TableComponent = (props: ITableProps) => {
                       aria-haspopup="true"
                       onClick={handleOpenRowMenu}
                     >
-                      <MoreVert style={{ color: "#0899BA" }} />
+                      <MoreVert style={{color: "#0899BA"}}/>
                     </Button>
                   )}
 
@@ -412,7 +412,7 @@ const TableComponent = (props: ITableProps) => {
           {/* {console.log(careFilter)} */}
           {careState &&
             integration &&
-            careState.list.data.map((care: CareInterface, index: number) => (
+            careState?.list?.data?.map((care: CareInterface, index: number) => (
               <TableRow key={`care_${index}`}>
                 <TableCell>
                   <Link to={`/care/${care._id}/overview`}>
@@ -438,6 +438,40 @@ const TableComponent = (props: ITableProps) => {
               </TableRow>
             ))}
 
+          {/*Historico de Atendimento*/}
+          {attendanceHistory &&
+            attendanceHistory.data.map((care: any, index: number) => (
+              <TableRow key={`patient_${index}`}>
+                <TableCell>
+                  <p>{care?.created_at ? formatDate(care?.created_at ?? "", "DD/MM/YYYY") : "-"}</p>
+                </TableCell>
+                <TableCell align="center">
+                  <p>{care?._id}</p>
+                </TableCell>
+                <TableCell>
+                  <p>{care?.released_at ? formatDate(care?.released_at ?? "", "DD/MM/YYYY") : "-"}</p>
+                </TableCell>
+                {/*<TableCell align="center">*/}
+                {/*  <p>*/}
+                {/*    {typeof care?.care_type_id === "object"*/}
+                {/*      ? care?.care_type_id.name*/}
+                {/*      : care?.care_type_id}*/}
+                {/*  </p>*/}
+                {/*</TableCell>*/}
+                <TableCell>
+                  {care?.tipo}
+                </TableCell>
+                <TableCell align="center">
+                  <p>{care?.company_id}</p>
+                </TableCell>
+                <TableCell align="center">
+                  <Button onClick={() => history.push(`/care/${care?._id}/overview`)}>
+                    <VisibilityIcon style={{color: '#0899BA'}}/>
+                  </Button>
+                </TableCell>
+              </TableRow>
+            ))}
+
           {careFilter &&
             !integration &&
             careFilter.map((care: CareInterface, index: number) => (
@@ -448,16 +482,24 @@ const TableComponent = (props: ITableProps) => {
                     {care.patient_id?.social_name || care.patient_id?.name}
                   </Link>
                 </TableCell>
+                {/*<TableCell>*/}
+                {/*  {typeof care?.care_type_id === "object"*/}
+                {/*    ? care?.care_type_id.name*/}
+                {/*    : care?.care_type_id}*/}
+                {/*</TableCell>*/}
                 <TableCell>
-                  {typeof care?.care_type_id === "object"
-                    ? care?.care_type_id.name
-                    : care?.care_type_id}
+                  {care?.tipo}
                 </TableCell>
                 <TableCell>{care.patient_id?.fiscal_number}</TableCell>
 
+                {/*<TableCell align="center">*/}
+                {/*  {care?.started_at*/}
+                {/*    ? formatDate(care?.started_at ?? "", "DD/MM/YYYY HH:mm:ss")*/}
+                {/*    : "-"}*/}
+                {/*</TableCell>*/}
                 <TableCell align="center">
-                  {care?.started_at
-                    ? formatDate(care?.started_at ?? "", "DD/MM/YYYY HH:mm:ss")
+                  {care?.created_at
+                    ? formatDate(care?.created_at ?? "", "DD/MM/YYYY HH:mm:ss")
                     : "-"}
                 </TableCell>
                 <TableCell align="left">
@@ -479,7 +521,7 @@ const TableComponent = (props: ITableProps) => {
                     aria-haspopup="true"
                     onClick={handleOpenRowMenu}
                   >
-                    <MoreVert style={{ color: "#0899BA" }} />
+                    <MoreVert style={{color: "#0899BA"}}/>
                   </Button>
                   <Menu
                     id={`simple-menu${index}`}
