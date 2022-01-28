@@ -9,6 +9,7 @@ import TableHead from "@material-ui/core/TableHead";
 import TableRow from "@material-ui/core/TableRow";
 import Paper from "@material-ui/core/Paper";
 import {Visibility as VisibilityIcon} from "@material-ui/icons";
+
 MenuItem;
 import FilterListIcon from "@material-ui/icons/FilterList";
 import Checkbox from "@material-ui/core/Checkbox";
@@ -409,34 +410,33 @@ const TableComponent = (props: ITableProps) => {
             ))}
 
           {/* table de care/list c/ integração */}
-          {/* {console.log(careFilter)} */}
           {careState &&
-            integration &&
-            careState?.list?.data?.map((care: CareInterface, index: number) => (
-              <TableRow key={`care_${index}`}>
-                <TableCell>
-                  <Link to={`/care/${care._id}/overview`}>
-                    {handleEmpty(care._id)}
-                  </Link>
-                </TableCell>
-                <TableCell>
-                  <Link to={`/care/${care._id}/overview`}>
-                    {care.patient_id?.social_status
-                      ? handleEmpty(care.patient_id.social_name)
-                      : handleEmpty(care.patient_id.name)}
-                  </Link>
-                </TableCell>
-                <TableCell align="center">{handleEmpty(care?.tipo)}</TableCell>
-                <TableCell align="center">
-                  {handleEmpty(care.patient_id?.fiscal_number)}
-                </TableCell>
-                <TableCell align="center">
-                  {care?.created_at
-                    ? formatDate(care?.created_at ?? "", "DD/MM/YYYY HH:mm:ss")
-                    : "-"}
-                </TableCell>
-              </TableRow>
-            ))}
+          integration &&
+          careState?.list?.data ? careState?.list?.data?.map((care: CareInterface, index: number) => (
+            <TableRow key={`care_${index}`}>
+              <TableCell>
+                <Link to={`/care/${care._id}/overview`}>
+                  {handleEmpty(care._id)}
+                </Link>
+              </TableCell>
+              <TableCell>
+                <Link to={`/care/${care._id}/overview`}>
+                  {care.patient_id?.social_status
+                    ? handleEmpty(care.patient_id.social_name)
+                    : handleEmpty(care.patient_id.name)}
+                </Link>
+              </TableCell>
+              <TableCell align="center">{handleEmpty(care?.tipo)}</TableCell>
+              <TableCell align="center">
+                {handleEmpty(care.patient_id?.fiscal_number)}
+              </TableCell>
+              <TableCell align="center">
+                {care?.created_at
+                  ? formatDate(care?.created_at ?? "", "DD/MM/YYYY HH:mm:ss")
+                  : "-"}
+              </TableCell>
+            </TableRow>
+          )) : null}
 
           {/*Historico de Atendimento*/}
           {attendanceHistory &&
@@ -531,7 +531,11 @@ const TableComponent = (props: ITableProps) => {
                     onClose={handleCloseRowMenu}
                   >
                     {toggleHistoryModal && (
-                      <MenuItem onClick={() => toggleHistoryModal(index, care)}>
+                      <MenuItem onClick={() => {
+                        toggleHistoryModal(index, care)
+                        handleCloseRowMenu()
+                      }
+                      }>
                         Histórico
                       </MenuItem>
                     )}
