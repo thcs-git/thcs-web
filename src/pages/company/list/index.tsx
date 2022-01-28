@@ -66,15 +66,40 @@ export default function CompanyList() {
     setAnchorEl(null);
   }, [anchorEl]);
 
-  const handleChangeInput = useCallback(
-    (event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-      setSearch(event.target.value);
-      dispatch(searchRequest(event.target.value));
-    },
-    []
-  );
+  // const handleChangeInput = useCallback(
+  //   (event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+  //     setSearch(event.target.value);
+  //     dispatch(searchRequest(event.target.value));
+  //   },
+  //   []
+  // );
 
-  const debounceSearchRequest = debounce(handleChangeInput, 900);
+  // const debounceSearchRequest = debounce(handleChangeInput, 900);
+
+  const handleSearchInput = useCallback((event: any) => {
+    dispatch(searchRequest(event));
+  }, []);
+
+  const handleChangeInput = (
+    event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => {
+    setSearch(event.target.value);
+
+    if (event.target.value === "") {
+      handleSearchInput("");
+    }
+  };
+
+  const handleKeyEnter = (e: any) => {
+    if (e.key === "Enter") {
+      e.preventDefault();
+      handleSearchInput(search);
+    }
+  };
+
+  const handleClickSearch = (e: any) => {
+    handleSearchInput(search);
+  };
 
   const integration = sessionStorage.getItem(SESSIONSTORAGE.INTEGRATION);
 
@@ -91,7 +116,10 @@ export default function CompanyList() {
                 handleButton={() => history.push("/company/create/")}
                 inputPlaceholder="Pesquise por nome fantasia, CNPJ, status, etc..."
                 buttonTitle=""
-                onChangeInput={debounceSearchRequest}
+                onChangeInput={handleChangeInput}
+                value={search}
+                onKeyEnter={handleKeyEnter}
+                onClickSearch={handleClickSearch}
               />
               <Table
                 tableCells={[
@@ -132,7 +160,10 @@ export default function CompanyList() {
                 handleButton={() => history.push("/company/create/")}
                 inputPlaceholder="Pesquise por nome fantasia, CNPJ, status, etc..."
                 buttonTitle="Novo"
-                onChangeInput={debounceSearchRequest}
+                onChangeInput={handleChangeInput}
+                value={search}
+                onKeyEnter={handleKeyEnter}
+                onClickSearch={handleClickSearch}
               />
               <Table
                 tableCells={[

@@ -91,13 +91,13 @@ export default function UserClientList() {
     setAnchorEl(null);
   }, [anchorEl]);
 
-  const handleChangeInput = useCallback(
-    (event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-      setSearch(event.target.value);
-      dispatch(searchRequest({ search: event.target.value }));
-    },
-    []
-  );
+  // const handleChangeInput = useCallback(
+  //   (event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+  //     setSearch(event.target.value);
+  //     dispatch(searchRequest({ search: event.target.value }));
+  //   },
+  //   []
+  // );
 
   const handleActive = useCallback((user) => {
     return _.filter(user.companies_links, {
@@ -111,7 +111,7 @@ export default function UserClientList() {
     })[0]?.linked_at;
   }, []);
 
-  const debounceSearchRequest = debounce(handleChangeInput, 900);
+  // const debounceSearchRequest = debounce(handleChangeInput, 900);
 
   const toggleHistoryModal = (index: number) => {
     handleCloseRowMenu();
@@ -125,6 +125,31 @@ export default function UserClientList() {
       cpf = cpf.replace("-", "");
       return `${cpf[0]}${cpf[1]}${cpf[2]}.${cpf[3]}${cpf[4]}${cpf[5]}.${cpf[6]}${cpf[7]}${cpf[8]}-${cpf[9]}${cpf[10]}`;
     }
+  };
+
+  const handleSearchInput = useCallback((event: any) => {
+    dispatch(searchRequest({ search: event }));
+  }, []);
+
+  const handleChangeInput = (
+    event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => {
+    setSearch(event.target.value);
+
+    if (event.target.value === "") {
+      handleSearchInput("");
+    }
+  };
+
+  const handleKeyEnter = (e: any) => {
+    if (e.key === "Enter") {
+      e.preventDefault();
+      handleSearchInput(search);
+    }
+  };
+
+  const handleClickSearch = (e: any) => {
+    handleSearchInput(search);
   };
   const integration = sessionStorage.getItem(SESSIONSTORAGE.INTEGRATION);
   function handleEmpty(value: any) {
@@ -146,7 +171,10 @@ export default function UserClientList() {
                 handleButton={() => history.push("/user/edit/create/")}
                 buttonTitle=""
                 inputPlaceholder="Pesquise por prestador, especialidades, status, etc..."
-                onChangeInput={debounceSearchRequest}
+                onChangeInput={handleChangeInput}
+                value={search}
+                onKeyEnter={handleKeyEnter}
+                onClickSearch={handleClickSearch}
               />
               <Table
                 tableCells={[
@@ -171,7 +199,10 @@ export default function UserClientList() {
                 handleButton={() => history.push("/user/edit/create/")}
                 buttonTitle=""
                 inputPlaceholder="Pesquise por prestador, especialidades, status, etc..."
-                onChangeInput={debounceSearchRequest}
+                onChangeInput={handleChangeInput}
+                value={search}
+                onKeyEnter={handleKeyEnter}
+                onClickSearch={handleClickSearch}
               />
               <Table
                 tableCells={[
