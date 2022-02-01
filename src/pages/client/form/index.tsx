@@ -571,8 +571,11 @@ export default function ClientForm(props: RouteComponentProps<IPageParams>) {
       <Container>
       {params.mode === 'permission' ? (
         <>
-          <TabTittle tittle={'Permissões Do Cliente'} icon={!canEditPermission &&
-          <ButtonEdit setCanEdit={() => setCanEditPermission(!canEditPermission)} canEdit={canEditPermission}>Editar</ButtonEdit>}/>
+          <TabTittle 
+          tittle={'Permissões Do Cliente'} 
+          icon={!canEditPermission &&
+          <ButtonEdit setCanEdit={() => setCanEditPermission(!canEditPermission)} canEdit={canEditPermission}>Editar</ButtonEdit>}
+          />
           <PermissionForm
             state={permissionState}
             setState={setPermissionState}
@@ -590,8 +593,10 @@ export default function ClientForm(props: RouteComponentProps<IPageParams>) {
             </>
           ):(
             <>
-              <TabTittle tittle={'Cliente'} icon={!canEdit &&
-              <ButtonEdit setCanEdit={() => setCanEdit(!canEdit)} canEdit={canEdit}>Editar</ButtonEdit>}/>
+              <TabTittle tittle={'Cliente'} 
+              // icon={!canEdit &&
+              // <ButtonEdit setCanEdit={() => setCanEdit(!canEdit)} canEdit={canEdit}>Editar</ButtonEdit>}
+              />
             </>
           )}
           <TabForm

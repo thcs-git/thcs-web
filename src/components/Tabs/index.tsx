@@ -481,7 +481,7 @@ const TabForm = (props: ITabprops) => {
                   {state.gender?.toLowerCase() === "masculino" && <MaleIcon />}
                   {state.gender?.toLowerCase() === "feminino" && <FemaleIcon />}
                 </WrapperName>
-                <Divider style={{ marginBottom: 0, marginTop: 16 }} />
+                <Divider style={{ marginBottom: 0, marginTop: 16, width:458 }} />
               </>
             )}
             {components.map((component: string, sub_index: number) => (

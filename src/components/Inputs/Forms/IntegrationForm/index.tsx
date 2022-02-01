@@ -1,5 +1,6 @@
 import React, {useState, ReactNode, useCallback, useEffect} from 'react';
 import {Checkbox, FormControlLabel, Grid} from "@material-ui/core";
+import Switch from '@mui/material/Switch';
 
 import {FormGroupSection, InputFiled as TextField} from "./styles";
 import InputMask from "react-input-mask";
@@ -41,19 +42,31 @@ const IntegrationForm = (props: IComponent) => {
         <Grid item md={8} xs={12}>
           <FormControlLabel
             control={
-              <Checkbox
+              // <Checkbox
+              //   color="primary"
+              //   checked={integrationChecked}
+              //   onChange={(element, value) => {
+              //     setIntegrationChecked(!integrationChecked)
+              //     if (!value) {
+              //       setState({...state, integration: null})
+              //     }
+              //   }}
+              //   disabled={!canEdit}
+              //   name="link"
+              // />
+              <Switch 
+                disabled={!canEdit}
                 color="primary"
                 checked={integrationChecked}
                 onChange={(element, value) => {
                   setIntegrationChecked(!integrationChecked)
-                  if (!value) {
-                    setState({...state, integration: null})
+                    if (!value) setState({...state, integration: null}) 
                   }
-                }}
-                disabled={!canEdit}
-                name="link"
-              />}
-            label="Integrado?"
+                }
+              />
+            }
+            label="Possui Integração"
+            labelPlacement="start"
           />
         </Grid>
         {integrationChecked ? (
