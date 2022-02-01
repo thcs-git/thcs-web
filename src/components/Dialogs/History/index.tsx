@@ -171,71 +171,72 @@ export default function HistoryDialog(props: IDialogProps) {
             </Grid>
             <Table
               tableCells={tableCells}
+              attendanceHistory={careState?.history}
             >
-              {careState?.history?.map((care: any, index: number) => {
+              {/*{careState?.history?.map((care: any, index: number) => {*/}
 
-                return (
-                  <>
-                    {historyType === 'care' ? (
-                      <>
-                        <TableRow key={`patient_${index}`}>
-                          <TableCell>
-                            <p>{care?.started_at ? formatDate(care?.started_at ?? "", "DD/MM/YYYY") : ""}</p>
-                          </TableCell>
-                          <TableCell align="center">
-                            <p>{care?._id}</p>
-                          </TableCell>
-                          <TableCell align="center">
-                            <p>-</p>
-                          </TableCell>
-                          <TableCell align="center">
-                            <p>
-                              {typeof care?.care_type_id === "object"
-                                ? care?.care_type_id.name
-                                : care?.care_type_id}
-                            </p>
-                          </TableCell>
-                          <TableCell align="center">
-                            <p>{care?.company_id?.name}</p>
-                          </TableCell>
-                          <TableCell align="center">
-                            <Button onClick={() => history.push(`/care/${care?._id}/overview`)}>
-                              <VisibilityIcon style={{color: '#0899BA'}}/>
-                            </Button>
-                          </TableCell>
-                        </TableRow>
-                      </>
-                    ) : (
-                      <>
-                        <TableRow key={`patient_${index}`}>
-                          <TableCell align="center">
-                            <p>{care?.capture?.finished_at ? formatDate(care?.finished_at, 'DD/MM/YYYY') : '-'}</p>
-                          </TableCell>
-                          <TableCell align="center">
-                            <p>{handleType(care)}</p>
-                          </TableCell>
-                          <TableCell align="center">
-                            <p>{handleCoplexities(care)}</p>
-                          </TableCell>
-                          <TableCell align="center">
-                            <ListItemCaptureStatus status={care?.capture?.status || ''}>
-                              <FiberManualRecord/> {care?.capture?.status}
-                            </ListItemCaptureStatus>
-                          </TableCell>
-                          <TableCell align="center">
-                            <p>{care?.company_id?.name}</p>
-                          </TableCell>
-                          <TableCell align="center">
-                            <Button onClick={() => history.push(`/patient/capture/${care?._id}/overview`)}>
-                              <VisibilityIcon style={{color: '#0899BA'}}/>
-                            </Button>
-                          </TableCell>
-                        </TableRow>
-                      </>
-                    )}
-                  </>
-                )
-              })}
+              {/*  return (*/}
+              {/*    <>*/}
+              {/*      {historyType === 'care' ? (*/}
+              {/*        <>*/}
+              {/*          <TableRow key={`patient_${index}`}>*/}
+              {/*            <TableCell>*/}
+              {/*              <p>{care?.started_at ? formatDate(care?.started_at ?? "", "DD/MM/YYYY") : ""}</p>*/}
+              {/*            </TableCell>*/}
+              {/*            <TableCell align="center">*/}
+              {/*              <p>{care?._id}</p>*/}
+              {/*            </TableCell>*/}
+              {/*            <TableCell align="center">*/}
+              {/*              <p>-</p>*/}
+              {/*            </TableCell>*/}
+              {/*            <TableCell align="center">*/}
+              {/*              <p>*/}
+              {/*                {typeof care?.care_type_id === "object"*/}
+              {/*                  ? care?.care_type_id.name*/}
+              {/*                  : care?.care_type_id}*/}
+              {/*              </p>*/}
+              {/*            </TableCell>*/}
+              {/*            <TableCell align="center">*/}
+              {/*              <p>{care?.company_id?.name}</p>*/}
+              {/*            </TableCell>*/}
+              {/*            <TableCell align="center">*/}
+              {/*              <Button onClick={() => history.push(`/care/${care?._id}/overview`)}>*/}
+              {/*                <VisibilityIcon style={{color: '#0899BA'}}/>*/}
+              {/*              </Button>*/}
+              {/*            </TableCell>*/}
+              {/*          </TableRow>*/}
+              {/*        </>*/}
+              {/*      ) : (*/}
+              {/*        <>*/}
+              {/*          <TableRow key={`patient_${index}`}>*/}
+              {/*            <TableCell align="center">*/}
+              {/*              <p>{care?.capture?.finished_at ? formatDate(care?.finished_at, 'DD/MM/YYYY') : '-'}</p>*/}
+              {/*            </TableCell>*/}
+              {/*            <TableCell align="center">*/}
+              {/*              <p>{handleType(care)}</p>*/}
+              {/*            </TableCell>*/}
+              {/*            <TableCell align="center">*/}
+              {/*              <p>{handleCoplexities(care)}</p>*/}
+              {/*            </TableCell>*/}
+              {/*            <TableCell align="center">*/}
+              {/*              <ListItemCaptureStatus status={care?.capture?.status || ''}>*/}
+              {/*                <FiberManualRecord/> {care?.capture?.status}*/}
+              {/*              </ListItemCaptureStatus>*/}
+              {/*            </TableCell>*/}
+              {/*            <TableCell align="center">*/}
+              {/*              <p>{care?.company_id?.name}</p>*/}
+              {/*            </TableCell>*/}
+              {/*            <TableCell align="center">*/}
+              {/*              <Button onClick={() => history.push(`/patient/capture/${care?._id}/overview`)}>*/}
+              {/*                <VisibilityIcon style={{color: '#0899BA'}}/>*/}
+              {/*              </Button>*/}
+              {/*            </TableCell>*/}
+              {/*          </TableRow>*/}
+              {/*        </>*/}
+              {/*      )}*/}
+              {/*    </>*/}
+              {/*  )*/}
+              {/*})}*/}
 
               {/*{patientArray?.map((patient: any, index: number) => {*/}
               {/*  console.log(patient)*/}

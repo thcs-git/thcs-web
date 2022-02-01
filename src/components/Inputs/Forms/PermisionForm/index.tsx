@@ -105,10 +105,20 @@ const PermissionForm = (props: IComponent) => {
       name: 'client',
       rights: [
         {crud: 'view', label: 'Visualizar'},
-        {crud: 'edit', label: 'Editar'},
-        {crud: 'status', label: 'Desativar'},
-        {crud: 'create', label: 'Criar'},
-        {crud: 'history', label: 'Histórico'},
+      ]
+    },
+    {
+      legend: 'Permissões',
+      name: 'permissions',
+      rights: [
+        {crud: 'edit', label: 'Criar/Editar'},
+      ]
+    },
+    {
+      legend: 'Integração',
+      name: 'integration',
+      rights: [
+        {crud: 'edit', label: 'Criar/Editar'},
       ]
     },
     {
@@ -116,10 +126,6 @@ const PermissionForm = (props: IComponent) => {
       name: 'company',
       rights: [
         {crud: 'view', label: 'Visualizar'},
-        {crud: 'edit', label: 'Editar'},
-        {crud: 'status', label: 'Desativar'},
-        {crud: 'create', label: 'Criar'},
-        {crud: 'history', label: 'Histórico'},
       ]
     },
     {
@@ -127,10 +133,6 @@ const PermissionForm = (props: IComponent) => {
       name: 'userclient',
       rights: [
         {crud: 'view', label: 'Visualizar'},
-        {crud: 'edit', label: 'Editar'},
-        {crud: 'status', label: 'Desativar'},
-        {crud: 'create', label: 'Criar'},
-        {crud: 'history', label: 'Histórico'},
       ]
     },
     {
@@ -138,79 +140,83 @@ const PermissionForm = (props: IComponent) => {
       name: 'user',
       rights: [
         {crud: 'view', label: 'Visualizar'},
-        {crud: 'edit', label: 'Editar'},
-        {crud: 'status', label: 'Desativar'},
-        {crud: 'create', label: 'Criar'},
-        {crud: 'history', label: 'Histórico'},
       ]
     },
-    {
-      legend: 'Banco de Talentos',
-      name: 'userdesengaged',
-      rights: [
-        {crud: 'view', label: 'Visualizar'},
-        {crud: 'edit', label: 'Editar'},
-        {crud: 'status', label: 'Desativar'},
-        {crud: 'create', label: 'Criar'},
-        {crud: 'history', label: 'Histórico'},
-      ]
-    },
-    {
-      legend: 'Área',
-      name: 'area',
-      rights: [
-        {crud: 'view', label: 'Visualizar'},
-        {crud: 'edit', label: 'Editar'},
-        {crud: 'status', label: 'Desativar'},
-        {crud: 'create', label: 'Criar'},
-        {crud: 'history', label: 'Histórico'},
-      ]
-    },
+    // {
+    //   legend: 'Banco de Talentos',
+    //   name: 'userdesengaged',
+    //   rights: [
+    //     {crud: 'view', label: 'Visualizar'},
+    //     {crud: 'status', label: 'Desativar'},
+    //     {crud: 'create', label: 'Criar'},
+    //     {crud: 'history', label: 'Histórico'},
+    //   ]
+    // },
+    // {
+    //   legend: 'Área',
+    //   name: 'area',
+    //   rights: [
+    //     {crud: 'view', label: 'Visualizar'},
+    //     {crud: 'status', label: 'Desativar'},
+    //     {crud: 'create', label: 'Criar'},
+    //     {crud: 'history', label: 'Histórico'},
+    //   ]
+    // },
     {
       legend: 'Pacientes',
       name: 'patient',
       rights: [
-        {crud: 'view', label: 'Visualizar'},
-        {crud: 'edit', label: 'Editar'},
-        {crud: 'status', label: 'Desativar'},
-        {crud: 'create', label: 'Criar'},
-        {crud: 'history', label: 'Histórico'},
+        {crud: 'view.mine', label: 'Visualizar Meus Pacientes'},
+        {crud: 'view.all', label: 'Visualizar Todos Pacientes'},
       ]
     },
-    {
-      legend: 'Avaliação',
-      name: 'avaliation',
-      rights: [
-        {crud: 'view', label: 'Visualizar'},
-        {crud: 'edit', label: 'Editar'},
-        {crud: 'status', label: 'Desativar'},
-        {crud: 'create', label: 'Criar'},
-        {crud: 'history', label: 'Histórico'},
-      ]
-    },
+    // {
+    //   legend: 'Avaliação',
+    //   name: 'avaliation',
+    //   rights: [
+    //     {crud: 'view', label: 'Visualizar'},
+    //     {crud: 'status', label: 'Desativar'},
+    //     {crud: 'create', label: 'Criar'},
+    //     {crud: 'history', label: 'Histórico'},
+    //   ]
+    // },
     {
       legend: 'Atendimento',
       name: 'care',
       rights: [
+        {crud: 'view.mine', label: 'Visualizar Meus Atendimento'},
+        {crud: 'view.all', label: 'Visualizar Todos Atendimento'},
+      ]
+    },
+    {
+      legend: 'QR Code',
+      name: 'qrcode',
+      rights: [
         {crud: 'view', label: 'Visualizar'},
-        {crud: 'edit', label: 'Editar'},
-        {crud: 'status', label: 'Desativar'},
-        {crud: 'create', label: 'Criar'},
-        {crud: 'history', label: 'Histórico'},
+        {crud: 'create', label: 'Gerar'},
+      ]
+    },
+    {
+      legend: 'Agenda',
+      name: 'schedule',
+      rights: [
+        {crud: 'view', label: 'Visualizar'},
+        {crud: 'edit', label: 'Criar Evento'},
       ]
     },
   ]
 
   const rowsApp = [
     {
-      legend: 'Cliente',
-      name: 'app.client',
+      legend: '',
+      name: 'app',
       rights: [
-        {crud: 'view', label: 'Visualizar'},
-        {crud: 'edit', label: 'Editar'},
-        {crud: 'status', label: 'Desativar'},
-        {crud: 'create', label: 'Criar'},
-        {crud: 'history', label: 'Histórico'},
+        {crud: 'check.create', label: 'Checagem'},
+        {crud: 'admeasurement.create', label: 'Aferição'},
+        {crud: 'evolution.create', label: 'Evolução'},
+        {crud: 'prescription.create', label: 'Receituários'},
+        {crud: 'certificate.create', label: 'Atestado'},
+        {crud: 'exam.create', label: 'Exames'},
       ]
     },
   ]
@@ -250,7 +256,7 @@ const PermissionForm = (props: IComponent) => {
       if (selected.length > 0) {
         list.push(selected[0])
       }
-    return list
+      return list
     }
 
     return userState.data.professions
