@@ -521,10 +521,10 @@ export default function ClientForm(props: RouteComponentProps<IPageParams>) {
 
   const buttons = [
     {
-      name: 'Dashboard',
+      name: 'Voltar',
       onClick: handleCancelForm,
-      variant: 'outlined',
-      background: 'success_rounded',
+      variant: 'contained',
+      background: 'secondary',
       show: true,
     },
     {

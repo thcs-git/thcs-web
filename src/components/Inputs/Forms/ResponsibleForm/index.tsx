@@ -57,9 +57,10 @@ const ResponsibleForm = (props: IComponent) => {
   state.cellphone && rows.push({name: "Celular", value: state.cellphone})
 
   const content = {
-    tittle: 'Responsável',
+    tittle: 'Dados da Responsável',
     // icon: <InfoRoundedIcon style={{color: "#ffffff"}}/>,
-    rows: rows
+    rows: rows,
+    details:"ResponsibleForm"
   }
 
   return (
