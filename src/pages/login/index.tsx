@@ -172,7 +172,6 @@ export default function SignIn() {
   const [valid, setValid] = useState(false);
   const [openPolicyModal, setOpenPolicyModal] = useState(false);
   const classes = useStyles();
-
   // useEffect(() => {
   //   const expired = localStorage.getItem(LOCALSTORAGE.EXPIRED_SESSION);
   //   const token = localStorage.getItem(LOCALSTORAGE.TOKEN);
@@ -201,7 +200,7 @@ export default function SignIn() {
         })
       );
     },
-    [inputPassword, inputEmail]
+    [inputPassword]
   );
 
   const handleLogin = useCallback(
@@ -209,10 +208,11 @@ export default function SignIn() {
       event.preventDefault();
 
       if (inputEmail.error || inputPassword.error) return;
+
       dispatch(
         loadRequest({ email: inputEmail.value, password: inputPassword.value })
-      );
-    },
+      )
+      },
     [inputPassword, inputEmail]
   );
 
@@ -267,7 +267,7 @@ export default function SignIn() {
 
       dispatch(emailRequest({ email: inputEmail.value }));
     },
-    [inputPassword, inputEmail]
+    [ inputEmail]
   );
 
   const handleKeyEnter = (e: any) => {
@@ -275,6 +275,13 @@ export default function SignIn() {
       handleVerifyEmail(e);
     }
   };
+
+  function handleVerifyEmailAndPassword(e:any){
+    for (let i = 0; i < 5; i++) { // fn temporária para correção de redirecionamento apos criação de password (se requisição asyn demorar, pode não funcionar)
+      handleVerifyEmail(e)
+      handlePassword(e)
+    }
+  }
   return (
     <>
       {loginState.loading && <Loading />}
@@ -493,7 +500,7 @@ export default function SignIn() {
                       variant="contained"
                       color="primary"
                       className={classes.submit}
-                      onClick={handlePassword}
+                      onClick={handleVerifyEmailAndPassword}
                       disabled={valid}
                     >
                       Cadastrar
