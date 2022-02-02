@@ -277,10 +277,10 @@ export default function SignIn() {
   };
 
   function handleVerifyEmailAndPassword(e:any){
-    for (let i = 0; i < 5; i++) { // fn temporária para correção de redirecionamento apos criação de password (se requisição asyn demorar, pode não funcionar)
       handleVerifyEmail(e)
       handlePassword(e)
-    }
+      handleLogin(e)
+
   }
   return (
     <>
