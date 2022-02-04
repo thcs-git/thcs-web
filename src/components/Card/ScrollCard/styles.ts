@@ -56,6 +56,7 @@ export const ContainerStyle = styled(Container)`
 
     .glider-next,
     .glider-prev {
+      width: 125px;
       position: absolute;
       background: 0 0;
       z-index: 2;
@@ -93,6 +94,8 @@ export const ContainerStyle = styled(Container)`
         rgba(255, 255, 255, 0) 100%
       );
       svg {
+        cursor: pointer;
+
         &:hover {
           color: var(--gray-dark);
         }
@@ -101,6 +104,8 @@ export const ContainerStyle = styled(Container)`
     .glider-prev.disabled {
       background: 0 0;
       color: var(--gray-light);
+      opacity: 0;
+      z-index: -1;
       svg {
         &:hover {
           color: var(--gray-light);
@@ -108,6 +113,8 @@ export const ContainerStyle = styled(Container)`
       }
     }
     .glider-next {
+      display: flex;
+      justify-content: end;
       right: -21px;
       background: linear-gradient(
         90deg,
@@ -116,6 +123,8 @@ export const ContainerStyle = styled(Container)`
         rgba(255, 255, 255, 1) 100%
       );
       svg {
+        cursor: pointer;
+
         &:hover {
           color: var(--gray-dark);
         }
@@ -124,6 +133,9 @@ export const ContainerStyle = styled(Container)`
     .glider-next.disabled {
       background: 0 0;
       color: var(--gray-light);
+      opacity: 0;
+      z-index: -1;
+
       svg {
         &:hover {
           color: var(--gray-light);

@@ -32,6 +32,7 @@ import { FieldContent, FormTitle } from "../../../styles/components/Form";
 import Sidebar from "../../../components/Sidebar";
 import Header from "../../../components/Header/Overview";
 import ScrollCard from "../../../components/Card/ScrollCard";
+import CardInfo from "../../../components/Card/Info";
 
 import {
   deleteCareRequest,
@@ -325,6 +326,8 @@ export default function PatientOverview(
                     spacing={2}
                     style={{ marginTop: "2%", minWidth: "480px" }}
                   >
+                    <CardInfo></CardInfo>
+
                     {/* Dados pessoais */}
                     <Grid item xs={12} sm={12} md={6} lg={6}>
                       <Card className="card-styles">

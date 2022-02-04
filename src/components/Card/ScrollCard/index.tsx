@@ -95,15 +95,7 @@ export default function ScrollCard(props: IScroll) {
             >
               {cardsItens}
             </Glider>
-            <Box
-              id="glider-next-1"
-              className="glider-next"
-              style={{
-                width: "125px",
-                display: "flex",
-                justifyContent: "end",
-              }}
-            >
+            <Box id="glider-next-1" className="glider-next">
               <ArrowForwardIosIcon style={{ width: "30px", height: "auto" }} />
             </Box>
           </Box>
