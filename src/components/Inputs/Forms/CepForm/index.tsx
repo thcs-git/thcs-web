@@ -1,16 +1,22 @@
-import React, {useState, ReactNode, useCallback} from 'react';
-import {Divider, FormControl, FormControlLabel, Grid, InputAdornment, InputLabel} from "@material-ui/core";
+import React, { useState, ReactNode, useCallback } from "react";
+import {
+  Divider,
+  FormControl,
+  FormControlLabel,
+  Grid,
+  InputAdornment,
+  InputLabel,
+} from "@material-ui/core";
 
-import {FormGroupSection, InputFiled as TextField} from "./styles";
-import InputMask, {Props} from "react-input-mask";
+import { FormGroupSection, InputFiled as TextField } from "./styles";
+import InputMask, { Props } from "react-input-mask";
 import validator from "validator";
-import {validateCNPJ as validateCNPJHelper} from "../../../../helpers/validateCNPJ";
-import {OutlinedInputFiled} from "../../../../pages/customer/form/styles";
-import {SearchOutlined} from "@material-ui/icons";
-import {SwitchComponent as Switch} from "../../../../styles/components/Switch";
+import { validateCNPJ as validateCNPJHelper } from "../../../../helpers/validateCNPJ";
+import { OutlinedInputFiled } from "../../../../pages/customer/form/styles";
+import { SearchOutlined } from "@material-ui/icons";
+import { SwitchComponent as Switch } from "../../../../styles/components/Switch";
 import ViewCard from "../../../Card/ViewCard";
 import InfoRoundedIcon from "@material-ui/icons/InfoRounded";
-
 
 interface IComponent {
   index: number;
@@ -34,51 +40,68 @@ function a11yProps(name: string, index: number) {
   };
 }
 
-
 const CepForm = (props: IComponent) => {
-  const {index, state, setState, setValidations, canEdit, getAddress, cepStatus, params} = props;
+  const {
+    index,
+    state,
+    setState,
+    setValidations,
+    canEdit,
+    getAddress,
+    cepStatus,
+    params,
+  } = props;
 
-  const rows: any[] = []
+  const rows: any[] = [];
 
   function handleRows(state: any, name: string) {
-    state && rows.push({name: name, value: state})
+    state && rows.push({ name: name, value: state });
   }
 
-  handleRows(state.address.postal_code, 'CEP')
-  handleRows(state.address.street, 'Endereço')
-  handleRows(state.address.number, 'Número')
-  handleRows(state.address.complement, 'Complemento')
-  handleRows(state.address.district, 'Bairro')
-  handleRows(state.address.city, 'Cidade')
-  handleRows(state.address.state, 'UF')
+  handleRows(state.address.postal_code, "CEP");
+  handleRows(state.address.street, "Endereço");
+  handleRows(state.address.number, "Número");
+  handleRows(state.address.complement, "Complemento");
+  handleRows(state.address.district, "Bairro");
+  handleRows(state.address.city, "Cidade");
+  handleRows(state.address.state, "UF");
 
   const content = {
-    tittle: 'Endereço',
+    tittle: "Endereço",
     // icon: <InfoRoundedIcon style={{color: "#ffffff"}}/>,
-    rows: rows
-  }
+    rows: rows,
+    details: "CepForm",
+  };
 
   return (
     <FormGroupSection>
       <Grid container>
-        {params.mode === 'view' && !canEdit ? (
-          <ViewCard
-            content={content}
-          />
+        {params.mode === "view" && !canEdit ? (
+          <ViewCard content={content} />
         ) : (
           <>
             <Grid item md={2} xs={12}>
-              <FormControl variant="outlined" size="small" style={{padding: '0 12px 12px 0', width: '100%'}}>
+              <FormControl
+                variant="outlined"
+                size="small"
+                style={{ padding: "0 12px 12px 0", width: "100%" }}
+              >
                 <InputLabel htmlFor="search-input">CEP</InputLabel>
                 <InputMask
                   mask="99999-999"
                   value={state.address.postal_code}
                   disabled={!canEdit}
-                  onChange={element => {
-                    setState({...state, address: {...state.address, postal_code: element.target.value}})
+                  onChange={(element) => {
+                    setState({
+                      ...state,
+                      address: {
+                        ...state.address,
+                        postal_code: element.target.value,
+                      },
+                    });
                     setValidations((prevState: any) => ({
                       ...prevState,
-                      postal_code: !validator.isEmpty(element.target.value)
+                      postal_code: !validator.isEmpty(element.target.value),
                     }));
                   }}
                   onBlur={getAddress}
@@ -91,7 +114,7 @@ const CepForm = (props: IComponent) => {
                       placeholder="00000-000"
                       endAdornment={
                         <InputAdornment position="end">
-                          <SearchOutlined style={{color: 'var(--primary)'}}/>
+                          <SearchOutlined style={{ color: "var(--primary)" }} />
                         </InputAdornment>
                       }
                       {...a11yProps("input-postal-code", index)}
@@ -99,7 +122,7 @@ const CepForm = (props: IComponent) => {
                   )}
                 </InputMask>
                 {cepStatus && (
-                  <p style={{color: '#f44336', margin: '-2px 5px 10px'}}>
+                  <p style={{ color: "#f44336", margin: "-2px 5px 10px" }}>
                     CEP inválido
                   </p>
                 )}
@@ -110,19 +133,18 @@ const CepForm = (props: IComponent) => {
               <TextField
                 label="Endereço"
                 variant="outlined"
-
-
                 size="small"
                 value={state.address.street}
                 onChange={(element) => {
-                  setState({...state, address: {...state.address, street: element.target.value}})
+                  setState({
+                    ...state,
+                    address: { ...state.address, street: element.target.value },
+                  });
                   setValidations((prevState: any) => ({
                     ...prevState,
-                    street: !validator.isEmpty(element.target.value)
+                    street: !validator.isEmpty(element.target.value),
                   }));
-                }
-                }
-
+                }}
                 disabled={!canEdit}
                 fullWidth
                 {...a11yProps("input-address", index)}
@@ -134,16 +156,17 @@ const CepForm = (props: IComponent) => {
                 label="Número"
                 variant="outlined"
                 size="small"
-
                 value={state.address.number}
                 // onBlur={validationNumberField}
 
-
                 onChange={(element) => {
-                  setState({...state, address: {...state.address, number: element.target.value}})
+                  setState({
+                    ...state,
+                    address: { ...state.address, number: element.target.value },
+                  });
                   setValidations((prevState: any) => ({
                     ...prevState,
-                    number: !validator.isEmpty(element.target.value)
+                    number: !validator.isEmpty(element.target.value),
                   }));
                 }}
                 fullWidth
@@ -156,12 +179,15 @@ const CepForm = (props: IComponent) => {
                 label="Complemento"
                 variant="outlined"
                 size="small"
-
                 value={state.address.complement}
-                onChange={(element) => setState({
-                  ...state,
-                  address: {...state.address, complement: element.target.value}
-                })
+                onChange={(element) =>
+                  setState({
+                    ...state,
+                    address: {
+                      ...state.address,
+                      complement: element.target.value,
+                    },
+                  })
                 }
                 fullWidth
                 disabled={!canEdit}
@@ -174,16 +200,20 @@ const CepForm = (props: IComponent) => {
                 label="Bairro"
                 variant="outlined"
                 size="small"
-
                 value={state.address.district}
                 // onBlur={validationDistrictField}
 
-
                 onChange={(element) => {
-                  setState({...state, address: {...state.address, district: element.target.value}})
+                  setState({
+                    ...state,
+                    address: {
+                      ...state.address,
+                      district: element.target.value,
+                    },
+                  });
                   setValidations((prevState: any) => ({
                     ...prevState,
-                    district: !validator.isEmpty(element.target.value)
+                    district: !validator.isEmpty(element.target.value),
                   }));
                 }}
                 fullWidth
@@ -196,15 +226,19 @@ const CepForm = (props: IComponent) => {
                 label="Cidade"
                 variant="outlined"
                 size="small"
-
                 value={state.address.city}
                 // onBlur={validationCityField}
 
                 onChange={(element) => {
-                  setState({...state, address: {...state.address, city: element.target.value}});
-                  setValidations((prevState: any) => ({...prevState, city: !validator.isEmpty(element.target.value)}))
-                }
-                }
+                  setState({
+                    ...state,
+                    address: { ...state.address, city: element.target.value },
+                  });
+                  setValidations((prevState: any) => ({
+                    ...prevState,
+                    city: !validator.isEmpty(element.target.value),
+                  }));
+                }}
                 fullWidth
                 disabled={!canEdit}
                 {...a11yProps("input-city", index)}
@@ -216,7 +250,12 @@ const CepForm = (props: IComponent) => {
                 variant="outlined"
                 size="small"
                 value={state.address.state}
-                onChange={(element) => setState({...state, address: {...state.address, state: element.target.value}})}
+                onChange={(element) =>
+                  setState({
+                    ...state,
+                    address: { ...state.address, state: element.target.value },
+                  })
+                }
                 fullWidth
                 disabled={!canEdit}
                 {...a11yProps("input-address-uf", index)}
@@ -227,6 +266,6 @@ const CepForm = (props: IComponent) => {
       </Grid>
     </FormGroupSection>
   );
-}
+};
 
 export default React.memo(CepForm);

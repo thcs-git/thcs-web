@@ -1,8 +1,7 @@
 import React from "react";
-import {FormGroupSection} from "./styles";
-import {Grid} from "@material-ui/core";
+import { FormGroupSection } from "./styles";
+import { Grid } from "@material-ui/core";
 import ViewCard from "../../../Card/ViewCard";
-
 
 interface IComponent {
   state: any;
@@ -18,42 +17,35 @@ interface IPageParams {
 }
 
 const UserContactForm = (props: IComponent) => {
-  const {state, setState, setValidations, canEdit, params} = props;
+  const { state, setState, setValidations, canEdit, params } = props;
 
-  const rows: any[] = []
+  const rows: any[] = [];
 
   function handleRows(state: any, name: string) {
-    state && rows.push({name: name, value: state})
+    state && rows.push({ name: name, value: state });
   }
 
-  handleRows(state.email, 'E-mail')
-  handleRows(state.phone, 'Telefone')
-  handleRows(state.cellphone, 'Celular')
+  handleRows(state.email, "E-mail");
+  handleRows(state.phone, "Telefone");
+  handleRows(state.cellphone, "Celular");
 
   const content = {
-    tittle: 'Contato',
-    rows: rows
-  }
+    tittle: "Contato",
+    rows: rows,
+    details: "UserContactForm",
+  };
 
   return (
     <FormGroupSection>
       <Grid container>
-        {params.mode === 'view' && !canEdit ? (
-          <>
-            {rows.length > 0 && (
-              <ViewCard
-                content={content}
-              />
-            )}
-          </>
+        {params.mode === "view" && !canEdit ? (
+          <>{rows.length > 0 && <ViewCard content={content} />}</>
         ) : (
-          <>
-          </>
+          <></>
         )}
       </Grid>
     </FormGroupSection>
   );
-
-}
+};
 
 export default React.memo(UserContactForm);
