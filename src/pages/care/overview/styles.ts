@@ -2,6 +2,9 @@ import styled from 'styled-components';
 import { Container } from '@material-ui/core';
 
 export const ContainerStyle = styled(Container)`
+
+  padding:0;
+
   .card-styles {
     min-height: 324px;
     position: relative;
