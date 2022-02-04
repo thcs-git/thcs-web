@@ -94,7 +94,7 @@ export default function UserClientList() {
   const handleChangeInput = useCallback(
     (event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
       setSearch(event.target.value);
-      dispatch(searchRequest(event.target.value));
+      dispatch(searchRequest({ search: event.target.value }));
     },
     []
   );
@@ -142,6 +142,12 @@ export default function UserClientList() {
 
           {integration ? (
             <>
+              <SearchComponent
+                handleButton={() => history.push("/user/edit/create/")}
+                buttonTitle=""
+                inputPlaceholder="Pesquise por prestador, especialidades, status, etc..."
+                onChangeInput={debounceSearchRequest}
+              />
               <Table
                 tableCells={[
                   { name: "Profissional", align: "left" },
@@ -161,12 +167,12 @@ export default function UserClientList() {
             </>
           ) : (
             <>
-              {/*<SearchComponent*/}
-              {/*  handleButton={() => history.push('/user/edit/create/')}*/}
-              {/*  buttonTitle=""*/}
-              {/*  inputPlaceholder="Pesquise por prestador, especialidades, status, etc..."*/}
-              {/*  onChangeInput={debounceSearchRequest}*/}
-              {/*/>*/}
+              <SearchComponent
+                handleButton={() => history.push("/user/edit/create/")}
+                buttonTitle=""
+                inputPlaceholder="Pesquise por prestador, especialidades, status, etc..."
+                onChangeInput={debounceSearchRequest}
+              />
               <Table
                 tableCells={[
                   { name: "Prestador", align: "left" },
