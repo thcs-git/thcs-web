@@ -102,7 +102,7 @@ export default function UserList() {
   const handleChangeInput = useCallback(
     (event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
       setSearch(event.target.value);
-      dispatch(searchRequest(event.target.value));
+      dispatch(searchRequest({ search: event.target.value }));
     },
     []
   );
@@ -151,6 +151,12 @@ export default function UserList() {
 
           {integration ? (
             <>
+              <SearchComponent
+                handleButton={() => history.push("/user/edit/create/")}
+                buttonTitle=""
+                inputPlaceholder="Pesquise por prestador, especialidades, status, etc..."
+                onChangeInput={debounceSearchRequest}
+              />
               <Table
                 tableCells={[
                   { name: "Profissional", align: "left" },
