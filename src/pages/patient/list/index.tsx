@@ -269,6 +269,12 @@ export default function PatientList() {
           <FormTitle>Lista de Pacientes</FormTitle>
           {integration ? (
             <>
+              <SearchComponent
+                handleButton={handleClickButton}
+                inputPlaceholder="Pesquise por nome, CPF, data, etc..."
+                buttonTitle="Novo"
+                onChangeInput={debounceSearchRequest}
+              />
               <Table
                 tableCells={[
                   { name: "Prontuário", align: "left" },
