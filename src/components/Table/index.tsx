@@ -598,6 +598,101 @@ const TableComponent = (props: ITableProps) => {
             !careFilter &&
             props.children}
           {/* table de care/list c/ integração */}
+          {/* {console.log(careFilter)} */}
+          {careState &&
+            integration &&
+            careState.list.data.map((care: CareInterface, index: number) => (
+              <TableRow key={`care_${index}`}>
+                <TableCell>
+                  <Link to={`/care/${care._id}/overview`}>
+                    {handleEmpty(care._id)}
+                  </Link>
+                </TableCell>
+                <TableCell>
+                  <Link to={`/care/${care._id}/overview`}>
+                    {care.patient_id?.social_status
+                      ? handleEmpty(care.patient_id.social_name)
+                      : handleEmpty(care.patient_id.name)}
+                  </Link>
+                </TableCell>
+                <TableCell align="center">{handleEmpty(care?.tipo)}</TableCell>
+                <TableCell align="center">
+                  {handleEmpty(care.patient_id?.fiscal_number)}
+                </TableCell>
+                <TableCell align="center">
+                  {care?.created_at
+                    ? formatDate(care?.created_at ?? "", "DD/MM/YYYY HH:mm:ss")
+                    : "-"}
+                </TableCell>
+              </TableRow>
+            ))}
+
+          {careFilter &&
+            !integration &&
+            careFilter.map((care: CareInterface, index: number) => (
+              <TableRow key={`care_${index}`}>
+                <TableCell>{care?._id}</TableCell>
+                <TableCell>
+                  <Link to={`/care/${care._id}/overview`}>
+                    {care.patient_id?.social_name || care.patient_id?.name}
+                  </Link>
+                </TableCell>
+                <TableCell>
+                  {typeof care?.care_type_id === "object"
+                    ? care?.care_type_id.name
+                    : care?.care_type_id}
+                </TableCell>
+                <TableCell>{care.patient_id?.fiscal_number}</TableCell>
+
+                <TableCell align="center">
+                  {care?.started_at
+                    ? formatDate(care?.started_at ?? "", "DD/MM/YYYY HH:mm:ss")
+                    : "-"}
+                </TableCell>
+                <TableCell align="left">
+                  <ComplexityStatus
+                    status={care?.complexity || care?.capture?.complexity}
+                  >
+                    <p>
+                      {handleComplexity &&
+                        handleComplexity(
+                          care?.complexity || care?.capture?.complexity
+                        )}
+                    </p>
+                  </ComplexityStatus>
+                </TableCell>
+                <TableCell>
+                  <Button
+                    aria-controls={`simple-menu${index}`}
+                    id={`btn_simple-menu${index}`}
+                    aria-haspopup="true"
+                    onClick={handleOpenRowMenu}
+                  >
+                    <MoreVert style={{ color: "#0899BA" }} />
+                  </Button>
+                  <Menu
+                    id={`simple-menu${index}`}
+                    anchorEl={anchorEl}
+                    keepMounted
+                    open={anchorEl?.id === `btn_simple-menu${index}`}
+                    onClose={handleCloseRowMenu}
+                  >
+                    {toggleHistoryModal && (
+                      <MenuItem onClick={() => toggleHistoryModal(index, care)}>
+                        Histórico
+                      </MenuItem>
+                    )}
+                  </Menu>
+                </TableCell>
+              </TableRow>
+            ))}
+
+          {!userState &&
+            !patientState &&
+            !careState &&
+            !careFilter &&
+            props.children}
+          {/* table de care/list c/ integração */}
           {/*{careState &&*/}
           {/*integration &&*/}
           {/*careState?.list?.data ? careState?.list?.data?.map((care: CareInterface, index: number) => (*/}
