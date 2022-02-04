@@ -3,6 +3,7 @@ import styled from "styled-components";
 import AppBar from "@material-ui/core/AppBar";
 import Tabs from "@material-ui/core/Tabs";
 import Tab from "@material-ui/core/Tab";
+import { FormControl } from "@material-ui/core";
 
 export const TabContent = styled(AppBar)`
   //margin-bottom: 10px;
@@ -32,7 +33,7 @@ export const TabNavItem = styled(Tab)`
   box-shadow: none;
 
   &.active {
-    color: var(--primary);
+    color: var(--secondary);
   }
 
   &:focus {
@@ -126,4 +127,15 @@ export const TabNavItemAlingRigth = styled.div`
   gap: 30px;
   margin-right: 21px;
   /* width: 100%; */
+`;
+
+export const WrapperName = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 8px;
+
+  font-size: 16px;
+  font-weight: bold;
+
+  margin-left: 16px;
 `;
