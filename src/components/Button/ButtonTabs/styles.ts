@@ -1,5 +1,5 @@
-import styled, {css} from "styled-components";
-import Button, {ButtonProps} from "@material-ui/core/Button";
+import styled, { css } from "styled-components";
+import Button, { ButtonProps } from "@material-ui/core/Button";
 
 export const ButtonsContent = styled.div`
   display: flex;
@@ -14,7 +14,7 @@ export const ButtonsContent = styled.div`
 
 interface IButtonProps extends ButtonProps {
   background?: string;
-  center?: boolean
+  center?: boolean;
 }
 
 const background: any = {
@@ -65,9 +65,16 @@ const background: any = {
       background: var(--primary-hover);
     }
   `,
+  secondary: css`
+    background: var(--primary);
+    color: var(--white);
+    &:hover {
+      background: var(--primary-hover);
+    }
+  `,
   disable: css`
     background: var(--disable) !important;
-    color: #ADADAD67  !important;
+    color: #adadad67 !important;
     &:hover {
       background: var(--disable) !important;
     }
@@ -75,9 +82,14 @@ const background: any = {
 };
 
 export const ButtonComponent = styled(Button)`
-  ${(props: IButtonProps) => background[props.background || 'var(--primary)']}
-  ${(props: IButtonProps) => props.center ? 'text-align: center;' : null}
-  ${(props: IButtonProps) => props.variant === 'outlined' ? `background: transparent !important; color: var(--black); color: ${`var(--${props.background});` || 'var(--primary);'}` : null}
+  ${(props: IButtonProps) => background[props.background || "var(--primary)"]}
+  ${(props: IButtonProps) => (props.center ? "text-align: center;" : null)}
+  ${(props: IButtonProps) =>
+    props.variant === "outlined"
+      ? `background: transparent !important; color: var(--black); color: ${
+          `var(--${props.background});` || "var(--primary);"
+        }`
+      : null}
 
   min-width: 95px;
   max-height: 36px;
