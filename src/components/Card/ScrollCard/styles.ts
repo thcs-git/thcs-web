@@ -92,10 +92,20 @@ export const ContainerStyle = styled(Container)`
         rgba(255, 255, 255, 1) 50%,
         rgba(255, 255, 255, 0) 100%
       );
+      svg {
+        &:hover {
+          color: var(--gray-dark);
+        }
+      }
     }
     .glider-prev.disabled {
       background: 0 0;
       color: var(--gray-light);
+      svg {
+        &:hover {
+          color: var(--gray-light);
+        }
+      }
     }
     .glider-next {
       right: -21px;
@@ -105,10 +115,20 @@ export const ContainerStyle = styled(Container)`
         rgba(255, 255, 255, 1) 50%,
         rgba(255, 255, 255, 1) 100%
       );
+      svg {
+        &:hover {
+          color: var(--gray-dark);
+        }
+      }
     }
     .glider-next.disabled {
       background: 0 0;
       color: var(--gray-light);
+      svg {
+        &:hover {
+          color: var(--gray-light);
+        }
+      }
     }
   }
 `;

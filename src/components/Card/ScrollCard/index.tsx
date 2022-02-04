@@ -77,7 +77,7 @@ export default function ScrollCard(props: IScroll) {
             <Box
               id="glider-prev-1"
               className="glider-prev"
-              style={{ width: "60px" }}
+              style={{ width: "125px" }}
             >
               <ArrowBackIosNewIcon style={{ width: "30px", height: "auto" }} />
             </Box>
@@ -99,7 +99,7 @@ export default function ScrollCard(props: IScroll) {
               id="glider-next-1"
               className="glider-next"
               style={{
-                width: "60px",
+                width: "125px",
                 display: "flex",
                 justifyContent: "end",
               }}
