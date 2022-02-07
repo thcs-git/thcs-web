@@ -75,16 +75,39 @@ export default function CustomerList() {
     [anchorEl]
   );
 
-  const handleChangeInput = useCallback(
-    (event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-      setSearch(event.target.value);
-      dispatch(searchRequest(event.target.value));
-    },
-    []
-  );
+  // const handleChangeInput = useCallback(
+  //   (event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+  //     setSearch(event.target.value);
+  //     dispatch(searchRequest(event.target.value));
+  //   },
+  //   []
 
-  const debounceSearchRequest = debounce(handleChangeInput, 900);
+  const handleSearchInput = useCallback((event: any) => {
+    dispatch(searchRequest(event));
+  }, []);
 
+  const handleChangeInput = (
+    event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => {
+    setSearch(event.target.value);
+
+    if (event.target.value === "") {
+      handleSearchInput("");
+    }
+  };
+
+  const handleKeyEnter = (e: any) => {
+    if (e.key === "Enter") {
+      e.preventDefault();
+      handleSearchInput(search);
+    }
+  };
+
+  const handleClickSearch = (e: any) => {
+    handleSearchInput(search);
+  };
+
+  // const debounceSearchRequest = debounce(handleChangeInput, 900);
   return (
     <>
       {customerState.loading && <Loading />}
@@ -96,7 +119,10 @@ export default function CustomerList() {
             handleButton={() => history.push("/customer/create/")}
             buttonTitle=""
             inputPlaceholder="Pesquise por nome fantasia, CNPJ, status, etc..."
-            onChangeInput={debounceSearchRequest}
+            onChangeInput={handleChangeInput}
+            value={search}
+            onKeyEnter={handleKeyEnter}
+            onClickSearch={handleClickSearch}
           />
           <Table
             tableCells={[
