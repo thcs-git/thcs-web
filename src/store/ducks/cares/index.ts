@@ -36,7 +36,12 @@ export const INITIAL_STATE: CareState = {
     page: '1',
     total: 0
   },
-  history: [],
+  history: {
+    data: [],
+    limit: '10',
+    page: '1',
+    total: 0
+  },
   error: false,
   loading: false,
   success: false,
