@@ -73,7 +73,7 @@ export default function ScrollCard(props: IScroll) {
             </Box>
             <Box>{tittle && tittle}</Box>
           </Box>
-          <Box className="wrapperScroll">
+          <Box className="wrapperScroll" style={{ maxWidth: "1000px" }}>
             <Box
               id="glider-prev-1"
               className="glider-prev"
