@@ -171,7 +171,9 @@ export default function HistoryDialog(props: IDialogProps) {
             </Grid>
             <Table
               tableCells={tableCells}
-              attendanceHistory={careState?.history}
+              careState={careState}
+              historyModalOpen={modalOpen}
+              // attendanceHistory={careState?.history}
             >
               {/*{careState?.history?.map((care: any, index: number) => {*/}
 
