@@ -26,7 +26,6 @@ import {any} from "cypress/types/bluebird";
 import {formatDate} from "../../helpers/date";
 import {PatientState} from "../../store/ducks/patients/types";
 import {CareState, CareInterface} from "../../store/ducks/cares/types";
-
 interface ICellProps {
   name: string;
   align: "right" | "left" | "center";
@@ -90,7 +89,6 @@ const TableComponent = (props: ITableProps) => {
   function handleEmpty(value: any) {
     return value ? value : "-";
   }
-
   const handleCloseRowMenu = useCallback(() => {
     setAnchorEl(null);
   }, [anchorEl]);

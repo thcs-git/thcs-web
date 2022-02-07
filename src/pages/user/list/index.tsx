@@ -99,13 +99,13 @@ export default function UserList() {
     setAnchorEl(null);
   }, [anchorEl]);
 
-  const handleChangeInput = useCallback(
-    (event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-      setSearch(event.target.value);
-      dispatch(searchRequest({ search: event.target.value }));
-    },
-    []
-  );
+  // const handleChangeInput = useCallback(
+  //   (event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+  //     setSearch(event.target.value);
+  //     dispatch(searchRequest({ search: event.target.value }));
+  //   },
+  //   []
+  // );
 
   const handleActive = useCallback((user) => {
     return _.filter(user.companies_links, {
@@ -119,7 +119,7 @@ export default function UserList() {
     })[0]?.linked_at;
   }, []);
 
-  const debounceSearchRequest = debounce(handleChangeInput, 900);
+  // const debounceSearchRequest = debounce(handleChangeInput, 900);
 
   const toggleHistoryModal = (index: number) => {
     handleCloseRowMenu();
@@ -141,6 +141,30 @@ export default function UserList() {
   function handleEmpty(value: any) {
     return value ? value : "-";
   }
+  const handleSearchInput = useCallback((event: any) => {
+    dispatch(searchRequest({ search: event }));
+  }, []);
+
+  const handleChangeInput = (
+    event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => {
+    setSearch(event.target.value);
+
+    if (event.target.value === "") {
+      handleSearchInput("");
+    }
+  };
+
+  const handleKeyEnter = (e: any) => {
+    if (e.key === "Enter") {
+      e.preventDefault();
+      handleSearchInput(search);
+    }
+  };
+
+  const handleClickSearch = (e: any) => {
+    handleSearchInput(search);
+  };
 
   return (
     <>
@@ -155,7 +179,10 @@ export default function UserList() {
                 handleButton={() => history.push("/user/edit/create/")}
                 buttonTitle=""
                 inputPlaceholder="Pesquise por prestador, especialidades, status, etc..."
-                onChangeInput={debounceSearchRequest}
+                onChangeInput={handleChangeInput}
+                value={search}
+                onKeyEnter={handleKeyEnter}
+                onClickSearch={handleClickSearch}
               />
               <Table
                 tableCells={[
@@ -180,7 +207,10 @@ export default function UserList() {
                 handleButton={() => history.push("/user/edit/create/")}
                 buttonTitle=""
                 inputPlaceholder="Pesquise por prestador, especialidades, status, etc..."
-                onChangeInput={debounceSearchRequest}
+                onChangeInput={handleChangeInput}
+                value={search}
+                onKeyEnter={handleKeyEnter}
+                onClickSearch={handleClickSearch}
               />
               <Table
                 tableCells={[

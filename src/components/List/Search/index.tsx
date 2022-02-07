@@ -21,6 +21,8 @@ interface SearchProps {
   inputPlaceholder?: string;
   switches?: boolean;
   setTabIndex?: any;
+  onKeyEnter?: (e: any) => void;
+  onClickSearch?: (e: any) => void;
 }
 
 const Search = ({
@@ -31,6 +33,8 @@ const Search = ({
   inputPlaceholder,
   switches,
   setTabIndex,
+  onKeyEnter,
+  onClickSearch,
 }: SearchProps) => {
   return (
     <div>
@@ -44,15 +48,14 @@ const Search = ({
             value={value}
             type="search"
             onChange={onChangeInput}
-            onKeyDown={(event: any) =>
-              event.keyCode === 13 && event.preventDefault()
-            }
+            onKeyDown={onKeyEnter}
             endAdornment={
               <InputAdornment position="end">
                 <IconButton
                   aria-label="toggle password visibility"
                   edge="end"
                   color="secondary"
+                  onClick={onClickSearch}
                 >
                   <SearchOutlined />
                 </IconButton>

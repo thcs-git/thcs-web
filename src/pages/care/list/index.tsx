@@ -115,15 +115,40 @@ export default function CouncilList() {
     setAnchorEl(null);
   }, [anchorEl]);
 
-  const handleChangeInput = useCallback(
-    (event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-      setSearch(event.target.value);
-      dispatch(getCares({ search: event.target.value, status: valueStatus }));
-    },
-    [search]
-  );
+  // const handleChangeInput = useCallback(
+  //   (event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+  //     setSearch(event.target.value);
+  //     dispatch(getCares({ search: event.target.value, status: valueStatus }));
+  //   },
+  //   [search]
+  // );
 
-  const debounceSearchRequest = debounce(handleChangeInput, 900);
+  // const debounceSearchRequest = debounce(handleChangeInput, 900);
+  const handleSearchInput = useCallback((event: any) => {
+    dispatch(getCares({ search: event, status: valueStatus }));
+  }, []);
+
+  const handleChangeInput = (
+    event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => {
+    setSearch(event.target.value);
+
+    if (event.target.value === "") {
+      handleSearchInput("");
+    }
+  };
+
+
+  const handleKeyEnter = (e: any) => {
+    if (e.key === "Enter") {
+      e.preventDefault();
+      handleSearchInput(search);
+    }
+  };
+
+  const handleClickSearch = (e: any) => {
+    handleSearchInput(search);
+  };
 
   const handleComplexity = (complexity: any) => {
     if (complexity === "Sem Complexidade" || complexity === "") {
@@ -184,10 +209,13 @@ export default function CouncilList() {
               <SearchComponent
                 handleButton={() => history.push("/care/create/")}
                 buttonTitle=""
-                onChangeInput={debounceSearchRequest}
                 inputPlaceholder="Pesquise por nome, nº de atendimento, CPF, etc..."
                 switches={true}
                 setTabIndex={setTabIndex}
+                onChangeInput={handleChangeInput}
+                value={search}
+                onKeyEnter={handleKeyEnter}
+                onClickSearch={handleClickSearch}
               />
               <Table
                 tableCells={[
@@ -239,11 +267,14 @@ export default function CouncilList() {
             <>
               <SearchComponent
                 handleButton={() => history.push("/care/create/")}
-                buttonTitle="Novo Atendimento"
-                onChangeInput={debounceSearchRequest}
+                buttonTitle=""
                 inputPlaceholder="Pesquise por nome, nº de atendimento, CPF, etc..."
                 switches={true}
                 setTabIndex={setTabIndex}
+                onChangeInput={handleChangeInput}
+                value={search}
+                onKeyEnter={handleKeyEnter}
+                onClickSearch={handleClickSearch}
               />
 
               <Table
@@ -323,7 +354,6 @@ export default function CouncilList() {
               </Table>
             </>
           )}
-
           <PaginationComponent
             page={careState.list.page}
             rowsPerPage={careState.list.limit}
