@@ -128,13 +128,16 @@ export default function CouncilList() {
     dispatch(getCares({ search: event, status: valueStatus }));
   }, []);
 
-  const handleChangeInput = useCallback(
-    (event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-      setSearch(event.target.value);
-      dispatch(getCares({ search: event.target.value, status: valueStatus }));
-    },
-    [search]
-  );
+  const handleChangeInput = (
+    event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => {
+    setSearch(event.target.value);
+
+    if (event.target.value === "") {
+      handleSearchInput("");
+    }
+  };
+
 
   const handleKeyEnter = (e: any) => {
     if (e.key === "Enter") {
@@ -264,7 +267,7 @@ export default function CouncilList() {
             <>
               <SearchComponent
                 handleButton={() => history.push("/care/create/")}
-                buttonTitle="Novo Atendimento"
+                buttonTitle=""
                 inputPlaceholder="Pesquise por nome, nº de atendimento, CPF, etc..."
                 switches={true}
                 setTabIndex={setTabIndex}
