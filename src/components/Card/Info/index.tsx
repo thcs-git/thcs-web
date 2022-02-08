@@ -104,47 +104,104 @@ export default function CardInfo(props: ICardInfo) {
     });
     return itens;
   }
-  function handleTeamData(content: IContent) {
-    let data: string[] = [];
+  // function handleTeamData(content: IContent) {
+  //   let data: string[] = [];
 
-    content.rows.map(({ name, value }: IRows, index: number) => {
+  //   content.rows.map(({ name, value }: IRows, index: number) => {
+  //     if (name === "Equipe") {
+  //       value.map((item: string) => {
+  //         data.push(item);
+  //       });
+  //     }
+  //   });
+
+  //   return data;
+  // }
+
+  function handleTeamData(content: IContent) {
+    let team: object[] = [];
+    content.rows.map(({ name, value }: IRows) => {
       if (name === "Equipe") {
-        value.map((item: string) => {
-          data.push(item);
+        value.map((item: any) => {
+          if (item.name) team.push(item);
         });
       }
     });
-
-    return data;
+    return team;
   }
-  function teamData(arr: string[]) {
-    let itens1 = arr.map((item: string, index: number) => {
-      console.log(item, "item");
-      if (index % 2 === 0) {
-        return <Box key={index}>- {item}</Box>;
+
+  function teamData(arr: object[]) {
+    let itensSideRigth = arr.map((item: any, index: number) => {
+      if (index % 2 !== 0) {
+        if (item.name) {
+          let profession: string = item.profession_id.map((profession: any) => {
+            return profession.name ? profession.name : false;
+          });
+          return (
+            <Box key={index}>
+              - {item.name} {profession.length > 0 && `(${profession})`}
+            </Box>
+          );
+        }
       }
     });
-    let itens2 = arr.map((item: string, index: number) => {
-      if (index % 2 !== 0) {
-        return <Box key={index}>- {item}</Box>;
+    let itensSideLeft = arr.map((item: any, index: number) => {
+      if (index % 2 === 0) {
+        if (item.name) {
+          let profession: string = item.profession_id.map((profession: any) => {
+            if (profession.name) {
+              return profession.name;
+            }
+          });
+          return (
+            <Box key={index}>
+              - {item.name} {profession.length > 0 && `(${profession})`}
+            </Box>
+          );
+        }
       }
     });
 
     let itensGrid = (
       <Grid container style={{ boxShadow: "none" }}>
         <Grid item xs={6} style={{ boxShadow: "none" }}>
-          {itens1}
+          {itensSideLeft}
         </Grid>
         <Grid item xs={6} style={{ boxShadow: "none" }}>
-          {itens2}
+          {itensSideRigth}
         </Grid>
       </Grid>
     );
-    console.log(itensGrid, "grid");
     return itensGrid;
   }
 
-  // function boxData(name:string,value:any){}
+  // function teamData2(arr: string[]) {
+  //   let itens1 = arr.map((item: string, index: number) => {
+  //     console.log(item, "item");
+  //     if (index % 2 === 0) {
+  //       return <Box key={index}>- {item}</Box>;
+  //     }
+  //   });
+  //   let itens2 = arr.map((item: string, index: number) => {
+  //     if (index % 2 !== 0) {
+  //       return <Box key={index}>- {item}</Box>;
+  //     }
+  //   });
+
+  //   let itensGrid = (
+  //     <Grid container style={{ boxShadow: "none" }}>
+  //       <Grid item xs={6} style={{ boxShadow: "none" }}>
+  //         {itens1}
+  //       </Grid>
+  //       <Grid item xs={6} style={{ boxShadow: "none" }}>
+  //         {itens2}
+  //       </Grid>
+  //     </Grid>
+  //   );
+  //   console.log(itensGrid, "grid");
+  //   return itensGrid;
+  // }
+
   function iconHeader(title: string) {
     if (title === "Dados Pessoais")
       return <IconChart style={{ width: "24px", height: "24px" }} />;

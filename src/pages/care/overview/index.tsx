@@ -1,33 +1,8 @@
 import React, { useCallback, useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import {
-  Box,
-  Dialog,
-  DialogActions,
-  DialogContent,
-  DialogContentText,
-  DialogTitle,
-  Divider,
-  Grid,
-  List,
-  ListItem,
-  ListItemText,
-  makeStyles,
-  Menu,
-  MenuItem,
-  Paper,
-  TableCell,
-  TableRow,
-  TextField,
-  Tooltip,
-  Typography,
-} from "@material-ui/core";
-import Card from "@material-ui/core/Card";
+import { makeStyles } from "@material-ui/core";
 import { Link, useHistory } from "react-router-dom";
 
-import QueueIcon from "@material-ui/icons/Queue";
-import CropFreeIcon from "@material-ui/icons/CropFree";
-import TodayRoundedIcon from "@material-ui/icons/TodayRounded";
 import { FieldContent, FormTitle } from "../../../styles/components/Form";
 import Sidebar from "../../../components/Sidebar";
 import Header from "../../../components/Header/Overview";
@@ -38,58 +13,21 @@ import {
   deleteCareRequest,
   loadCareById,
   updateCareRequest,
+  loadScheduleRequest,
 } from "../../../store/ducks/cares/actions";
 import { loadPatientById } from "../../../store/ducks/patients/actions";
 
-import IconProfile from "../../../assets/img/icon-profile.svg";
-import IconProntuario from "../../../assets/img/icon-prontuario.svg";
-import { ReactComponent as SuccessImage } from "../../../assets/img/illustration-token.svg";
-import IconMultidisciplinar from "../../../assets/img/icon-equipe-medica.svg";
-import IconDadosPessoais from "../../../assets/img/icon-dados-pessoais.svg";
-import IconPlanoInternacoes from "../../../assets/img/icon-plano-internacoes.svg";
-import IconUltimosProced from "../../../assets/img/icon-ultimos-procedimentos.svg";
-
-import IconAfericao from "../../../assets/img/icon-afericao.svg";
-import IconCurativos from "../../../assets/img/icon-curativos.svg";
-import IconMedicacao from "../../../assets/img/icon-medicacao.svg";
-import IconStatus from "../../../assets/img/icon-status.svg";
-
-import { ReactComponent as IconAlergic } from "../../../assets/img/icon-alergic.svg";
-import { ReactComponent as IconAntibiotics } from "../../../assets/img/icon-antibiotics.svg";
-import { ReactComponent as IconEvolution } from "../../../assets/img/icon-diagnosis.svg";
-import { ReactComponent as IconHistory } from "../../../assets/img/icon-history.svg";
-import { ReactComponent as IconMeasurement } from "../../../assets/img/icon-measurement.svg";
-import { ReactComponent as IconPrescription } from "../../../assets/img/icon-prescription.svg";
-import { ReactComponent as IconHome } from "../../../assets/img/marca-sollar-home.svg";
-
-import IconAgenda from "../../../assets/img/agenda.png";
-
-import { ContainerStyle as Container, Profile } from "./styles";
-import ButtonComponent from "../../../styles/components/Button";
-import Button from "../../../styles/components/Button";
+import { ContainerStyle as Container } from "./styles";
 import {
   MoreVert,
   Check as CheckIcon,
   Close as CloseIcon,
-  Add as AddIcon,
-  AccountCircle as AccountCircleIcon,
-  Visibility as VisibilityIcon,
 } from "@material-ui/icons";
 import { ApplicationState } from "../../../store";
 import { RouteComponentProps } from "react-router-dom";
 import { age, formatDate } from "../../../helpers/date";
-import mask from "../../../utils/mask";
 import Loading from "../../../components/Loading";
-import QRCode from "react-qr-code";
 import SESSIONSTORAGE from "../../../helpers/constants/sessionStorage";
-import Table from "../../../components/Table";
-import ViewCard from "../../../components/Card/ViewCard";
-import MedicalReleaseDialog from "../../../components/Dialogs/Release/Medical";
-import AdmReleaseDialog from "../../../components/Dialogs/Release/Adm";
-import moment from "moment";
-import { Autocomplete } from "@material-ui/lab";
-import { releaseReferral } from "../../../helpers/patient";
-import RoomIcon from "@material-ui/icons/Room";
 
 interface IPageParams {
   id?: string;
@@ -159,27 +97,55 @@ export default function PatientOverview(
   const classes = useStyles();
   const careState = useSelector((state: ApplicationState) => state.cares);
   const patientState = useSelector((state: ApplicationState) => state.patients);
+  const [medicalReleaseModal, setMedicalReleaseModal] = useState(false);
+  const [revertMedicalReleaseModal, setRevertMedicalReleaseModal] =
+    useState(false);
+  const [admReleaseModal, setAdmReleaseModal] = useState(false);
+  const [revertAdmReleaseModal, setRevertAdmReleaseModal] = useState(false);
+  const [prescriptionModal, setPrescriptionModal] = useState(false);
+  const [team, setTeam] = useState<any[]>([]);
+  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
 
   useEffect(() => {
     if (careState.data.patient_id) {
       dispatch(loadPatientById(careState.data.patient_id._id));
     }
   }, [careState?.data?.patient_id]);
-  const [medicalReleaseModal, setMedicalReleaseModal] = useState(false);
-  const [revertMedicalReleaseModal, setRevertMedicalReleaseModal] =
-    useState(false);
-  const [admReleaseModal, setAdmReleaseModal] = useState(false);
-  const [revertAdmReleaseModal, setRevertAdmReleaseModal] = useState(false);
-
-  const [prescriptionModal, setPrescriptionModal] = useState(false);
-
-  const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
 
   useEffect(() => {
     if (params.id) {
       dispatch(loadCareById(params.id));
+      dispatch(loadScheduleRequest({ attendance_id: params.id }));
     }
-  }, [dispatch]);
+  }, [params.id]);
+
+  useEffect(() => {
+    handleTeam();
+  }, [careState.schedule]);
+
+  const handleTeam = useCallback(() => {
+    const teamUsers: any = [];
+
+    try {
+      careState.schedule?.forEach((item) => {
+        if (teamUsers.length === 0) {
+          teamUsers.push(item.user_id);
+        } else {
+          const founded = teamUsers.findIndex((user: any) => {
+            if (typeof item.user_id === "object") {
+              return user._id === item.user_id._id;
+            }
+          });
+
+          if (founded < 0) {
+            teamUsers.push(item.user_id);
+          }
+        }
+      });
+    } catch (error) {}
+
+    setTeam(teamUsers);
+  }, [careState.schedule]);
 
   const handleOpenRowMenu = useCallback(
     (event: React.MouseEvent<HTMLButtonElement>) => {
@@ -219,7 +185,7 @@ export default function PatientOverview(
 
   const integration = sessionStorage.getItem(SESSIONSTORAGE.INTEGRATION);
   const [careModalOpen, setCareModalOpen] = useState(false);
-  console.log(careState, "Care state");
+
   const rows = [];
 
   careState?.data?.patient_id?.name &&
@@ -388,19 +354,11 @@ export default function PatientOverview(
 
   rows.push({
     name: "Equipe",
-    value: [
-      "tercio arruda de santana",
-      "Manuel Propier",
-      "Rafael Targino",
-      "Bruno ",
-      "Ayrlon Douglas",
-      "MOCADO",
-    ],
+    value: team,
   });
 
   const content = {
     tittle: "HeaderOverview",
-    // icon: <InfoRoundedIcon style={{color: "#ffffff"}}/>,
     rows: rows,
   };
   const gridPropsPlan = {
