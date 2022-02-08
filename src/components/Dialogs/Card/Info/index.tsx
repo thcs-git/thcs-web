@@ -11,6 +11,7 @@ import { ReactComponent as IconPatient } from "../../../../assets/img/icon-pacie
 import { ReactComponent as IconEdit } from "../../../../assets/img/icon editar.svg";
 import { ReactComponent as IconChart } from "../../../../assets/img/icon-prontuario.svg";
 import { ReactComponent as IconHospitalization } from "../../../../assets/img/icon-plano-internacoes.svg";
+import { ReactComponent as IconTeam } from "../../../../assets/img/icon-equipe-medica.svg";
 
 //Styles
 import { WrapperDialog } from "./styles";
@@ -58,6 +59,9 @@ export default function DialogInfo(props: IDialogProps) {
 
     if (title === "Plano e Internação")
       return <IconHospitalization style={{ width: "16px" }} />;
+
+    if (title === "Equipe Multidisciplinar")
+      return <IconTeam style={{ width: "16px" }} />;
   }
 
   const boxData = (name: string, value: any) => {
@@ -134,13 +138,44 @@ export default function DialogInfo(props: IDialogProps) {
     });
     return itens;
   };
+
+  function handleTeamData(content: IContent) {
+    let data: string[] = [];
+
+    content.rows.map(({ name, value }: IRows, index: number) => {
+      if (name === "Equipe") {
+        value.map((item: string) => {
+          data.push(item);
+        });
+      }
+    });
+
+    return data;
+  }
+  function teamData(arr: string[]) {
+    let itens = arr.map((item: string, index: number) => {
+      return (
+        <Box style={{ color: "var(--black)", marginLeft: "24px" }} key={index}>
+          - {item}
+        </Box>
+      );
+    });
+
+    return itens;
+  }
+  const dataList = (tittle: string) => {
+    if (tittle === "Dados Pessoais") return personalData(content);
+    if (tittle === "Plano e Internação") return planData(content);
+    if (tittle === "Equipe Multidisciplinar")
+      return teamData(handleTeamData(content));
+  };
   console.log(content.rows);
   return (
     <WrapperDialog>
       <Dialog open={openDialog} onClose={handleClose}>
         <Box
           style={{
-            padding: "21px",
+            padding: "21px 21px 8px 21px",
             fontSize: "14px",
             minWidth: "526px",
             lineHeight: "24px",
@@ -194,14 +229,18 @@ export default function DialogInfo(props: IDialogProps) {
             {/* <IconPatient style={{ width: "16px" }} /> */}
             <Box>{tittleCard} </Box>
           </Box>
-          {tittleCard === "Dados Pessoais" && personalData(content)}
-          {tittleCard === "Plano e Internação" && planData(content)}
+          {dataList(tittleCard)}
         </Box>
 
-        <DialogActions>
+        <DialogActions style={{ textAlign: "center" }}>
           <Button
             onClick={handleClose}
-            style={{ fontWeight: "bold", color: "var(--secondary)" }}
+            style={{
+              fontWeight: "bold",
+              color: "var(--secondary)",
+              margin: "0 auto",
+              padding: "8px 16px",
+            }}
           >
             FECHAR
           </Button>

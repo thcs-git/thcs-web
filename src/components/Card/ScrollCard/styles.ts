@@ -47,7 +47,7 @@ export const ContainerStyle = styled(Container)`
   width: 100%;
   height: 186px;
   background-color: var(--white);
-  margin: 32px auto 16px;
+  margin: 32px auto 8px;
   box-shadow: 0px 1px 4px #00000019;
   border-radius: 9px;
 

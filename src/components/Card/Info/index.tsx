@@ -9,6 +9,7 @@ import {
   TextRed,
   WrapperHeader,
   WrapperTittle,
+  BoxContainer,
 } from "./styles";
 // teste
 import Button from "@mui/material/Button";
@@ -22,6 +23,8 @@ import DialogTitle from "@mui/material/DialogTitle";
 import { ReactComponent as IconChart } from "../../../assets/img/icon-prontuario.svg";
 import { ReactComponent as IconEye } from "../../../assets/img/Icon ionic-md-eye.svg";
 import { ReactComponent as IconHospitalization } from "../../../assets/img/icon-plano-internacoes.svg";
+import { ReactComponent as IconTeam } from "../../../assets/img/icon-equipe-medica.svg";
+import { OpenInBrowser } from "@material-ui/icons";
 
 interface IRows {
   name: string;
@@ -49,58 +52,161 @@ export default function CardInfo(props: ICardInfo) {
 
   function personalData(content: IContent, alergic: boolean | undefined) {
     let itens = content.rows.map(({ name, value }: IRows, index: number) => {
-      if (name === "CPF") return <Box key={index}>{`${name}: ${value}`}</Box>;
-      if (name === "Data de nascimento")
-        return <Box key={index}>{`${name}: ${value}`}</Box>;
-      if (name === "Idade") return <Box key={index}>{`${name}: ${value}`}</Box>;
-      if (name === "Mãe") return <Box key={index}>{`${name}: ${value}`}</Box>;
-      if (name === "Tipo sanguíneo")
-        return <Box key={index}>{`${name}: ${value}`}</Box>;
-      if (name === "Doador de órgãos")
-        return <Box key={index}>{`${name}: ${value ? "Sim" : "Não"}`}</Box>;
+      switch (name) {
+        case "CPF":
+          return boxData(name, value);
+        case "Data de nascimento":
+          return boxData(name, value);
+        case "Mãe":
+          return boxData(name, value);
+        case "Tipo sanguíneo":
+          return boxData(name, value);
+        case "Doador de órgãos":
+          return <Box key={index}>{`${name}: ${value ? "Sim" : "Não"}`}</Box>;
+      }
     });
     alergic && itens.push(<TextRed>Paciente Alérgico</TextRed>);
     return itens;
   }
+  const boxData = (name: string, value: any) => {
+    return (
+      <Box>
+        {name}: {value}
+      </Box>
+    );
+  };
   function PlanData(content: IContent) {
-    // console.log(content.rows);
     let itens = content.rows.map(({ name, value }: IRows, index: number) => {
-      if (name === "Número do Atendimento")
-        return <Box style={{ fontWeight: "bold" }}>{`${name}: ${value}`}</Box>;
-      if (name === "Médico Assistente")
-        return <Box style={{ fontWeight: "bold" }}>{`${name}: ${value}`}</Box>;
-      if (name === "Tipo de internação")
-        return <Box>{`${name}: ${value}`}</Box>;
-      if (name === "Convênio") return <Box>{`${name}: ${value.name}`}</Box>;
-      if (name === "Plano") return <Box>{`${name}: ${value.name}`}</Box>;
-      if (name === "Cógido do Paciente")
-        return <Box>{`${name}: ${value}`}</Box>;
-      if (name === "Unidade") return <Box>{`${name}: ${value}`}</Box>;
-      if (name === "Setor") return <Box>{`${name}: ${value}`}</Box>;
-      if (name === "Leito") return <Box>{`${name}: ${value}`}</Box>;
+      switch (name) {
+        case "Número do Atendimento":
+          return (
+            <Box style={{ fontWeight: "bold" }}>{`${name}: ${value}`}</Box>
+          );
+        case "Médico Assistente":
+          return (
+            <Box style={{ fontWeight: "bold" }}>{`${name}: ${value}`}</Box>
+          );
+        case "Tipo de internação":
+          return boxData(name, value);
+        case "Convênio":
+          return boxData(name, value.name);
+        case "Plano":
+          return boxData(name, value.name);
+        case "Cógido do Paciente":
+          return boxData(name, value);
+        case "Unidade":
+          return boxData(name, value);
+        case "Setor":
+          return boxData(name, value);
+        case "Leito":
+          return boxData(name, value);
+      }
     });
-    // console.log(itens);
     return itens;
   }
+  function handleTeamData(content: IContent) {
+    let data: string[] = [];
+
+    content.rows.map(({ name, value }: IRows, index: number) => {
+      if (name === "Equipe") {
+        value.map((item: string) => {
+          data.push(item);
+        });
+      }
+    });
+
+    return data;
+  }
+  function teamData(arr: string[]) {
+    let itens1 = arr.map((item: string, index: number) => {
+      console.log(item, "item");
+      if (index % 2 === 0) {
+        return <Box key={index}>- {item}</Box>;
+      }
+    });
+    let itens2 = arr.map((item: string, index: number) => {
+      if (index % 2 !== 0) {
+        return <Box key={index}>- {item}</Box>;
+      }
+    });
+
+    let itensGrid = (
+      <Grid container style={{ boxShadow: "none" }}>
+        <Grid item xs={6} style={{ boxShadow: "none" }}>
+          {itens1}
+        </Grid>
+        <Grid item xs={6} style={{ boxShadow: "none" }}>
+          {itens2}
+        </Grid>
+      </Grid>
+    );
+    console.log(itensGrid, "grid");
+    return itensGrid;
+  }
+
+  // function boxData(name:string,value:any){}
   function iconHeader(title: string) {
     if (title === "Dados Pessoais")
       return <IconChart style={{ width: "24px", height: "24px" }} />;
 
     if (title === "Plano e Internação")
       return <IconHospitalization style={{ width: "24px", height: "24px" }} />;
+
+    if (title === "Equipe Multidisciplinar")
+      return <IconTeam style={{ width: "24px", height: "24px" }} />;
   }
   const handleClickOpen = () => {
     setOpenDialog(true);
   };
 
+  const switchData = (tittle: string) => {
+    if (tittle === "Dados Pessoais") return personalData(content, alergicIs);
+    if (tittle === "Plano e Internação") return PlanData(content);
+    if (tittle === "Equipe Multidisciplinar")
+      return teamData(handleTeamData(content));
+  };
+
   // console.log(openDialog);
   return (
     <>
-      <Grid item style={{ padding: "26.5px", flex: "1" }}>
+      <BoxContainer style={{ padding: "26.5px", flex: "1", margin: "8px" }}>
         <WrapperHeader>
           <WrapperTittle>
             {iconHeader(tittleCard)}
             <Box>{tittleCard}</Box>
+            {tittleCard === "Equipe Multidisciplinar" && (
+              <Box
+                style={{
+                  cursor: "pointer",
+                  border: "2px solid var(--secondary)",
+                  borderRadius: "2px",
+                  display: "flex",
+                  justifyContent: "space-evenly",
+                  alignItems: "center",
+                  padding: "4px",
+                  gap: "6px",
+                }}
+              >
+                <Box
+                  style={{
+                    cursor: "pointer",
+                    fontSize: "16px",
+                    border: "1px solid var(--secondary)",
+                    borderRadius: "10px",
+                    width: "16px",
+                    height: "16px",
+                    display: "flex",
+                    justifyContent: "center",
+                    alignItems: "center",
+                  }}
+                >
+                  +
+                </Box>
+                <Box style={{ fontSize: "10px", cursor: "pointer" }}>
+                  Adicionar profissional
+                </Box>
+              </Box>
+            )}
           </WrapperTittle>
           <Box
             style={{
@@ -111,14 +217,13 @@ export default function CardInfo(props: ICardInfo) {
             }}
             onClick={handleClickOpen}
           >
-            <IconEye />
+            <IconEye style={{ cursor: "pointer" }} />
           </Box>
         </WrapperHeader>
         <Box style={{ color: "var(--gray-dark)" }}>
-          {tittleCard === "Dados Pessoais" && personalData(content, alergicIs)}
-          {tittleCard === "Plano e Internação" && PlanData(content)}
+          {switchData(tittleCard)}
         </Box>
-      </Grid>
+      </BoxContainer>
       <DialogInfo
         tittleCard={tittleCard}
         content={content}

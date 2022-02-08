@@ -9,6 +9,11 @@ export const GridStyle = styled(Grid)`
   box-shadow: 0px 1px 4px #00000012;
   border-radius: 8px;
 `;
+export const BoxContainer = styled(Box)`
+  background-color: var(--white);
+  box-shadow: 0px 1px 4px #00000012;
+  border-radius: 8px;
+`;
 
 export const TextRed = styled(Box)`
   display: inline;
@@ -27,6 +32,6 @@ export const WrapperTittle = styled(Box)`
   min-width: 300px;
   display: flex;
   justify-content: start;
-  align-content: center;
+  align-items: center;
   gap: 8px;
 `;

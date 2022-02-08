@@ -219,7 +219,7 @@ export default function PatientOverview(
 
   const integration = sessionStorage.getItem(SESSIONSTORAGE.INTEGRATION);
   const [careModalOpen, setCareModalOpen] = useState(false);
-  console.log(patientState, "patientstate");
+  console.log(careState, "Care state");
   const rows = [];
 
   careState?.data?.patient_id?.name &&
@@ -386,6 +386,18 @@ export default function PatientOverview(
       value: formatDate(careState?.data?.dt_alta, "DD/MM/YYYY HH:mm"),
     });
 
+  rows.push({
+    name: "Equipe",
+    value: [
+      "tercio arruda de santana",
+      "Manuel Propier",
+      "Rafael Targino",
+      "Bruno ",
+      "Ayrlon Douglas",
+      "MOCADO",
+    ],
+  });
+
   const content = {
     tittle: "HeaderOverview",
     // icon: <InfoRoundedIcon style={{color: "#ffffff"}}/>,
@@ -424,13 +436,15 @@ export default function PatientOverview(
               />
               <Container
                 style={{
-                  padding: "0 40px 20px 40px",
+                  padding: "0 32px 20px ",
                 }}
               >
-                <Grid
-                  container
-                  spacing={0}
-                  style={{ justifyContent: "space-between", gap: "16px" }}
+                <Container
+                  style={{
+                    display: "flex",
+                    flexWrap: "wrap",
+                    justifyContent: "space-between",
+                  }}
                 >
                   <CardInfo
                     content={content}
@@ -445,7 +459,13 @@ export default function PatientOverview(
                     alergicIs={false}
                     gridProps={gridPropsPlan}
                   />
-                </Grid>
+                  <CardInfo
+                    content={content}
+                    tittleCard="Equipe Multidisciplinar"
+                    alergicIs={false}
+                    gridProps={gridPropsPlan}
+                  />
+                </Container>
               </Container>
             </>
           ) : (
