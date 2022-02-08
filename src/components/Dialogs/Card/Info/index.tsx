@@ -72,7 +72,6 @@ export default function DialogInfo(props: IDialogProps) {
     );
   };
   const personalData = (data: IContent) => {
-    // console.log(data.rows);
     const list = data.rows.map(({ name, value }: IRows, index: number) => {
       switch (name) {
         case "Nome":
@@ -139,37 +138,67 @@ export default function DialogInfo(props: IDialogProps) {
     return itens;
   };
 
-  function handleTeamData(content: IContent) {
-    let data: string[] = [];
+  // function handleTeamData(content: IContent) {
+  //   let data: string[] = [];
 
-    content.rows.map(({ name, value }: IRows, index: number) => {
+  //   content.rows.map(({ name, value }: IRows, index: number) => {
+  //     if (name === "Equipe") {
+  //       value.map((item: string) => {
+  //         data.push(item);
+  //       });
+  //     }
+  //   });
+
+  //   return data;
+  // }
+  // function teamData(arr: string[]) {
+  //   let itens = arr.map((item: string, index: number) => {
+  //     return (
+  //       <Box style={{ color: "var(--black)", marginLeft: "24px" }} key={index}>
+  //         - {item}
+  //       </Box>
+  //     );
+  //   });
+
+  //   return itens;
+  // }
+  function handleTeamData(content: IContent) {
+    let team: object[] = [];
+    content.rows.map(({ name, value }: IRows) => {
       if (name === "Equipe") {
-        value.map((item: string) => {
-          data.push(item);
+        value.map((item: any) => {
+          if (item.name) team.push(item);
         });
       }
     });
-
-    return data;
+    return team;
   }
-  function teamData(arr: string[]) {
-    let itens = arr.map((item: string, index: number) => {
-      return (
-        <Box style={{ color: "var(--black)", marginLeft: "24px" }} key={index}>
-          - {item}
-        </Box>
-      );
-    });
 
+  function teamData(arr: object[]) {
+    let itens = arr.map((item: any, index: number) => {
+      if (item.name) {
+        let profession: string = item.profession_id.map((profession: any) => {
+          return profession.name ? profession.name : false;
+        });
+        return (
+          <Box
+            key={index}
+            style={{ color: "var(--black)", marginLeft: "24px" }}
+          >
+            - {item.name} {profession.length > 0 && `(${profession})`}
+          </Box>
+        );
+      }
+    });
     return itens;
   }
+
   const dataList = (tittle: string) => {
     if (tittle === "Dados Pessoais") return personalData(content);
     if (tittle === "Plano e Internação") return planData(content);
     if (tittle === "Equipe Multidisciplinar")
       return teamData(handleTeamData(content));
   };
-  console.log(content.rows);
   return (
     <WrapperDialog>
       <Dialog open={openDialog} onClose={handleClose}>
