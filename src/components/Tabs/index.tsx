@@ -388,30 +388,6 @@ const TabForm = (props: ITabprops) => {
               />
             )
           )}
-
-          {/* {navItems.map(({ name, badge }: INavItems, index: number) => (
-            <TabNavItem
-              value={index}
-              label={
-                badge ? (
-                  <Badge
-                    classes={{ badge: classes.customBadge }}
-                    className={classes.padding}
-                    color="primary"
-                    badgeContent={badge}
-                    max={99}
-                  >
-                    {name}
-                  </Badge>
-                ) : (
-                  name
-                )
-              }
-              wrapped
-              className={value === index ? "active" : ""}
-              {...a11yProps({ index })}
-            ></TabNavItem>
-          ))} */}
         </TabNav>
       </TabContent>
       {navItems.map(({ name, components, badge }: INavItems, index: number) => {
@@ -475,13 +451,33 @@ const TabForm = (props: ITabprops) => {
           <TabPanel value={value} index={index}>
             {state.name && (
               <>
-                <WrapperName>
-                  <ProfileIcon />
-                  {state.name}
-                  {state.gender?.toLowerCase() === "masculino" && <MaleIcon />}
-                  {state.gender?.toLowerCase() === "feminino" && <FemaleIcon />}
-                </WrapperName>
-                <Divider style={{ marginBottom: 0, marginTop: 16, width:458 }} />
+                {components[0] === "PermissionList" ? (
+                  <WrapperName>
+                    <CompanyIcon />
+                    Permissões - {state.name}
+                  </WrapperName>
+                ) : (
+                  <>
+                    <WrapperName>
+                      {name === "DADOS DO CLIENTE" || name === "INTEGRAÇÃO" ? (
+                        <CompanyIcon />
+                      ) : (
+                        <ProfileIcon />
+                      )}
+
+                      {state.name}
+                      {state.gender?.toLowerCase() === "masculino" && (
+                        <MaleIcon />
+                      )}
+                      {state.gender?.toLowerCase() === "feminino" && (
+                        <FemaleIcon />
+                      )}
+                    </WrapperName>
+                    <Divider
+                      style={{ marginBottom: 0, marginTop: 16, width: 458 }}
+                    />
+                  </>
+                )}
               </>
             )}
             {components.map((component: string, sub_index: number) => (
