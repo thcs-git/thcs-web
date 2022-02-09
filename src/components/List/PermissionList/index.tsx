@@ -73,7 +73,7 @@ const PermissionList = (props: IComponent) => {
                       {active ? "Ativo" : "Inativo"}
                     </ListItemStatus>
                   </TableCell>
-                  <TableCell align="left">
+                  <TableCell align="left" style={{ color: "var(--black)" }}>
                     {formatDate(created_at, "DD/MM/YYYY")}
                   </TableCell>
                   <TableCell align="left">
