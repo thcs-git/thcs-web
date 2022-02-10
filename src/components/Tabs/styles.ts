@@ -139,3 +139,60 @@ export const WrapperName = styled.div`
 
   margin-left: 16px;
 `;
+
+export const TabNavItemPermission = styled(Tab)`
+  font-weight: bold;
+  color: var(--gray-dark);
+  text-transform: capitalize;
+
+  /* display: flex; */
+
+  cursor: pointer;
+
+  max-width: 100%;
+  box-shadow: none;
+
+  border-radius: 30px;
+  color: var(--white);
+  margin-right: 8px;
+  font-size: 11px;
+  height: 32px;
+  font-weight: normal;
+
+  &.active {
+    background-color: var(--secondary);
+    border: 1px solid #0786a3;
+    color: var(--white);
+    svg {
+      fill: #f9f9f9;
+    }
+  }
+  &.desactive {
+    background-color: none;
+    border: 1px solid #e0e0e0;
+    color: #9e9e9e;
+    svg {
+      fill: #9e9e9e;
+    }
+  }
+
+  &:focus {
+    outline: 0 !important;
+  }
+  .MuiTab-root {
+    min-height: 32px;
+  }
+`;
+
+export const TabNavPermission = styled(Tabs)`
+  background: var(--gray-light);
+  cursor: pointer;
+
+  display: flex;
+  flex-direction: row;
+
+  .MuiTab-root {
+    min-height: 32px;
+    min-width: 100px;
+  }
+`;

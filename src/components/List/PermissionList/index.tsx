@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 
 //MUI
 import Table from "@mui/material/Table";
@@ -18,90 +18,169 @@ import { useHistory } from "react-router-dom";
 import { ButtonStyle } from "./styles";
 import { ButtonsContent } from "../../Button/ButtonTabs/styles";
 import { useDispatch } from "react-redux";
-import { loadPermissionRequest } from "../../../store/ducks/customers/actions";
+import {
+  loadPermissionRequest,
+  cleanAction,
+} from "../../../store/ducks/customers/actions";
+
+//Componentes
+import PermissionForm from "../../Inputs/Forms/PermisionForm";
+import ButtonTabs from "../../Button/ButtonTabs";
 
 interface IComponent {
   customerState: any;
   mode: string;
+  propsPermissionForm?: any;
 }
 
 const PermissionList = (props: IComponent) => {
-  const { customerState, mode } = props;
+  const { customerState, mode, propsPermissionForm } = props;
+  const {
+    state,
+    setState,
+    userState,
+    params,
+    canEditPermission,
+    buttonsPermission,
+    modePermission,
+    setModePermission,
+  } = propsPermissionForm;
   const dispatch = useDispatch();
   const history = useHistory();
+  const [idPermission, setIdPermission] = useState("");
 
   const headData: string[] = ["Função", "Status", "Adicionado em", "", ""];
+  console.log(
+    propsPermissionForm.customerState === customerState,
+    "verificação"
+  );
+
+  useEffect(() => {
+    if (modePermission === "view" || modePermission === "edit") {
+      dispatch(loadPermissionRequest(idPermission));
+    }
+  }, [modePermission]);
 
   return (
     <>
-      <Table>
-        <TableHead>
-          <TableRow>
-            {headData.map((item: string) => {
-              return (
-                <TableCell
-                  style={{ color: "var(--gray-dark)", fontSize: "12px" }}
-                >
-                  {item}
-                </TableCell>
-              );
-            })}
-          </TableRow>
-        </TableHead>
-        <TableBody>
-          {customerState.data.usertypes?.map(
-            (
-              { _id, active, created_at, name, permissions }: any,
-              index: number
-            ) => {
-              return (
-                <TableRow key={`${name}_${index}`}>
-                  <TableCell align="left">
-                    <ItemTable
-                      style={{ color: "var(--black)" }}
-                      onClick={() => {
-                        history.push(
-                          `/client/${customerState.data._id}/permission/${permissions}/view/`
-                        );
-                      }}
-                    >
-                      {name}
-                    </ItemTable>
+      {modePermission === "start" ? (
+        <Table>
+          <TableHead>
+            <TableRow>
+              {headData.map((item: string) => {
+                return (
+                  <TableCell
+                    style={{ color: "var(--gray-dark)", fontSize: "12px" }}
+                  >
+                    {item}
                   </TableCell>
-                  <TableCell align="left">
-                    <ListItemStatus active={active}>
-                      {active ? "Ativo" : "Inativo"}
-                    </ListItemStatus>
-                  </TableCell>
-                  <TableCell align="left" style={{ color: "var(--black)" }}>
-                    {formatDate(created_at, "DD/MM/YYYY")}
-                  </TableCell>
-                  <TableCell align="left">
-                    <ButtonView
-                      canEdit={true}
-                      setCanEdit={() => {
-                        history.push(
-                          `/client/${customerState.data._id}/permission/${permissions}/view/`
-                        );
-                      }}
-                    ></ButtonView>
-                  </TableCell>
-                  <TableCell align="left">
-                    <ButtonEdit
-                      canEdit={true}
-                      setCanEdit={() => {
-                        history.push(
-                          `/client/${customerState.data._id}/permission/${permissions}/edit/`
-                        );
-                      }}
-                    ></ButtonEdit>
-                  </TableCell>
-                </TableRow>
-              );
-            }
-          )}
-        </TableBody>
-      </Table>
+                );
+              })}
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            {customerState.data.usertypes?.map(
+              (
+                { _id, active, created_at, name, permissions }: any,
+                index: number
+              ) => {
+                return (
+                  <TableRow key={`${name}_${index}`}>
+                    <TableCell align="left">
+                      <ItemTable
+                        style={{ color: "var(--black)" }}
+                        onClick={() => {
+                          setModePermission("view");
+
+                          // history.push(
+                          //   `/client/${customerState.data._id}/permission/${permissions}/view/`
+                          // );
+                        }}
+                      >
+                        {name}
+                      </ItemTable>
+                    </TableCell>
+                    <TableCell align="left">
+                      <ListItemStatus active={active}>
+                        {active ? "Ativo" : "Inativo"}
+                      </ListItemStatus>
+                    </TableCell>
+                    <TableCell align="left" style={{ color: "var(--black)" }}>
+                      {formatDate(created_at, "DD/MM/YYYY")}
+                    </TableCell>
+                    <TableCell align="left">
+                      <ButtonView
+                        canEdit={true}
+                        setCanEdit={() => {
+                          setModePermission("view");
+                          setIdPermission(permissions);
+                          // history.push(
+                          //   `/client/${customerState.data._id}/permission/${permissions}/view/`
+                          // );
+                        }}
+                      ></ButtonView>
+                    </TableCell>
+                    <TableCell align="left">
+                      <ButtonEdit
+                        canEdit={true}
+                        setCanEdit={() => {
+                          setModePermission("edit");
+                          setIdPermission(permissions);
+
+                          // history.push(
+                          //   `/client/${customerState.data._id}/permission/${permissions}/edit/`
+                          // );
+                        }}
+                      ></ButtonEdit>
+                    </TableCell>
+                  </TableRow>
+                );
+              }
+            )}
+          </TableBody>
+        </Table>
+      ) : modePermission === "view" ? (
+        <>
+          <PermissionForm
+            state={state}
+            setState={setState}
+            customerState={customerState}
+            userState={userState}
+            params={params}
+            modePermission={modePermission}
+            idPermission={idPermission}
+          />
+          <ButtonTabs canEdit={false} buttons={buttonsPermission} />
+        </>
+      ) : modePermission === "edit" ? (
+        <>
+          <PermissionForm
+            state={state}
+            setState={setState}
+            customerState={customerState}
+            userState={userState}
+            params={params}
+            modePermission={modePermission}
+            idPermission={idPermission}
+          />
+          <ButtonTabs canEdit={true} buttons={buttonsPermission} />
+        </>
+      ) : modePermission === "create" ? (
+        <>
+          <PermissionForm
+            state={state}
+            setState={setState}
+            customerState={customerState}
+            userState={userState}
+            params={params}
+            modePermission={modePermission}
+            idPermission={idPermission}
+          />
+          <ButtonTabs canEdit={true} buttons={buttonsPermission} />
+        </>
+      ) : (
+        ""
+      )}
     </>
   );
 };

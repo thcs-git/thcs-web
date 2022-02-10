@@ -1,6 +1,6 @@
 import React, { useState, ReactNode } from "react";
 import { makeStyles, Theme } from "@material-ui/core/styles";
-import { Badge, Divider, Grid } from "@material-ui/core";
+import { Badge, Divider, Grid, withWidth } from "@material-ui/core";
 
 import {
   TabBody,
@@ -13,6 +13,8 @@ import {
   TabNavItemAlingRigth,
   TabNavItemAlingLeft,
   WrapperName,
+  TabNavItemPermission,
+  TabNavPermission,
 } from "./styles";
 import ClientFormHeader from "../Inputs/Forms/ClientName";
 import _ from "lodash";
@@ -38,6 +40,14 @@ import { ReactComponent as MaleIcon } from "../../assets/img/icon-male-1.svg";
 import { ReactComponent as FemaleIcon } from "../../assets/img/ionic-md-female.svg";
 import { ReactComponent as ProfileIcon } from "../../assets/img/icon-user-1.svg";
 
+import { ReactComponent as PortalActiveIcon } from "../../assets/img/icon-portal-active.svg";
+import { ReactComponent as PortalDesactiveIcon } from "../../assets/img/icon-portal-desactive.svg";
+
+import { ReactComponent as AppActiveIcon } from "../../assets/img/icon-app-active.svg";
+import { ReactComponent as AppDesactiveIcon } from "../../assets/img/icon-app-desactive.svg";
+
+import Box from "@mui/material/Box";
+
 interface ITabprops {
   navItems: INavItems[];
   children?: ReactNode;
@@ -57,6 +67,7 @@ interface ITabprops {
   params: IPageParams;
   rowsPortal?: any;
   rowsApp?: any;
+  propsPermissionForm?: any;
 }
 
 interface IPageParams {
@@ -142,6 +153,7 @@ const TabForm = (props: ITabprops) => {
     params,
     rowsPortal,
     rowsApp,
+    propsPermissionForm,
   } = props;
   const classes = useStyles();
   const indicatorCompany = classes.indicator;
@@ -263,15 +275,26 @@ const TabForm = (props: ITabprops) => {
           <PermissionList
             customerState={customerState}
             mode={mode ? mode : ""}
+            propsPermissionForm={propsPermissionForm}
           />
         );
       case "CheckListFormPortal":
         return (
-          <CheckListForm state={state} setState={setState} rows={rowsPortal} />
+          <CheckListForm
+            state={state}
+            setState={setState}
+            rows={rowsPortal}
+            mode={mode}
+          />
         );
       case "CheckListFormApp":
         return (
-          <CheckListForm state={state} setState={setState} rows={rowsApp} />
+          <CheckListForm
+            state={state}
+            setState={setState}
+            rows={rowsApp}
+            mode={mode}
+          />
         );
       case "ToggleActive":
         return (
@@ -408,6 +431,122 @@ const TabForm = (props: ITabprops) => {
         );
       })}
     </div>
+  ) : navItems[0].components[0] === "CheckListFormPortal" ||
+    navItems[0].components[0] === "CheckListFormApp" ? (
+    <div className={classes.root}>
+      <Box
+        style={{
+          display: "flex",
+          flexDirection: "row",
+          alignItems: "center",
+          gap: "30px ",
+          marginLeft: "15px",
+        }}
+      >
+        <Grid
+          item
+          style={{
+            fontSize: "16px",
+            color: "var(--black)",
+            fontWeight: "bold",
+          }}
+        >
+          {state.name}
+        </Grid>
+
+        <TabContent
+          position="static"
+          style={{
+            background: "none",
+            flexDirection: "row",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "flex-start",
+            maxWidth: "500px",
+          }}
+        >
+          <TabNavPermission
+            value={value}
+            onChange={handleChange}
+            variant="scrollable"
+            scrollButtons="auto"
+            aria-label="scrollable auto tabs example"
+            style={{
+              fontSize: "13px",
+              background: "none",
+              display: "flex",
+
+              alignItems: "center",
+            }}
+            TabIndicatorProps={{ style: { display: "none" } }}
+          >
+            {navItems.map(({ name, badge }: INavItems, index: number) => (
+              <TabNavItemPermission
+                value={index}
+                label={
+                  badge ? (
+                    <Badge
+                      classes={{ badge: classes.customBadge }}
+                      className={classes.padding}
+                      badgeContent={badge}
+                      max={99}
+                    >
+                      {name}
+                    </Badge>
+                  ) : (
+                    <Box
+                      style={{
+                        display: "flex",
+                        flexDirection: "row",
+                        alignItems: "Center",
+                        gap: "5px",
+                        minHeight: "32px",
+                      }}
+                    >
+                      {name.toLowerCase() === "no portal" &&
+                        (value === index ? (
+                          <PortalActiveIcon />
+                        ) : (
+                          <PortalDesactiveIcon />
+                        ))}
+                      {name.toLowerCase() === "no aplicativo" &&
+                        (value === index ? (
+                          <AppActiveIcon />
+                        ) : (
+                          <AppDesactiveIcon />
+                        ))}
+
+                      {name}
+                    </Box>
+                  )
+                }
+                wrapped
+                className={value === index ? "active" : "desactive"}
+                {...a11yProps({ index })}
+              ></TabNavItemPermission>
+            ))}
+          </TabNavPermission>
+        </TabContent>
+      </Box>
+
+      {navItems.map(({ name, components, badge }: INavItems, index: number) => {
+        const last = _.findLastIndex(components);
+        return (
+          <TabPanel value={value} index={index}>
+            {components.map((component: string, sub_index: number) => (
+              <>
+                {handleComponents(component, parseInt(`${index}${sub_index}`))}
+                {/* {sub_index != last && (
+                  <Grid item md={12} xs={12}>
+                    <Divider style={{ marginBottom: 28, marginTop: 20 }} />
+                  </Grid>
+                )} */}
+              </>
+            ))}
+          </TabPanel>
+        );
+      })}
+    </div>
   ) : (
     <div className={classes.root}>
       <TabContent position="static">
@@ -417,7 +556,7 @@ const TabForm = (props: ITabprops) => {
           variant="scrollable"
           scrollButtons="auto"
           aria-label="scrollable auto tabs example"
-          TabIndicatorProps={{ className: classes.indicator }}
+          TabIndicatorProps={{ style: { display: "none" } }}
           style={{ fontSize: "13px" }}
         >
           {navItems.map(({ name, badge }: INavItems, index: number) => (
@@ -452,10 +591,14 @@ const TabForm = (props: ITabprops) => {
             {state.name && (
               <>
                 {components[0] === "PermissionList" ? (
-                  <WrapperName>
-                    <CompanyIcon />
-                    Permissões - {state.name}
-                  </WrapperName>
+                  propsPermissionForm.modePermission === "start" ? (
+                    <WrapperName>
+                      <CompanyIcon />
+                      Permissões - {state.name}
+                    </WrapperName>
+                  ) : (
+                    ""
+                  )
                 ) : (
                   <>
                     <WrapperName>

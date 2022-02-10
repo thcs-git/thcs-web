@@ -111,10 +111,12 @@ export default function ClientForm(props: RouteComponentProps<IPageParams>) {
   }));
 
   const classes = useStyles();
+
   const customerState = useSelector(
     (state: ApplicationState) => state.customers
   );
   const userState = useSelector((state: ApplicationState) => state.users);
+
   const [inputUf, setInputUf] = useState({ index: 0 });
   const [inputPhone, setInputPhone] = useState({ value: "", error: false });
   const [inputCellPhone, setInputCellPhone] = useState({
@@ -208,6 +210,17 @@ export default function ClientForm(props: RouteComponentProps<IPageParams>) {
     customer_id: "",
   });
 
+  const [modePermission, setModePermission] = useState("start");
+
+  useEffect(() => {
+    setPermissionState((prevState) => {
+      return {
+        ...prevState,
+        mode: modePermission,
+      };
+    });
+  }, [modePermission]);
+
   var isValidPhoneNumber: any;
   var isValidCellPhoneNumber: any;
   var formValid: any;
@@ -217,10 +230,16 @@ export default function ClientForm(props: RouteComponentProps<IPageParams>) {
       const currentCustomer = localStorage.getItem(LOCALSTORAGE.CUSTOMER) || "";
       history.push(`/client/${currentCustomer}/view`);
     }
-
-    if (_.split(window.location.pathname, "/").slice(-2)[0] === "view") {
+    if (modePermission === "views") {
       setCanEditPermission(false);
     }
+    if (modePermission === "edit") {
+      setCanEditPermission(true);
+    }
+
+    // if (_.split(window.location.pathname, "/").slice(-2)[0] === "view") {
+    //   setCanEditPermission(false);
+    // }
   }, []);
 
   useEffect(() => {
@@ -329,10 +348,17 @@ export default function ClientForm(props: RouteComponentProps<IPageParams>) {
           _.split(window.location.pathname, "/").slice(-3)[0]
         )
       );
-    } else if (params.id && !permissionState.mode && params.id != ":id") {
+    } else if (
+      params.id &&
+      // !permissionState.mode &&
+      params.id != ":id"
+    ) {
       dispatch(loadCustomerById(params.id));
     }
   }, [dispatch, params]);
+
+  console.log(customerState.data._id, "customer id");
+  console.log(params.id, "params id");
 
   useEffect(() => {
     if (
@@ -510,12 +536,12 @@ export default function ClientForm(props: RouteComponentProps<IPageParams>) {
     const currentCustomer = localStorage.getItem(LOCALSTORAGE.CUSTOMER) || "";
 
     setInitialTab(1);
-
-    if (canEdit) {
-      history.push(`/client/${currentCustomer}/edit`);
-    } else {
-      history.push(`/client/${currentCustomer}/view`);
-    }
+    setModePermission("start");
+    // if (canEdit) {
+    //   history.push(`/client/${currentCustomer}/edit`);
+    // } else {
+    //   history.push(`/client/${currentCustomer}/view`);
+    // }
   }
 
   const handleSavePermission = useCallback(() => {
@@ -590,12 +616,23 @@ export default function ClientForm(props: RouteComponentProps<IPageParams>) {
     { name: "Visualizar", align: "center" },
     { name: "Editar", align: "center" },
   ];
-
+  console.log(customerState.data._id, "CUSTOMERSTATE");
+  const propsPermissionForm = {
+    state: permissionState,
+    setState: setPermissionState,
+    customerState: customerState,
+    userState: userState,
+    params: params,
+    canEditPermission: canEditPermission,
+    buttonsPermission: buttonsPermission,
+    modePermission: modePermission,
+    setModePermission: setModePermission,
+  };
   return (
     <Sidebar>
       {customerState.loading && <Loading />}
       <Container>
-        {params.mode === "permission" ? (
+        {params.mode === "permissio" ? (
           <>
             <TabTittle
               tittle={"Permissões Do Cliente"}
@@ -630,10 +667,11 @@ export default function ClientForm(props: RouteComponentProps<IPageParams>) {
                   <TabTittle tittle={"Detalhamento do Cliente"} />
                   <ButtonStyle
                     variant="contained"
-                    onClick={() =>
-                      history.push(
-                        `/client/${customerState.data._id}/permission/create/`
-                      )
+                    onClick={
+                      () => setModePermission("create")
+                      // history.push(
+                      //   `/client/${customerState.data._id}/permission/create/`
+                      // )
                     }
                   >
                     Adicionar função
@@ -665,6 +703,7 @@ export default function ClientForm(props: RouteComponentProps<IPageParams>) {
               initialTab={initialTab}
               setInitialTab={setInitialTab}
               params={params}
+              propsPermissionForm={propsPermissionForm}
             />
             <ButtonTabs canEdit={canEdit} buttons={buttons} />
           </>
