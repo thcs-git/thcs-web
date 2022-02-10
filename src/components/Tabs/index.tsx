@@ -475,7 +475,6 @@ const TabForm = (props: ITabprops) => {
               fontSize: "13px",
               background: "none",
               display: "flex",
-
               alignItems: "center",
             }}
             TabIndicatorProps={{ style: { display: "none" } }}
@@ -556,8 +555,8 @@ const TabForm = (props: ITabprops) => {
           variant="scrollable"
           scrollButtons="auto"
           aria-label="scrollable auto tabs example"
-          TabIndicatorProps={{ style: { display: "none" } }}
-          style={{ fontSize: "13px" }}
+          TabIndicatorProps={{ className: classes.indicator }}
+          style={{ fontSize: "13px", fontWeight: "normal" }}
         >
           {navItems.map(({ name, badge }: INavItems, index: number) => (
             <TabNavItem

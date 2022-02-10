@@ -11,6 +11,7 @@ import {
 import { FormGroupSection } from "./styles";
 import { makeStyles, Theme, withStyles } from "@material-ui/core/styles";
 import _ from "lodash";
+import Box from "@mui/material/Box";
 
 interface Iprops {
   state: any;
@@ -57,46 +58,70 @@ const CheckListForm = (props: Iprops) => {
   function handleChecked(name: string, crud: string) {
     return _.indexOf(state.rights, `${name}.${crud}`) > -1;
   }
-  console.log("entreiiiii");
   return (
-    <FormGroupSection>
-      {rows.map(({ legend, name, rights }: any, index: number) => (
-        <FormControl
-          component="fieldset"
-          style={{ marginBottom: "15px", display: "flex" }}
-        >
-          <FormLabel className={classes.formLabel}>{legend}</FormLabel>
-          <FormGroup aria-label="position" row>
-            {rights.map(({ crud, label }: any, index: number) => (
-              <FormControlLabel
-                value={crud}
-                control={<CustomCheckbox checked={handleChecked(name, crud)} />}
-                label={label}
-                labelPlacement="end"
-                disabled={mode === "view"}
-                onChange={(event, value) => {
-                  const rights = [...state.rights];
-                  const right = `${name}.${crud}`;
-
-                  if (value) {
-                    setState((prevState: any) => ({
-                      ...prevState,
-                      rights: [...prevState.rights, right],
-                    }));
-                  } else {
-                    _.pull(rights, right);
-                    setState((prevState: any) => ({
-                      ...prevState,
-                      rights: rights,
-                    }));
+    <>
+      <Box
+        style={{
+          fontSize: "12px",
+          display: "flex",
+          flexDirection: "row",
+          alignItems: "center",
+          justifyContent: "center",
+          color: "var(--gray-dark)",
+          borderRadius: "8px 8px 0 0",
+          backgroundColor: "var(--gray-light)",
+          gap: "17px",
+          padding: "17px",
+          width: "min-content",
+          height: "35px",
+          margin: "0 auto",
+        }}
+      >
+        <Box>Visualizar</Box>
+        <Box>Criar/Editar</Box>
+        <Box>Gerar</Box>
+      </Box>
+      <FormGroupSection>
+        {rows.map(({ legend, name, rights }: any, index: number) => (
+          <FormControl
+            component="fieldset"
+            style={{ marginBottom: "15px", display: "flex" }}
+          >
+            <FormLabel className={classes.formLabel}>{legend}</FormLabel>
+            <FormGroup aria-label="position" row>
+              {rights.map(({ crud, label }: any, index: number) => (
+                <FormControlLabel
+                  value={crud}
+                  control={
+                    <CustomCheckbox checked={handleChecked(name, crud)} />
                   }
-                }}
-              />
-            ))}
-          </FormGroup>
-        </FormControl>
-      ))}
-    </FormGroupSection>
+                  label={label}
+                  labelPlacement="end"
+                  disabled={mode === "view"}
+                  onChange={(event, value) => {
+                    const rights = [...state.rights];
+                    const right = `${name}.${crud}`;
+
+                    if (value) {
+                      setState((prevState: any) => ({
+                        ...prevState,
+                        rights: [...prevState.rights, right],
+                      }));
+                    } else {
+                      _.pull(rights, right);
+                      setState((prevState: any) => ({
+                        ...prevState,
+                        rights: rights,
+                      }));
+                    }
+                  }}
+                />
+              ))}
+            </FormGroup>
+          </FormControl>
+        ))}
+      </FormGroupSection>
+    </>
   );
 };
 

@@ -15,7 +15,7 @@ export const TabContent = styled(AppBar)`
 
 export const TabNav = styled(Tabs)`
   background: var(--gray-light);
-  /* box-shadow: 1px 1px 3px #00000029; */
+  box-shadow: 1px 1px 3px #00000029;
   /* width: 100%; */
 
   display: flex;
@@ -141,7 +141,6 @@ export const WrapperName = styled.div`
 `;
 
 export const TabNavItemPermission = styled(Tab)`
-  font-weight: bold;
   color: var(--gray-dark);
   text-transform: capitalize;
 
