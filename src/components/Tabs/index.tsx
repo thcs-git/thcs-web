@@ -15,6 +15,7 @@ import {
   WrapperName,
   TabNavItemPermission,
   TabNavPermission,
+  WrapperHeaderForm,
 } from "./styles";
 import ClientFormHeader from "../Inputs/Forms/ClientName";
 import _ from "lodash";
@@ -47,6 +48,44 @@ import { ReactComponent as AppActiveIcon } from "../../assets/img/icon-app-activ
 import { ReactComponent as AppDesactiveIcon } from "../../assets/img/icon-app-desactive.svg";
 
 import Box from "@mui/material/Box";
+import TextField from "@mui/material/TextField";
+import Autocomplete from "@mui/material/Autocomplete";
+import { CustomerState } from "../../store/ducks/customers/types";
+import { UserState } from "../../store/ducks/users/types";
+
+interface IPropsPermissionFrom {
+  state: {
+    active: boolean;
+    name: string;
+    rights: never[];
+    mode: string;
+    _id: string;
+    customer_id: string;
+  };
+  setState: React.Dispatch<
+    React.SetStateAction<{
+      active: boolean;
+      name: string;
+      rights: never[];
+      mode: string;
+      _id: string;
+      customer_id: string;
+    }>
+  >;
+  customerState: CustomerState;
+  userState: UserState;
+  params: IPageParams;
+  canEditPermission: boolean;
+  buttonsPermission: {
+    name: string;
+    onClick: () => void;
+    variant: string;
+    background: string;
+    show: boolean;
+  }[];
+  modePermission: string;
+  setModePermission: React.Dispatch<React.SetStateAction<string>>;
+}
 
 interface ITabprops {
   navItems: INavItems[];
@@ -67,7 +106,9 @@ interface ITabprops {
   params: IPageParams;
   rowsPortal?: any;
   rowsApp?: any;
-  propsPermissionForm?: any;
+  propsPermissionForm?: IPropsPermissionFrom;
+  autoCompleteSetting?: any;
+  modePermission?: string;
 }
 
 interface IPageParams {
@@ -154,6 +195,8 @@ const TabForm = (props: ITabprops) => {
     rowsPortal,
     rowsApp,
     propsPermissionForm,
+    autoCompleteSetting,
+    modePermission,
   } = props;
   const classes = useStyles();
   const indicatorCompany = classes.indicator;
@@ -285,6 +328,8 @@ const TabForm = (props: ITabprops) => {
             setState={setState}
             rows={rowsPortal}
             mode={mode}
+            checkList={"portal"}
+            autoCompleteSetting={autoCompleteSetting}
           />
         );
       case "CheckListFormApp":
@@ -294,6 +339,8 @@ const TabForm = (props: ITabprops) => {
             setState={setState}
             rows={rowsApp}
             mode={mode}
+            checkList={"app"}
+            autoCompleteSetting={autoCompleteSetting}
           />
         );
       case "ToggleActive":
@@ -439,20 +486,55 @@ const TabForm = (props: ITabprops) => {
           display: "flex",
           flexDirection: "row",
           alignItems: "center",
-          gap: "30px ",
+          gap: "10px ",
           marginLeft: "15px",
+          width: "600px",
         }}
       >
-        <Grid
-          item
-          style={{
-            fontSize: "16px",
-            color: "var(--black)",
-            fontWeight: "bold",
-          }}
-        >
-          {state.name}
-        </Grid>
+        {mode === "create" ? (
+          <Autocomplete
+            sx={{
+              display: "inline-block",
+              "& input": {},
+            }}
+            // sx={{ "& input": { height: 32 } }}
+            id="combo-box-profession"
+            // disabled={mode === "view"}
+            options={autoCompleteSetting.handleProfessionList()}
+            getOptionLabel={(option) => option.name}
+            renderInput={(params) => (
+              <TextField
+                {...params}
+                label="Selecione a função"
+                variant="outlined"
+                style={{ fontSize: "12px", height: "32px" }}
+              />
+            )}
+            // getOptionSelected={(option, value) =>
+            //   option._id == userState.data.professions[0]._id
+            // }
+            // defaultValue={selectProfession()}
+            value={autoCompleteSetting.selectProfession()}
+            onChange={(event, value) => {
+              if (value) {
+                autoCompleteSetting.handleSelectProfession(value);
+              }
+            }}
+            size="small"
+            fullWidth
+          />
+        ) : (
+          <Grid
+            item
+            style={{
+              fontSize: "16px",
+              color: "var(--black)",
+              fontWeight: "bold",
+            }}
+          >
+            {state.name}
+          </Grid>
+        )}
 
         <TabContent
           position="static"
@@ -462,7 +544,7 @@ const TabForm = (props: ITabprops) => {
             display: "flex",
             alignItems: "center",
             justifyContent: "flex-start",
-            maxWidth: "500px",
+            width: "256px",
           }}
         >
           <TabNavPermission
@@ -590,7 +672,7 @@ const TabForm = (props: ITabprops) => {
             {state.name && (
               <>
                 {components[0] === "PermissionList" ? (
-                  propsPermissionForm.modePermission === "start" ? (
+                  propsPermissionForm?.modePermission === "start" ? (
                     <WrapperName>
                       <CompanyIcon />
                       Permissões - {state.name}

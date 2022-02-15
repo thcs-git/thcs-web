@@ -20,7 +20,7 @@ export const ButtonsContent = styled.div`
 export const WrapperTitle = styled.div`
   display: flex;
   justify-content: space-between;
-  align-itens: center;
+  /* align-items: center; */
 `;
 
 export const BoxCustom = styled(Box)`
@@ -43,7 +43,7 @@ export const FormGroupSection = styled(FormControl)`
 
 export const ButtonStyle = styled(Button)`
   background: var(--success);
-  width: 190px;
+  width: 200px;
   height: 36px;
   margin-left: 10px;
   color: var(--white);

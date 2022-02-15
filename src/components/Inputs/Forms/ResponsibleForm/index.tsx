@@ -1,13 +1,12 @@
-import React, {useState, ReactNode, useCallback} from 'react';
-import {Grid} from "@material-ui/core";
+import React, { useState, ReactNode, useCallback } from "react";
+import { Grid } from "@material-ui/core";
 
-import {FormGroupSection, InputFiled as TextField} from "./styles";
+import { FormGroupSection, InputFiled as TextField } from "./styles";
 import InputMask from "react-input-mask";
 import validator from "validator";
-import {validateCNPJ as validateCNPJHelper} from "../../../../helpers/validateCNPJ";
+import { validateCNPJ as validateCNPJHelper } from "../../../../helpers/validateCNPJ";
 import ToggleActive from "../../../Button/ToggleActive";
 import ViewCard from "../../../Card/ViewCard";
-
 
 interface IComponent {
   index: number;
@@ -31,45 +30,62 @@ function a11yProps(name: string, index: number) {
   };
 }
 
-
 const ResponsibleForm = (props: IComponent) => {
-  const {index, state, setState, setValidations, fieldsValidation, canEdit, user, params} = props;
+  const {
+    index,
+    state,
+    setState,
+    setValidations,
+    fieldsValidation,
+    canEdit,
+    user,
+    params,
+  } = props;
 
   const validatePhone = () => {
     if (state.phones[0]?.phone) {
-      const landline = state.phones[0]?.phone.replace('(', '').replace(')', '9').replace(' ', '').replace(' ', '').replace('-', '');
-      return validator.isMobilePhone(landline, 'pt-BR');
+      const landline = state.phones[0]?.phone
+        .replace("(", "")
+        .replace(")", "9")
+        .replace(" ", "")
+        .replace(" ", "")
+        .replace("-", "");
+      return validator.isMobilePhone(landline, "pt-BR");
     }
-  }
+  };
 
   const validateCellPhone = () => {
     if (state.cellphone) {
-      const cellphone = state.cellphone.replace('(', '').replace(')', '').replace(' ', '').replace(' ', '').replace('-', '');
-      return validator.isMobilePhone(cellphone, 'pt-BR');
+      const cellphone = state.cellphone
+        .replace("(", "")
+        .replace(")", "")
+        .replace(" ", "")
+        .replace(" ", "")
+        .replace("-", "");
+      return validator.isMobilePhone(cellphone, "pt-BR");
     }
-  }
+  };
 
-  const rows = []
+  const rows = [];
 
-  state.responsible_user && rows.push({name: "Nome do responsável", value: state.responsible_user})
-  state.email && rows.push({name: "E-mail", value: state.email})
-  state.phone && rows.push({name: "Telefone", value: state.phone})
-  state.cellphone && rows.push({name: "Celular", value: state.cellphone})
+  state.responsible_user &&
+    rows.push({ name: "Nome", value: state.responsible_user });
+  state.email && rows.push({ name: "E-mail", value: state.email });
+  state.phone && rows.push({ name: "Telefone", value: state.phone });
+  state.cellphone && rows.push({ name: "Celular", value: state.cellphone });
 
   const content = {
-    tittle: 'Dados da Responsável',
+    tittle: "Dados do Responsável",
     // icon: <InfoRoundedIcon style={{color: "#ffffff"}}/>,
     rows: rows,
-    details:"ResponsibleForm"
-  }
+    details: "ResponsibleForm",
+  };
 
   return (
     <FormGroupSection>
       <Grid container>
-        {params.mode === 'view' && !canEdit ? (
-          <ViewCard
-            content={content}
-          />
+        {params.mode === "view" && !canEdit ? (
+          <ViewCard content={content} />
         ) : (
           <>
             <Grid item md={8} xs={12}>
@@ -79,10 +95,13 @@ const ResponsibleForm = (props: IComponent) => {
                 size="small"
                 value={state.responsible_user}
                 onChange={(element) => {
-                  setState({...state, responsible_user: element.target.value})
+                  setState({
+                    ...state,
+                    responsible_user: element.target.value,
+                  });
                   setValidations((prevState: any) => ({
                     ...prevState,
-                    responsible_user: !validator.isEmpty(element.target.value)
+                    responsible_user: !validator.isEmpty(element.target.value),
                   }));
                 }}
                 disabled={!canEdit}
@@ -93,23 +112,29 @@ const ResponsibleForm = (props: IComponent) => {
             <Grid item md={4} xs={12}>
               <InputMask
                 mask="(99) 9999-9999"
-                value={state?.phone ? state?.phone : state?.phones.len > 0 ? state?.phones[0]?.phone : ''}
+                value={
+                  state?.phone
+                    ? state?.phone
+                    : state?.phones.len > 0
+                    ? state?.phones[0]?.phone
+                    : ""
+                }
                 disabled={!canEdit}
                 onChange={(element) => {
                   {
-                    setState((prevState: { phones: any[]; }) => ({
+                    setState((prevState: { phones: any[] }) => ({
                       ...prevState,
                       phone: element.target.value,
                       phones: [
                         {
                           ...prevState.phones[0],
-                          phone: element.target.value
-                        }
-                      ]
-                    }))
+                          phone: element.target.value,
+                        },
+                      ],
+                    }));
                     setValidations((prevState: any) => ({
                       ...prevState,
-                      phone: !validator.isEmpty(element.target.value)
+                      phone: !validator.isEmpty(element.target.value),
                     }));
                   }
                 }}
@@ -125,14 +150,14 @@ const ResponsibleForm = (props: IComponent) => {
                     variant="outlined"
                     size="small"
                     placeholder="(00) 0000-0000"
-                    error={!validatePhone() && state.phones[0].phone != ''}
+                    error={!validatePhone() && state.phones[0].phone != ""}
                     fullWidth
                     {...a11yProps("input-cellphone", index)}
                   />
                 )}
               </InputMask>
               {!validatePhone() && state.phones[0].phone && (
-                <p style={{color: '#f44336', margin: '-10px 5px 10px'}}>
+                <p style={{ color: "#f44336", margin: "-10px 5px 10px" }}>
                   Por favor insira um número válido
                 </p>
               )}
@@ -144,11 +169,17 @@ const ResponsibleForm = (props: IComponent) => {
                 size="small"
                 value={state.email}
                 onBlur={(element) => {
-                  setValidations((prevState: any) => ({...prevState, email: !validator.isEmpty(element.target.value)}));
+                  setValidations((prevState: any) => ({
+                    ...prevState,
+                    email: !validator.isEmpty(element.target.value),
+                  }));
                 }}
                 onChange={(element) => {
-                  setState({...state, email: element.target.value})
-                  setValidations((prevState: any) => ({...prevState, email: !validator.isEmail(element.target.value)}));
+                  setState({ ...state, email: element.target.value });
+                  setValidations((prevState: any) => ({
+                    ...prevState,
+                    email: !validator.isEmail(element.target.value),
+                  }));
                 }}
                 fullWidth
                 disabled={!canEdit}
@@ -159,23 +190,25 @@ const ResponsibleForm = (props: IComponent) => {
               <InputMask
                 mask="(99) 9 9999-9999"
                 disabled={!canEdit}
-                value={state.cellphone ? state.cellphone : state.phones[0]?.cellphone}
+                value={
+                  state.cellphone ? state.cellphone : state.phones[0]?.cellphone
+                }
                 onBlur={validateCellPhone}
                 onChange={(element) => {
                   {
-                    setState((prevState: { phones: any[]; }) => ({
+                    setState((prevState: { phones: any[] }) => ({
                       ...prevState,
                       cellphone: element.target.value,
                       phones: [
                         {
                           ...prevState.phones[0],
-                          cellphone: element.target.value
-                        }
-                      ]
-                    }))
+                          cellphone: element.target.value,
+                        },
+                      ],
+                    }));
                     setValidations((prevState: any) => ({
                       ...prevState,
-                      phone: !validator.isEmpty(element.target.value)
+                      phone: !validator.isEmpty(element.target.value),
                     }));
                     // setInputCellPhone({...inputCellPhone, value: element.target.value})
                   }
@@ -189,19 +222,21 @@ const ResponsibleForm = (props: IComponent) => {
                     variant="outlined"
                     size="small"
                     placeholder="(00) 0 0000-0000"
-                    error={!validateCellPhone() && state.phones[0]?.cellphone != ''}
+                    error={
+                      !validateCellPhone() && state.phones[0]?.cellphone != ""
+                    }
                     fullWidth
                     {...a11yProps("input-phone", index)}
                   />
                 )}
               </InputMask>
               {!validateCellPhone() && state.phones[0]?.cellphone && (
-                <p style={{color: '#f44336', margin: '4px 4px'}}>
+                <p style={{ color: "#f44336", margin: "4px 4px" }}>
                   Por favor insira um número válido
                 </p>
               )}
             </Grid>
-            {user == 'Tascom' && (
+            {user == "Tascom" && (
               <ToggleActive
                 index={index}
                 state={state}
@@ -214,6 +249,6 @@ const ResponsibleForm = (props: IComponent) => {
       </Grid>
     </FormGroupSection>
   );
-}
+};
 
 export default React.memo(ResponsibleForm);

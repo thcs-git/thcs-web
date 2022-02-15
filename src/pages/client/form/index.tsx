@@ -1,6 +1,10 @@
 import React, { useState, useEffect, useCallback } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import { useHistory, RouteComponentProps } from "react-router-dom";
+import debounce from "lodash.debounce";
+
 import InputMask, { Props } from "react-input-mask";
+// redux saga
 import { ApplicationState } from "../../../store";
 import {
   loadCustomerById,
@@ -18,16 +22,16 @@ import {
   CustomerState,
 } from "../../../store/ducks/customers/types";
 import { createUserRequest as createUserAction } from "../../../store/ducks/users/actions";
-import { UserInterface } from "../../../store/ducks/users/types";
+import { UserInterface, UserState } from "../../../store/ducks/users/types";
+
+// MUI e style
 import {
   SearchOutlined,
   Edit,
   CodeOutlined,
   TrackChangesTwoTone,
 } from "@material-ui/icons";
-import { useHistory, RouteComponentProps } from "react-router-dom";
 import {
-  Button,
   Dialog,
   DialogActions,
   DialogContent,
@@ -42,11 +46,12 @@ import {
   FormControlLabel,
   makeStyles,
 } from "@material-ui/core";
-import { SwitchComponent as Switch } from "../../../styles/components/Switch";
-import Sidebar from "../../../components/Sidebar";
-import { FormTitle } from "../../../styles/components/Form";
-import ButtonComponent from "../../../styles/components/Button";
-import { ButtonStyle } from "./styles";
+import Backdrop from "@mui/material/Backdrop";
+import Box from "@mui/material/Box";
+import Modal from "@mui/material/Modal";
+import Fade from "@mui/material/Fade";
+import Button from "@mui/material/Button";
+import Typography from "@mui/material/Typography";
 
 import {
   ButtonsContent,
@@ -59,23 +64,30 @@ import {
   FormGroupSection,
   BoxCustom,
   WrapperTitle,
+  ButtonStyle,
 } from "./styles";
+import { Theme } from "@material-ui/core/styles";
+
+// utils
 import mask from "../../../utils/mask";
-import Loading from "../../../components/Loading";
 import { validateCNPJ as validateCNPJHelper } from "../../../helpers/validateCNPJ";
 import _ from "lodash";
-import FeedbackComponent from "../../../components/Feedback";
 import validator from "validator";
-import { Autocomplete } from "@material-ui/lab";
 import { toast } from "react-toastify";
+
+import LOCALSTORAGE from "../../../helpers/constants/localStorage";
+//componentes
+import Loading from "../../../components/Loading";
+import { SwitchComponent as Switch } from "../../../styles/components/Switch";
+import Sidebar from "../../../components/Sidebar";
+import { FormTitle } from "../../../styles/components/Form";
+import ButtonComponent from "../../../styles/components/Button";
 import TabForm from "../../../components/Tabs";
 import TabTittle from "../../../components/Text/TabTittle";
 import ButtonEdit from "../../../components/Button/ButtonEdit";
 import ButtonTabs from "../../../components/Button/ButtonTabs";
-
-import LOCALSTORAGE from "../../../helpers/constants/localStorage";
 import PermissionForm from "../../../components/Inputs/Forms/PermisionForm";
-import { Theme } from "@material-ui/core/styles";
+import FeedbackComponent from "../../../components/Feedback";
 
 interface IFormFields extends CustomerInterface {
   form?: {
@@ -86,6 +98,40 @@ interface IFormFields extends CustomerInterface {
 interface IPageParams {
   id?: string;
   mode?: string;
+}
+interface IPropsPermissionFrom {
+  state: {
+    active: boolean;
+    name: string;
+    rights: never[];
+    mode: string;
+    _id: string;
+    customer_id: string;
+  };
+  setState: React.Dispatch<
+    React.SetStateAction<{
+      active: boolean;
+      name: string;
+      rights: never[];
+      mode: string;
+      _id: string;
+      customer_id: string;
+    }>
+  >;
+
+  customerState: CustomerState;
+  userState: UserState;
+  params: IPageParams;
+  canEditPermission: boolean;
+  buttonsPermission: {
+    name: string;
+    onClick: () => void;
+    variant: string;
+    background: string;
+    show: boolean;
+  }[];
+  modePermission: string;
+  setModePermission: React.Dispatch<React.SetStateAction<string>>;
 }
 
 export default function ClientForm(props: RouteComponentProps<IPageParams>) {
@@ -211,6 +257,10 @@ export default function ClientForm(props: RouteComponentProps<IPageParams>) {
   });
 
   const [modePermission, setModePermission] = useState("start");
+
+  const [open, setOpen] = React.useState(false);
+  const handleOpen = () => setOpen(true);
+  const handleClose = () => setOpen(false);
 
   useEffect(() => {
     setPermissionState((prevState) => {
@@ -357,9 +407,6 @@ export default function ClientForm(props: RouteComponentProps<IPageParams>) {
     }
   }, [dispatch, params]);
 
-  console.log(customerState.data._id, "customer id");
-  console.log(params.id, "params id");
-
   useEffect(() => {
     if (
       params.id &&
@@ -369,16 +416,6 @@ export default function ClientForm(props: RouteComponentProps<IPageParams>) {
       dispatch(loadCustomerById(params.id));
     }
   }, [customerState.permissionSuccess]);
-
-  const handleValidateFields = useCallback(() => {
-    let isValid: boolean = true;
-    for (let key of Object.keys(fieldsValidation)) {
-      if (fieldsValidation[key]) {
-        isValid = false;
-      }
-    }
-    return isValid;
-  }, [fieldsValidation, state]);
 
   useEffect(() => {
     const field = customerState.errorCep
@@ -400,6 +437,18 @@ export default function ClientForm(props: RouteComponentProps<IPageParams>) {
 
     document.getElementById("input-social-client")?.focus();
   }, [customerState.errorCep]);
+  // console.log(customerState.data._id, "customer id");
+  // console.log(params.id, "params id");
+
+  const handleValidateFields = useCallback(() => {
+    let isValid: boolean = true;
+    for (let key of Object.keys(fieldsValidation)) {
+      if (fieldsValidation[key]) {
+        isValid = false;
+      }
+    }
+    return isValid;
+  }, [fieldsValidation, state]);
 
   const handleSaveFormCustomer = useCallback(() => {
     // console.log(fieldsValidation);
@@ -522,10 +571,6 @@ export default function ClientForm(props: RouteComponentProps<IPageParams>) {
     }
   }
 
-  function handleCloseModalCancel() {
-    setOpenModalCancel(false);
-  }
-
   function handleCancelForm() {
     dispatch(cleanAction());
     setOpenModalCancel(false);
@@ -546,9 +591,21 @@ export default function ClientForm(props: RouteComponentProps<IPageParams>) {
 
   const handleSavePermission = useCallback(() => {
     if (permissionState.mode === "create") {
-      dispatch(createPermissionRequest(permissionState));
+      if (permissionState.name === "") {
+        toast.error("Seleciona a função antes de salvar.");
+        return;
+      } else {
+        dispatch(createPermissionRequest(permissionState));
+      }
     } else if (permissionState.mode === "edit") {
       dispatch(updatePermissionRequest(permissionState));
+    }
+
+    if (!customerState.error) {
+      setOpen(true);
+      setTimeout(() => {
+        setOpen(false);
+      }, 6000);
     }
     handlePermissionReturn();
   }, [permissionState]);
@@ -591,7 +648,7 @@ export default function ClientForm(props: RouteComponentProps<IPageParams>) {
 
   const buttonsPermission = [
     {
-      name: "Voltar",
+      name: modePermission === "view" ? "Voltar" : "Cancelar",
       onClick: handlePermissionReturn,
       variant: "outlined",
       background: "success_rounded",
@@ -605,6 +662,17 @@ export default function ClientForm(props: RouteComponentProps<IPageParams>) {
       show: false,
     },
   ];
+  const style = {
+    position: "absolute",
+    top: "50%",
+    left: "50%",
+    transform: "translate(-50%, -50%)",
+    width: 400,
+    bgcolor: "background.paper",
+    border: "2px solid #000",
+    boxShadow: 24,
+    p: 4,
+  };
 
   // const User = 'Tascom'
   const User = "Client";
@@ -616,8 +684,8 @@ export default function ClientForm(props: RouteComponentProps<IPageParams>) {
     { name: "Visualizar", align: "center" },
     { name: "Editar", align: "center" },
   ];
-  console.log(customerState.data._id, "CUSTOMERSTATE");
-  const propsPermissionForm = {
+
+  const propsPermissionForm: IPropsPermissionFrom = {
     state: permissionState,
     setState: setPermissionState,
     customerState: customerState,
@@ -628,11 +696,22 @@ export default function ClientForm(props: RouteComponentProps<IPageParams>) {
     modePermission: modePermission,
     setModePermission: setModePermission,
   };
+  function cleanSelectProfession() {
+    setPermissionState((prevState: any) => ({
+      active: false,
+      name: "",
+      rights: [],
+      mode: "",
+      _id: "",
+      customer_id: "",
+    }));
+  }
+
   return (
     <Sidebar>
       {customerState.loading && <Loading />}
       <Container>
-        {params.mode === "permissio" ? (
+        {params.mode === "permission//retirarTextoAposBarras" ? (
           <>
             <TabTittle
               tittle={"Permissões Do Cliente"}
@@ -668,7 +747,10 @@ export default function ClientForm(props: RouteComponentProps<IPageParams>) {
                   <ButtonStyle
                     variant="contained"
                     onClick={
-                      () => setModePermission("create")
+                      () => {
+                        setModePermission("create");
+                        cleanSelectProfession();
+                      }
                       // history.push(
                       //   `/client/${customerState.data._id}/permission/create/`
                       // )
@@ -705,9 +787,54 @@ export default function ClientForm(props: RouteComponentProps<IPageParams>) {
               params={params}
               propsPermissionForm={propsPermissionForm}
             />
-            <ButtonTabs canEdit={canEdit} buttons={buttons} />
+            {modePermission === "start" && (
+              <ButtonTabs canEdit={canEdit} buttons={buttons} />
+            )}
           </>
         )}
+
+        <Modal
+          aria-labelledby="transition-modal-title"
+          aria-describedby="transition-modal-description"
+          open={open}
+          onClose={handleClose}
+          closeAfterTransition
+          BackdropComponent={Backdrop}
+          BackdropProps={{
+            timeout: 500,
+          }}
+        >
+          <Fade in={open}>
+            <Box
+              sx={{
+                position: "absolute",
+                top: "50%",
+                left: "50%",
+                transform: "translate(-50%, -50%)",
+                width: 500,
+                bgcolor: "background.paper",
+                // border: "2px solid #000",
+                borderRadius: "12px",
+                boxShadow: 24,
+                p: 4,
+              }}
+            >
+              <FeedbackComponent
+                title="Função adicionada e/ou editada com sucesso!"
+                description="Os dados foram salvos no sistema."
+                type="success"
+              />
+            </Box>
+          </Fade>
+        </Modal>
+
+        {/* <Modal open={openModal}>
+          <FeedbackComponent
+            title="Função adicionada com sucesso!"
+            description="Os dados foram salvos no sistema. Em segundos o modal desaparecerá."
+            type="success"
+          />
+        </Modal> */}
       </Container>
     </Sidebar>
   );

@@ -4,16 +4,7 @@ import { TabBody, TabBodyItem } from "../../../Tabs/styles";
 import ButtonEdit from "../../../Button/ButtonEdit";
 import TabTittle from "../../../Text/TabTittle";
 import _ from "lodash";
-import {
-  Checkbox,
-  CheckboxProps,
-  FormControl,
-  FormControlLabel,
-  FormGroup,
-  FormLabel,
-  Grid,
-} from "@material-ui/core";
-import { FormLabelComponent } from "./styles";
+
 import { SwitchComponent as Switch } from "../../../Button/ToggleActive/styles";
 import { InputFiled as TextField } from "../IntegrationForm/styles";
 import {
@@ -21,15 +12,29 @@ import {
   loadCustomerById,
   loadPermissionRequest,
 } from "../../../../store/ducks/customers/actions";
-import Autocomplete from "@material-ui/lab/Autocomplete";
 import { loadProfessionsRequest as getProfessionsAction } from "../../../../store/ducks/users/actions";
 import { useDispatch, useSelector } from "react-redux";
 import { ApplicationState } from "../../../../store";
 import { ProfessionUserInterface } from "../../../../store/ducks/users/types";
 import TabForm from "../../../Tabs";
 import { RouteComponentProps } from "react-router-dom";
+//MUI
+import Autocomplete from "@material-ui/lab/Autocomplete";
+import {
+  CheckboxProps,
+  FormControl,
+  FormControlLabel,
+  FormGroup,
+  FormLabel,
+  Grid,
+} from "@material-ui/core";
 import Box from "@mui/material/Box";
-
+import Tooltip from "@mui/material/Tooltip";
+// icon
+import CheckCircleOutlineOutlinedIcon from "@mui/icons-material/CheckCircleOutlineOutlined";
+import { ReactComponent as InactiveIcon } from "../../../../assets/img/icon-inative.svg";
+// styles
+import { FormLabelComponent, CheckboxStyle as Checkbox } from "./styles";
 interface IComponent {
   state: any;
   setState: any;
@@ -128,32 +133,56 @@ const PermissionForm = (props: IComponent) => {
     {
       legend: "Cliente",
       name: "client",
-      rights: [{ crud: "view", label: "Visualizar" }],
+      rights: [
+        { crud: "view", label: "Visualizar" },
+        { crud: "edit", label: "Criar/Editar" },
+        { crud: "create", label: "Gerar" },
+      ],
     },
     {
       legend: "Permissões",
       name: "permissions",
-      rights: [{ crud: "edit", label: "Criar/Editar" }],
+      rights: [
+        { crud: "view", label: "Visualizar" },
+        { crud: "edit", label: "Criar/Editar" },
+        { crud: "create", label: "Gerar" },
+      ],
     },
     {
       legend: "Integração",
       name: "integration",
-      rights: [{ crud: "edit", label: "Criar/Editar" }],
+      rights: [
+        { crud: "view", label: "Visualizar" },
+        { crud: "edit", label: "Criar/Editar" },
+        { crud: "create", label: "Gerar" },
+      ],
     },
-    {
-      legend: "Empresas",
-      name: "company",
-      rights: [{ crud: "view", label: "Visualizar" }],
-    },
+    // {
+    //   legend: "Empresas",
+    //   name: "company",
+    //   rights: [
+    //     { crud: "view", label: "Visualizar" },
+    //     { crud: "edit", label: "Criar/Editar" },
+    //     { crud: "create", label: "Gerar" },
+    //   ],
+    // },
     {
       legend: "Todos Profissionais",
       name: "userclient",
-      rights: [{ crud: "view", label: "Visualizar" }],
+      rights: [
+        { crud: "view", label: "Visualizar" },
+        { crud: "edit", label: "Criar/Editar" },
+        { crud: "create", label: "Gerar" },
+      ],
     },
     {
       legend: "Meus Profissionais",
       name: "user",
-      rights: [{ crud: "view", label: "Visualizar" }],
+      rights: [
+        { crud: "view", label: "Visualizar" },
+        { crud: "edit", label: "Criar/Editar" },
+        { crud: "create", label: "Gerar" },
+      ],
     },
     // {
     //   legend: 'Banco de Talentos',
@@ -176,11 +205,21 @@ const PermissionForm = (props: IComponent) => {
     //   ]
     // },
     {
-      legend: "Pacientes",
-      name: "patient",
+      legend: "Todos Pacientes",
+      name: "allPatient",
       rights: [
-        { crud: "view.mine", label: "Visualizar Meus Pacientes" },
-        { crud: "view.all", label: "Visualizar Todos Pacientes" },
+        { crud: "view", label: "Visualizar" },
+        { crud: "edit", label: "Criar/Editar" },
+        { crud: "create", label: "Gerar" },
+      ],
+    },
+    {
+      legend: "Meus Pacientes",
+      name: "myPatient",
+      rights: [
+        { crud: "view", label: "Visualizar" },
+        { crud: "edit", label: "Criar/Editar" },
+        { crud: "create", label: "Gerar" },
       ],
     },
     // {
@@ -194,11 +233,21 @@ const PermissionForm = (props: IComponent) => {
     //   ]
     // },
     {
-      legend: "Atendimento",
-      name: "care",
+      legend: "Todos Atendimentos",
+      name: "allCare",
       rights: [
-        { crud: "view.mine", label: "Visualizar Meus Atendimento" },
-        { crud: "view.all", label: "Visualizar Todos Atendimento" },
+        { crud: "view", label: "Visualizar" },
+        { crud: "edit", label: "Criar/Editar" },
+        { crud: "create", label: "Gerar" },
+      ],
+    },
+    {
+      legend: "Meus Atendimento",
+      name: "myCare",
+      rights: [
+        { crud: "view", label: "Visualizar" },
+        { crud: "edit", label: "Criar/Editar" },
+        { crud: "create", label: "Gerar" },
       ],
     },
     {
@@ -206,6 +255,7 @@ const PermissionForm = (props: IComponent) => {
       name: "qrcode",
       rights: [
         { crud: "view", label: "Visualizar" },
+        { crud: "edit", label: "Criar/Editar" },
         { crud: "create", label: "Gerar" },
       ],
     },
@@ -214,7 +264,8 @@ const PermissionForm = (props: IComponent) => {
       name: "schedule",
       rights: [
         { crud: "view", label: "Visualizar" },
-        { crud: "edit", label: "Criar Evento" },
+        { crud: "edit", label: "Criar/Editar" },
+        { crud: "create", label: "Gerar" },
       ],
     },
   ];
@@ -252,7 +303,7 @@ const PermissionForm = (props: IComponent) => {
       });
       return selected[0] ? selected[0] : { _id: "0", name: "" };
     }
-  }, [state, state.name, userState.data.professions]);
+  }, [state, state.name, userState.data.professions, mode]);
 
   const handleProfessionList = useCallback(() => {
     const list = [...userState.data.professions];
@@ -272,7 +323,7 @@ const PermissionForm = (props: IComponent) => {
     }
 
     return userState.data.professions;
-  }, [userState.data.professions, customerState.data.usertypes, state]);
+  }, [userState.data.professions, customerState.data.usertypes, state, mode]);
 
   useEffect(() => {
     if (mode === "create") {
@@ -326,7 +377,7 @@ const PermissionForm = (props: IComponent) => {
         }));
       }
     }
-  }, [customerState]);
+  }, [customerState, mode]);
 
   const NavItems = [
     {
@@ -339,8 +390,121 @@ const PermissionForm = (props: IComponent) => {
     },
   ];
 
+  const CustomCheckbox = withStyles({
+    root: {
+      color: "var(--gray)",
+      "&$checked": {
+        color: "var(--action)",
+      },
+    },
+    checked: {},
+  })((props: CheckboxProps) => <Checkbox color="default" {...props} />);
+
+  const handleControlForm = (mode: string) => {
+    if (mode === "view") {
+      return (
+        <CustomCheckbox
+          style={{
+            width: "35px",
+            height: "35px",
+            backgroundColor: "none",
+            borderRadius: "0",
+          }}
+          checked={state.active}
+          icon={<InactiveIcon />}
+          checkedIcon={<CheckCircleOutlineOutlinedIcon />}
+        />
+      );
+    } else {
+      return (
+        <Switch
+          disabled={mode === "view"}
+          checked={state.active}
+          onChange={(event) => {
+            setState((prevState: any) => ({
+              ...prevState,
+              active: event.target.checked,
+            }));
+          }}
+        />
+      );
+    }
+  };
+
+  const handleLabelForm = (mode: string) => {
+    if (mode === "view" && state.active) {
+      return (
+        <Box style={{ fontWeight: "bold", color: "var(--success" }}>
+          Função ativa
+        </Box>
+      );
+    } else if (mode === "view" && !state.active) {
+      return (
+        <Box style={{ fontWeight: "bold", color: "var(--gray)" }}>
+          Função inativa
+        </Box>
+      );
+    } else {
+      return (
+        <Box
+          style={{
+            display: "flex",
+            flexDirection: "row",
+            justifyContent: "center",
+            alignItems: "center",
+          }}
+        >
+          <Tooltip title="Se ligado, função estará ativa no Portal e também no Aplicativo.">
+            <Box
+              style={{
+                display: "flex",
+                flexDirection: "row",
+                justifyContent: "center",
+                alignItems: "center",
+                width: "16px",
+                height: "16px",
+                backgroundColor: "var(--gray)",
+                borderRadius: "10px",
+                textAlign: "center",
+                marginRight: "5.3px",
+                color: "var(--white)",
+                fontWeight: "bold",
+              }}
+            >
+              ?
+            </Box>
+          </Tooltip>{" "}
+          <Box>Ativo?</Box>
+        </Box>
+      );
+    }
+  };
+  const handleLabelPlacement = (mode: string) => {
+    if (mode === "vieW") {
+      return "end";
+    } else {
+      return "start";
+    }
+  };
+
+  const autoCompleteProfession = {
+    handleProfessionList: handleProfessionList,
+    selectProfession: selectProfession,
+    handleSelectProfession: handleSelectProfession,
+    userState: userState,
+    // _id: userState.data.professions[0]._id,
+  };
+
   return (
-    <div className={classes.root}>
+    <div
+      className={classes.root}
+      style={{
+        display: "flex",
+        justifyContent: "center",
+        alignItems: "flex-start",
+        flexDirection: "column",
+      }}
+    >
       {/* <TabPanel value={0} index={0}>
         <Grid container style={{ justifyContent: "flex-start" }}>
           <Grid item> */}
@@ -359,7 +523,29 @@ const PermissionForm = (props: IComponent) => {
       {/*  }}*/}
       {/*  fullWidth*/}
       {/*/>*/}
-
+      {/* {modePermission === "create" && (
+        <Autocomplete
+          id="combo-box-profession"
+          disabled={mode === "view"}
+          options={handleProfessionList()}
+          getOptionLabel={(option) => option.name}
+          renderInput={(params) => (
+            <TextField {...params} label="Função" variant="outlined" />
+          )}
+          getOptionSelected={(option, value) =>
+            option._id == userState.data.professions[0]._id
+          }
+          // defaultValue={selectProfession()}
+          value={selectProfession()}
+          onChange={(event, value) => {
+            if (value) {
+              handleSelectProfession(value);
+            }
+          }}
+          size="small"
+          fullWidth
+        />
+      )} */}
       {/* <Autocomplete
               id="combo-box-profession"
               disabled={mode === "view"}
@@ -433,7 +619,15 @@ const PermissionForm = (props: IComponent) => {
       >
         {state.name}
       </Grid> */}
-      <Box style={{ display: "flex", flexDirection: "row", marginTop: "25px" }}>
+      <Box
+        style={{
+          display: "flex",
+          justifyContent: "center",
+          flexDirection: "row",
+          marginTop: "25px",
+          maxWidth: "550px",
+        }}
+      >
         <TabForm
           navItems={NavItems}
           state={state}
@@ -443,24 +637,14 @@ const PermissionForm = (props: IComponent) => {
           rowsPortal={rowsPortal}
           rowsApp={rowsApp}
           mode={mode}
+          autoCompleteSetting={autoCompleteProfession}
         />
       </Box>
       <Grid item md={3} xs={12}>
         <FormControlLabel
-          control={
-            <Switch
-              disabled={mode === "create" || mode === "view"}
-              checked={state.active}
-              onChange={(event) => {
-                setState((prevState: any) => ({
-                  ...prevState,
-                  active: event.target.checked,
-                }));
-              }}
-            />
-          }
-          label={state.active ? "Ativo" : "Inativo"}
-          labelPlacement="start"
+          control={handleControlForm(mode)}
+          label={handleLabelForm(mode)}
+          labelPlacement={handleLabelPlacement(mode)}
         />
       </Grid>
     </div>

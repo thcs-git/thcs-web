@@ -50,10 +50,6 @@ const PermissionList = (props: IComponent) => {
   const [idPermission, setIdPermission] = useState("");
 
   const headData: string[] = ["Função", "Status", "Adicionado em", "", ""];
-  console.log(
-    propsPermissionForm.customerState === customerState,
-    "verificação"
-  );
 
   useEffect(() => {
     if (modePermission === "view" || modePermission === "edit") {
@@ -91,6 +87,7 @@ const PermissionList = (props: IComponent) => {
                         style={{ color: "var(--black)" }}
                         onClick={() => {
                           setModePermission("view");
+                          setIdPermission(permissions);
 
                           // history.push(
                           //   `/client/${customerState.data._id}/permission/${permissions}/view/`
@@ -106,7 +103,7 @@ const PermissionList = (props: IComponent) => {
                       </ListItemStatus>
                     </TableCell>
                     <TableCell align="left" style={{ color: "var(--black)" }}>
-                      {formatDate(created_at, "DD/MM/YYYY")}
+                      {formatDate(created_at, "DD/MM/YYYY HH:mm")}
                     </TableCell>
                     <TableCell align="left">
                       <ButtonView
@@ -152,20 +149,7 @@ const PermissionList = (props: IComponent) => {
           />
           <ButtonTabs canEdit={false} buttons={buttonsPermission} />
         </>
-      ) : modePermission === "edit" ? (
-        <>
-          <PermissionForm
-            state={state}
-            setState={setState}
-            customerState={customerState}
-            userState={userState}
-            params={params}
-            modePermission={modePermission}
-            idPermission={idPermission}
-          />
-          <ButtonTabs canEdit={true} buttons={buttonsPermission} />
-        </>
-      ) : modePermission === "create" ? (
+      ) : modePermission === "edit" || modePermission === "create" ? (
         <>
           <PermissionForm
             state={state}

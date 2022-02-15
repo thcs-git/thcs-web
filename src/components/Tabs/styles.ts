@@ -4,6 +4,7 @@ import AppBar from "@material-ui/core/AppBar";
 import Tabs from "@material-ui/core/Tabs";
 import Tab from "@material-ui/core/Tab";
 import { FormControl } from "@material-ui/core";
+import Box from "@mui/material/Box";
 
 export const TabContent = styled(AppBar)`
   //margin-bottom: 10px;
@@ -14,7 +15,7 @@ export const TabContent = styled(AppBar)`
 `;
 
 export const TabNav = styled(Tabs)`
-  background: var(--gray-light);
+  background: #f2f2f2;
   box-shadow: 1px 1px 3px #00000029;
   /* width: 100%; */
 
@@ -23,8 +24,8 @@ export const TabNav = styled(Tabs)`
 `;
 
 export const TabNavItem = styled(Tab)`
-  font-weight: bold;
-  color: var(--gray-dark);
+  /* font-weight: bold; */
+  color: #cccccc;
   /* display: flex; */
 
   cursor: pointer;
@@ -148,7 +149,7 @@ export const TabNavItemPermission = styled(Tab)`
 
   cursor: pointer;
 
-  max-width: 100%;
+  /* max-width: 100%; */
   box-shadow: none;
 
   border-radius: 30px;
@@ -194,4 +195,21 @@ export const TabNavPermission = styled(Tabs)`
     min-height: 32px;
     min-width: 100px;
   }
+`;
+
+export const WrapperHeaderForm = styled(Box)`
+  font-size: 12px;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: flex-end;
+  color: var(--gray-dark);
+  border-radius: 8px 8px 0 0;
+  background-color: var(--gray-light);
+  gap: 17px;
+  padding: 15.3px;
+  width: min-content;
+  height: 35px;
+  margin-right: 1.7px;
+  margin-bottom: 4px;
 `;
