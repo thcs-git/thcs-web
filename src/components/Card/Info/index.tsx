@@ -41,16 +41,16 @@ interface IContent {
   rows: IRows[];
 }
 interface ICardInfo {
-  tittleCard: string;
+  tittle: { card: string; info?: string[] };
   content: IContent;
   gridProps?: IPropsGrid;
   alergicIs?: boolean;
 }
-export default function CardInfo(props: ICardInfo) {
-  const { content, gridProps, tittleCard, alergicIs } = props;
-  const [openDialog, setOpenDialog] = useState(false);
 
-  function personalData(content: IContent, alergic: boolean | undefined) {
+export default function CardInfo(props: ICardInfo) {
+  const { content, gridProps, tittle, alergicIs } = props;
+  const [openDialog, setOpenDialog] = useState(false);
+  function personalData(content: IContent) {
     let itens = content.rows.map(({ name, value }: IRows, index: number) => {
       switch (name) {
         case "CPF":
@@ -65,7 +65,6 @@ export default function CardInfo(props: ICardInfo) {
           return <Box key={index}>{`${name}: ${value ? "Sim" : "Não"}`}</Box>;
       }
     });
-    alergic && itens.push(<TextRed>Paciente Alérgico</TextRed>);
     return itens;
   }
   const boxData = (name: string, value: any) => {
@@ -75,7 +74,7 @@ export default function CardInfo(props: ICardInfo) {
       </Box>
     );
   };
-  function PlanData(content: IContent) {
+  function planData(content: IContent) {
     let itens = content.rows.map(({ name, value }: IRows, index: number) => {
       switch (name) {
         case "Número do Atendimento":
@@ -217,8 +216,8 @@ export default function CardInfo(props: ICardInfo) {
   };
 
   const switchData = (tittle: string) => {
-    if (tittle === "Dados Pessoais") return personalData(content, alergicIs);
-    if (tittle === "Plano e Internação") return PlanData(content);
+    if (tittle === "Dados Pessoais") return personalData(content);
+    if (tittle === "Plano e Internação") return planData(content);
     if (tittle === "Equipe Multidisciplinar")
       return teamData(handleTeamData(content));
   };
@@ -229,9 +228,9 @@ export default function CardInfo(props: ICardInfo) {
       <BoxContainer style={{ padding: "26.5px", flex: "1", margin: "8px" }}>
         <WrapperHeader>
           <WrapperTittle>
-            {iconHeader(tittleCard)}
-            <Box>{tittleCard}</Box>
-            {tittleCard === "Equipe Multidisciplinar" && (
+            {iconHeader(tittle.card)}
+            <Box>{tittle.card}</Box>
+            {tittle.card === "Equipe Multidisciplinar" && (
               <Box
                 style={{
                   cursor: "pointer",
@@ -278,11 +277,11 @@ export default function CardInfo(props: ICardInfo) {
           </Box>
         </WrapperHeader>
         <Box style={{ color: "var(--gray-dark)" }}>
-          {switchData(tittleCard)}
+          {switchData(tittle.card)}
         </Box>
       </BoxContainer>
       <DialogInfo
-        tittleCard={tittleCard}
+        tittle={tittle}
         content={content}
         openDialog={openDialog}
         setOpenDialog={setOpenDialog}

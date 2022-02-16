@@ -376,7 +376,18 @@ export default function PatientOverview(
     "Exames/Atestados",
     "Relatórios",
   ];
-
+  const personalCard = {
+    card: "Dados Pessoais",
+    info: ["Dados Pessoais"],
+  };
+  const planCard = {
+    card: "Plano e Internação",
+    info: ["Dados de atendimento", "Dados do Plano"],
+  };
+  const teamCard = {
+    card: "Equipe Multidisciplinar",
+    info: ["Equipe Multidisciplinar"],
+  };
   return (
     <Sidebar>
       {careState.loading && <Loading />}
@@ -406,20 +417,20 @@ export default function PatientOverview(
                 >
                   <CardInfo
                     content={content}
-                    tittleCard="Dados Pessoais"
+                    tittle={personalCard}
                     alergicIs={true}
                     gridProps={gridPropsPlan}
                   />
 
                   <CardInfo
                     content={content}
-                    tittleCard="Plano e Internação"
+                    tittle={planCard}
                     alergicIs={false}
                     gridProps={gridPropsPlan}
                   />
                   <CardInfo
                     content={content}
-                    tittleCard="Equipe Multidisciplinar"
+                    tittle={teamCard}
                     alergicIs={false}
                     gridProps={gridPropsPlan}
                   />

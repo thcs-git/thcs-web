@@ -27,7 +27,7 @@ export const WrapperHeader = styled(Box)`
 `;
 
 export const WrapperTittle = styled(Box)`
-  fontweight: bold;
+  font-weight: bold;
   color: var(--secondary);
   min-width: 300px;
   display: flex;

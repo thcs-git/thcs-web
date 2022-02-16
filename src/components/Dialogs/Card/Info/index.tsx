@@ -4,7 +4,8 @@ import React from "react";
 import Dialog from "@mui/material/Dialog";
 import DialogActions from "@mui/material/DialogActions";
 import Button from "@mui/material/Button";
-import Box from "@material-ui/core/Box";
+import Box from "@mui/material/Box";
+import Backdrop from "@mui/material/Backdrop";
 
 // IMG
 import { ReactComponent as IconPatient } from "../../../../assets/img/icon-pacient.svg";
@@ -12,11 +13,12 @@ import { ReactComponent as IconEdit } from "../../../../assets/img/icon editar.s
 import { ReactComponent as IconChart } from "../../../../assets/img/icon-prontuario.svg";
 import { ReactComponent as IconHospitalization } from "../../../../assets/img/icon-plano-internacoes.svg";
 import { ReactComponent as IconTeam } from "../../../../assets/img/icon-equipe-medica.svg";
+import HomeIcon from "@mui/icons-material/Home";
 
 //Styles
 import { WrapperDialog } from "./styles";
 interface IDialogProps {
-  tittleCard: string;
+  tittle: { card: string; info?: string[] };
   content: IContent;
   openDialog: boolean;
   setOpenDialog: any;
@@ -31,14 +33,14 @@ interface IRows {
 }
 
 export default function DialogInfo(props: IDialogProps) {
-  const { tittleCard, content, openDialog, setOpenDialog } = props;
+  const { tittle, content, openDialog, setOpenDialog } = props;
 
   const handleClose = () => {
     setOpenDialog(false);
   };
   const namePatient = (data: IContent) => {
     const name = data.rows.map(({ name, value }: IRows) => {
-      if (name === "Nome")
+      if (name === "Nome" && tittle.card !== "Plano e Internação")
         return (
           <Box
             style={{
@@ -50,6 +52,22 @@ export default function DialogInfo(props: IDialogProps) {
             {value}
           </Box>
         );
+      if (
+        name === "Número do Atendimento" &&
+        tittle.card === "Plano e Internação"
+      ) {
+        return (
+          <Box
+            style={{
+              fontSize: "20px",
+              color: "var(--primary)",
+              fontWeight: "bold",
+            }}
+          >
+            {`Atendimento ${value}`}
+          </Box>
+        );
+      }
     });
     return name;
   };
@@ -57,8 +75,11 @@ export default function DialogInfo(props: IDialogProps) {
     if (title === "Dados Pessoais")
       return <IconPatient style={{ width: "16px" }} />;
 
-    if (title === "Plano e Internação")
+    if (title === "Dados do Plano")
       return <IconHospitalization style={{ width: "16px" }} />;
+
+    if (title === "Dados de atendimento")
+      return <HomeIcon style={{ width: "16px", color: "var(--secondary)" }} />;
 
     if (title === "Equipe Multidisciplinar")
       return <IconTeam style={{ width: "16px" }} />;
@@ -117,21 +138,17 @@ export default function DialogInfo(props: IDialogProps) {
   const planData = (data: IContent) => {
     let itens = data.rows.map(({ name, value }: IRows, index: number) => {
       switch (name) {
-        case "Número do Atendimento":
-          return boxData(name, value);
-        case "Médico Assistente":
-          return boxData(name, value);
-        case "Tipo de internação":
-          return boxData(name, value);
         case "Convênio":
           return boxData(name, value.name);
         case "Plano":
           return boxData(name, value.name);
+        case "Subplano":
+          return boxData(name, value.name);
         case "Código do paciente":
           return boxData(name, value);
-        case "Unidade":
+        case "Número da carteira":
           return boxData(name, value);
-        case "Setor":
+        case "Data de validade":
           return boxData(name, value);
       }
     });
@@ -193,9 +210,36 @@ export default function DialogInfo(props: IDialogProps) {
     return itens;
   }
 
+  function careData(content: IContent) {
+    let itens = content.rows.map(({ name, value }: IRows, index: number) => {
+      switch (name) {
+        case "Data de Atendimento":
+          return boxData(name, value);
+        case "Tipo de internação":
+          return boxData(name, value);
+        case "CID":
+          return boxData(name, value.name);
+        case "Médico Assistente":
+          return boxData(name, value);
+        case "Especialidade do Atendimento":
+          return boxData(name, value.name);
+        case "Leito":
+          return boxData(name, value);
+        case "Unidade":
+          return boxData(name, value);
+        case "Setor":
+          return boxData(name, value);
+        case "Acomodação":
+          return boxData(name, value);
+      }
+    });
+    return itens;
+  }
+
   const dataList = (tittle: string) => {
     if (tittle === "Dados Pessoais") return personalData(content);
-    if (tittle === "Plano e Internação") return planData(content);
+    if (tittle === "Dados do Plano") return planData(content);
+    if (tittle === "Dados de atendimento") return careData(content);
     if (tittle === "Equipe Multidisciplinar")
       return teamData(handleTeamData(content));
   };
@@ -246,28 +290,35 @@ export default function DialogInfo(props: IDialogProps) {
               </Box>
             </button>
           </Box>
-          <Box
-            style={{
-              display: "flex",
-              alignItems: "center",
-              gap: "9px",
-              margin: "24px auto 8px",
-            }}
-          >
-            {iconHeader(tittleCard)}
-            {/* <IconPatient style={{ width: "16px" }} /> */}
-            <Box>{tittleCard} </Box>
-          </Box>
-          {dataList(tittleCard)}
+
+          {tittle.info?.map((tittleInfo: string) => {
+            console.log(tittleInfo);
+            return (
+              <>
+                <Box
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                    gap: "9px",
+                    margin: "24px auto 8px",
+                  }}
+                >
+                  {iconHeader(tittleInfo)}
+                  {/* <IconPatient style={{ width: "16px" }} /> */}
+                  <Box sx={{ fontWeight: "bold" }}>{tittleInfo} </Box>
+                </Box>
+                {dataList(tittleInfo)}
+              </>
+            );
+          })}
         </Box>
 
-        <DialogActions style={{ textAlign: "center" }}>
+        <DialogActions style={{ textAlign: "right" }}>
           <Button
             onClick={handleClose}
             style={{
               fontWeight: "bold",
               color: "var(--secondary)",
-              margin: "0 auto",
               padding: "8px 16px",
             }}
           >
