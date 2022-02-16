@@ -81,8 +81,6 @@ export default function CustomerList() {
   //     dispatch(searchRequest(event.target.value));
   //   },
   //   []
-  // );
-  console.log(search);
 
   const handleSearchInput = useCallback((event: any) => {
     dispatch(searchRequest(event));

@@ -211,8 +211,8 @@ export default function SignIn() {
 
       dispatch(
         loadRequest({ email: inputEmail.value, password: inputPassword.value })
-      )
-      },
+      );
+    },
     [inputPassword, inputEmail]
   );
 
@@ -267,7 +267,7 @@ export default function SignIn() {
 
       dispatch(emailRequest({ email: inputEmail.value }));
     },
-    [ inputEmail]
+    [inputEmail]
   );
 
   const handleKeyEnter = (e: any) => {
@@ -276,11 +276,10 @@ export default function SignIn() {
     }
   };
 
-  function handleVerifyEmailAndPassword(e:any){
-    for (let i = 0; i < 5; i++) { // fn temporária para correção de redirecionamento apos criação de password (se requisição asyn demorar, pode não funcionar)
-      handleVerifyEmail(e)
-      handlePassword(e)
-    }
+  function handleVerifyEmailAndPassword(e: any) {
+    handleVerifyEmail(e);
+    handlePassword(e);
+    handleLogin(e);
   }
   return (
     <>

@@ -266,7 +266,7 @@ export default function CouncilList() {
             <>
               <SearchComponent
                 handleButton={() => history.push("/care/create/")}
-                buttonTitle="Novo Atendimento"
+                buttonTitle=""
                 inputPlaceholder="Pesquise por nome, nº de atendimento, CPF, etc..."
                 switches={true}
                 setTabIndex={setTabIndex}
@@ -353,7 +353,6 @@ export default function CouncilList() {
               </Table>
             </>
           )}
-
           <PaginationComponent
             page={careState.list.page}
             rowsPerPage={careState.list.limit}
