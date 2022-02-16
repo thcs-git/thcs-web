@@ -200,7 +200,7 @@ export default function SignIn() {
         })
       );
     },
-    [inputPassword]
+    [inputPassword, inputEmail]
   );
 
   const handleLogin = useCallback(
@@ -208,7 +208,6 @@ export default function SignIn() {
       event.preventDefault();
 
       if (inputEmail.error || inputPassword.error) return;
-
       dispatch(
         loadRequest({ email: inputEmail.value, password: inputPassword.value })
       );
@@ -267,7 +266,7 @@ export default function SignIn() {
 
       dispatch(emailRequest({ email: inputEmail.value }));
     },
-    [inputEmail]
+    [inputPassword, inputEmail]
   );
 
   const handleKeyEnter = (e: any) => {
