@@ -26,7 +26,6 @@ import {any} from "cypress/types/bluebird";
 import {formatDate} from "../../helpers/date";
 import {PatientState} from "../../store/ducks/patients/types";
 import {CareState, CareInterface} from "../../store/ducks/cares/types";
-
 interface ICellProps {
   name: string;
   align: "right" | "left" | "center";
@@ -52,7 +51,7 @@ interface ITableProps {
   toggleHistoryModal?: (index: number, patient: any) => void;
   toggleHistoryModal_2?: (index: number, patient: any) => void;
   handleComplexity?: (complexity: any) => any;
-  attendanceHistory?: any;
+  historyModalOpen?: boolean;
 }
 
 const TableComponent = (props: ITableProps) => {
@@ -69,7 +68,7 @@ const TableComponent = (props: ITableProps) => {
     toggleHistoryModal,
     toggleHistoryModal_2,
     handleComplexity,
-    attendanceHistory,
+    historyModalOpen,
   } = props;
   const history = useHistory();
 
@@ -332,7 +331,6 @@ const TableComponent = (props: ITableProps) => {
             ))}
 
           {/* table de patient c/ integração */}
-          {/* {console.log(integration, patientState?.list.data)} */}
           {patientState &&
             !integration &&
             patientState.list.data.map((patient, index) => (
@@ -408,68 +406,39 @@ const TableComponent = (props: ITableProps) => {
               </TableRow>
             ))}
 
-          {/* table de care/list c/ integração */}
-          {/*{careState &&*/}
-          {/*integration &&*/}
-          {/*careState?.list?.data ? careState?.list?.data?.map((care: CareInterface, index: number) => (*/}
-          {/*  <TableRow key={`care_${index}`}>*/}
-          {/*    <TableCell>*/}
-          {/*      <Link to={`/care/${care._id}/overview`}>*/}
-          {/*        {handleEmpty(care._id)}*/}
-          {/*      </Link>*/}
-          {/*    </TableCell>*/}
-          {/*    <TableCell>*/}
-          {/*      <Link to={`/care/${care._id}/overview`}>*/}
-          {/*        {care.patient_id?.social_status*/}
-          {/*          ? handleEmpty(care.patient_id.social_name)*/}
-          {/*          : handleEmpty(care.patient_id.name)}*/}
-          {/*      </Link>*/}
-          {/*    </TableCell>*/}
-          {/*    <TableCell align="center">{handleEmpty(care?.tipo)}</TableCell>*/}
-          {/*    <TableCell align="center">*/}
-          {/*      {handleEmpty(care.patient_id?.fiscal_number)}*/}
-          {/*    </TableCell>*/}
-          {/*    <TableCell align="center">*/}
-          {/*      {care?.created_at*/}
-          {/*        ? formatDate(care?.created_at ?? "", "DD/MM/YYYY HH:mm:ss")*/}
-          {/*        : "-"}*/}
-          {/*    </TableCell>*/}
-          {/*  </TableRow>*/}
-          {/*)) : null}*/}
-
-          {/*Historico de Atendimento*/}
-          {attendanceHistory &&
-            attendanceHistory.data.map((care: any, index: number) => (
-              <TableRow key={`patient_${index}`}>
-                <TableCell>
-                  <p>{care?.created_at ? formatDate(care?.created_at ?? "", "DD/MM/YYYY") : "-"}</p>
-                </TableCell>
-                <TableCell align="center">
-                  <p>{care?._id}</p>
-                </TableCell>
-                <TableCell>
-                  <p>{care?.released_at ? formatDate(care?.released_at ?? "", "DD/MM/YYYY") : "-"}</p>
-                </TableCell>
-                {/*<TableCell align="center">*/}
-                {/*  <p>*/}
-                {/*    {typeof care?.care_type_id === "object"*/}
-                {/*      ? care?.care_type_id.name*/}
-                {/*      : care?.care_type_id}*/}
-                {/*  </p>*/}
-                {/*</TableCell>*/}
-                <TableCell>
-                  {care?.tipo}
-                </TableCell>
-                <TableCell align="center">
-                  <p>{care?.company_id}</p>
-                </TableCell>
-                <TableCell align="center">
-                  <Button onClick={() => history.push(`/care/${care?._id}/overview`)}>
-                    <VisibilityIcon style={{color: '#0899BA'}}/>
-                  </Button>
-                </TableCell>
-              </TableRow>
-            ))}
+          {/*/!*Historico de Atendimento*!/*/}
+          {historyModalOpen &&
+            careState?.history?.data.map((care: any, index: number) =>
+            <TableRow key={`patient_${index}`}>
+              <TableCell>
+                <p>{care?.created_at ? formatDate(care?.created_at ?? "", "DD/MM/YYYY") : "-"}</p>
+              </TableCell>
+              <TableCell align="center">
+                <p>{care?._id}</p>
+              </TableCell>
+              <TableCell>
+                <p>{care?.released_at ? formatDate(care?.released_at ?? "", "DD/MM/YYYY") : "-"}</p>
+              </TableCell>
+              {/*<TableCell align="center">*/}
+              {/*  <p>*/}
+              {/*    {typeof care?.care_type_id === "object"*/}
+              {/*      ? care?.care_type_id.name*/}
+              {/*      : care?.care_type_id}*/}
+              {/*  </p>*/}
+              {/*</TableCell>*/}
+              <TableCell>
+                {care?.tipo}
+              </TableCell>
+              <TableCell align="center">
+                <p>{care?.company_id}</p>
+              </TableCell>
+              <TableCell align="center">
+                <Button onClick={() => history.push(`/care/${care?._id}/overview`)}>
+                  <VisibilityIcon style={{color: '#0899BA'}}/>
+                </Button>
+              </TableCell>
+            </TableRow>
+          )}
 
           {careFilter &&
             !integration &&
