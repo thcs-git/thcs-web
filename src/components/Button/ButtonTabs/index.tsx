@@ -41,7 +41,6 @@ const ButtonTabs = (props: IComponent) => {
   const classes = useStyles();
 
   const { canEdit, buttons } = props;
-
   return (
     <ButtonsContent style={{ paddingRight: 15, marginTop: 25 }}>
       {buttons.map(({ name, variant, background, onClick, show }: IButtons) => (
