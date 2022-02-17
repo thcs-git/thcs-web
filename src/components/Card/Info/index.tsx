@@ -20,7 +20,7 @@ import DialogContent from "@mui/material/DialogContent";
 import DialogContentText from "@mui/material/DialogContentText";
 import DialogTitle from "@mui/material/DialogTitle";
 // IMG
-import { ReactComponent as IconChart } from "../../../assets/img/icon-prontuario.svg";
+import { ReactComponent as IconChart } from "../../../assets/img/icon-data.svg";
 import { ReactComponent as IconEye } from "../../../assets/img/Icon ionic-md-eye.svg";
 import { ReactComponent as IconHospitalization } from "../../../assets/img/icon-plano-internacoes.svg";
 import { ReactComponent as IconTeam } from "../../../assets/img/icon-equipe-medica.svg";

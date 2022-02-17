@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 // import Glider from "react-glider";
 //Img
-import { ReactComponent as ChartIcon } from "../../../assets/img/icon-prontuario.svg";
+import { ReactComponent as ChartIcon } from "../../../assets/img/icon-prontuario-1.svg";
 import { ReactComponent as PrescriptionIcon } from "../../../assets/img/icon-prescription.svg";
 import { ReactComponent as MeasurementIcon } from "../../../assets/img/icon-measurement.svg";
 import { ReactComponent as AlergicIcon } from "../../../assets/img/icon-alergic.svg";
