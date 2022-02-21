@@ -84,12 +84,12 @@ const background: any = {
 export const ButtonComponent = styled(Button)`
   ${(props: IButtonProps) => background[props.background || "var(--primary)"]}
   ${(props: IButtonProps) => (props.center ? "text-align: center;" : null)}
-  ${(props: IButtonProps) =>
+  /* ${(props: IButtonProps) =>
     props.variant === "outlined"
-      ? `background: transparent !important; color: var(--black); color: ${
-          `var(--${props.background});` || "var(--primary);"
+      ? `background: transparent !important; color: ${
+          `var(--${props.background});` || "var(--primary) ;"
         }`
-      : null}
+      : null} */
 
   min-width: 95px;
   max-height: 36px;

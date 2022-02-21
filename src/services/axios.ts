@@ -1,7 +1,7 @@
-import axios from 'axios';
+import axios from "axios";
 
-import LOCALSTORAGE from '../helpers/constants/localStorage';
-import SESSIONSTORAGE from '../helpers/constants/sessionStorage';
+import LOCALSTORAGE from "../helpers/constants/localStorage";
+import SESSIONSTORAGE from "../helpers/constants/sessionStorage";
 
 export const viacep = axios.create({
   baseURL: process.env.REACT_APP_VIACEP_API,
@@ -10,15 +10,15 @@ export const viacep = axios.create({
 export const apiSollar = axios.create({
   baseURL: process.env.REACT_APP_BASE_API,
 });
+export const apiSollarMobi = axios.create({
+  baseURL: process.env.REACT_APP_BASE_API_MOBI,
+});
 
 export function apiIntegra(url: string) {
-  return axios.create(
-    {
-      baseURL: url,
-    }
-  )
-};
-
+  return axios.create({
+    baseURL: url,
+  });
+}
 
 export const ibge = axios.create({
   baseURL: process.env.REACT_APP_IBGE_API,
@@ -32,16 +32,19 @@ apiSollar.interceptors.request.use(
   function (config) {
     // Do something before request is sent
     const token = localStorage.getItem(LOCALSTORAGE.TOKEN);
-    const username = localStorage.getItem(LOCALSTORAGE.USERNAME) || '';
-    const user_id = localStorage.getItem(LOCALSTORAGE.USER_ID) || '';
-    const company_id = localStorage.getItem(LOCALSTORAGE.COMPANY_SELECTED) || '';
-    const customer_id = localStorage.getItem(LOCALSTORAGE.CUSTOMER) || '';
-    const integration_url = sessionStorage.getItem(SESSIONSTORAGE.INTEGRATION) || '';
-    const external_company_id = localStorage.getItem(LOCALSTORAGE.INTEGRATION_COMPANY_SELECTED) || '';
+    const username = localStorage.getItem(LOCALSTORAGE.USERNAME) || "";
+    const user_id = localStorage.getItem(LOCALSTORAGE.USER_ID) || "";
+    const company_id =
+      localStorage.getItem(LOCALSTORAGE.COMPANY_SELECTED) || "";
+    const customer_id = localStorage.getItem(LOCALSTORAGE.CUSTOMER) || "";
+    const integration_url =
+      sessionStorage.getItem(SESSIONSTORAGE.INTEGRATION) || "";
+    const external_company_id =
+      localStorage.getItem(LOCALSTORAGE.INTEGRATION_COMPANY_SELECTED) || "";
 
     if (token) {
       config.headers.token = `${token}`;
-      config.headers.user = JSON.stringify({id: user_id, username});
+      config.headers.user = JSON.stringify({ id: user_id, username });
       config.headers.company_id = company_id;
       config.headers.customer_id = customer_id;
     }
@@ -60,27 +63,88 @@ apiSollar.interceptors.request.use(
 );
 
 apiSollar.interceptors.response.use(
-  response => {
+  (response) => {
     return response;
   },
-  error => {
+  (error) => {
     if (!error.response) return;
 
-    const {errors} = error.response.data;
-    if (errors?.name === 'TokenExpiredError') {
+    const { errors } = error.response.data;
+    if (errors?.name === "TokenExpiredError") {
       localStorage.removeItem(LOCALSTORAGE.TOKEN);
-      localStorage.setItem(LOCALSTORAGE.EXPIRED_SESSION, JSON.stringify(errors));
-      window.location.href = '/login';
+      localStorage.setItem(
+        LOCALSTORAGE.EXPIRED_SESSION,
+        JSON.stringify(errors)
+      );
+      window.location.href = "/login";
     }
     return Promise.reject(error);
   }
 );
 
+apiSollarMobi.interceptors.request.use(
+  function (config) {
+    // Do something before request is sent
+    const token = localStorage.getItem(LOCALSTORAGE.TOKEN);
+    const username = localStorage.getItem(LOCALSTORAGE.USERNAME) || "";
+    const user_id = localStorage.getItem(LOCALSTORAGE.USER_ID) || "";
+    const company_id =
+      localStorage.getItem(LOCALSTORAGE.COMPANY_SELECTED) || "";
+    const customer_id = localStorage.getItem(LOCALSTORAGE.CUSTOMER) || "";
+    const integration_url =
+      sessionStorage.getItem(SESSIONSTORAGE.INTEGRATION) || "";
+    const external_company_id =
+      localStorage.getItem(LOCALSTORAGE.INTEGRATION_COMPANY_SELECTED) || "";
 
-googleMaps.interceptors.request.use(function (config) {
-  config.params = {...config.params, key: process.env.REACT_APP_GOOGLE_API_KEY};
-  return config;
+    if (token) {
+      config.headers.token = `${token}`;
+      config.headers.user = JSON.stringify({ id: user_id, username });
+      config.headers.company_id = company_id;
+      config.headers.customer_id = customer_id;
+    }
 
-}, function (error) {
-  return Promise.reject(error);
-});
+    if (integration_url) {
+      config.headers.integration_url = integration_url;
+      config.headers.external_company_id = external_company_id;
+    }
+
+    return config;
+  },
+  function (error) {
+    // Do something with request error
+    return Promise.reject(error);
+  }
+);
+
+apiSollarMobi.interceptors.response.use(
+  (response) => {
+    return response;
+  },
+  (error) => {
+    if (!error.response) return;
+
+    const { errors } = error.response.data;
+    if (errors?.name === "TokenExpiredError") {
+      localStorage.removeItem(LOCALSTORAGE.TOKEN);
+      localStorage.setItem(
+        LOCALSTORAGE.EXPIRED_SESSION,
+        JSON.stringify(errors)
+      );
+      window.location.href = "/login";
+    }
+    return Promise.reject(error);
+  }
+);
+
+googleMaps.interceptors.request.use(
+  function (config) {
+    config.params = {
+      ...config.params,
+      key: process.env.REACT_APP_GOOGLE_API_KEY,
+    };
+    return config;
+  },
+  function (error) {
+    return Promise.reject(error);
+  }
+);

@@ -47,9 +47,10 @@ const ClientFormHeader = (props: IComponent) => {
   state.fiscal_number && rows.push({name: "CPF", value: state.fiscal_number})
 
   const content = {
-    tittle: state.social_name,
+    tittle: "Dados do Hospital",
     // icon: <InfoRoundedIcon style={{color: "#ffffff"}}/>,
-    rows: rows
+    rows: rows,
+    details: "ClientFormHeader"
   }
 
   return (
