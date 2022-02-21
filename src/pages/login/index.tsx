@@ -172,7 +172,6 @@ export default function SignIn() {
   const [valid, setValid] = useState(false);
   const [openPolicyModal, setOpenPolicyModal] = useState(false);
   const classes = useStyles();
-
   // useEffect(() => {
   //   const expired = localStorage.getItem(LOCALSTORAGE.EXPIRED_SESSION);
   //   const token = localStorage.getItem(LOCALSTORAGE.TOKEN);
@@ -275,6 +274,12 @@ export default function SignIn() {
       handleVerifyEmail(e);
     }
   };
+
+  function handleVerifyEmailAndPassword(e: any) {
+    handleVerifyEmail(e);
+    handlePassword(e);
+    handleLogin(e);
+  }
   return (
     <>
       {loginState.loading && <Loading />}
@@ -493,7 +498,7 @@ export default function SignIn() {
                       variant="contained"
                       color="primary"
                       className={classes.submit}
-                      onClick={handlePassword}
+                      onClick={handleVerifyEmailAndPassword}
                       disabled={valid}
                     >
                       Cadastrar

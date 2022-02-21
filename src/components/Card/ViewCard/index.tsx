@@ -374,7 +374,60 @@ export default function ViewCard(props: IProps) {
         </Grid>
       </Grid>
     </Grid>
-  ) : (
+  ) : content.details === "ClientFormHeader" ? (
+    <Grid item md={md_value}>
+      <Grid
+        container
+        style={{
+          flexDirection: "column",
+          paddingLeft: "10px",
+          paddingTop: "10px",
+        }}
+      >
+        <Grid item style={{ paddingBottom: "0" }}>
+          <WrapperTitleData>
+            <Company2Icon />
+            {content.tittle}
+          </WrapperTitleData>
+          <WrapperContentData>
+            {content.rows.map(({ name, value }: Irows, index: number) => (
+              <>
+              
+              <Grid item>{`${name ==="CPF" ? "CNPJ": name }: ${value}`}</Grid>
+              </>
+            ))}
+          </WrapperContentData>
+        </Grid>
+      </Grid>
+    </Grid>
+  ) : content.details === "ResponsibleForm" ? (
+    <Grid item md={md_value}>
+      <Grid
+        container
+        style={{
+          flexDirection: "column",
+          paddingLeft: "10px",
+          paddingTop: "10px",
+        }}
+      >
+        <Grid item style={{ paddingBottom: "0" }}>
+          <WrapperTitleData>
+          <ProfessionalIcon />
+
+            {content.tittle}
+          </WrapperTitleData>
+          <WrapperContentData>
+            {content.rows.map(({ name, value }: Irows, index: number) => (
+              <>
+              
+              <Grid item>{`${name ==="CPF" ? "CNPJ": name }: ${value}`}</Grid>
+              </>
+            ))}
+          </WrapperContentData>
+        </Grid>
+      </Grid>
+    </Grid>
+  ): (
     <Grid item md={md_value}>
       <Grid
         container

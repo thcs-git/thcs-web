@@ -1,17 +1,22 @@
-import {put, call} from "redux-saga/effects";
-import {toast} from "react-toastify";
+import { put, call } from "redux-saga/effects";
+import { toast } from "react-toastify";
 
-import {apiSollar} from "../../../services/axios";
+import { apiSollar } from "../../../services/axios";
 import history from "../../../routes/history";
-import {AxiosResponse} from "axios";
+import { AxiosResponse } from "axios";
 
 import LOCALSTORAGE from "../../../helpers/constants/localStorage";
 import SESSIONSTORAGE from "../../../helpers/constants/sessionStorage";
 
-import {loadSuccess, loadFailure, emailSuccess, emailFailure} from "./actions";
+import {
+  loadSuccess,
+  loadFailure,
+  emailSuccess,
+  emailFailure,
+} from "./actions";
 import _ from "lodash";
 
-export function* doLogin({payload}: any) {
+export function* doLogin({ payload }: any) {
   try {
     const response: AxiosResponse = yield call(
       apiSollar.post,
@@ -19,7 +24,7 @@ export function* doLogin({payload}: any) {
       payload?.credentials
     );
 
-    const {data} = response;
+    const { data } = response;
 
     // localStorage.removeItem(LOCALSTORAGE.TOKEN);
     // localStorage.removeItem(LOCALSTORAGE.USERNAME);
@@ -34,12 +39,11 @@ export function* doLogin({payload}: any) {
     localStorage.setItem(LOCALSTORAGE.USERNAME, data.name);
     localStorage.setItem(LOCALSTORAGE.USER_ID, data._id);
 
-    const lastLastLogin = (
-      _.find(data.companies_links, {
-        companie_id: {
-          _id: localStorage.getItem(LOCALSTORAGE.COMPANY_SELECTED)
-        }
-      }))
+    const lastLastLogin = _.find(data.companies_links, {
+      companie_id: {
+        _id: localStorage.getItem(LOCALSTORAGE.COMPANY_SELECTED),
+      },
+    });
 
     if (lastLastLogin) {
       localStorage.setItem(
@@ -62,16 +66,17 @@ export function* doLogin({payload}: any) {
         lastLastLogin?.companie_id?.name
       );
 
-      lastLastLogin?.companie_id?.customer_id?.integration && sessionStorage.setItem(
-        SESSIONSTORAGE.INTEGRATION,
-        lastLastLogin?.companie_id?.customer_id?.integration
-      );
+      lastLastLogin?.companie_id?.customer_id?.integration &&
+        sessionStorage.setItem(
+          SESSIONSTORAGE.INTEGRATION,
+          lastLastLogin?.companie_id?.customer_id?.integration
+        );
 
-      lastLastLogin?.companie_id?.customer_id?.integration_name && sessionStorage.setItem(
-        SESSIONSTORAGE.INTEGRATION_NAME,
-        lastLastLogin?.companie_id?.customer_id?.integration_name
-      );
-
+      lastLastLogin?.companie_id?.customer_id?.integration_name &&
+        sessionStorage.setItem(
+          SESSIONSTORAGE.INTEGRATION_NAME,
+          lastLastLogin?.companie_id?.customer_id?.integration_name
+        );
     } else {
       localStorage.setItem(
         LOCALSTORAGE.CUSTOMER,
@@ -93,17 +98,18 @@ export function* doLogin({payload}: any) {
         data.companies_links[0]?.companie_id?.name || "SEM"
       );
 
-      data.companies_links[0]?.companie_id?.customer_id?.integration && sessionStorage.setItem(
-        SESSIONSTORAGE.INTEGRATION,
-        data.companies_links[0]?.companie_id?.customer_id?.integration
-      );
+      data.companies_links[0]?.companie_id?.customer_id?.integration &&
+        sessionStorage.setItem(
+          SESSIONSTORAGE.INTEGRATION,
+          data.companies_links[0]?.companie_id?.customer_id?.integration
+        );
 
-      data.companies_links[0]?.companie_id?.customer_id?.integration_name && sessionStorage.setItem(
-        SESSIONSTORAGE.INTEGRATION_NAME,
-        data.companies_links[0]?.companie_id?.customer_id?.integration_name
-      );
+      data.companies_links[0]?.companie_id?.customer_id?.integration_name &&
+        sessionStorage.setItem(
+          SESSIONSTORAGE.INTEGRATION_NAME,
+          data.companies_links[0]?.companie_id?.customer_id?.integration_name
+        );
     }
-
 
     // yield put(loadSuccess(data));
 
@@ -122,7 +128,7 @@ export function* doLogin({payload}: any) {
   }
 }
 
-export function* checkEmail({payload}: any) {
+export function* checkEmail({ payload }: any) {
   try {
     const response: AxiosResponse = yield call(
       apiSollar.post,
@@ -130,8 +136,9 @@ export function* checkEmail({payload}: any) {
       payload.credentials
     );
 
-    const {data} = response;
-    data.token.auth && localStorage.setItem(LOCALSTORAGE.TOKEN, data.token.token);
+    const { data } = response;
+    data.token.auth &&
+      localStorage.setItem(LOCALSTORAGE.TOKEN, data.token.token);
     yield put(emailSuccess(data));
   } catch (err) {
     console.log("err", err);
