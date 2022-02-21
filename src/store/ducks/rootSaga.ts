@@ -25,7 +25,9 @@ import {
   createCompanyCustomer,
   updateCompanyCustomer,
   searchCustomer,
-  createPermission, loadPermission, updatePermissionCustomer,
+  createPermission,
+  loadPermission,
+  updatePermissionCustomer,
 } from "./customers/sagas";
 
 import { CompanyTypes } from "./companies/types";
@@ -35,7 +37,8 @@ import {
   store as createCompany,
   getById as getCompanyById,
   update as updateCompany,
-  searchCompany, getCompaniesById,
+  searchCompany,
+  getCompaniesById,
 } from "./companies/sagas";
 
 import { SpecialtyTypes } from "./specialties/types";
@@ -81,16 +84,11 @@ import {
   getPatientCapture,
 } from "./patients/sagas";
 
-import {LayoutTypes} from "./layout/types";
-import {
-  get as getLayout
-} from "./layout/sagas"
+import { LayoutTypes } from "./layout/types";
+import { get as getLayout } from "./layout/sagas";
 
-import {MessageTypes} from "./message/types";
-import {
-  get as getMessage,
-  getMessageById
-} from "./message/sagas"
+import { MessageTypes } from "./message/types";
+import { get as getMessage, getMessageById } from "./message/sagas";
 
 import { UserTypes } from "./users/types";
 
@@ -109,7 +107,9 @@ import {
   checkEmail,
   getUserByEmail,
   recoveryPassword,
-  recoverypasswordiftoken, getByClient, updateUserPassword,
+  recoverypasswordiftoken,
+  getByClient,
+  updateUserPassword,
 } from "./users/sagas";
 
 import { CareTypes } from "./cares/types";
@@ -142,11 +142,21 @@ import {
   getSchedule,
   storeSchedule,
   updateSchedule,
-  deleteSchedule, getHistory, getAllCid, getReleaseReason, getReleaseReferral, transferCare, deleteCare,
+  deleteSchedule,
+  getHistory,
+  getAllCid,
+  getReleaseReason,
+  getReleaseReferral,
+  transferCare,
+  deleteCare,
 } from "./cares/sagas";
 
 import { get as getProfession } from "./professions/sagas";
 import { ProfessionTypes } from "./professions/types";
+
+import { AllergiesTypes } from "./allergies/types";
+import { load as getAllergies } from "./allergies/sagas";
+
 export default function* rootSaga() {
   return yield all([
     takeLatest(LoginTypes.LOAD_REQUEST, doLogin),
@@ -255,7 +265,10 @@ export default function* rootSaga() {
     takeLatest(CustomerTypes.UPDATE_CUSTOMER_REQUEST, updateCompanyCustomer),
     takeLatest(CustomerTypes.SEARCH_REQUEST, searchCustomer),
     takeLatest(CustomerTypes.LOAD_REQUEST_PERMISSION, loadPermission),
-    takeLatest(CustomerTypes.UPDATE_PERMISSION_REQUEST, updatePermissionCustomer),
+    takeLatest(
+      CustomerTypes.UPDATE_PERMISSION_REQUEST,
+      updatePermissionCustomer
+    ),
     takeLatest(CustomerTypes.CREATE_PERMISSION_REQUEST, createPermission),
 
     // Documents
@@ -298,10 +311,7 @@ export default function* rootSaga() {
       UserTypes.LOAD_REQUEST_RECOVERY_PASSWORD_TOKEN,
       recoverypasswordiftoken
     ),
-    takeLatest(
-      UserTypes.LOAD_REQUEST_BY_CLIENT,
-      getByClient
-    ),
+    takeLatest(UserTypes.LOAD_REQUEST_BY_CLIENT, getByClient),
 
     /** Profession */
     takeLatest(ProfessionTypes.LOAD_REQUEST, getProfession),
@@ -322,5 +332,10 @@ export default function* rootSaga() {
     /** Message */
     takeLatest(MessageTypes.LOAD_REQUEST, getMessage),
     takeLatest(MessageTypes.LOAD_REQUEST_MESSAGE_BY_ID, getMessageById),
+
+    /**
+     * ALLERGIES
+     */
+    takeLatest(AllergiesTypes.LOAD_REQUEST, getAllergies),
   ]);
 }
