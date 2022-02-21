@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
+  <g id="icon-prontuario" transform="translate(-428 -1014)">
+    <!-- <text id="Relatórios_de_Prontuário" data-name="Relatórios de Prontuário" transform="translate(460 1031)" fill="#0899ba" font-size="14" font-family="OpenSans-Bold, Open Sans" font-weight="700" letter-spacing="0em"><tspan x="0" y="0">Relatórios de Prontuário</tspan></text> -->
+    <g id="Grupo_10848" data-name="Grupo 10848" transform="translate(-286 773.5)">
+      <g id="Grupo_958" data-name="Grupo 958" transform="translate(714 240.5)">
+        <g id="Grupo_957" data-name="Grupo 957" transform="translate(0 0)">
+          <circle id="Elipse_80" data-name="Elipse 80" cx="12" cy="12" r="12" fill="#0899ba"/>
+        </g>
+      </g>
+    </g>
+    <path id="icon-prontuario-2" data-name="icon-prontuario" d="M7.063,3.335V0h-4.9a.587.587,0,0,0-.589.589V6.278H.2a.2.2,0,0,0-.2.2v.392a.2.2,0,0,0,.2.2H3.651a.2.2,0,0,1,.177.108l.488.976L5.709,5.358a.2.2,0,0,1,.351,0l.851,1.7H8.632a.392.392,0,1,1,0,.785h-2.2L5.886,6.763,4.493,9.552a.2.2,0,0,1-.351,0l-.853-1.7H1.569v4.12a.587.587,0,0,0,.589.589H10.4a.587.587,0,0,0,.589-.589V3.924H7.651A.59.59,0,0,1,7.063,3.335Zm3.752-.76-2.4-2.4A.588.588,0,0,0,8,0h-.15V3.139h3.139v-.15A.587.587,0,0,0,10.815,2.575Z" transform="translate(434 1020)" fill="#fff"/>
+  </g>
+</svg>
