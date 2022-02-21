@@ -1,6 +1,6 @@
 import React, { useState, ReactNode } from "react";
 import { makeStyles, Theme } from "@material-ui/core/styles";
-import { Badge, Divider, Grid } from "@material-ui/core";
+import { Badge, Divider, Grid, withWidth } from "@material-ui/core";
 
 import {
   TabBody,
@@ -13,6 +13,9 @@ import {
   TabNavItemAlingRigth,
   TabNavItemAlingLeft,
   WrapperName,
+  TabNavItemPermission,
+  TabNavPermission,
+  WrapperHeaderForm,
 } from "./styles";
 import ClientFormHeader from "../Inputs/Forms/ClientName";
 import _ from "lodash";
@@ -38,6 +41,52 @@ import { ReactComponent as MaleIcon } from "../../assets/img/icon-male-1.svg";
 import { ReactComponent as FemaleIcon } from "../../assets/img/ionic-md-female.svg";
 import { ReactComponent as ProfileIcon } from "../../assets/img/icon-user-1.svg";
 
+import { ReactComponent as PortalActiveIcon } from "../../assets/img/icon-portal-active.svg";
+import { ReactComponent as PortalDesactiveIcon } from "../../assets/img/icon-portal-desactive.svg";
+
+import { ReactComponent as AppActiveIcon } from "../../assets/img/icon-app-active.svg";
+import { ReactComponent as AppDesactiveIcon } from "../../assets/img/icon-app-desactive.svg";
+
+import Box from "@mui/material/Box";
+import TextField from "@mui/material/TextField";
+import Autocomplete from "@mui/material/Autocomplete";
+import { CustomerState } from "../../store/ducks/customers/types";
+import { UserState } from "../../store/ducks/users/types";
+
+interface IPropsPermissionFrom {
+  state: {
+    active: boolean;
+    name: string;
+    rights: never[];
+    mode: string;
+    _id: string;
+    customer_id: string;
+  };
+  setState: React.Dispatch<
+    React.SetStateAction<{
+      active: boolean;
+      name: string;
+      rights: never[];
+      mode: string;
+      _id: string;
+      customer_id: string;
+    }>
+  >;
+  customerState: CustomerState;
+  userState: UserState;
+  params: IPageParams;
+  canEditPermission: boolean;
+  buttonsPermission: {
+    name: string;
+    onClick: () => void;
+    variant: string;
+    background: string;
+    show: boolean;
+  }[];
+  modePermission: string;
+  setModePermission: React.Dispatch<React.SetStateAction<string>>;
+}
+
 interface ITabprops {
   navItems: INavItems[];
   children?: ReactNode;
@@ -57,6 +106,9 @@ interface ITabprops {
   params: IPageParams;
   rowsPortal?: any;
   rowsApp?: any;
+  propsPermissionForm?: IPropsPermissionFrom;
+  autoCompleteSetting?: any;
+  modePermission?: string;
 }
 
 interface IPageParams {
@@ -142,6 +194,9 @@ const TabForm = (props: ITabprops) => {
     params,
     rowsPortal,
     rowsApp,
+    propsPermissionForm,
+    autoCompleteSetting,
+    modePermission,
   } = props;
   const classes = useStyles();
   const indicatorCompany = classes.indicator;
@@ -263,15 +318,30 @@ const TabForm = (props: ITabprops) => {
           <PermissionList
             customerState={customerState}
             mode={mode ? mode : ""}
+            propsPermissionForm={propsPermissionForm}
           />
         );
       case "CheckListFormPortal":
         return (
-          <CheckListForm state={state} setState={setState} rows={rowsPortal} />
+          <CheckListForm
+            state={state}
+            setState={setState}
+            rows={rowsPortal}
+            mode={mode}
+            checkList={"portal"}
+            autoCompleteSetting={autoCompleteSetting}
+          />
         );
       case "CheckListFormApp":
         return (
-          <CheckListForm state={state} setState={setState} rows={rowsApp} />
+          <CheckListForm
+            state={state}
+            setState={setState}
+            rows={rowsApp}
+            mode={mode}
+            checkList={"app"}
+            autoCompleteSetting={autoCompleteSetting}
+          />
         );
       case "ToggleActive":
         return (
@@ -388,30 +458,6 @@ const TabForm = (props: ITabprops) => {
               />
             )
           )}
-
-          {/* {navItems.map(({ name, badge }: INavItems, index: number) => (
-            <TabNavItem
-              value={index}
-              label={
-                badge ? (
-                  <Badge
-                    classes={{ badge: classes.customBadge }}
-                    className={classes.padding}
-                    color="primary"
-                    badgeContent={badge}
-                    max={99}
-                  >
-                    {name}
-                  </Badge>
-                ) : (
-                  name
-                )
-              }
-              wrapped
-              className={value === index ? "active" : ""}
-              {...a11yProps({ index })}
-            ></TabNavItem>
-          ))} */}
         </TabNav>
       </TabContent>
       {navItems.map(({ name, components, badge }: INavItems, index: number) => {
@@ -432,6 +478,156 @@ const TabForm = (props: ITabprops) => {
         );
       })}
     </div>
+  ) : navItems[0].components[0] === "CheckListFormPortal" ||
+    navItems[0].components[0] === "CheckListFormApp" ? (
+    <div className={classes.root}>
+      <Box
+        style={{
+          display: "flex",
+          flexDirection: "row",
+          alignItems: "center",
+          gap: "10px ",
+          marginLeft: "15px",
+          width: "600px",
+        }}
+      >
+        {mode === "create" ? (
+          <Autocomplete
+            sx={{
+              display: "inline-block",
+              "& input": {},
+            }}
+            // sx={{ "& input": { height: 32 } }}
+            id="combo-box-profession"
+            // disabled={mode === "view"}
+            options={autoCompleteSetting.handleProfessionList()}
+            getOptionLabel={(option) => option.name}
+            renderInput={(params) => (
+              <TextField
+                {...params}
+                label="Selecione a função"
+                variant="outlined"
+                style={{ fontSize: "12px", height: "32px" }}
+              />
+            )}
+            // getOptionSelected={(option, value) =>
+            //   option._id == userState.data.professions[0]._id
+            // }
+            // defaultValue={selectProfession()}
+            value={autoCompleteSetting.selectProfession()}
+            onChange={(event, value) => {
+              if (value) {
+                autoCompleteSetting.handleSelectProfession(value);
+              }
+            }}
+            size="small"
+            fullWidth
+          />
+        ) : (
+          <Grid
+            item
+            style={{
+              fontSize: "16px",
+              color: "var(--black)",
+              fontWeight: "bold",
+            }}
+          >
+            {state.name}
+          </Grid>
+        )}
+
+        <TabContent
+          position="static"
+          style={{
+            background: "none",
+            flexDirection: "row",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "flex-start",
+            width: "256px",
+          }}
+        >
+          <TabNavPermission
+            value={value}
+            onChange={handleChange}
+            variant="scrollable"
+            scrollButtons="auto"
+            aria-label="scrollable auto tabs example"
+            style={{
+              fontSize: "13px",
+              background: "none",
+              display: "flex",
+              alignItems: "center",
+            }}
+            TabIndicatorProps={{ style: { display: "none" } }}
+          >
+            {navItems.map(({ name, badge }: INavItems, index: number) => (
+              <TabNavItemPermission
+                value={index}
+                label={
+                  badge ? (
+                    <Badge
+                      classes={{ badge: classes.customBadge }}
+                      className={classes.padding}
+                      badgeContent={badge}
+                      max={99}
+                    >
+                      {name}
+                    </Badge>
+                  ) : (
+                    <Box
+                      style={{
+                        display: "flex",
+                        flexDirection: "row",
+                        alignItems: "Center",
+                        gap: "5px",
+                        minHeight: "32px",
+                      }}
+                    >
+                      {name.toLowerCase() === "no portal" &&
+                        (value === index ? (
+                          <PortalActiveIcon />
+                        ) : (
+                          <PortalDesactiveIcon />
+                        ))}
+                      {name.toLowerCase() === "no aplicativo" &&
+                        (value === index ? (
+                          <AppActiveIcon />
+                        ) : (
+                          <AppDesactiveIcon />
+                        ))}
+
+                      {name}
+                    </Box>
+                  )
+                }
+                wrapped
+                className={value === index ? "active" : "desactive"}
+                {...a11yProps({ index })}
+              ></TabNavItemPermission>
+            ))}
+          </TabNavPermission>
+        </TabContent>
+      </Box>
+
+      {navItems.map(({ name, components, badge }: INavItems, index: number) => {
+        const last = _.findLastIndex(components);
+        return (
+          <TabPanel value={value} index={index}>
+            {components.map((component: string, sub_index: number) => (
+              <>
+                {handleComponents(component, parseInt(`${index}${sub_index}`))}
+                {/* {sub_index != last && (
+                  <Grid item md={12} xs={12}>
+                    <Divider style={{ marginBottom: 28, marginTop: 20 }} />
+                  </Grid>
+                )} */}
+              </>
+            ))}
+          </TabPanel>
+        );
+      })}
+    </div>
   ) : (
     <div className={classes.root}>
       <TabContent position="static">
@@ -442,7 +638,7 @@ const TabForm = (props: ITabprops) => {
           scrollButtons="auto"
           aria-label="scrollable auto tabs example"
           TabIndicatorProps={{ className: classes.indicator }}
-          style={{ fontSize: "13px" }}
+          style={{ fontSize: "13px", fontWeight: "normal" }}
         >
           {navItems.map(({ name, badge }: INavItems, index: number) => (
             <TabNavItem
@@ -475,13 +671,37 @@ const TabForm = (props: ITabprops) => {
           <TabPanel value={value} index={index}>
             {state.name && (
               <>
-                <WrapperName>
-                  <ProfileIcon />
-                  {state.name}
-                  {state.gender?.toLowerCase() === "masculino" && <MaleIcon />}
-                  {state.gender?.toLowerCase() === "feminino" && <FemaleIcon />}
-                </WrapperName>
-                <Divider style={{ marginBottom: 0, marginTop: 16 }} />
+                {components[0] === "PermissionList" ? (
+                  propsPermissionForm?.modePermission === "start" ? (
+                    <WrapperName>
+                      <CompanyIcon />
+                      Permissões - {state.name}
+                    </WrapperName>
+                  ) : (
+                    ""
+                  )
+                ) : (
+                  <>
+                    <WrapperName>
+                      {name === "DADOS DO CLIENTE" || name === "INTEGRAÇÃO" ? (
+                        <CompanyIcon />
+                      ) : (
+                        <ProfileIcon />
+                      )}
+
+                      {state.name}
+                      {state.gender?.toLowerCase() === "masculino" && (
+                        <MaleIcon />
+                      )}
+                      {state.gender?.toLowerCase() === "feminino" && (
+                        <FemaleIcon />
+                      )}
+                    </WrapperName>
+                    <Divider
+                      style={{ marginBottom: 0, marginTop: 16, width: 458 }}
+                    />
+                  </>
+                )}
               </>
             )}
             {components.map((component: string, sub_index: number) => (

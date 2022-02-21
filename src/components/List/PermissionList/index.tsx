@@ -1,81 +1,172 @@
-import React from 'react';
-import {TableCell, TableRow} from "@material-ui/core";
-import {ItemTable, ListItemStatus} from "../../../pages/customer/list/styles";
-import {ListLink} from "./styles"
-import {formatDate} from "../../../helpers/date";
-import Table from "../../Table";
+import React, { useEffect, useState } from "react";
+
+//MUI
+import Table from "@mui/material/Table";
+import TableBody from "@mui/material/TableBody";
+import TableCell from "@mui/material/TableCell";
+import TableContainer from "@mui/material/TableContainer";
+import TableHead from "@mui/material/TableHead";
+import TableRow from "@mui/material/TableRow";
+
+import { ItemTable, ListItemStatus } from "../../../pages/customer/list/styles";
+import { ListLink } from "./styles";
+import { formatDate } from "../../../helpers/date";
+// import Table from "../../Table";
 import ButtonEdit from "../../Button/ButtonEdit";
 import ButtonView from "../../Button/ButtonView";
-import {useHistory} from "react-router-dom";
-import {ButtonStyle} from "./styles";
-import {ButtonsContent} from "../../Button/ButtonTabs/styles";
-import {useDispatch} from "react-redux";
-import {loadPermissionRequest} from "../../../store/ducks/customers/actions";
+import { useHistory } from "react-router-dom";
+import { ButtonStyle } from "./styles";
+import { ButtonsContent } from "../../Button/ButtonTabs/styles";
+import { useDispatch } from "react-redux";
+import {
+  loadPermissionRequest,
+  cleanAction,
+} from "../../../store/ducks/customers/actions";
+
+//Componentes
+import PermissionForm from "../../Inputs/Forms/PermisionForm";
+import ButtonTabs from "../../Button/ButtonTabs";
 
 interface IComponent {
   customerState: any;
   mode: string;
+  propsPermissionForm?: any;
 }
 
 const PermissionList = (props: IComponent) => {
-  const {customerState, mode} = props;
+  const { customerState, mode, propsPermissionForm } = props;
+  const {
+    state,
+    setState,
+    userState,
+    params,
+    canEditPermission,
+    buttonsPermission,
+    modePermission,
+    setModePermission,
+  } = propsPermissionForm;
   const dispatch = useDispatch();
   const history = useHistory();
+  const [idPermission, setIdPermission] = useState("");
+
+  const headData: string[] = ["Função", "Status", "Adicionado em", "", ""];
+
+  useEffect(() => {
+    if (modePermission === "view" || modePermission === "edit") {
+      dispatch(loadPermissionRequest(idPermission));
+    }
+  }, [modePermission]);
 
   return (
     <>
-      <ButtonsContent>
-        <ButtonStyle onClick={() => history.push(`/client/${customerState.data._id}/permission/create/`)}>Novo</ButtonStyle>
-      </ButtonsContent>
-      <Table
-        tableCells={
-          [
-            {name: "Nome da Permissão", align: "left"},
-            {name: "Estado", align: "left"},
-            {name: "Adicionado em", align: "center"},
-            {name: "Vizualizar", align: "center"},
-            {name: "Editar", align: "center"},
-          ]
-        }>
-        {customerState.data.usertypes?.map(({_id, active, created_at, name, permissions}: any, index: number) => (
-          <TableRow key={`${name}_${index}`}>
-            <TableCell align="left">
-              <ItemTable>
-                {/*<ListLink key={permissions} to={`/client/${customerState.data._id}/permission/${permissions}/view/`}>*/}
-                {/*  {name}*/}
-                {/*</ListLink>*/}
-                <ListLink onClick={() => {
-                  history.push(`/client/${customerState.data._id}/permission/${permissions}/view/`)
-                  // dispatch(loadPermissionRequest(permissions))
-                }}>
-                  {name}
-                </ListLink>
-              </ItemTable>
-            </TableCell>
-            <TableCell align="center"><ListItemStatus
-              active={active}>{active ? 'Ativo' : 'Inativo'}</ListItemStatus></TableCell>
-            <TableCell align="center">{formatDate(created_at, 'DD/MM/YYYY')}</TableCell>
-            <TableCell align="center">
-              <ButtonView canEdit={true}
-                          setCanEdit={() => {
-                            history.push(`/client/${customerState.data._id}/permission/${permissions}/view/`)
-                            // dispatch(loadPermissionRequest(permissions))
-                          }}>
-              </ButtonView>
-            </TableCell>
-            <TableCell align="center">
-              <ButtonEdit canEdit={true}
-                          setCanEdit={() => {
-                            history.push(`/client/${customerState.data._id}/permission/${permissions}/edit/`)
-                            // dispatch(loadPermissionRequest(permissions))
-                          }}>
-              </ButtonEdit>
-            </TableCell>
-          </TableRow>
-        ))}
-      </Table>
+      {modePermission === "start" ? (
+        <Table>
+          <TableHead>
+            <TableRow>
+              {headData.map((item: string) => {
+                return (
+                  <TableCell
+                    style={{ color: "var(--gray-dark)", fontSize: "12px" }}
+                  >
+                    {item}
+                  </TableCell>
+                );
+              })}
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            {customerState.data.usertypes?.map(
+              (
+                { _id, active, created_at, name, permissions }: any,
+                index: number
+              ) => {
+                return (
+                  <TableRow key={`${name}_${index}`}>
+                    <TableCell align="left">
+                      <ItemTable
+                        style={{ color: "var(--black)" }}
+                        onClick={() => {
+                          setModePermission("view");
+                          setIdPermission(permissions);
+
+                          // history.push(
+                          //   `/client/${customerState.data._id}/permission/${permissions}/view/`
+                          // );
+                        }}
+                      >
+                        {name}
+                      </ItemTable>
+                    </TableCell>
+                    <TableCell align="left">
+                      <ListItemStatus active={active}>
+                        {active ? "Ativo" : "Inativo"}
+                      </ListItemStatus>
+                    </TableCell>
+                    <TableCell align="left" style={{ color: "var(--black)" }}>
+                      {formatDate(created_at, "DD/MM/YYYY HH:mm")}
+                    </TableCell>
+                    <TableCell align="left">
+                      <ButtonView
+                        canEdit={true}
+                        setCanEdit={() => {
+                          setModePermission("view");
+                          setIdPermission(permissions);
+                          // history.push(
+                          //   `/client/${customerState.data._id}/permission/${permissions}/view/`
+                          // );
+                        }}
+                      ></ButtonView>
+                    </TableCell>
+                    <TableCell align="left">
+                      <ButtonEdit
+                        canEdit={true}
+                        setCanEdit={() => {
+                          setModePermission("edit");
+                          setIdPermission(permissions);
+
+                          // history.push(
+                          //   `/client/${customerState.data._id}/permission/${permissions}/edit/`
+                          // );
+                        }}
+                      ></ButtonEdit>
+                    </TableCell>
+                  </TableRow>
+                );
+              }
+            )}
+          </TableBody>
+        </Table>
+      ) : modePermission === "view" ? (
+        <>
+          <PermissionForm
+            state={state}
+            setState={setState}
+            customerState={customerState}
+            userState={userState}
+            params={params}
+            modePermission={modePermission}
+            idPermission={idPermission}
+          />
+          <ButtonTabs canEdit={false} buttons={buttonsPermission} />
+        </>
+      ) : modePermission === "edit" || modePermission === "create" ? (
+        <>
+          <PermissionForm
+            state={state}
+            setState={setState}
+            customerState={customerState}
+            userState={userState}
+            params={params}
+            modePermission={modePermission}
+            idPermission={idPermission}
+          />
+          <ButtonTabs canEdit={true} buttons={buttonsPermission} />
+        </>
+      ) : (
+        ""
+      )}
     </>
   );
-}
+};
 
 export default React.memo(PermissionList);
