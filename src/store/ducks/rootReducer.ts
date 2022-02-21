@@ -15,8 +15,9 @@ import specialties from "./specialties";
 import patients from "./patients";
 import users from "./users";
 import profession from "./professions";
-import layout from "./layout"
-import message from "./message"
+import layout from "./layout";
+import message from "./message";
+import allergies from "./allergies";
 
 export default combineReducers<IInitialState>({
   areas,
@@ -33,4 +34,5 @@ export default combineReducers<IInitialState>({
   profession,
   layout,
   message,
+  allergies,
 });

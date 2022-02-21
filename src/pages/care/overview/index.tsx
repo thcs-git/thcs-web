@@ -8,6 +8,7 @@ import Sidebar from "../../../components/Sidebar";
 import Header from "../../../components/Header/Overview";
 import ScrollCard from "../../../components/Card/ScrollCard";
 import CardInfo from "../../../components/Card/Info";
+import ButtonTabs from "../../../components/Button/ButtonTabs";
 
 import {
   deleteCareRequest,
@@ -16,6 +17,7 @@ import {
   loadScheduleRequest,
 } from "../../../store/ducks/cares/actions";
 import { loadPatientById } from "../../../store/ducks/patients/actions";
+import { loadRequest as loadRequestAllergies } from "../../../store/ducks/allergies/actions";
 
 import { ContainerStyle as Container } from "./styles";
 import {
@@ -28,6 +30,10 @@ import { RouteComponentProps } from "react-router-dom";
 import { age, formatDate } from "../../../helpers/date";
 import Loading from "../../../components/Loading";
 import SESSIONSTORAGE from "../../../helpers/constants/sessionStorage";
+import {
+  AllergiesInterface,
+  AllergiesState,
+} from "../../../store/ducks/allergies/types";
 
 interface IPageParams {
   id?: string;
@@ -97,6 +103,10 @@ export default function PatientOverview(
   const classes = useStyles();
   const careState = useSelector((state: ApplicationState) => state.cares);
   const patientState = useSelector((state: ApplicationState) => state.patients);
+  const allergiesState = useSelector(
+    (state: ApplicationState) => state.allergies
+  );
+
   const [medicalReleaseModal, setMedicalReleaseModal] = useState(false);
   const [revertMedicalReleaseModal, setRevertMedicalReleaseModal] =
     useState(false);
@@ -122,6 +132,12 @@ export default function PatientOverview(
   useEffect(() => {
     handleTeam();
   }, [careState.schedule]);
+
+  useEffect(() => {
+    dispatch(
+      loadRequestAllergies(patientState.data._id ? patientState.data._id : "")
+    );
+  }, [patientState.data._id]);
 
   const handleTeam = useCallback(() => {
     const teamUsers: any = [];
@@ -388,6 +404,30 @@ export default function PatientOverview(
     card: "Equipe Multidisciplinar",
     info: ["Equipe Multidisciplinar"],
   };
+
+  function isAllergic(allergie: AllergiesState) {
+    let allergic = false;
+
+    allergie.data.map((data: AllergiesInterface) => {
+      if (data?.description) {
+        allergic = true;
+      }
+    });
+
+    return allergic;
+  }
+
+  const buttons = [
+    {
+      name: "Voltar",
+      onClick: () => {
+        history.push("/care");
+      },
+      variant: "contained",
+      background: "secondary",
+      show: true,
+    },
+  ];
   return (
     <Sidebar>
       {careState.loading && <Loading />}
@@ -397,7 +437,7 @@ export default function PatientOverview(
           {/*{integration ? (*/}
           {true ? (
             <>
-              <Header content={content} />
+              <Header content={content} allergic={isAllergic(allergiesState)} />
               <ScrollCard
                 tittle="Relatório de Prontuário"
                 iconName="ChartIcon"
@@ -441,6 +481,7 @@ export default function PatientOverview(
             <></>
           )}
         </Container>
+        <ButtonTabs buttons={buttons} canEdit={false} />
       </Container>
     </Sidebar>
   );

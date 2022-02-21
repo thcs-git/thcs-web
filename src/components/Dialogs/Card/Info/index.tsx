@@ -292,7 +292,7 @@ export default function DialogInfo(props: IDialogProps) {
           </Box>
 
           {tittle.info?.map((tittleInfo: string) => {
-            console.log(tittleInfo);
+            // console.log(tittleInfo);
             return (
               <>
                 <Box

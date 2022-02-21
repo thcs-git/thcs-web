@@ -30,10 +30,11 @@ interface IContent {
 
 interface IProps {
   content: IContent;
+  allergic?: boolean;
 }
 
 export default function HeaderOverview(props: IProps) {
-  const { content } = props;
+  const { content, allergic } = props;
 
   return (
     <Container>
@@ -59,10 +60,14 @@ export default function HeaderOverview(props: IProps) {
                   name === "Nome" && value
               )}
 
-              <TagAllergic style={{ marginLeft: "4px", fontWeight: "normal" }}>
-                <AllergicIcon />
-                Alérgico(a)
-              </TagAllergic>
+              {allergic && (
+                <TagAllergic
+                  style={{ marginLeft: "4px", fontWeight: "normal" }}
+                >
+                  <AllergicIcon />
+                  Alérgico(a)
+                </TagAllergic>
+              )}
             </Box>
 
             <Box>
