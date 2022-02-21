@@ -138,7 +138,6 @@ export default function CouncilList() {
     }
   };
 
-
   const handleKeyEnter = (e: any) => {
     if (e.key === "Enter") {
       e.preventDefault();
