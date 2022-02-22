@@ -43,7 +43,7 @@ interface IRows {
 
 export default function DialogInfo(props: IDialogProps) {
   const { tittle, content, openDialog, setOpenDialog, integration } = props;
-  const [qrCode, setQrcode] = useState("");
+  const [qrCode, setQrcode] = useState("22/02/2022, 12:50:56");
 
   // const [qrCodeDate, setQrCodeDate] = useState(
   //   formatDate(QR)
