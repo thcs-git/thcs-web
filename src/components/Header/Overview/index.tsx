@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 
 //types
 import { CareState } from "../../../store/ducks/cares/types";
@@ -18,11 +18,13 @@ import {
   CardText,
   BoxIcon,
 } from "./styles";
+import DialogInfo from "../../Dialogs/Card/Info";
 
 interface IRows {
   name: string;
   value: any;
 }
+
 interface IContent {
   tittle: string;
   rows: IRows[];
@@ -31,10 +33,16 @@ interface IContent {
 interface IProps {
   content: IContent;
   allergic?: boolean;
+  integration?: any;
 }
 
 export default function HeaderOverview(props: IProps) {
-  const { content, allergic } = props;
+  const { content, allergic, integration } = props;
+  const [openDialog, setOpenDialog] = useState(false);
+
+  const handleClickOpen = () => {
+    setOpenDialog(true);
+  };
 
   return (
     <Container>
@@ -69,12 +77,11 @@ export default function HeaderOverview(props: IProps) {
                 </TagAllergic>
               )}
             </Box>
-
             <Box>
               <Box>
                 {content.rows.map(
                   ({ name, value }: IRows, index: number) =>
-                    name === "CID" && `DIagnóstico: CID ${value.name}`
+                    name === "CID" && `CID ${integration ? value : value.name}`
                 )}
               </Box>
             </Box>
@@ -83,7 +90,7 @@ export default function HeaderOverview(props: IProps) {
       </Box>
 
       <Box style={{ display: "flex", gap: "8px" }}>
-        <BoxIcon>
+        <BoxIcon onClick={handleClickOpen}>
           <QRCodeIcon style={{ height: "32px", width: "32px" }} />
           <Box>QR Code</Box>
         </BoxIcon>
@@ -94,6 +101,12 @@ export default function HeaderOverview(props: IProps) {
           <Box>Check-in/out</Box>
         </BoxIcon> */}
       </Box>
+      <DialogInfo
+        tittle={{ card: "Qr Code", info: ["Qr code"] }}
+        content={content}
+        openDialog={openDialog}
+        setOpenDialog={setOpenDialog}
+      />
     </Container>
   );
 }

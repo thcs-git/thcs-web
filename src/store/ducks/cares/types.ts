@@ -150,7 +150,8 @@ export interface CareInterface {
   accommodation_type_id?: string;
   care_type_id?: any;
   procedure_id?: string;
-  cid_id?: string | CidPopulateInterface;
+  // cid_id?: string | CidPopulateInterface;
+  cid_id?: any;
   area_id?: any;
   user_id?: string; // *
   status?: string; // * Pre-Atendimento, Em atendimento, Cancelado, Finalizado

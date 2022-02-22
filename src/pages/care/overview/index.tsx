@@ -318,16 +318,33 @@ export default function PatientOverview(
       value: careState?.data?.capture?.assistant_doctor,
     });
   careState?.data?.cid_id &&
-    rows.push({ name: "CID", value: careState?.data?.cid_id });
+    rows.push({
+      name: "CID",
+      value: integration
+        ? careState?.data?.cid_id
+        : careState?.data?.cid_id.name,
+    });
   careState?.data?.health_insurance_id &&
     rows.push({
       name: "Convênio",
-      value: careState?.data?.health_insurance_id,
+      value: integration
+        ? { name: careState?.data?.health_insurance_id }
+        : careState?.data?.health_insurance_id,
     });
   careState?.data?.health_plan_id &&
-    rows.push({ name: "Plano", value: careState?.data?.health_plan_id });
+    rows.push({
+      name: "Plano",
+      value: integration
+        ? { name: careState?.data?.health_plan_id }
+        : careState?.data?.health_plan_id,
+    });
   careState?.data?.health_sub_plan_id &&
-    rows.push({ name: "Subplano", value: careState?.data?.health_sub_plan_id });
+    rows.push({
+      name: "Subplano",
+      value: integration
+        ? { name: careState?.data?.health_sub_plan_id }
+        : careState?.data?.health_sub_plan_id,
+    });
 
   careState?.data?.capture?.unity &&
     rows.push({ name: "Unidade", value: careState?.data?.capture?.unity });
@@ -360,7 +377,9 @@ export default function PatientOverview(
   careState?.data?.speciality &&
     rows.push({
       name: "Especialidade do Atendimento",
-      value: careState?.data?.speciality,
+      value: integration
+        ? { name: careState?.data?.speciality }
+        : careState?.data?.speciality,
     });
   careState?.data?.dt_alta &&
     rows.push({
@@ -407,12 +426,11 @@ export default function PatientOverview(
 
   function isAllergic(allergie: AllergiesState) {
     let allergic = false;
-
-    allergie.data.map((data: AllergiesInterface) => {
-      if (data?.description) {
-        allergic = true;
-      }
-    });
+    // allergie.data.map((data: AllergiesInterface) => {
+    //   if (data?.description) {
+    //     allergic = true;
+    //   }
+    // });
 
     return allergic;
   }
@@ -437,7 +455,11 @@ export default function PatientOverview(
           {/*{integration ? (*/}
           {true ? (
             <>
-              <Header content={content} allergic={isAllergic(allergiesState)} />
+              <Header
+                content={content}
+                allergic={isAllergic(allergiesState)}
+                integration={integration}
+              />
               <ScrollCard
                 tittle="Relatório de Prontuário"
                 iconName="ChartIcon"
@@ -460,6 +482,7 @@ export default function PatientOverview(
                     tittle={personalCard}
                     alergicIs={true}
                     gridProps={gridPropsPlan}
+                    integration={integration}
                   />
 
                   <CardInfo
@@ -467,12 +490,14 @@ export default function PatientOverview(
                     tittle={planCard}
                     alergicIs={false}
                     gridProps={gridPropsPlan}
+                    integration={integration}
                   />
                   <CardInfo
                     content={content}
                     tittle={teamCard}
                     alergicIs={false}
                     gridProps={gridPropsPlan}
+                    integration={integration}
                   />
                 </Container>
               </Container>

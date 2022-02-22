@@ -45,10 +45,11 @@ interface ICardInfo {
   content: IContent;
   gridProps?: IPropsGrid;
   alergicIs?: boolean;
+  integration?: any;
 }
 
 export default function CardInfo(props: ICardInfo) {
-  const { content, gridProps, tittle, alergicIs } = props;
+  const { content, gridProps, tittle, alergicIs, integration } = props;
   const [openDialog, setOpenDialog] = useState(false);
   function personalData(content: IContent) {
     let itens = content.rows.map(({ name, value }: IRows, index: number) => {

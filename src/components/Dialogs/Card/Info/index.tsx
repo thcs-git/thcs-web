@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 
 //MUI
 import Dialog from "@mui/material/Dialog";
@@ -17,11 +17,14 @@ import HomeIcon from "@mui/icons-material/Home";
 
 //Styles
 import { WrapperDialog } from "./styles";
+import QRCode from "react-qr-code";
+import _ from "lodash";
 interface IDialogProps {
   tittle: { card: string; info?: string[] };
   content: IContent;
   openDialog: boolean;
   setOpenDialog: any;
+  integration?: any;
 }
 interface IContent {
   tittle: string;
@@ -33,8 +36,16 @@ interface IRows {
 }
 
 export default function DialogInfo(props: IDialogProps) {
-  const { tittle, content, openDialog, setOpenDialog } = props;
+  const { tittle, content, openDialog, setOpenDialog, integration } = props;
+  const [qrCode, setQrcode] = useState("");
 
+  function editName() {
+    console.log(tittle);
+    return _.find(content.rows, { name: "Número do Atendimento" })?.name ===
+      "Número do Atendimento"
+      ? "Gerar"
+      : "Edit";
+  }
   const handleClose = () => {
     setOpenDialog(false);
   };
@@ -218,7 +229,7 @@ export default function DialogInfo(props: IDialogProps) {
         case "Tipo de internação":
           return boxData(name, value);
         case "CID":
-          return boxData(name, value.name);
+          return boxData(name, integration ? value : value);
         case "Médico Assistente":
           return boxData(name, value);
         case "Especialidade do Atendimento":
@@ -236,10 +247,24 @@ export default function DialogInfo(props: IDialogProps) {
     return itens;
   }
 
+  function qrcodeData(content: IContent) {
+    // let itens = content.rows.map(({ name, value }: IRows, index: number) => {
+    //   switch (name) {
+    //     case "Número do Atendimento":
+    //       return {name, value}
+    //   }
+    // });
+
+    // const qrcode = _.find(itens, {name:'Número do Atendimento'}) + String(new Date())
+
+    return <QRCode value={JSON.stringify({ date: qrCode })} />;
+  }
+
   const dataList = (tittle: string) => {
     if (tittle === "Dados Pessoais") return personalData(content);
     if (tittle === "Dados do Plano") return planData(content);
     if (tittle === "Dados de atendimento") return careData(content);
+    if (tittle === "Qr code") return qrcodeData(content);
     if (tittle === "Equipe Multidisciplinar")
       return teamData(handleTeamData(content));
   };
@@ -275,9 +300,11 @@ export default function DialogInfo(props: IDialogProps) {
               }}
               onClick={() => {
                 console.log("cliquei");
+                setQrcode(String(new Date()));
               }}
             >
               <IconEdit style={{ cursor: "pointer" }} />
+              {/*{console.log('a', content)}*/}
               <Box
                 style={{
                   cursor: "pointer",
@@ -286,13 +313,12 @@ export default function DialogInfo(props: IDialogProps) {
                   fontWeight: "bold",
                 }}
               >
-                Editar
+                {editName()}
               </Box>
             </button>
           </Box>
 
           {tittle.info?.map((tittleInfo: string) => {
-            // console.log(tittleInfo);
             return (
               <>
                 <Box
