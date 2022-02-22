@@ -408,8 +408,8 @@ export default function PatientOverview(
     "Alergias",
     "Antibióticos",
     "Evolução",
-    "Exames/Atestados",
-    "Relatórios",
+    "Exames",
+    "Atestados",
   ];
   const personalCard = {
     card: "Dados Pessoais",

@@ -18,7 +18,12 @@ import HomeIcon from "@mui/icons-material/Home";
 //Styles
 import { WrapperDialog } from "./styles";
 import QRCode from "react-qr-code";
+
+// helps
 import _ from "lodash";
+import LOCALSTORAGE from "../../../../helpers/constants/localStorage";
+import { formatDate } from "../../../../helpers/date";
+
 interface IDialogProps {
   tittle: { card: string; info?: string[] };
   content: IContent;
@@ -26,6 +31,7 @@ interface IDialogProps {
   setOpenDialog: any;
   integration?: any;
 }
+
 interface IContent {
   tittle: string;
   rows: IRows[];
@@ -39,8 +45,20 @@ export default function DialogInfo(props: IDialogProps) {
   const { tittle, content, openDialog, setOpenDialog, integration } = props;
   const [qrCode, setQrcode] = useState("");
 
+  // const [qrCodeDate, setQrCodeDate] = useState(
+  //   formatDate(QR)
+  // );
+
+  // function generationNewQrCode() {
+  //   localStorage.setItem(
+  //     LOCALSTORAGE.DATE_GENERATION_QR_CODE,
+  //     formatDate(undefined, "DD/MM/YYYY HH:mm:ss")
+  //   );
+
+  //   // setQrCodeDate(generation)
+  // }
+
   function editName() {
-    console.log(tittle);
     return _.find(content.rows, { name: "Número do Atendimento" })?.name ===
       "Número do Atendimento"
       ? "Gerar"
@@ -257,7 +275,20 @@ export default function DialogInfo(props: IDialogProps) {
 
     // const qrcode = _.find(itens, {name:'Número do Atendimento'}) + String(new Date())
 
-    return <QRCode value={JSON.stringify({ date: qrCode })} />;
+    return (
+      <Box
+        sx={{
+          width: "100%",
+          display: "flex",
+          justifyContent: "center",
+          flexDirection: "column",
+          alignItems: "center",
+        }}
+      >
+        <QRCode value={JSON.stringify({ date: qrCode })} />
+        <Box sx={{ marginTop: "16px" }}>Gerado em: {qrCode}</Box>
+      </Box>
+    );
   }
 
   const dataList = (tittle: string) => {
@@ -300,7 +331,10 @@ export default function DialogInfo(props: IDialogProps) {
               }}
               onClick={() => {
                 console.log("cliquei");
-                setQrcode(String(new Date()));
+                setQrcode(
+                  String(formatDate(undefined, "DD/MM/YYYY, HH:mm:ss"))
+                );
+                // generationNewQrCode();
               }}
             >
               <IconEdit style={{ cursor: "pointer" }} />
@@ -331,7 +365,22 @@ export default function DialogInfo(props: IDialogProps) {
                 >
                   {iconHeader(tittleInfo)}
                   {/* <IconPatient style={{ width: "16px" }} /> */}
-                  <Box sx={{ fontWeight: "bold" }}>{tittleInfo} </Box>
+
+                  {tittle?.card === "Qr Code" ? (
+                    <Box
+                      sx={{
+                        fontWeight: "bold",
+                        width: "100%",
+                        textAlign: "center",
+                        fontSize: "24px",
+                        marginBottom: "8px",
+                      }}
+                    >
+                      {tittleInfo}{" "}
+                    </Box>
+                  ) : (
+                    <Box sx={{ fontWeight: "bold" }}>{tittleInfo} </Box>
+                  )}
                 </Box>
                 {dataList(tittleInfo)}
               </>

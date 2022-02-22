@@ -44,8 +44,8 @@ export default function ScrollCard(props: IScroll) {
           {name === "Alergias" && <AlergicIcon />}
           {name === "Antibióticos" && <AntibioticsIcon />}
           {name === "Evolução" && <DiagnosisIcon />}
-          {name === "Exames/Atestados" && <ExamIcon />}
-          {name === "Relatórios" && <HistoryIcon />}
+          {name === "Exames" && <ExamIcon />}
+          {name === "Atestados" && <HistoryIcon />}
         </IconCard>
         <FooterCard>{name}</FooterCard>
       </Card>
