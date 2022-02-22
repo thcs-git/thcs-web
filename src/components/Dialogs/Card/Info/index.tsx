@@ -17,9 +17,9 @@ import HomeIcon from "@mui/icons-material/Home";
 
 //Styles
 import { WrapperDialog } from "./styles";
-import QRCode from "react-qr-code";
 
 // helps
+import QRCode from "react-qr-code";
 import _ from "lodash";
 import LOCALSTORAGE from "../../../../helpers/constants/localStorage";
 import { formatDate } from "../../../../helpers/date";
@@ -58,11 +58,8 @@ export default function DialogInfo(props: IDialogProps) {
   //   // setQrCodeDate(generation)
   // }
 
-  function editName() {
-    return _.find(content.rows, { name: "Número do Atendimento" })?.name ===
-      "Número do Atendimento"
-      ? "Gerar"
-      : "Edit";
+  function editName(card: string) {
+    return card === "Qr Code" ? "Gerar" : "Editar";
   }
   const handleClose = () => {
     setOpenDialog(false);
@@ -347,7 +344,7 @@ export default function DialogInfo(props: IDialogProps) {
                   fontWeight: "bold",
                 }}
               >
-                {editName()}
+                {editName(tittle.card)}
               </Box>
             </button>
           </Box>
