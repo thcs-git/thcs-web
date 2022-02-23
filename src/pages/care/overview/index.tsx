@@ -9,6 +9,7 @@ import Header from "../../../components/Header/Overview";
 import ScrollCard from "../../../components/Card/ScrollCard";
 import CardInfo from "../../../components/Card/Info";
 import ButtonTabs from "../../../components/Button/ButtonTabs";
+import AccordionReport from "../../../components/Accordion/Report";
 
 import {
   deleteCareRequest,
@@ -115,6 +116,8 @@ export default function PatientOverview(
   const [prescriptionModal, setPrescriptionModal] = useState(false);
   const [team, setTeam] = useState<any[]>([]);
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
+  const [reportActive, setReportActive] = useState(false);
+  const [reportType, setReportType] = useState("");
 
   useEffect(() => {
     if (careState.data.patient_id) {
@@ -203,194 +206,198 @@ export default function PatientOverview(
   const [careModalOpen, setCareModalOpen] = useState(false);
 
   const rows = [];
+  (function handleDataRows() {
+    careState?.data?.patient_id?.name &&
+      rows.push({ name: "Nome", value: careState?.data?.patient_id?.name });
+    patientState?.data?.gender &&
+      rows.push({
+        name: "Gênero",
+        value: patientState?.data?.gender,
+      });
+    patientState?.data?.marital_status &&
+      rows.push({
+        name: "Estado Civil ",
+        value: patientState?.data?.marital_status,
+      });
+    careState?.data?.patient_id?.birthdate &&
+      rows.push({
+        name: "Data de nascimento",
+        value: formatDate(careState.data.patient_id.birthdate, "DD/MM/YYYY"),
+      });
+    careState?.data?.patient_id?.mother_name &&
+      rows.push({
+        name: "Mãe",
+        value: careState.data.patient_id.mother_name,
+      });
+    patientState?.data?.national_id &&
+      rows.push({
+        name: "RG",
+        value: patientState?.data?.national_id,
+      });
 
-  careState?.data?.patient_id?.name &&
-    rows.push({ name: "Nome", value: careState?.data?.patient_id?.name });
-  patientState?.data?.gender &&
-    rows.push({
-      name: "Gênero",
-      value: patientState?.data?.gender,
-    });
-  patientState?.data?.marital_status &&
-    rows.push({
-      name: "Estado Civil ",
-      value: patientState?.data?.marital_status,
-    });
-  careState?.data?.patient_id?.birthdate &&
-    rows.push({
-      name: "Data de nascimento",
-      value: formatDate(careState.data.patient_id.birthdate, "DD/MM/YYYY"),
-    });
-  careState?.data?.patient_id?.mother_name &&
-    rows.push({
-      name: "Mãe",
-      value: careState.data.patient_id.mother_name,
-    });
-  patientState?.data?.national_id &&
-    rows.push({
-      name: "RG",
-      value: patientState?.data?.national_id,
-    });
+    careState?.data?.patient_id?.fiscal_number &&
+      rows.push({
+        name: "CPF",
+        value: careState?.data?.patient_id?.fiscal_number,
+      });
+    patientState?.data?.phones &&
+      patientState.data.phones.forEach((phone) => {
+        if (phone.cellnumber) {
+          rows.push({
+            name: "Celular",
+            value: phone.cellnumber,
+          });
+        }
+        if (phone.number) {
+          rows.push({
+            name: "Telefone",
+            value: phone.number,
+          });
+        }
+      });
+    careState?.data?.patient_id?.organ_donor &&
+      rows.push({
+        name: "Doador de órgãos",
+        value: careState.data.patient_id.organ_donor,
+      });
 
-  careState?.data?.patient_id?.fiscal_number &&
-    rows.push({
-      name: "CPF",
-      value: careState?.data?.patient_id?.fiscal_number,
-    });
-  patientState?.data?.phones &&
-    patientState.data.phones.forEach((phone) => {
-      if (phone.cellnumber) {
-        rows.push({
-          name: "Celular",
-          value: phone.cellnumber,
-        });
-      }
-      if (phone.number) {
-        rows.push({
-          name: "Telefone",
-          value: phone.number,
-        });
-      }
-    });
-  careState?.data?.patient_id?.organ_donor &&
-    rows.push({
-      name: "Doador de órgãos",
-      value: careState.data.patient_id.organ_donor,
-    });
+    careState?.data?.patient_id?.birthdate &&
+      rows.push({
+        name: "Idade",
+        value: age(careState.data.patient_id.birthdate),
+      });
 
-  careState?.data?.patient_id?.birthdate &&
-    rows.push({
-      name: "Idade",
-      value: age(careState.data.patient_id.birthdate),
-    });
+    careState?.data?.patient_id?.blood_type &&
+      rows.push({
+        name: "Tipo sanguíneo",
+        value: careState.data.patient_id.blood_type,
+      });
 
-  careState?.data?.patient_id?.blood_type &&
-    rows.push({
-      name: "Tipo sanguíneo",
-      value: careState.data.patient_id.blood_type,
-    });
+    careState?.data?.patient_id?._id &&
+      rows.push({
+        name: "Código do paciente",
+        value: careState.data.patient_id._id,
+      });
+    patientState?.data?.nationality &&
+      rows.push({
+        name: "Nacionalidade",
+        value: patientState?.data?.nationality,
+      });
+    patientState?.data?.address_id?.postal_code &&
+      rows.push({
+        name: "CEP",
+        value: patientState?.data?.address_id?.postal_code,
+      });
+    patientState?.data?.address_id?.street &&
+      rows.push({ name: "Rua", value: patientState?.data?.address_id?.street });
+    patientState?.data?.address_id?.number &&
+      rows.push({
+        name: "Número",
+        value: patientState?.data?.address_id?.number,
+      });
 
-  careState?.data?.patient_id?._id &&
-    rows.push({
-      name: "Código do paciente",
-      value: careState.data.patient_id._id,
-    });
-  patientState?.data?.nationality &&
-    rows.push({
-      name: "Nacionalidade",
-      value: patientState?.data?.nationality,
-    });
-  patientState?.data?.address_id?.postal_code &&
-    rows.push({
-      name: "CEP",
-      value: patientState?.data?.address_id?.postal_code,
-    });
-  patientState?.data?.address_id?.street &&
-    rows.push({ name: "Rua", value: patientState?.data?.address_id?.street });
-  patientState?.data?.address_id?.number &&
-    rows.push({
-      name: "Número",
-      value: patientState?.data?.address_id?.number,
-    });
+    patientState?.data?.address_id?.district &&
+      rows.push({
+        name: "Bairro",
+        value: patientState?.data?.address_id?.district,
+      });
+    patientState?.data?.address_id?.city &&
+      rows.push({
+        name: "Cidade",
+        value: patientState?.data?.address_id?.city,
+      });
+    patientState?.data?.address_id?.complement &&
+      rows.push({
+        name: "Complemento",
+        value: patientState?.data?.address_id?.complement,
+      });
+    patientState?.data?.address_id?.state &&
+      rows.push({ name: "UF", value: patientState?.data?.address_id?.state });
 
-  patientState?.data?.address_id?.district &&
-    rows.push({
-      name: "Bairro",
-      value: patientState?.data?.address_id?.district,
-    });
-  patientState?.data?.address_id?.city &&
-    rows.push({ name: "Cidade", value: patientState?.data?.address_id?.city });
-  patientState?.data?.address_id?.complement &&
-    rows.push({
-      name: "Complemento",
-      value: patientState?.data?.address_id?.complement,
-    });
-  patientState?.data?.address_id?.state &&
-    rows.push({ name: "UF", value: patientState?.data?.address_id?.state });
+    careState?.data?.tipo &&
+      rows.push({ name: "Tipo de Atendimento", value: careState?.data?.tipo });
+    careState?.data?._id &&
+      rows.push({ name: "Número do Atendimento", value: careState?.data?._id });
+    careState?.data?.capture?.assistant_doctor &&
+      rows.push({
+        name: "Médico Assistente",
+        value: careState?.data?.capture?.assistant_doctor,
+      });
+    careState?.data?.cid_id &&
+      rows.push({
+        name: "CID",
+        value: integration
+          ? careState?.data?.cid_id
+          : careState?.data?.cid_id.name,
+      });
+    careState?.data?.health_insurance_id &&
+      rows.push({
+        name: "Convênio",
+        value: integration
+          ? { name: careState?.data?.health_insurance_id }
+          : careState?.data?.health_insurance_id,
+      });
+    careState?.data?.health_plan_id &&
+      rows.push({
+        name: "Plano",
+        value: integration
+          ? { name: careState?.data?.health_plan_id }
+          : careState?.data?.health_plan_id,
+      });
+    careState?.data?.health_sub_plan_id &&
+      rows.push({
+        name: "Subplano",
+        value: integration
+          ? { name: careState?.data?.health_sub_plan_id }
+          : careState?.data?.health_sub_plan_id,
+      });
 
-  careState?.data?.tipo &&
-    rows.push({ name: "Tipo de Atendimento", value: careState?.data?.tipo });
-  careState?.data?._id &&
-    rows.push({ name: "Número do Atendimento", value: careState?.data?._id });
-  careState?.data?.capture?.assistant_doctor &&
-    rows.push({
-      name: "Médico Assistente",
-      value: careState?.data?.capture?.assistant_doctor,
-    });
-  careState?.data?.cid_id &&
-    rows.push({
-      name: "CID",
-      value: integration
-        ? careState?.data?.cid_id
-        : careState?.data?.cid_id.name,
-    });
-  careState?.data?.health_insurance_id &&
-    rows.push({
-      name: "Convênio",
-      value: integration
-        ? { name: careState?.data?.health_insurance_id }
-        : careState?.data?.health_insurance_id,
-    });
-  careState?.data?.health_plan_id &&
-    rows.push({
-      name: "Plano",
-      value: integration
-        ? { name: careState?.data?.health_plan_id }
-        : careState?.data?.health_plan_id,
-    });
-  careState?.data?.health_sub_plan_id &&
-    rows.push({
-      name: "Subplano",
-      value: integration
-        ? { name: careState?.data?.health_sub_plan_id }
-        : careState?.data?.health_sub_plan_id,
-    });
+    careState?.data?.capture?.unity &&
+      rows.push({ name: "Unidade", value: careState?.data?.capture?.unity });
+    careState?.data?.capture?.sector &&
+      rows.push({ name: "Setor", value: careState?.data?.capture?.sector });
+    careState?.data?.capture?.type &&
+      rows.push({ name: "Acomodação", value: careState?.data?.capture?.type });
+    careState?.data?.capture?.bed &&
+      rows.push({ name: "Leito", value: careState?.data?.capture?.bed });
+    careState?.data?.created_at &&
+      rows.push({
+        name: "Data de Atendimento",
+        value: formatDate(careState?.data?.created_at, "DD/MM/YYYY HH:mm"),
+      });
+    careState?.data?.mot_alta &&
+      rows.push({ name: "Motivo de Alta", value: careState?.data?.mot_alta });
+    careState?.data?.health_plan_card_number &&
+      rows.push({
+        name: "Número da carteira",
+        value: careState?.data?.health_plan_card_number,
+      });
+    careState?.data?.health_plan_card_validate &&
+      rows.push({
+        name: "Data de validade",
+        value: formatDate(
+          careState?.data?.health_plan_card_validate,
+          "DD/MM/YYYY"
+        ),
+      });
+    careState?.data?.speciality &&
+      rows.push({
+        name: "Especialidade do Atendimento",
+        value: integration
+          ? { name: careState?.data?.speciality }
+          : careState?.data?.speciality,
+      });
+    careState?.data?.dt_alta &&
+      rows.push({
+        name: "Data de Alta",
+        value: formatDate(careState?.data?.dt_alta, "DD/MM/YYYY HH:mm"),
+      });
 
-  careState?.data?.capture?.unity &&
-    rows.push({ name: "Unidade", value: careState?.data?.capture?.unity });
-  careState?.data?.capture?.sector &&
-    rows.push({ name: "Setor", value: careState?.data?.capture?.sector });
-  careState?.data?.capture?.type &&
-    rows.push({ name: "Acomodação", value: careState?.data?.capture?.type });
-  careState?.data?.capture?.bed &&
-    rows.push({ name: "Leito", value: careState?.data?.capture?.bed });
-  careState?.data?.created_at &&
     rows.push({
-      name: "Data de Atendimento",
-      value: formatDate(careState?.data?.created_at, "DD/MM/YYYY HH:mm"),
+      name: "Equipe",
+      value: team,
     });
-  careState?.data?.mot_alta &&
-    rows.push({ name: "Motivo de Alta", value: careState?.data?.mot_alta });
-  careState?.data?.health_plan_card_number &&
-    rows.push({
-      name: "Número da carteira",
-      value: careState?.data?.health_plan_card_number,
-    });
-  careState?.data?.health_plan_card_validate &&
-    rows.push({
-      name: "Data de validade",
-      value: formatDate(
-        careState?.data?.health_plan_card_validate,
-        "DD/MM/YYYY"
-      ),
-    });
-  careState?.data?.speciality &&
-    rows.push({
-      name: "Especialidade do Atendimento",
-      value: integration
-        ? { name: careState?.data?.speciality }
-        : careState?.data?.speciality,
-    });
-  careState?.data?.dt_alta &&
-    rows.push({
-      name: "Data de Alta",
-      value: formatDate(careState?.data?.dt_alta, "DD/MM/YYYY HH:mm"),
-    });
-
-  rows.push({
-    name: "Equipe",
-    value: team,
-  });
+  })();
 
   const content = {
     tittle: "HeaderOverview",
@@ -446,6 +453,23 @@ export default function PatientOverview(
       show: true,
     },
   ];
+
+  function handleReport(nameReport: string) {
+    if (nameReport === reportType || reportActive === false) {
+      setReportActive(!reportActive);
+    }
+    setReportType(nameReport);
+  }
+  console.log(reportActive, reportType);
+  const dataMocado = [
+    {
+      hour: "20:21",
+      professional: "Maria",
+      function: "Administrador",
+      documentName: "string",
+      options: "any",
+    },
+  ];
   return (
     <Sidebar>
       {careState.loading && <Loading />}
@@ -464,42 +488,47 @@ export default function PatientOverview(
                 tittle="Relatório de Prontuário"
                 iconName="ChartIcon"
                 cards={cards}
+                onClickCard={handleReport}
               />
               <Container
                 style={{
                   padding: "0 32px 20px ",
                 }}
               >
-                <Container
-                  style={{
-                    display: "flex",
-                    flexWrap: "wrap",
-                    justifyContent: "space-between",
-                  }}
-                >
-                  <CardInfo
-                    content={content}
-                    tittle={personalCard}
-                    alergicIs={true}
-                    gridProps={gridPropsPlan}
-                    integration={integration}
-                  />
+                {reportActive ? (
+                  <AccordionReport rows={dataMocado} />
+                ) : (
+                  <Container
+                    style={{
+                      display: "flex",
+                      flexWrap: "wrap",
+                      justifyContent: "space-between",
+                    }}
+                  >
+                    <CardInfo
+                      content={content}
+                      tittle={personalCard}
+                      alergicIs={true}
+                      gridProps={gridPropsPlan}
+                      integration={integration}
+                    />
 
-                  <CardInfo
-                    content={content}
-                    tittle={planCard}
-                    alergicIs={false}
-                    gridProps={gridPropsPlan}
-                    integration={integration}
-                  />
-                  <CardInfo
-                    content={content}
-                    tittle={teamCard}
-                    alergicIs={false}
-                    gridProps={gridPropsPlan}
-                    integration={integration}
-                  />
-                </Container>
+                    <CardInfo
+                      content={content}
+                      tittle={planCard}
+                      alergicIs={false}
+                      gridProps={gridPropsPlan}
+                      integration={integration}
+                    />
+                    <CardInfo
+                      content={content}
+                      tittle={teamCard}
+                      alergicIs={false}
+                      gridProps={gridPropsPlan}
+                      integration={integration}
+                    />
+                  </Container>
+                )}
               </Container>
             </>
           ) : (

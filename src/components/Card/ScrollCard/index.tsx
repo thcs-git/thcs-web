@@ -30,14 +30,15 @@ interface IScroll {
   tittle?: string;
   cards: string[];
   iconName?: string;
+  onClickCard?: any;
 }
 
 export default function ScrollCard(props: IScroll) {
-  const { tittle, cards, iconName } = props;
+  const { tittle, cards, iconName, onClickCard } = props;
 
   const cardsItens = cards.map((name: string, index: number) => {
     return (
-      <Card key={index}>
+      <Card key={index} onClick={() => onClickCard(name)}>
         <IconCard>
           {name === "Prescrições" && <PrescriptionIcon />}
           {name === "Aferições" && <MeasurementIcon />}
