@@ -453,13 +453,18 @@ export default function PatientOverview(
     }
     setReportType(nameReport);
   }
-  function handleContentReport(report: string) {
+  function handleContentReport(report: string): any {
     if (report === "Aferições") {
-      return measurementState.data;
+      return {
+        data: measurementState.data,
+        loading: measurementState.loading,
+        error: measurementState.error,
+      };
     } else {
-      return measurementState.data;
+      return "";
     }
   }
+
   console.log(reportActive, reportType);
 
   return (
@@ -485,7 +490,7 @@ export default function PatientOverview(
               />
               {reportActive ? (
                 <AccordionReport
-                  data={handleContentReport(reportType)}
+                  content={handleContentReport(reportType)}
                   company_id={
                     careState.data.company_id ? careState.data.company_id : ""
                   }

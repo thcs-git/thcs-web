@@ -11,8 +11,10 @@ export enum MeasurementsTypes {
  */
 export interface MeasurementItem {
   _id: string;
-  active: boolean;
-  measurement_item_id: string;
+  name: string;
+  reference: any; //tipar depois
+  type: string;
+  unit_id: any; //tipar depois
   value: string;
 }
 export interface MeasurementsInfo {
@@ -21,21 +23,13 @@ export interface MeasurementsInfo {
   canceled: boolean;
   company_id: string;
   created_at: string;
-  created_by: string;
-  measurements: MeasurementItem[];
-  user: [
+  created_by: [
     {
-      __v: number;
       _id: string;
-      active: boolean;
-      address: string;
-      birthdate: any;
-      cellphone: string;
-      companies: [];
       companies_links: [
         {
           _id: string;
-          active: string;
+          active: boolean;
           companie_id: string;
           customer_id: string;
           exp: string;
@@ -44,39 +38,11 @@ export interface MeasurementsInfo {
           linked_at: string;
         }
       ];
-      council_id: string;
-      council_number: string;
-      council_state: string;
-      created_at: string;
-      customer_id: string;
-      email: string;
-      fiscal_number: string;
-      gender: string;
-      issuing_organ: string;
-      main_specialty_id: string;
-      mother_name: string;
       name: string;
-      national_id: string;
-      nationality: string;
-      password: string;
-      phone: string;
-      phones: [
-        {
-          _id: string;
-          number: string;
-          telegram: boolean;
-          whatsapp: boolean;
-        }
-      ];
-      profession_id: string;
-      specialties: [];
-      type_user: string;
-      user_type: string;
-      user_type_id: null;
-      username: string;
-      verified: false;
     }
   ];
+  itens: MeasurementItem[];
+  patient_id: string;
 }
 export interface Measurements {
   _id: string; //data

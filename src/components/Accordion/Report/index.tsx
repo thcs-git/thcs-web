@@ -5,6 +5,7 @@ import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import Divider from "@mui/material/Divider";
+import Tooltip from "@mui/material/Tooltip";
 
 // icons
 import IconMeasurement from "../../Icons/measurement";
@@ -21,6 +22,8 @@ import Saturation from "../../Icons/Saturation";
 import Temperature from "../../Icons/Temperature";
 import Weight from "../../Icons/Weight";
 
+import Pain from "../../Icons/Pain";
+
 // styled components and style
 import {
   AccordionStyled as Accordion,
@@ -33,11 +36,17 @@ import {
 } from "./style";
 
 // Helps
-
 import { formatDate } from "../../../helpers/date";
+import { toast } from "react-toastify";
+// components
+import Loading from "../../Loading";
 
 interface IAccordionReport {
-  data: any;
+  content: {
+    loading: boolean;
+    error: boolean;
+    data: any;
+  };
   company_id: string;
   // data: IDataAccordion[];
 }
@@ -51,21 +60,13 @@ interface IAccordionInfo {
   canceled: boolean;
   company_id: string;
   created_at: string;
-  created_by: string;
-  measurements: IAccordionItem[];
-  user: [
+  created_by: [
     {
-      __v: number;
       _id: string;
-      active: boolean;
-      address: string;
-      birthdate: any;
-      cellphone: string;
-      companies: [];
       companies_links: [
         {
           _id: string;
-          active: string;
+          active: boolean;
           companie_id: string;
           customer_id: string;
           exp: string;
@@ -74,49 +75,24 @@ interface IAccordionInfo {
           linked_at: string;
         }
       ];
-      council_id: string;
-      council_number: string;
-      council_state: string;
-      created_at: string;
-      customer_id: string;
-      email: string;
-      fiscal_number: string;
-      gender: string;
-      issuing_organ: string;
-      main_specialty_id: string;
-      mother_name: string;
       name: string;
-      national_id: string;
-      nationality: string;
-      password: string;
-      phone: string;
-      phones: [
-        {
-          _id: string;
-          number: string;
-          telegram: boolean;
-          whatsapp: boolean;
-        }
-      ];
-      profession_id: string;
-      specialties: [];
-      type_user: string;
-      user_type: string;
-      user_type_id: null;
-      username: string;
-      verified: false;
     }
   ];
+  itens: IAccordionItem[];
+  patient_id: string;
 }
 interface IAccordionItem {
   _id: string;
-  active: boolean;
-  measurement_item_id: string;
+  name: string;
+  reference: any; //tipar depois
+  type: string;
+  unit_id: any; //tipar depois
   value: string;
 }
 
 export default function AccordionReport(props: IAccordionReport) {
-  const { data, company_id } = props;
+  const { content, company_id } = props;
+
   const [expanded, setExpanded] = useState<string | false>("panel0");
   const measurementsItemObjectIdMD = [
     {
@@ -168,42 +144,187 @@ export default function AccordionReport(props: IAccordionReport) {
       name: "Temperatura",
     },
   ];
-  console.log(data, "DATAAA");
+  console.log(content.data, "DATAAA");
 
   const handleChange =
     (panel: string) => (event: React.SyntheticEvent, isExpanded: boolean) => {
       setExpanded(isExpanded ? panel : false);
     };
 
-  function handleFunction(list: IAccordionInfo, company: string) {
-    const functionProfessional = list.user[0].companies_links.map(
+  const handleFunction = (list: IAccordionInfo, company: string) => {
+    return list.created_by[0].companies_links.map(
       (item: any, index: number) => {
         if (item.companie_id === company) {
           return item.function;
         }
       }
     );
-    return functionProfessional;
-  }
+  };
   const handleMeasurementItemsIcons = (measurements: IAccordionItem[]) => {
-    measurements.map((measurementItem: IAccordionItem, index: number) => {
-      // console.log(measurementItem, "ITEMSS");
-    });
-    return "BOXXX";
+    return measurements.map(
+      (measurementItem: IAccordionItem, index: number) => {
+        switch (measurementItem.name) {
+          case "PAD":
+            return (
+              <Tooltip title={measurementItem.name}>
+                <Box>
+                  <Presure
+                    fill={"var(--secondary)"}
+                    width={"20px"}
+                    height={"20px"}
+                  />
+                </Box>
+              </Tooltip>
+            );
+          case "Frequência Respiratória":
+            return (
+              <Tooltip title={measurementItem.name}>
+                <Box>
+                  <Lung
+                    fill={"var(--secondary)"}
+                    width={"20px"}
+                    height={"20px"}
+                  />
+                </Box>
+              </Tooltip>
+            );
+          case "Frequência Cardíaca":
+            return (
+              <Tooltip title={measurementItem.name}>
+                <Box>
+                  <Frequency
+                    fill={"var(--secondary)"}
+                    width={"20px"}
+                    height={"20px"}
+                  />
+                </Box>
+              </Tooltip>
+            );
+          case "Superfície Corpórea":
+            return (
+              <Tooltip title={measurementItem.name}>
+                <Box>
+                  <BodilySurface
+                    fill={"var(--secondary)"}
+                    width={"20px"}
+                    height={"20px"}
+                  />
+                </Box>
+              </Tooltip>
+            );
+          case "IMC":
+            return (
+              <Tooltip title={measurementItem.name}>
+                <Box>
+                  <Exam
+                    fill={"var(--secondary)"}
+                    width={"20px"}
+                    height={"20px"}
+                  />
+                </Box>
+              </Tooltip>
+            );
+          case "Altura":
+            return (
+              <Tooltip title={measurementItem.name}>
+                <Box>
+                  <Height
+                    fill={"var(--secondary)"}
+                    width={"20px"}
+                    height={"20px"}
+                  />
+                </Box>
+              </Tooltip>
+            );
+          case "Peso":
+            return (
+              <Tooltip title={measurementItem.name}>
+                <Box>
+                  <Weight
+                    fill={"var(--secondary)"}
+                    width={"20px"}
+                    height={"20px"}
+                  />
+                </Box>
+              </Tooltip>
+            );
+          case "HGT":
+            return (
+              <Tooltip title={measurementItem.name}>
+                <Box>
+                  <BloodGlucose
+                    fill={"var(--secondary)"}
+                    width={"20px"}
+                    height={"20px"}
+                  />
+                </Box>
+              </Tooltip>
+            );
+          case "Dor":
+            return (
+              <Tooltip title={measurementItem.name}>
+                <Box>
+                  <Pain
+                    fill={"var(--secondary)"}
+                    width={"20px"}
+                    height={"20px"}
+                  />
+                </Box>
+              </Tooltip>
+            );
+
+          case "SpO2":
+            return (
+              <Tooltip title={measurementItem.name}>
+                <Box>
+                  <Saturation
+                    fill={"var(--secondary)"}
+                    width={"20px"}
+                    height={"20px"}
+                  />
+                </Box>
+              </Tooltip>
+            );
+          case "PAS":
+            return (
+              <Tooltip title={measurementItem.name}>
+                <Box>
+                  <Presure
+                    fill={"var(--secondary)"}
+                    width={"20px"}
+                    height={"20px"}
+                  />
+                </Box>
+              </Tooltip>
+            );
+          case "Temperatura":
+            return (
+              <Tooltip title={measurementItem.name}>
+                <Box>
+                  <Temperature
+                    fill={"var(--secondary)"}
+                    width={"20px"}
+                    height={"20px"}
+                  />
+                </Box>
+              </Tooltip>
+            );
+        }
+      }
+    );
   };
 
-  function handleRow(list: IAccordionInfo[]) {
-    const column = list.map((column: any, index: number) => {
-      console.log(column);
+  const handleRow = (list: IAccordionInfo[]) => {
+    return list.map((column: IAccordionInfo, index: number) => {
       return (
         <>
-          <ContentDetailsAccordion>
+          <ContentDetailsAccordion key={column._id}>
             <TextCenterDetails>
               {formatDate(column.created_at, "HH:mm")}
             </TextCenterDetails>
-            <TextCenterDetails>{/* {column.user[0].name} */}</TextCenterDetails>
+            <TextCenterDetails>{column.created_by[0].name}</TextCenterDetails>
             <TextCenterDetails>
-              {/* {handleFunction(column, company_id)} */}
+              {handleFunction(column, company_id)}
             </TextCenterDetails>
             <TextCenterDetails sx={{ width: "200px" }}>
               <Box
@@ -213,60 +334,10 @@ export default function AccordionReport(props: IAccordionReport) {
                   justifyContent: "center",
                   alignItems: "center",
                   gap: "4px",
+                  margin: "2px",
                 }}
               >
-                {handleMeasurementItemsIcons(column.measurements)}
-
-                {/* <BloodGlucose
-                  fill={"var(--secondary)"}
-                  width={"20px"}
-                  height={"20px"}
-                />
-                <BodilySurface
-                  fill={"var(--secondary)"}
-                  width={"20px"}
-                  height={"20px"}
-                />
-                <Exam
-                  fill={"var(--secondary)"}
-                  width={"20px"}
-                  height={"20px"}
-                />
-                <Frequency
-                  fill={"var(--secondary)"}
-                  width={"20px"}
-                  height={"20px"}
-                />
-                <Height
-                  fill={"var(--secondary)"}
-                  width={"20px"}
-                  height={"20px"}
-                />
-                <Lung
-                  fill={"var(--secondary)"}
-                  width={"20px"}
-                  height={"20px"}
-                />
-                <Presure
-                  fill={"var(--secondary)"}
-                  width={"20px"}
-                  height={"20px"}
-                />
-                <Saturation
-                  fill={"var(--secondary)"}
-                  width={"20px"}
-                  height={"20px"}
-                />
-                <Temperature
-                  fill={"var(--secondary)"}
-                  width={"20px"}
-                  height={"20px"}
-                />
-                <Weight
-                  fill={"var(--secondary)"}
-                  width={"20px"}
-                  height={"20px"}
-                /> */}
+                {handleMeasurementItemsIcons(column.itens)}
               </Box>
             </TextCenterDetails>
             <TextCenterDetails
@@ -286,8 +357,7 @@ export default function AccordionReport(props: IAccordionReport) {
         </>
       );
     });
-    return column;
-  }
+  };
 
   function handleHeaderDetails() {
     return (
@@ -312,55 +382,71 @@ export default function AccordionReport(props: IAccordionReport) {
 
   return (
     <>
-      <Container>
-        {data.map(({ _id, list }: IDataAccordion, index: number) => {
-          return (
-            <Accordion
-              disableGutters={true}
-              expanded={expanded === `panel${index}`}
-              onChange={handleChange(`panel${index}`)}
-            >
-              <AccordionSummary
-                expandIcon={<ExpandMoreIcon />}
-                aria-controls={`panel${index}bh-content`}
-                id={`panel${index}bh-header`}
+      {content.loading && <Loading />}
+      {content.error &&
+        toast.error("Não foi possível carregar os relatórios deste prontuário")}
+      {content.data ? (
+        <Container>
+          {content.data.map(({ _id, list }: IDataAccordion, index: number) => {
+            return (
+              <Accordion
+                key={_id}
+                disableGutters={true}
+                expanded={expanded === `panel${index}`}
+                onChange={handleChange(`panel${index}`)}
               >
-                <Box
-                  sx={{
-                    display: "flex",
-                    gap: "8px",
-                    flexDirection: "row",
-                    justifyContent: "space-between",
-                  }}
+                <AccordionSummary
+                  expandIcon={<ExpandMoreIcon />}
+                  aria-controls={`panel${index}bh-content`}
+                  id={`panel${index}bh-header`}
                 >
-                  <IconMeasurement
-                    fill={
-                      expanded === `panel${index}`
-                        ? "var(--white)"
-                        : "var(--gray-dark)"
-                    }
-                    width="22px"
-                    height={"22px"}
-                  />
                   <Box
                     sx={{
                       display: "flex",
+                      gap: "8px",
+                      flexDirection: "row",
                       justifyContent: "space-between",
                     }}
                   >
-                    {formatDate(_id, "DD/MM/YY")}
+                    <IconMeasurement
+                      fill={
+                        expanded === `panel${index}`
+                          ? "var(--white)"
+                          : "var(--gray-dark)"
+                      }
+                      width="22px"
+                      height={"22px"}
+                    />
+                    <Box
+                      sx={{
+                        display: "flex",
+                        justifyContent: "space-between",
+                      }}
+                    >
+                      {formatDate(_id, "DD/MM/YY")}
+                    </Box>
                   </Box>
-                </Box>
-                <PrintIcon sx={{ cursor: "pointer", marginRight: "12px" }} />
-              </AccordionSummary>
-              <AccordionDetails>
-                {handleHeaderDetails()}
-                {handleRow(list)}
-              </AccordionDetails>
-            </Accordion>
-          );
-        })}
-      </Container>
+                  <PrintIcon sx={{ cursor: "pointer", marginRight: "12px" }} />
+                </AccordionSummary>
+                <AccordionDetails>
+                  {handleHeaderDetails()}
+                  {handleRow(list)}
+                </AccordionDetails>
+              </Accordion>
+            );
+          })}
+        </Container>
+      ) : (
+        <Box
+          sx={{
+            textAlign: "center",
+            color: "var(--gray-dark)",
+            padding: "8px 0 16px",
+          }}
+        >
+          Não há relatórios para este prontuário
+        </Box>
+      )}
     </>
   );
 }
