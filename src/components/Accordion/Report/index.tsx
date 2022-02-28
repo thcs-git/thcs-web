@@ -319,14 +319,14 @@ export default function AccordionReport(props: IAccordionReport) {
       return (
         <>
           <ContentDetailsAccordion key={column._id}>
-            <TextCenterDetails>
+            <TextCenterDetails sx={{ width: "80px" }}>
               {formatDate(column.created_at, "HH:mm")}
             </TextCenterDetails>
             <TextCenterDetails>{column.created_by[0].name}</TextCenterDetails>
             <TextCenterDetails>
               {handleFunction(column, company_id)}
             </TextCenterDetails>
-            <TextCenterDetails sx={{ width: "200px" }}>
+            <TextCenterDetails sx={{ width: "320px" }}>
               <Box
                 sx={{
                   display: "flex",
@@ -363,10 +363,10 @@ export default function AccordionReport(props: IAccordionReport) {
     return (
       <>
         <HeaderDetailsAccordion>
-          <TextCenterDetails>Hora</TextCenterDetails>
+          <TextCenterDetails sx={{ width: "80px" }}>Hora</TextCenterDetails>
           <TextCenterDetails>Profissional</TextCenterDetails>
           <TextCenterDetails>Função</TextCenterDetails>
-          <TextCenterDetails sx={{ width: "200px" }}>
+          <TextCenterDetails sx={{ width: "320px" }}>
             Conteúdo
           </TextCenterDetails>
           <TextCenterDetails
