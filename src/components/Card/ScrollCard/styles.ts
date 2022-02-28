@@ -1,7 +1,7 @@
 import styled from "styled-components";
 import { Container } from "@material-ui/core";
 import Glider from "react-glider";
-import Box from "@material-ui/core/Box";
+import Box from "@mui/material/Box";
 import "glider-js/glider.min.css";
 
 export const Card = styled(Box)`
@@ -71,10 +71,10 @@ export const ContainerStyle = styled(Container)`
       color: var(--gray);
       height: 100%;
       cursor: pointer;
-      backgroundcolor: #FFFFF;
+      /* background-color: #FFFFF; */
       display: flex;
-      justifycontent: center;
-      alignitems: center;
+      justify-content: center;
+      align-items: center;
     }
 
     .glider-dot,

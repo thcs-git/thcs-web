@@ -35,11 +35,33 @@ import {
   AllergiesInterface,
   AllergiesState,
 } from "../../../store/ducks/allergies/types";
+import { loadRequest as loadRequestMeasurements } from "../../../store/ducks/measurements/actions";
 
 interface IPageParams {
   id?: string;
 }
-
+interface IAllergiIntegration {
+  allergie: {
+    data: {
+      allergy: [
+        {
+          active: number;
+          created_at: string;
+          created_by: string;
+          description: string;
+          id: number;
+          name: string;
+          severity: string;
+          type: string;
+        }
+      ];
+      event: [];
+    };
+    error: boolean;
+    loading: boolean;
+    success: boolean;
+  };
+}
 const useStyles = makeStyles((theme) => ({
   root: {
     display: "flex",
@@ -98,24 +120,23 @@ const useStyles = makeStyles((theme) => ({
 export default function PatientOverview(
   props: RouteComponentProps<IPageParams>
 ) {
+  const integration = sessionStorage.getItem(SESSIONSTORAGE.INTEGRATION);
+
   const history = useHistory();
   const dispatch = useDispatch();
   const { params } = props.match;
-  const classes = useStyles();
   const careState = useSelector((state: ApplicationState) => state.cares);
   const patientState = useSelector((state: ApplicationState) => state.patients);
   const allergiesState = useSelector(
     (state: ApplicationState) => state.allergies
   );
+  // console.log(careState, "CRESTATE");
+  const measurementState = useSelector(
+    (state: ApplicationState) => state.measurements
+  );
 
-  const [medicalReleaseModal, setMedicalReleaseModal] = useState(false);
-  const [revertMedicalReleaseModal, setRevertMedicalReleaseModal] =
-    useState(false);
-  const [admReleaseModal, setAdmReleaseModal] = useState(false);
-  const [revertAdmReleaseModal, setRevertAdmReleaseModal] = useState(false);
-  const [prescriptionModal, setPrescriptionModal] = useState(false);
+  useState(false);
   const [team, setTeam] = useState<any[]>([]);
-  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const [reportActive, setReportActive] = useState(false);
   const [reportType, setReportType] = useState("");
 
@@ -123,7 +144,7 @@ export default function PatientOverview(
     if (careState.data.patient_id) {
       dispatch(loadPatientById(careState.data.patient_id._id));
     }
-  }, [careState?.data?.patient_id]);
+  }, [careState?.data?.patient_id, integration]);
 
   useEffect(() => {
     if (params.id) {
@@ -137,10 +158,16 @@ export default function PatientOverview(
   }, [careState.schedule]);
 
   useEffect(() => {
-    dispatch(
-      loadRequestAllergies(patientState.data._id ? patientState.data._id : "")
-    );
-  }, [patientState.data._id]);
+    if (patientState.data._id) {
+      dispatch(loadRequestAllergies(patientState.data._id));
+    }
+  }, [patientState.data._id, integration]);
+
+  useEffect(() => {
+    patientState?.data?._id && reportType === "Aferições"
+      ? dispatch(loadRequestMeasurements(patientState?.data?._id))
+      : "";
+  }, [patientState.data._id, reportType]);
 
   const handleTeam = useCallback(() => {
     const teamUsers: any = [];
@@ -165,45 +192,6 @@ export default function PatientOverview(
 
     setTeam(teamUsers);
   }, [careState.schedule]);
-
-  const handleOpenRowMenu = useCallback(
-    (event: React.MouseEvent<HTMLButtonElement>) => {
-      setAnchorEl(event.currentTarget);
-    },
-    [anchorEl]
-  );
-
-  const handleCloseRowMenu = useCallback(() => {
-    setAnchorEl(null);
-  }, [anchorEl]);
-
-  const renderPatientStatus = useCallback((status: string) => {
-    switch (status) {
-      case "Não Elegível":
-        return <CloseIcon style={{ color: "#FF6565", cursor: "pointer" }} />;
-      case "Elegível":
-        return <CheckIcon style={{ color: "#4FC66A", cursor: "pointer" }} />;
-      default:
-        return <CheckIcon style={{ color: "#EBEBEB" }} />;
-    }
-  }, []);
-
-  const getLastDocument = useCallback(() => {
-    const { documents_id: documents } = careState.data;
-
-    return documents ? documents[documents.length - 1]?.created_at : "";
-  }, [careState]);
-
-  const getPatientPhone = useCallback(() => {
-    const { patient_id: patient } = careState.data;
-
-    const number = patient?.phones[0].number;
-
-    return number;
-  }, [careState]);
-
-  const integration = sessionStorage.getItem(SESSIONSTORAGE.INTEGRATION);
-  const [careModalOpen, setCareModalOpen] = useState(false);
 
   const rows = [];
   (function handleDataRows() {
@@ -431,14 +419,19 @@ export default function PatientOverview(
     info: ["Equipe Multidisciplinar"],
   };
 
-  function isAllergic(allergie: AllergiesState) {
+  function isAllergic(allergie: any) {
     let allergic = false;
-    // allergie.data.map((data: AllergiesInterface) => {
-    //   if (data?.description) {
-    //     allergic = true;
-    //   }
-    // });
-
+    Object.keys(allergie).map((item: any) => {
+      if (item === "data" && allergie[item]["allergy"]) {
+        allergie[item]["allergy"].map((item: any) => {
+          if (integration && item.active === 1) {
+            allergic = true;
+          } else if (!integration && item.active) {
+            allergic = true;
+          }
+        });
+      }
+    });
     return allergic;
   }
 
@@ -460,16 +453,15 @@ export default function PatientOverview(
     }
     setReportType(nameReport);
   }
+  function handleContentReport(report: string) {
+    if (report === "Aferições") {
+      return measurementState.data;
+    } else {
+      return measurementState.data;
+    }
+  }
   console.log(reportActive, reportType);
-  const dataMocado = [
-    {
-      hour: "20:21",
-      professional: "Maria",
-      function: "Administrador",
-      documentName: "string",
-      options: "any",
-    },
-  ];
+
   return (
     <Sidebar>
       {careState.loading && <Loading />}
@@ -489,15 +481,21 @@ export default function PatientOverview(
                 iconName="ChartIcon"
                 cards={cards}
                 onClickCard={handleReport}
+                allergic={isAllergic(allergiesState)}
               />
-              <Container
-                style={{
-                  padding: "0 32px 20px ",
-                }}
-              >
-                {reportActive ? (
-                  <AccordionReport rows={dataMocado} />
-                ) : (
+              {reportActive ? (
+                <AccordionReport
+                  data={handleContentReport(reportType)}
+                  company_id={
+                    careState.data.company_id ? careState.data.company_id : ""
+                  }
+                />
+              ) : (
+                <Container
+                  style={{
+                    padding: "0 32px 20px ",
+                  }}
+                >
                   <Container
                     style={{
                       display: "flex",
@@ -528,8 +526,8 @@ export default function PatientOverview(
                       integration={integration}
                     />
                   </Container>
-                )}
-              </Container>
+                </Container>
+              )}
             </>
           ) : (
             <></>

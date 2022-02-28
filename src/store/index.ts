@@ -17,6 +17,7 @@ import { UserState } from "./ducks/users/types";
 import { LayoutState } from "./ducks/layout/types";
 import { MessageState } from "./ducks/message/types";
 import { AllergiesState } from "./ducks/allergies/types";
+import { MeasurementsState } from "./ducks/measurements/types";
 
 import { InitialState } from "./ducks/states";
 import combinedReducers from "./ducks/rootReducer";
@@ -39,6 +40,7 @@ export interface ApplicationState {
   layout: LayoutState;
   message: MessageState;
   allergies: AllergiesState;
+  measurements: MeasurementsState;
 }
 
 const sagaMiddleware = createSagaMiddleware();
