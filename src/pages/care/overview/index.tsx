@@ -62,6 +62,7 @@ interface IAllergiIntegration {
     success: boolean;
   };
 }
+
 const useStyles = makeStyles((theme) => ({
   root: {
     display: "flex",
@@ -130,12 +131,10 @@ export default function PatientOverview(
   const allergiesState = useSelector(
     (state: ApplicationState) => state.allergies
   );
-  // console.log(careState, "CRESTATE");
   const measurementState = useSelector(
     (state: ApplicationState) => state.measurements
   );
 
-  useState(false);
   const [team, setTeam] = useState<any[]>([]);
   const [reportActive, setReportActive] = useState(false);
   const [reportType, setReportType] = useState("");
@@ -164,9 +163,9 @@ export default function PatientOverview(
   }, [patientState.data._id, integration]);
 
   useEffect(() => {
-    patientState?.data?._id && reportType === "Aferições"
-      ? dispatch(loadRequestMeasurements(patientState?.data?._id))
-      : "";
+    if (patientState?.data?._id && reportType === "Aferições") {
+      dispatch(loadRequestMeasurements(patientState?.data?._id));
+    }
   }, [patientState.data._id, reportType]);
 
   const handleTeam = useCallback(() => {
@@ -454,11 +453,20 @@ export default function PatientOverview(
     setReportType(nameReport);
   }
   function handleContentReport(report: string): any {
-    if (report === "Aferições") {
+    if (report === "Aferições" && measurementState.data.length > 0) {
       return {
         data: measurementState.data,
         loading: measurementState.loading,
         error: measurementState.error,
+      };
+    } else if (
+      report === "Alergias" &&
+      Object.keys(allergiesState.data).length > 0
+    ) {
+      return {
+        data: allergiesState.data,
+        loading: allergiesState.loading,
+        error: allergiesState.error,
       };
     } else {
       return "";
