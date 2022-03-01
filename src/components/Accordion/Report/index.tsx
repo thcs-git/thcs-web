@@ -48,6 +48,7 @@ interface IAccordionReport {
     data: any;
   };
   company_id: string;
+  reportType: string;
   // data: IDataAccordion[];
 }
 interface IDataAccordion {
@@ -91,7 +92,7 @@ interface IAccordionItem {
 }
 
 export default function AccordionReport(props: IAccordionReport) {
-  const { content, company_id } = props;
+  const { content, company_id, reportType } = props;
 
   const [expanded, setExpanded] = useState<string | false>("panel0");
   const measurementsItemObjectIdMD = [
@@ -444,7 +445,7 @@ export default function AccordionReport(props: IAccordionReport) {
             padding: "8px 0 16px",
           }}
         >
-          Não há relatórios para este prontuário
+          Não há relatórios para o prontuário de {reportType}
         </Box>
       )}
     </>

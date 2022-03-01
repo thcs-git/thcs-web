@@ -494,6 +494,7 @@ export default function PatientOverview(
                   company_id={
                     careState.data.company_id ? careState.data.company_id : ""
                   }
+                  reportType={reportType}
                 />
               ) : (
                 <Container
