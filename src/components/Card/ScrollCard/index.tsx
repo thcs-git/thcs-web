@@ -15,6 +15,8 @@ import AlergicIcon from "../../Icons/allergic";
 import Box from "@material-ui/core/Box";
 import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
 import ArrowBackIosNewIcon from "@mui/icons-material/ArrowBackIosNew";
+import Backdrop from "@mui/material/Backdrop";
+import CircularProgress from "@mui/material/CircularProgress";
 //Styles
 import "./styles";
 
@@ -33,11 +35,21 @@ interface IScroll {
   iconName?: string;
   onClickCard?: any;
   allergic?: boolean;
+  loadingCard?: boolean;
 }
 
 export default function ScrollCard(props: IScroll) {
-  const { tittle, cards, iconName, onClickCard, allergic } = props;
+  const { tittle, cards, iconName, onClickCard, allergic, loadingCard } = props;
   const [selectCard, setSelectCard] = useState("");
+  const [openBackdrop, setOpenBackdrop] = useState(true);
+
+  useEffect(() => {
+    if (loadingCard) {
+      setOpenBackdrop(true);
+    } else {
+      setOpenBackdrop(false);
+    }
+  }, [loadingCard]);
 
   function handleSelectCard(name: string) {
     if (name === selectCard) {
@@ -46,15 +58,21 @@ export default function ScrollCard(props: IScroll) {
       setSelectCard(name);
     }
   }
+  function handleClickCard(name: string): any {
+    if (name !== "Alergias") {
+      onClickCard(name);
+      handleSelectCard(name);
+    } else if (!loadingCard) {
+      onClickCard(name);
+      handleSelectCard(name);
+    }
+  }
 
   const cardsItens = cards.map((name: string, index: number) => {
     return (
       <Card
         key={index}
-        onClick={() => {
-          onClickCard(name);
-          handleSelectCard(name);
-        }}
+        onClick={() => handleClickCard(name)}
         sx={{
           border: `${
             name === selectCard
@@ -69,7 +87,13 @@ export default function ScrollCard(props: IScroll) {
           {name === "Prescrições" && <PrescriptionIcon />}
           {name === "Aferições" && <MeasurementIcon />}
           {name === "Alergias" && (
-            <AlergicIcon fill={allergic ? "#FF6565" : "#0899BA"} />
+            <>
+              {loadingCard ? (
+                <CircularProgress sx={{ color: "var(--secondary)" }} />
+              ) : (
+                <AlergicIcon fill={allergic ? "#FF6565" : "#0899BA"} />
+              )}
+            </>
           )}
           {name === "Antibióticos" && <AntibioticsIcon />}
           {name === "Evolução" && <DiagnosisIcon />}

@@ -433,6 +433,17 @@ export default function PatientOverview(
     });
     return allergic;
   }
+  const contentAllergyExist = (allergie: any) => {
+    let allergicExist = false;
+    Object.keys(allergie).map((item: any) => {
+      if (item === "data" && allergie[item]["allergy"]) {
+        if (allergie[item]["allergy"].length > 0) allergicExist = true;
+      } else if (item === "data" && allergie[item]["event"]) {
+        if (allergie[item]["event"].length > 0) allergicExist = true;
+      }
+    });
+    return allergicExist;
+  };
 
   const buttons = [
     {
@@ -463,11 +474,14 @@ export default function PatientOverview(
       report === "Alergias" &&
       Object.keys(allergiesState.data).length > 0
     ) {
-      return {
-        data: allergiesState.data,
-        loading: allergiesState.loading,
-        error: allergiesState.error,
-      };
+      contentAllergyExist(allergiesState);
+      return contentAllergyExist(allergiesState)
+        ? {
+            data: allergiesState.data,
+            loading: allergiesState.loading,
+            error: allergiesState.error,
+          }
+        : "";
     } else {
       return "";
     }
@@ -495,6 +509,7 @@ export default function PatientOverview(
                 cards={cards}
                 onClickCard={handleReport}
                 allergic={isAllergic(allergiesState)}
+                loadingCard={allergiesState.loading}
               />
               {reportActive ? (
                 <AccordionReport

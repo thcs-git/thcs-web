@@ -172,8 +172,22 @@ export default function AccordionReport(props: IAccordionReport) {
       })
       .join(" ");
   };
+
+  const getFirstAndLastName = (fullName: string) => {
+    return `${fullName.split(" ")[0]} ${
+      fullName.split(" ")[fullName.split(" ").length - 1]
+    }`;
+  };
+
   const handleFunction = (list: any, company: string, type?: string) => {
     if (type) {
+      if (!list.created_by?.companies_links || list.created_by === null)
+        return "-";
+      return list.created_by.companies_links.map((item: any, index: number) => {
+        if (item.companie_id === company) {
+          return item.function;
+        }
+      });
     } else {
       return list.created_by[0].companies_links.map(
         (item: any, index: number) => {
@@ -342,22 +356,38 @@ export default function AccordionReport(props: IAccordionReport) {
       <>
         <HeaderDetailsAccordion>
           <TextCenterDetails
-            sx={{ width: `${type === "allergy" ? "100px" : "80px"}` }}
+            sx={{
+              width: `${
+                type === "allergy" || type === "event" ? "100px" : "80px"
+              }`,
+            }}
           >
             Hora
           </TextCenterDetails>
           <TextCenterDetails
-            sx={{ width: `${type === "allergy" ? "250px" : ""}` }}
+            sx={{
+              width: `${
+                type === "allergy" || type === "event" ? "250px" : "200px"
+              }`,
+            }}
           >
             Profissional
           </TextCenterDetails>
           <TextCenterDetails
-            sx={{ width: `${type === "allergy" ? "250px" : ""}` }}
+            sx={{
+              width: `${
+                type === "allergy" || type === "event" ? "250px" : "200px"
+              }`,
+            }}
           >
             Função
           </TextCenterDetails>
           <TextCenterDetails
-            sx={{ width: `${type === "allergy" ? "200px" : "320px"}` }}
+            sx={{
+              width: `${
+                type === "allergy" || type === "event" ? "200px" : "320px"
+              }`,
+            }}
           >
             {type === "allergy"
               ? "Alergia"
@@ -393,12 +423,14 @@ export default function AccordionReport(props: IAccordionReport) {
                 <TextCenterDetails sx={{ width: "250px" }}>
                   {column.created_by
                     ? integration
-                      ? capitalizeText(column.created_by)
-                      : capitalizeText(column.created_by.name)
-                    : ""}
+                      ? getFirstAndLastName(capitalizeText(column.created_by))
+                      : getFirstAndLastName(
+                          capitalizeText(column.created_by.name)
+                        )
+                    : "-"}
                 </TextCenterDetails>
                 <TextCenterDetails sx={{ width: "250px" }}>
-                  {/* {handleFunction(column, company_id)} */}
+                  {handleFunction(column, company_id, type)}
                 </TextCenterDetails>
                 <TextCenterDetails sx={{ width: "200px" }}>
                   <Box
@@ -411,8 +443,57 @@ export default function AccordionReport(props: IAccordionReport) {
                       margin: "2px",
                     }}
                   >
-                    {capitalizeText(column.description)}
-                    {/* {handleMeasurementItemsIcons(column.itens)} */}
+                    {integration
+                      ? capitalizeText(column.name)
+                      : capitalizeText(column.description)}
+                  </Box>
+                </TextCenterDetails>
+              </ContentDetailsAccordion>
+              {list.length !== index + 1 ? (
+                <Divider sx={{ width: "100%", margin: "0 auto" }} />
+              ) : (
+                ""
+              )}
+            </>
+          );
+        });
+      } else if (type === "event") {
+        console.log(list, "EVENTOS");
+        return list.map((column: any, index: number) => {
+          return (
+            <>
+              <ContentDetailsAccordion key={column._id}>
+                <TextCenterDetails sx={{ width: "100px" }}>
+                  {formatDate(column.created_at, "DD/MM/YY HH:mm")}
+                </TextCenterDetails>
+                <TextCenterDetails sx={{ width: "250px" }}>
+                  {column.created_by
+                    ? integration
+                      ? typeof column.created_by === "string"
+                        ? getFirstAndLastName(capitalizeText(column.created_by))
+                        : "-"
+                      : typeof column.created_by === "string"
+                      ? getFirstAndLastName(
+                          capitalizeText(column.created_by.name)
+                        )
+                      : "-"
+                    : "-"}
+                </TextCenterDetails>
+                <TextCenterDetails sx={{ width: "250px" }}>
+                  {handleFunction(column, company_id, type)}
+                </TextCenterDetails>
+                <TextCenterDetails sx={{ width: "200px" }}>
+                  <Box
+                    sx={{
+                      display: "flex",
+                      flexWrap: "wrap",
+                      justifyContent: "center",
+                      alignItems: "center",
+                      gap: "4px",
+                      margin: "2px",
+                    }}
+                  >
+                    {capitalizeText(column.event)}
                   </Box>
                 </TextCenterDetails>
               </ContentDetailsAccordion>
