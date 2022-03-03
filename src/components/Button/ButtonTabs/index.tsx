@@ -13,6 +13,7 @@ interface IButtons {
   background: string;
   onClick?: any;
   show?: boolean;
+  component?: JSX.Element;
 }
 
 function a11yProps(name: string, index: number) {
@@ -48,19 +49,22 @@ const ButtonTabs = (props: IComponent) => {
         marginTop: 25,
       }}
     >
-      {buttons.map(({ name, variant, background, onClick, show }: IButtons) => (
-        <>
-          {(show || canEdit) && (
-            <ButtonComponent
-              variant={variant}
-              background={background}
-              onClick={onClick}
-            >
-              {name}
-            </ButtonComponent>
-          )}
-        </>
-      ))}
+      {buttons.map(
+        ({ name, variant, background, onClick, show, component }: IButtons) => (
+          <>
+            {(show || canEdit) && (
+              <ButtonComponent
+                variant={variant}
+                background={background}
+                onClick={onClick}
+              >
+                {name}
+                {component}
+              </ButtonComponent>
+            )}
+          </>
+        )
+      )}
     </ButtonsContent>
   );
 };
