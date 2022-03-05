@@ -25,6 +25,7 @@ import Temperature from "../../Icons/Temperature";
 import Weight from "../../Icons/Weight";
 import Pain from "../../Icons/Pain";
 import Allergy from "../../Icons/allergic";
+import Evolution from "../../Icons/Evolution";
 
 // styled components and style
 import {
@@ -380,12 +381,16 @@ export default function AccordionReport(props: IAccordionReport) {
               }`,
             }}
           >
-            Função
+            {reportType === "Evolução" ? "Especialidade" : "Função"}
           </TextCenterDetails>
           <TextCenterDetails
             sx={{
               width: `${
-                type === "allergy" || type === "event" ? "200px" : "320px"
+                type === "allergy" ||
+                type === "event" ||
+                reportType === "Evolução"
+                  ? "200px"
+                  : "320px"
               }`,
             }}
           >
@@ -393,11 +398,18 @@ export default function AccordionReport(props: IAccordionReport) {
               ? "Alergia"
               : type === "event"
               ? "Eventos adversos"
+              : reportType === "Evolução"
+              ? "Tipo Evolução"
               : "Conteúdo"}
           </TextCenterDetails>
           {reportType !== "Alergias" ? (
             <TextCenterDetails
-              sx={{ width: "100px", justifyContent: "flex-start" }}
+              sx={{
+                width: `${reportType === "Evolução" ? "200px" : "100px"}`,
+                justifyContent: `${
+                  reportType === "Evolução" ? "center" : "flex-start"
+                }`,
+              }}
             >
               Opções
             </TextCenterDetails>
@@ -412,7 +424,6 @@ export default function AccordionReport(props: IAccordionReport) {
   const handleRow = (list: any, type?: string) => {
     if (type) {
       if (type === "allergy") {
-        console.log(list, "LISTTT");
         return list.map((column: any, index: number) => {
           return (
             <>
@@ -458,7 +469,6 @@ export default function AccordionReport(props: IAccordionReport) {
           );
         });
       } else if (type === "event") {
-        console.log(list, "EVENTOS");
         return list.map((column: any, index: number) => {
           return (
             <>
@@ -506,6 +516,38 @@ export default function AccordionReport(props: IAccordionReport) {
           );
         });
       }
+    } else if (reportType === "Evolução") {
+      return list.map((column: any, index: number) => {
+        return (
+          <>
+            <ContentDetailsAccordion key={column._id}>
+              <TextCenterDetails sx={{ width: "80px" }}>
+                {formatDate(column.created_at, "HH:mm")}
+              </TextCenterDetails>
+              <TextCenterDetails>
+                {getFirstAndLastName(capitalizeText(column.created_by[0].name))}
+              </TextCenterDetails>
+              <TextCenterDetails>
+                {column.created_by[0].main_specialty_id[0].name
+                  ? column.created_by[0].main_specialty_id[0].name
+                  : "-"}
+              </TextCenterDetails>
+              <TextCenterDetails>{column.type}</TextCenterDetails>
+              <TextCenterDetails>
+                <DownloadIcon
+                  sx={{ color: "var(--secondary)", marginRight: "8px" }}
+                />
+                <PrintIcon sx={{ color: "var(--secondary)" }} />
+              </TextCenterDetails>
+            </ContentDetailsAccordion>
+            {list.length !== index + 1 ? (
+              <Divider sx={{ width: "100%", margin: "0 auto" }} />
+            ) : (
+              ""
+            )}
+          </>
+        );
+      });
     } else {
       return list.map((column: IAccordionInfo, index: number) => {
         return (
@@ -514,7 +556,9 @@ export default function AccordionReport(props: IAccordionReport) {
               <TextCenterDetails sx={{ width: "80px" }}>
                 {formatDate(column.created_at, "HH:mm")}
               </TextCenterDetails>
-              <TextCenterDetails>{column.created_by[0].name}</TextCenterDetails>
+              <TextCenterDetails>
+                {getFirstAndLastName(capitalizeText(column.created_by[0].name))}
+              </TextCenterDetails>
               <TextCenterDetails>
                 {handleFunction(column, company_id)}
               </TextCenterDetails>
@@ -557,7 +601,7 @@ export default function AccordionReport(props: IAccordionReport) {
       {content.loading && <Loading />}
 
       {content.data ? (
-        reportType === "Aferições" ? (
+        reportType === "Aferições" || reportType === "Evolução" ? (
           <Container>
             {content.data.map(
               ({ _id, list }: IDataAccordion, index: number) => {
@@ -581,15 +625,30 @@ export default function AccordionReport(props: IAccordionReport) {
                           justifyContent: "space-between",
                         }}
                       >
-                        <IconMeasurement
-                          fill={
-                            expanded === `panel${index}`
-                              ? "var(--white)"
-                              : "var(--gray-dark)"
-                          }
-                          width="22px"
-                          height={"22px"}
-                        />
+                        {reportType === "Aferições" ? (
+                          <IconMeasurement
+                            fill={
+                              expanded === `panel${index}`
+                                ? "var(--white)"
+                                : "var(--gray-dark)"
+                            }
+                            width="22px"
+                            height={"22px"}
+                          />
+                        ) : reportType === "Evolução" ? (
+                          <Evolution
+                            fill={
+                              expanded === `panel${index}`
+                                ? "var(--white)"
+                                : "var(--gray-dark)"
+                            }
+                            width={"22px"}
+                            height={"22px"}
+                          />
+                        ) : (
+                          ""
+                        )}
+
                         <Box
                           sx={{
                             display: "flex",
@@ -599,9 +658,16 @@ export default function AccordionReport(props: IAccordionReport) {
                           {formatDate(_id, "DD/MM/YY")}
                         </Box>
                       </Box>
-                      <PrintIcon
-                        sx={{ cursor: "pointer", marginRight: "12px" }}
-                      />
+                      <Box>
+                        {reportType === "Evolução" && (
+                          <DownloadIcon
+                            sx={{ cursor: "pointer", marginRight: "12px" }}
+                          />
+                        )}
+                        <PrintIcon
+                          sx={{ cursor: "pointer", marginRight: "12px" }}
+                        />
+                      </Box>
                     </AccordionSummary>
                     <AccordionDetails>
                       {handleHeaderDetails()}

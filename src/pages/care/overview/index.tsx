@@ -16,6 +16,7 @@ import {
   loadCareById,
   updateCareRequest,
   loadScheduleRequest,
+  loadEvolutionRequest,
 } from "../../../store/ducks/cares/actions";
 import { loadPatientById } from "../../../store/ducks/patients/actions";
 import { loadRequest as loadRequestAllergies } from "../../../store/ducks/allergies/actions";
@@ -166,7 +167,12 @@ export default function PatientOverview(
     if (patientState?.data?._id && reportType === "Aferições") {
       dispatch(loadRequestMeasurements(patientState?.data?._id));
     }
-  }, [patientState.data._id, reportType]);
+    if (patientState.data._id && reportType === "Evolução") {
+      dispatch(loadEvolutionRequest(careState?.data?._id));
+    }
+  }, [careState.data._id, reportType]);
+
+  console.log(careState);
 
   const handleTeam = useCallback(() => {
     const teamUsers: any = [];
@@ -482,6 +488,12 @@ export default function PatientOverview(
             error: allergiesState.error,
           }
         : "";
+    } else if (report === "Evolução" && careState.evolution.length > 0) {
+      return {
+        data: careState.evolution,
+        loading: false,
+        error: false,
+      };
     } else {
       return "";
     }
