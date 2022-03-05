@@ -16,6 +16,7 @@ import {
   loadCareById,
   updateCareRequest,
   loadScheduleRequest,
+  loadEvolutionRequest,
 } from "../../../store/ducks/cares/actions";
 import { loadPatientById } from "../../../store/ducks/patients/actions";
 import { loadRequest as loadRequestAllergies } from "../../../store/ducks/allergies/actions";
@@ -62,6 +63,7 @@ interface IAllergiIntegration {
     success: boolean;
   };
 }
+
 const useStyles = makeStyles((theme) => ({
   root: {
     display: "flex",
@@ -130,12 +132,10 @@ export default function PatientOverview(
   const allergiesState = useSelector(
     (state: ApplicationState) => state.allergies
   );
-  // console.log(careState, "CRESTATE");
   const measurementState = useSelector(
     (state: ApplicationState) => state.measurements
   );
 
-  useState(false);
   const [team, setTeam] = useState<any[]>([]);
   const [reportActive, setReportActive] = useState(false);
   const [reportType, setReportType] = useState("");
@@ -164,10 +164,15 @@ export default function PatientOverview(
   }, [patientState.data._id, integration]);
 
   useEffect(() => {
-    patientState?.data?._id && reportType === "Aferições"
-      ? dispatch(loadRequestMeasurements(patientState?.data?._id))
-      : "";
-  }, [patientState.data._id, reportType]);
+    if (patientState?.data?._id && reportType === "Aferições") {
+      dispatch(loadRequestMeasurements(patientState?.data?._id));
+    }
+    if (patientState.data._id && reportType === "Evolução") {
+      dispatch(loadEvolutionRequest(careState?.data?._id));
+    }
+  }, [careState.data._id, reportType]);
+
+  console.log(careState);
 
   const handleTeam = useCallback(() => {
     const teamUsers: any = [];
@@ -434,6 +439,17 @@ export default function PatientOverview(
     });
     return allergic;
   }
+  const contentAllergyExist = (allergie: any) => {
+    let allergicExist = false;
+    Object.keys(allergie).map((item: any) => {
+      if (item === "data" && allergie[item]["allergy"]) {
+        if (allergie[item]["allergy"].length > 0) allergicExist = true;
+      } else if (item === "data" && allergie[item]["event"]) {
+        if (allergie[item]["event"].length > 0) allergicExist = true;
+      }
+    });
+    return allergicExist;
+  };
 
   const buttons = [
     {
@@ -454,11 +470,29 @@ export default function PatientOverview(
     setReportType(nameReport);
   }
   function handleContentReport(report: string): any {
-    if (report === "Aferições") {
+    if (report === "Aferições" && measurementState.data.length > 0) {
       return {
         data: measurementState.data,
         loading: measurementState.loading,
         error: measurementState.error,
+      };
+    } else if (
+      report === "Alergias" &&
+      Object.keys(allergiesState.data).length > 0
+    ) {
+      contentAllergyExist(allergiesState);
+      return contentAllergyExist(allergiesState)
+        ? {
+            data: allergiesState.data,
+            loading: allergiesState.loading,
+            error: allergiesState.error,
+          }
+        : "";
+    } else if (report === "Evolução" && careState.evolution.length > 0) {
+      return {
+        data: careState.evolution,
+        loading: false,
+        error: false,
       };
     } else {
       return "";
@@ -487,6 +521,7 @@ export default function PatientOverview(
                 cards={cards}
                 onClickCard={handleReport}
                 allergic={isAllergic(allergiesState)}
+                loadingCard={allergiesState.loading}
               />
               {reportActive ? (
                 <AccordionReport

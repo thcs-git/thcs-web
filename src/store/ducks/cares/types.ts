@@ -1,4 +1,4 @@
-import {PatientInterface} from "../patients/types";
+import { PatientInterface } from "../patients/types";
 
 /**
  * Action types
@@ -125,12 +125,31 @@ export enum CareTypes {
 
   LOAD_HISTORY_REQUEST = "@care/LOAD_HISTORY_REQUEST",
   LOAD_HISTORY_SUCCESS = "@care/LOAD_HISTORY_SUCCESS",
+
+  // evolution
+
+  LOAD_EVOLUTION_REQUEST = "@LOAD_EVOLUTION_REQUEST",
+  LOAD_EVOLUTION_SUCCESS = "@LOAD_EVOLUTION_SUCCESS",
+  LOAD_EVOLUTION_FAILURE = "@LOAD_EVOLUTION_FAILURE",
 }
 
 /**
  * Data types
  */
-
+export interface IEvolution {
+  _id: string;
+  list: [
+    {
+      _id: string;
+      active: boolean;
+      attendance_id: string;
+      created_at: string;
+      created_by: any;
+      evolution: string;
+      type: string;
+    }
+  ];
+}
 export interface CareInterface {
   transferred_from?: string;
   death?: boolean;
@@ -196,7 +215,6 @@ export interface CareList {
   status?: string;
 }
 
-
 /**
  * State type
  */
@@ -224,6 +242,7 @@ export interface CareState {
   documentNead: DocumentState;
   document: any;
   schedule?: ScheduleInterface[];
+  evolution: IEvolution[];
   // document?: {
   //   document_group_id: DocumentGroupInterface
   // } & DocumentGroupInterface;
@@ -416,39 +435,39 @@ export interface IMedicalReleaseData {
   release_at: string;
   release_reason: {
     type?: string;
-    _id: string,
-    name: string,
+    _id: string;
+    name: string;
   };
   release_cid: {
-    _id: string,
-    name: string,
+    _id: string;
+    name: string;
   };
   release_referral: {
-    _id: string,
-    name: string,
+    _id: string;
+    name: string;
   };
   release_observation: string;
   release_responsible: {
-    _id: string,
-    name: string,
+    _id: string;
+    name: string;
   };
 }
 
 export interface IAdmReleaseData {
   release_at: string;
   release_reason: {
-    _id: string,
-    name: string,
+    _id: string;
+    name: string;
   };
   release_cid: {
-    _id: string,
-    name: string,
+    _id: string;
+    name: string;
   };
   release_referral: string;
   release_observation: string;
   release_responsible: {
-    _id: string,
-    name: string,
+    _id: string;
+    name: string;
   };
 }
 
