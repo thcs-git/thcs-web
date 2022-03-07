@@ -26,7 +26,7 @@ import Weight from "../../Icons/Weight";
 import Pain from "../../Icons/Pain";
 import Allergy from "../../Icons/allergic";
 import Evolution from "../../Icons/Evolution";
-
+import Check from "../../Icons/Check";
 // styled components and style
 import {
   AccordionStyled as Accordion,
@@ -107,56 +107,7 @@ export default function AccordionReport(props: IAccordionReport) {
   const integration = sessionStorage.getItem(SESSIONSTORAGE.INTEGRATION);
 
   const [expanded, setExpanded] = useState<string | false>("panel0");
-  const measurementsItemObjectIdMD = [
-    {
-      _id: "62026db535284c714701a9ac",
-      name: "Pressão Arterial Diastólica",
-    },
-    {
-      _id: "5f7f796167a82d0e01571c42",
-      name: "Frequência Respiratória",
-    },
-    {
-      _id: "5f7f78fc67a82d0e01571c40",
-      name: "Frequência Cardíaca",
-    },
-    {
-      _id: "5f7f773567a82d0e01571c3d",
-      name: "Superfícia Corporal",
-    },
-    {
-      _id: "5f7f772567a82d0e01571c3b",
-      name: "Índice de Massa Corporal",
-    },
-    {
-      _id: "5f7f771f67a82d0e01571c39",
-      name: "Altura",
-    },
-    {
-      _id: "5f7f771b67a82d0e01571c37",
-      name: "Peso",
-    },
-    {
-      _id: "5f7f768067a82d0e01571c35",
-      name: "Hemoglico Teste",
-    },
-    {
-      _id: "5f20a77811ebd813183e6a03",
-      name: "Dor",
-    },
-    {
-      _id: "5f20a76a11ebd813183e6a01",
-      name: "SpO2",
-    },
-    {
-      _id: "5f20a74011ebd813183e69ff",
-      name: "Pressão Arterial Sistólica",
-    },
-    {
-      _id: "5f1f660a8590e0d2df9ad113",
-      name: "Temperatura",
-    },
-  ];
+
   console.log(content.data, "DATAAA");
 
   const handleChange =
@@ -181,10 +132,16 @@ export default function AccordionReport(props: IAccordionReport) {
   };
 
   const handleFunction = (list: any, company: string, type?: string) => {
-    if (type) {
+    if (type === "allergy" || type === "event") {
       if (!list.created_by?.companies_links || list.created_by === null)
         return "-";
       return list.created_by.companies_links.map((item: any, index: number) => {
+        if (item.companie_id === company) {
+          return item.function;
+        }
+      });
+    } else if (reportType === "Check-in/out") {
+      return list.map((item: any, index: number) => {
         if (item.companie_id === company) {
           return item.function;
         }
@@ -404,7 +361,7 @@ export default function AccordionReport(props: IAccordionReport) {
               : reportType === "Evolução"
               ? "Tipo Evolução"
               : reportType === "Check-in/out"
-              ? "Check-in"
+              ? "Entrada"
               : "Conteúdo"}
           </TextCenterDetails>
           {reportType === "Alergias" ? (
@@ -412,13 +369,19 @@ export default function AccordionReport(props: IAccordionReport) {
           ) : (
             <TextCenterDetails
               sx={{
-                width: `${reportType === "Evolução" ? "200px" : "100px"}`,
+                width: `${
+                  reportType === "Evolução" || reportType === "Check-in/out"
+                    ? "200px"
+                    : "100px"
+                }`,
                 justifyContent: `${
-                  reportType === "Evolução" ? "center" : "flex-start"
+                  reportType === "Evolução" || reportType === "Check-in/out"
+                    ? "center"
+                    : "flex-start"
                 }`,
               }}
             >
-              {reportType === "Check-in/out" ? "Check-out" : "Opções"}
+              {reportType === "Check-in/out" ? "Saída" : "Opções"}
             </TextCenterDetails>
           )}
         </HeaderDetailsAccordion>
@@ -554,43 +517,34 @@ export default function AccordionReport(props: IAccordionReport) {
         );
       });
     } else if (reportType === "Check-in/out") {
-      return list.map((column: any, index: number) => {
-        return (
-          <>
-            <ContentDetailsAccordion key={column._id}>
-              {reportType !== "Check-in/out" && (
-                <TextCenterDetails sx={{ width: "80px" }}>
-                  {formatDate(column.created_at, "HH:mm")}
+      return list.map((data: any, index: number) => {
+        return data.list.map((column: any, index: number) => {
+          return (
+            <>
+              <ContentDetailsAccordion key={index}>
+                <TextCenterDetails>
+                  {getFirstAndLastName(capitalizeText(data._id.user[0].name))}
                 </TextCenterDetails>
+
+                <TextCenterDetails>
+                  {handleFunction(data._id.user[0].companies_links, company_id)}
+                </TextCenterDetails>
+
+                <TextCenterDetails>
+                  {formatDate(column[0].created_at, "HH:mm")}
+                </TextCenterDetails>
+                <TextCenterDetails>
+                  {column[1] ? formatDate(column[1].created_at, "HH:mm") : "-"}
+                </TextCenterDetails>
+              </ContentDetailsAccordion>
+              {list.length !== index + 1 ? (
+                <Divider sx={{ width: "100%", margin: "0 auto" }} />
+              ) : (
+                ""
               )}
-              <TextCenterDetails>
-                {getFirstAndLastName(capitalizeText(column.created_by[0].name))}
-              </TextCenterDetails>
-              <TextCenterDetails>
-                {handleFunction(column, company_id)}
-              </TextCenterDetails>
-              <TextCenterDetails sx={{ width: "320px" }}>
-                <Box
-                  sx={{
-                    display: "flex",
-                    flexWrap: "wrap",
-                    justifyContent: "center",
-                    alignItems: "center",
-                    gap: "4px",
-                    margin: "2px",
-                  }}
-                >
-                  {/* {handleMeasurementItemsIcons(column.itens)} */}
-                </Box>
-              </TextCenterDetails>
-            </ContentDetailsAccordion>
-            {list.length !== index + 1 ? (
-              <Divider sx={{ width: "100%", margin: "0 auto" }} />
-            ) : (
-              ""
-            )}
-          </>
-        );
+            </>
+          );
+        });
       });
     } else {
       return list.map((column: IAccordionInfo, index: number) => {
@@ -683,6 +637,16 @@ export default function AccordionReport(props: IAccordionReport) {
                           />
                         ) : reportType === "Evolução" ? (
                           <Evolution
+                            fill={
+                              expanded === `panel${index}`
+                                ? "var(--white)"
+                                : "var(--gray-dark)"
+                            }
+                            width={"22px"}
+                            height={"22px"}
+                          />
+                        ) : reportType === "Check-in/out" ? (
+                          <Check
                             fill={
                               expanded === `panel${index}`
                                 ? "var(--white)"
