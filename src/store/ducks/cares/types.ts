@@ -128,9 +128,15 @@ export enum CareTypes {
 
   // evolution
 
-  LOAD_EVOLUTION_REQUEST = "@LOAD_EVOLUTION_REQUEST",
-  LOAD_EVOLUTION_SUCCESS = "@LOAD_EVOLUTION_SUCCESS",
-  LOAD_EVOLUTION_FAILURE = "@LOAD_EVOLUTION_FAILURE",
+  LOAD_EVOLUTION_REQUEST = "@care/LOAD_EVOLUTION_REQUEST",
+  LOAD_EVOLUTION_SUCCESS = "@care/LOAD_EVOLUTION_SUCCESS",
+  LOAD_EVOLUTION_FAILURE = "@care/LOAD_EVOLUTION_FAILURE",
+
+  // check-in/out
+
+  LOAD_CHECKIN_REQUEST = "@care/LOAD_CHECKIN_REQUEST",
+  LOAD_CHECKIN_SUCCESS = "@care/LOAD_CHECKIN_SUCCESS",
+  LOAD_CHECKIN_FAILURE = "@care/LOAD_CHECKIN_FAILURE",
 }
 
 /**
@@ -243,6 +249,7 @@ export interface CareState {
   document: any;
   schedule?: ScheduleInterface[];
   evolution: IEvolution[];
+  checkin: any;
   // document?: {
   //   document_group_id: DocumentGroupInterface
   // } & DocumentGroupInterface;

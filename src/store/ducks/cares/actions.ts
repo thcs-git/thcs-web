@@ -262,3 +262,15 @@ export const loadEvolutionSuccess = (data: any) =>
 
 export const loadEvolutionFailure = () =>
   action(CareTypes.LOAD_EVOLUTION_FAILURE);
+
+/**
+ * check-in/out
+ */
+
+export const loadCheckinRequest = (id: any) =>
+  action(CareTypes.LOAD_CHECKIN_REQUEST, id);
+
+export const loadCheckinSuccess = (data: any) =>
+  action(CareTypes.LOAD_CHECKIN_SUCCESS, data);
+
+export const loadCheckinFailure = () => action(CareTypes.LOAD_CHECKIN_FAILURE);
