@@ -356,15 +356,17 @@ export default function AccordionReport(props: IAccordionReport) {
     return (
       <>
         <HeaderDetailsAccordion>
-          <TextCenterDetails
-            sx={{
-              width: `${
-                type === "allergy" || type === "event" ? "100px" : "80px"
-              }`,
-            }}
-          >
-            Hora
-          </TextCenterDetails>
+          {reportType !== "Check-in/out" && (
+            <TextCenterDetails
+              sx={{
+                width: `${
+                  type === "allergy" || type === "event" ? "100px" : "80px"
+                }`,
+              }}
+            >
+              Hora
+            </TextCenterDetails>
+          )}
           <TextCenterDetails
             sx={{
               width: `${
@@ -388,7 +390,8 @@ export default function AccordionReport(props: IAccordionReport) {
               width: `${
                 type === "allergy" ||
                 type === "event" ||
-                reportType === "Evolução"
+                reportType === "Evolução" ||
+                reportType === "Check-in/out"
                   ? "200px"
                   : "320px"
               }`,
@@ -400,9 +403,13 @@ export default function AccordionReport(props: IAccordionReport) {
               ? "Eventos adversos"
               : reportType === "Evolução"
               ? "Tipo Evolução"
+              : reportType === "Check-in/out"
+              ? "Check-in"
               : "Conteúdo"}
           </TextCenterDetails>
-          {reportType !== "Alergias" ? (
+          {reportType === "Alergias" ? (
+            ""
+          ) : (
             <TextCenterDetails
               sx={{
                 width: `${reportType === "Evolução" ? "200px" : "100px"}`,
@@ -411,10 +418,8 @@ export default function AccordionReport(props: IAccordionReport) {
                 }`,
               }}
             >
-              Opções
+              {reportType === "Check-in/out" ? "Check-out" : "Opções"}
             </TextCenterDetails>
-          ) : (
-            ""
           )}
         </HeaderDetailsAccordion>
         <Divider sx={{ width: "100%", margin: "0 auto" }} />
@@ -548,6 +553,45 @@ export default function AccordionReport(props: IAccordionReport) {
           </>
         );
       });
+    } else if (reportType === "Check-in/out") {
+      return list.map((column: any, index: number) => {
+        return (
+          <>
+            <ContentDetailsAccordion key={column._id}>
+              {reportType !== "Check-in/out" && (
+                <TextCenterDetails sx={{ width: "80px" }}>
+                  {formatDate(column.created_at, "HH:mm")}
+                </TextCenterDetails>
+              )}
+              <TextCenterDetails>
+                {getFirstAndLastName(capitalizeText(column.created_by[0].name))}
+              </TextCenterDetails>
+              <TextCenterDetails>
+                {handleFunction(column, company_id)}
+              </TextCenterDetails>
+              <TextCenterDetails sx={{ width: "320px" }}>
+                <Box
+                  sx={{
+                    display: "flex",
+                    flexWrap: "wrap",
+                    justifyContent: "center",
+                    alignItems: "center",
+                    gap: "4px",
+                    margin: "2px",
+                  }}
+                >
+                  {/* {handleMeasurementItemsIcons(column.itens)} */}
+                </Box>
+              </TextCenterDetails>
+            </ContentDetailsAccordion>
+            {list.length !== index + 1 ? (
+              <Divider sx={{ width: "100%", margin: "0 auto" }} />
+            ) : (
+              ""
+            )}
+          </>
+        );
+      });
     } else {
       return list.map((column: IAccordionInfo, index: number) => {
         return (
@@ -601,7 +645,9 @@ export default function AccordionReport(props: IAccordionReport) {
       {content.loading && <Loading />}
 
       {content.data ? (
-        reportType === "Aferições" || reportType === "Evolução" ? (
+        reportType === "Aferições" ||
+        reportType === "Evolução" ||
+        reportType === "Check-in/out" ? (
           <Container>
             {content.data.map(
               ({ _id, list }: IDataAccordion, index: number) => {
