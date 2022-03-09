@@ -157,7 +157,10 @@ import { ProfessionTypes } from "./professions/types";
 import { AllergiesTypes } from "./allergies/types";
 import { load as getAllergies } from "./allergies/sagas";
 
-export default function* rootSaga() {
+import { MeasurementsTypes } from "./measurements/types";
+import { get as getMeasurements } from "./measurements/sagas";
+
+export default function* rootSaga(): any {
   return yield all([
     takeLatest(LoginTypes.LOAD_REQUEST, doLogin),
     takeLatest(LoginTypes.EMAIL_REQUEST, checkEmailLogin),
@@ -337,5 +340,10 @@ export default function* rootSaga() {
      * ALLERGIES
      */
     takeLatest(AllergiesTypes.LOAD_REQUEST, getAllergies),
+
+    /**
+     * MEASUREMENT
+     */
+    takeLatest(MeasurementsTypes.LOAD_REQUEST, getMeasurements),
   ]);
 }
