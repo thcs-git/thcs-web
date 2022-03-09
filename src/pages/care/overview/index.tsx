@@ -399,6 +399,7 @@ export default function PatientOverview(
   const content = {
     tittle: "HeaderOverview",
     rows: rows,
+    careState: careState,
   };
   const gridPropsPlan = {
     lg: 6,

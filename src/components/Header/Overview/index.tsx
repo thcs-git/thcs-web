@@ -29,6 +29,7 @@ interface IRows {
 interface IContent {
   tittle: string;
   rows: IRows[];
+  careState: CareState;
 }
 
 interface IProps {
@@ -95,12 +96,6 @@ export default function HeaderOverview(props: IProps) {
           <QRCodeIcon style={{ height: "32px", width: "32px" }} />
           <Box>QR Code</Box>
         </BoxIcon>
-        {/* <BoxIcon>
-          <LocationIcon
-            style={{ height: "32px", width: "32px", fill: "#ffffff" }}
-          />
-          <Box>Check-in/out</Box>
-        </BoxIcon> */}
       </Box>
       <DialogQrCode
         tittle={{ card: "Qr Code", info: ["Qr code"] }}

@@ -1,4 +1,11 @@
-import React, { useState } from "react";
+import React, { useState, useEffect, useCallback } from "react";
+
+// redux saga
+import { useDispatch, useSelector } from "react-redux";
+import {
+  loadCareById,
+  updateCareRequest,
+} from "../../../store/ducks/cares/actions";
 
 // Helpers
 import QRCode from "react-qr-code";
@@ -9,38 +16,50 @@ import LOCALSTORAGE from "../../../helpers/constants/localStorage";
 import Dialog from "@mui/material/Dialog";
 import DialogActions from "@mui/material/DialogActions";
 import Box from "@mui/material/Box";
-import Button from "@mui/material/Button";
-import Container from "@mui/material/Container";
-//Components
+// styles e styledComponents
 import { ButtonGeneration } from "./styles";
 // icons
 import CloseIcon from "@mui/icons-material/Close";
 import PrintIcon from "../../Icons/Print";
+import { CareState } from "../../../store/ducks/cares/types";
 
 interface IQrCodeProps {
   tittle: any;
-  content: any;
+  content: IContent;
   openDialog: boolean;
   setOpenDialog: React.Dispatch<React.SetStateAction<boolean>>;
 }
+interface IContent {
+  tittle: string;
+  rows: IRows[];
+  careState: CareState;
+}
+interface IRows {
+  name: string;
+  value: any;
+}
 
 export default function DialogQrCode(props: IQrCodeProps) {
-  const { tittle, content, openDialog, setOpenDialog } = props;
-  const [qrCode, setQrCode] = useState(
-    formatDate(undefined, "DD/MM/YYYY HH:mm:ss:SSS")
-  );
-  const [dateNow, setDateNow] = useState(formatDate(undefined, "DD/MM/YYYY"));
-  const [hourNow, setHourNow] = useState(formatDate(undefined, "HH:mm:ss"));
+  const {
+    tittle,
+    content: { careState },
+    openDialog,
+    setOpenDialog,
+  } = props;
+
+  const [qrCode, setQrCode] = useState(careState.data.qrCode || "");
+  const [dateNow, setDateNow] = useState("");
+  const [hourNow, setHourNow] = useState("");
+  const dispatch = useDispatch();
 
   const handleClose = () => {
     setOpenDialog(false);
   };
 
-  const handleQrCode = () => {
-    setQrCode(formatDate(undefined, "DD/MM/YYYY HH:mm:ss:SSS"));
-    setDateNow(formatDate(undefined, "DD/MM/YYYY"));
-    setHourNow(formatDate(undefined, "HH:mm:ss"));
-  };
+  function handlerCareStateForQrCode() {
+    careState.data.qrCode = new Date().toISOString();
+    return careState.data;
+  }
 
   const buttons = [
     {
@@ -48,7 +67,9 @@ export default function DialogQrCode(props: IQrCodeProps) {
       variant: "contained",
       background: "secondary",
       show: true,
-      onClick: handleQrCode,
+      onClick: () => {
+        dispatch(updateCareRequest(handlerCareStateForQrCode()));
+      },
     },
     {
       name: "",
@@ -56,9 +77,20 @@ export default function DialogQrCode(props: IQrCodeProps) {
       background: "secondary",
       show: true,
       onClick: () => {
-        console.log("cliquei");
+        window.print();
       },
       component: <PrintIcon fill={"#FFFFFF"} />,
+    },
+  ];
+  const buttonCreateQrcode = [
+    {
+      name: "Gerar QR Code",
+      variant: "contained",
+      background: "secondary",
+      show: true,
+      onClick: () => {
+        dispatch(updateCareRequest(handlerCareStateForQrCode()));
+      },
     },
   ];
 
@@ -92,11 +124,25 @@ export default function DialogQrCode(props: IQrCodeProps) {
           gap: "8px",
         }}
       >
-        <QRCode value={qrCode} fgColor="var(--secondary)" />
+        {careState.data.qrCode && (
+          <QRCode value={careState.data.qrCode} fgColor="var(--secondary)" />
+        )}
+
         <Box sx={{ marginTop: "8px" }}>
-          Gerado em: {dateNow} às {hourNow}
+          {careState.data.qrCode ? (
+            <>
+              Gerado em: {formatDate(careState.data.qrCode, "DD/MM/YYYY")} às{" "}
+              {formatDate(careState.data.qrCode, "HH:mm:ss")}
+            </>
+          ) : (
+            ""
+          )}
         </Box>
-        <ButtonGeneration buttons={buttons} canEdit={true} />
+        {careState.data.qrCode ? (
+          <ButtonGeneration buttons={buttons} canEdit={true} />
+        ) : (
+          <ButtonGeneration buttons={buttonCreateQrcode} canEdit={true} />
+        )}
       </Box>
     </Dialog>
   );

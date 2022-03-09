@@ -210,6 +210,7 @@ export interface CareInterface {
   adm_release?: IAdmReleaseData | null;
   medical_release_status?: boolean;
   adm_release_status?: boolean;
+  qrCode?: string;
 }
 
 export interface CareList {
