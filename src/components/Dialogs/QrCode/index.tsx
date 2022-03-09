@@ -15,6 +15,7 @@ import Container from "@mui/material/Container";
 import { ButtonGeneration } from "./styles";
 // icons
 import CloseIcon from "@mui/icons-material/Close";
+import PrintIcon from "../../Icons/Print";
 
 interface IQrCodeProps {
   tittle: any;
@@ -36,7 +37,7 @@ export default function DialogQrCode(props: IQrCodeProps) {
   };
 
   const handleQrCode = () => {
-    setQrCode(formatDate(undefined, "DD/MM/YYYY HH:mm:ss"));
+    setQrCode(formatDate(undefined, "DD/MM/YYYY HH:mm:ss:SSS"));
     setDateNow(formatDate(undefined, "DD/MM/YYYY"));
     setHourNow(formatDate(undefined, "HH:mm:ss"));
   };
@@ -48,6 +49,16 @@ export default function DialogQrCode(props: IQrCodeProps) {
       background: "secondary",
       show: true,
       onClick: handleQrCode,
+    },
+    {
+      name: "",
+      variant: "contained",
+      background: "secondary",
+      show: true,
+      onClick: () => {
+        console.log("cliquei");
+      },
+      component: <PrintIcon fill={"#FFFFFF"} />,
     },
   ];
 
