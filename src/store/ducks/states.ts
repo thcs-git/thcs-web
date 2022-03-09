@@ -47,6 +47,9 @@ import { MessageState, MessageTypes } from "./message/types";
 import { INITIAL_STATE as INITIAL_STATE_ALLERGIES } from "./allergies";
 import { AllergiesState } from "./allergies/types";
 
+import { INITIAL_STATE as INITIAL_STATE_MEASUREMENTS } from "./measurements";
+import { MeasurementsState } from "./measurements/types";
+
 /**
  * Initial state tree interface
  */
@@ -66,6 +69,7 @@ export interface IInitialState {
   layout: Readonly<LayoutState>;
   message: Readonly<MessageState>;
   allergies: Readonly<AllergiesState>;
+  measurements: Readonly<MeasurementsState>;
 }
 
 /**
@@ -87,4 +91,5 @@ export const InitialState: IInitialState = {
   layout: INITIAL_STATE_LAYOUT,
   message: INITIAL_STATE_MESSAGE,
   allergies: INITIAL_STATE_ALLERGIES,
+  measurements: INITIAL_STATE_MEASUREMENTS,
 };

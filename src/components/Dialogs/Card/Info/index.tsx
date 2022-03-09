@@ -325,6 +325,7 @@ export default function DialogInfo(props: IDialogProps) {
                 alignItems: "center",
                 padding: "4px",
                 gap: "6px",
+                marginLeft: "16px",
               }}
               onClick={() => {
                 console.log("cliquei");

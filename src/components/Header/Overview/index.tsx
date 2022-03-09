@@ -19,6 +19,7 @@ import {
   BoxIcon,
 } from "./styles";
 import DialogInfo from "../../Dialogs/Card/Info";
+import DialogQrCode from "../../Dialogs/QrCode";
 
 interface IRows {
   name: string;
@@ -101,7 +102,7 @@ export default function HeaderOverview(props: IProps) {
           <Box>Check-in/out</Box>
         </BoxIcon> */}
       </Box>
-      <DialogInfo
+      <DialogQrCode
         tittle={{ card: "Qr Code", info: ["Qr code"] }}
         content={content}
         openDialog={openDialog}

@@ -7,8 +7,8 @@ export const ButtonsContent = styled.div`
 
   margin-bottom: 20px;
 
-  button:first-child {
-    margin-right: 10px;
+  button:nth-child(2) {
+    margin-left: 10px;
   }
 `;
 
