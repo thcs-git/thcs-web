@@ -9,11 +9,33 @@ export enum AllergiesTypes {
 /**
  * data types
  */
-export interface AllergiesInterface {
+
+export interface AllergiesItem {
+  __v: number;
   _id: string;
-  type: string;
+  active: boolean;
+  care_id: string;
+  company: string;
+  created_at: string;
+  created_by: {
+    _id: string;
+    email: string;
+    name: string;
+  };
+  deny: false;
   description: string;
+  observations: string;
+  pacient_id: string;
+  patient_id: {
+    _id: string;
+    name: string;
+  };
   severity: string;
+  type: string;
+}
+export interface AllergiesInterface {
+  allergy: AllergiesItem[];
+  event: any;
 }
 
 /**
