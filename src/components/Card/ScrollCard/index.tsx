@@ -10,6 +10,7 @@ import { ReactComponent as DiagnosisIcon } from "../../../assets/img/icon-diagno
 import { ReactComponent as ExamIcon } from "../../../assets/img/icon-exam.svg";
 import { ReactComponent as HistoryIcon } from "../../../assets/img/icon-history.svg";
 import AlergicIcon from "../../Icons/allergic";
+import CheckIcon from "../../Icons/Check";
 
 //MUI
 import Box from "@material-ui/core/Box";
@@ -84,6 +85,7 @@ export default function ScrollCard(props: IScroll) {
         }}
       >
         <IconCard>
+          {name === "Check-in/out" && <CheckIcon fill={"#0899BA"} />}
           {name === "Prescrições" && <PrescriptionIcon />}
           {name === "Aferições" && <MeasurementIcon />}
           {name === "Alergias" && (

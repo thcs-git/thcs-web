@@ -150,6 +150,7 @@ import {
   transferCare,
   deleteCare,
   getEvolution,
+  getChekin,
 } from "./cares/sagas";
 
 import { get as getProfession } from "./professions/sagas";
@@ -239,6 +240,8 @@ export default function* rootSaga(): any {
     takeLatest(CareTypes.DELETE_CARE_REQUEST, deleteCare),
 
     takeLatest(CareTypes.LOAD_EVOLUTION_REQUEST, getEvolution),
+
+    takeLatest(CareTypes.LOAD_CHECKIN_REQUEST, getChekin),
 
     // Council
     takeLatest(CouncilTypes.LOAD_REQUEST, getCouncils),
