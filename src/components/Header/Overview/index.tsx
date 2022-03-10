@@ -20,6 +20,7 @@ import {
 } from "./styles";
 import DialogInfo from "../../Dialogs/Card/Info";
 import DialogQrCode from "../../Dialogs/QrCode";
+import { QrCodeState } from "../../../store/ducks/qrCode/types";
 
 interface IRows {
   name: string;
@@ -29,6 +30,7 @@ interface IRows {
 interface IContent {
   tittle: string;
   rows: IRows[];
+  qrCodeState: QrCodeState;
   careState: CareState;
 }
 

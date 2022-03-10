@@ -3,14 +3,17 @@ import React, { useState, useEffect, useCallback } from "react";
 // redux saga
 import { useDispatch, useSelector } from "react-redux";
 import {
-  loadCareById,
-  updateCareRequest,
-} from "../../../store/ducks/cares/actions";
+  createQrCodeRequest,
+  updateQrCodeRequest,
+} from "../../../store/ducks/qrCode/actions";
 
 // Helpers
 import QRCode from "react-qr-code";
 import { formatDate } from "../../../helpers/date";
 import LOCALSTORAGE from "../../../helpers/constants/localStorage";
+import SESSIONSTORAGE from "../../../helpers/constants/sessionStorage";
+
+import crypto from "crypto";
 
 // MUI
 import Dialog from "@mui/material/Dialog";
@@ -21,7 +24,11 @@ import { ButtonGeneration } from "./styles";
 // icons
 import CloseIcon from "@mui/icons-material/Close";
 import PrintIcon from "../../Icons/Print";
+import { qrCode, QrCodeState } from "../../../store/ducks/qrCode/types";
 import { CareState } from "../../../store/ducks/cares/types";
+import { CachedTwoTone } from "@material-ui/icons";
+// components
+import Loading from "../../../components/Loading";
 
 interface IQrCodeProps {
   tittle: any;
@@ -32,6 +39,7 @@ interface IQrCodeProps {
 interface IContent {
   tittle: string;
   rows: IRows[];
+  qrCodeState: QrCodeState;
   careState: CareState;
 }
 interface IRows {
@@ -42,25 +50,14 @@ interface IRows {
 export default function DialogQrCode(props: IQrCodeProps) {
   const {
     tittle,
-    content: { careState },
+    content: { qrCodeState, careState },
     openDialog,
     setOpenDialog,
   } = props;
 
-  const [qrCode, setQrCode] = useState(careState.data.qrCode || "");
-  const [dateNow, setDateNow] = useState("");
-  const [hourNow, setHourNow] = useState("");
+  const integration = sessionStorage.getItem(SESSIONSTORAGE.INTEGRATION);
   const dispatch = useDispatch();
-
-  const handleClose = () => {
-    setOpenDialog(false);
-  };
-
-  function handlerCareStateForQrCode() {
-    careState.data.qrCode = new Date().toISOString();
-    return careState.data;
-  }
-
+  const user_id = localStorage.getItem(LOCALSTORAGE.USER_ID);
   const buttons = [
     {
       name: "Gerar novo QR Code",
@@ -68,7 +65,8 @@ export default function DialogQrCode(props: IQrCodeProps) {
       background: "secondary",
       show: true,
       onClick: () => {
-        dispatch(updateCareRequest(handlerCareStateForQrCode()));
+        updateAndCreateQrCode();
+        // dispatch(loadQrCodeRequest(handlerCareStateForQrCode()));
       },
     },
     {
@@ -89,61 +87,98 @@ export default function DialogQrCode(props: IQrCodeProps) {
       background: "secondary",
       show: true,
       onClick: () => {
-        dispatch(updateCareRequest(handlerCareStateForQrCode()));
+        dispatch(createQrCodeRequest(handlerQrCode()));
       },
     },
   ];
 
+  const handleClose = () => {
+    setOpenDialog(false);
+  };
+
+  function handlerQrCode() {
+    const newQrCode = {
+      created_by: user_id,
+      active: true,
+      attendance_id: !integration ? careState.data._id : undefined,
+      external_attendance_id: integration ? careState.data._id : undefined,
+      qr_code: crypto
+        .createHash("md5")
+        .update(
+          JSON.stringify({
+            dataNow: new Date().toISOString(),
+            attendance_id: careState.data._id,
+          })
+        )
+        .digest("hex"),
+    };
+
+    qrCodeState.data = newQrCode;
+    return newQrCode;
+  }
+
+  function updateAndCreateQrCode() {
+    qrCodeState.data.active = false;
+    dispatch(updateQrCodeRequest(qrCodeState.data));
+    dispatch(createQrCodeRequest(handlerQrCode()));
+  }
+
+  console.log(qrCodeState, "QRCODE@@@");
   return (
-    <Dialog open={openDialog} onClose={handleClose}>
-      <DialogActions style={{ textAlign: "right" }}>
-        <CloseIcon
-          onClick={handleClose}
+    <>
+      {qrCodeState.loading && <Loading />}
+      <Dialog open={openDialog} onClose={handleClose}>
+        <DialogActions style={{ textAlign: "right" }}>
+          <CloseIcon
+            onClick={handleClose}
+            sx={{
+              fontWeight: "bold",
+              color: "var(--gray)",
+              border: " 2px solid var(--gray)",
+              borderRadius: "30px",
+              transition: "200ms",
+              "&:hover": {
+                color: "var(--gray-dark)",
+                border: " 2px solid var(--gray-dark)",
+              },
+            }}
+          />
+        </DialogActions>
+
+        <Box
           sx={{
-            fontWeight: "bold",
-            color: "var(--gray)",
-            border: " 2px solid var(--gray)",
-            borderRadius: "30px",
-            transition: "200ms",
-            "&:hover": {
-              color: "var(--gray-dark)",
-              border: " 2px solid var(--gray-dark)",
-            },
+            width: "400px",
+            height: "400px",
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+            justifyContent: "center",
+            gap: "8px",
           }}
-        />
-      </DialogActions>
-
-      <Box
-        sx={{
-          width: "400px",
-          height: "400px",
-          display: "flex",
-          flexDirection: "column",
-          alignItems: "center",
-          justifyContent: "center",
-          gap: "8px",
-        }}
-      >
-        {careState.data.qrCode && (
-          <QRCode value={careState.data.qrCode} fgColor="var(--secondary)" />
-        )}
-
-        <Box sx={{ marginTop: "8px" }}>
-          {careState.data.qrCode ? (
+        >
+          {qrCodeState.data && qrCodeState.data.qr_code ? (
             <>
-              Gerado em: {formatDate(careState.data.qrCode, "DD/MM/YYYY")} às{" "}
-              {formatDate(careState.data.qrCode, "HH:mm:ss")}
+              <QRCode
+                value={qrCodeState.data.qr_code}
+                fgColor="var(--secondary)"
+              />
+              <Box sx={{ marginTop: "8px" }}>
+                <>
+                  Gerado em:{" "}
+                  {formatDate(qrCodeState.data.created_at, "DD/MM/YYYY")} às{" "}
+                  {formatDate(qrCodeState.data.created_at, "HH:mm:ss")}
+                </>
+              </Box>
+              <ButtonGeneration buttons={buttons} canEdit={true} />
             </>
           ) : (
-            ""
+            <>
+              <Box>Não existe nenhum QR Code ativo</Box>
+              <ButtonGeneration buttons={buttonCreateQrcode} canEdit={true} />
+            </>
           )}
         </Box>
-        {careState.data.qrCode ? (
-          <ButtonGeneration buttons={buttons} canEdit={true} />
-        ) : (
-          <ButtonGeneration buttons={buttonCreateQrcode} canEdit={true} />
-        )}
-      </Box>
-    </Dialog>
+      </Dialog>
+    </>
   );
 }

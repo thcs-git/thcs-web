@@ -19,6 +19,7 @@ import layout from "./layout";
 import message from "./message";
 import allergies from "./allergies";
 import measurements from "./measurements";
+import qrCode from "./qrCode";
 
 export default combineReducers<IInitialState>({
   areas,
@@ -37,4 +38,5 @@ export default combineReducers<IInitialState>({
   message,
   allergies,
   measurements,
+  qrCode,
 });

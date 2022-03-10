@@ -38,6 +38,7 @@ import {
   AllergiesState,
 } from "../../../store/ducks/allergies/types";
 import { loadRequest as loadRequestMeasurements } from "../../../store/ducks/measurements/actions";
+import { loadRequest as loadRequestQrCode } from "../../../store/ducks/qrCode/actions";
 
 interface IPageParams {
   id?: string;
@@ -136,7 +137,8 @@ export default function PatientOverview(
   const measurementState = useSelector(
     (state: ApplicationState) => state.measurements
   );
-
+  const qrCodeState = useSelector((state: ApplicationState) => state.qrCode);
+  console.log(qrCodeState, "QRCODESTATE");
   const [team, setTeam] = useState<any[]>([]);
   const [reportActive, setReportActive] = useState(false);
   const [reportType, setReportType] = useState("");
@@ -150,6 +152,9 @@ export default function PatientOverview(
   useEffect(() => {
     if (params.id) {
       dispatch(loadCareById(params.id));
+      dispatch(loadRequestQrCode(params.id));
+
+      console.log(dispatch(loadRequestQrCode(params.id)), "TESTEEEEEE");
       dispatch(loadScheduleRequest({ attendance_id: params.id }));
     }
   }, [params.id]);
@@ -175,8 +180,6 @@ export default function PatientOverview(
       dispatch(loadCheckinRequest(careState.data._id));
     }
   }, [careState.data._id, reportType]);
-
-  console.log(careState);
 
   const handleTeam = useCallback(() => {
     const teamUsers: any = [];
@@ -399,6 +402,7 @@ export default function PatientOverview(
   const content = {
     tittle: "HeaderOverview",
     rows: rows,
+    qrCodeState: qrCodeState,
     careState: careState,
   };
   const gridPropsPlan = {
@@ -510,7 +514,7 @@ export default function PatientOverview(
       return "";
     }
   }
-
+  console.log(careState);
   console.log(reportActive, reportType);
 
   return (
