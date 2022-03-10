@@ -26,7 +26,7 @@ import Weight from "../../Icons/Weight";
 import Pain from "../../Icons/Pain";
 import Allergy from "../../Icons/allergic";
 import Evolution from "../../Icons/Evolution";
-
+import Check from "../../Icons/Check";
 // styled components and style
 import {
   AccordionStyled as Accordion,
@@ -181,10 +181,16 @@ export default function AccordionReport(props: IAccordionReport) {
   };
 
   const handleFunction = (list: any, company: string, type?: string) => {
-    if (type) {
+    if (type === "allergy" || type === "event") {
       if (!list.created_by?.companies_links || list.created_by === null)
         return "-";
       return list.created_by.companies_links.map((item: any, index: number) => {
+        if (item.companie_id === company) {
+          return item.function;
+        }
+      });
+    } else if (reportType === "Check-in/out") {
+      return list.map((item: any, index: number) => {
         if (item.companie_id === company) {
           return item.function;
         }
@@ -356,15 +362,17 @@ export default function AccordionReport(props: IAccordionReport) {
     return (
       <>
         <HeaderDetailsAccordion>
-          <TextCenterDetails
-            sx={{
-              width: `${
-                type === "allergy" || type === "event" ? "100px" : "80px"
-              }`,
-            }}
-          >
-            Hora
-          </TextCenterDetails>
+          {reportType !== "Check-in/out" && (
+            <TextCenterDetails
+              sx={{
+                width: `${
+                  type === "allergy" || type === "event" ? "100px" : "80px"
+                }`,
+              }}
+            >
+              Hora
+            </TextCenterDetails>
+          )}
           <TextCenterDetails
             sx={{
               width: `${
@@ -388,7 +396,8 @@ export default function AccordionReport(props: IAccordionReport) {
               width: `${
                 type === "allergy" ||
                 type === "event" ||
-                reportType === "Evolução"
+                reportType === "Evolução" ||
+                reportType === "Check-in/out"
                   ? "200px"
                   : "320px"
               }`,
@@ -400,21 +409,29 @@ export default function AccordionReport(props: IAccordionReport) {
               ? "Eventos adversos"
               : reportType === "Evolução"
               ? "Tipo Evolução"
+              : reportType === "Check-in/out"
+              ? "Entrada"
               : "Conteúdo"}
           </TextCenterDetails>
-          {reportType !== "Alergias" ? (
+          {reportType === "Alergias" ? (
+            ""
+          ) : (
             <TextCenterDetails
               sx={{
-                width: `${reportType === "Evolução" ? "200px" : "100px"}`,
+                width: `${
+                  reportType === "Evolução" || reportType === "Check-in/out"
+                    ? "200px"
+                    : "100px"
+                }`,
                 justifyContent: `${
-                  reportType === "Evolução" ? "center" : "flex-start"
+                  reportType === "Evolução" || reportType === "Check-in/out"
+                    ? "center"
+                    : "flex-start"
                 }`,
               }}
             >
-              Opções
+              {reportType === "Check-in/out" ? "Saída" : "Opções"}
             </TextCenterDetails>
-          ) : (
-            ""
           )}
         </HeaderDetailsAccordion>
         <Divider sx={{ width: "100%", margin: "0 auto" }} />
@@ -548,6 +565,36 @@ export default function AccordionReport(props: IAccordionReport) {
           </>
         );
       });
+    } else if (reportType === "Check-in/out") {
+      return list.map((data: any, index: number) => {
+        return data.list.map((column: any, index: number) => {
+          return (
+            <>
+              <ContentDetailsAccordion key={index}>
+                <TextCenterDetails>
+                  {getFirstAndLastName(capitalizeText(data._id.user[0].name))}
+                </TextCenterDetails>
+
+                <TextCenterDetails>
+                  {handleFunction(data._id.user[0].companies_links, company_id)}
+                </TextCenterDetails>
+
+                <TextCenterDetails>
+                  {formatDate(column[0].created_at, "HH:mm")}
+                </TextCenterDetails>
+                <TextCenterDetails>
+                  {column[1] ? formatDate(column[1].created_at, "HH:mm") : "-"}
+                </TextCenterDetails>
+              </ContentDetailsAccordion>
+              {list.length !== index + 1 ? (
+                <Divider sx={{ width: "100%", margin: "0 auto" }} />
+              ) : (
+                ""
+              )}
+            </>
+          );
+        });
+      });
     } else {
       return list.map((column: IAccordionInfo, index: number) => {
         return (
@@ -601,7 +648,9 @@ export default function AccordionReport(props: IAccordionReport) {
       {content.loading && <Loading />}
 
       {content.data ? (
-        reportType === "Aferições" || reportType === "Evolução" ? (
+        reportType === "Aferições" ||
+        reportType === "Evolução" ||
+        reportType === "Check-in/out" ? (
           <Container>
             {content.data.map(
               ({ _id, list }: IDataAccordion, index: number) => {
@@ -637,6 +686,16 @@ export default function AccordionReport(props: IAccordionReport) {
                           />
                         ) : reportType === "Evolução" ? (
                           <Evolution
+                            fill={
+                              expanded === `panel${index}`
+                                ? "var(--white)"
+                                : "var(--gray-dark)"
+                            }
+                            width={"22px"}
+                            height={"22px"}
+                          />
+                        ) : reportType === "Check-in/out" ? (
+                          <Check
                             fill={
                               expanded === `panel${index}`
                                 ? "var(--white)"

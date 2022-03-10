@@ -128,9 +128,15 @@ export enum CareTypes {
 
   // evolution
 
-  LOAD_EVOLUTION_REQUEST = "@LOAD_EVOLUTION_REQUEST",
-  LOAD_EVOLUTION_SUCCESS = "@LOAD_EVOLUTION_SUCCESS",
-  LOAD_EVOLUTION_FAILURE = "@LOAD_EVOLUTION_FAILURE",
+  LOAD_EVOLUTION_REQUEST = "@care/LOAD_EVOLUTION_REQUEST",
+  LOAD_EVOLUTION_SUCCESS = "@care/LOAD_EVOLUTION_SUCCESS",
+  LOAD_EVOLUTION_FAILURE = "@care/LOAD_EVOLUTION_FAILURE",
+
+  // check-in/out
+
+  LOAD_CHECKIN_REQUEST = "@care/LOAD_CHECKIN_REQUEST",
+  LOAD_CHECKIN_SUCCESS = "@care/LOAD_CHECKIN_SUCCESS",
+  LOAD_CHECKIN_FAILURE = "@care/LOAD_CHECKIN_FAILURE",
 }
 
 /**
@@ -215,6 +221,70 @@ export interface CareList {
   status?: string;
 }
 
+export interface ICheckinList {
+  _id: string;
+  list: [
+    {
+      _id: {
+        date: string;
+        user: [
+          {
+            name: string;
+            _id: string;
+            companies_links: [
+              {
+                _id: string;
+                active: boolean;
+                companie_id: string;
+                customer_id: string;
+                exp: string;
+                function: string;
+                linked_at: string;
+              }
+            ];
+            main_specialty_id: [
+              {
+                _id: string;
+                active: boolean;
+                created_at: string;
+                created_by: string;
+                name: string;
+              }
+            ];
+            specialties: [
+              {
+                _id: string;
+                active: boolean;
+                created_at: string;
+                created_by: string;
+                name: string;
+                roles: any;
+              }
+            ];
+          }
+        ];
+      };
+      list: [
+        {
+          __v: number;
+          _id: string;
+          attendance_id: string;
+          bracelet_scanned: true;
+          company_id: string;
+          created_at: string;
+          destiny: any;
+          external_attendance_id: string;
+          origin: any;
+          patient_id: string;
+          schedule_id: string;
+          type: string;
+          user_id: any;
+        }
+      ];
+    }
+  ];
+}
+
 /**
  * State type
  */
@@ -243,6 +313,7 @@ export interface CareState {
   document: any;
   schedule?: ScheduleInterface[];
   evolution: IEvolution[];
+  checkin: ICheckinList[];
   // document?: {
   //   document_group_id: DocumentGroupInterface
   // } & DocumentGroupInterface;
