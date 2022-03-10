@@ -50,7 +50,9 @@ interface ICardInfo {
 
 export default function CardInfo(props: ICardInfo) {
   const { content, gridProps, tittle, alergicIs, integration } = props;
+
   const [openDialog, setOpenDialog] = useState(false);
+
   function personalData(content: IContent) {
     let itens = content.rows.map(({ name, value }: IRows, index: number) => {
       switch (name) {
@@ -64,6 +66,8 @@ export default function CardInfo(props: ICardInfo) {
           return boxData(name, value);
         case "Doador de órgãos":
           return <Box key={index}>{`${name}: ${value ? "Sim" : "Não"}`}</Box>;
+        case "Gênero":
+          return boxData(name, value);
       }
     });
     return itens;

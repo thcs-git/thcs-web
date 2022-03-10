@@ -313,7 +313,7 @@ export interface CareState {
   document: any;
   schedule?: ScheduleInterface[];
   evolution: IEvolution[];
-  checkin: ICheckinList[];
+  checkin: any;
   // document?: {
   //   document_group_id: DocumentGroupInterface
   // } & DocumentGroupInterface;
