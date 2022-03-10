@@ -43,20 +43,6 @@ interface IRows {
 
 export default function DialogInfo(props: IDialogProps) {
   const { tittle, content, openDialog, setOpenDialog, integration } = props;
-  const [qrCode, setQrcode] = useState("22/02/2022, 12:50:56");
-
-  // const [qrCodeDate, setQrCodeDate] = useState(
-  //   formatDate(QR)
-  // );
-
-  // function generationNewQrCode() {
-  //   localStorage.setItem(
-  //     LOCALSTORAGE.DATE_GENERATION_QR_CODE,
-  //     formatDate(undefined, "DD/MM/YYYY HH:mm:ss")
-  //   );
-
-  //   // setQrCodeDate(generation)
-  // }
 
   function editName(card: string) {
     return card === "Qr Code" ? "Gerar" : "Editar";
@@ -181,30 +167,6 @@ export default function DialogInfo(props: IDialogProps) {
     return itens;
   };
 
-  // function handleTeamData(content: IContent) {
-  //   let data: string[] = [];
-
-  //   content.rows.map(({ name, value }: IRows, index: number) => {
-  //     if (name === "Equipe") {
-  //       value.map((item: string) => {
-  //         data.push(item);
-  //       });
-  //     }
-  //   });
-
-  //   return data;
-  // }
-  // function teamData(arr: string[]) {
-  //   let itens = arr.map((item: string, index: number) => {
-  //     return (
-  //       <Box style={{ color: "var(--black)", marginLeft: "24px" }} key={index}>
-  //         - {item}
-  //       </Box>
-  //     );
-  //   });
-
-  //   return itens;
-  // }
   function handleTeamData(content: IContent) {
     let team: object[] = [];
     content.rows.map(({ name, value }: IRows) => {
@@ -262,37 +224,10 @@ export default function DialogInfo(props: IDialogProps) {
     return itens;
   }
 
-  function qrcodeData(content: IContent) {
-    // let itens = content.rows.map(({ name, value }: IRows, index: number) => {
-    //   switch (name) {
-    //     case "Número do Atendimento":
-    //       return {name, value}
-    //   }
-    // });
-
-    // const qrcode = _.find(itens, {name:'Número do Atendimento'}) + String(new Date())
-
-    return (
-      <Box
-        sx={{
-          width: "100%",
-          display: "flex",
-          justifyContent: "center",
-          flexDirection: "column",
-          alignItems: "center",
-        }}
-      >
-        <QRCode value={JSON.stringify({ date: qrCode })} />
-        <Box sx={{ marginTop: "16px" }}>Gerado em: {qrCode}</Box>
-      </Box>
-    );
-  }
-
   const dataList = (tittle: string) => {
     if (tittle === "Dados Pessoais") return personalData(content);
     if (tittle === "Dados do Plano") return planData(content);
     if (tittle === "Dados de atendimento") return careData(content);
-    if (tittle === "Qr code") return qrcodeData(content);
     if (tittle === "Equipe Multidisciplinar")
       return teamData(handleTeamData(content));
   };
@@ -329,14 +264,9 @@ export default function DialogInfo(props: IDialogProps) {
               }}
               onClick={() => {
                 console.log("cliquei");
-                setQrcode(
-                  String(formatDate(undefined, "DD/MM/YYYY, HH:mm:ss"))
-                );
-                // generationNewQrCode();
               }}
             >
               <IconEdit style={{ cursor: "pointer" }} />
-              {/*{console.log('a', content)}*/}
               <Box
                 style={{
                   cursor: "pointer",
@@ -362,23 +292,8 @@ export default function DialogInfo(props: IDialogProps) {
                   }}
                 >
                   {iconHeader(tittleInfo)}
-                  {/* <IconPatient style={{ width: "16px" }} /> */}
 
-                  {tittle?.card === "Qr Code" ? (
-                    <Box
-                      sx={{
-                        fontWeight: "bold",
-                        width: "100%",
-                        textAlign: "center",
-                        fontSize: "24px",
-                        marginBottom: "8px",
-                      }}
-                    >
-                      {tittleInfo}{" "}
-                    </Box>
-                  ) : (
-                    <Box sx={{ fontWeight: "bold" }}>{tittleInfo} </Box>
-                  )}
+                  <Box sx={{ fontWeight: "bold" }}>{tittleInfo} </Box>
                 </Box>
                 {dataList(tittleInfo)}
               </>
