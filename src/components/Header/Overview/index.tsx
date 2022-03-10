@@ -69,14 +69,14 @@ export default function HeaderOverview(props: IProps) {
                   name === "Nome" && value
               )}
 
-              {allergic && (
+              {/* {allergic && (
                 <TagAllergic
                   style={{ marginLeft: "4px", fontWeight: "normal" }}
                 >
                   <AllergicIcon />
                   Alérgico(a)
                 </TagAllergic>
-              )}
+              )} */}
             </Box>
             <Box>
               <Box>

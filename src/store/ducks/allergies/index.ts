@@ -4,10 +4,32 @@ import { AllergiesState, AllergiesTypes } from "./types";
 export const INITIAL_STATE: AllergiesState = {
   data: [
     {
-      _id: "",
-      type: "",
-      description: "",
-      severity: "",
+      allergy: [
+        {
+          __v: 0,
+          _id: "",
+          active: false,
+          care_id: "",
+          company: "",
+          created_at: "",
+          created_by: {
+            _id: "",
+            email: "",
+            name: "",
+          },
+          deny: false,
+          description: "",
+          observations: "",
+          pacient_id: "",
+          patient_id: {
+            _id: "",
+            name: "",
+          },
+          severity: "",
+          type: "",
+        },
+      ],
+      event: "",
     },
   ],
   loading: false,

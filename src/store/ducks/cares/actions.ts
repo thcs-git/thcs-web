@@ -6,7 +6,9 @@ import {
   DocumentGroupInterface,
   DocumentInterface,
   HealthInsuranceInterface,
-  HealthPlanInterface, ReleaseReasonInterface, ReleaseReferralInterface,
+  HealthPlanInterface,
+  ReleaseReasonInterface,
+  ReleaseReferralInterface,
 } from "./types";
 
 export const loadRequest = (params: LoadRequestParams = {}) =>
@@ -34,8 +36,7 @@ export const transferCareSuccess = (data: CareInterface) =>
 
 export const deleteCareRequest = (id: string) =>
   action(CareTypes.DELETE_CARE_REQUEST, { id });
-export const deleteCareSuccess = () =>
-  action(CareTypes.DELETE_CARE_SUCCESS);
+export const deleteCareSuccess = () => action(CareTypes.DELETE_CARE_SUCCESS);
 
 export const loadCareById = (id: string) =>
   action(CareTypes.LOAD_REQUEST_CARE_BY_ID, { id });
@@ -51,7 +52,7 @@ export const loadRequestPopUp = (params: LoadRequestParams = {}) =>
   action(CareTypes.LOAD_PATIENT_REQUEST, { params });
 
 export const searchPatientSuccess = (data: CareInterface) =>
-  action(CareTypes.SEARCH_PATIENT_SUCCESS, { data } );
+  action(CareTypes.SEARCH_PATIENT_SUCCESS, { data });
 
 /**
  * Documento Socioambiental
@@ -142,7 +143,7 @@ export const actionDocumentNeadUpdateRequest = (data: DocumentInterface) =>
 export const actionDocumentNeadUpdate = (data: DocumentInterface) =>
   action(CareTypes.DOCUMENT_NEAD_UPDATE, { data });
 
-  export const cleanAction = () => action(CareTypes.CLEAN);
+export const cleanAction = () => action(CareTypes.CLEAN);
 
 /**
  * Health Care
@@ -186,8 +187,7 @@ export const careTypeSuccess = (data: HealthPlanInterface) =>
 /**
  * CID
  */
-export const cidAllRequest = () =>
-  action(CareTypes.LOAD_CID_REQUEST);
+export const cidAllRequest = () => action(CareTypes.LOAD_CID_REQUEST);
 export const cidRequest = (cid: string) =>
   action(CareTypes.SEARCH_CID_REQUEST, { cid });
 export const cidSuccess = (data: HealthPlanInterface) =>
@@ -249,3 +249,16 @@ export const deleteScheduleRequest = (id: string, type?: string) =>
   action(CareTypes.DELETE_SCHEDULE_REQUEST, { id, type });
 export const deleteScheduleSuccess = (data: any) =>
   action(CareTypes.DELETE_SCHEDULE_SUCCESS, { data });
+
+/**
+ * evolution
+ */
+
+export const loadEvolutionRequest = (id: any) =>
+  action(CareTypes.LOAD_EVOLUTION_REQUEST, id);
+
+export const loadEvolutionSuccess = (data: any) =>
+  action(CareTypes.LOAD_EVOLUTION_SUCCESS, data);
+
+export const loadEvolutionFailure = () =>
+  action(CareTypes.LOAD_EVOLUTION_FAILURE);
