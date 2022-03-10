@@ -17,6 +17,7 @@ import {
   updateCareRequest,
   loadScheduleRequest,
   loadEvolutionRequest,
+  loadCheckinRequest,
 } from "../../../store/ducks/cares/actions";
 import { loadPatientById } from "../../../store/ducks/patients/actions";
 import { loadRequest as loadRequestAllergies } from "../../../store/ducks/allergies/actions";
@@ -169,6 +170,9 @@ export default function PatientOverview(
     }
     if (patientState.data._id && reportType === "Evolução") {
       dispatch(loadEvolutionRequest(careState?.data?._id));
+    }
+    if (careState?.data?._id && reportType === "Check-in/out") {
+      dispatch(loadCheckinRequest(careState.data._id));
     }
   }, [careState.data._id, reportType]);
 
@@ -403,6 +407,7 @@ export default function PatientOverview(
     md: 6,
   };
   const cards = [
+    "Check-in/out",
     "Prescrições",
     "Aferições",
     "Alergias",
@@ -491,6 +496,12 @@ export default function PatientOverview(
     } else if (report === "Evolução" && careState.evolution.length > 0) {
       return {
         data: careState.evolution,
+        loading: false,
+        error: false,
+      };
+    } else if (report === "Check-in/out" && careState.checkin.length > 0) {
+      return {
+        data: careState.checkin,
         loading: false,
         error: false,
       };

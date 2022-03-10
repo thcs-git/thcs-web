@@ -43,6 +43,8 @@ import {
   loadEvolutionRequest,
   loadEvolutionSuccess,
   loadEvolutionFailure,
+  loadCheckinSuccess,
+  loadCheckinFailure,
 } from "./actions";
 
 import { apiIntegra, apiSollar } from "../../../services/axios";
@@ -755,6 +757,20 @@ export function* getEvolution({ payload }: any) {
     yield put(loadEvolutionSuccess(response.data));
   } catch (err) {
     yield put(loadEvolutionFailure());
+    toast.error("Erro ao buscar Evoluções");
+  }
+}
+
+export function* getChekin({ payload }: any) {
+  try {
+    const response: AxiosResponse = yield call(
+      apiSollarMobi.post,
+      `/checkin/getGroup`,
+      { attendance_id: payload }
+    );
+    yield put(loadCheckinSuccess(response.data));
+  } catch (err) {
+    yield put(loadCheckinFailure());
     toast.error("Erro ao buscar Evoluções");
   }
 }

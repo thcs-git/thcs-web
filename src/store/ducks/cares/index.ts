@@ -62,6 +62,7 @@ export const INITIAL_STATE: CareState = {
   document: "",
   schedule: [],
   evolution: [],
+  checkin: [],
 };
 
 const reducer: Reducer<CareState> = (state = INITIAL_STATE, action) => {
@@ -662,6 +663,30 @@ const reducer: Reducer<CareState> = (state = INITIAL_STATE, action) => {
         loading: false,
         evolution: [],
       };
+    case CareTypes.LOAD_CHECKIN_REQUEST:
+      return {
+        ...state,
+        loading: true,
+        succes: false,
+        error: false,
+      };
+    case CareTypes.LOAD_CHECKIN_SUCCESS:
+      return {
+        ...state,
+        loading: false,
+        success: true,
+        error: false,
+        checkin: action.payload,
+      };
+    case CareTypes.LOAD_CHECKIN_FAILURE:
+      return {
+        ...state,
+        loading: false,
+        success: false,
+        error: true,
+        checkin: [],
+      };
+
     case CareTypes.CLEAN:
       return INITIAL_STATE;
 
