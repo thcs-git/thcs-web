@@ -107,7 +107,6 @@ export default function AccordionReport(props: IAccordionReport) {
   const integration = sessionStorage.getItem(SESSIONSTORAGE.INTEGRATION);
 
   const [expanded, setExpanded] = useState<string | false>("panel0");
-
   console.log(content.data, "DATAAA");
 
   const handleChange =
