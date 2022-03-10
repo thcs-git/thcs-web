@@ -49,7 +49,7 @@ export const TextCenterDetails = styled(Box)`
   display: flex;
   justify-content: center;
   text-align: center;
-  width: 150px;
+  width: 200px;
   margin: auto 0;
 `;
 
