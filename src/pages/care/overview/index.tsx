@@ -9,12 +9,14 @@ import Header from "../../../components/Header/Overview";
 import ScrollCard from "../../../components/Card/ScrollCard";
 import CardInfo from "../../../components/Card/Info";
 import ButtonTabs from "../../../components/Button/ButtonTabs";
+import AccordionReport from "../../../components/Accordion/Report";
 
 import {
   deleteCareRequest,
   loadCareById,
   updateCareRequest,
   loadScheduleRequest,
+  loadEvolutionRequest,
 } from "../../../store/ducks/cares/actions";
 import { loadPatientById } from "../../../store/ducks/patients/actions";
 import { loadRequest as loadRequestAllergies } from "../../../store/ducks/allergies/actions";
@@ -34,9 +36,32 @@ import {
   AllergiesInterface,
   AllergiesState,
 } from "../../../store/ducks/allergies/types";
+import { loadRequest as loadRequestMeasurements } from "../../../store/ducks/measurements/actions";
 
 interface IPageParams {
   id?: string;
+}
+interface IAllergiIntegration {
+  allergie: {
+    data: {
+      allergy: [
+        {
+          active: number;
+          created_at: string;
+          created_by: string;
+          description: string;
+          id: number;
+          name: string;
+          severity: string;
+          type: string;
+        }
+      ];
+      event: [];
+    };
+    error: boolean;
+    loading: boolean;
+    success: boolean;
+  };
 }
 
 const useStyles = makeStyles((theme) => ({
@@ -97,30 +122,29 @@ const useStyles = makeStyles((theme) => ({
 export default function PatientOverview(
   props: RouteComponentProps<IPageParams>
 ) {
+  const integration = sessionStorage.getItem(SESSIONSTORAGE.INTEGRATION);
+
   const history = useHistory();
   const dispatch = useDispatch();
   const { params } = props.match;
-  const classes = useStyles();
   const careState = useSelector((state: ApplicationState) => state.cares);
   const patientState = useSelector((state: ApplicationState) => state.patients);
   const allergiesState = useSelector(
     (state: ApplicationState) => state.allergies
   );
+  const measurementState = useSelector(
+    (state: ApplicationState) => state.measurements
+  );
 
-  const [medicalReleaseModal, setMedicalReleaseModal] = useState(false);
-  const [revertMedicalReleaseModal, setRevertMedicalReleaseModal] =
-    useState(false);
-  const [admReleaseModal, setAdmReleaseModal] = useState(false);
-  const [revertAdmReleaseModal, setRevertAdmReleaseModal] = useState(false);
-  const [prescriptionModal, setPrescriptionModal] = useState(false);
   const [team, setTeam] = useState<any[]>([]);
-  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
+  const [reportActive, setReportActive] = useState(false);
+  const [reportType, setReportType] = useState("");
 
   useEffect(() => {
     if (careState.data.patient_id) {
       dispatch(loadPatientById(careState.data.patient_id._id));
     }
-  }, [careState?.data?.patient_id]);
+  }, [careState?.data?.patient_id, integration]);
 
   useEffect(() => {
     if (params.id) {
@@ -134,10 +158,21 @@ export default function PatientOverview(
   }, [careState.schedule]);
 
   useEffect(() => {
-    dispatch(
-      loadRequestAllergies(patientState.data._id ? patientState.data._id : "")
-    );
-  }, [patientState.data._id]);
+    if (patientState.data._id) {
+      dispatch(loadRequestAllergies(patientState.data._id));
+    }
+  }, [patientState.data._id, integration]);
+
+  useEffect(() => {
+    if (patientState?.data?._id && reportType === "Aferições") {
+      dispatch(loadRequestMeasurements(patientState?.data?._id));
+    }
+    if (patientState.data._id && reportType === "Evolução") {
+      dispatch(loadEvolutionRequest(careState?.data?._id));
+    }
+  }, [careState.data._id, reportType]);
+
+  console.log(careState);
 
   const handleTeam = useCallback(() => {
     const teamUsers: any = [];
@@ -163,234 +198,199 @@ export default function PatientOverview(
     setTeam(teamUsers);
   }, [careState.schedule]);
 
-  const handleOpenRowMenu = useCallback(
-    (event: React.MouseEvent<HTMLButtonElement>) => {
-      setAnchorEl(event.currentTarget);
-    },
-    [anchorEl]
-  );
-
-  const handleCloseRowMenu = useCallback(() => {
-    setAnchorEl(null);
-  }, [anchorEl]);
-
-  const renderPatientStatus = useCallback((status: string) => {
-    switch (status) {
-      case "Não Elegível":
-        return <CloseIcon style={{ color: "#FF6565", cursor: "pointer" }} />;
-      case "Elegível":
-        return <CheckIcon style={{ color: "#4FC66A", cursor: "pointer" }} />;
-      default:
-        return <CheckIcon style={{ color: "#EBEBEB" }} />;
-    }
-  }, []);
-
-  const getLastDocument = useCallback(() => {
-    const { documents_id: documents } = careState.data;
-
-    return documents ? documents[documents.length - 1]?.created_at : "";
-  }, [careState]);
-
-  const getPatientPhone = useCallback(() => {
-    const { patient_id: patient } = careState.data;
-
-    const number = patient?.phones[0].number;
-
-    return number;
-  }, [careState]);
-
-  const integration = sessionStorage.getItem(SESSIONSTORAGE.INTEGRATION);
-  const [careModalOpen, setCareModalOpen] = useState(false);
-
   const rows = [];
+  (function handleDataRows() {
+    careState?.data?.patient_id?.name &&
+      rows.push({ name: "Nome", value: careState?.data?.patient_id?.name });
+    patientState?.data?.gender &&
+      rows.push({
+        name: "Gênero",
+        value: patientState?.data?.gender,
+      });
+    patientState?.data?.marital_status &&
+      rows.push({
+        name: "Estado Civil ",
+        value: patientState?.data?.marital_status,
+      });
+    careState?.data?.patient_id?.birthdate &&
+      rows.push({
+        name: "Data de nascimento",
+        value: formatDate(careState.data.patient_id.birthdate, "DD/MM/YYYY"),
+      });
+    careState?.data?.patient_id?.mother_name &&
+      rows.push({
+        name: "Mãe",
+        value: careState.data.patient_id.mother_name,
+      });
+    patientState?.data?.national_id &&
+      rows.push({
+        name: "RG",
+        value: patientState?.data?.national_id,
+      });
 
-  careState?.data?.patient_id?.name &&
-    rows.push({ name: "Nome", value: careState?.data?.patient_id?.name });
-  patientState?.data?.gender &&
-    rows.push({
-      name: "Gênero",
-      value: patientState?.data?.gender,
-    });
-  patientState?.data?.marital_status &&
-    rows.push({
-      name: "Estado Civil ",
-      value: patientState?.data?.marital_status,
-    });
-  careState?.data?.patient_id?.birthdate &&
-    rows.push({
-      name: "Data de nascimento",
-      value: formatDate(careState.data.patient_id.birthdate, "DD/MM/YYYY"),
-    });
-  careState?.data?.patient_id?.mother_name &&
-    rows.push({
-      name: "Mãe",
-      value: careState.data.patient_id.mother_name,
-    });
-  patientState?.data?.national_id &&
-    rows.push({
-      name: "RG",
-      value: patientState?.data?.national_id,
-    });
+    careState?.data?.patient_id?.fiscal_number &&
+      rows.push({
+        name: "CPF",
+        value: careState?.data?.patient_id?.fiscal_number,
+      });
+    patientState?.data?.phones &&
+      patientState.data.phones.forEach((phone) => {
+        if (phone.cellnumber) {
+          rows.push({
+            name: "Celular",
+            value: phone.cellnumber,
+          });
+        }
+        if (phone.number) {
+          rows.push({
+            name: "Telefone",
+            value: phone.number,
+          });
+        }
+      });
+    careState?.data?.patient_id?.organ_donor &&
+      rows.push({
+        name: "Doador de órgãos",
+        value: careState.data.patient_id.organ_donor,
+      });
 
-  careState?.data?.patient_id?.fiscal_number &&
-    rows.push({
-      name: "CPF",
-      value: careState?.data?.patient_id?.fiscal_number,
-    });
-  patientState?.data?.phones &&
-    patientState.data.phones.forEach((phone) => {
-      if (phone.cellnumber) {
-        rows.push({
-          name: "Celular",
-          value: phone.cellnumber,
-        });
-      }
-      if (phone.number) {
-        rows.push({
-          name: "Telefone",
-          value: phone.number,
-        });
-      }
-    });
-  careState?.data?.patient_id?.organ_donor &&
-    rows.push({
-      name: "Doador de órgãos",
-      value: careState.data.patient_id.organ_donor,
-    });
+    careState?.data?.patient_id?.birthdate &&
+      rows.push({
+        name: "Idade",
+        value: age(careState.data.patient_id.birthdate),
+      });
 
-  careState?.data?.patient_id?.birthdate &&
-    rows.push({
-      name: "Idade",
-      value: age(careState.data.patient_id.birthdate),
-    });
+    careState?.data?.patient_id?.blood_type &&
+      rows.push({
+        name: "Tipo sanguíneo",
+        value: careState.data.patient_id.blood_type,
+      });
 
-  careState?.data?.patient_id?.blood_type &&
-    rows.push({
-      name: "Tipo sanguíneo",
-      value: careState.data.patient_id.blood_type,
-    });
+    careState?.data?.patient_id?._id &&
+      rows.push({
+        name: "Código do paciente",
+        value: careState.data.patient_id._id,
+      });
+    patientState?.data?.nationality &&
+      rows.push({
+        name: "Nacionalidade",
+        value: patientState?.data?.nationality,
+      });
+    patientState?.data?.address_id?.postal_code &&
+      rows.push({
+        name: "CEP",
+        value: patientState?.data?.address_id?.postal_code,
+      });
+    patientState?.data?.address_id?.street &&
+      rows.push({ name: "Rua", value: patientState?.data?.address_id?.street });
+    patientState?.data?.address_id?.number &&
+      rows.push({
+        name: "Número",
+        value: patientState?.data?.address_id?.number,
+      });
 
-  careState?.data?.patient_id?._id &&
-    rows.push({
-      name: "Código do paciente",
-      value: careState.data.patient_id._id,
-    });
-  patientState?.data?.nationality &&
-    rows.push({
-      name: "Nacionalidade",
-      value: patientState?.data?.nationality,
-    });
-  patientState?.data?.address_id?.postal_code &&
-    rows.push({
-      name: "CEP",
-      value: patientState?.data?.address_id?.postal_code,
-    });
-  patientState?.data?.address_id?.street &&
-    rows.push({ name: "Rua", value: patientState?.data?.address_id?.street });
-  patientState?.data?.address_id?.number &&
-    rows.push({
-      name: "Número",
-      value: patientState?.data?.address_id?.number,
-    });
+    patientState?.data?.address_id?.district &&
+      rows.push({
+        name: "Bairro",
+        value: patientState?.data?.address_id?.district,
+      });
+    patientState?.data?.address_id?.city &&
+      rows.push({
+        name: "Cidade",
+        value: patientState?.data?.address_id?.city,
+      });
+    patientState?.data?.address_id?.complement &&
+      rows.push({
+        name: "Complemento",
+        value: patientState?.data?.address_id?.complement,
+      });
+    patientState?.data?.address_id?.state &&
+      rows.push({ name: "UF", value: patientState?.data?.address_id?.state });
 
-  patientState?.data?.address_id?.district &&
-    rows.push({
-      name: "Bairro",
-      value: patientState?.data?.address_id?.district,
-    });
-  patientState?.data?.address_id?.city &&
-    rows.push({ name: "Cidade", value: patientState?.data?.address_id?.city });
-  patientState?.data?.address_id?.complement &&
-    rows.push({
-      name: "Complemento",
-      value: patientState?.data?.address_id?.complement,
-    });
-  patientState?.data?.address_id?.state &&
-    rows.push({ name: "UF", value: patientState?.data?.address_id?.state });
+    careState?.data?.tipo &&
+      rows.push({ name: "Tipo de Atendimento", value: careState?.data?.tipo });
+    careState?.data?._id &&
+      rows.push({ name: "Número do Atendimento", value: careState?.data?._id });
+    careState?.data?.capture?.assistant_doctor &&
+      rows.push({
+        name: "Médico Assistente",
+        value: careState?.data?.capture?.assistant_doctor,
+      });
+    careState?.data?.cid_id &&
+      rows.push({
+        name: "CID",
+        value: integration
+          ? careState?.data?.cid_id
+          : careState?.data?.cid_id.name,
+      });
+    careState?.data?.health_insurance_id &&
+      rows.push({
+        name: "Convênio",
+        value: integration
+          ? { name: careState?.data?.health_insurance_id }
+          : careState?.data?.health_insurance_id,
+      });
+    careState?.data?.health_plan_id &&
+      rows.push({
+        name: "Plano",
+        value: integration
+          ? { name: careState?.data?.health_plan_id }
+          : careState?.data?.health_plan_id,
+      });
+    careState?.data?.health_sub_plan_id &&
+      rows.push({
+        name: "Subplano",
+        value: integration
+          ? { name: careState?.data?.health_sub_plan_id }
+          : careState?.data?.health_sub_plan_id,
+      });
 
-  careState?.data?.tipo &&
-    rows.push({ name: "Tipo de Atendimento", value: careState?.data?.tipo });
-  careState?.data?._id &&
-    rows.push({ name: "Número do Atendimento", value: careState?.data?._id });
-  careState?.data?.capture?.assistant_doctor &&
-    rows.push({
-      name: "Médico Assistente",
-      value: careState?.data?.capture?.assistant_doctor,
-    });
-  careState?.data?.cid_id &&
-    rows.push({
-      name: "CID",
-      value: integration
-        ? careState?.data?.cid_id
-        : careState?.data?.cid_id.name,
-    });
-  careState?.data?.health_insurance_id &&
-    rows.push({
-      name: "Convênio",
-      value: integration
-        ? { name: careState?.data?.health_insurance_id }
-        : careState?.data?.health_insurance_id,
-    });
-  careState?.data?.health_plan_id &&
-    rows.push({
-      name: "Plano",
-      value: integration
-        ? { name: careState?.data?.health_plan_id }
-        : careState?.data?.health_plan_id,
-    });
-  careState?.data?.health_sub_plan_id &&
-    rows.push({
-      name: "Subplano",
-      value: integration
-        ? { name: careState?.data?.health_sub_plan_id }
-        : careState?.data?.health_sub_plan_id,
-    });
+    careState?.data?.capture?.unity &&
+      rows.push({ name: "Unidade", value: careState?.data?.capture?.unity });
+    careState?.data?.capture?.sector &&
+      rows.push({ name: "Setor", value: careState?.data?.capture?.sector });
+    careState?.data?.capture?.type &&
+      rows.push({ name: "Acomodação", value: careState?.data?.capture?.type });
+    careState?.data?.capture?.bed &&
+      rows.push({ name: "Leito", value: careState?.data?.capture?.bed });
+    careState?.data?.created_at &&
+      rows.push({
+        name: "Data de Atendimento",
+        value: formatDate(careState?.data?.created_at, "DD/MM/YYYY HH:mm"),
+      });
+    careState?.data?.mot_alta &&
+      rows.push({ name: "Motivo de Alta", value: careState?.data?.mot_alta });
+    careState?.data?.health_plan_card_number &&
+      rows.push({
+        name: "Número da carteira",
+        value: careState?.data?.health_plan_card_number,
+      });
+    careState?.data?.health_plan_card_validate &&
+      rows.push({
+        name: "Data de validade",
+        value: formatDate(
+          careState?.data?.health_plan_card_validate,
+          "DD/MM/YYYY"
+        ),
+      });
+    careState?.data?.speciality &&
+      rows.push({
+        name: "Especialidade do Atendimento",
+        value: integration
+          ? { name: careState?.data?.speciality }
+          : careState?.data?.speciality,
+      });
+    careState?.data?.dt_alta &&
+      rows.push({
+        name: "Data de Alta",
+        value: formatDate(careState?.data?.dt_alta, "DD/MM/YYYY HH:mm"),
+      });
 
-  careState?.data?.capture?.unity &&
-    rows.push({ name: "Unidade", value: careState?.data?.capture?.unity });
-  careState?.data?.capture?.sector &&
-    rows.push({ name: "Setor", value: careState?.data?.capture?.sector });
-  careState?.data?.capture?.type &&
-    rows.push({ name: "Acomodação", value: careState?.data?.capture?.type });
-  careState?.data?.capture?.bed &&
-    rows.push({ name: "Leito", value: careState?.data?.capture?.bed });
-  careState?.data?.created_at &&
     rows.push({
-      name: "Data de Atendimento",
-      value: formatDate(careState?.data?.created_at, "DD/MM/YYYY HH:mm"),
+      name: "Equipe",
+      value: team,
     });
-  careState?.data?.mot_alta &&
-    rows.push({ name: "Motivo de Alta", value: careState?.data?.mot_alta });
-  careState?.data?.health_plan_card_number &&
-    rows.push({
-      name: "Número da carteira",
-      value: careState?.data?.health_plan_card_number,
-    });
-  careState?.data?.health_plan_card_validate &&
-    rows.push({
-      name: "Data de validade",
-      value: formatDate(
-        careState?.data?.health_plan_card_validate,
-        "DD/MM/YYYY"
-      ),
-    });
-  careState?.data?.speciality &&
-    rows.push({
-      name: "Especialidade do Atendimento",
-      value: integration
-        ? { name: careState?.data?.speciality }
-        : careState?.data?.speciality,
-    });
-  careState?.data?.dt_alta &&
-    rows.push({
-      name: "Data de Alta",
-      value: formatDate(careState?.data?.dt_alta, "DD/MM/YYYY HH:mm"),
-    });
-
-  rows.push({
-    name: "Equipe",
-    value: team,
-  });
+  })();
 
   const content = {
     tittle: "HeaderOverview",
@@ -424,16 +424,32 @@ export default function PatientOverview(
     info: ["Equipe Multidisciplinar"],
   };
 
-  function isAllergic(allergie: AllergiesState) {
+  function isAllergic(allergie: any) {
     let allergic = false;
-    // allergie.data.map((data: AllergiesInterface) => {
-    //   if (data?.description) {
-    //     allergic = true;
-    //   }
-    // });
-
+    Object.keys(allergie).map((item: any) => {
+      if (item === "data" && allergie[item]["allergy"]) {
+        allergie[item]["allergy"].map((item: any) => {
+          if (integration && item.active === 1) {
+            allergic = true;
+          } else if (!integration && item.active) {
+            allergic = true;
+          }
+        });
+      }
+    });
     return allergic;
   }
+  const contentAllergyExist = (allergie: any) => {
+    let allergicExist = false;
+    Object.keys(allergie).map((item: any) => {
+      if (item === "data" && allergie[item]["allergy"]) {
+        if (allergie[item]["allergy"].length > 0) allergicExist = true;
+      } else if (item === "data" && allergie[item]["event"]) {
+        if (allergie[item]["event"].length > 0) allergicExist = true;
+      }
+    });
+    return allergicExist;
+  };
 
   const buttons = [
     {
@@ -446,6 +462,45 @@ export default function PatientOverview(
       show: true,
     },
   ];
+
+  function handleReport(nameReport: string) {
+    if (nameReport === reportType || reportActive === false) {
+      setReportActive(!reportActive);
+    }
+    setReportType(nameReport);
+  }
+  function handleContentReport(report: string): any {
+    if (report === "Aferições" && measurementState.data.length > 0) {
+      return {
+        data: measurementState.data,
+        loading: measurementState.loading,
+        error: measurementState.error,
+      };
+    } else if (
+      report === "Alergias" &&
+      Object.keys(allergiesState.data).length > 0
+    ) {
+      contentAllergyExist(allergiesState);
+      return contentAllergyExist(allergiesState)
+        ? {
+            data: allergiesState.data,
+            loading: allergiesState.loading,
+            error: allergiesState.error,
+          }
+        : "";
+    } else if (report === "Evolução" && careState.evolution.length > 0) {
+      return {
+        data: careState.evolution,
+        loading: false,
+        error: false,
+      };
+    } else {
+      return "";
+    }
+  }
+
+  console.log(reportActive, reportType);
+
   return (
     <Sidebar>
       {careState.loading && <Loading />}
@@ -464,43 +519,56 @@ export default function PatientOverview(
                 tittle="Relatório de Prontuário"
                 iconName="ChartIcon"
                 cards={cards}
+                onClickCard={handleReport}
+                allergic={isAllergic(allergiesState)}
+                loadingCard={allergiesState.loading}
               />
-              <Container
-                style={{
-                  padding: "0 32px 20px ",
-                }}
-              >
+              {reportActive ? (
+                <AccordionReport
+                  content={handleContentReport(reportType)}
+                  company_id={
+                    careState.data.company_id ? careState.data.company_id : ""
+                  }
+                  reportType={reportType}
+                />
+              ) : (
                 <Container
                   style={{
-                    display: "flex",
-                    flexWrap: "wrap",
-                    justifyContent: "space-between",
+                    padding: "0 32px 20px ",
                   }}
                 >
-                  <CardInfo
-                    content={content}
-                    tittle={personalCard}
-                    alergicIs={true}
-                    gridProps={gridPropsPlan}
-                    integration={integration}
-                  />
+                  <Container
+                    style={{
+                      display: "flex",
+                      flexWrap: "wrap",
+                      justifyContent: "space-between",
+                    }}
+                  >
+                    <CardInfo
+                      content={content}
+                      tittle={personalCard}
+                      alergicIs={true}
+                      gridProps={gridPropsPlan}
+                      integration={integration}
+                    />
 
-                  <CardInfo
-                    content={content}
-                    tittle={planCard}
-                    alergicIs={false}
-                    gridProps={gridPropsPlan}
-                    integration={integration}
-                  />
-                  <CardInfo
-                    content={content}
-                    tittle={teamCard}
-                    alergicIs={false}
-                    gridProps={gridPropsPlan}
-                    integration={integration}
-                  />
+                    <CardInfo
+                      content={content}
+                      tittle={planCard}
+                      alergicIs={false}
+                      gridProps={gridPropsPlan}
+                      integration={integration}
+                    />
+                    <CardInfo
+                      content={content}
+                      tittle={teamCard}
+                      alergicIs={false}
+                      gridProps={gridPropsPlan}
+                      integration={integration}
+                    />
+                  </Container>
                 </Container>
-              </Container>
+              )}
             </>
           ) : (
             <></>

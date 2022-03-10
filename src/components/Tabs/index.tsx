@@ -52,6 +52,7 @@ import TextField from "@mui/material/TextField";
 import Autocomplete from "@mui/material/Autocomplete";
 import { CustomerState } from "../../store/ducks/customers/types";
 import { UserState } from "../../store/ducks/users/types";
+import SESSIONSTORAGE from "../../helpers/constants/sessionStorage";
 
 interface IPropsPermissionFrom {
   state: {
@@ -205,6 +206,7 @@ const TabForm = (props: ITabprops) => {
     setInitialTab && setInitialTab(newValue);
   };
   const [value, setValue] = useState(initialTab);
+  const integration = sessionStorage.getItem(SESSIONSTORAGE.INTEGRATION);
 
   function handleComponents(component: string, index: number) {
     switch (component) {
@@ -640,28 +642,32 @@ const TabForm = (props: ITabprops) => {
           TabIndicatorProps={{ className: classes.indicator }}
           style={{ fontSize: "13px", fontWeight: "normal" }}
         >
-          {navItems.map(({ name, badge }: INavItems, index: number) => (
-            <TabNavItem
-              value={index}
-              label={
-                badge ? (
-                  <Badge
-                    classes={{ badge: classes.customBadge }}
-                    className={classes.padding}
-                    badgeContent={badge}
-                    max={99}
-                  >
-                    {name}
-                  </Badge>
-                ) : (
-                  name
-                )
-              }
-              wrapped
-              className={value === index ? "active" : ""}
-              {...a11yProps({ index })}
-            ></TabNavItem>
-          ))}
+          {navItems.map(({ name, badge }: INavItems, index: number) =>
+            name === "INTEGRAÇÃO" && !integration ? (
+              ""
+            ) : (
+              <TabNavItem
+                value={index}
+                label={
+                  badge ? (
+                    <Badge
+                      classes={{ badge: classes.customBadge }}
+                      className={classes.padding}
+                      badgeContent={badge}
+                      max={99}
+                    >
+                      {name}
+                    </Badge>
+                  ) : (
+                    name
+                  )
+                }
+                wrapped
+                className={value === index ? "active" : ""}
+                {...a11yProps({ index })}
+              ></TabNavItem>
+            )
+          )}
         </TabNav>
       </TabContent>
 

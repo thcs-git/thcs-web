@@ -149,6 +149,7 @@ import {
   getReleaseReferral,
   transferCare,
   deleteCare,
+  getEvolution,
 } from "./cares/sagas";
 
 import { get as getProfession } from "./professions/sagas";
@@ -157,7 +158,10 @@ import { ProfessionTypes } from "./professions/types";
 import { AllergiesTypes } from "./allergies/types";
 import { load as getAllergies } from "./allergies/sagas";
 
-export default function* rootSaga() {
+import { MeasurementsTypes } from "./measurements/types";
+import { get as getMeasurements } from "./measurements/sagas";
+
+export default function* rootSaga(): any {
   return yield all([
     takeLatest(LoginTypes.LOAD_REQUEST, doLogin),
     takeLatest(LoginTypes.EMAIL_REQUEST, checkEmailLogin),
@@ -233,6 +237,8 @@ export default function* rootSaga() {
     takeLatest(CareTypes.LOAD_HISTORY_REQUEST, getHistory),
     takeLatest(CareTypes.TRANSFER_CARE_REQUEST, transferCare),
     takeLatest(CareTypes.DELETE_CARE_REQUEST, deleteCare),
+
+    takeLatest(CareTypes.LOAD_EVOLUTION_REQUEST, getEvolution),
 
     // Council
     takeLatest(CouncilTypes.LOAD_REQUEST, getCouncils),
@@ -337,5 +343,10 @@ export default function* rootSaga() {
      * ALLERGIES
      */
     takeLatest(AllergiesTypes.LOAD_REQUEST, getAllergies),
+
+    /**
+     * MEASUREMENT
+     */
+    takeLatest(MeasurementsTypes.LOAD_REQUEST, getMeasurements),
   ]);
 }

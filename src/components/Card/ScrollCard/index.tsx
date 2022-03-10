@@ -4,16 +4,19 @@ import React, { useEffect, useState } from "react";
 import { ReactComponent as ChartIcon } from "../../../assets/img/icon-prontuario-1.svg";
 import { ReactComponent as PrescriptionIcon } from "../../../assets/img/icon-prescription.svg";
 import { ReactComponent as MeasurementIcon } from "../../../assets/img/icon-measurement.svg";
-import { ReactComponent as AlergicIcon } from "../../../assets/img/icon-alergic.svg";
+// import { ReactComponent as AlergicIcon } from "../../../assets/img/icon-alergic.svg";
 import { ReactComponent as AntibioticsIcon } from "../../../assets/img/icon-antibiotics.svg";
 import { ReactComponent as DiagnosisIcon } from "../../../assets/img/icon-diagnosis.svg";
 import { ReactComponent as ExamIcon } from "../../../assets/img/icon-exam.svg";
 import { ReactComponent as HistoryIcon } from "../../../assets/img/icon-history.svg";
+import AlergicIcon from "../../Icons/allergic";
 
 //MUI
 import Box from "@material-ui/core/Box";
 import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
 import ArrowBackIosNewIcon from "@mui/icons-material/ArrowBackIosNew";
+import Backdrop from "@mui/material/Backdrop";
+import CircularProgress from "@mui/material/CircularProgress";
 //Styles
 import "./styles";
 
@@ -30,24 +33,87 @@ interface IScroll {
   tittle?: string;
   cards: string[];
   iconName?: string;
+  onClickCard?: any;
+  allergic?: boolean;
+  loadingCard?: boolean;
 }
 
 export default function ScrollCard(props: IScroll) {
-  const { tittle, cards, iconName } = props;
+  const { tittle, cards, iconName, onClickCard, allergic, loadingCard } = props;
+  const [selectCard, setSelectCard] = useState("");
+  const [openBackdrop, setOpenBackdrop] = useState(true);
+
+  useEffect(() => {
+    if (loadingCard) {
+      setOpenBackdrop(true);
+    } else {
+      setOpenBackdrop(false);
+    }
+  }, [loadingCard]);
+
+  function handleSelectCard(name: string) {
+    if (name === selectCard) {
+      setSelectCard("");
+    } else {
+      setSelectCard(name);
+    }
+  }
+  function handleClickCard(name: string): any {
+    if (name !== "Alergias") {
+      onClickCard(name);
+      handleSelectCard(name);
+    } else if (!loadingCard) {
+      onClickCard(name);
+      handleSelectCard(name);
+    }
+  }
 
   const cardsItens = cards.map((name: string, index: number) => {
     return (
-      <Card key={index}>
+      <Card
+        key={index}
+        onClick={() => handleClickCard(name)}
+        sx={{
+          border: `${
+            name === selectCard
+              ? name === "Alergias" && allergic
+                ? "1px solid var(--danger)"
+                : "1px solid var(--secondary)"
+              : "1px solid #ebebeb"
+          }`,
+        }}
+      >
         <IconCard>
           {name === "Prescrições" && <PrescriptionIcon />}
           {name === "Aferições" && <MeasurementIcon />}
-          {name === "Alergias" && <AlergicIcon />}
+          {name === "Alergias" && (
+            <>
+              {loadingCard ? (
+                <CircularProgress sx={{ color: "var(--secondary)" }} />
+              ) : (
+                <AlergicIcon fill={allergic ? "#FF6565" : "#0899BA"} />
+              )}
+            </>
+          )}
           {name === "Antibióticos" && <AntibioticsIcon />}
           {name === "Evolução" && <DiagnosisIcon />}
           {name === "Exames" && <ExamIcon />}
           {name === "Atestados" && <HistoryIcon />}
         </IconCard>
-        <FooterCard>{name}</FooterCard>
+        <FooterCard
+          sx={{
+            backgroundColor: `${
+              name === selectCard
+                ? name === "Alergias" && allergic
+                  ? "var(--danger)"
+                  : "var(--secondary)"
+                : "var(--gray-light);"
+            }`,
+            color: `${name === selectCard ? "var(--white)" : ""}`,
+          }}
+        >
+          {name}
+        </FooterCard>
       </Card>
     );
   });

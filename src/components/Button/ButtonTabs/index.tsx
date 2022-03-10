@@ -13,6 +13,7 @@ interface IButtons {
   background: string;
   onClick?: any;
   show?: boolean;
+  component?: JSX.Element;
 }
 
 function a11yProps(name: string, index: number) {
@@ -42,20 +43,28 @@ const ButtonTabs = (props: IComponent) => {
 
   const { canEdit, buttons } = props;
   return (
-    <ButtonsContent style={{ paddingRight: 15, marginTop: 25 }}>
-      {buttons.map(({ name, variant, background, onClick, show }: IButtons) => (
-        <>
-          {(show || canEdit) && (
-            <ButtonComponent
-              variant={variant}
-              background={background}
-              onClick={onClick}
-            >
-              {name}
-            </ButtonComponent>
-          )}
-        </>
-      ))}
+    <ButtonsContent
+      style={{
+        paddingRight: buttons[0].name === "Gerar novo QR Code" ? 0 : 15,
+        marginTop: 25,
+      }}
+    >
+      {buttons.map(
+        ({ name, variant, background, onClick, show, component }: IButtons) => (
+          <>
+            {(show || canEdit) && (
+              <ButtonComponent
+                variant={variant}
+                background={background}
+                onClick={onClick}
+              >
+                {name}
+                {component}
+              </ButtonComponent>
+            )}
+          </>
+        )
+      )}
     </ButtonsContent>
   );
 };
