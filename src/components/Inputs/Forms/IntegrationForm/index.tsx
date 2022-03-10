@@ -52,7 +52,7 @@ const IntegrationForm = (props: IComponent) => {
   return (
     <FormGroupSection>
       <Grid container>
-        <Grid item md={8} xs={12}>
+        {/* <Grid item md={8} xs={12}>
           <FormControlLabel
             control={
               // <Checkbox
@@ -80,10 +80,10 @@ const IntegrationForm = (props: IComponent) => {
             label="Possui Integração"
             labelPlacement="start"
           />
-        </Grid>
+        </Grid> */}
         {integrationChecked ? (
           <>
-            <Grid item xs={12} sx={{ marginLeft: "16px" }}>
+            <Grid item xs={12} sx={{ marginLeft: "16px", marginTop: "16px" }}>
               <Typography>
                 Data da integração:{" "}
                 {formatDate(state.created_at, "DD/MM/YYYY HH:mm")}
