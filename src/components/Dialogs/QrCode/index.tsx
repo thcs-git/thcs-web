@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from "react";
+import React, { useState, useEffect, useCallback, useRef } from "react";
 
 // redux saga
 import { useDispatch, useSelector } from "react-redux";
@@ -12,6 +12,7 @@ import QRCode from "react-qr-code";
 import { formatDate } from "../../../helpers/date";
 import LOCALSTORAGE from "../../../helpers/constants/localStorage";
 import SESSIONSTORAGE from "../../../helpers/constants/sessionStorage";
+import ReactToPrint from "react-to-print";
 
 import crypto from "crypto";
 
@@ -20,7 +21,7 @@ import Dialog from "@mui/material/Dialog";
 import DialogActions from "@mui/material/DialogActions";
 import Box from "@mui/material/Box";
 // styles e styledComponents
-import { ButtonGeneration } from "./styles";
+import { ButtonGeneration, ButtonPrint } from "./styles";
 // icons
 import CloseIcon from "@mui/icons-material/Close";
 import PrintIcon from "../../Icons/Print";
@@ -58,7 +59,7 @@ export default function DialogQrCode(props: IQrCodeProps) {
   const integration = sessionStorage.getItem(SESSIONSTORAGE.INTEGRATION);
   const dispatch = useDispatch();
   const user_id = localStorage.getItem(LOCALSTORAGE.USER_ID);
-  const buttons = [
+  const buttonNew = [
     {
       name: "Gerar novo QR Code",
       variant: "contained",
@@ -69,17 +70,8 @@ export default function DialogQrCode(props: IQrCodeProps) {
         // dispatch(loadQrCodeRequest(handlerCareStateForQrCode()));
       },
     },
-    {
-      name: "",
-      variant: "contained",
-      background: "secondary",
-      show: true,
-      onClick: () => {
-        window.print();
-      },
-      component: <PrintIcon fill={"#FFFFFF"} />,
-    },
   ];
+
   const buttonCreateQrcode = [
     {
       name: "Gerar QR Code",
@@ -91,6 +83,7 @@ export default function DialogQrCode(props: IQrCodeProps) {
       },
     },
   ];
+  const componentRef = useRef(null);
 
   const handleClose = () => {
     setOpenDialog(false);
@@ -127,7 +120,7 @@ export default function DialogQrCode(props: IQrCodeProps) {
   return (
     <>
       {qrCodeState.loading && <Loading />}
-      <Dialog open={openDialog} onClose={handleClose}>
+      <Dialog open={openDialog} onClose={handleClose} ref={componentRef}>
         <DialogActions style={{ textAlign: "right" }}>
           <CloseIcon
             onClick={handleClose}
@@ -169,7 +162,23 @@ export default function DialogQrCode(props: IQrCodeProps) {
                   {formatDate(qrCodeState.data.created_at, "HH:mm:ss")}
                 </>
               </Box>
-              <ButtonGeneration buttons={buttons} canEdit={true} />
+              <Box sx={{ display: "flex", gap: "10px" }}>
+                <ButtonGeneration buttons={buttonNew} canEdit={true} />
+                <ReactToPrint
+                  documentTitle={`QR Code do Paciente ${
+                    careState.data.patient_id?.name
+                      ? careState.data.patient_id?.name
+                      : ""
+                  }`}
+                  trigger={() => (
+                    <ButtonPrint>
+                      <PrintIcon fill={"var(--white"} />
+                    </ButtonPrint>
+                    // <ButtonGeneration buttons={buttonPrint} canEdit={false} />
+                  )}
+                  content={() => componentRef.current}
+                />
+              </Box>
             </>
           ) : (
             <>
