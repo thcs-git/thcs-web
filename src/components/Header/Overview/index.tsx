@@ -45,6 +45,14 @@ export default function HeaderOverview(props: IProps) {
     setOpenDialog(true);
   };
 
+  function handlerCID(rows: IRows[]) {
+    const cid = rows.filter(({ name, value }: IRows) => {
+      if (name === "CID" && value) return value;
+    });
+    console.log(cid);
+    return cid.length > 0 ? cid[0].value : "Não informado";
+  }
+
   return (
     <Container>
       <Box
@@ -68,23 +76,9 @@ export default function HeaderOverview(props: IProps) {
                 ({ name, value }: IRows, index: number) =>
                   name === "Nome" && value
               )}
-
-              {/* {allergic && (
-                <TagAllergic
-                  style={{ marginLeft: "4px", fontWeight: "normal" }}
-                >
-                  <AllergicIcon />
-                  Alérgico(a)
-                </TagAllergic>
-              )} */}
             </Box>
             <Box>
-              <Box>
-                {content.rows.map(
-                  ({ name, value }: IRows, index: number) =>
-                    name === "CID" && `CID ${integration ? value : value.name}`
-                )}
-              </Box>
+              <Box>CID {handlerCID(content.rows)}</Box>
             </Box>
           </CardText>
         </Box>
@@ -95,12 +89,6 @@ export default function HeaderOverview(props: IProps) {
           <QRCodeIcon style={{ height: "32px", width: "32px" }} />
           <Box>QR Code</Box>
         </BoxIcon>
-        {/* <BoxIcon>
-          <LocationIcon
-            style={{ height: "32px", width: "32px", fill: "#ffffff" }}
-          />
-          <Box>Check-in/out</Box>
-        </BoxIcon> */}
       </Box>
       <DialogQrCode
         tittle={{ card: "Qr Code", info: ["Qr code"] }}
