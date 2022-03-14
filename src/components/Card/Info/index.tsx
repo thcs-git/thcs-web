@@ -235,39 +235,6 @@ export default function CardInfo(props: ICardInfo) {
           <WrapperTittle>
             {iconHeader(tittle.card)}
             <Box>{tittle.card}</Box>
-            {tittle.card === "Equipe Multidisciplinar" && (
-              <Box
-                style={{
-                  cursor: "pointer",
-                  border: "2px solid var(--secondary)",
-                  borderRadius: "2px",
-                  display: "flex",
-                  justifyContent: "space-evenly",
-                  alignItems: "center",
-                  padding: "4px",
-                  gap: "6px",
-                }}
-              >
-                <Box
-                  style={{
-                    cursor: "pointer",
-                    fontSize: "16px",
-                    border: "1px solid var(--secondary)",
-                    borderRadius: "10px",
-                    width: "16px",
-                    height: "16px",
-                    display: "flex",
-                    justifyContent: "center",
-                    alignItems: "center",
-                  }}
-                >
-                  +
-                </Box>
-                <Box style={{ fontSize: "10px", cursor: "pointer" }}>
-                  Adicionar profissional
-                </Box>
-              </Box>
-            )}
           </WrapperTittle>
           <Box
             style={{
