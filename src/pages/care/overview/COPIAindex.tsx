@@ -306,7 +306,7 @@ export default function PatientOverview(
             {/*{integration ? (*/}
             {true ? (
               <>
-                <Header content={content} />
+                {/* <Header content={content} /> */}
                 <ScrollCard
                   tittle="Relatório de Prontuário"
                   iconName="ChartIcon"

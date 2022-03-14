@@ -137,6 +137,11 @@ export enum CareTypes {
   LOAD_CHECKIN_REQUEST = "@care/LOAD_CHECKIN_REQUEST",
   LOAD_CHECKIN_SUCCESS = "@care/LOAD_CHECKIN_SUCCESS",
   LOAD_CHECKIN_FAILURE = "@care/LOAD_CHECKIN_FAILURE",
+
+  // check-in/out report
+  LOAD_CHECKIN_REPORT_REQUEST = "@care/LOAD_CHECKIN_REPORT_REQUEST",
+  LOAD_CHECKIN_REPORT_SUCCESS = "@care/LOAD_CHECKIN_REPORT_SUCCESS",
+  LOAD_CHECKIN_REPORT_FAILURE = "@care/LOAD_CHECKIN_REPORT_FAILURE",
 }
 
 /**
@@ -210,6 +215,7 @@ export interface CareInterface {
   adm_release?: IAdmReleaseData | null;
   medical_release_status?: boolean;
   adm_release_status?: boolean;
+  qrCode?: string;
 }
 
 export interface CareList {

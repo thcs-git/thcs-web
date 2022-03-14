@@ -151,6 +151,7 @@ import {
   deleteCare,
   getEvolution,
   getChekin,
+  getChekInReport,
 } from "./cares/sagas";
 
 import { get as getProfession } from "./professions/sagas";
@@ -161,6 +162,10 @@ import { load as getAllergies } from "./allergies/sagas";
 
 import { MeasurementsTypes } from "./measurements/types";
 import { get as getMeasurements } from "./measurements/sagas";
+
+import { QrCodeTypes } from "./qrCode/types";
+import { updateQrCode, createQrCode, get as getQrCode } from "./qrCode/sagas";
+import { QrCode } from "@mui/icons-material";
 
 export default function* rootSaga(): any {
   return yield all([
@@ -242,6 +247,7 @@ export default function* rootSaga(): any {
     takeLatest(CareTypes.LOAD_EVOLUTION_REQUEST, getEvolution),
 
     takeLatest(CareTypes.LOAD_CHECKIN_REQUEST, getChekin),
+    takeLatest(CareTypes.LOAD_CHECKIN_REPORT_REQUEST, getChekInReport),
 
     // Council
     takeLatest(CouncilTypes.LOAD_REQUEST, getCouncils),
@@ -351,5 +357,12 @@ export default function* rootSaga(): any {
      * MEASUREMENT
      */
     takeLatest(MeasurementsTypes.LOAD_REQUEST, getMeasurements),
+
+    /**
+     * QR CODE
+     */
+    takeLatest(QrCodeTypes.LOAD_REQUEST, getQrCode),
+    takeLatest(QrCodeTypes.CREATE_QRCODE_REQUEST, createQrCode),
+    takeLatest(QrCodeTypes.UPDATE_QRCODE_REQUEST, updateQrCode),
   ]);
 }

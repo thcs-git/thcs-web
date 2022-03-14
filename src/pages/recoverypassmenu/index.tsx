@@ -28,7 +28,7 @@ export default function RecoveryPassMenu(){
 
 
   useEffect(()=>{
-    console.log(currentUser);
+    // console.log(currentUser);
     if(currentUser){
         setUserecovery(prev=>({
       ...prev,
@@ -57,7 +57,7 @@ export default function RecoveryPassMenu(){
 
   const  recoveryPassword= useCallback(()=>{
     if(!newPassword.error){
-        console.log(userecovery);
+        // console.log(userecovery);
     dispatch(loadRecoveryPasswordiftoken(userecovery));
     setOk(true);
     }

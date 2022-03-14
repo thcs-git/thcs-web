@@ -50,6 +50,9 @@ import { AllergiesState } from "./allergies/types";
 import { INITIAL_STATE as INITIAL_STATE_MEASUREMENTS } from "./measurements";
 import { MeasurementsState } from "./measurements/types";
 
+import { INITIAL_STATE as INITIAL_STATE_QR_CODE } from "./qrCode";
+import { QrCodeState } from "./qrCode/types";
+
 /**
  * Initial state tree interface
  */
@@ -70,6 +73,7 @@ export interface IInitialState {
   message: Readonly<MessageState>;
   allergies: Readonly<AllergiesState>;
   measurements: Readonly<MeasurementsState>;
+  qrCode: Readonly<QrCodeState>;
 }
 
 /**
@@ -92,4 +96,5 @@ export const InitialState: IInitialState = {
   message: INITIAL_STATE_MESSAGE,
   allergies: INITIAL_STATE_ALLERGIES,
   measurements: INITIAL_STATE_MEASUREMENTS,
+  qrCode: INITIAL_STATE_QR_CODE,
 };

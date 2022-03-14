@@ -71,6 +71,7 @@ export interface SpecialtiesUserInterface {
 export interface UserRecoveryPassword {
   _id: string;
   password: string;
+  oldPassword?: string;
 }
 
 export interface ProfessionUserInterface {
@@ -166,12 +167,14 @@ export interface UserInterface {
     geolocation?: { latitude: number; longitude: number };
   };
   email: string; // email
-  phones: [{
-    cellnumber?: string;
-    number?: string;
-    telegram: boolean;
-    whatsapp: boolean;
-  }];
+  phones: [
+    {
+      cellnumber?: string;
+      number?: string;
+      telegram: boolean;
+      whatsapp: boolean;
+    }
+  ];
   phone: string;
   cellphone: string;
   user_type_id: string | UserTypeInterface;

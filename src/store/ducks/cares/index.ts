@@ -23,6 +23,7 @@ export const INITIAL_STATE: CareState = {
     created_at: "",
     dt_alta: "",
     updated_at: "",
+    qrCode: "",
   },
   list: {
     data: [],
