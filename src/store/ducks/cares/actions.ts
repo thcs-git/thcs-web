@@ -274,3 +274,15 @@ export const loadCheckinSuccess = (data: any) =>
   action(CareTypes.LOAD_CHECKIN_SUCCESS, data);
 
 export const loadCheckinFailure = () => action(CareTypes.LOAD_CHECKIN_FAILURE);
+
+/**
+ * check-in/out report
+ */
+
+export const loadCheckinReportRequest = (id: any) =>
+    action(CareTypes.LOAD_CHECKIN_REPORT_REQUEST, id);
+
+export const loadCheckinReportSuccess = (data: any) =>
+    action(CareTypes.LOAD_CHECKIN_REPORT_SUCCESS, data);
+
+export const loadCheckinReportFailure = () => action(CareTypes.LOAD_CHECKIN_REPORT_FAILURE);

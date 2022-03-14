@@ -1,4 +1,4 @@
-import { apiSollarMobi } from "./../../../services/axios";
+import {apiSollarMobi, apiSollarReport} from "./../../../services/axios";
 import { put, call } from "redux-saga/effects";
 import { toast } from "react-toastify";
 import { AxiosResponse } from "axios";
@@ -44,7 +44,7 @@ import {
   loadEvolutionSuccess,
   loadEvolutionFailure,
   loadCheckinSuccess,
-  loadCheckinFailure,
+  loadCheckinFailure, loadCheckinReportSuccess, loadCheckinReportFailure,
 } from "./actions";
 
 import { apiIntegra, apiSollar } from "../../../services/axios";
@@ -774,5 +774,19 @@ export function* getChekin({ payload }: any) {
   } catch (err) {
     yield put(loadCheckinFailure());
     toast.error("Erro ao buscar Evoluções");
+  }
+}
+
+export function* getChekInReport({ payload }: any) {
+  try {
+    const response: AxiosResponse = yield call(
+        apiSollarReport.get,
+        `/`,
+        {responseType: 'blob'}
+    );
+    yield put(loadCheckinReportSuccess(response.data));
+  } catch (err) {
+    yield put(loadCheckinReportFailure());
+    toast.error("Erro Ao Buscar Relatório De Check-In/Out");
   }
 }
