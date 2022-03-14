@@ -250,34 +250,6 @@ export default function DialogInfo(props: IDialogProps) {
             }}
           >
             {namePatient(content)}
-            <button
-              style={{
-                cursor: "pointer",
-                border: "2px solid var(--secondary)",
-                borderRadius: "2px",
-                display: "flex",
-                justifyContent: "space-evenly",
-                alignItems: "center",
-                padding: "4px",
-                gap: "6px",
-                marginLeft: "16px",
-              }}
-              onClick={() => {
-                console.log("cliquei");
-              }}
-            >
-              <IconEdit style={{ cursor: "pointer" }} />
-              <Box
-                style={{
-                  cursor: "pointer",
-                  fontSize: "10px",
-                  color: "var(--secondary)",
-                  fontWeight: "bold",
-                }}
-              >
-                {editName(tittle.card)}
-              </Box>
-            </button>
           </Box>
 
           {tittle.info?.map((tittleInfo: string) => {
