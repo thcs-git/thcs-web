@@ -32,6 +32,7 @@ import UserCompanyForm from "../Inputs/Forms/UserCompanyForm";
 import CheckListForm from "../Inputs/Forms/CheckListForm";
 import CompanyForm from "../Inputs/Forms/CompanyForm";
 import PatientForm from "../Inputs/Forms/patientForm";
+import ChangePasswordConfiguration from "../Inputs/Forms/ChangePasswordTab";
 
 import { ReactComponent as CompanyIcon } from "../../assets/img/icon-company.svg";
 import { ReactComponent as EmailIcon } from "../../assets/img/Icon-email.svg";
@@ -363,6 +364,8 @@ const TabForm = (props: ITabprops) => {
             canEdit={canEdit ? canEdit : false}
           />
         );
+      case "ChangePassword":
+        return <ChangePasswordConfiguration state={state} />;
       default:
         return <TabBodyItem>Not found!</TabBodyItem>;
     }

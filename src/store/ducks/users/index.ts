@@ -28,7 +28,7 @@ export const INITIAL_STATE: UserState = {
         number: "",
         telegram: false,
         whatsapp: false,
-      }
+      },
     ],
     email: "",
     phone: "",
@@ -256,6 +256,13 @@ const reducer: Reducer<UserState> = (state = INITIAL_STATE, action) => {
         loading: false,
         error: false,
         success: true,
+      };
+    case UserTypes.LOAD_REQUEST_RECOVERY_PASSWORD_TOKEN:
+      return {
+        ...state,
+        loading: true,
+        error: false,
+        success: false,
       };
     case UserTypes.LOAD_SUCCESS_RECOVERY_PASSWORD:
       return {
