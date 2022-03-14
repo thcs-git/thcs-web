@@ -52,7 +52,6 @@ export default function HeaderOverview(props: IProps) {
     const cid = rows.filter(({ name, value }: IRows) => {
       if (name === "CID" && value) return value;
     });
-    console.log(cid);
     return cid.length > 0 ? cid[0].value : "Não informado";
   }
 

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, {useState} from "react";
 // aplication
 import SESSIONSTORAGE from "../../../helpers/constants/sessionStorage";
 
@@ -29,83 +29,83 @@ import Evolution from "../../Icons/Evolution";
 import Check from "../../Icons/Check";
 // styled components and style
 import {
-  AccordionStyled as Accordion,
-  AccordionDetailsStyled as AccordionDetails,
-  AccordionSummaryStyled as AccordionSummary,
-  HeaderDetailsAccordion,
-  ContentDetailsAccordion,
-  TextCenterDetails,
-  ContainerStyled as Container,
+    AccordionStyled as Accordion,
+    AccordionDetailsStyled as AccordionDetails,
+    AccordionSummaryStyled as AccordionSummary,
+    HeaderDetailsAccordion,
+    ContentDetailsAccordion,
+    TextCenterDetails,
+    ContainerStyled as Container,
 } from "./style";
 
 // Helps
-import { formatDate } from "../../../helpers/date";
-import { toast } from "react-toastify";
+import {formatDate} from "../../../helpers/date";
+import {toast} from "react-toastify";
 import _ from "lodash";
 // components
 import Loading from "../../Loading";
 // types
 import {
-  AllergiesInterface,
-  AllergiesItem,
+    AllergiesInterface,
+    AllergiesItem,
 } from "../../../store/ducks/allergies/types";
 import {IconButton} from "@mui/material";
 import {loadCheckinReportRequest} from "../../../store/ducks/cares/actions";
 import {useDispatch} from "react-redux";
 
 interface IAccordionReport {
-  content: {
-    loading: boolean;
-    error: boolean;
-    data: any;
-  };
-  company_id: string;
-  reportType: string;
-  allergic?: boolean;
+    content: {
+        loading: boolean;
+        error: boolean;
+        data: any;
+    };
+    company_id: string;
+    reportType: string;
+    allergic?: boolean;
 
-  // data: IDataAccordion[];
+    // data: IDataAccordion[];
 }
 
 interface IDataAccordion {
-  _id: string; // data
-  list: IAccordionInfo[];
+    _id: string; // data
+    list: IAccordionInfo[];
 }
 
 interface IAccordionInfo {
-  _id: string;
-  attendance_id: string;
-  canceled: boolean;
-  company_id: string;
-  created_at: string;
-  created_by: [
-    {
-      _id: string;
-      companies_links: [
+    _id: string;
+    attendance_id: string;
+    canceled: boolean;
+    company_id: string;
+    created_at: string;
+    created_by: [
         {
-          _id: string;
-          active: boolean;
-          companie_id: string;
-          customer_id: string;
-          exp: string;
-          function: string;
-          id_integration: string;
-          linked_at: string;
+            _id: string;
+            companies_links: [
+                {
+                    _id: string;
+                    active: boolean;
+                    companie_id: string;
+                    customer_id: string;
+                    exp: string;
+                    function: string;
+                    id_integration: string;
+                    linked_at: string;
+                }
+            ];
+            name: string;
         }
-      ];
-      name: string;
-    }
-  ];
-  itens: IAccordionItem[];
-  patient_id: string;
+    ];
+    itens: IAccordionItem[];
+    patient_id: string;
 }
 
 interface IAccordionItem {
-  _id: string;
-  name: string;
-  reference: any; //tipar depois
-  type: string;
-  unit_id: any; //tipar depois
-  value: string;
+    _id: string;
+    name: string;
+    reference: any; //tipar depois
+    type: string;
+    unit_id: any; //tipar depois
+    value: string;
 }
 
 export default function AccordionReport(props: IAccordionReport) {
@@ -166,65 +166,65 @@ export default function AccordionReport(props: IAccordionReport) {
     ];
     // console.log(content.data, "DATAAA");
 
-  const handleChange =
-    (panel: string) => (event: React.SyntheticEvent, isExpanded: boolean) => {
-      setExpanded(isExpanded ? panel : false);
+    const handleChange =
+        (panel: string) => (event: React.SyntheticEvent, isExpanded: boolean) => {
+            setExpanded(isExpanded ? panel : false);
+        };
+
+    const capitalizeText = (words: string) => {
+        return words
+            .toLowerCase()
+            .split(" ")
+            .map((text: string) => {
+                return (text = text.charAt(0).toUpperCase() + text.substring(1));
+            })
+            .join(" ");
     };
 
-  const capitalizeText = (words: string) => {
-    return words
-      .toLowerCase()
-      .split(" ")
-      .map((text: string) => {
-        return (text = text.charAt(0).toUpperCase() + text.substring(1));
-      })
-      .join(" ");
-  };
+    const getFirstAndLastName = (fullName: string) => {
+        return `${fullName.split(" ")[0]} ${
+            fullName.split(" ")[fullName.split(" ").length - 1]
+        }`;
+    };
 
-  const getFirstAndLastName = (fullName: string) => {
-    return `${fullName.split(" ")[0]} ${
-      fullName.split(" ")[fullName.split(" ").length - 1]
-    }`;
-  };
-
-  const handleFunction = (list: any, company: string, type?: string) => {
-    if (type === "allergy" || type === "event") {
-      if (!list.created_by?.companies_links || list.created_by === null)
-        return "-";
-      return list.created_by.companies_links.map((item: any, index: number) => {
-        if (item.companie_id === company) {
-          return item.function;
+    const handleFunction = (list: any, company: string, type?: string) => {
+        if (type === "allergy" || type === "event") {
+            if (!list.created_by?.companies_links || list.created_by === null)
+                return "-";
+            return list.created_by.companies_links.map((item: any, index: number) => {
+                if (item.companie_id === company) {
+                    return item.function;
+                }
+            });
+        } else if (reportType === "Check-in/out") {
+            return list.map((item: any, index: number) => {
+                if (item.companie_id === company) {
+                    return item.function;
+                }
+            });
+        } else {
+            return list.created_by[0].companies_links.map(
+                (item: any, index: number) => {
+                    if (item.companie_id === company) {
+                        return item.function;
+                    }
+                }
+            );
         }
-      });
-    } else if (reportType === "Check-in/out") {
-      return list.map((item: any, index: number) => {
-        if (item.companie_id === company) {
-          return item.function;
-        }
-      });
-    } else {
-      return list.created_by[0].companies_links.map(
-        (item: any, index: number) => {
-          if (item.companie_id === company) {
-            return item.function;
-          }
-        }
-      );
-    }
-  };
-  const handleMeasurementItemsIcons = (
-    measurements: IAccordionItem[],
+    };
+    const handleMeasurementItemsIcons = (
+        measurements: IAccordionItem[],
         canceled: boolean
-  ) => {
-    return measurements.map(
-      (measurementItem: IAccordionItem, index: number) => {
-        switch (measurementItem.name) {
-          case "PAD":
-            return (
-              <Tooltip title={measurementItem.name}>
-                <Box>
-                  <Presure
-                    fill={canceled ? "#7D7D7D" : "var(--secondary)"}
+    ) => {
+        return measurements.map(
+            (measurementItem: IAccordionItem, index: number) => {
+                switch (measurementItem.name) {
+                    case "PAD":
+                        return (
+                            <Tooltip title={measurementItem.name}>
+                                <Box>
+                                    <Presure
+                                        fill={canceled ? "#7D7D7D" : "var(--secondary)"}
                                         width={"20px"}
                                         height={"20px"}
                                     />
@@ -450,242 +450,242 @@ export default function AccordionReport(props: IAccordionReport) {
         );
     }
 
-  const handleRow = (list: any, type?: string) => {
-    if (type) {
-      if (type === "allergy") {
-        return list.map((column: any, index: number) => {
-          return (
-            <>
-              <ContentDetailsAccordion key={column._id}>
-                <TextCenterDetails sx={{ width: "100px" }}>
-                  {formatDate(column.created_at, "DD/MM/YY HH:mm")}
-                </TextCenterDetails>
-                <TextCenterDetails sx={{ width: "250px" }}>
-                  {column.created_by
-                    ? integration
-                      ? getFirstAndLastName(capitalizeText(column.created_by))
-                      : getFirstAndLastName(
-                          capitalizeText(column.created_by.name)
-                        )
-                    : "-"}
-                </TextCenterDetails>
-                <TextCenterDetails sx={{ width: "250px" }}>
-                  {handleFunction(column, company_id, type)}
-                </TextCenterDetails>
-                <TextCenterDetails sx={{ width: "200px" }}>
-                  <Box
-                    sx={{
-                      display: "flex",
-                      flexWrap: "wrap",
-                      justifyContent: "center",
-                      alignItems: "center",
-                      gap: "4px",
-                      margin: "2px",
-                    }}
-                  >
-                    {integration
-                      ? capitalizeText(column.name)
-                      : capitalizeText(column.description)}
-                  </Box>
-                </TextCenterDetails>
-              </ContentDetailsAccordion>
-              {list.length !== index + 1 ? (
-                <Divider sx={{ width: "100%", margin: "0 auto" }} />
-              ) : (
-                ""
-              )}
-            </>
-          );
-        });
-      } else if (type === "event") {
-        return list.map((column: any, index: number) => {
-          return (
-            <>
-              <ContentDetailsAccordion key={column._id}>
-                <TextCenterDetails sx={{ width: "100px" }}>
-                  {formatDate(column.created_at, "DD/MM/YY HH:mm")}
-                </TextCenterDetails>
-                <TextCenterDetails sx={{ width: "250px" }}>
-                  {column.created_by
-                    ? integration
-                      ? typeof column.created_by === "string"
-                        ? getFirstAndLastName(capitalizeText(column.created_by))
-                        : "-"
-                      : typeof column.created_by === "string"
-                      ? getFirstAndLastName(
-                          capitalizeText(column.created_by.name)
-                        )
-                      : "-"
-                    : "-"}
-                </TextCenterDetails>
-                <TextCenterDetails sx={{ width: "250px" }}>
-                  {handleFunction(column, company_id, type)}
-                </TextCenterDetails>
-                <TextCenterDetails sx={{ width: "200px" }}>
-                  <Box
-                    sx={{
-                      display: "flex",
-                      flexWrap: "wrap",
-                      justifyContent: "center",
-                      alignItems: "center",
-                      gap: "4px",
-                      margin: "2px",
-                    }}
-                  >
-                    {capitalizeText(column.event)}
-                  </Box>
-                </TextCenterDetails>
-              </ContentDetailsAccordion>
-              {list.length !== index + 1 ? (
-                <Divider sx={{ width: "100%", margin: "0 auto" }} />
-              ) : (
-                ""
-              )}
-            </>
-          );
-        });
-      }
-    } else if (reportType === "Evolução") {
-      return list.map((column: any, index: number) => {
-        return (
-          <>
-            <ContentDetailsAccordion key={column._id}>
-              <TextCenterDetails
-                sx={{
-                  width: "80px",
-                  textDecoration: `${column.active ? "none" : "line-through"}`,
-                  color: `${column.active ? "#333333" : "#7D7D7D"}`,
-                }}
-              >
-                {formatDate(column.created_at, "HH:mm")}
-              </TextCenterDetails>
-              <TextCenterDetails
+    const handleRow = (list: any, type?: string) => {
+        if (type) {
+            if (type === "allergy") {
+                return list.map((column: any, index: number) => {
+                    return (
+                        <>
+                            <ContentDetailsAccordion key={column._id}>
+                                <TextCenterDetails sx={{width: "100px"}}>
+                                    {formatDate(column.created_at, "DD/MM/YY HH:mm")}
+                                </TextCenterDetails>
+                                <TextCenterDetails sx={{width: "250px"}}>
+                                    {column.created_by
+                                        ? integration
+                                            ? getFirstAndLastName(capitalizeText(column.created_by))
+                                            : getFirstAndLastName(
+                                                capitalizeText(column.created_by.name)
+                                            )
+                                        : "-"}
+                                </TextCenterDetails>
+                                <TextCenterDetails sx={{width: "250px"}}>
+                                    {handleFunction(column, company_id, type)}
+                                </TextCenterDetails>
+                                <TextCenterDetails sx={{width: "200px"}}>
+                                    <Box
+                                        sx={{
+                                            display: "flex",
+                                            flexWrap: "wrap",
+                                            justifyContent: "center",
+                                            alignItems: "center",
+                                            gap: "4px",
+                                            margin: "2px",
+                                        }}
+                                    >
+                                        {integration
+                                            ? capitalizeText(column.name)
+                                            : capitalizeText(column.description)}
+                                    </Box>
+                                </TextCenterDetails>
+                            </ContentDetailsAccordion>
+                            {list.length !== index + 1 ? (
+                                <Divider sx={{width: "100%", margin: "0 auto"}}/>
+                            ) : (
+                                ""
+                            )}
+                        </>
+                    );
+                });
+            } else if (type === "event") {
+                return list.map((column: any, index: number) => {
+                    return (
+                        <>
+                            <ContentDetailsAccordion key={column._id}>
+                                <TextCenterDetails sx={{width: "100px"}}>
+                                    {formatDate(column.created_at, "DD/MM/YY HH:mm")}
+                                </TextCenterDetails>
+                                <TextCenterDetails sx={{width: "250px"}}>
+                                    {column.created_by
+                                        ? integration
+                                            ? typeof column.created_by === "string"
+                                                ? getFirstAndLastName(capitalizeText(column.created_by))
+                                                : "-"
+                                            : typeof column.created_by === "string"
+                                                ? getFirstAndLastName(
+                                                    capitalizeText(column.created_by.name)
+                                                )
+                                                : "-"
+                                        : "-"}
+                                </TextCenterDetails>
+                                <TextCenterDetails sx={{width: "250px"}}>
+                                    {handleFunction(column, company_id, type)}
+                                </TextCenterDetails>
+                                <TextCenterDetails sx={{width: "200px"}}>
+                                    <Box
+                                        sx={{
+                                            display: "flex",
+                                            flexWrap: "wrap",
+                                            justifyContent: "center",
+                                            alignItems: "center",
+                                            gap: "4px",
+                                            margin: "2px",
+                                        }}
+                                    >
+                                        {capitalizeText(column.event)}
+                                    </Box>
+                                </TextCenterDetails>
+                            </ContentDetailsAccordion>
+                            {list.length !== index + 1 ? (
+                                <Divider sx={{width: "100%", margin: "0 auto"}}/>
+                            ) : (
+                                ""
+                            )}
+                        </>
+                    );
+                });
+            }
+        } else if (reportType === "Evolução") {
+            return list.map((column: any, index: number) => {
+                return (
+                    <>
+                        <ContentDetailsAccordion key={column._id}>
+                            <TextCenterDetails
                                 sx={{
-                  textDecoration: `${column.active ? "none" : "line-through"}`,
-                  color: `${column.active ? "#333333" : "#7D7D7D"}`,
-                }}
-              >
-                {getFirstAndLastName(capitalizeText(column.created_by[0].name))}
-              </TextCenterDetails>
-              <TextCenterDetails
+                                    width: "80px",
+                                    textDecoration: `${column.active ? "none" : "line-through"}`,
+                                    color: `${column.active ? "#333333" : "#7D7D7D"}`,
+                                }}
+                            >
+                                {formatDate(column.created_at, "HH:mm")}
+                            </TextCenterDetails>
+                            <TextCenterDetails
                                 sx={{
-                  textDecoration: `${column.active ? "none" : "line-through"}`,
-                  color: `${column.active ? "#333333" : "#7D7D7D"}`,
-                }}
-              >
-                {column.created_by[0].main_specialty_id[0].name
-                  ? column.created_by[0].main_specialty_id[0].name
-                  : "-"}
-              </TextCenterDetails>
-              <TextCenterDetails
-                sx={{
-                  textDecoration: `${column.active ? "none" : "line-through"}`,
-                  color: `${column.active ? "#333333" : "#7D7D7D"}`,
-                }}
-              >
-                {column.type}
-              </TextCenterDetails>
-              <TextCenterDetails>
-                <DownloadIcon
-                  sx={{ color: "var(--secondary)", marginRight: "8px" }}
-                />
-                <PrintIcon sx={{ color: "var(--secondary)" }} />
-              </TextCenterDetails>
-            </ContentDetailsAccordion>
-            {list.length !== index + 1 ? (
-              <Divider sx={{ width: "100%", margin: "0 auto" }} />
-            ) : (
-              ""
-            )}
-          </>
-        );
-      });
-    } else if (reportType === "Check-in/out") {
-      return list.map((data: any, index: number) => {
-        return data.list.map((column: any, index: number) => {
-          return (
-            <>
-              <ContentDetailsAccordion key={index}>
-                <TextCenterDetails>
-                  {getFirstAndLastName(capitalizeText(data._id.user[0].name))}
-                </TextCenterDetails>
+                                    textDecoration: `${column.active ? "none" : "line-through"}`,
+                                    color: `${column.active ? "#333333" : "#7D7D7D"}`,
+                                }}
+                            >
+                                {getFirstAndLastName(capitalizeText(column.created_by[0].name))}
+                            </TextCenterDetails>
+                            <TextCenterDetails
+                                sx={{
+                                    textDecoration: `${column.active ? "none" : "line-through"}`,
+                                    color: `${column.active ? "#333333" : "#7D7D7D"}`,
+                                }}
+                            >
+                                {column.created_by[0].main_specialty_id[0].name
+                                    ? column.created_by[0].main_specialty_id[0].name
+                                    : "-"}
+                            </TextCenterDetails>
+                            <TextCenterDetails
+                                sx={{
+                                    textDecoration: `${column.active ? "none" : "line-through"}`,
+                                    color: `${column.active ? "#333333" : "#7D7D7D"}`,
+                                }}
+                            >
+                                {column.type}
+                            </TextCenterDetails>
+                            <TextCenterDetails>
+                                <DownloadIcon
+                                    sx={{color: "var(--secondary)", marginRight: "8px"}}
+                                />
+                                <PrintIcon sx={{color: "var(--secondary)"}}/>
+                            </TextCenterDetails>
+                        </ContentDetailsAccordion>
+                        {list.length !== index + 1 ? (
+                            <Divider sx={{width: "100%", margin: "0 auto"}}/>
+                        ) : (
+                            ""
+                        )}
+                    </>
+                );
+            });
+        } else if (reportType === "Check-in/out") {
+            return list.map((data: any, index: number) => {
+                return data.list.map((column: any, index: number) => {
+                    return (
+                        <>
+                            <ContentDetailsAccordion key={index}>
+                                <TextCenterDetails>
+                                    {getFirstAndLastName(capitalizeText(data._id.user[0].name))}
+                                </TextCenterDetails>
 
-                <TextCenterDetails>
-                  {handleFunction(data._id.user[0].companies_links, company_id)}
-                </TextCenterDetails>
+                                <TextCenterDetails>
+                                    {handleFunction(data._id.user[0].companies_links, company_id)}
+                                </TextCenterDetails>
 
-                <TextCenterDetails>
-                  {formatDate(column[0].created_at, "HH:mm")}
-                </TextCenterDetails>
-                <TextCenterDetails>
-                  {column[1] ? formatDate(column[1].created_at, "HH:mm") : "-"}
-                </TextCenterDetails>
-              </ContentDetailsAccordion>
-              {list.length !== index + 1 ? (
-                <Divider sx={{ width: "100%", margin: "0 auto" }} />
-              ) : (
-                ""
-              )}
-            </>
-          );
-        });
-      });
-    } else {
-      return list.map((column: IAccordionInfo, index: number) => {
-        return (
-          <>
-            <ContentDetailsAccordion key={column._id}>
-              <TextCenterDetails
-                sx={{
-                  width: "80px",
-                  textDecoration: `${
-                    column.canceled ? "line-through" : "none"
-                  }`,
-                  color: `${column.canceled ? "#7D7D7D" : "#333333"}`,
-                }}
-              >
-                {formatDate(column.created_at, "HH:mm")}
-              </TextCenterDetails>
-              <TextCenterDetails
+                                <TextCenterDetails>
+                                    {formatDate(column[0].created_at, "HH:mm")}
+                                </TextCenterDetails>
+                                <TextCenterDetails>
+                                    {column[1] ? formatDate(column[1].created_at, "HH:mm") : "-"}
+                                </TextCenterDetails>
+                            </ContentDetailsAccordion>
+                            {list.length !== index + 1 ? (
+                                <Divider sx={{width: "100%", margin: "0 auto"}}/>
+                            ) : (
+                                ""
+                            )}
+                        </>
+                    );
+                });
+            });
+        } else {
+            return list.map((column: IAccordionInfo, index: number) => {
+                return (
+                    <>
+                        <ContentDetailsAccordion key={column._id}>
+                            <TextCenterDetails
                                 sx={{
-                  textDecoration: `${
-                    column.canceled ? "line-through" : "none"
-                  }`,
-                  color: `${column.canceled ? "#7D7D7D" : "#333333"}`,
-                }}
-              >
-                {getFirstAndLastName(capitalizeText(column.created_by[0].name))}
-              </TextCenterDetails>
-              <TextCenterDetails
+                                    width: "80px",
+                                    textDecoration: `${
+                                        column.canceled ? "line-through" : "none"
+                                    }`,
+                                    color: `${column.canceled ? "#7D7D7D" : "#333333"}`,
+                                }}
+                            >
+                                {formatDate(column.created_at, "HH:mm")}
+                            </TextCenterDetails>
+                            <TextCenterDetails
                                 sx={{
-                  textDecoration: `${
-                    column.canceled ? "line-through" : "none"
-                  }`,
-                  color: `${column.canceled ? "#7D7D7D" : "#333333"}`,
-                }}
-              >
-                {handleFunction(column, company_id)}
-              </TextCenterDetails>
-              <TextCenterDetails
-                sx={{
-                  width: "320px",
-                  textDecoration: `${
-                    column.canceled ? "line-through" : "none"
-                  }`,
-                  color: `${column.canceled ? "#7D7D7D" : "#333333"}`,
-                }}
-              >
-                <Box
-                  sx={{
-                    display: "flex",
-                    flexWrap: "wrap",
-                    justifyContent: "center",
-                    alignItems: "center",
-                    gap: "4px",
-                    margin: "2px",
-                  }}
-                >
-                  {handleMeasurementItemsIcons(column.itens, column.canceled)}
+                                    textDecoration: `${
+                                        column.canceled ? "line-through" : "none"
+                                    }`,
+                                    color: `${column.canceled ? "#7D7D7D" : "#333333"}`,
+                                }}
+                            >
+                                {getFirstAndLastName(capitalizeText(column.created_by[0].name))}
+                            </TextCenterDetails>
+                            <TextCenterDetails
+                                sx={{
+                                    textDecoration: `${
+                                        column.canceled ? "line-through" : "none"
+                                    }`,
+                                    color: `${column.canceled ? "#7D7D7D" : "#333333"}`,
+                                }}
+                            >
+                                {handleFunction(column, company_id)}
+                            </TextCenterDetails>
+                            <TextCenterDetails
+                                sx={{
+                                    width: "320px",
+                                    textDecoration: `${
+                                        column.canceled ? "line-through" : "none"
+                                    }`,
+                                    color: `${column.canceled ? "#7D7D7D" : "#333333"}`,
+                                }}
+                            >
+                                <Box
+                                    sx={{
+                                        display: "flex",
+                                        flexWrap: "wrap",
+                                        justifyContent: "center",
+                                        alignItems: "center",
+                                        gap: "4px",
+                                        margin: "2px",
+                                    }}
+                                >
+                                    {handleMeasurementItemsIcons(column.itens, column.canceled)}
                                 </Box>
                             </TextCenterDetails>
                             <TextCenterDetails
@@ -708,70 +708,70 @@ export default function AccordionReport(props: IAccordionReport) {
         }
     };
 
-  return (
-    <>
-      {content.loading && <Loading />}
+    return (
+        <>
+            {content.loading && <Loading/>}
 
-      {content.data ? (
-        reportType === "Aferições" ||
-        reportType === "Evolução" ||
-        reportType === "Check-in/out" ? (
-          <Container>
-            {content.data.map(
-              ({ _id, list }: IDataAccordion, index: number) => {
-                return (
-                  <Accordion
-                    key={_id}
-                    disableGutters={true}
-                    expanded={expanded === `panel${index}`}
-                    onChange={handleChange(`panel${index}`)}
-                  >
-                    <AccordionSummary
-                      expandIcon={<ExpandMoreIcon />}
-                      aria-controls={`panel${index}bh-content`}
-                      id={`panel${index}bh-header`}
-                    >
-                      <Box
-                        sx={{
-                          display: "flex",
-                          gap: "8px",
-                          flexDirection: "row",
-                          justifyContent: "space-between",
-                        }}
-                      >
-                        {reportType === "Aferições" ? (
-                          <IconMeasurement
-                            fill={
-                              expanded === `panel${index}`
-                                ? "var(--white)"
-                                : "var(--gray-dark)"
-                            }
-                            width="22px"
-                            height={"22px"}
-                          />
-                        ) : reportType === "Evolução" ? (
-                          <Evolution
-                            fill={
-                              expanded === `panel${index}`
-                                ? "var(--white)"
-                                : "var(--gray-dark)"
-                            }
-                            width={"22px"}
-                            height={"22px"}
-                          />
-                        ) : reportType === "Check-in/out" ? (
-                          <Check
-                            fill={
-                              expanded === `panel${index}`
-                                ? "var(--white)"
-                                : "var(--gray-dark)"
-                            }
-                            width={"22px"}
-                            height={"22px"}
-                          />
-                        ) : (
-                          ""
-                        )}
+            {content.data ? (
+                reportType === "Aferições" ||
+                reportType === "Evolução" ||
+                reportType === "Check-in/out" ? (
+                    <Container>
+                        {content.data.map(
+                            ({_id, list}: IDataAccordion, index: number) => {
+                                return (
+                                    <Accordion
+                                        key={_id}
+                                        disableGutters={true}
+                                        expanded={expanded === `panel${index}`}
+                                        onChange={handleChange(`panel${index}`)}
+                                    >
+                                        <AccordionSummary
+                                            expandIcon={<ExpandMoreIcon/>}
+                                            aria-controls={`panel${index}bh-content`}
+                                            id={`panel${index}bh-header`}
+                                        >
+                                            <Box
+                                                sx={{
+                                                    display: "flex",
+                                                    gap: "8px",
+                                                    flexDirection: "row",
+                                                    justifyContent: "space-between",
+                                                }}
+                                            >
+                                                {reportType === "Aferições" ? (
+                                                    <IconMeasurement
+                                                        fill={
+                                                            expanded === `panel${index}`
+                                                                ? "var(--white)"
+                                                                : "var(--gray-dark)"
+                                                        }
+                                                        width="22px"
+                                                        height={"22px"}
+                                                    />
+                                                ) : reportType === "Evolução" ? (
+                                                    <Evolution
+                                                        fill={
+                                                            expanded === `panel${index}`
+                                                                ? "var(--white)"
+                                                                : "var(--gray-dark)"
+                                                        }
+                                                        width={"22px"}
+                                                        height={"22px"}
+                                                    />
+                                                ) : reportType === "Check-in/out" ? (
+                                                    <Check
+                                                        fill={
+                                                            expanded === `panel${index}`
+                                                                ? "var(--white)"
+                                                                : "var(--gray-dark)"
+                                                        }
+                                                        width={"22px"}
+                                                        height={"22px"}
+                                                    />
+                                                ) : (
+                                                    ""
+                                                )}
 
                                                 <Box
                                                     sx={{
@@ -884,8 +884,8 @@ export default function AccordionReport(props: IAccordionReport) {
                 </Box>
             )}
 
-      {content.error &&
-        toast.error("Não foi possível carregar os relatórios deste prontuário")}
-    </>
-  );
+            {content.error &&
+                toast.error("Não foi possível carregar os relatórios deste prontuário")}
+        </>
+    );
 }

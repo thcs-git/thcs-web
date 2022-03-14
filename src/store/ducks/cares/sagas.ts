@@ -197,7 +197,6 @@ export function* createCare({ payload: { data } }: any) {
 export function* updateCare({ payload: { data } }: any) {
   const { _id } = data;
 
-  console.log(data, " DATA REQUESTTT");
   try {
     const response: AxiosResponse = yield call(
       apiSollar.put,
@@ -207,7 +206,6 @@ export function* updateCare({ payload: { data } }: any) {
     );
 
     toast.success("Atendimento atualizado com sucesso!");
-    console.log(response.data, "DATAA RESPONSE");
     yield put(updateCareSuccess(response.data));
   } catch (error) {
     toast.error("Não foi possível atualizar os dados do atendimento");

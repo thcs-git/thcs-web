@@ -116,7 +116,6 @@ export default function DialogQrCode(props: IQrCodeProps) {
     dispatch(createQrCodeRequest(handlerQrCode()));
   }
 
-  console.log(qrCodeState, "QRCODE@@@");
   return (
     <>
       {qrCodeState.loading && <Loading />}
