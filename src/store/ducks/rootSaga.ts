@@ -162,6 +162,10 @@ import { load as getAllergies } from "./allergies/sagas";
 import { MeasurementsTypes } from "./measurements/types";
 import { get as getMeasurements } from "./measurements/sagas";
 
+import { QrCodeTypes } from "./qrCode/types";
+import { updateQrCode, createQrCode, get as getQrCode } from "./qrCode/sagas";
+import { QrCode } from "@mui/icons-material";
+
 export default function* rootSaga(): any {
   return yield all([
     takeLatest(LoginTypes.LOAD_REQUEST, doLogin),
@@ -351,5 +355,12 @@ export default function* rootSaga(): any {
      * MEASUREMENT
      */
     takeLatest(MeasurementsTypes.LOAD_REQUEST, getMeasurements),
+
+    /**
+     * QR CODE
+     */
+    takeLatest(QrCodeTypes.LOAD_REQUEST, getQrCode),
+    takeLatest(QrCodeTypes.CREATE_QRCODE_REQUEST, createQrCode),
+    takeLatest(QrCodeTypes.UPDATE_QRCODE_REQUEST, updateQrCode),
   ]);
 }

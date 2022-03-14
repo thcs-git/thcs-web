@@ -72,6 +72,7 @@ export default function CardInfo(props: ICardInfo) {
     });
     return itens;
   }
+
   const boxData = (name: string, value: any) => {
     return (
       <Box>
@@ -79,6 +80,7 @@ export default function CardInfo(props: ICardInfo) {
       </Box>
     );
   };
+
   function planData(content: IContent) {
     let itens = content.rows.map(({ name, value }: IRows, index: number) => {
       switch (name) {
@@ -108,19 +110,6 @@ export default function CardInfo(props: ICardInfo) {
     });
     return itens;
   }
-  // function handleTeamData(content: IContent) {
-  //   let data: string[] = [];
-
-  //   content.rows.map(({ name, value }: IRows, index: number) => {
-  //     if (name === "Equipe") {
-  //       value.map((item: string) => {
-  //         data.push(item);
-  //       });
-  //     }
-  //   });
-
-  //   return data;
-  // }
 
   function handleTeamData(content: IContent) {
     let team: object[] = [];
@@ -179,33 +168,6 @@ export default function CardInfo(props: ICardInfo) {
     return itensGrid;
   }
 
-  // function teamData2(arr: string[]) {
-  //   let itens1 = arr.map((item: string, index: number) => {
-  //     console.log(item, "item");
-  //     if (index % 2 === 0) {
-  //       return <Box key={index}>- {item}</Box>;
-  //     }
-  //   });
-  //   let itens2 = arr.map((item: string, index: number) => {
-  //     if (index % 2 !== 0) {
-  //       return <Box key={index}>- {item}</Box>;
-  //     }
-  //   });
-
-  //   let itensGrid = (
-  //     <Grid container style={{ boxShadow: "none" }}>
-  //       <Grid item xs={6} style={{ boxShadow: "none" }}>
-  //         {itens1}
-  //       </Grid>
-  //       <Grid item xs={6} style={{ boxShadow: "none" }}>
-  //         {itens2}
-  //       </Grid>
-  //     </Grid>
-  //   );
-  //   console.log(itensGrid, "grid");
-  //   return itensGrid;
-  // }
-
   function iconHeader(title: string) {
     if (title === "Dados Pessoais")
       return <IconChart style={{ width: "24px", height: "24px" }} />;
@@ -227,7 +189,6 @@ export default function CardInfo(props: ICardInfo) {
       return teamData(handleTeamData(content));
   };
 
-  // console.log(openDialog);
   return (
     <>
       <BoxContainer style={{ padding: "26.5px", flex: "1", margin: "8px" }}>
