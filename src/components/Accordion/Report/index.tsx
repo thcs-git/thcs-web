@@ -107,56 +107,6 @@ export default function AccordionReport(props: IAccordionReport) {
   const integration = sessionStorage.getItem(SESSIONSTORAGE.INTEGRATION);
 
   const [expanded, setExpanded] = useState<string | false>("panel0");
-  const measurementsItemObjectIdMD = [
-    {
-      _id: "62026db535284c714701a9ac",
-      name: "Pressão Arterial Diastólica",
-    },
-    {
-      _id: "5f7f796167a82d0e01571c42",
-      name: "Frequência Respiratória",
-    },
-    {
-      _id: "5f7f78fc67a82d0e01571c40",
-      name: "Frequência Cardíaca",
-    },
-    {
-      _id: "5f7f773567a82d0e01571c3d",
-      name: "Superfícia Corporal",
-    },
-    {
-      _id: "5f7f772567a82d0e01571c3b",
-      name: "Índice de Massa Corporal",
-    },
-    {
-      _id: "5f7f771f67a82d0e01571c39",
-      name: "Altura",
-    },
-    {
-      _id: "5f7f771b67a82d0e01571c37",
-      name: "Peso",
-    },
-    {
-      _id: "5f7f768067a82d0e01571c35",
-      name: "Hemoglico Teste",
-    },
-    {
-      _id: "5f20a77811ebd813183e6a03",
-      name: "Dor",
-    },
-    {
-      _id: "5f20a76a11ebd813183e6a01",
-      name: "SpO2",
-    },
-    {
-      _id: "5f20a74011ebd813183e69ff",
-      name: "Pressão Arterial Sistólica",
-    },
-    {
-      _id: "5f1f660a8590e0d2df9ad113",
-      name: "Temperatura",
-    },
-  ];
   console.log(content.data, "DATAAA");
 
   const handleChange =

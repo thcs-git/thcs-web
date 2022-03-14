@@ -20,9 +20,10 @@ const UserProfessionForm = (props: IComponent) => {
   const { state, setState, setValidations, canEdit, params } = props;
 
   const specialties: any[] = [];
-  state.specialties.map((item: any) => {
-    specialties.push(item.name);
-  });
+  state.specialties.lenght > 0 &&
+    state.specialties.map((item: any) => {
+      specialties.push(item.name);
+    });
 
   const content1 = {
     tittle: "Função",
