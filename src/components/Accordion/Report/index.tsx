@@ -107,56 +107,6 @@ export default function AccordionReport(props: IAccordionReport) {
   const integration = sessionStorage.getItem(SESSIONSTORAGE.INTEGRATION);
 
   const [expanded, setExpanded] = useState<string | false>("panel0");
-  const measurementsItemObjectIdMD = [
-    {
-      _id: "62026db535284c714701a9ac",
-      name: "Pressão Arterial Diastólica",
-    },
-    {
-      _id: "5f7f796167a82d0e01571c42",
-      name: "Frequência Respiratória",
-    },
-    {
-      _id: "5f7f78fc67a82d0e01571c40",
-      name: "Frequência Cardíaca",
-    },
-    {
-      _id: "5f7f773567a82d0e01571c3d",
-      name: "Superfícia Corporal",
-    },
-    {
-      _id: "5f7f772567a82d0e01571c3b",
-      name: "Índice de Massa Corporal",
-    },
-    {
-      _id: "5f7f771f67a82d0e01571c39",
-      name: "Altura",
-    },
-    {
-      _id: "5f7f771b67a82d0e01571c37",
-      name: "Peso",
-    },
-    {
-      _id: "5f7f768067a82d0e01571c35",
-      name: "Hemoglico Teste",
-    },
-    {
-      _id: "5f20a77811ebd813183e6a03",
-      name: "Dor",
-    },
-    {
-      _id: "5f20a76a11ebd813183e6a01",
-      name: "SpO2",
-    },
-    {
-      _id: "5f20a74011ebd813183e69ff",
-      name: "Pressão Arterial Sistólica",
-    },
-    {
-      _id: "5f1f660a8590e0d2df9ad113",
-      name: "Temperatura",
-    },
-  ];
   console.log(content.data, "DATAAA");
 
   const handleChange =
@@ -205,7 +155,10 @@ export default function AccordionReport(props: IAccordionReport) {
       );
     }
   };
-  const handleMeasurementItemsIcons = (measurements: IAccordionItem[]) => {
+  const handleMeasurementItemsIcons = (
+    measurements: IAccordionItem[],
+    canceled: boolean
+  ) => {
     return measurements.map(
       (measurementItem: IAccordionItem, index: number) => {
         switch (measurementItem.name) {
@@ -214,7 +167,7 @@ export default function AccordionReport(props: IAccordionReport) {
               <Tooltip title={measurementItem.name}>
                 <Box>
                   <Presure
-                    fill={"var(--secondary)"}
+                    fill={canceled ? "#7D7D7D" : "var(--secondary)"}
                     width={"20px"}
                     height={"20px"}
                   />
@@ -226,7 +179,7 @@ export default function AccordionReport(props: IAccordionReport) {
               <Tooltip title={measurementItem.name}>
                 <Box>
                   <Lung
-                    fill={"var(--secondary)"}
+                    fill={canceled ? "#7D7D7D" : "var(--secondary)"}
                     width={"20px"}
                     height={"20px"}
                   />
@@ -238,7 +191,7 @@ export default function AccordionReport(props: IAccordionReport) {
               <Tooltip title={measurementItem.name}>
                 <Box>
                   <Frequency
-                    fill={"var(--secondary)"}
+                    fill={canceled ? "#7D7D7D" : "var(--secondary)"}
                     width={"20px"}
                     height={"20px"}
                   />
@@ -250,7 +203,7 @@ export default function AccordionReport(props: IAccordionReport) {
               <Tooltip title={measurementItem.name}>
                 <Box>
                   <BodilySurface
-                    fill={"var(--secondary)"}
+                    fill={canceled ? "#7D7D7D" : "var(--secondary)"}
                     width={"20px"}
                     height={"20px"}
                   />
@@ -262,7 +215,7 @@ export default function AccordionReport(props: IAccordionReport) {
               <Tooltip title={measurementItem.name}>
                 <Box>
                   <Exam
-                    fill={"var(--secondary)"}
+                    fill={canceled ? "#7D7D7D" : "var(--secondary)"}
                     width={"20px"}
                     height={"20px"}
                   />
@@ -274,7 +227,7 @@ export default function AccordionReport(props: IAccordionReport) {
               <Tooltip title={measurementItem.name}>
                 <Box>
                   <Height
-                    fill={"var(--secondary)"}
+                    fill={canceled ? "#7D7D7D" : "var(--secondary)"}
                     width={"20px"}
                     height={"20px"}
                   />
@@ -286,7 +239,7 @@ export default function AccordionReport(props: IAccordionReport) {
               <Tooltip title={measurementItem.name}>
                 <Box>
                   <Weight
-                    fill={"var(--secondary)"}
+                    fill={canceled ? "#7D7D7D" : "var(--secondary)"}
                     width={"20px"}
                     height={"20px"}
                   />
@@ -298,7 +251,7 @@ export default function AccordionReport(props: IAccordionReport) {
               <Tooltip title={measurementItem.name}>
                 <Box>
                   <BloodGlucose
-                    fill={"var(--secondary)"}
+                    fill={canceled ? "#7D7D7D" : "var(--secondary)"}
                     width={"20px"}
                     height={"20px"}
                   />
@@ -310,7 +263,7 @@ export default function AccordionReport(props: IAccordionReport) {
               <Tooltip title={measurementItem.name}>
                 <Box>
                   <Pain
-                    fill={"var(--secondary)"}
+                    fill={canceled ? "#7D7D7D" : "var(--secondary)"}
                     width={"20px"}
                     height={"20px"}
                   />
@@ -323,7 +276,7 @@ export default function AccordionReport(props: IAccordionReport) {
               <Tooltip title={measurementItem.name}>
                 <Box>
                   <Saturation
-                    fill={"var(--secondary)"}
+                    fill={canceled ? "#7D7D7D" : "var(--secondary)"}
                     width={"20px"}
                     height={"20px"}
                   />
@@ -335,7 +288,7 @@ export default function AccordionReport(props: IAccordionReport) {
               <Tooltip title={measurementItem.name}>
                 <Box>
                   <Presure
-                    fill={"var(--secondary)"}
+                    fill={canceled ? "#7D7D7D" : "var(--secondary)"}
                     width={"20px"}
                     height={"20px"}
                   />
@@ -347,7 +300,7 @@ export default function AccordionReport(props: IAccordionReport) {
               <Tooltip title={measurementItem.name}>
                 <Box>
                   <Temperature
-                    fill={"var(--secondary)"}
+                    fill={canceled ? "#7D7D7D" : "var(--secondary)"}
                     width={"20px"}
                     height={"20px"}
                   />
@@ -538,18 +491,41 @@ export default function AccordionReport(props: IAccordionReport) {
         return (
           <>
             <ContentDetailsAccordion key={column._id}>
-              <TextCenterDetails sx={{ width: "80px" }}>
+              <TextCenterDetails
+                sx={{
+                  width: "80px",
+                  textDecoration: `${column.active ? "none" : "line-through"}`,
+                  color: `${column.active ? "#333333" : "#7D7D7D"}`,
+                }}
+              >
                 {formatDate(column.created_at, "HH:mm")}
               </TextCenterDetails>
-              <TextCenterDetails>
+              <TextCenterDetails
+                sx={{
+                  textDecoration: `${column.active ? "none" : "line-through"}`,
+                  color: `${column.active ? "#333333" : "#7D7D7D"}`,
+                }}
+              >
                 {getFirstAndLastName(capitalizeText(column.created_by[0].name))}
               </TextCenterDetails>
-              <TextCenterDetails>
+              <TextCenterDetails
+                sx={{
+                  textDecoration: `${column.active ? "none" : "line-through"}`,
+                  color: `${column.active ? "#333333" : "#7D7D7D"}`,
+                }}
+              >
                 {column.created_by[0].main_specialty_id[0].name
                   ? column.created_by[0].main_specialty_id[0].name
                   : "-"}
               </TextCenterDetails>
-              <TextCenterDetails>{column.type}</TextCenterDetails>
+              <TextCenterDetails
+                sx={{
+                  textDecoration: `${column.active ? "none" : "line-through"}`,
+                  color: `${column.active ? "#333333" : "#7D7D7D"}`,
+                }}
+              >
+                {column.type}
+              </TextCenterDetails>
               <TextCenterDetails>
                 <DownloadIcon
                   sx={{ color: "var(--secondary)", marginRight: "8px" }}
@@ -600,16 +576,46 @@ export default function AccordionReport(props: IAccordionReport) {
         return (
           <>
             <ContentDetailsAccordion key={column._id}>
-              <TextCenterDetails sx={{ width: "80px" }}>
+              <TextCenterDetails
+                sx={{
+                  width: "80px",
+                  textDecoration: `${
+                    column.canceled ? "line-through" : "none"
+                  }`,
+                  color: `${column.canceled ? "#7D7D7D" : "#333333"}`,
+                }}
+              >
                 {formatDate(column.created_at, "HH:mm")}
               </TextCenterDetails>
-              <TextCenterDetails>
+              <TextCenterDetails
+                sx={{
+                  textDecoration: `${
+                    column.canceled ? "line-through" : "none"
+                  }`,
+                  color: `${column.canceled ? "#7D7D7D" : "#333333"}`,
+                }}
+              >
                 {getFirstAndLastName(capitalizeText(column.created_by[0].name))}
               </TextCenterDetails>
-              <TextCenterDetails>
+              <TextCenterDetails
+                sx={{
+                  textDecoration: `${
+                    column.canceled ? "line-through" : "none"
+                  }`,
+                  color: `${column.canceled ? "#7D7D7D" : "#333333"}`,
+                }}
+              >
                 {handleFunction(column, company_id)}
               </TextCenterDetails>
-              <TextCenterDetails sx={{ width: "320px" }}>
+              <TextCenterDetails
+                sx={{
+                  width: "320px",
+                  textDecoration: `${
+                    column.canceled ? "line-through" : "none"
+                  }`,
+                  color: `${column.canceled ? "#7D7D7D" : "#333333"}`,
+                }}
+              >
                 <Box
                   sx={{
                     display: "flex",
@@ -620,7 +626,7 @@ export default function AccordionReport(props: IAccordionReport) {
                     margin: "2px",
                   }}
                 >
-                  {handleMeasurementItemsIcons(column.itens)}
+                  {handleMeasurementItemsIcons(column.itens, column.canceled)}
                 </Box>
               </TextCenterDetails>
               <TextCenterDetails
