@@ -777,10 +777,12 @@ export function* getChekin({ payload }: any) {
 
 export function* getChekInReport({ payload }: any) {
   try {
+    const integration = sessionStorage.getItem(SESSIONSTORAGE.INTEGRATION)
+    const headers = integration ? {token, external_attendance_id: payload} : {token, attendance_id: payload}
     const response: AxiosResponse = yield call(
         apiSollarReport.get,
-        `/`,
-        {responseType: 'blob'}
+        `/checkin`,
+        {responseType: 'blob', headers: {...headers} }
     );
     yield put(loadCheckinReportSuccess(response.data));
   } catch (err) {
