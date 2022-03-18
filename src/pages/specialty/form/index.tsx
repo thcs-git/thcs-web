@@ -112,7 +112,7 @@ export default function SpecialtyForm(props: RouteComponentProps<IPageParams>) {
   return (
     <Sidebar>
       {specialtyState.loading && <Loading />}
-      {console.log('state', state)}
+      {/*{console.log('state', state)}*/}
       <Container>
         <FormSection>
           <FormContent>

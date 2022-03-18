@@ -138,7 +138,6 @@ export default function PatientOverview(
     (state: ApplicationState) => state.measurements
   );
   const qrCodeState = useSelector((state: ApplicationState) => state.qrCode);
-  console.log(qrCodeState, "QRCODESTATE");
   const [team, setTeam] = useState<any[]>([]);
   const [reportActive, setReportActive] = useState(false);
   const [reportType, setReportType] = useState("");
@@ -154,7 +153,7 @@ export default function PatientOverview(
       dispatch(loadCareById(params.id));
       dispatch(loadRequestQrCode(params.id));
 
-      console.log(dispatch(loadRequestQrCode(params.id)), "TESTEEEEEE");
+      // console.log(dispatch(loadRequestQrCode(params.id)), "TESTEEEEEE");
       dispatch(loadScheduleRequest({ attendance_id: params.id }));
     }
   }, [params.id]);
@@ -514,8 +513,8 @@ export default function PatientOverview(
       return "";
     }
   }
-  console.log(careState);
-  console.log(reportActive, reportType);
+  // console.log(careState);
+  // console.log(reportActive, reportType);
 
   return (
     <Sidebar>

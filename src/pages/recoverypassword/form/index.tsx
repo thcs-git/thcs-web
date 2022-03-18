@@ -93,7 +93,7 @@ export default function RecoveryPasswordPage(props: RouteComponentProps<IPagePar
   }, []);
 
   const  handleValidatePassword = useCallback(()=>{
-    console.log("validação");
+    // console.log("validação");
     setNewPassword(prev => (
       { ...prev,
         error: !(userecovery.password.length >= SIZE_INPUT_PASSWORD
@@ -103,7 +103,7 @@ export default function RecoveryPasswordPage(props: RouteComponentProps<IPagePar
   ,[newPassword])
 
   const  recoveryPassword= useCallback(()=>{
-    console.log(userecovery);
+    // console.log(userecovery);
     if(!newPassword.error){
        dispatch(loadRecoveryPassword(userecovery));
       setOk(true);
