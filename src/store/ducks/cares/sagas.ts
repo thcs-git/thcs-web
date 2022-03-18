@@ -1,7 +1,9 @@
-import {apiSollarMobi, apiSollarReport} from "./../../../services/axios";
+import { apiSollarMobi, apiSollarReport } from "./../../../services/axios";
 import { put, call } from "redux-saga/effects";
 import { toast } from "react-toastify";
 import { AxiosResponse } from "axios";
+// helps
+import { formatDate } from "./../../../helpers/date";
 
 import LOCALSTORAGE from "../../../helpers/constants/localStorage";
 
@@ -44,7 +46,9 @@ import {
   loadEvolutionSuccess,
   loadEvolutionFailure,
   loadCheckinSuccess,
-  loadCheckinFailure, loadCheckinReportSuccess, loadCheckinReportFailure,
+  loadCheckinFailure,
+  loadCheckinReportSuccess,
+  loadCheckinReportFailure,
 } from "./actions";
 
 import { apiIntegra, apiSollar } from "../../../services/axios";
@@ -52,6 +56,7 @@ import { apiIntegra, apiSollar } from "../../../services/axios";
 import { handleCompanySelected } from "../../../helpers/localStorage";
 import SESSIONSTORAGE from "../../../helpers/constants/sessionStorage";
 import { pull } from "cypress/types/lodash";
+import { IFilterReport } from "./types";
 
 const token = localStorage.getItem("token");
 
@@ -777,14 +782,53 @@ export function* getChekin({ payload }: any) {
 
 export function* getChekInReport({ payload }: any) {
   try {
-    const response: AxiosResponse = yield call(
-        apiSollarReport.get,
-        `/`,
-        {responseType: 'blob'}
-    );
+    const response: AxiosResponse = yield call(apiSollarReport.get, `/`, {
+      responseType: "blob",
+    });
     yield put(loadCheckinReportSuccess(response.data));
   } catch (err) {
     yield put(loadCheckinReportFailure());
     toast.error("Erro Ao Buscar Relatório De Check-In/Out");
+  }
+}
+
+export function* getFilterCheckin({ payload }: any) {
+  let { dataStart, dataEnd } = payload;
+  dataStart = dataStart ? formatDate(dataStart["$d"], "YYYY-MM-DD") : null;
+  dataEnd = dataEnd ? formatDate(dataEnd["$d"], "YYYY-MM-DD") : null;
+  payload = {
+    ...payload,
+    dataStart,
+    dataEnd,
+  };
+  try {
+    const response: AxiosResponse = yield call(
+      apiSollarMobi.post,
+      `/checkin/getGroup`,
+
+      payload
+    );
+  } catch (err) {
+    toast.error("Erro ao Filtrar Relatório De Check-In/Out");
+  }
+}
+export function* getFilterEvolution({ payload }: any) {
+  let { dataStart, dataEnd } = payload;
+  dataStart = dataStart ? formatDate(dataStart["$d"], "YYYY-MM-DD") : null;
+  dataEnd = dataEnd ? formatDate(dataEnd["$d"], "YYYY-MM-DD") : null;
+  payload = {
+    ...payload,
+    dataStart,
+    dataEnd,
+  };
+  try {
+    const response: AxiosResponse = yield call(
+      apiSollarMobi.post,
+      `/evolution/getGroup`,
+
+      payload
+    );
+  } catch (err) {
+    toast.error("Erro ao Filtrar Relatório De Evolução");
   }
 }
