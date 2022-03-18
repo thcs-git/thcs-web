@@ -91,8 +91,8 @@ export default function HeaderOverview(props: IProps) {
 
       <Box style={{ display: "flex", gap: "8px" }}>
         <BoxIcon onClick={handleClickOpen}>
-          <QRCodeIcon fill={"var(--black)"} />
-          <Box sx={{ color: "var(--black)" }}>QR Code</Box>
+          <QRCodeIcon fill={"var(--gray-dark)"} />
+          <Box sx={{ color: "var(--secondary)" }}>QR Code</Box>
         </BoxIcon>
       </Box>
       <DialogQrCode
