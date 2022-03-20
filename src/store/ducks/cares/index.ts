@@ -687,6 +687,27 @@ const reducer: Reducer<CareState> = (state = INITIAL_STATE, action) => {
         error: true,
         checkin: [],
       };
+    case CareTypes.LOAD_CHECKIN_REPORT_REQUEST:
+      return {
+        ...state,
+        loading: true,
+        succes: false,
+        error: false,
+      };
+    case CareTypes.LOAD_CHECKIN_REPORT_SUCCESS:
+      return {
+        ...state,
+        loading: false,
+        success: true,
+        error: false,
+      };
+    case CareTypes.LOAD_CHECKIN_REPORT_FAILURE:
+      return {
+        ...state,
+        loading: false,
+        success: false,
+        error: true,
+      };
 
     case CareTypes.CLEAN:
       return INITIAL_STATE;

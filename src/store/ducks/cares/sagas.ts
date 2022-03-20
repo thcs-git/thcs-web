@@ -768,10 +768,13 @@ export function* getEvolution({ payload }: any) {
 
 export function* getChekin({ payload }: any) {
   try {
+    const integration = sessionStorage.getItem(SESSIONSTORAGE.INTEGRATION)
+    const headers = integration ? {external_attendance_id: payload} : {attendance_id: payload}
     const response: AxiosResponse = yield call(
       apiSollarMobi.post,
       `/checkin/getGroup`,
-      { attendance_id: payload }
+      { attendance_id: payload },
+        {headers: {...headers}}
     );
     yield put(loadCheckinSuccess(response.data));
   } catch (err) {
@@ -782,9 +785,13 @@ export function* getChekin({ payload }: any) {
 
 export function* getChekInReport({ payload }: any) {
   try {
-    const response: AxiosResponse = yield call(apiSollarReport.get, `/`, {
-      responseType: "blob",
-    });
+    const integration = sessionStorage.getItem(SESSIONSTORAGE.INTEGRATION)
+    const headers = integration ? {token, external_attendance_id: payload} : {token, attendance_id: payload}
+    const response: AxiosResponse = yield call(
+        apiSollarReport.get,
+        `/checkin`,
+        {responseType: 'blob', headers: {...headers} }
+    );
     yield put(loadCheckinReportSuccess(response.data));
   } catch (err) {
     yield put(loadCheckinReportFailure());
