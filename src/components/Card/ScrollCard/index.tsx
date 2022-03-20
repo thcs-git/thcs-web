@@ -1,23 +1,23 @@
 import React, { useEffect, useState } from "react";
 // import Glider from "react-glider";
-//Img
+// Icons
 import { ReactComponent as ChartIcon } from "../../../assets/img/icon-prontuario-1.svg";
 import { ReactComponent as PrescriptionIcon } from "../../../assets/img/icon-prescription.svg";
 import { ReactComponent as MeasurementIcon } from "../../../assets/img/icon-measurement.svg";
-// import { ReactComponent as AlergicIcon } from "../../../assets/img/icon-alergic.svg";
 import { ReactComponent as AntibioticsIcon } from "../../../assets/img/icon-antibiotics.svg";
 import { ReactComponent as DiagnosisIcon } from "../../../assets/img/icon-diagnosis.svg";
 import { ReactComponent as ExamIcon } from "../../../assets/img/icon-exam.svg";
 import { ReactComponent as HistoryIcon } from "../../../assets/img/icon-history.svg";
 import AlergicIcon from "../../Icons/allergic";
 import CheckIcon from "../../Icons/Check";
-
+import FilterListIcon from "@mui/icons-material/FilterList";
 //MUI
-import Box from "@material-ui/core/Box";
+import Box from "@mui/material/Box";
 import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
 import ArrowBackIosNewIcon from "@mui/icons-material/ArrowBackIosNew";
 import Backdrop from "@mui/material/Backdrop";
 import CircularProgress from "@mui/material/CircularProgress";
+
 //Styles
 import "./styles";
 
@@ -29,6 +29,8 @@ import {
   IconCard,
 } from "./styles";
 import {} from "./styles";
+import Button from "@mui/material/Button";
+import { width } from "@mui/system";
 
 interface IScroll {
   tittle?: string;
@@ -37,10 +39,25 @@ interface IScroll {
   onClickCard?: any;
   allergic?: boolean;
   loadingCard?: boolean;
+  reportType?: string;
+  reportActive?: boolean;
+  openFilter?: () => void;
+  existContent?: boolean;
 }
 
 export default function ScrollCard(props: IScroll) {
-  const { tittle, cards, iconName, onClickCard, allergic, loadingCard } = props;
+  const {
+    tittle,
+    cards,
+    iconName,
+    onClickCard,
+    allergic,
+    loadingCard,
+    openFilter,
+    reportType,
+    reportActive,
+    existContent,
+  } = props;
   const [selectCard, setSelectCard] = useState("");
   const [openBackdrop, setOpenBackdrop] = useState(true);
 
@@ -68,7 +85,19 @@ export default function ScrollCard(props: IScroll) {
       handleSelectCard(name);
     }
   }
-
+  function handlerShowFilter(report: any, active: any) {
+    if (active === true && existContent) {
+      if (report === "Evolução" || report === "Check-in/out") {
+        return (
+          <Button onClick={openFilter} sx={{ padding: "0", minWidth: "30px" }}>
+            <FilterListIcon
+              sx={{ color: "var(--secondary)", height: "24px" }}
+            />
+          </Button>
+        );
+      }
+    }
+  }
   const cardsItens = cards.map((name: string, index: number) => {
     return (
       <Card
@@ -119,14 +148,14 @@ export default function ScrollCard(props: IScroll) {
       </Card>
     );
   });
-
   return (
     <>
-      <Box style={{ padding: "0px 40px 0 40px" }}>
+      <Box sx={{ padding: "0px 40px 0 40px" }}>
         <Container>
           <Box
-            style={{
+            sx={{
               display: "flex",
+              justifyContent: "space-between",
               alignItems: "center",
               paddingTop: "14px",
               gap: "8px",
@@ -134,20 +163,24 @@ export default function ScrollCard(props: IScroll) {
               color: "var(--secondary)",
             }}
           >
-            <Box style={{ height: "24px" }}>
-              {iconName === "ChartIcon" && (
-                <ChartIcon style={{ height: "24px" }} />
-              )}
+            <Box sx={{ display: "flex", gap: "8px" }}>
+              <Box sx={{ height: "24px" }}>
+                {iconName === "ChartIcon" && (
+                  <ChartIcon style={{ height: "24px" }} />
+                )}
+              </Box>
+              <Box>{tittle && tittle}</Box>
             </Box>
-            <Box>{tittle && tittle}</Box>
+
+            {handlerShowFilter(reportType, reportActive)}
           </Box>
-          <Box className="wrapperScroll" style={{ maxWidth: "1000px" }}>
+          <Box className="wrapperScroll" sx={{ maxWidth: "1000px" }}>
             <Box
               id="glider-prev-1"
               className="glider-prev"
-              style={{ width: "125px" }}
+              sx={{ width: "125px" }}
             >
-              <ArrowBackIosNewIcon style={{ width: "30px", height: "auto" }} />
+              <ArrowBackIosNewIcon sx={{ width: "30px", height: "auto" }} />
             </Box>
             <Glider
               draggable
@@ -164,7 +197,7 @@ export default function ScrollCard(props: IScroll) {
               {cardsItens}
             </Glider>
             <Box id="glider-next-1" className="glider-next">
-              <ArrowForwardIosIcon style={{ width: "30px", height: "auto" }} />
+              <ArrowForwardIosIcon sx={{ width: "30px", height: "auto" }} />
             </Box>
           </Box>
         </Container>
