@@ -50,8 +50,10 @@ import {
     AllergiesItem,
 } from "../../../store/ducks/allergies/types";
 import {IconButton} from "@mui/material";
-import {loadCheckinReportRequest} from "../../../store/ducks/cares/actions";
-import {useDispatch} from "react-redux";
+import {loadCheckinFilterRequest, loadCheckinReportRequest} from "../../../store/ducks/cares/actions";
+import {useDispatch, useSelector} from "react-redux";
+import {CareState} from "../../../store/ducks/cares/types";
+import {ApplicationState} from "../../../store";
 
 interface IAccordionReport {
     content: {
@@ -62,7 +64,7 @@ interface IAccordionReport {
     company_id: string;
     reportType: string;
     allergic?: boolean;
-
+    state?: any;
     // data: IDataAccordion[];
 }
 
@@ -109,7 +111,7 @@ interface IAccordionItem {
 }
 
 export default function AccordionReport(props: IAccordionReport) {
-    const {content, company_id, reportType} = props;
+    const {content, company_id, reportType, state} = props;
     const dispatch = useDispatch();
     const integration = sessionStorage.getItem(SESSIONSTORAGE.INTEGRATION);
 
@@ -791,7 +793,18 @@ export default function AccordionReport(props: IAccordionReport) {
                                                 <IconButton color="secondary" aria-label="print"
                                                             sx={{cursor: "pointer", height: "10px"}}
                                                             onClick={() => {
-                                                                dispatch(loadCheckinReportRequest('asd'))
+                                                                if (reportType === "Check-in/out") {
+                                                                    const payload = {
+                                                                        _id: "",
+                                                                        type: "Group",
+                                                                        name: "",
+                                                                        dataStart: _id,
+                                                                        dataEnd: _id,
+                                                                        reportType: "Check-in/out",
+                                                                        attendance_id: state?.data?._id,
+                                                                    }
+                                                                    dispatch(loadCheckinFilterRequest(payload))
+                                                                }
                                                             }}>
                                                     <PrintIcon
                                                         sx={{cursor: "pointer", marginRight: "12px"}}
