@@ -50,7 +50,7 @@ import {
     AllergiesItem,
 } from "../../../store/ducks/allergies/types";
 import {IconButton} from "@mui/material";
-import {loadCheckinReportRequest} from "../../../store/ducks/cares/actions";
+import {loadCheckinFilterRequest, loadCheckinReportRequest} from "../../../store/ducks/cares/actions";
 import {useDispatch, useSelector} from "react-redux";
 import {CareState} from "../../../store/ducks/cares/types";
 import {ApplicationState} from "../../../store";
@@ -794,7 +794,16 @@ export default function AccordionReport(props: IAccordionReport) {
                                                             sx={{cursor: "pointer", height: "10px"}}
                                                             onClick={() => {
                                                                 if (reportType === "Check-in/out") {
-                                                                    dispatch(loadCheckinReportRequest(state?.data?._id))
+                                                                    const payload = {
+                                                                        _id: "",
+                                                                        type: "Group",
+                                                                        name: "",
+                                                                        dataStart: _id,
+                                                                        dataEnd: _id,
+                                                                        reportType: "Check-in/out",
+                                                                        attendance_id: state?.data?._id,
+                                                                    }
+                                                                    dispatch(loadCheckinFilterRequest(payload))
                                                                 }
                                                             }}>
                                                     <PrintIcon
