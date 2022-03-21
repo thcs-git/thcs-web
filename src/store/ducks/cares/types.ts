@@ -132,6 +132,9 @@ export enum CareTypes {
   LOAD_EVOLUTION_SUCCESS = "@care/LOAD_EVOLUTION_SUCCESS",
   LOAD_EVOLUTION_FAILURE = "@care/LOAD_EVOLUTION_FAILURE",
 
+  LOAD_EVOLUTION_FILTER_REQUEST = "@care/LOAD_EVOLUTION_FILTER_REQUEST",
+  LOAD_EVOLUTION_FILTER_SUCCESS = "@care/LOAD_EVOLUTION_FILTER_SUCCESS",
+
   // check-in/out
 
   LOAD_CHECKIN_REQUEST = "@care/LOAD_CHECKIN_REQUEST",
@@ -142,6 +145,9 @@ export enum CareTypes {
   LOAD_CHECKIN_REPORT_REQUEST = "@care/LOAD_CHECKIN_REPORT_REQUEST",
   LOAD_CHECKIN_REPORT_SUCCESS = "@care/LOAD_CHECKIN_REPORT_SUCCESS",
   LOAD_CHECKIN_REPORT_FAILURE = "@care/LOAD_CHECKIN_REPORT_FAILURE",
+
+  LOAD_CHECKIN_FILTER_REQUEST = "@care/LOAD_CHECKIN_FILTER_REQUEST",
+  LOAD_CHECKIN_FILTER_SUCCESS = "@care/LOAD_CHECKIN_FILTER_SUCCESS",
 }
 
 /**
@@ -484,4 +490,14 @@ export interface IAdmReleaseData {
   };
 }
 
-export type LoadRequestParams = Partial<Omit<CareList, "data">>;
+export interface IFilterReport {
+  _id: string;
+  type: string;
+  name: string;
+  dataStart: any;
+  dataEnd: any;
+  reportType: string;
+  attendance_id: string;
+}
+
+export type LoadRequestParams = Partial<Omit<CareList | IFilterReport, "data">>;
