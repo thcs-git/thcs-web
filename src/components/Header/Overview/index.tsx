@@ -8,8 +8,9 @@ import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 //IMG or SVG
 import IconProfile from "../../../assets/img/icon-profile.svg";
 import { ReactComponent as AllergicIcon } from "../../../assets/img/icon-alergia.svg";
-import { ReactComponent as QRCodeIcon } from "../../../assets/img/qr-code-green.svg";
 import { ReactComponent as LocationIcon } from "../../../assets/img/icon-location-green.svg";
+import QRCodeIcon from "../../Icons/QrCode";
+import PatientIcon from "../../Icons/Patient";
 
 //style Components
 import {
@@ -66,8 +67,10 @@ export default function HeaderOverview(props: IProps) {
         }}
       >
         <Box>
-          <AccountCircleIcon
-            style={{ width: "56px", height: "56px", marginLeft: "16px" }}
+          <PatientIcon
+            fill={"var(--secondary)"}
+            width={"48px"}
+            height={"48px"}
           />
         </Box>
 
@@ -88,8 +91,8 @@ export default function HeaderOverview(props: IProps) {
 
       <Box style={{ display: "flex", gap: "8px" }}>
         <BoxIcon onClick={handleClickOpen}>
-          <QRCodeIcon style={{ height: "32px", width: "32px" }} />
-          <Box>QR Code</Box>
+          <QRCodeIcon fill={"var(--gray-dark)"} />
+          <Box sx={{ color: "var(--secondary)" }}>QR Code</Box>
         </BoxIcon>
       </Box>
       <DialogQrCode

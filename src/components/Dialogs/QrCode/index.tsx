@@ -66,8 +66,7 @@ export default function DialogQrCode(props: IQrCodeProps) {
       background: "secondary",
       show: true,
       onClick: () => {
-        updateAndCreateQrCode();
-        // dispatch(loadQrCodeRequest(handlerCareStateForQrCode()));
+        dispatch(createQrCodeRequest(handlerQrCode()));
       },
     },
   ];
@@ -95,25 +94,10 @@ export default function DialogQrCode(props: IQrCodeProps) {
       active: true,
       attendance_id: !integration ? careState.data._id : undefined,
       external_attendance_id: integration ? careState.data._id : undefined,
-      qr_code: crypto
-        .createHash("md5")
-        .update(
-          JSON.stringify({
-            dataNow: new Date().toISOString(),
-            attendance_id: careState.data._id,
-          })
-        )
-        .digest("hex"),
     };
 
     qrCodeState.data = newQrCode;
     return newQrCode;
-  }
-
-  function updateAndCreateQrCode() {
-    qrCodeState.data.active = false;
-    dispatch(updateQrCodeRequest(qrCodeState.data));
-    dispatch(createQrCodeRequest(handlerQrCode()));
   }
 
   return (
@@ -150,10 +134,7 @@ export default function DialogQrCode(props: IQrCodeProps) {
         >
           {qrCodeState.data && qrCodeState.data.qr_code ? (
             <>
-              <QRCode
-                value={qrCodeState.data.qr_code}
-                fgColor="var(--secondary)"
-              />
+              <QRCode value={qrCodeState.data.qr_code} fgColor="var(--black)" />
               <Box sx={{ marginTop: "8px" }}>
                 <>
                   Gerado em:{" "}
