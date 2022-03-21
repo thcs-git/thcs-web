@@ -162,8 +162,7 @@ export default function PatientOverview(
     if (params.id) {
       dispatch(loadCareById(params.id));
       dispatch(loadRequestQrCode(params.id));
-
-      // console.log(dispatch(loadRequestQrCode(params.id)), "TESTEEEEEE");
+      dispatch(loadCheckinRequest(params.id));
       dispatch(loadScheduleRequest({ attendance_id: params.id }));
     }
   }, [params.id]);

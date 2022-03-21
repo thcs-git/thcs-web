@@ -141,21 +141,26 @@ export default function CardInfo(props: ICardInfo) {
 
   function handleTeamData(content: IContent) {
     let team: ITeam[] = [];
-    let teamFiltered: ITeam[] = [];
     content.careState.checkin.map((day: any, index: number) => {
-      day.list.map((checks: any, index: number) => {
-        checks.list.map((user: any) => {
-          const professional: ITeam = {
-            name: getFirstAndLastName(capitalizeText(user[0].user_id[0].name)),
-            function: handleFunction(
-              user[0].user_id[0].companies_links,
-              careState.data.company_id
-            ),
-            user_id: user[0].user_id[0]._id,
-          };
-          team.push(professional);
+      if (day) {
+        day.list.map((checks: any, index: number) => {
+          if (checks.list) {
+            checks.list.map((user: any) => {
+              const professional: ITeam = {
+                name: getFirstAndLastName(
+                  capitalizeText(user[0].user_id[0].name)
+                ),
+                function: handleFunction(
+                  user[0].user_id[0].companies_links,
+                  careState.data.company_id
+                ),
+                user_id: user[0].user_id[0]._id,
+              };
+              team.push(professional);
+            });
+          }
         });
-      });
+      }
     });
     return _.uniqBy(team, "user_id").sort((a: any, b: any) => {
       return a.name < b.name ? -1 : a.name > b.name ? 1 : 0;
@@ -186,6 +191,10 @@ export default function CardInfo(props: ICardInfo) {
       }
     });
 
+    const arrEmpty = (
+      <Box>Não foram realizados nenhum check-in/out neste atendimento.</Box>
+    );
+
     let itensGrid = (
       <Grid container style={{ boxShadow: "none" }}>
         <Grid item xs={6} style={{ boxShadow: "none" }}>
@@ -196,7 +205,7 @@ export default function CardInfo(props: ICardInfo) {
         </Grid>
       </Grid>
     );
-    return itensGrid;
+    return arr.length > 0 ? itensGrid : arrEmpty;
   }
 
   function iconHeader(title: string) {
