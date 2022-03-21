@@ -152,6 +152,8 @@ import {
   getEvolution,
   getChekin,
   getChekInReport,
+  getFilterCheckin,
+  getFilterEvolution,
 } from "./cares/sagas";
 
 import { get as getProfession } from "./professions/sagas";
@@ -248,6 +250,8 @@ export default function* rootSaga(): any {
 
     takeLatest(CareTypes.LOAD_CHECKIN_REQUEST, getChekin),
     takeLatest(CareTypes.LOAD_CHECKIN_REPORT_REQUEST, getChekInReport),
+    takeLatest(CareTypes.LOAD_CHECKIN_FILTER_REQUEST, getFilterCheckin),
+    takeLatest(CareTypes.LOAD_EVOLUTION_FILTER_REQUEST, getFilterEvolution),
 
     // Council
     takeLatest(CouncilTypes.LOAD_REQUEST, getCouncils),
