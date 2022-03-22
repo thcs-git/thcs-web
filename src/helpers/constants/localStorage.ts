@@ -5,6 +5,7 @@ export default {
   REMEMBER_ME: "@sollar_remember_me",
   USERNAME: "@sollar_username",
   USER_ID: "@sollar_user_id",
+  INTEGRATION_USER_ID: "@sollar_integration_user_id",
   COMPANY_SELECTED: `@sollar_company_selected`,
   COMPANY_NAME: `@sollar_company_name`,
   CUSTOMER: `@sollar_customer`,

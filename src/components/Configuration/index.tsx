@@ -57,12 +57,16 @@ export default function Configuration() {
       localStorage.setItem(LOCALSTORAGE.CUSTOMER, company.companie_id.customer_id._id);
       localStorage.setItem(LOCALSTORAGE.CUSTOMER_NAME, company.companie_id.customer_id.name);
 
+      console.log(company)
+
       if (company.companie_id.customer_id.integration) {
         sessionStorage.setItem(SESSIONSTORAGE.INTEGRATION, company.companie_id.customer_id.integration);
         localStorage.setItem(LOCALSTORAGE.INTEGRATION_COMPANY_SELECTED, company.companie_id.external_id);
+        localStorage.setItem(LOCALSTORAGE.INTEGRATION_USER_ID, company.user_external_id);
       } else {
         sessionStorage.removeItem(SESSIONSTORAGE.INTEGRATION);
         localStorage.removeItem(LOCALSTORAGE.INTEGRATION_COMPANY_SELECTED);
+        localStorage.removeItem(LOCALSTORAGE.INTEGRATION_USER_ID);
       }
 
       setUser(prevState => ({

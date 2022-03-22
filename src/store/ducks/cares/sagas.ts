@@ -784,7 +784,12 @@ export function* getChekin({payload}: any) {
 export function* getChekInReport({payload}: any) {
     try {
         const integration = sessionStorage.getItem(SESSIONSTORAGE.INTEGRATION)
-        const headers = integration ? {token, external_attendance_id: payload} : {token, attendance_id: payload}
+        const external_user_id = localStorage.getItem(LOCALSTORAGE.INTEGRATION_USER_ID)
+        const headers = integration ? {
+            token,
+            external_attendance_id: payload,
+            external_user_id: external_user_id
+        } : {token, attendance_id: payload}
         const response: AxiosResponse = yield call(
             apiSollarReport.get,
             `/checkin`,
@@ -799,7 +804,7 @@ export function* getChekInReport({payload}: any) {
 
 export function* getFilterCheckin({payload}: any) {
     try {
-        let {dataStart, dataEnd, type, name} = payload;
+        let {_id, dataStart, dataEnd, type, name} = payload;
         dataStart = typeof dataStart === 'string' ? dataStart : formatDate(dataStart["$d"], "YYYY-MM-DD");
         dataEnd = typeof dataEnd === 'string' ? dataEnd : formatDate(dataEnd["$d"], "YYYY-MM-DD");
         payload = {
@@ -808,10 +813,13 @@ export function* getFilterCheckin({payload}: any) {
             dataEnd,
         };
         const integration = sessionStorage.getItem(SESSIONSTORAGE.INTEGRATION)
-        const headers = integration ? {token, external_attendance_id: payload.attendance_id} : {token, attendance_id: payload.attendance_id}
+        const headers = integration ? {token, external_attendance_id: payload.attendance_id} : {
+            token,
+            attendance_id: payload.attendance_id
+        }
         const response: AxiosResponse = yield call(
             apiSollarReport.get,
-            `/checkin?dataStart=${dataStart}&dataEnd=${dataEnd}&name=${name}&type=${type}`,
+            `/checkin?_id=${_id}&dataStart=${dataStart}&dataEnd=${dataEnd}&name=${name}&type=${type}`,
             {responseType: 'blob', headers: {...headers}}
         );
         yield put(loadCheckinReportSuccess(response.data));
