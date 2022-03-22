@@ -13,7 +13,6 @@ import Badge from "@mui/material/Badge";
 // icons
 import IconMeasurement from "../../Icons/measurement";
 import PrintIcon from "@mui/icons-material/Print";
-import DownloadIcon from "@mui/icons-material/Download";
 import BloodGlucose from "../../Icons/BloodGlucose";
 import BodilySurface from "../../Icons/BodilySurface";
 import Exam from "../../Icons/Exam";
@@ -116,27 +115,27 @@ export default function AccordionReport(props: IAccordionReport) {
   const dispatch = useDispatch();
   const integration = sessionStorage.getItem(SESSIONSTORAGE.INTEGRATION);
   const [expanded, setExpanded] = useState<string | false>("panel0");
-  if (reportType === "Alergias" && content.data) {
-    // MOCANDO EVENTOS ADVERSOS
-    content.data.event = [
-      {
-        _id: 79019,
-        item: ["ABAIXADOR DE LINGUA DESCARTAVEL"],
-        type: ["ALERGIA"],
-        profession: "MEDICO(A)",
-        created_by: "MEDICO PEP TESTE",
-        created_at: "2022-02-09T11:47:54.000Z",
-      },
-      {
-        _id: 79020,
-        item: ["DIPRIVAN PFS  20 MG/ML, 2% 50ML", "AAS INFANTIL 100 MG"],
-        type: ["CONSTIPAÇÃO", "TAQUICARDIA"],
-        profession: "MEDICO(A)",
-        created_by: "MEDICO PEP TESTE",
-        created_at: "2022-02-09T13:09:22.000Z",
-      },
-    ];
-  }
+  // if (reportType === "Alergias" && content.data) {
+  //   // MOCANDO EVENTOS ADVERSOS
+  //   content.data.event = [
+  //     {
+  //       _id: 79019,
+  //       item: ["ABAIXADOR DE LINGUA DESCARTAVEL"],
+  //       type: ["ALERGIA"],
+  //       profession: "MEDICO(A)",
+  //       created_by: "MEDICO PEP TESTE",
+  //       created_at: "2022-02-09T11:47:54.000Z",
+  //     },
+  //     {
+  //       _id: 79020,
+  //       item: ["DIPRIVAN PFS  20 MG/ML, 2% 50ML", "AAS INFANTIL 100 MG"],
+  //       type: ["CONSTIPAÇÃO", "TAQUICARDIA"],
+  //       profession: "MEDICO(A)",
+  //       created_by: "MEDICO PEP TESTE",
+  //       created_at: "2022-02-09T13:09:22.000Z",
+  //     },
+  //   ];
+  // }
 
   const handleChange =
     (panel: string) => (event: React.SyntheticEvent, isExpanded: boolean) => {
@@ -406,13 +405,7 @@ export default function AccordionReport(props: IAccordionReport) {
                     ? "200px"
                     : "100px"
                 }`,
-                justifyContent: `${
-                  reportType === "Evolução" ||
-                  reportType === "Check-in/out" ||
-                  type === "event"
-                    ? "center"
-                    : "flex-start"
-                }`,
+                justifyContent: "center",
               }}
             >
               {reportType === "Check-in/out"
@@ -431,50 +424,63 @@ export default function AccordionReport(props: IAccordionReport) {
   const handleRow = (list: any, type?: string) => {
     if (type) {
       if (type === "allergy") {
-        return list.map((column: any, index: number) => {
+        if (content.data.allergy.length === 0) {
           return (
-            <>
-              <ContentDetailsAccordion key={column._id}>
-                <TextCenterDetails sx={{ width: "100px" }}>
-                  {formatDate(column.created_at, "DD/MM/YY HH:mm")}
-                </TextCenterDetails>
-                <TextCenterDetails sx={{ width: "250px" }}>
-                  {column.created_by
-                    ? integration
-                      ? getFirstAndLastName(capitalizeText(column.created_by))
-                      : getFirstAndLastName(
-                          capitalizeText(column.created_by.name)
-                        )
-                    : "-"}
-                </TextCenterDetails>
-                <TextCenterDetails sx={{ width: "250px" }}>
-                  {handleFunction(column, company_id, type)}
-                </TextCenterDetails>
-                <TextCenterDetails sx={{ width: "200px" }}>
-                  <Box
-                    sx={{
-                      display: "flex",
-                      flexWrap: "wrap",
-                      justifyContent: "center",
-                      alignItems: "center",
-                      gap: "4px",
-                      margin: "2px",
-                    }}
-                  >
-                    {integration
-                      ? capitalizeText(column.name)
-                      : capitalizeText(column.description)}
-                  </Box>
-                </TextCenterDetails>
-              </ContentDetailsAccordion>
-              {list.length !== index + 1 ? (
-                <Divider sx={{ width: "100%", margin: "0 auto" }} />
-              ) : (
-                ""
-              )}
-            </>
+            <Box
+              sx={{
+                color: "var(--gray-dark)",
+                textAlign: "center",
+                margin: "16px 0 8px",
+              }}
+            >
+              Não há alergias registrados para este paciente.
+            </Box>
           );
-        });
+        } else
+          return list.map((column: any, index: number) => {
+            return (
+              <>
+                <ContentDetailsAccordion key={column._id}>
+                  <TextCenterDetails sx={{ width: "100px" }}>
+                    {formatDate(column.created_at, "DD/MM/YY HH:mm")}
+                  </TextCenterDetails>
+                  <TextCenterDetails sx={{ width: "250px" }}>
+                    {column.created_by
+                      ? integration
+                        ? getFirstAndLastName(capitalizeText(column.created_by))
+                        : getFirstAndLastName(
+                            capitalizeText(column.created_by.name)
+                          )
+                      : "-"}
+                  </TextCenterDetails>
+                  <TextCenterDetails sx={{ width: "250px" }}>
+                    {handleFunction(column, company_id, type)}
+                  </TextCenterDetails>
+                  <TextCenterDetails sx={{ width: "200px" }}>
+                    <Box
+                      sx={{
+                        display: "flex",
+                        flexWrap: "wrap",
+                        justifyContent: "center",
+                        alignItems: "center",
+                        gap: "4px",
+                        margin: "2px",
+                      }}
+                    >
+                      {integration
+                        ? capitalizeText(column.name)
+                        : capitalizeText(column.description)}
+                    </Box>
+                  </TextCenterDetails>
+                </ContentDetailsAccordion>
+                {list.length !== index + 1 ? (
+                  <Divider sx={{ width: "100%", margin: "0 auto" }} />
+                ) : (
+                  ""
+                )}
+              </>
+            );
+          });
       } else if (type === "event") {
         if (content.data.event.length === 0) {
           return (
@@ -492,7 +498,6 @@ export default function AccordionReport(props: IAccordionReport) {
           return list.map((column: any, index: number) => {
             return (
               <>
-                {console.log(column)}
                 <ContentDetailsAccordion key={column._id}>
                   <TextCenterDetails sx={{ width: "100px" }}>
                     {formatDate(column.created_at, "DD/MM/YY HH:mm")}
@@ -634,9 +639,6 @@ export default function AccordionReport(props: IAccordionReport) {
                 {column.type}
               </TextCenterDetails>
               <TextCenterDetails>
-                <DownloadIcon
-                  sx={{ color: "var(--secondary)", marginRight: "8px" }}
-                />
                 <PrintIcon sx={{ color: "var(--secondary)" }} />
               </TextCenterDetails>
             </ContentDetailsAccordion>
@@ -737,11 +739,8 @@ export default function AccordionReport(props: IAccordionReport) {
                 </Box>
               </TextCenterDetails>
               <TextCenterDetails
-                sx={{ width: "100px", justifyContent: "flex-start" }}
+                sx={{ width: "100px", justifyContent: "center" }}
               >
-                <DownloadIcon
-                  sx={{ color: "var(--secondary)", marginRight: "8px" }}
-                />
                 <PrintIcon sx={{ color: "var(--secondary)" }} />
               </TextCenterDetails>
             </ContentDetailsAccordion>
@@ -831,11 +830,6 @@ export default function AccordionReport(props: IAccordionReport) {
                         </Box>
                       </Box>
                       <Box>
-                        {reportType === "Evolução" && (
-                          <DownloadIcon
-                            sx={{ cursor: "pointer", marginRight: "12px" }}
-                          />
-                        )}
                         <IconButton
                           color="secondary"
                           aria-label="print"
@@ -873,6 +867,7 @@ export default function AccordionReport(props: IAccordionReport) {
                     expandIcon={<ExpandMoreIcon />}
                     aria-controls={`panel${index}bh-content`}
                     id={`panel${index}bh-header`}
+                    sx={{ display: "flex", justifyContent: "space-between" }}
                   >
                     <Box
                       sx={{
@@ -891,26 +886,25 @@ export default function AccordionReport(props: IAccordionReport) {
                         width="22px"
                         height={"22px"}
                       />
-                      <Box
-                        sx={{
-                          display: "flex",
-                          justifyContent: "space-between",
+
+                      {item === "allergy" && "Alergias"}
+                      {item === "event" && "Eventos adversos"}
+                    </Box>
+                    <Box>
+                      <IconButton
+                        color="secondary"
+                        aria-label="print"
+                        sx={{ cursor: "pointer", height: "10px" }}
+                        onClick={() => {
+                          console.log("clikei");
+                          // dispatch(loadCheckinReportRequest("asd"));
                         }}
                       >
-                        {item === "allergy" && "Alergias"}
-                        {item === "event" && "Eventos adversos"}
-                      </Box>
+                        <PrintIcon
+                          sx={{ cursor: "pointer", marginRight: "12px" }}
+                        />
+                      </IconButton>
                     </Box>
-                    <TextCenterDetails
-                      sx={{ width: "100px", justifyContent: "flex-start" }}
-                    >
-                      <DownloadIcon
-                        sx={{ cursor: "pointer", marginRight: "12px" }}
-                      />
-                      <PrintIcon
-                        sx={{ cursor: "pointer", marginRight: "12px" }}
-                      />
-                    </TextCenterDetails>
                   </AccordionSummary>
                   <AccordionDetails>
                     {handleHeaderDetails(item)}
@@ -931,7 +925,10 @@ export default function AccordionReport(props: IAccordionReport) {
             padding: "8px 0 16px",
           }}
         >
-          Não há relatórios para o prontuário de {reportType}
+          Não há relatórios para o prontuário de{" "}
+          {reportType === "Alergias"
+            ? "Alergias e Eventos Adversos"
+            : reportType}
         </Box>
       )}
 

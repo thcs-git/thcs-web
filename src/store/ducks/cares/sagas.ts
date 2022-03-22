@@ -1,4 +1,4 @@
-import {apiSollarMobi, apiSollarReport} from "./../../../services/axios";
+import { apiSollarMobi, apiSollarReport } from "./../../../services/axios";
 import { put, call } from "redux-saga/effects";
 import { toast } from "react-toastify";
 import { AxiosResponse } from "axios";
@@ -44,7 +44,9 @@ import {
   loadEvolutionSuccess,
   loadEvolutionFailure,
   loadCheckinSuccess,
-  loadCheckinFailure, loadCheckinReportSuccess, loadCheckinReportFailure,
+  loadCheckinFailure,
+  loadCheckinReportSuccess,
+  loadCheckinReportFailure,
 } from "./actions";
 
 import { apiIntegra, apiSollar } from "../../../services/axios";
@@ -777,11 +779,9 @@ export function* getChekin({ payload }: any) {
 
 export function* getChekInReport({ payload }: any) {
   try {
-    const response: AxiosResponse = yield call(
-        apiSollarReport.get,
-        `/`,
-        {responseType: 'blob'}
-    );
+    const response: AxiosResponse = yield call(apiSollarReport.get, `/`, {
+      responseType: "blob",
+    });
     yield put(loadCheckinReportSuccess(response.data));
   } catch (err) {
     yield put(loadCheckinReportFailure());
