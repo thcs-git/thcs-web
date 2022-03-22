@@ -1,8 +1,17 @@
 import React, { useCallback, useEffect, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { makeStyles } from "@material-ui/core";
-import { Link, useHistory } from "react-router-dom";
 
+// Router
+import { Link, useHistory } from "react-router-dom";
+import { RouteComponentProps } from "react-router-dom";
+
+// MUI
+import { makeStyles } from "@material-ui/core";
+import {
+  MoreVert,
+  Check as CheckIcon,
+  Close as CloseIcon,
+} from "@material-ui/icons";
+// Components
 import { FieldContent, FormTitle } from "../../../styles/components/Form";
 import Sidebar from "../../../components/Sidebar";
 import Header from "../../../components/Header/Overview";
@@ -10,7 +19,18 @@ import ScrollCard from "../../../components/Card/ScrollCard";
 import CardInfo from "../../../components/Card/Info";
 import ButtonTabs from "../../../components/Button/ButtonTabs";
 import AccordionReport from "../../../components/Accordion/Report";
+import Loading from "../../../components/Loading";
+import FilterReport from "../../../components/Dialogs/Filter/Report";
 
+// Styles
+import { ContainerStyle as Container } from "./styles";
+
+// Helper
+import SESSIONSTORAGE from "../../../helpers/constants/sessionStorage";
+import { age, formatDate } from "../../../helpers/date";
+
+// Redux e Sagas
+import { useDispatch, useSelector } from "react-redux";
 import {
   deleteCareRequest,
   loadCareById,
@@ -21,24 +41,13 @@ import {
 } from "../../../store/ducks/cares/actions";
 import { loadPatientById } from "../../../store/ducks/patients/actions";
 import { loadRequest as loadRequestAllergies } from "../../../store/ducks/allergies/actions";
-
-import { ContainerStyle as Container } from "./styles";
-import {
-  MoreVert,
-  Check as CheckIcon,
-  Close as CloseIcon,
-} from "@material-ui/icons";
-import { ApplicationState } from "../../../store";
-import { RouteComponentProps } from "react-router-dom";
-import { age, formatDate } from "../../../helpers/date";
-import Loading from "../../../components/Loading";
-import SESSIONSTORAGE from "../../../helpers/constants/sessionStorage";
 import {
   AllergiesInterface,
   AllergiesState,
 } from "../../../store/ducks/allergies/types";
 import { loadRequest as loadRequestMeasurements } from "../../../store/ducks/measurements/actions";
 import { loadRequest as loadRequestQrCode } from "../../../store/ducks/qrCode/actions";
+import { ApplicationState } from "../../../store";
 
 interface IPageParams {
   id?: string;
@@ -141,6 +150,7 @@ export default function PatientOverview(
   const [team, setTeam] = useState<any[]>([]);
   const [reportActive, setReportActive] = useState(false);
   const [reportType, setReportType] = useState("");
+  const [openFilterReport, setOpenFilterReport] = useState(false);
 
   useEffect(() => {
     if (params.id) {
@@ -504,8 +514,13 @@ export default function PatientOverview(
       return "";
     }
   }
-  // console.log(careState);
-  // console.log(reportActive, reportType);
+
+  function handleOpenFilter() {
+    setOpenFilterReport(true);
+  }
+  function handleCloseFilter() {
+    setOpenFilterReport(false);
+  }
 
   return (
     <Sidebar>
@@ -513,7 +528,6 @@ export default function PatientOverview(
       <Container style={{ padding: "20px", maxWidth: "1100px" }}>
         <FormTitle>Overview de Paciente</FormTitle>
         <Container style={{ backgroundColor: "#f5f5f5" }}>
-          {/*{integration ? (*/}
           {true ? (
             <>
               <Header
@@ -528,6 +542,18 @@ export default function PatientOverview(
                 onClickCard={handleReport}
                 allergic={isAllergic(allergiesState)}
                 loadingCard={allergiesState.loading}
+                openFilter={handleOpenFilter}
+                reportType={reportType}
+                reportActive={reportActive}
+                existContent={!!handleContentReport(reportType)}
+              />
+              <FilterReport
+                openFilter={openFilterReport}
+                closeFilter={handleCloseFilter}
+                reportType={reportType}
+                content={rows}
+                careState={careState}
+                contentReport={handleContentReport(reportType)}
               />
               {reportActive ? (
                 <AccordionReport
@@ -536,6 +562,7 @@ export default function PatientOverview(
                     careState.data.company_id ? careState.data.company_id : ""
                   }
                   reportType={reportType}
+                  state={careState}
                 />
               ) : (
                 <Container

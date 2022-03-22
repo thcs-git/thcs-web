@@ -52,8 +52,13 @@ import {
   AllergiesItem,
 } from "../../../store/ducks/allergies/types";
 import { IconButton } from "@mui/material";
-import { loadCheckinReportRequest } from "../../../store/ducks/cares/actions";
-import { useDispatch } from "react-redux";
+import {
+  loadCheckinFilterRequest,
+  loadCheckinReportRequest,
+} from "../../../store/ducks/cares/actions";
+import { useDispatch, useSelector } from "react-redux";
+import { CareState } from "../../../store/ducks/cares/types";
+import { ApplicationState } from "../../../store";
 
 interface IAccordionReport {
   content: {
@@ -64,7 +69,7 @@ interface IAccordionReport {
   company_id: string;
   reportType: string;
   allergic?: boolean;
-
+  state?: any;
   // data: IDataAccordion[];
 }
 
@@ -111,31 +116,10 @@ interface IAccordionItem {
 }
 
 export default function AccordionReport(props: IAccordionReport) {
-  const { content, company_id, reportType } = props;
+  const { content, company_id, reportType, state } = props;
   const dispatch = useDispatch();
   const integration = sessionStorage.getItem(SESSIONSTORAGE.INTEGRATION);
   const [expanded, setExpanded] = useState<string | false>("panel0");
-  // if (reportType === "Alergias" && content.data) {
-  //   // MOCANDO EVENTOS ADVERSOS
-  //   content.data.event = [
-  //     {
-  //       _id: 79019,
-  //       item: ["ABAIXADOR DE LINGUA DESCARTAVEL"],
-  //       type: ["ALERGIA"],
-  //       profession: "MEDICO(A)",
-  //       created_by: "MEDICO PEP TESTE",
-  //       created_at: "2022-02-09T11:47:54.000Z",
-  //     },
-  //     {
-  //       _id: 79020,
-  //       item: ["DIPRIVAN PFS  20 MG/ML, 2% 50ML", "AAS INFANTIL 100 MG"],
-  //       type: ["CONSTIPAÇÃO", "TAQUICARDIA"],
-  //       profession: "MEDICO(A)",
-  //       created_by: "MEDICO PEP TESTE",
-  //       created_at: "2022-02-09T13:09:22.000Z",
-  //     },
-  //   ];
-  // }
 
   const handleChange =
     (panel: string) => (event: React.SyntheticEvent, isExpanded: boolean) => {

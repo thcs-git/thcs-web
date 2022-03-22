@@ -9,6 +9,7 @@ import {
   HealthPlanInterface,
   ReleaseReasonInterface,
   ReleaseReferralInterface,
+  IFilterReport,
 } from "./types";
 
 export const loadRequest = (params: LoadRequestParams = {}) =>
@@ -263,6 +264,11 @@ export const loadEvolutionSuccess = (data: any) =>
 export const loadEvolutionFailure = () =>
   action(CareTypes.LOAD_EVOLUTION_FAILURE);
 
+export const loadEvolutionFilterRequest = (data: IFilterReport) =>
+  action(CareTypes.LOAD_EVOLUTION_FILTER_REQUEST, data);
+export const loadEvolutionFilterSucess = (data: IFilterReport) =>
+  action(CareTypes.LOAD_EVOLUTION_FILTER_REQUEST, data);
+
 /**
  * check-in/out
  */
@@ -275,14 +281,19 @@ export const loadCheckinSuccess = (data: any) =>
 
 export const loadCheckinFailure = () => action(CareTypes.LOAD_CHECKIN_FAILURE);
 
+export const loadCheckinFilterRequest = (data: IFilterReport) =>
+  action(CareTypes.LOAD_CHECKIN_FILTER_REQUEST, data);
+export const loadCheckinFilterSuccess = (data: IFilterReport) =>
+  action(CareTypes.LOAD_CHECKIN_FILTER_SUCCESS, data);
 /**
  * check-in/out report
  */
 
 export const loadCheckinReportRequest = (id: any) =>
-    action(CareTypes.LOAD_CHECKIN_REPORT_REQUEST, id);
+  action(CareTypes.LOAD_CHECKIN_REPORT_REQUEST, id);
 
 export const loadCheckinReportSuccess = (data: any) =>
-    action(CareTypes.LOAD_CHECKIN_REPORT_SUCCESS, data);
+  action(CareTypes.LOAD_CHECKIN_REPORT_SUCCESS, data);
 
-export const loadCheckinReportFailure = () => action(CareTypes.LOAD_CHECKIN_REPORT_FAILURE);
+export const loadCheckinReportFailure = () =>
+  action(CareTypes.LOAD_CHECKIN_REPORT_FAILURE);
