@@ -74,15 +74,8 @@ export default function FilterReport(props: IPropsFilter) {
     contentReport,
   } = props;
 
-  const userState = useSelector((state: ApplicationState) => state.users);
-  const customerState = useSelector(
-    (state: ApplicationState) => state.customers
-  );
   const dispatch = useDispatch();
   const customer_id = localStorage.getItem(LOCALSTORAGE.CUSTOMER);
-  const company_id = localStorage.getItem(LOCALSTORAGE.COMPANY_SELECTED);
-  const [valueDataStart, setValueDataStart] = React.useState<Date | null>(null);
-  const [valueDataEnd, setValueDataEnd] = React.useState<Date | null>(null);
   const [stateFilter, setStateFilter] = useState<IFilter>({
     _id: "",
     type: "Prestador",
@@ -121,39 +114,6 @@ export default function FilterReport(props: IPropsFilter) {
       return { ...state, type: event.target.value, name: "" };
     });
   };
-
-  const professionsList = useCallback(() => {
-    let data: any = [];
-    handleTeam().map((item: any) => {
-      item.companies_links.map((item: any, index: number) => {
-        if (item.companie_id === company_id) {
-          let alreadyExists: boolean = false;
-          data.forEach((profession: any) => {
-            profession.name === item.function ? (alreadyExists = true) : "";
-          });
-          !alreadyExists && data.push({ name: item.function, _id: item._id });
-        }
-      });
-    });
-    return data.sort((a: any, b: any) => {
-      return a.name < b.name ? -1 : a.name > b.name ? 1 : 0;
-    });
-  }, [customerState.data.usertypes, reportType]);
-
-  function handleTeam() {
-    let team: object[] = [];
-    content.map(({ name, value }: IRows) => {
-      if (name === "Equipe") {
-        value.map((item: any) => {
-          if (item.name) team.push(item);
-        });
-      }
-    });
-    return team.sort((a: any, b: any) => {
-      return a.name < b.name ? -1 : a.name > b.name ? 1 : 0;
-    });
-  }
-
   function handleMinDateReport() {
     if (reportType === "Check-in/out") {
       if (contentReport) {
@@ -214,7 +174,6 @@ export default function FilterReport(props: IPropsFilter) {
       handleGenerate();
     }
   }
-
   function rangeDataComparison(dataEnd: any, dataStart: any, content: any) {
     if (reportType === "Check-in/out") {
       if (
@@ -301,6 +260,56 @@ export default function FilterReport(props: IPropsFilter) {
       }
     }
   }
+  const capitalizeText = (words: string) => {
+    return words
+      .toLowerCase()
+      .split(" ")
+      .map((text: string) => {
+        return (text = text.charAt(0).toUpperCase() + text.substring(1));
+      })
+      .join(" ");
+  };
+  function handleFunction(list: any, company: string) {
+    for (let i = 0; i < list.length; i++) {
+      if (list[i].companie_id === company) {
+        return list[i].function;
+      }
+    }
+  }
+  function handleAutocompleteData(type: string) {
+    let List: any[] = [];
+    careState.checkin.map((day: any) => {
+      if (day) {
+        day.list.map((checks: any) => {
+          if (checks.list) {
+            checks.list.map((user: any) => {
+              const itemList: any = {
+                name:
+                  type === "Função"
+                    ? handleFunction(
+                        user[0].user_id[0].companies_links,
+                        careState.data.company_id
+                      )
+                    : capitalizeText(user[0].user_id[0].name),
+                _id: type === "Função" ? "" : user[0].user_id[0]._id,
+              };
+              List.push(itemList);
+            });
+          }
+        });
+      }
+    });
+    if (type === "Função") {
+      return _.uniqBy(List, "name").sort((a: any, b: any) => {
+        return a.name < b.name ? -1 : a.name > b.name ? 1 : 0;
+      });
+    } else {
+      return _.uniqBy(List, "_id").sort((a: any, b: any) => {
+        return a.name < b.name ? -1 : a.name > b.name ? 1 : 0;
+      });
+    }
+  }
+
   return (
     <Dialog
       open={openFilter}
@@ -367,9 +376,7 @@ export default function FilterReport(props: IPropsFilter) {
           </FormLabel>
           <Autocomplete
             id="combo-box-profession"
-            options={
-              stateFilter.type === "Função" ? professionsList() : handleTeam()
-            }
+            options={handleAutocompleteData(stateFilter.type)}
             getOptionLabel={(option) => option.name}
             renderInput={(params) => (
               <TextField
