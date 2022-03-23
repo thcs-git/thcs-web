@@ -222,9 +222,31 @@ export default function FilterReport(props: IPropsFilter) {
   }
   function handleGenerate() {
     if (stateFilter.reportType === "Check-in/out") {
-      dispatch(loadCheckinFilterRequest(stateFilter));
+      dispatch(
+        loadCheckinFilterRequest(
+          stateFilter.dataEnd
+            ? stateFilter
+            : {
+                ...stateFilter,
+                dataEnd: dayjs(
+                  formatDate(contentReport.data[0]._id, "YYYY-MM-DD")
+                ),
+              }
+        )
+      );
     } else if (stateFilter.reportType === "Evolução") {
-      dispatch(loadEvolutionFilterRequest(stateFilter));
+      dispatch(
+        loadEvolutionFilterRequest(
+          stateFilter.dataEnd
+            ? stateFilter
+            : {
+                ...stateFilter,
+                dataEnd: dayjs(
+                  formatDate(contentReport.data[0]._id, "YYYY-MM-DD")
+                ),
+              }
+        )
+      );
     }
     // closeFilter();
     // cleanFilter();
@@ -451,12 +473,21 @@ export default function FilterReport(props: IPropsFilter) {
                 label="Data de início"
                 value={stateFilter.dataStart}
                 onChange={(newValue) => {
-                  setStateFilter((state: any) => {
-                    return {
-                      ...state,
-                      dataStart: dayjs(formatDate(newValue, "YYYY-MM-DD")),
-                    };
-                  });
+                  if (newValue) {
+                    setStateFilter((state: any) => {
+                      return {
+                        ...state,
+                        dataStart: dayjs(formatDate(newValue, "YYYY-MM-DD")),
+                      };
+                    });
+                  } else {
+                    setStateFilter((state: any) => {
+                      return {
+                        ...state,
+                        dataStart: null,
+                      };
+                    });
+                  }
                 }}
                 renderInput={(params) => <TextField {...params} />}
               />
@@ -468,12 +499,21 @@ export default function FilterReport(props: IPropsFilter) {
                 label="Data de Fim"
                 value={stateFilter.dataEnd}
                 onChange={(newValue) => {
-                  setStateFilter((state: any) => {
-                    return {
-                      ...state,
-                      dataEnd: dayjs(formatDate(newValue, "YYYY-MM-DD")),
-                    };
-                  });
+                  if (newValue) {
+                    setStateFilter((state: any) => {
+                      return {
+                        ...state,
+                        dataEnd: dayjs(formatDate(newValue, "YYYY-MM-DD")),
+                      };
+                    });
+                  } else {
+                    setStateFilter((state: any) => {
+                      return {
+                        ...state,
+                        dataEnd: null,
+                      };
+                    });
+                  }
                 }}
                 renderInput={(params) => <TextField {...params} />}
               />
