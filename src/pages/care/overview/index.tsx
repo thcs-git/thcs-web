@@ -474,7 +474,7 @@ export default function PatientOverview(
     {
       name: "Voltar",
       onClick: () => {
-        history.push("/care");
+        reportActive ? setReportActive(false) : history.push("/care");
       },
       variant: "contained",
       background: "secondary",
