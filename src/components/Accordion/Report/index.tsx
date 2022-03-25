@@ -197,146 +197,155 @@ export default function AccordionReport(props: IAccordionReport) {
     }`;
   };
 
-  const handleFunction = (list: any, company: string, type?: string) => {
-    if (type === "allergy" || type === "event") {
-      if (!list.created_by?.companies_links || list.created_by === null)
-        return "-";
-      return list.created_by.companies_links.map((item: any, index: number) => {
-        if (item.companie_id === company) {
-          return item.function;
+    const handleFunction = (list: any, company: string, type?: string) => {
+        if (type === "allergy" || type === "event") {
+            if (!list.created_by?.companies_links || list.created_by === null)
+                return "-";
+            return list.created_by.companies_links.map((item: any, index: number) => {
+                if (item.companie_id === company) {
+                    return item.function;
+                }
+            });
+        } else if (reportType === "Check-in/out") {
+            return list.map((item: any, index: number) => {
+                if (item.companie_id === company) {
+                    return item.function;
+                }
+            });
+        } else {
+            return list.created_by[0].companies_links.map(
+                (item: any, index: number) => {
+                    if (item.companie_id === company) {
+                        return item.function;
+                    }
+                }
+            );
         }
-      });
-    } else if (reportType === "Check-in/out") {
-      return list.map((item: any, index: number) => {
-        if (item.companie_id === company) {
-          return item.function;
-        }
-      });
-    } else {
-      return list.created_by[0].companies_links.map(
-        (item: any, index: number) => {
-          if (item.companie_id === company) {
-            return item.function;
-          }
-        }
-      );
+    };
+    function checkMeasurementValue(measurements: IAccordionItem[]) {
+        let measurementCheck: IAccordionItem[] = [];
+        measurements.map((item: IAccordionItem) => {
+            if (item.value !== "-") {
+                return measurementCheck.push(item);
+            }
+        });
+        return measurementCheck;
     }
-  };
-  const handleMeasurementItemsIcons = (
-    measurements: IAccordionItem[],
-    canceled: boolean
-  ) => {
-    return measurements.map(
-      (measurementItem: IAccordionItem, index: number) => {
-        switch (measurementItem.name) {
-          case "PAD":
-            return (
-              <Tooltip title={measurementItem.name}>
-                <Box>
-                  <Presure
-                    fill={canceled ? "#7D7D7D" : "var(--secondary)"}
-                    width={"20px"}
-                    height={"20px"}
-                  />
-                </Box>
-              </Tooltip>
-            );
-          case "Frequência Respiratória":
-            return (
-              <Tooltip title={measurementItem.name}>
-                <Box>
-                  <Lung
-                    fill={canceled ? "#7D7D7D" : "var(--secondary)"}
-                    width={"20px"}
-                    height={"20px"}
-                  />
-                </Box>
-              </Tooltip>
-            );
-          case "Frequência Cardíaca":
-            return (
-              <Tooltip title={measurementItem.name}>
-                <Box>
-                  <Frequency
-                    fill={canceled ? "#7D7D7D" : "var(--secondary)"}
-                    width={"20px"}
-                    height={"20px"}
-                  />
-                </Box>
-              </Tooltip>
-            );
-          case "Superfície Corpórea":
-            return (
-              <Tooltip title={measurementItem.name}>
-                <Box>
-                  <BodilySurface
-                    fill={canceled ? "#7D7D7D" : "var(--secondary)"}
-                    width={"20px"}
-                    height={"20px"}
-                  />
-                </Box>
-              </Tooltip>
-            );
-          case "IMC":
-            return (
-              <Tooltip title={measurementItem.name}>
-                <Box>
-                  <Exam
-                    fill={canceled ? "#7D7D7D" : "var(--secondary)"}
-                    width={"20px"}
-                    height={"20px"}
-                  />
-                </Box>
-              </Tooltip>
-            );
-          case "Altura":
-            return (
-              <Tooltip title={measurementItem.name}>
-                <Box>
-                  <Height
-                    fill={canceled ? "#7D7D7D" : "var(--secondary)"}
-                    width={"20px"}
-                    height={"20px"}
-                  />
-                </Box>
-              </Tooltip>
-            );
-          case "Peso":
-            return (
-              <Tooltip title={measurementItem.name}>
-                <Box>
-                  <Weight
-                    fill={canceled ? "#7D7D7D" : "var(--secondary)"}
-                    width={"20px"}
-                    height={"20px"}
-                  />
-                </Box>
-              </Tooltip>
-            );
-          case "HGT":
-            return (
-              <Tooltip title={measurementItem.name}>
-                <Box>
-                  <BloodGlucose
-                    fill={canceled ? "#7D7D7D" : "var(--secondary)"}
-                    width={"20px"}
-                    height={"20px"}
-                  />
-                </Box>
-              </Tooltip>
-            );
-          case "Dor":
-            return (
-              <Tooltip title={measurementItem.name}>
-                <Box>
-                  <Pain
-                    fill={canceled ? "#7D7D7D" : "var(--secondary)"}
-                    width={"20px"}
-                    height={"20px"}
-                  />
-                </Box>
-              </Tooltip>
-            );
+    const handleMeasurementItemsIcons = (
+        measurements: IAccordionItem[],
+        canceled: boolean
+    ) => {
+        return measurements.map(
+            (measurementItem: IAccordionItem, index: number) => {
+                switch (measurementItem.name) {
+                    case "PAD":
+                        return (
+                            <Tooltip title={measurementItem.name}>
+                                <Box>
+                                    <Presure
+                                        fill={canceled ? "#7D7D7D" : "var(--secondary)"}
+                                        width={"20px"}
+                                        height={"20px"}
+                                    />
+                                </Box>
+                            </Tooltip>
+                        );
+                    case "Frequência Respiratória":
+                        return (
+                            <Tooltip title={measurementItem.name}>
+                                <Box>
+                                    <Lung
+                                        fill={canceled ? "#7D7D7D" : "var(--secondary)"}
+                                        width={"20px"}
+                                        height={"20px"}
+                                    />
+                                </Box>
+                            </Tooltip>
+                        );
+                    case "Frequência Cardíaca":
+                        return (
+                            <Tooltip title={measurementItem.name}>
+                                <Box>
+                                    <Frequency
+                                        fill={canceled ? "#7D7D7D" : "var(--secondary)"}
+                                        width={"20px"}
+                                        height={"20px"}
+                                    />
+                                </Box>
+                            </Tooltip>
+                        );
+                    case "Superfície Corpórea":
+                        return (
+                            <Tooltip title={measurementItem.name}>
+                                <Box>
+                                    <BodilySurface
+                                        fill={canceled ? "#7D7D7D" : "var(--secondary)"}
+                                        width={"20px"}
+                                        height={"20px"}
+                                    />
+                                </Box>
+                            </Tooltip>
+                        );
+                    case "IMC":
+                        return (
+                            <Tooltip title={measurementItem.name}>
+                                <Box>
+                                    <Exam
+                                        fill={canceled ? "#7D7D7D" : "var(--secondary)"}
+                                        width={"20px"}
+                                        height={"20px"}
+                                    />
+                                </Box>
+                            </Tooltip>
+                        );
+                    case "Altura":
+                        return (
+                            <Tooltip title={measurementItem.name}>
+                                <Box>
+                                    <Height
+                                        fill={canceled ? "#7D7D7D" : "var(--secondary)"}
+                                        width={"20px"}
+                                        height={"20px"}
+                                    />
+                                </Box>
+                            </Tooltip>
+                        );
+                    case "Peso":
+                        return (
+                            <Tooltip title={measurementItem.name}>
+                                <Box>
+                                    <Weight
+                                        fill={canceled ? "#7D7D7D" : "var(--secondary)"}
+                                        width={"20px"}
+                                        height={"20px"}
+                                    />
+                                </Box>
+                            </Tooltip>
+                        );
+                    case "HGT":
+                        return (
+                            <Tooltip title={measurementItem.name}>
+                                <Box>
+                                    <BloodGlucose
+                                        fill={canceled ? "#7D7D7D" : "var(--secondary)"}
+                                        width={"20px"}
+                                        height={"20px"}
+                                    />
+                                </Box>
+                            </Tooltip>
+                        );
+                    case "Dor":
+                        return (
+                            <Tooltip title={measurementItem.name}>
+                                <Box>
+                                    <Pain
+                                        fill={canceled ? "#7D7D7D" : "var(--secondary)"}
+                                        width={"20px"}
+                                        height={"20px"}
+                                    />
+                                </Box>
+                            </Tooltip>
+                        );
 
           case "SpO2":
             return (
@@ -776,7 +785,7 @@ export default function AccordionReport(props: IAccordionReport) {
                     margin: "2px",
                   }}
                 >
-                  {handleMeasurementItemsIcons(column.itens, column.canceled)}
+                  {handleMeasurementItemsIcons(checkMeasurementValue(column.itens), column.canceled)}
                 </Box>
               </TextCenterDetails>
               <TextCenterDetails
@@ -871,35 +880,34 @@ export default function AccordionReport(props: IAccordionReport) {
                         </Box>
                       </Box>
                       <Box>
-                          {reportType === "Evolução" && (
-                              <DownloadIcon
-                                  sx={{ cursor: "pointer", marginRight: "12px" }}
-                              />
-                          )}
-                          <IconButton
-                              color="secondary"
-                              aria-label="print"
-                              sx={{ cursor: "pointer", height: "10px" }}
-                              onClick={() => {
-                                  if (reportType === "Check-in/out") {
-                                      const payload = {
-                                          _id: "",
-                                          type: "Group",
-                                          name: "",
-                                          dataStart: _id,
-                                          dataEnd: _id,
-                                          reportType: "Check-in/out",
-                                          attendance_id: state?.data?._id,
-                                      };
-                                      dispatch(loadCheckinFilterRequest(payload));
-                                      // dispatch(loadCheckinReportRequest("asd"));
-                                  }
-                              }}
-                          >
-                              <PrintIcon
-                                  sx={{ cursor: "pointer", marginRight: "12px" }}
-                              />
-                          </IconButton>
+                        {reportType === "Evolução" && (
+                          <DownloadIcon
+                            sx={{ cursor: "pointer", marginRight: "12px" }}
+                          />
+                        )}
+                        <IconButton
+                          color="secondary"
+                          aria-label="print"
+                          sx={{ cursor: "pointer", height: "10px" }}
+                          onClick={() => {
+                            if (reportType === "Check-in/out") {
+                              const payload = {
+                                _id: "",
+                                type: "Group",
+                                name: "",
+                                dataStart: _id,
+                                dataEnd: _id,
+                                reportType: "Check-in/out",
+                                attendance_id: state?.data?._id,
+                              };
+                              dispatch(loadCheckinFilterRequest(payload));
+                            }
+                          }}
+                        >
+                          <PrintIcon
+                            sx={{ cursor: "pointer", marginRight: "12px" }}
+                          />
+                        </IconButton>
                       </Box>
                     </AccordionSummary>
                     <AccordionDetails>
@@ -925,7 +933,6 @@ export default function AccordionReport(props: IAccordionReport) {
                     expandIcon={<ExpandMoreIcon />}
                     aria-controls={`panel${index}bh-content`}
                     id={`panel${index}bh-header`}
-                    sx={{ display: "flex", justifyContent: "space-between" }}
                   >
                     <Box
                       sx={{
@@ -944,26 +951,26 @@ export default function AccordionReport(props: IAccordionReport) {
                         width="22px"
                         height={"22px"}
                       />
-                        <Box
-                            sx={{
-                                display: "flex",
-                                justifyContent: "space-between",
-                            }}
-                        >
-                            {item === "allergy" && "Alergias"}
-                            {item === "event" && "Eventos adversos"}
-                        </Box>
-                    </Box>
-                      <TextCenterDetails
-                          sx={{ width: "100px", justifyContent: "flex-start" }}
+                      <Box
+                        sx={{
+                          display: "flex",
+                          justifyContent: "space-between",
+                        }}
                       >
-                          <DownloadIcon
-                              sx={{ cursor: "pointer", marginRight: "12px" }}
-                          />
-                          <PrintIcon
-                              sx={{ cursor: "pointer", marginRight: "12px" }}
-                          />
-                      </TextCenterDetails>
+                        {item === "allergy" && "Alergias"}
+                        {item === "event" && "Eventos adversos"}
+                      </Box>
+                    </Box>
+                    <TextCenterDetails
+                      sx={{ width: "100px", justifyContent: "flex-start" }}
+                    >
+                      <DownloadIcon
+                        sx={{ cursor: "pointer", marginRight: "12px" }}
+                      />
+                      <PrintIcon
+                        sx={{ cursor: "pointer", marginRight: "12px" }}
+                      />
+                    </TextCenterDetails>
                   </AccordionSummary>
                   <AccordionDetails>
                     {handleHeaderDetails(item)}
@@ -984,10 +991,7 @@ export default function AccordionReport(props: IAccordionReport) {
             padding: "8px 0 16px",
           }}
         >
-          Não há relatórios para o prontuário de{" "}
-          {reportType === "Alergias"
-            ? "Alergias e Eventos Adversos"
-            : reportType}
+          Não há relatórios para o prontuário de {reportType}
         </Box>
       )}
 
