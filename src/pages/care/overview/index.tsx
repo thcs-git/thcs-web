@@ -153,39 +153,34 @@ export default function PatientOverview(
   const [openFilterReport, setOpenFilterReport] = useState(false);
 
   useEffect(() => {
-    if (careState.data.patient_id) {
-      dispatch(loadPatientById(careState.data.patient_id._id));
-    }
-  }, [careState?.data?.patient_id, integration]);
-
-  useEffect(() => {
     if (params.id) {
       dispatch(loadCareById(params.id));
       dispatch(loadRequestQrCode(params.id));
-      dispatch(loadCheckinRequest(params.id));
-      dispatch(loadScheduleRequest({ attendance_id: params.id }));
+
+      // dispatch(loadScheduleRequest({ attendance_id: params.id }));
     }
   }, [params.id]);
+
+  useEffect(() => {
+    if (careState.data.patient_id) {
+      dispatch(loadPatientById(careState.data.patient_id._id));
+      dispatch(loadRequestAllergies(careState.data.patient_id._id));
+    }
+  }, [careState?.data?.patient_id, integration]);
 
   useEffect(() => {
     handleTeam();
   }, [careState.schedule]);
 
   useEffect(() => {
-    if (patientState.data._id) {
-      dispatch(loadRequestAllergies(patientState.data._id));
+    if (careState?.data?.patient_id?._id && reportType === "Aferições") {
+      dispatch(loadRequestMeasurements(careState?.data?.patient_id?._id));
     }
-  }, [patientState.data._id, integration]);
-
-  useEffect(() => {
-    if (patientState?.data?._id && reportType === "Aferições") {
-      dispatch(loadRequestMeasurements(patientState?.data?._id));
-    }
-    if (patientState.data._id && reportType === "Evolução") {
+    if (careState?.data?._id && reportType === "Evolução") {
       dispatch(loadEvolutionRequest(careState?.data?._id));
     }
     if (careState?.data?._id && reportType === "Check-in/out") {
-      dispatch(loadCheckinRequest(careState.data._id));
+      dispatch(loadCheckinRequest(careState?.data?._id));
     }
   }, [careState.data._id, reportType]);
 
@@ -444,29 +439,19 @@ export default function PatientOverview(
 
   function isAllergic(allergie: any) {
     let allergic = false;
-    Object.keys(allergie).map((item: any) => {
-      if (item === "data" && allergie[item]["allergy"]) {
-        allergie[item]["allergy"].map((item: any) => {
-          if (integration && item.active === 1) {
-            allergic = true;
-          } else if (!integration && item.active) {
-            allergic = true;
-          }
-        });
-      }
+    allergie.data["allergy"].map((item: any) => {
+      if (integration && item.active === 1) allergic = true;
+      else if (!integration && item.active) allergic = true;
     });
     return allergic;
   }
   const contentAllergyExist = (allergie: any) => {
-    let allergicExist = false;
-    Object.keys(allergie).map((item: any) => {
-      if (item === "data" && allergie[item]["allergy"]) {
-        if (allergie[item]["allergy"].length > 0) allergicExist = true;
-      } else if (item === "data" && allergie[item]["event"]) {
-        if (allergie[item]["event"].length > 0) allergicExist = true;
-      }
-    });
-    return allergicExist;
+    if (
+      allergie.data["allergy"].length > 0 ||
+      allergie.data["event"].length > 0
+    )
+      return true;
+    else return false;
   };
 
   const buttons = [
