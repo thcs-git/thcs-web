@@ -9,7 +9,14 @@ export enum AllergiesTypes {
 /**
  * data types
  */
-
+export interface IAdverseEvents {
+  _id: number;
+  created_at: string;
+  created_by: string;
+  item: string[];
+  profession: string;
+  type: string[];
+}
 export interface AllergiesItem {
   __v: number;
   _id: string;
@@ -35,14 +42,14 @@ export interface AllergiesItem {
 }
 export interface AllergiesInterface {
   allergy: AllergiesItem[];
-  event: any;
+  event: IAdverseEvents[];
 }
 
 /**
  * state type
  */
 export interface AllergiesState {
-  data: AllergiesInterface[];
+  data: AllergiesInterface;
   loading: boolean;
   error: boolean;
   success: boolean;
