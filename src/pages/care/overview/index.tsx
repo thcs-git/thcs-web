@@ -156,8 +156,8 @@ export default function PatientOverview(
     if (params.id) {
       dispatch(loadCareById(params.id));
       dispatch(loadRequestQrCode(params.id));
-
-      // dispatch(loadScheduleRequest({ attendance_id: params.id }));
+      dispatch(loadCheckinRequest(params.id));
+      dispatch(loadScheduleRequest({ attendance_id: params.id }));
     }
   }, [params.id]);
 
@@ -173,10 +173,16 @@ export default function PatientOverview(
   }, [careState.schedule]);
 
   useEffect(() => {
-    if (careState?.data?.patient_id?._id && reportType === "Aferições") {
-      dispatch(loadRequestMeasurements(careState?.data?.patient_id?._id));
+    if (patientState.data._id) {
+      dispatch(loadRequestAllergies(patientState.data._id));
     }
-    if (careState?.data?._id && reportType === "Evolução") {
+  }, [patientState.data._id, integration]);
+
+  useEffect(() => {
+    if (patientState?.data?._id && reportType === "Aferições") {
+      dispatch(loadRequestMeasurements(patientState?.data?._id));
+    }
+    if (careState.data._id && reportType === "Evolução") {
       dispatch(loadEvolutionRequest(careState?.data?._id));
     }
     if (careState?.data?._id && reportType === "Check-in/out") {
@@ -439,19 +445,29 @@ export default function PatientOverview(
 
   function isAllergic(allergie: any) {
     let allergic = false;
-    allergie.data["allergy"].map((item: any) => {
-      if (integration && item.active === 1) allergic = true;
-      else if (!integration && item.active) allergic = true;
+    Object.keys(allergie).map((item: any) => {
+      if (item === "data" && allergie[item]["allergy"]) {
+        allergie[item]["allergy"].map((item: any) => {
+          if (integration && item.active === 1) {
+            allergic = true;
+          } else if (!integration && item.active) {
+            allergic = true;
+          }
+        });
+      }
     });
     return allergic;
   }
   const contentAllergyExist = (allergie: any) => {
-    if (
-      allergie.data["allergy"].length > 0 ||
-      allergie.data["event"].length > 0
-    )
-      return true;
-    else return false;
+    let allergicExist = false;
+    Object.keys(allergie).map((item: any) => {
+      if (item === "data" && allergie[item]["allergy"]) {
+        if (allergie[item]["allergy"].length > 0) allergicExist = true;
+      } else if (item === "data" && allergie[item]["event"]) {
+        if (allergie[item]["event"].length > 0) allergicExist = true;
+      }
+    });
+    return allergicExist;
   };
 
   const buttons = [
