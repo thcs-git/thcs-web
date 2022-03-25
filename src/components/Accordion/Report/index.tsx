@@ -13,6 +13,7 @@ import Badge from "@mui/material/Badge";
 // icons
 import IconMeasurement from "../../Icons/measurement";
 import PrintIcon from "@mui/icons-material/Print";
+import DownloadIcon from "@mui/icons-material/Download";
 import BloodGlucose from "../../Icons/BloodGlucose";
 import BodilySurface from "../../Icons/BodilySurface";
 import Exam from "../../Icons/Exam";
@@ -119,7 +120,59 @@ export default function AccordionReport(props: IAccordionReport) {
   const { content, company_id, reportType, state } = props;
   const dispatch = useDispatch();
   const integration = sessionStorage.getItem(SESSIONSTORAGE.INTEGRATION);
+
   const [expanded, setExpanded] = useState<string | false>("panel0");
+  const measurementsItemObjectIdMD = [
+    {
+      _id: "62026db535284c714701a9ac",
+      name: "Pressão Arterial Diastólica",
+    },
+    {
+      _id: "5f7f796167a82d0e01571c42",
+      name: "Frequência Respiratória",
+    },
+    {
+      _id: "5f7f78fc67a82d0e01571c40",
+      name: "Frequência Cardíaca",
+    },
+    {
+      _id: "5f7f773567a82d0e01571c3d",
+      name: "Superfícia Corporal",
+    },
+    {
+      _id: "5f7f772567a82d0e01571c3b",
+      name: "Índice de Massa Corporal",
+    },
+    {
+      _id: "5f7f771f67a82d0e01571c39",
+      name: "Altura",
+    },
+    {
+      _id: "5f7f771b67a82d0e01571c37",
+      name: "Peso",
+    },
+    {
+      _id: "5f7f768067a82d0e01571c35",
+      name: "Hemoglico Teste",
+    },
+    {
+      _id: "5f20a77811ebd813183e6a03",
+      name: "Dor",
+    },
+    {
+      _id: "5f20a76a11ebd813183e6a01",
+      name: "SpO2",
+    },
+    {
+      _id: "5f20a74011ebd813183e69ff",
+      name: "Pressão Arterial Sistólica",
+    },
+    {
+      _id: "5f1f660a8590e0d2df9ad113",
+      name: "Temperatura",
+    },
+  ];
+  // console.log(content.data, "DATAAA");
 
   const handleChange =
     (panel: string) => (event: React.SyntheticEvent, isExpanded: boolean) => {
@@ -343,14 +396,18 @@ export default function AccordionReport(props: IAccordionReport) {
           )}
           <TextCenterDetails
             sx={{
-              width: `${type === "allergy" ? "250px" : "200px"}`,
+              width: `${
+                type === "allergy" || type === "event" ? "250px" : "200px"
+              }`,
             }}
           >
             Profissional
           </TextCenterDetails>
           <TextCenterDetails
             sx={{
-              width: `${type === "allergy" ? "250px" : "200px"}`,
+              width: `${
+                type === "allergy" || type === "event" ? "250px" : "200px"
+              }`,
             }}
           >
             {reportType === "Evolução" ? "Especialidade" : "Função"}
@@ -370,33 +427,31 @@ export default function AccordionReport(props: IAccordionReport) {
             {type === "allergy"
               ? "Alergia"
               : type === "event"
-              ? "Item de prescrição"
+              ? "Eventos adversos"
               : reportType === "Evolução"
               ? "Tipo Evolução"
               : reportType === "Check-in/out"
               ? "Entrada"
               : "Conteúdo"}
           </TextCenterDetails>
-          {reportType === "Alergias" && type === "allergy" ? (
+          {reportType === "Alergias" ? (
             ""
           ) : (
             <TextCenterDetails
               sx={{
                 width: `${
-                  reportType === "Evolução" ||
-                  reportType === "Check-in/out" ||
-                  type === "event"
+                  reportType === "Evolução" || reportType === "Check-in/out"
                     ? "200px"
                     : "100px"
                 }`,
-                justifyContent: "center",
+                justifyContent: `${
+                  reportType === "Evolução" || reportType === "Check-in/out"
+                    ? "center"
+                    : "flex-start"
+                }`,
               }}
             >
-              {reportType === "Check-in/out"
-                ? "Saída"
-                : type === "event"
-                ? "Eventos adversos"
-                : "Opções"}
+              {reportType === "Check-in/out" ? "Saída" : "Opções"}
             </TextCenterDetails>
           )}
         </HeaderDetailsAccordion>
@@ -408,179 +463,178 @@ export default function AccordionReport(props: IAccordionReport) {
   const handleRow = (list: any, type?: string) => {
     if (type) {
       if (type === "allergy") {
-        if (content.data.allergy.length === 0) {
-          return (
-            <Box
-              sx={{
-                color: "var(--gray-dark)",
-                textAlign: "center",
-                margin: "16px 0 8px",
-              }}
-            >
-              Não há alergias registrados para este paciente.
-            </Box>
-          );
-        } else
-          return list.map((column: any, index: number) => {
-            return (
-              <>
-                <ContentDetailsAccordion key={column._id}>
-                  <TextCenterDetails sx={{ width: "100px" }}>
-                    {formatDate(column.created_at, "DD/MM/YY HH:mm")}
-                  </TextCenterDetails>
-                  <TextCenterDetails sx={{ width: "250px" }}>
-                    {column.created_by
-                      ? integration
-                        ? getFirstAndLastName(capitalizeText(column.created_by))
-                        : getFirstAndLastName(
-                            capitalizeText(column.created_by.name)
-                          )
-                      : "-"}
-                  </TextCenterDetails>
-                  <TextCenterDetails sx={{ width: "250px" }}>
-                    {handleFunction(column, company_id, type)}
-                  </TextCenterDetails>
-                  <TextCenterDetails sx={{ width: "200px" }}>
-                    <Box
+          if (content.data.allergy.length === 0) {
+              return (
+                  <Box
                       sx={{
-                        display: "flex",
-                        flexWrap: "wrap",
-                        justifyContent: "center",
-                        alignItems: "center",
-                        gap: "4px",
-                        margin: "2px",
+                          color: "var(--gray-dark)",
+                          textAlign: "center",
+                          margin: "16px 0 8px",
                       }}
-                    >
-                      {integration
-                        ? capitalizeText(column.name)
-                        : capitalizeText(column.description)}
-                    </Box>
-                  </TextCenterDetails>
-                </ContentDetailsAccordion>
-                {list.length !== index + 1 ? (
-                  <Divider sx={{ width: "100%", margin: "0 auto" }} />
-                ) : (
-                  ""
-                )}
-              </>
-            );
-          });
+                  >
+                      Não há alergias registrados para este paciente.
+                  </Box>
+              );
+          } else
+        return list.map((column: any, index: number) => {
+          return (
+            <>
+              <ContentDetailsAccordion key={column._id}>
+                <TextCenterDetails sx={{ width: "100px" }}>
+                  {formatDate(column.created_at, "DD/MM/YY HH:mm")}
+                </TextCenterDetails>
+                <TextCenterDetails sx={{ width: "250px" }}>
+                  {column.created_by
+                    ? integration
+                      ? getFirstAndLastName(capitalizeText(column.created_by))
+                      : getFirstAndLastName(
+                          capitalizeText(column.created_by.name)
+                        )
+                    : "-"}
+                </TextCenterDetails>
+                <TextCenterDetails sx={{ width: "250px" }}>
+                  {handleFunction(column, company_id, type)}
+                </TextCenterDetails>
+                <TextCenterDetails sx={{ width: "200px" }}>
+                  <Box
+                    sx={{
+                      display: "flex",
+                      flexWrap: "wrap",
+                      justifyContent: "center",
+                      alignItems: "center",
+                      gap: "4px",
+                      margin: "2px",
+                    }}
+                  >
+                    {integration
+                      ? capitalizeText(column.name)
+                      : capitalizeText(column.description)}
+                  </Box>
+                </TextCenterDetails>
+              </ContentDetailsAccordion>
+              {list.length !== index + 1 ? (
+                <Divider sx={{ width: "100%", margin: "0 auto" }} />
+              ) : (
+                ""
+              )}
+            </>
+          );
+        });
       } else if (type === "event") {
-        if (content.data.event.length === 0) {
+          if (content.data.event.length === 0) {
+              return (
+                  <Box
+                      sx={{
+                          color: "var(--gray-dark)",
+                          textAlign: "center",
+                          margin: "16px 0 8px",
+                      }}
+                  >
+                      Não há eventos adversos registrados para este paciente.
+                  </Box>
+              );
+          } else
+        return list.map((column: any, index: number) => {
           return (
-            <Box
-              sx={{
-                color: "var(--gray-dark)",
-                textAlign: "center",
-                margin: "16px 0 8px",
-              }}
-            >
-              Não há eventos adversos registrados para este paciente.
-            </Box>
+            <>
+              <ContentDetailsAccordion key={column._id}>
+                <TextCenterDetails sx={{ width: "100px" }}>
+                  {formatDate(column.created_at, "DD/MM/YY HH:mm")}
+                </TextCenterDetails>
+                <TextCenterDetails sx={{ width: "250px" }}>
+                  {column.created_by
+                    ? integration
+                      ? typeof column.created_by === "string"
+                        ? getFirstAndLastName(capitalizeText(column.created_by))
+                        : "-"
+                      : typeof column.created_by === "string"
+                      ? getFirstAndLastName(
+                          capitalizeText(column.created_by.name)
+                        )
+                      : "-"
+                    : "-"}
+                </TextCenterDetails>
+                  <TextCenterDetails sx={{ width: "200px" }}>
+                      <Box
+                          sx={{
+                              display: "flex",
+                              flexWrap: "wrap",
+                              justifyContent: "center",
+                              alignItems: "center",
+                              gap: "4px",
+                              margin: "2px",
+                          }}
+                      >
+                          <Badge
+                              badgeContent={column.item.length}
+                              showZero
+                              color="primary"
+                              overlap="rectangular"
+                              sx={{
+                                  ".MuiBadge-colorPrimary": {
+                                      backgroundColor: "var(--secondary)",
+                                      borderRadius: "4px",
+                                      fontSize: "10px !important",
+                                      right: "-2px",
+                                      height: "16px",
+                                      padding: "5px",
+                                      minWidth: "min-content",
+                                  },
+                              }}
+                          >
+                              <Drug
+                                  fill={"var(--secondary)"}
+                                  width={"20px"}
+                                  height={"20px"}
+                              />
+                          </Badge>
+                      </Box>
+                  </TextCenterDetails>
+                  <TextCenterDetails sx={{ width: "200px" }}>
+                      <Box
+                          sx={{
+                              display: "flex",
+                              flexWrap: "wrap",
+                              justifyContent: "center",
+                              alignItems: "center",
+                              gap: "4px",
+                              margin: "2px",
+                          }}
+                      >
+                          <Badge
+                              badgeContent={column.type.length}
+                              showZero
+                              color="primary"
+                              overlap="rectangular"
+                              sx={{
+                                  ".MuiBadge-colorPrimary": {
+                                      backgroundColor: "var(--secondary)",
+                                      borderRadius: "4px",
+                                      fontSize: "10px !important",
+                                      right: "-9px",
+                                      height: "14px",
+                                      padding: "5px",
+                                      minWidth: "min-content",
+                                  },
+                              }}
+                          >
+                              <AdverseEvent
+                                  fill={"var(--secondary)"}
+                                  width={"18px"}
+                                  height={"18px"}
+                              />
+                          </Badge>
+                      </Box>
+                  </TextCenterDetails>
+              </ContentDetailsAccordion>
+              {list.length !== index + 1 ? (
+                <Divider sx={{ width: "100%", margin: "0 auto" }} />
+              ) : (
+                ""
+              )}
+            </>
           );
-        } else
-          return list.map((column: any, index: number) => {
-            return (
-              <>
-                <ContentDetailsAccordion key={column._id}>
-                  <TextCenterDetails sx={{ width: "100px" }}>
-                    {formatDate(column.created_at, "DD/MM/YY HH:mm")}
-                  </TextCenterDetails>
-                  <TextCenterDetails sx={{ width: "200px" }}>
-                    {column.created_by &&
-                      integration &&
-                      getFirstAndLastName(capitalizeText(column.created_by))}
-                    {column.created_by &&
-                      !integration &&
-                      getFirstAndLastName(capitalizeText(column.created_by))}
-                    {!column.created_by && "-"}
-                  </TextCenterDetails>
-                  <TextCenterDetails sx={{ width: "200px" }}>
-                    {column.profession
-                      ? capitalizeText(column.profession)
-                      : "-"}
-                  </TextCenterDetails>
-                  <TextCenterDetails sx={{ width: "200px" }}>
-                    <Box
-                      sx={{
-                        display: "flex",
-                        flexWrap: "wrap",
-                        justifyContent: "center",
-                        alignItems: "center",
-                        gap: "4px",
-                        margin: "2px",
-                      }}
-                    >
-                      <Badge
-                        badgeContent={column.item.length}
-                        showZero
-                        color="primary"
-                        overlap="rectangular"
-                        sx={{
-                          ".MuiBadge-colorPrimary": {
-                            backgroundColor: "var(--secondary)",
-                            borderRadius: "4px",
-                            fontSize: "10px !important",
-                            right: "-2px",
-                            height: "16px",
-                            padding: "5px",
-                            minWidth: "min-content",
-                          },
-                        }}
-                      >
-                        <Drug
-                          fill={"var(--secondary)"}
-                          width={"20px"}
-                          height={"20px"}
-                        />
-                      </Badge>
-                    </Box>
-                  </TextCenterDetails>
-                  <TextCenterDetails sx={{ width: "200px" }}>
-                    <Box
-                      sx={{
-                        display: "flex",
-                        flexWrap: "wrap",
-                        justifyContent: "center",
-                        alignItems: "center",
-                        gap: "4px",
-                        margin: "2px",
-                      }}
-                    >
-                      <Badge
-                        badgeContent={column.type.length}
-                        showZero
-                        color="primary"
-                        overlap="rectangular"
-                        sx={{
-                          ".MuiBadge-colorPrimary": {
-                            backgroundColor: "var(--secondary)",
-                            borderRadius: "4px",
-                            fontSize: "10px !important",
-                            right: "-9px",
-                            height: "14px",
-                            padding: "5px",
-                            minWidth: "min-content",
-                          },
-                        }}
-                      >
-                        <AdverseEvent
-                          fill={"var(--secondary)"}
-                          width={"18px"}
-                          height={"18px"}
-                        />
-                      </Badge>
-                    </Box>
-                  </TextCenterDetails>
-                </ContentDetailsAccordion>
-                {list.length !== index + 1 ? (
-                  <Divider sx={{ width: "100%", margin: "0 auto" }} />
-                ) : (
-                  ""
-                )}
-              </>
-            );
-          });
+        });
       }
     } else if (reportType === "Evolução") {
       return list.map((column: any, index: number) => {
@@ -610,7 +664,7 @@ export default function AccordionReport(props: IAccordionReport) {
                   color: `${column.active ? "#333333" : "#7D7D7D"}`,
                 }}
               >
-                {column.created_by[0].main_specialty_id[0].name
+                {column.created_by[0]?.main_specialty_id[0]?.name
                   ? column.created_by[0].main_specialty_id[0].name
                   : "-"}
               </TextCenterDetails>
@@ -623,6 +677,9 @@ export default function AccordionReport(props: IAccordionReport) {
                 {column.type}
               </TextCenterDetails>
               <TextCenterDetails>
+                <DownloadIcon
+                  sx={{ color: "var(--secondary)", marginRight: "8px" }}
+                />
                 <PrintIcon sx={{ color: "var(--secondary)" }} />
               </TextCenterDetails>
             </ContentDetailsAccordion>
@@ -814,18 +871,35 @@ export default function AccordionReport(props: IAccordionReport) {
                         </Box>
                       </Box>
                       <Box>
-                        <IconButton
-                          color="secondary"
-                          aria-label="print"
-                          sx={{ cursor: "pointer", height: "10px" }}
-                          onClick={() => {
-                            dispatch(loadCheckinReportRequest("asd"));
-                          }}
-                        >
-                          <PrintIcon
-                            sx={{ cursor: "pointer", marginRight: "12px" }}
-                          />
-                        </IconButton>
+                          {reportType === "Evolução" && (
+                              <DownloadIcon
+                                  sx={{ cursor: "pointer", marginRight: "12px" }}
+                              />
+                          )}
+                          <IconButton
+                              color="secondary"
+                              aria-label="print"
+                              sx={{ cursor: "pointer", height: "10px" }}
+                              onClick={() => {
+                                  if (reportType === "Check-in/out") {
+                                      const payload = {
+                                          _id: "",
+                                          type: "Group",
+                                          name: "",
+                                          dataStart: _id,
+                                          dataEnd: _id,
+                                          reportType: "Check-in/out",
+                                          attendance_id: state?.data?._id,
+                                      };
+                                      dispatch(loadCheckinFilterRequest(payload));
+                                      // dispatch(loadCheckinReportRequest("asd"));
+                                  }
+                              }}
+                          >
+                              <PrintIcon
+                                  sx={{ cursor: "pointer", marginRight: "12px" }}
+                              />
+                          </IconButton>
                       </Box>
                     </AccordionSummary>
                     <AccordionDetails>
@@ -870,25 +944,26 @@ export default function AccordionReport(props: IAccordionReport) {
                         width="22px"
                         height={"22px"}
                       />
-
-                      {item === "allergy" && "Alergias"}
-                      {item === "event" && "Eventos adversos"}
+                        <Box
+                            sx={{
+                                display: "flex",
+                                justifyContent: "space-between",
+                            }}
+                        >
+                            {item === "allergy" && "Alergias"}
+                            {item === "event" && "Eventos adversos"}
+                        </Box>
                     </Box>
-                    <Box>
-                      <IconButton
-                        color="secondary"
-                        aria-label="print"
-                        sx={{ cursor: "pointer", height: "10px" }}
-                        onClick={() => {
-                          console.log("clikei");
-                          // dispatch(loadCheckinReportRequest("asd"));
-                        }}
+                      <TextCenterDetails
+                          sx={{ width: "100px", justifyContent: "flex-start" }}
                       >
-                        <PrintIcon
-                          sx={{ cursor: "pointer", marginRight: "12px" }}
-                        />
-                      </IconButton>
-                    </Box>
+                          <DownloadIcon
+                              sx={{ cursor: "pointer", marginRight: "12px" }}
+                          />
+                          <PrintIcon
+                              sx={{ cursor: "pointer", marginRight: "12px" }}
+                          />
+                      </TextCenterDetails>
                   </AccordionSummary>
                   <AccordionDetails>
                     {handleHeaderDetails(item)}
