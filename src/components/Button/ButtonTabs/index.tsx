@@ -43,12 +43,7 @@ const ButtonTabs = (props: IComponent) => {
 
   const { canEdit, buttons } = props;
   return (
-    <ButtonsContent
-      style={{
-        paddingRight: buttons[0].name === "Gerar novo QR Code" ? 0 : 15,
-        marginTop: 25,
-      }}
-    >
+    <ButtonsContent>
       {buttons.map(
         ({ name, variant, background, onClick, show, component }: IButtons) => (
           <>
