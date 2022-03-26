@@ -1,8 +1,13 @@
-import {put, call} from "redux-saga/effects";
-import {toast} from "react-toastify";
-import {AxiosResponse} from "axios";
+import { put, call } from "redux-saga/effects";
+import { toast } from "react-toastify";
+import { AxiosResponse } from "axios";
 
-import {apiIntegra, apiSollar, googleMaps, viacep} from "../../../services/axios";
+import {
+  apiIntegra,
+  apiSollar,
+  googleMaps,
+  viacep,
+} from "../../../services/axios";
 
 import {
   loadSuccess,
@@ -24,9 +29,9 @@ import SESSIONSTORAGE from "../../../helpers/constants/sessionStorage";
 
 const token = localStorage.getItem("token");
 
-export function* get({payload}: any) {
-  const {params} = payload;
-  const integration = sessionStorage.getItem(SESSIONSTORAGE.INTEGRATION)
+export function* get({ payload }: any) {
+  const { params } = payload;
+  const integration = sessionStorage.getItem(SESSIONSTORAGE.INTEGRATION);
 
   try {
     // const response: AxiosResponse = yield call(
@@ -49,34 +54,31 @@ export function* get({payload}: any) {
   }
 }
 
-export function* getPatientById({payload: {id: _id}}: any) {
+export function* getPatientById({ payload: { id: _id } }: any) {
   try {
-    let response: AxiosResponse
-    const integration = sessionStorage.getItem(SESSIONSTORAGE.INTEGRATION)
+    let response: AxiosResponse;
+    const integration = sessionStorage.getItem(SESSIONSTORAGE.INTEGRATION);
 
     // if (integration) {
     //   response = yield call(
     //     apiIntegra(integration),
     //     `/patient/${_id}`, {});
     // } else {
-    response = yield call(
-      apiSollar.get,
-      `/patient`, {
-        headers: {token},
-        params: {_id},
-      });
+    response = yield call(apiSollar.get, `/patient`, {
+      headers: { token },
+      params: { _id },
+    });
     // }
-
     yield put(loadSuccessGetPatientById(response.data));
   } catch (error) {
     yield put(loadFailure());
   }
 }
 
-export function* createPatient({payload: {data}}: any) {
+export function* createPatient({ payload: { data } }: any) {
   try {
     if (data.address_id.postal_code) {
-      let {street, number, district, city, state} = data.address_id;
+      let { street, number, district, city, state } = data.address_id;
 
       try {
         // const { data: googleAddressData }: AxiosResponse = yield googleMaps.get(
@@ -98,7 +100,7 @@ export function* createPatient({payload: {data}}: any) {
       apiSollar.post,
       `/patient/store`,
       data,
-      {headers: {token}}
+      { headers: { token } }
     );
     yield put(createPatientSuccess(response.data));
     yield put(setIfRegistrationCompleted(true, response.data._id));
@@ -111,8 +113,8 @@ export function* createPatient({payload: {data}}: any) {
   }
 }
 
-export function* updatePatient({payload: {data}}: any) {
-  const {_id} = data;
+export function* updatePatient({ payload: { data } }: any) {
+  const { _id } = data;
 
   // if (data.address_id.postal_code) {
   //   let { street, number, district, city, state } = data.address_id;
@@ -136,8 +138,8 @@ export function* updatePatient({payload: {data}}: any) {
     const response: AxiosResponse = yield call(
       apiSollar.put,
       `/patient/${_id}/update`,
-      {...data},
-      {headers: {token}}
+      { ...data },
+      { headers: { token } }
     );
 
     toast.success("Paciente atualizado com sucesso!");
@@ -150,9 +152,9 @@ export function* updatePatient({payload: {data}}: any) {
   }
 }
 
-export function* getAddress({payload}: any) {
+export function* getAddress({ payload }: any) {
   try {
-    const {data}: AxiosResponse<ViacepDataInterface> = yield call(
+    const { data }: AxiosResponse<ViacepDataInterface> = yield call(
       viacep.get,
       `${payload.postalCode}/json`
     );
@@ -168,7 +170,7 @@ export function* getAddress({payload}: any) {
   }
 }
 
-export function* searchPatient({payload: {params}}: any) {
+export function* searchPatient({ payload: { params } }: any) {
   try {
     let searchQuery, requestParams;
 
@@ -178,7 +180,7 @@ export function* searchPatient({payload: {params}}: any) {
       requestParams = params;
       delete requestParams.limit;
       delete requestParams.page;
-      requestParams = {params: requestParams};
+      requestParams = { params: requestParams };
     }
 
     const response: AxiosResponse = yield call(
@@ -199,9 +201,9 @@ export function* searchPatient({payload: {params}}: any) {
  * Pacientes que estão aptos para uma captação
  */
 
-export function* getPatientCapture({payload}: any) {
+export function* getPatientCapture({ payload }: any) {
   try {
-    const {params} = payload;
+    const { params } = payload;
     console.log("cheguei");
     const response: AxiosResponse = yield call(
       apiSollar.get,
@@ -216,17 +218,16 @@ export function* getPatientCapture({payload}: any) {
   }
 }
 
-export function* getLastMeasurement({payload}: any) {
+export function* getLastMeasurement({ payload }: any) {
   try {
-    const {params} = payload;
+    const { params } = payload;
 
     const response: AxiosResponse = yield call(
       apiSollar.get,
       `/measurement/lastEntries?&patient_id=${params.patient_id}`,
       {
-        headers: {token},
+        headers: { token },
       }
     );
-  } catch (error) {
-  }
+  } catch (error) {}
 }
