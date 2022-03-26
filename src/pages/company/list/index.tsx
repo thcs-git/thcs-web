@@ -39,6 +39,7 @@ import { formatDate } from "../../../helpers/date";
 
 import { ListItemStatus } from "./styles";
 import SESSIONSTORAGE from "../../../helpers/constants/sessionStorage";
+import { toast } from "react-toastify";
 
 export default function CompanyList() {
   const history = useHistory();
@@ -128,30 +129,40 @@ export default function CompanyList() {
                   { name: "Tipo", align: "left" },
                 ]}
               >
-                {companyState.list.data.map(
-                  (company: CompanyInterface, index: number) => (
-                    <TableRow key={`patient_${index}`}>
-                      {company.tipo === "MATRIZ" ? (
-                        <TableCell
-                          align="left"
-                          style={{ color: "var(--primary)" }}
-                        >
-                          <Link key={index} to={`/company/${company._id}/view`}>
-                            {company.fantasy_name}
-                          </Link>
-                        </TableCell>
-                      ) : (
-                        <TableCell align="left">
-                          <Link key={index} to={`/company/${company._id}/view`}>
-                            {company.fantasy_name}
-                          </Link>
-                        </TableCell>
-                      )}
-                      <TableCell>{company.fiscal_number}</TableCell>
-                      <TableCell>{company.tipo}</TableCell>
-                    </TableRow>
-                  )
-                )}
+                {!companyState.list.data &&
+                  toast.error("Falha ao encontrar lista de empresas")}
+                {companyState.list.data &&
+                  companyState.list.data.map(
+                    (company: any, index: number) =>
+                      company && (
+                        <TableRow key={`patient_${index}`}>
+                          {company.tipo === "MATRIZ" ? (
+                            <TableCell
+                              align="left"
+                              style={{ color: "var(--primary)" }}
+                            >
+                              <Link
+                                key={index}
+                                to={`/company/${company._id}/view`}
+                              >
+                                {company.fantasy_name}
+                              </Link>
+                            </TableCell>
+                          ) : (
+                            <TableCell align="left">
+                              <Link
+                                key={index}
+                                to={`/company/${company._id}/view`}
+                              >
+                                {company.fantasy_name}
+                              </Link>
+                            </TableCell>
+                          )}
+                          <TableCell>{company.fiscal_number}</TableCell>
+                          <TableCell>{company.tipo}</TableCell>
+                        </TableRow>
+                      )
+                  )}
               </Table>
             </>
           ) : (
@@ -174,58 +185,64 @@ export default function CompanyList() {
                   { name: "", align: "left" },
                 ]}
               >
-                {companyState.list.data.map(
-                  (company: CompanyInterface, index: number) => (
-                    <TableRow key={`patient_${index}`}>
-                      <TableCell align="left">
-                        <Link key={index} to={`/company/${company._id}/view`}>
-                          {company.fantasy_name}
-                        </Link>
-                      </TableCell>
-                      <TableCell>{company.fiscal_number}</TableCell>
-                      <TableCell>
-                        <ListItemStatus active={company.active}>
-                          {company.active ? "Ativo" : "Inativo"}
-                        </ListItemStatus>
-                      </TableCell>
-                      <TableCell align="left">
-                        {formatDate(company.created_at, "DD/MM/YYYY HH:mm:ss")}
-                      </TableCell>
-                      <TableCell align="center">
-                        <Button
-                          aria-controls={`patient-menu${index}`}
-                          id={`btn_patient-menu${index}`}
-                          aria-haspopup="true"
-                          onClick={handleOpenRowMenu}
-                        >
-                          <MoreVert style={{ color: "#0899BA" }} />
-                        </Button>
-                        <Menu
-                          id={`patient-menu${index}`}
-                          anchorEl={anchorEl}
-                          keepMounted
-                          open={anchorEl?.id === `btn_patient-menu${index}`}
-                          onClose={handleCloseRowMenu}
-                        >
-                          <MenuItem
-                            onClick={() =>
-                              history.push(`/company/${company._id}/edit`)
-                            }
+                {!companyState.list.data &&
+                  toast.error("Falha ao encontrar lista de empresas")}
+                {companyState.list.data &&
+                  companyState.list.data.map(
+                    (company: CompanyInterface, index: number) => (
+                      <TableRow key={`patient_${index}`}>
+                        <TableCell align="left">
+                          <Link key={index} to={`/company/${company._id}/view`}>
+                            {company.fantasy_name}
+                          </Link>
+                        </TableCell>
+                        <TableCell>{company.fiscal_number}</TableCell>
+                        <TableCell>
+                          <ListItemStatus active={company.active}>
+                            {company.active ? "Ativo" : "Inativo"}
+                          </ListItemStatus>
+                        </TableCell>
+                        <TableCell align="left">
+                          {formatDate(
+                            company.created_at,
+                            "DD/MM/YYYY HH:mm:ss"
+                          )}
+                        </TableCell>
+                        <TableCell align="center">
+                          <Button
+                            aria-controls={`patient-menu${index}`}
+                            id={`btn_patient-menu${index}`}
+                            aria-haspopup="true"
+                            onClick={handleOpenRowMenu}
                           >
-                            Editar
-                          </MenuItem>
-                          <MenuItem
-                            onClick={() =>
-                              history.push(`/company/${company._id}/view`)
-                            }
+                            <MoreVert style={{ color: "#0899BA" }} />
+                          </Button>
+                          <Menu
+                            id={`patient-menu${index}`}
+                            anchorEl={anchorEl}
+                            keepMounted
+                            open={anchorEl?.id === `btn_patient-menu${index}`}
+                            onClose={handleCloseRowMenu}
                           >
-                            Visualizar
-                          </MenuItem>
-                        </Menu>
-                      </TableCell>
-                    </TableRow>
-                  )
-                )}
+                            <MenuItem
+                              onClick={() =>
+                                history.push(`/company/${company._id}/edit`)
+                              }
+                            >
+                              Editar
+                            </MenuItem>
+                            <MenuItem
+                              onClick={() =>
+                                history.push(`/company/${company._id}/view`)
+                              }
+                            >
+                              Visualizar
+                            </MenuItem>
+                          </Menu>
+                        </TableCell>
+                      </TableRow>
+                    )
+                  )}
               </Table>
             </>
           )}
