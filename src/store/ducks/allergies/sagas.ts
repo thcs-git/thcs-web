@@ -9,9 +9,9 @@ import { toast } from "react-toastify";
 export function* load(data: any) {
   try {
     const response: AxiosResponse = yield call(
-      apiSollarMobi.post,
+      apiSollarMobi.get,
       `/allergies`,
-      { patient_id: data.payload }
+      { params: { patient_id: data.payload } }
     );
     yield put(loadSuccess(response.data));
   } catch (err) {

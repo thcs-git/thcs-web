@@ -1,6 +1,5 @@
 import styled from "styled-components";
 import Box from "@material-ui/core/Box";
-import Button from "@mui/material/Button";
 
 export const BoxCustom = styled(Box)`
   min-height: calc(100vh - 250px);
@@ -12,6 +11,7 @@ export const BoxCustom = styled(Box)`
   }
   .MuiInputBase-input {
     padding: 19.5px 14px;
+    color: var(--black);
   }
   .MuiInputBase-inputAdornedEnd {
   }
@@ -24,12 +24,26 @@ export const BoxCustom = styled(Box)`
   }
   .MuiInputLabel-outlined {
   }
+  .css-1kty9di-MuiFormLabel-root-MuiInputLabel-root.Mui-focused {
+    color: var(--secondary);
+  }
+  .css-154xyx0-MuiInputBase-root-MuiOutlinedInput-root.Mui-focused
+    .MuiOutlinedInput-notchedOutline {
+    border: 2px solid var(--secondary);
+  }
+  .MuiInputBase-input {
+  }
+
+  fieldset {
+    &:hover {
+      border: 2px solid var(--black);
+    }
+    &:focus {
+      border: 2px solid pink;
+    }
+  }
 `;
 
-export const BoxCustomFoot = styled(Box)`
-  min-height: calc(100vh - 250px);
-  margin: 20px;
-`;
 export const FeedbackTitle = styled.h2`
   color: var(--primary);
   margin-bottom: 27px;
@@ -41,28 +55,4 @@ export const FeedbackDescription = styled.p`
   color: var(--black);
   font-size: 12px;
   /* margin-bottom: 14px; */
-`;
-
-export const ButtonsContent = styled.div`
-  display: flex;
-  justify-content: flex-start;
-
-  margin-bottom: 20px;
-
-  button:first-child {
-    margin-right: 10px;
-  }
-`;
-
-export const ButtonDefault = styled(Button)`
-  /* background: var(--success-hover);
-  border: 1px solid var(--primary);
-  color: var(--white);
-  border-color: var(--success-hover);
-  width: 10rem;
-  text-transform: capitalize;
-  font-weight: 600;
-  font-size: 14px;
-  color: #fff; */
-  background: blue;
 `;

@@ -5,7 +5,7 @@ export const ButtonsContent = styled.div`
   display: flex;
   justify-content: flex-end;
 
-  margin-bottom: 20px;
+  margin: 20px 0;
 
   button:nth-child(2) {
     margin-left: 10px;
