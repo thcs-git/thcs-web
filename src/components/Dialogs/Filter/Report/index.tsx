@@ -256,8 +256,8 @@ export default function FilterReport(props: IPropsFilter) {
         )
       );
     }
-    // closeFilter();
-    // cleanFilter();
+    closeFilter();
+    cleanFilter();
     toast.success("O relatório está sendo gerado.");
   }
 
@@ -345,7 +345,204 @@ export default function FilterReport(props: IPropsFilter) {
       });
     }
   }
+  /**
+    function handleGenerateReportValidation() {
+        const {attendance_id, reportType, type, name, dataEnd, dataStart} =
+            stateFilter;
+        if (!attendance_id || !reportType) {
+            toast.error("Atualize a página antes de gerar o relatório.");
+        } else if (!type) {
+            toast.error("Selecione filtro para Prestador ou Função");
+        } else if (!name) {
+            toast.error(
+                type === "Prestador" ? `Selecione o ${type}` : `Selecione a ${type}`
+            );
+        } else if (!dataStart) {
+            toast.error("Selecione a Data de início");
+        } else if (dataStart && !moment(dataStart["$d"]).isValid()) {
+            toast.error("Formato de data inválido");
+        } else if (dataEnd && !moment(dataEnd["$d"]).isValid()) {
+            toast.error("Formato de data inválido");
+        } else if (
+            dataEnd &&
+            dataStart &&
+            dayjs(formatDate(dataStart, "YYYY-MM-DD")) >
+            dayjs(formatDate(dataEnd, "YYYY-MM-DD"))
+        ) {
+            toast.error("Data de início maior que Data de fim.");
+        } else if (rangeDataComparison(dataEnd, dataStart, contentReport)) {
+            toast.error("Data fora do intervalo ");
+        } else {
+            handleGenerate();
+            closeFilter();
+        }
+    }
 
+    function rangeDataComparison(dataEnd: any, dataStart: any, content: any) {
+        if (reportType === "Check-in/out") {
+            if (
+                dataEnd &&
+                dataEnd > dayjs(formatDate(content.data[0]._id, "YYYY-MM-DD"))
+            ) {
+                return true;
+            } else if (
+                (dataStart &&
+                    dataStart <
+                    dayjs(
+                        formatDate(
+                            content.data[content.data.length - 1]._id,
+                            "YYYY-MM-DD"
+                        )
+                    )) ||
+                (dataStart &&
+                    dataStart > dayjs(formatDate(content.data[0]._id, "YYYY-MM-DD")))
+            ) {
+                return true;
+            } else {
+                return false;
+            }
+        } else if (reportType === "Evolução") {
+            if (dataEnd && dataEnd > dayjs(content.data[0]._id)) {
+                return true;
+            } else if (
+                (dataStart &&
+                    dataStart <
+                    dayjs(
+                        formatDate(
+                            content.data[content.data.length - 1]._id,
+                            "YYYY-MM-DD"
+                        )
+                    )) ||
+                (dataStart &&
+                    dataStart > dayjs(formatDate(content.data[0]._id, "YYYY-MM-DD")))
+            ) {
+                return true;
+            } else {
+                return false;
+            }
+        } else {
+            return false;
+        }
+    }
+
+    function handleGenerate() {
+        if (stateFilter.reportType === "Check-in/out") {
+            dispatch(
+                loadCheckinFilterRequest(
+                    stateFilter.dataEnd
+                        ? stateFilter
+                        : {
+                            ...stateFilter,
+                            dataEnd: dayjs(
+                                formatDate(contentReport.data[0]._id, "YYYY-MM-DD")
+                            ),
+                        }
+                )
+            );
+        } else if (stateFilter.reportType === "Evolução") {
+            dispatch(
+                loadEvolutionFilterRequest(
+                    stateFilter.dataEnd
+                        ? stateFilter
+                        : {
+                            ...stateFilter,
+                            dataEnd: dayjs(
+                                formatDate(contentReport.data[0]._id, "YYYY-MM-DD")
+                            ),
+                        }
+                )
+            );
+        }
+        // closeFilter();
+        // cleanFilter();
+        toast.success("O relatório está sendo gerado.");
+    }
+
+    function cleanFilter() {
+        setStateFilter((state: any) => {
+            return {
+                ...state,
+                _id: "",
+                dataEnd: null,
+                dataStart: null,
+                name: "",
+                type: "Prestador",
+            };
+        });
+    }
+
+    function textHelperRangeDate() {
+        if (reportType === "Check-in/out") {
+            if (contentReport) {
+                return `${formatDate(
+                    contentReport.data[contentReport.data.length - 1]._id,
+                    "DD/MM/YYYY"
+                )} - ${formatDate(contentReport.data[0]._id, "DD/MM/YYYY")}`;
+            }
+        }
+        if (reportType === "Evolução") {
+            if (contentReport) {
+                return `${formatDate(
+                    contentReport.data[contentReport.data.length - 1]._id,
+                    "DD/MM/YYYY"
+                )} - ${formatDate(contentReport.data[0]._id, "DD/MM/YYYY")}`;
+            }
+        }
+    }
+
+    const capitalizeText = (words: string) => {
+        return words
+            .toLowerCase()
+            .split(" ")
+            .map((text: string) => {
+                return (text = text.charAt(0).toUpperCase() + text.substring(1));
+            })
+            .join(" ");
+    };
+
+    function handleFunction(list: any, company: string) {
+        for (let i = 0; i < list.length; i++) {
+            if (list[i].companie_id === company) {
+                return list[i].function;
+            }
+        }
+    }
+
+    function handleAutocompleteData(type: string) {
+        let List: any[] = [];
+        careState.checkin.map((day: any) => {
+            if (day) {
+                day.list.map((checks: any) => {
+                    if (checks.list) {
+                        checks.list.map((user: any) => {
+                            console.log(careState)
+                            const itemList: any = {
+                                name:
+                                    type === "Função"
+                                        ? handleFunction(
+                                            user[0].user_id[0].companies_links,
+                                            careState.data.company_id
+                                        )
+                                        : capitalizeText(user[0].user_id[0].name),
+                                _id: type === "Função" ? "" : user[0].user_id[0]._id,
+                            };
+                            List.push(itemList);
+                        });
+                    }
+                });
+            }
+        });
+        if (type === "Função") {
+            return _.uniqBy(List, "name").sort((a: any, b: any) => {
+                return a.name < b.name ? -1 : a.name > b.name ? 1 : 0;
+            });
+        } else {
+            return _.uniqBy(List, "_id").sort((a: any, b: any) => {
+                return a.name < b.name ? -1 : a.name > b.name ? 1 : 0;
+            });
+        }
+    }
+ */
   return (
     <Dialog
       open={openFilter}
