@@ -752,10 +752,15 @@ export function* getHistory({ payload }: any) {
 
 export function* getEvolution({ payload }: any) {
   try {
+    const integration = sessionStorage.getItem(SESSIONSTORAGE.INTEGRATION);
+    const headers = integration
+        ? { external_attendance_id: payload }
+        : { attendance_id: payload };
     const response: AxiosResponse = yield call(
       apiSollarMobi.post,
       `/evolution/getGroup`,
-      { attendance_id: payload }
+      { attendance_id: payload },
+        { headers: { ...headers } }
     );
     yield put(loadEvolutionSuccess(response.data));
   } catch (err) {
