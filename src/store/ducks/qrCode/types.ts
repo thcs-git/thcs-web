@@ -20,7 +20,7 @@ export interface qrCode {
   _id?: string;
   attendance_id?: string;
   external_attendance_id?: string;
-  qr_code: string;
+  qr_code?: string;
   created_at?: string;
   created_by?: any;
   active: boolean;

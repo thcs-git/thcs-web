@@ -153,20 +153,20 @@ export default function PatientOverview(
   const [openFilterReport, setOpenFilterReport] = useState(false);
 
   useEffect(() => {
-    if (careState.data.patient_id) {
-      dispatch(loadPatientById(careState.data.patient_id._id));
-    }
-  }, [careState?.data?.patient_id, integration]);
-
-  useEffect(() => {
     if (params.id) {
       dispatch(loadCareById(params.id));
       dispatch(loadRequestQrCode(params.id));
-
-      // console.log(dispatch(loadRequestQrCode(params.id)), "TESTEEEEEE");
+      dispatch(loadCheckinRequest(params.id));
       dispatch(loadScheduleRequest({ attendance_id: params.id }));
     }
   }, [params.id]);
+
+  useEffect(() => {
+    if (careState.data.patient_id) {
+      dispatch(loadPatientById(careState.data.patient_id._id));
+      dispatch(loadRequestAllergies(careState.data.patient_id._id));
+    }
+  }, [careState?.data?.patient_id, integration]);
 
   useEffect(() => {
     handleTeam();
@@ -182,11 +182,11 @@ export default function PatientOverview(
     if (patientState?.data?._id && reportType === "Aferições") {
       dispatch(loadRequestMeasurements(patientState?.data?._id));
     }
-    if (patientState.data._id && reportType === "Evolução") {
+    if (careState.data._id && reportType === "Evolução") {
       dispatch(loadEvolutionRequest(careState?.data?._id));
     }
     if (careState?.data?._id && reportType === "Check-in/out") {
-      dispatch(loadCheckinRequest(careState.data._id));
+      dispatch(loadCheckinRequest(careState?.data?._id));
     }
   }, [careState.data._id, reportType]);
 
@@ -474,7 +474,7 @@ export default function PatientOverview(
     {
       name: "Voltar",
       onClick: () => {
-        history.push("/care");
+        reportActive ? setReportActive(false) : history.push("/care");
       },
       variant: "contained",
       background: "secondary",
@@ -572,6 +572,7 @@ export default function PatientOverview(
                     careState.data.company_id ? careState.data.company_id : ""
                   }
                   reportType={reportType}
+                  state={careState}
                 />
               ) : (
                 <Container

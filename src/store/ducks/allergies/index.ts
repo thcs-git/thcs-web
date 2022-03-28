@@ -2,36 +2,44 @@ import { Reducer } from "redux";
 import { AllergiesState, AllergiesTypes } from "./types";
 
 export const INITIAL_STATE: AllergiesState = {
-  data: [
-    {
-      allergy: [
-        {
-          __v: 0,
+  data: {
+    allergy: [
+      {
+        __v: 0,
+        _id: "",
+        active: false,
+        care_id: "",
+        company: "",
+        created_at: "",
+        created_by: {
           _id: "",
-          active: false,
-          care_id: "",
-          company: "",
-          created_at: "",
-          created_by: {
-            _id: "",
-            email: "",
-            name: "",
-          },
-          deny: false,
-          description: "",
-          observations: "",
-          pacient_id: "",
-          patient_id: {
-            _id: "",
-            name: "",
-          },
-          severity: "",
-          type: "",
+          email: "",
+          name: "",
         },
-      ],
-      event: "",
-    },
-  ],
+        deny: false,
+        description: "",
+        observations: "",
+        pacient_id: "",
+        patient_id: {
+          _id: "",
+          name: "",
+        },
+        severity: "",
+        type: "",
+      },
+    ],
+    event: [
+      {
+        _id: 0,
+        created_at: "",
+        created_by: "",
+        item: [],
+        profession: "",
+        type: [],
+      },
+    ],
+  },
+
   loading: false,
   success: false,
   error: false,
@@ -55,7 +63,7 @@ const reducer: Reducer<AllergiesState> = (state = INITIAL_STATE, action) => {
         loading: false,
         error: true,
         success: false,
-        data: [],
+        data: INITIAL_STATE.data,
       };
     default:
       return state;

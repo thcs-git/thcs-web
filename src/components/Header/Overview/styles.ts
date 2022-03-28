@@ -49,7 +49,8 @@ export const BoxIcon = styled(Box)`
   gap: 8px;
   flex-direction: column;
   font-weight: bold;
-  color: var(--success-hover);
+  //color: var(--success-hover);
+  color: var(--black);
   font-size: 12px;
   text-align: center;
   width: 88px;
