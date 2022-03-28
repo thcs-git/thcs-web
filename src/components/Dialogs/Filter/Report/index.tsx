@@ -177,7 +177,7 @@ export default function FilterReport(props: IPropsFilter) {
             toast.error("Data fora do intervalo ");
         } else {
             handleGenerate();
-            // closeFilter();
+            closeFilter();
         }
     }
 
