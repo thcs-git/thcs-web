@@ -31,6 +31,7 @@ export enum CompanyTypes {
  */
 
 export interface CompanyInterface {
+  data?: any;
   tipo: string;
   _id?: string;
   customer_id: string;

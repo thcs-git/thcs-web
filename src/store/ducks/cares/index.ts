@@ -691,7 +691,7 @@ const reducer: Reducer<CareState> = (state = INITIAL_STATE, action) => {
       return {
         ...state,
         loading: true,
-        succes: false,
+        success: false,
         error: false,
       };
     case CareTypes.LOAD_CHECKIN_REPORT_SUCCESS:
@@ -707,6 +707,34 @@ const reducer: Reducer<CareState> = (state = INITIAL_STATE, action) => {
         loading: false,
         success: false,
         error: true,
+      };
+    case CareTypes.LOAD_CHECKIN_FILTER_REQUEST:
+      return {
+        ...state,
+        loading: true,
+        success: false,
+        error: false,
+      };
+    case CareTypes.LOAD_CHECKIN_FILTER_SUCCESS:
+      return {
+        ...state,
+        loading: false,
+        success: true,
+        error: false,
+      };
+    case CareTypes.LOAD_EVOLUTION_FILTER_REQUEST:
+      return {
+        ...state,
+        loading: true,
+        success: false,
+        error: false,
+      };
+    case CareTypes.LOAD_EVOLUTION_FILTER_SUCCESS:
+      return {
+        ...state,
+        loading: false,
+        success: true,
+        error: false,
       };
 
     case CareTypes.CLEAN:

@@ -11,20 +11,17 @@ import {
   WrapperTittle,
   BoxContainer,
 } from "./styles";
-// teste
-import Button from "@mui/material/Button";
-import TextField from "@mui/material/TextField";
-import Dialog from "@mui/material/Dialog";
-import DialogActions from "@mui/material/DialogActions";
-import DialogContent from "@mui/material/DialogContent";
-import DialogContentText from "@mui/material/DialogContentText";
-import DialogTitle from "@mui/material/DialogTitle";
 // IMG
 import { ReactComponent as IconChart } from "../../../assets/img/icon-data.svg";
 import { ReactComponent as IconEye } from "../../../assets/img/Icon ionic-md-eye.svg";
 import { ReactComponent as IconHospitalization } from "../../../assets/img/icon-plano-internacoes.svg";
 import { ReactComponent as IconTeam } from "../../../assets/img/icon-equipe-medica.svg";
-import { OpenInBrowser } from "@material-ui/icons";
+// Redux types
+import { QrCodeState } from "../../../store/ducks/qrCode/types";
+import { CareState } from "../../../store/ducks/cares/types";
+// helper
+import LOCALSTORAGE from "../../../helpers/constants/localStorage";
+import _ from "lodash";
 
 interface IRows {
   name: string;
@@ -39,6 +36,8 @@ interface IPropsGrid {
 interface IContent {
   tittle: string;
   rows: IRows[];
+  qrCodeState: QrCodeState;
+  careState: CareState;
 }
 interface ICardInfo {
   tittle: { card: string; info?: string[] };
@@ -47,11 +46,17 @@ interface ICardInfo {
   alergicIs?: boolean;
   integration?: any;
 }
+interface ITeam {
+  name: string;
+  function: string;
+  user_id: string;
+}
 
 export default function CardInfo(props: ICardInfo) {
   const { content, gridProps, tittle, alergicIs, integration } = props;
-
+  const { careState } = content;
   const [openDialog, setOpenDialog] = useState(false);
+  const company_id = localStorage.getItem(LOCALSTORAGE.COMPANY_SELECTED);
 
   function personalData(content: IContent) {
     let itens = content.rows.map(({ name, value }: IRows, index: number) => {
@@ -80,6 +85,29 @@ export default function CardInfo(props: ICardInfo) {
       </Box>
     );
   };
+  const capitalizeText = (words: string) => {
+    return words
+      .toLowerCase()
+      .split(" ")
+      .map((text: string) => {
+        return (text = text.charAt(0).toUpperCase() + text.substring(1));
+      })
+      .join(" ");
+  };
+
+  const getFirstAndLastName = (fullName: string) => {
+    return `${fullName.split(" ")[0]} ${
+      fullName.split(" ")[fullName.split(" ").length - 1]
+    }`;
+  };
+
+  function handleFunction(list: any, company: string) {
+    for (let i = 0; i < list.length; i++) {
+      if (list[i].companie_id === company) {
+        return list[i].function;
+      }
+    }
+  }
 
   function planData(content: IContent) {
     let itens = content.rows.map(({ name, value }: IRows, index: number) => {
@@ -112,48 +140,60 @@ export default function CardInfo(props: ICardInfo) {
   }
 
   function handleTeamData(content: IContent) {
-    let team: object[] = [];
-    content.rows.map(({ name, value }: IRows) => {
-      if (name === "Equipe") {
-        value.map((item: any) => {
-          if (item.name) team.push(item);
+    let team: ITeam[] = [];
+    content.careState.checkin.map((day: any, index: number) => {
+      if (day) {
+        day.list.map((checks: any, index: number) => {
+          if (checks.list) {
+            checks.list.map((user: any) => {
+              const professional: ITeam = {
+                name: getFirstAndLastName(
+                  capitalizeText(user[0].user_id[0].name)
+                ),
+                function: handleFunction(
+                  user[0].user_id[0].companies_links,
+                  careState.data.company_id
+                ),
+                user_id: user[0].user_id[0]._id,
+              };
+              team.push(professional);
+            });
+          }
         });
       }
     });
-    return team;
+    return _.uniqBy(team, "user_id").sort((a: any, b: any) => {
+      return a.name < b.name ? -1 : a.name > b.name ? 1 : 0;
+    });
   }
 
-  function teamData(arr: object[]) {
-    let itensSideRigth = arr.map((item: any, index: number) => {
+  function teamData(arr: ITeam[]) {
+    let itensSideRigth = arr.map((item: ITeam, index: number) => {
       if (index % 2 !== 0) {
         if (item.name) {
-          let profession: string = item.profession_id.map((profession: any) => {
-            return profession.name ? profession.name : false;
-          });
           return (
             <Box key={index}>
-              - {item.name} {profession.length > 0 && `(${profession})`}
+              - {item.name} {"(" + item.function + ")"}
             </Box>
           );
         }
       }
     });
-    let itensSideLeft = arr.map((item: any, index: number) => {
+    let itensSideLeft = arr.map((item: ITeam, index: number) => {
       if (index % 2 === 0) {
         if (item.name) {
-          let profession: string = item.profession_id.map((profession: any) => {
-            if (profession.name) {
-              return profession.name;
-            }
-          });
           return (
             <Box key={index}>
-              - {item.name} {profession.length > 0 && `(${profession})`}
+              - {item.name} {"(" + item.function + ")"}
             </Box>
           );
         }
       }
     });
+
+    const arrEmpty = (
+      <Box>Não foram realizados nenhum check-in/out neste atendimento.</Box>
+    );
 
     let itensGrid = (
       <Grid container style={{ boxShadow: "none" }}>
@@ -165,7 +205,7 @@ export default function CardInfo(props: ICardInfo) {
         </Grid>
       </Grid>
     );
-    return itensGrid;
+    return arr.length > 0 ? itensGrid : arrEmpty;
   }
 
   function iconHeader(title: string) {
