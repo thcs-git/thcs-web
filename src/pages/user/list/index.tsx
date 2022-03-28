@@ -64,7 +64,7 @@ import {
 import LOCALSTORAGE from "../../../helpers/constants/localStorage";
 import _ from "lodash";
 import SESSIONSTORAGE from "../../../helpers/constants/sessionStorage";
-
+import { checkViewPermission } from "../../../utils/permissions";
 const token = window.localStorage.getItem("token");
 const currentCompany =
   localStorage.getItem(LOCALSTORAGE.COMPANY_SELECTED) || "";
@@ -169,129 +169,134 @@ export default function UserList() {
   return (
     <>
       <Sidebar>
-        {userState.loading && <Loading />}
-        <Container>
-          <FormTitle>Meus Profissionais</FormTitle>
+        {checkViewPermission("userclient") ? (
+          <Container>
+            {userState.loading && <Loading />}
+            <FormTitle>Meus Profissionais</FormTitle>
 
-          {integration ? (
-            <>
-              <SearchComponent
-                handleButton={() => history.push("/user/edit/create/")}
-                buttonTitle=""
-                inputPlaceholder="Pesquise por prestador, especialidades, status, etc..."
-                onChangeInput={handleChangeInput}
-                value={search}
-                onKeyEnter={handleKeyEnter}
-                onClickSearch={handleClickSearch}
-              />
-              <Table
-                tableCells={[
-                  { name: "Profissional", align: "left" },
-                  { name: "Usuário", align: "left" },
-                  { name: "CPF", align: "left" },
-                  { name: "Função", align: "left" },
-                  { name: "Especialidades", align: "left" },
-                ]}
-                userState={userState}
-                handleEmpty={handleEmpty}
-                handleCpf={handleCpf}
-                integration={integration}
-                users={users}
-              >
-                {"pages/user/list filho c/ integration"}
-              </Table>
-            </>
-          ) : (
-            <>
-              <SearchComponent
-                handleButton={() => history.push("/user/edit/create/")}
-                buttonTitle=""
-                inputPlaceholder="Pesquise por prestador, especialidades, status, etc..."
-                onChangeInput={handleChangeInput}
-                value={search}
-                onKeyEnter={handleKeyEnter}
-                onClickSearch={handleClickSearch}
-              />
-              <Table
-                tableCells={[
-                  { name: "Profissional", align: "left", width: "150px" },
-                  { name: "CPF", align: "left" },
-                  { name: "Função", align: "left" },
-                  { name: "Especialidades", align: "left", width: "250px" },
-                  // { name: '', align: 'left' },
-                  { name: "Adicionado em", align: "left", width: "150px" },
-                  { name: "Status", align: "left" },
-                  { name: "", align: "left" },
-                ]}
-                userState={userState}
-                handleEmpty={handleEmpty}
-                handleCpf={handleCpf}
-                integration={integration}
-                users={users}
-                handleLinkedAt={handleLinkedAt}
-                handleActive={handleActive}
-              >
-                {"pages/user/list filho s/ integration"}
-              </Table>
-            </>
-          )}
-          <PaginationComponent
-            page={userState.list.page}
-            rowsPerPage={userState.list.limit}
-            totalRows={userState.list.total}
-            handleFirstPage={() =>
-              dispatch(
-                loadRequest({
-                  page: "1",
-                  limit: userState.list.limit,
-                  total: userState.list.total,
-                  search,
-                })
-              )
-            }
-            handleLastPage={() =>
-              dispatch(
-                loadRequest({
-                  page: Math.ceil(
-                    +userState.list.total / +userState.list.limit
-                  ).toString(),
-                  limit: userState.list.limit,
-                  total: userState.list.total,
-                  search,
-                })
-              )
-            }
-            handleNextPage={() =>
-              dispatch(
-                loadRequest({
-                  page: (+userState.list.page + 1).toString(),
-                  limit: userState.list.limit,
-                  total: userState.list.total,
-                  search,
-                })
-              )
-            }
-            handlePreviosPage={() =>
-              dispatch(
-                loadRequest({
-                  page: (+userState.list.page - 1).toString(),
-                  limit: userState.list.limit,
-                  total: userState.list.total,
-                  search,
-                })
-              )
-            }
-            handleChangeRowsPerPage={(event) =>
-              dispatch(
-                loadRequest({
-                  limit: event.target.value,
-                  page: "1",
-                  search,
-                })
-              )
-            }
-          />
-        </Container>
+            {integration ? (
+              <>
+                <SearchComponent
+                  handleButton={() => history.push("/user/edit/create/")}
+                  buttonTitle=""
+                  inputPlaceholder="Pesquise por prestador, especialidades, status, etc..."
+                  onChangeInput={handleChangeInput}
+                  value={search}
+                  onKeyEnter={handleKeyEnter}
+                  onClickSearch={handleClickSearch}
+                />
+                <Table
+                  tableCells={[
+                    { name: "Profissional", align: "left" },
+                    { name: "Usuário", align: "left" },
+                    { name: "CPF", align: "left" },
+                    { name: "Função", align: "left" },
+                    { name: "Especialidades", align: "left" },
+                  ]}
+                  userState={userState}
+                  handleEmpty={handleEmpty}
+                  handleCpf={handleCpf}
+                  integration={integration}
+                  users={users}
+                >
+                  {"pages/user/list filho c/ integration"}
+                </Table>
+              </>
+            ) : (
+              <>
+                <SearchComponent
+                  handleButton={() => history.push("/user/edit/create/")}
+                  buttonTitle=""
+                  inputPlaceholder="Pesquise por prestador, especialidades, status, etc..."
+                  onChangeInput={handleChangeInput}
+                  value={search}
+                  onKeyEnter={handleKeyEnter}
+                  onClickSearch={handleClickSearch}
+                />
+                <Table
+                  tableCells={[
+                    { name: "Profissional", align: "left", width: "150px" },
+                    { name: "CPF", align: "left" },
+                    { name: "Função", align: "left" },
+                    { name: "Especialidades", align: "left", width: "250px" },
+                    // { name: '', align: 'left' },
+                    { name: "Adicionado em", align: "left", width: "150px" },
+                    { name: "Status", align: "left" },
+                    { name: "", align: "left" },
+                  ]}
+                  userState={userState}
+                  handleEmpty={handleEmpty}
+                  handleCpf={handleCpf}
+                  integration={integration}
+                  users={users}
+                  handleLinkedAt={handleLinkedAt}
+                  handleActive={handleActive}
+                >
+                  {"pages/user/list filho s/ integration"}
+                </Table>
+              </>
+            )}
+            <PaginationComponent
+              page={userState.list.page}
+              rowsPerPage={userState.list.limit}
+              totalRows={userState.list.total}
+              handleFirstPage={() =>
+                dispatch(
+                  loadRequest({
+                    page: "1",
+                    limit: userState.list.limit,
+                    total: userState.list.total,
+                    search,
+                  })
+                )
+              }
+              handleLastPage={() =>
+                dispatch(
+                  loadRequest({
+                    page: Math.ceil(
+                      +userState.list.total / +userState.list.limit
+                    ).toString(),
+                    limit: userState.list.limit,
+                    total: userState.list.total,
+                    search,
+                  })
+                )
+              }
+              handleNextPage={() =>
+                dispatch(
+                  loadRequest({
+                    page: (+userState.list.page + 1).toString(),
+                    limit: userState.list.limit,
+                    total: userState.list.total,
+                    search,
+                  })
+                )
+              }
+              handlePreviosPage={() =>
+                dispatch(
+                  loadRequest({
+                    page: (+userState.list.page - 1).toString(),
+                    limit: userState.list.limit,
+                    total: userState.list.total,
+                    search,
+                  })
+                )
+              }
+              handleChangeRowsPerPage={(event) =>
+                dispatch(
+                  loadRequest({
+                    limit: event.target.value,
+                    page: "1",
+                    search,
+                  })
+                )
+              }
+            />
+          </Container>
+        ) : (
+          "<NoPermission/>"
+        )}
+
         {/* Especialidades
         <Dialog
 

@@ -26,7 +26,12 @@ import {
 //Componentes
 import PermissionForm from "../../Inputs/Forms/PermisionForm";
 import ButtonTabs from "../../Button/ButtonTabs";
-
+// utils
+import {
+  checkViewPermission,
+  checkEditPermission,
+} from "../../../utils/permissions";
+import { toast } from "react-toastify";
 interface IComponent {
   customerState: any;
   mode: string;
@@ -86,7 +91,11 @@ const PermissionList = (props: IComponent) => {
                       <ItemTable
                         style={{ color: "var(--black)" }}
                         onClick={() => {
-                          setModePermission("view");
+                          !checkViewPermission("permissions")
+                            ? toast.error(
+                                "Você não tem permissão para visualizar permissões."
+                              )
+                            : setModePermission("view");
                           setIdPermission(permissions);
 
                           // history.push(
@@ -109,7 +118,11 @@ const PermissionList = (props: IComponent) => {
                       <ButtonView
                         canEdit={true}
                         setCanEdit={() => {
-                          setModePermission("view");
+                          !checkViewPermission("permissions")
+                            ? toast.error(
+                                "Você não tem permissão para visualizar permissões."
+                              )
+                            : setModePermission("view");
                           setIdPermission(permissions);
                           // history.push(
                           //   `/client/${customerState.data._id}/permission/${permissions}/view/`
@@ -121,7 +134,9 @@ const PermissionList = (props: IComponent) => {
                       <ButtonEdit
                         canEdit={true}
                         setCanEdit={() => {
-                          setModePermission("edit");
+                          !checkEditPermission("permissions")
+                            ? toast.error("Você não tem permissão para Editar.")
+                            : setModePermission("edit");
                           setIdPermission(permissions);
 
                           // history.push(
