@@ -270,13 +270,13 @@ export const loadEvolutionFilterSuccess = (data: IFilterReport) =>
   action(CareTypes.LOAD_EVOLUTION_FILTER_SUCCESS, data);
 
 export const loadEvolutionReportRequest = (id: any) =>
-    action(CareTypes.LOAD_EVOLUTION_REPORT_REQUEST, id);
+  action(CareTypes.LOAD_EVOLUTION_REPORT_REQUEST, id);
 
 export const loadEvolutionReportSuccess = (data: any) =>
-    action(CareTypes.LOAD_EVOLUTION_REPORT_SUCCESS, data);
+  action(CareTypes.LOAD_EVOLUTION_REPORT_SUCCESS, data);
 
 export const loadEvolutionReportFailure = () =>
-    action(CareTypes.LOAD_EVOLUTION_REPORT_FAILURE);
+  action(CareTypes.LOAD_EVOLUTION_REPORT_FAILURE);
 
 /**
  * check-in/out
