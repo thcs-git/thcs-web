@@ -65,6 +65,7 @@ import LOCALSTORAGE from "../../../helpers/constants/localStorage";
 import _ from "lodash";
 import SESSIONSTORAGE from "../../../helpers/constants/sessionStorage";
 import { checkViewPermission } from "../../../utils/permissions";
+import NoPermission from "../../../components/Erros/NoPermission";
 const token = window.localStorage.getItem("token");
 const currentCompany =
   localStorage.getItem(LOCALSTORAGE.COMPANY_SELECTED) || "";
@@ -169,7 +170,7 @@ export default function UserList() {
   return (
     <>
       <Sidebar>
-        {checkViewPermission("userclient") ? (
+        {checkViewPermission("user") ? (
           <Container>
             {userState.loading && <Loading />}
             <FormTitle>Meus Profissionais</FormTitle>
@@ -294,7 +295,7 @@ export default function UserList() {
             />
           </Container>
         ) : (
-          "<NoPermission/>"
+          <NoPermission />
         )}
 
         {/* Especialidades

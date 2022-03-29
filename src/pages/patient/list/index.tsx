@@ -67,6 +67,12 @@ import {
 } from "../../avaliation/list/styles";
 import SESSIONSTORAGE from "../../../helpers/constants/sessionStorage";
 import HistoryDialog from "../../../components/Dialogs/History";
+import {
+  checkViewPermission,
+  checkEditPermission,
+} from "../../../utils/permissions";
+import NoPermission from "../../../components/Erros/NoPermission";
+import { toast } from "react-toastify";
 
 export default function PatientList() {
   const history = useHistory();
@@ -142,9 +148,15 @@ export default function PatientList() {
   };
 
   const handleClickButton = useCallback(() => {
+    !checkEditPermission("patient")
+      ? toast.error("Você não tem permissão para adicionar novo paciente")
+      : clickButton;
+  }, []);
+
+  const clickButton = () => {
     dispatch(setIfRegistrationCompleted(false));
     history.push("/patient/create/");
-  }, []);
+  };
 
   const isDone = useCallback(
     (care: any) => {
@@ -289,123 +301,128 @@ export default function PatientList() {
   return (
     <>
       <Sidebar>
-        {patientState.loading && <Loading />}
-        <Container>
-          <FormTitle>Lista de Pacientes</FormTitle>
-          {integration ? (
-            <>
-              <SearchComponent
-                handleButton={handleClickButton}
-                inputPlaceholder="Pesquise por nome, CPF, data, etc..."
-                buttonTitle="Novo"
-                onChangeInput={handleChangeInput}
-                value={search}
-                onKeyEnter={handleKeyEnter}
-                onClickSearch={handleClickSearch}
-              />
-              <Table
-                tableCells={[
-                  { name: "Prontuário", align: "left" },
-                  { name: "Paciente", align: "left" },
-                  { name: "Data de Nascimento", align: "center" },
-                  { name: "CPF", align: "center" },
-                  { name: "Mãe", align: "left" },
-                ]}
-                patientState={patientState}
-                integration={integration}
-                toggleHistoryModal={toggleHistoryModal}
-                toggleHistoryModal_2={toggleHistoryModal_2}
-              >
-                {"pages/patient/list filho s/ integration"}
-              </Table>
-            </>
-          ) : (
-            <>
-              <SearchComponent
-                handleButton={handleClickButton}
-                inputPlaceholder="Pesquise por nome, CPF, data, etc..."
-                buttonTitle="Novo"
-                onChangeInput={handleChangeInput}
-                value={search}
-                onKeyEnter={handleKeyEnter}
-                onClickSearch={handleClickSearch}
-              />
+        {checkViewPermission("patient") ? (
+          <Container>
+            {patientState.loading && <Loading />}
+            <FormTitle>Lista de Pacientes</FormTitle>
+            {integration ? (
+              <>
+                <SearchComponent
+                  handleButton={handleClickButton}
+                  inputPlaceholder="Pesquise por nome, CPF, data, etc..."
+                  buttonTitle="Novo"
+                  onChangeInput={handleChangeInput}
+                  value={search}
+                  onKeyEnter={handleKeyEnter}
+                  onClickSearch={handleClickSearch}
+                />
+                <Table
+                  tableCells={[
+                    { name: "Prontuário", align: "left" },
+                    { name: "Paciente", align: "left" },
+                    { name: "Data de Nascimento", align: "center" },
+                    { name: "CPF", align: "center" },
+                    { name: "Mãe", align: "left" },
+                  ]}
+                  patientState={patientState}
+                  integration={integration}
+                  toggleHistoryModal={toggleHistoryModal}
+                  toggleHistoryModal_2={toggleHistoryModal_2}
+                >
+                  {"pages/patient/list filho s/ integration"}
+                </Table>
+              </>
+            ) : (
+              <>
+                <SearchComponent
+                  handleButton={handleClickButton}
+                  inputPlaceholder="Pesquise por nome, CPF, data, etc..."
+                  buttonTitle="Novo"
+                  onChangeInput={handleChangeInput}
+                  value={search}
+                  onKeyEnter={handleKeyEnter}
+                  onClickSearch={handleClickSearch}
+                />
 
-              <Table
-                tableCells={[
-                  { name: "Paciente", align: "left" },
-                  { name: "CPF", align: "left" },
-                  { name: "Mãe", align: "left" },
-                  { name: "Data de cadastro", align: "left" },
-                  { name: "", align: "left" },
-                ]}
-                patientState={patientState}
-                integration={integration}
-                toggleHistoryModal={toggleHistoryModal}
-                toggleHistoryModal_2={toggleHistoryModal_2}
-              >
-                {"pages/patient/list filho s/ integration"}
-              </Table>
-            </>
-          )}
+                <Table
+                  tableCells={[
+                    { name: "Paciente", align: "left" },
+                    { name: "CPF", align: "left" },
+                    { name: "Mãe", align: "left" },
+                    { name: "Data de cadastro", align: "left" },
+                    { name: "", align: "left" },
+                  ]}
+                  patientState={patientState}
+                  integration={integration}
+                  toggleHistoryModal={toggleHistoryModal}
+                  toggleHistoryModal_2={toggleHistoryModal_2}
+                >
+                  {"pages/patient/list filho s/ integration"}
+                </Table>
+              </>
+            )}
 
-          <PaginationComponent
-            page={patientState.list.page}
-            rowsPerPage={patientState.list.limit}
-            totalRows={patientState.list.total}
-            handleFirstPage={() =>
-              dispatch(
-                loadRequest({
-                  page: "1",
-                  limit: patientState.list.limit,
-                  total: patientState.list.total,
-                  search,
-                })
-              )
-            }
-            handleLastPage={() =>
-              dispatch(
-                loadRequest({
-                  page: Math.ceil(
-                    +patientState.list.total / +patientState.list.limit
-                  ).toString(),
-                  limit: patientState.list.limit,
-                  total: patientState.list.total,
-                  search,
-                })
-              )
-            }
-            handleNextPage={() =>
-              dispatch(
-                loadRequest({
-                  page: (+patientState.list.page + 1).toString(),
-                  limit: patientState.list.limit,
-                  total: patientState.list.total,
-                  search,
-                })
-              )
-            }
-            handlePreviosPage={() =>
-              dispatch(
-                loadRequest({
-                  page: (+patientState.list.page - 1).toString(),
-                  limit: patientState.list.limit,
-                  total: patientState.list.total,
-                  search,
-                })
-              )
-            }
-            handleChangeRowsPerPage={(event) =>
-              dispatch(
-                loadRequest({
-                  limit: event.target.value,
-                  page: "1",
-                  search,
-                })
-              )
-            }
-          />
-        </Container>
+            <PaginationComponent
+              page={patientState.list.page}
+              rowsPerPage={patientState.list.limit}
+              totalRows={patientState.list.total}
+              handleFirstPage={() =>
+                dispatch(
+                  loadRequest({
+                    page: "1",
+                    limit: patientState.list.limit,
+                    total: patientState.list.total,
+                    search,
+                  })
+                )
+              }
+              handleLastPage={() =>
+                dispatch(
+                  loadRequest({
+                    page: Math.ceil(
+                      +patientState.list.total / +patientState.list.limit
+                    ).toString(),
+                    limit: patientState.list.limit,
+                    total: patientState.list.total,
+                    search,
+                  })
+                )
+              }
+              handleNextPage={() =>
+                dispatch(
+                  loadRequest({
+                    page: (+patientState.list.page + 1).toString(),
+                    limit: patientState.list.limit,
+                    total: patientState.list.total,
+                    search,
+                  })
+                )
+              }
+              handlePreviosPage={() =>
+                dispatch(
+                  loadRequest({
+                    page: (+patientState.list.page - 1).toString(),
+                    limit: patientState.list.limit,
+                    total: patientState.list.total,
+                    search,
+                  })
+                )
+              }
+              handleChangeRowsPerPage={(event) =>
+                dispatch(
+                  loadRequest({
+                    limit: event.target.value,
+                    page: "1",
+                    search,
+                  })
+                )
+              }
+            />
+          </Container>
+        ) : (
+          <NoPermission />
+        )}
+
         {/* Historico de Captação */}
         <HistoryDialog
           modalOpen={historyModalOpen_2}

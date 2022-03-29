@@ -29,25 +29,15 @@ user.view
 user.edit
 user.create
 
-TODOS PACIENTES
-allPatient.view
-allPatient.edit
-allPatient.create
+PACIENTES
+patient.view
+patient.edit
+patient.create
 
-MEUS PACIENTES
-myPatient.view
-myPatient.edit
-myPatient.create
-
-TODOS ATENDIMENTOS
-allCare.view
-allCare.edit
-allCare.create
-
-MEUS ATENDIMENTOS
-myCare.view
-myCare.edit
-myCare.create
+ATENDIMENTOS
+care.view
+care.edit
+care.create
 
 QR Code
 qrcode.view
@@ -59,11 +49,8 @@ schedule.view
 schedule.edit
 schedule.create
 
-
-
     .edit é permissão para editar e criar.
     .create é permissão para gerar(?)
-
  */
 
 // checa se existe permissão view (visualizar)
@@ -86,8 +73,6 @@ export function checkViewPermission(permissionType: string) {
 
 // checa se existe permissão edit (editar e criar)
 export function checkEditPermission(permissionType: string) {
-  console.log(rights, "RIGHTS");
-
   let check = false;
   let permission = `${permissionType}.edit`;
   rights?.split('"').forEach((permissionItem: string) => {
@@ -102,8 +87,6 @@ export function checkEditPermission(permissionType: string) {
 
 // checa se existe permissão create (gerar)
 export function checkCreatePermission(permissionType: string) {
-  console.log(rights, "RIGHTS");
-
   let check = false;
   let permission = `${permissionType}.create`;
   rights?.split('"').forEach((permissionItem: string) => {
