@@ -11,5 +11,5 @@ export default {
   CUSTOMER_NAME: `@sollar_customer_name`,
   INTEGRATION_COMPANY_SELECTED: `@sollar_integration_company_selected`,
   DATE_GENERATION_QR_CODE: `@sollar_date_generation_qr_code`,
-  SOLLAR_INTEGRATION_USE_ID: `@dollar_integration_user_id`,
+  SOLLAR_INTEGRATION_USER_ID: `@dollar_integration_user_id`,
 };

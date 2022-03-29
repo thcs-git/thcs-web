@@ -46,7 +46,7 @@ apiSollar.interceptors.request.use(
       localStorage.getItem(LOCALSTORAGE.INTEGRATION_COMPANY_SELECTED) || "";
 
     const external_user_id =
-      localStorage.getItem(LOCALSTORAGE.SOLLAR_INTEGRATION_USE_ID) || "";
+      localStorage.getItem(LOCALSTORAGE.SOLLAR_INTEGRATION_USER_ID) || "";
 
     if (token) {
       config.headers.token = `${token}`;
