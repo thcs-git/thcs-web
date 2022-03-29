@@ -422,7 +422,11 @@ export default function AccordionReport(props: IAccordionReport) {
                             }`,
                         }}
                     >
-                        {reportType === "Evolução" ? "Especialidade" : "Função"}
+                        {reportType === "Evolução"
+                            ? "Especialidade"
+                            : type === "event"
+                                ? "Item de prescrição"
+                                : "Função"}
                     </TextCenterDetails>
                     <TextCenterDetails
                         sx={{

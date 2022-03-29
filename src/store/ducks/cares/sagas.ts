@@ -48,7 +48,8 @@ import {
   loadCheckinSuccess,
   loadCheckinFailure,
   loadCheckinReportSuccess,
-  loadCheckinReportFailure, loadEvolutionFilterSuccess,
+  loadCheckinReportFailure,
+  loadEvolutionFilterSuccess,
 } from "./actions";
 
 import { apiIntegra, apiSollar } from "../../../services/axios";
@@ -752,10 +753,15 @@ export function* getHistory({ payload }: any) {
 
 export function* getEvolution({ payload }: any) {
   try {
+    const integration = sessionStorage.getItem(SESSIONSTORAGE.INTEGRATION);
+    const headers = integration
+        ? { external_attendance_id: payload }
+        : { attendance_id: payload };
     const response: AxiosResponse = yield call(
       apiSollarMobi.post,
       `/evolution/getGroup`,
-      { attendance_id: payload }
+      { attendance_id: payload },
+        { headers: { ...headers } }
     );
     yield put(loadEvolutionSuccess(response.data));
   } catch (err) {
@@ -837,13 +843,13 @@ export function* getFilterEvolution({ payload }: any) {
   try {
     let { dataStart, dataEnd, type, name } = payload;
     dataStart =
-        typeof dataStart === "string"
-            ? dataStart
-            : formatDate(dataStart["$d"], "YYYY-MM-DD");
+      typeof dataStart === "string"
+        ? dataStart
+        : formatDate(dataStart["$d"], "YYYY-MM-DD");
     dataEnd =
-        typeof dataEnd === "string"
-            ? dataEnd
-            : formatDate(dataEnd["$d"], "YYYY-MM-DD");
+      typeof dataEnd === "string"
+        ? dataEnd
+        : formatDate(dataEnd["$d"], "YYYY-MM-DD");
     payload = {
       ...payload,
       dataStart,
@@ -851,16 +857,16 @@ export function* getFilterEvolution({ payload }: any) {
     };
     const integration = sessionStorage.getItem(SESSIONSTORAGE.INTEGRATION);
     const headers = integration
-        ? { token, external_attendance_id: payload.attendance_id }
-        : { token, attendance_id: payload.attendance_id };
+      ? { token, external_attendance_id: payload.attendance_id }
+      : { token, attendance_id: payload.attendance_id };
     const response: AxiosResponse = yield call(
-        apiSollarReport.get,
-        `/evolution?dataStart=${dataStart}&dataEnd=${dataEnd}&name=${name}&type=${type}`,
-        { responseType: "blob", headers: { ...headers } }
+      apiSollarReport.get,
+      `/evolution?dataStart=${dataStart}&dataEnd=${dataEnd}&name=${name}&type=${type}`,
+      { responseType: "blob", headers: { ...headers } }
     );
-    console.log('dasdsadsadsa')
+    console.log("dasdsadsadsa");
     yield put(loadEvolutionFilterSuccess(response.data));
-    console.log('1')
+    console.log("1");
   } catch (err) {
     toast.error("Erro ao Filtrar Relatório De Evolução");
     yield put(loadCheckinReportFailure());

@@ -1,19 +1,19 @@
-import React, {useState, useCallback, useEffect} from "react";
+import React, { useState, useCallback, useEffect } from "react";
 // Redux e Sagas
-import {useDispatch, useSelector} from "react-redux";
-import {ApplicationState} from "../../../../store";
-import {loadCustomerById} from "../../../../store/ducks/customers/actions";
-import {loadProfessionsRequest} from "../../../../store/ducks/users/actions";
-import {CareState} from "../../../../store/ducks/cares/types";
+import { useDispatch, useSelector } from "react-redux";
+import { ApplicationState } from "../../../../store";
+import { loadCustomerById } from "../../../../store/ducks/customers/actions";
+import { loadProfessionsRequest } from "../../../../store/ducks/users/actions";
+import { CareState } from "../../../../store/ducks/cares/types";
 import {
-    loadCheckinFilterRequest,
-    loadEvolutionFilterRequest,
+  loadCheckinFilterRequest,
+  loadEvolutionFilterRequest,
 } from "../../../../store/ducks/cares/actions";
 
 // Helper
 import _ from "lodash";
 import LOCALSTORAGE from "../../../../helpers/constants/localStorage";
-import {toast} from "react-toastify";
+import { toast } from "react-toastify";
 import moment from "moment";
 import dayjs from "dayjs";
 
@@ -37,118 +37,315 @@ import Box from "@mui/material/Box";
 import Tooltip from "@mui/material/Tooltip";
 
 // styled
-import {BoxCalendar, BoxTooltip, FormLabelRadio} from "./styles";
-import {TooltipProps, tooltipClasses} from "@mui/material/Tooltip";
-import {formatDate} from "../../../../helpers/date";
-import {styled} from "@mui/material";
+import { BoxCalendar, BoxTooltip, FormLabelRadio } from "./styles";
+import { TooltipProps, tooltipClasses } from "@mui/material/Tooltip";
+import { formatDate } from "../../../../helpers/date";
+import { styled } from "@mui/material";
 
 interface IPropsFilter {
-    openFilter: boolean;
-    closeFilter: () => void;
-    reportType: string;
-    content: IRows[];
-    careState: CareState;
-    contentReport: any;
+  openFilter: boolean;
+  closeFilter: () => void;
+  reportType: string;
+  content: IRows[];
+  careState: CareState;
+  contentReport: any;
 }
 
 interface IRows {
-    name: string;
-    value: any;
+  name: string;
+  value: any;
 }
 
 interface IFilter {
-    _id: string;
-    type: string;
-    name: string;
-    dataStart: any;
-    dataEnd: any;
-    reportType: string;
-    attendance_id: string;
+  _id: string;
+  type: string;
+  name: string;
+  dataStart: any;
+  dataEnd: any;
+  reportType: string;
+  attendance_id: string;
 }
 
 export default function FilterReport(props: IPropsFilter) {
-    const {
-        openFilter,
-        closeFilter,
-        reportType,
-        content,
-        careState,
-        contentReport,
-    } = props;
+  const {
+    openFilter,
+    closeFilter,
+    reportType,
+    content,
+    careState,
+    contentReport,
+  } = props;
 
-    const dispatch = useDispatch();
-    const customer_id = localStorage.getItem(LOCALSTORAGE.CUSTOMER);
-    const [stateFilter, setStateFilter] = useState<IFilter>({
+  const dispatch = useDispatch();
+  const customer_id = localStorage.getItem(LOCALSTORAGE.CUSTOMER);
+  const [stateFilter, setStateFilter] = useState<IFilter>({
+    _id: "",
+    type: "Prestador",
+    name: "",
+    dataStart: null,
+    dataEnd: null,
+    reportType: "",
+    attendance_id: "",
+  });
+  const CustomWidthTooltip = styled(({ className, ...props }: TooltipProps) => (
+    <Tooltip {...props} classes={{ popper: className }} />
+  ))({
+    [`& .${tooltipClasses.tooltip}`]: {
+      maxWidth: 350,
+    },
+  });
+
+  useEffect(() => {
+    setStateFilter((state: any) => {
+      return {
+        ...state,
+        attendance_id: careState.data._id,
+        reportType: reportType,
+      };
+    });
+  }, [reportType, careState.data._id]);
+  useEffect(() => {
+    if (customer_id) {
+      dispatch(loadCustomerById(customer_id));
+    }
+    dispatch(loadProfessionsRequest());
+  }, [stateFilter]);
+
+  const handleRadioChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setStateFilter((state: any) => {
+      return { ...state, type: event.target.value, name: "" };
+    });
+  };
+
+  function handleMinDateReport() {
+    if (reportType === "Check-in/out") {
+      if (contentReport) {
+        return dayjs(contentReport.data[contentReport.data.length - 1]._id);
+      } else {
+        return null;
+      }
+    } else if (reportType === "Evolução") {
+      if (contentReport) {
+        return dayjs(contentReport.data[contentReport.data.length - 1]._id);
+      } else {
+        return null;
+      }
+    }
+  }
+
+  function handleMaxDateReport() {
+    if (reportType === "Check-in/out") {
+      if (contentReport) {
+        return dayjs(contentReport.data[0]._id);
+      } else {
+        return undefined;
+      }
+    } else if (reportType === "Evolução") {
+      if (contentReport) {
+        return dayjs(contentReport.data[0]._id);
+      } else {
+        return undefined;
+      }
+    }
+  }
+
+  function handleGenerateReportValidation() {
+    const { attendance_id, reportType, type, name, dataEnd, dataStart } =
+      stateFilter;
+    if (!attendance_id || !reportType) {
+      toast.error("Atualize a página antes de gerar o relatório.");
+    } else if (!type) {
+      toast.error("Selecione filtro para Prestador ou Função");
+    } else if (!name) {
+      toast.error(
+        type === "Prestador" ? `Selecione o ${type}` : `Selecione a ${type}`
+      );
+    } else if (!dataStart) {
+      toast.error("Selecione a Data de início");
+    } else if (dataStart && !moment(dataStart["$d"]).isValid()) {
+      toast.error("Formato de data inválido");
+    } else if (dataEnd && !moment(dataEnd["$d"]).isValid()) {
+      toast.error("Formato de data inválido");
+    } else if (
+      dataEnd &&
+      dataStart &&
+      dayjs(formatDate(dataStart, "YYYY-MM-DD")) >
+        dayjs(formatDate(dataEnd, "YYYY-MM-DD"))
+    ) {
+      toast.error("Data de início maior que Data de fim.");
+    } else if (rangeDataComparison(dataEnd, dataStart, contentReport)) {
+      toast.error("Data fora do intervalo ");
+    } else {
+      handleGenerate();
+      // closeFilter();
+    }
+  }
+
+  function rangeDataComparison(dataEnd: any, dataStart: any, content: any) {
+    if (reportType === "Check-in/out") {
+      if (
+        dataEnd &&
+        dataEnd > dayjs(formatDate(content.data[0]._id, "YYYY-MM-DD"))
+      ) {
+        return true;
+      } else if (
+        (dataStart &&
+          dataStart <
+            dayjs(
+              formatDate(
+                content.data[content.data.length - 1]._id,
+                "YYYY-MM-DD"
+              )
+            )) ||
+        (dataStart &&
+          dataStart > dayjs(formatDate(content.data[0]._id, "YYYY-MM-DD")))
+      ) {
+        return true;
+      } else {
+        return false;
+      }
+    } else if (reportType === "Evolução") {
+      if (dataEnd && dataEnd > dayjs(content.data[0]._id)) {
+        return true;
+      } else if (
+        (dataStart &&
+          dataStart <
+            dayjs(
+              formatDate(
+                content.data[content.data.length - 1]._id,
+                "YYYY-MM-DD"
+              )
+            )) ||
+        (dataStart &&
+          dataStart > dayjs(formatDate(content.data[0]._id, "YYYY-MM-DD")))
+      ) {
+        return true;
+      } else {
+        return false;
+      }
+    } else {
+      return false;
+    }
+  }
+
+  function handleGenerate() {
+    if (stateFilter.reportType === "Check-in/out") {
+      dispatch(
+        loadCheckinFilterRequest(
+          stateFilter.dataEnd
+            ? stateFilter
+            : {
+                ...stateFilter,
+                dataEnd: dayjs(
+                  formatDate(contentReport.data[0]._id, "YYYY-MM-DD")
+                ),
+              }
+        )
+      );
+    } else if (stateFilter.reportType === "Evolução") {
+      dispatch(
+        loadEvolutionFilterRequest(
+          stateFilter.dataEnd
+            ? stateFilter
+            : {
+                ...stateFilter,
+                dataEnd: dayjs(
+                  formatDate(contentReport.data[0]._id, "YYYY-MM-DD")
+                ),
+              }
+        )
+      );
+    }
+    closeFilter();
+    cleanFilter();
+    toast.success("O relatório está sendo gerado.");
+  }
+
+  function cleanFilter() {
+    setStateFilter((state: any) => {
+      return {
+        ...state,
         _id: "",
-        type: "Prestador",
-        name: "",
-        dataStart: null,
         dataEnd: null,
-        reportType: "",
-        attendance_id: "",
+        dataStart: null,
+        name: "",
+        type: "Prestador",
+      };
     });
-    const CustomWidthTooltip = styled(({className, ...props}: TooltipProps) => (
-        <Tooltip {...props} classes={{popper: className}}/>
-    ))({
-        [`& .${tooltipClasses.tooltip}`]: {
-            maxWidth: 350,
-        },
+  }
+
+  function textHelperRangeDate() {
+    if (reportType === "Check-in/out") {
+      if (contentReport) {
+        return `${formatDate(
+          contentReport.data[contentReport.data.length - 1]._id,
+          "DD/MM/YYYY"
+        )} - ${formatDate(contentReport.data[0]._id, "DD/MM/YYYY")}`;
+      }
+    }
+    if (reportType === "Evolução") {
+      if (contentReport) {
+        return `${formatDate(
+          contentReport.data[contentReport.data.length - 1]._id,
+          "DD/MM/YYYY"
+        )} - ${formatDate(contentReport.data[0]._id, "DD/MM/YYYY")}`;
+      }
+    }
+  }
+
+  const capitalizeText = (words: string) => {
+    return words
+      .toLowerCase()
+      .split(" ")
+      .map((text: string) => {
+        return (text = text.charAt(0).toUpperCase() + text.substring(1));
+      })
+      .join(" ");
+  };
+
+  function handleFunction(list: any, company: string) {
+    for (let i = 0; i < list.length; i++) {
+      if (list[i].companie_id === company) {
+        return list[i].function;
+      }
+    }
+  }
+
+  function handleAutocompleteData(type: string) {
+    let List: any[] = [];
+    careState.checkin.map((day: any) => {
+      if (day) {
+        day.list.map((checks: any) => {
+          if (checks.list) {
+            checks.list.map((user: any) => {
+              console.log(careState);
+              const itemList: any = {
+                name:
+                  type === "Função"
+                    ? handleFunction(
+                        user[0].user_id[0].companies_links,
+                        careState.data.company_id
+                      )
+                    : capitalizeText(user[0].user_id[0].name),
+                _id: type === "Função" ? "" : user[0].user_id[0]._id,
+              };
+              List.push(itemList);
+            });
+          }
+        });
+      }
     });
-
-    useEffect(() => {
-        setStateFilter((state: any) => {
-            return {
-                ...state,
-                attendance_id: careState.data._id,
-                reportType: reportType,
-            };
-        });
-    }, [reportType, careState.data._id]);
-    useEffect(() => {
-        if (customer_id) {
-            dispatch(loadCustomerById(customer_id));
-        }
-        dispatch(loadProfessionsRequest());
-    }, [stateFilter]);
-
-    const handleRadioChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-        setStateFilter((state: any) => {
-            return {...state, type: event.target.value, name: ""};
-        });
-    };
-
-    function handleMinDateReport() {
-        if (reportType === "Check-in/out") {
-            if (contentReport) {
-                return dayjs(contentReport.data[contentReport.data.length - 1]._id);
-            } else {
-                return null;
-            }
-        } else if (reportType === "Evolução") {
-            if (contentReport) {
-                return dayjs(contentReport.data[contentReport.data.length - 1]._id);
-            } else {
-                return null;
-            }
-        }
+    if (type === "Função") {
+      return _.uniqBy(List, "name").sort((a: any, b: any) => {
+        return a.name < b.name ? -1 : a.name > b.name ? 1 : 0;
+      });
+    } else {
+      return _.uniqBy(List, "_id").sort((a: any, b: any) => {
+        return a.name < b.name ? -1 : a.name > b.name ? 1 : 0;
+      });
     }
-
-    function handleMaxDateReport() {
-        if (reportType === "Check-in/out") {
-            if (contentReport) {
-                return dayjs(contentReport.data[0]._id);
-            } else {
-                return undefined;
-            }
-        } else if (reportType === "Evolução") {
-            if (contentReport) {
-                return dayjs(contentReport.data[0]._id);
-            } else {
-                return undefined;
-            }
-        }
-    }
-
+  }
+  /**
     function handleGenerateReportValidation() {
         const {attendance_id, reportType, type, name, dataEnd, dataStart} =
             stateFilter;
@@ -177,7 +374,7 @@ export default function FilterReport(props: IPropsFilter) {
             toast.error("Data fora do intervalo ");
         } else {
             handleGenerate();
-            // closeFilter();
+            closeFilter();
         }
     }
 
@@ -345,216 +542,216 @@ export default function FilterReport(props: IPropsFilter) {
             });
         }
     }
-
-    return (
-        <Dialog
-            open={openFilter}
-            onClose={() => {
-                closeFilter();
-                cleanFilter();
+ */
+  return (
+    <Dialog
+      open={openFilter}
+      onClose={() => {
+        closeFilter();
+        cleanFilter();
+      }}
+      aria-labelledby="dialog-filter-report"
+    >
+      <DialogTitle sx={{ fontSize: "20px", fontWeight: "bold" }}>
+        {reportType}
+      </DialogTitle>
+      <DialogContent
+        sx={{
+          display: "flex",
+          flexDirection: "column",
+          width: "600px",
+          gap: "8px",
+        }}
+      >
+        <FormControl>
+          <FormLabelRadio id="radio-buttons-group-label">
+            Filtrar por prestador ou função
+          </FormLabelRadio>
+          <RadioGroup
+            row
+            aria-labelledby="radio-buttons-prestador-or-funcao"
+            name="radio-buttons-group"
+            value={stateFilter.type}
+            onChange={handleRadioChange}
+            sx={{
+              "& .css-vqmohf-MuiButtonBase-root-MuiRadio-root.Mui-checked": {
+                color: "var(--secondary)",
+              },
+              marginTop: "16px",
             }}
-            aria-labelledby="dialog-filter-report"
-        >
-            <DialogTitle sx={{fontSize: "20px", fontWeight: "bold"}}>
-                {reportType}
-            </DialogTitle>
-            <DialogContent
+          >
+            <FormControlLabel
+              defaultValue={"Prestador"}
+              value="Prestador"
+              control={<Radio />}
+              label="Prestador"
+            />
+            <FormControlLabel
+              value="Função"
+              control={<Radio />}
+              label="Função"
+            />
+          </RadioGroup>
+        </FormControl>
+        <FormControl>
+          <FormLabel
+            id="demo-radio-buttons-group-label"
+            sx={{
+              color: "var(--black)",
+              fontWeight: "bold",
+              marginBottom: "16px",
+            }}
+          >
+            Agora ditgite o nome{" "}
+            {stateFilter.type === "Função"
+              ? `da ${stateFilter.type}`
+              : `do ${stateFilter.type}`}
+          </FormLabel>
+          <Autocomplete
+            id="combo-box-profession"
+            options={handleAutocompleteData(stateFilter.type)}
+            getOptionLabel={(option) => option.name}
+            renderInput={(params) => (
+              <TextField
+                {...params}
+                label={stateFilter.type}
+                variant="outlined"
                 sx={{
-                    display: "flex",
-                    flexDirection: "column",
-                    width: "600px",
-                    gap: "8px",
+                  fontSize: "12px",
+                  height: "32px",
+                  "& label": { fontStyle: "italic" },
                 }}
-            >
-                <FormControl>
-                    <FormLabelRadio id="radio-buttons-group-label">
-                        Filtrar por prestador ou função
-                    </FormLabelRadio>
-                    <RadioGroup
-                        row
-                        aria-labelledby="radio-buttons-prestador-or-funcao"
-                        name="radio-buttons-group"
-                        value={stateFilter.type}
-                        onChange={handleRadioChange}
-                        sx={{
-                            "& .css-vqmohf-MuiButtonBase-root-MuiRadio-root.Mui-checked": {
-                                color: "var(--secondary)",
-                            },
-                            marginTop: "16px",
-                        }}
-                    >
-                        <FormControlLabel
-                            defaultValue={"Prestador"}
-                            value="Prestador"
-                            control={<Radio/>}
-                            label="Prestador"
-                        />
-                        <FormControlLabel
-                            value="Função"
-                            control={<Radio/>}
-                            label="Função"
-                        />
-                    </RadioGroup>
-                </FormControl>
-                <FormControl>
-                    <FormLabel
-                        id="demo-radio-buttons-group-label"
-                        sx={{
-                            color: "var(--black)",
-                            fontWeight: "bold",
-                            marginBottom: "16px",
-                        }}
-                    >
-                        Agora ditgite o nome{" "}
-                        {stateFilter.type === "Função"
-                            ? `da ${stateFilter.type}`
-                            : `do ${stateFilter.type}`}
-                    </FormLabel>
-                    <Autocomplete
-                        id="combo-box-profession"
-                        options={handleAutocompleteData(stateFilter.type)}
-                        getOptionLabel={(option) => option.name}
-                        renderInput={(params) => (
-                            <TextField
-                                {...params}
-                                label={stateFilter.type}
-                                variant="outlined"
-                                sx={{
-                                    fontSize: "12px",
-                                    height: "32px",
-                                    "& label": {fontStyle: "italic"},
-                                }}
-                            />
-                        )}
-                        value={stateFilter}
-                        onChange={(event, value) => {
-                            if (value) {
-                                setStateFilter((state: any) => {
-                                    return {
-                                        ...state,
-                                        name: value.name,
-                                        _id: value._id,
-                                    };
-                                });
-                            } else {
-                                setStateFilter((state: any) => {
-                                    return {
-                                        ...state,
-                                        name: "",
-                                        _id: "",
-                                    };
-                                });
-                            }
-                        }}
-                        sx={{
-                            width: 300,
+              />
+            )}
+            value={stateFilter}
+            onChange={(event, value) => {
+              if (value) {
+                setStateFilter((state: any) => {
+                  return {
+                    ...state,
+                    name: value.name,
+                    _id: value._id,
+                  };
+                });
+              } else {
+                setStateFilter((state: any) => {
+                  return {
+                    ...state,
+                    name: "",
+                    _id: "",
+                  };
+                });
+              }
+            }}
+            sx={{
+              width: 300,
 
-                            "& .css-154xyx0-MuiInputBase-root-MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline":
-                                {border: "2px solid var(--secondary)"},
-                        }}
-                        size="small"
-                        fullWidth
-                    />
-                </FormControl>
-                <FormControl>
-                    <FormLabel
-                        id="demo-radio-buttons-group-label"
-                        sx={{
-                            color: "var(--black)",
-                            fontWeight: "bold",
-                            margin: "16px 0",
-                            display: "flex",
-                            alignItems: "center",
-                            gap: "8px",
-                        }}
-                    >
-                        <Box> Por fim, selecione o período</Box>
-                        <CustomWidthTooltip
-                            title={`Caso não seja selecionado Data de fim, será considerado a última data registrada ${
-                                stateFilter.reportType === "Evolução"
-                                    ? "das Evoluções"
-                                    : "dos Check-ins/outs"
-                            }. Intervalo das datas registradas: ${textHelperRangeDate()}`}
-                        >
-                            <BoxTooltip>?</BoxTooltip>
-                        </CustomWidthTooltip>
-                    </FormLabel>
-                    <BoxCalendar>
-                        <LocalizationProvider dateAdapter={AdapterDayJs}>
-                            <DatePicker
-                                maxDate={handleMaxDateReport()}
-                                minDate={handleMinDateReport()}
-                                label="Data de início"
-                                value={stateFilter.dataStart}
-                                onChange={(newValue) => {
-                                    if (newValue) {
-                                        setStateFilter((state: any) => {
-                                            return {
-                                                ...state,
-                                                dataStart: dayjs(formatDate(newValue, "YYYY-MM-DD")),
-                                            };
-                                        });
-                                    } else {
-                                        setStateFilter((state: any) => {
-                                            return {
-                                                ...state,
-                                                dataStart: null,
-                                            };
-                                        });
-                                    }
-                                }}
-                                renderInput={(params) => <TextField {...params} />}
-                            />
-                        </LocalizationProvider>
-                        <LocalizationProvider dateAdapter={AdapterDayJs}>
-                            <DatePicker
-                                maxDate={handleMaxDateReport()}
-                                minDate={handleMinDateReport()}
-                                label="Data de Fim"
-                                value={stateFilter.dataEnd}
-                                onChange={(newValue) => {
-                                    if (newValue) {
-                                        setStateFilter((state: any) => {
-                                            return {
-                                                ...state,
-                                                dataEnd: dayjs(formatDate(newValue, "YYYY-MM-DD")),
-                                            };
-                                        });
-                                    } else {
-                                        setStateFilter((state: any) => {
-                                            return {
-                                                ...state,
-                                                dataEnd: null,
-                                            };
-                                        });
-                                    }
-                                }}
-                                renderInput={(params) => <TextField {...params} />}
-                            />
-                        </LocalizationProvider>
-                    </BoxCalendar>
-                </FormControl>
-            </DialogContent>
-            <DialogActions>
-                <Button
-                    autoFocus
-                    onClick={() => {
-                        cleanFilter();
-                        closeFilter();
-                    }}
-                    sx={{textTransform: "uppercase", fontWeight: "bold"}}
-                >
-                    Cancelar
-                </Button>
-                <Button
-                    onClick={() => {
-                        handleGenerateReportValidation();
-                    }}
-                    sx={{textTransform: "uppercase", fontWeight: "bold"}}
-                >
-                    Gerar Relatório
-                </Button>
-            </DialogActions>
-        </Dialog>
-    );
+              "& .css-154xyx0-MuiInputBase-root-MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline":
+                { border: "2px solid var(--secondary)" },
+            }}
+            size="small"
+            fullWidth
+          />
+        </FormControl>
+        <FormControl>
+          <FormLabel
+            id="demo-radio-buttons-group-label"
+            sx={{
+              color: "var(--black)",
+              fontWeight: "bold",
+              margin: "16px 0",
+              display: "flex",
+              alignItems: "center",
+              gap: "8px",
+            }}
+          >
+            <Box> Por fim, selecione o período</Box>
+            <CustomWidthTooltip
+              title={`Caso não seja selecionado Data de fim, será considerado a última data registrada ${
+                stateFilter.reportType === "Evolução"
+                  ? "das Evoluções"
+                  : "dos Check-ins/outs"
+              }. Intervalo das datas registradas: ${textHelperRangeDate()}`}
+            >
+              <BoxTooltip>?</BoxTooltip>
+            </CustomWidthTooltip>
+          </FormLabel>
+          <BoxCalendar>
+            <LocalizationProvider dateAdapter={AdapterDayJs}>
+              <DatePicker
+                maxDate={handleMaxDateReport()}
+                minDate={handleMinDateReport()}
+                label="Data de início"
+                value={stateFilter.dataStart}
+                onChange={(newValue) => {
+                  if (newValue) {
+                    setStateFilter((state: any) => {
+                      return {
+                        ...state,
+                        dataStart: dayjs(formatDate(newValue, "YYYY-MM-DD")),
+                      };
+                    });
+                  } else {
+                    setStateFilter((state: any) => {
+                      return {
+                        ...state,
+                        dataStart: null,
+                      };
+                    });
+                  }
+                }}
+                renderInput={(params) => <TextField {...params} />}
+              />
+            </LocalizationProvider>
+            <LocalizationProvider dateAdapter={AdapterDayJs}>
+              <DatePicker
+                maxDate={handleMaxDateReport()}
+                minDate={handleMinDateReport()}
+                label="Data de Fim"
+                value={stateFilter.dataEnd}
+                onChange={(newValue) => {
+                  if (newValue) {
+                    setStateFilter((state: any) => {
+                      return {
+                        ...state,
+                        dataEnd: dayjs(formatDate(newValue, "YYYY-MM-DD")),
+                      };
+                    });
+                  } else {
+                    setStateFilter((state: any) => {
+                      return {
+                        ...state,
+                        dataEnd: null,
+                      };
+                    });
+                  }
+                }}
+                renderInput={(params) => <TextField {...params} />}
+              />
+            </LocalizationProvider>
+          </BoxCalendar>
+        </FormControl>
+      </DialogContent>
+      <DialogActions>
+        <Button
+          autoFocus
+          onClick={() => {
+            cleanFilter();
+            closeFilter();
+          }}
+          sx={{ textTransform: "uppercase", fontWeight: "bold" }}
+        >
+          Cancelar
+        </Button>
+        <Button
+          onClick={() => {
+            handleGenerateReportValidation();
+          }}
+          sx={{ textTransform: "uppercase", fontWeight: "bold" }}
+        >
+          Gerar Relatório
+        </Button>
+      </DialogActions>
+    </Dialog>
+  );
 }
