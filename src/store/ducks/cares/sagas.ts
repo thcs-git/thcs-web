@@ -1,7 +1,9 @@
-import {apiSollarMobi, apiSollarReport} from "./../../../services/axios";
+import { apiSollarMobi, apiSollarReport } from "./../../../services/axios";
 import { put, call } from "redux-saga/effects";
 import { toast } from "react-toastify";
 import { AxiosResponse } from "axios";
+// helps
+import { formatDate } from "./../../../helpers/date";
 
 import LOCALSTORAGE from "../../../helpers/constants/localStorage";
 
@@ -44,7 +46,10 @@ import {
   loadEvolutionSuccess,
   loadEvolutionFailure,
   loadCheckinSuccess,
-  loadCheckinFailure, loadCheckinReportSuccess, loadCheckinReportFailure,
+  loadCheckinFailure,
+  loadCheckinReportSuccess,
+  loadCheckinReportFailure,
+  loadEvolutionFilterSuccess,
 } from "./actions";
 
 import { apiIntegra, apiSollar } from "../../../services/axios";
@@ -52,6 +57,7 @@ import { apiIntegra, apiSollar } from "../../../services/axios";
 import { handleCompanySelected } from "../../../helpers/localStorage";
 import SESSIONSTORAGE from "../../../helpers/constants/sessionStorage";
 import { pull } from "cypress/types/lodash";
+import { IFilterReport } from "./types";
 
 const token = localStorage.getItem("token");
 
@@ -313,8 +319,6 @@ export function* storeDocumentSocioAmbiental({ payload }: any) {
 export function* updateDocumentSocioAmbiental({ payload }: any) {
   try {
     const { _id } = payload;
-
-    console.log("payload", payload);
 
     delete payload._id;
 
@@ -751,10 +755,15 @@ export function* getHistory({ payload }: any) {
 
 export function* getEvolution({ payload }: any) {
   try {
+    const integration = sessionStorage.getItem(SESSIONSTORAGE.INTEGRATION);
+    const headers = integration
+        ? { external_attendance_id: payload }
+        : { attendance_id: payload };
     const response: AxiosResponse = yield call(
       apiSollarMobi.post,
       `/evolution/getGroup`,
-      { attendance_id: payload }
+      { attendance_id: payload },
+        { headers: { ...headers } }
     );
     yield put(loadEvolutionSuccess(response.data));
   } catch (err) {
@@ -765,10 +774,15 @@ export function* getEvolution({ payload }: any) {
 
 export function* getChekin({ payload }: any) {
   try {
+    const integration = sessionStorage.getItem(SESSIONSTORAGE.INTEGRATION);
+    const headers = integration
+      ? { external_attendance_id: payload }
+      : { attendance_id: payload };
     const response: AxiosResponse = yield call(
       apiSollarMobi.post,
       `/checkin/getGroup`,
-      { attendance_id: payload }
+      { attendance_id: payload },
+      { headers: { ...headers } }
     );
     yield put(loadCheckinSuccess(response.data));
   } catch (err) {
@@ -779,14 +793,84 @@ export function* getChekin({ payload }: any) {
 
 export function* getChekInReport({ payload }: any) {
   try {
+    const integration = sessionStorage.getItem(SESSIONSTORAGE.INTEGRATION);
+    const headers = integration
+      ? { token, external_attendance_id: payload }
+      : { token, attendance_id: payload };
     const response: AxiosResponse = yield call(
-        apiSollarReport.get,
-        `/`,
-        {responseType: 'blob'}
+      apiSollarReport.get,
+      `/checkin`,
+      { responseType: "blob", headers: { ...headers } }
     );
     yield put(loadCheckinReportSuccess(response.data));
   } catch (err) {
     yield put(loadCheckinReportFailure());
     toast.error("Erro Ao Buscar Relatório De Check-In/Out");
+  }
+}
+
+export function* getFilterCheckin({ payload }: any) {
+  try {
+    let { dataStart, dataEnd, type, name } = payload;
+    dataStart =
+      typeof dataStart === "string"
+        ? dataStart
+        : formatDate(dataStart["$d"], "YYYY-MM-DD");
+    dataEnd =
+      typeof dataEnd === "string"
+        ? dataEnd
+        : formatDate(dataEnd["$d"], "YYYY-MM-DD");
+    payload = {
+      ...payload,
+      dataStart,
+      dataEnd,
+    };
+    const integration = sessionStorage.getItem(SESSIONSTORAGE.INTEGRATION);
+    const headers = integration
+      ? { token, external_attendance_id: payload.attendance_id }
+      : { token, attendance_id: payload.attendance_id };
+    const response: AxiosResponse = yield call(
+      apiSollarReport.get,
+      `/checkin?dataStart=${dataStart}&dataEnd=${dataEnd}&name=${name}&type=${type}`,
+      { responseType: "blob", headers: { ...headers } }
+    );
+    yield put(loadCheckinReportSuccess(response.data));
+  } catch (err) {
+    toast.error("Erro ao Filtrar Relatório De Check-In/Out");
+    yield put(loadCheckinReportFailure());
+  }
+}
+
+export function* getFilterEvolution({ payload }: any) {
+  try {
+    let { dataStart, dataEnd, type, name } = payload;
+    dataStart =
+      typeof dataStart === "string"
+        ? dataStart
+        : formatDate(dataStart["$d"], "YYYY-MM-DD");
+    dataEnd =
+      typeof dataEnd === "string"
+        ? dataEnd
+        : formatDate(dataEnd["$d"], "YYYY-MM-DD");
+    payload = {
+      ...payload,
+      dataStart,
+      dataEnd,
+    };
+    const integration = sessionStorage.getItem(SESSIONSTORAGE.INTEGRATION);
+    const headers = integration
+      ? { token, external_attendance_id: payload.attendance_id }
+      : { token, attendance_id: payload.attendance_id };
+    const response: AxiosResponse = yield call(
+      apiSollarReport.get,
+      `/evolution?dataStart=${dataStart}&dataEnd=${dataEnd}&name=${name}&type=${type}`,
+      { responseType: "blob", headers: { ...headers } }
+    );
+    console.log("dasdsadsadsa");
+    yield put(loadEvolutionFilterSuccess(response.data));
+    console.log("1");
+  } catch (err) {
+    toast.error("Erro ao Filtrar Relatório De Evolução");
+    yield put(loadCheckinReportFailure());
   }
 }

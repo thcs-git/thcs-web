@@ -1,39 +1,29 @@
 import React, { useState, useEffect, useCallback } from "react";
-// React Router
-import { useHistory, RouteComponentProps } from "react-router-dom";
 // Helper
 import LOCALSTORAGE from "../../../../helpers/constants/localStorage";
-import SESSIONSTORAGE from "../../../../helpers/constants/sessionStorage";
-import { toast } from "react-toastify";
+import { useFormik } from "formik";
+import * as yup from "yup";
 // Redux e Sagas
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import {
   UserState,
   UserRecoveryPassword,
 } from "../../../../store/ducks/users/types";
-import { ApplicationState } from "../../../../store";
 import { loadRecoveryPasswordiftoken } from "../../../../store/ducks/users/actions";
 
 // MUI
-import Grid from "@material-ui/core/Grid";
-
-// Styles
-import {
-  BoxCustom,
-  FeedbackTitle,
-  FeedbackDescription,
-  ButtonsContent,
-  ButtonDefault,
-} from "./styles";
-import FormControl from "@mui/material/FormControl";
-import InputLabel from "@mui/material/InputLabel";
-import OutlinedInput from "@mui/material/OutlinedInput";
 import InputAdornment from "@mui/material/InputAdornment";
 import IconButton from "@mui/material/IconButton";
 import Visibility from "@material-ui/icons/Visibility";
 import VisibilityOff from "@material-ui/icons/VisibilityOff";
 import Button from "@mui/material/Button";
+import TextField from "@mui/material/TextField";
+import Grid from "@mui/material/Grid";
 
+// Styles
+import { BoxCustom, FeedbackTitle, FeedbackDescription } from "./styles";
+
+//components
 interface IPageParams {
   id?: string;
   email?: string;
@@ -43,13 +33,35 @@ interface IPageParams {
 
 const SIZE_INPUT_PASSWORD = 3;
 
+const validationSchema = yup.object({
+  oldPassword: yup.string().required("Campo obrigatório"),
+  password: yup
+    .string()
+    .min(
+      SIZE_INPUT_PASSWORD,
+      `A senha deve ter no mínimo ${SIZE_INPUT_PASSWORD} caracteres`
+    )
+    .max(20, "Senha deve ter no maximo 20 caracteres")
+    .required("Campo obrigatório")
+    .notOneOf(
+      [yup.ref("oldPassword"), null],
+      "Senha antiga e nova senha iguais"
+    ),
+  confirmPassword: yup
+    .string()
+    .min(
+      SIZE_INPUT_PASSWORD,
+      `A senha deve ter no mínimo ${SIZE_INPUT_PASSWORD} caracteres`
+    )
+    .required("Campo obrigatório")
+    .oneOf(
+      [yup.ref("password"), null],
+      "Nova senha e confirmar senha diferentes"
+    ),
+});
+
 export default function ChangePasswordConfiguration(props: IPageParams) {
-  const { state } = props;
   const dispatch = useDispatch();
-  const SIZE_INPUT_PASSWORD = 3;
-  const [newPassword, setNewPassword] = useState({ value: "", error: false });
-  const [newConfirmPassword, setNewConfirmPassword] = useState({ value: "" });
-  const [ok, setOk] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [userecovery, setUserecovery] = useState<UserRecoveryPassword>({
     _id: "",
@@ -57,10 +69,8 @@ export default function ChangePasswordConfiguration(props: IPageParams) {
     oldPassword: "",
   });
   const currentUser = window.localStorage.getItem(LOCALSTORAGE.USER_ID);
-  console.log(state, "USER STATE");
-  // useEffect
+
   useEffect(() => {
-    console.log(currentUser);
     if (currentUser) {
       setUserecovery((prev) => ({
         ...prev,
@@ -72,163 +82,146 @@ export default function ChangePasswordConfiguration(props: IPageParams) {
   const handleClickShowPassword = useCallback(() => {
     setShowPassword((prev) => !prev);
   }, []);
-
-  const handleValidatePassword = useCallback(() => {
-    console.log(userecovery);
-    setNewPassword((prev) => ({
-      ...prev,
-      error: !(
-        newPassword.value.length >= SIZE_INPUT_PASSWORD &&
-        newPassword.value &&
-        newPassword.value === newConfirmPassword.value &&
-        newPassword.value !== userecovery.oldPassword
-      ),
-    }));
-
-    setUserecovery((prev) => ({
-      ...prev,
-      password: newPassword.value,
-    }));
-  }, [newPassword, newConfirmPassword.value, userecovery.oldPassword]);
-
-  const recoveryPassword = useCallback(() => {
-    if (newPassword.value === userecovery.oldPassword) {
-      toast.error("Sua nova senha não pode ser igual a antiga.");
-    } else if (userecovery.password.length < SIZE_INPUT_PASSWORD) {
-      toast.error(
-        `A nova senha deve conter mais que ${SIZE_INPUT_PASSWORD} caracteres.`
+  const formik = useFormik({
+    initialValues: {
+      oldPassword: "",
+      password: "",
+      confirmPassword: "",
+    },
+    validationSchema: validationSchema,
+    onSubmit: (values) => {
+      dispatch(
+        loadRecoveryPasswordiftoken({
+          ...userecovery,
+          oldPassword: values.oldPassword,
+          password: values.password,
+        })
       );
-    } else if (newPassword.value !== newConfirmPassword.value) {
-      toast.error(
-        "Os campos Nova senha e Confirmar nova senha devem ser iguais."
-      );
-    } else if (!newPassword.error && userecovery.oldPassword) {
-      console.log(userecovery);
-      dispatch(loadRecoveryPasswordiftoken(userecovery));
-      setOk(true);
-    }
-  }, [newPassword]);
+    },
+  });
 
+  const handleMouseDownPassword = (
+    event: React.MouseEvent<HTMLButtonElement>
+  ) => {
+    event.preventDefault();
+  };
   return (
     <BoxCustom>
       <Grid container direction="column">
-        <Grid item md={12}>
+        <Grid item>
           <FeedbackTitle>Alteração de senha</FeedbackTitle>
           <FeedbackDescription>
             Para criar uma nova senha, preencha os campos abaixo:
           </FeedbackDescription>
         </Grid>
-        <Grid item md={5}>
-          <FormControl fullWidth margin="normal" variant="outlined">
-            <InputLabel htmlFor="outlined-adornment-password">
-              Senha Antiga
-            </InputLabel>
-            <OutlinedInput
-              id="outlined-adornment-password"
+        <Grid item sx={{ width: 400 }}>
+          <form onSubmit={formik.handleSubmit}>
+            <TextField
+              fullWidth
+              sx={{ margin: "8px 0" }}
+              id="oldPassword"
+              name="oldPassword"
+              label="Senha antiga"
               type={showPassword ? "text" : "password"}
+              value={formik.values.oldPassword}
+              onChange={formik.handleChange}
               error={
-                newPassword.value === userecovery.oldPassword ||
-                newConfirmPassword.value === userecovery.oldPassword ||
-                !userecovery.oldPassword
+                formik.touched.oldPassword && Boolean(formik.errors.oldPassword)
               }
-              endAdornment={
-                <InputAdornment position="end">
-                  <IconButton
-                    aria-label="toggle password visibility"
-                    onClick={handleClickShowPassword}
-                    // onMouseDown={handleMouseDownPassword}
-                    edge="end"
-                  >
-                    {showPassword ? <VisibilityOff /> : <Visibility />}
-                  </IconButton>
-                </InputAdornment>
+              helperText={
+                formik.touched.oldPassword && formik.errors.oldPassword
               }
-              onChange={(element) => {
-                setUserecovery((prev) => ({
-                  ...prev,
-                  oldPassword: element.target.value,
-                }));
+              InputProps={{
+                endAdornment: (
+                  <InputAdornment position="end">
+                    <IconButton
+                      aria-label="toggle password visibility"
+                      onClick={handleClickShowPassword}
+                      onMouseDown={handleMouseDownPassword}
+                      edge="end"
+                    >
+                      {showPassword ? <VisibilityOff /> : <Visibility />}
+                    </IconButton>
+                  </InputAdornment>
+                ),
               }}
             />
-          </FormControl>
-        </Grid>
-        <Grid item md={5}>
-          <FormControl fullWidth margin="normal" variant="outlined">
-            <InputLabel htmlFor="outlined-adornment-password">
-              Nova Senha
-            </InputLabel>
-            <OutlinedInput
-              id="outlined-adornment-password"
+            <TextField
+              fullWidth
+              sx={{ margin: "8px 0" }}
+              id="password"
+              name="password"
+              label="Nova senha"
               type={showPassword ? "text" : "password"}
-              error={newPassword.error}
-              onChange={(element) => {
-                setNewPassword((prev) => ({
-                  ...prev,
-                  value: element.target.value,
-                }));
+              value={formik.values.password}
+              onChange={formik.handleChange}
+              error={formik.touched.password && Boolean(formik.errors.password)}
+              helperText={formik.touched.password && formik.errors.password}
+              InputProps={{
+                endAdornment: (
+                  <InputAdornment position="end">
+                    <IconButton
+                      aria-label="toggle password visibility"
+                      onClick={handleClickShowPassword}
+                      onMouseDown={handleMouseDownPassword}
+                      edge="end"
+                    >
+                      {showPassword ? <VisibilityOff /> : <Visibility />}
+                    </IconButton>
+                  </InputAdornment>
+                ),
               }}
-              endAdornment={
-                <InputAdornment position="end">
-                  <IconButton
-                    aria-label="toggle password visibility"
-                    onClick={handleClickShowPassword}
-                    // onMouseDown={handleMouseDownPassword}
-                    edge="end"
-                  >
-                    {showPassword ? <VisibilityOff /> : <Visibility />}
-                  </IconButton>
-                </InputAdornment>
-              }
-              onBlur={handleValidatePassword}
             />
-          </FormControl>
-        </Grid>
-        <Grid item md={5}>
-          <FormControl fullWidth margin="normal" variant="outlined">
-            <InputLabel htmlFor="outlined-adornment-password">
-              Confirmar Nova Senha
-            </InputLabel>
-            <OutlinedInput
-              id="outlined-adornment-password"
+            <TextField
+              fullWidth
+              sx={{ margin: "8px 0" }}
+              id="confirmPassword"
+              name="confirmPassword"
+              label="Confirmar senha"
               type={showPassword ? "text" : "password"}
-              error={newPassword.error}
-              onChange={(element) => {
-                setNewConfirmPassword((prev) => ({
-                  ...prev,
-                  value: element.target.value,
-                }));
-              }}
-              endAdornment={
-                <InputAdornment position="end">
-                  <IconButton
-                    aria-label="toggle password visibility"
-                    onClick={handleClickShowPassword}
-                    // onMouseDown={handleMouseDownPassword}
-                    edge="end"
-                  >
-                    {showPassword ? <VisibilityOff /> : <Visibility />}
-                  </IconButton>
-                </InputAdornment>
+              value={formik.values.confirmPassword}
+              onChange={formik.handleChange}
+              error={
+                formik.touched.confirmPassword &&
+                Boolean(formik.errors.confirmPassword)
               }
-              onBlur={handleValidatePassword}
+              helperText={
+                formik.touched.confirmPassword && formik.errors.confirmPassword
+              }
+              InputProps={{
+                endAdornment: (
+                  <InputAdornment position="end">
+                    <IconButton
+                      aria-label="toggle password visibility"
+                      onClick={handleClickShowPassword}
+                      onMouseDown={handleMouseDownPassword}
+                      edge="end"
+                    >
+                      {showPassword ? <VisibilityOff /> : <Visibility />}
+                    </IconButton>
+                  </InputAdornment>
+                ),
+              }}
             />
-          </FormControl>
-        </Grid>
-        <Grid md={12} style={{ marginTop: "16px" }}>
-          <ButtonsContent>
-            <ButtonDefault
+
+            <Button
               variant="contained"
-              onClick={recoveryPassword}
+              fullWidth
+              type="submit"
               sx={{
+                textTransform: "capitalize",
+                width: 130,
+                height: 36,
+                marginTop: 1,
                 background: "var(--success)",
                 "&:hover": {
                   background: "var(--success-hover)",
                 },
               }}
             >
-              Salvar Senha
-            </ButtonDefault>
-          </ButtonsContent>
+              Salvar senha
+            </Button>
+          </form>
         </Grid>
       </Grid>
     </BoxCustom>

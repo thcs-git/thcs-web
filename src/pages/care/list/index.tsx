@@ -220,8 +220,8 @@ export default function CouncilList() {
                 tableCells={[
                   { name: "Atendimento", align: "left" },
                   { name: "Paciente", align: "left" },
-                  { name: "Tipo", align: "center" },
-                  { name: "CPF", align: "center" },
+                  { name: "Tipo", align: "left" },
+                  { name: "CPF", align: "left" },
                   { name: "Data de Atendimento", align: "center" },
                 ]}
                 careState={careState}

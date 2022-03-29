@@ -8,6 +8,7 @@ import Typography from "@mui/material/Typography";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import Divider from "@mui/material/Divider";
 import Tooltip from "@mui/material/Tooltip";
+import Badge from "@mui/material/Badge";
 
 // icons
 import IconMeasurement from "../../Icons/measurement";
@@ -27,6 +28,8 @@ import Pain from "../../Icons/Pain";
 import Allergy from "../../Icons/allergic";
 import Evolution from "../../Icons/Evolution";
 import Check from "../../Icons/Check";
+import Drug from "../../Icons/Drug";
+import AdverseEvent from "../../Icons/AdverseEvent";
 // styled components and style
 import {
     AccordionStyled as Accordion,
@@ -50,8 +53,14 @@ import {
     AllergiesItem,
 } from "../../../store/ducks/allergies/types";
 import {IconButton} from "@mui/material";
-import {loadCheckinReportRequest} from "../../../store/ducks/cares/actions";
-import {useDispatch} from "react-redux";
+import {
+    loadCheckinFilterRequest,
+    loadCheckinReportRequest, loadEvolutionFilterRequest,
+} from "../../../store/ducks/cares/actions";
+import {useDispatch, useSelector} from "react-redux";
+import {CareState} from "../../../store/ducks/cares/types";
+import {ApplicationState} from "../../../store";
+import dayjs from "dayjs";
 
 interface IAccordionReport {
     content: {
@@ -62,7 +71,7 @@ interface IAccordionReport {
     company_id: string;
     reportType: string;
     allergic?: boolean;
-
+    state?: any;
     // data: IDataAccordion[];
 }
 
@@ -109,7 +118,7 @@ interface IAccordionItem {
 }
 
 export default function AccordionReport(props: IAccordionReport) {
-    const {content, company_id, reportType} = props;
+    const {content, company_id, reportType, state} = props;
     const dispatch = useDispatch();
     const integration = sessionStorage.getItem(SESSIONSTORAGE.INTEGRATION);
 
@@ -172,13 +181,15 @@ export default function AccordionReport(props: IAccordionReport) {
         };
 
     const capitalizeText = (words: string) => {
-        return words
-            .toLowerCase()
-            .split(" ")
-            .map((text: string) => {
-                return (text = text.charAt(0).toUpperCase() + text.substring(1));
-            })
-            .join(" ");
+        if (words) {
+            return words
+                .toLowerCase()
+                .split(" ")
+                .map((text: string) => {
+                    return (text = text.charAt(0).toUpperCase() + text.substring(1));
+                })
+                .join(" ");
+        } else return "";
     };
 
     const getFirstAndLastName = (fullName: string) => {
@@ -212,6 +223,17 @@ export default function AccordionReport(props: IAccordionReport) {
             );
         }
     };
+
+    function checkMeasurementValue(measurements: IAccordionItem[]) {
+        let measurementCheck: IAccordionItem[] = [];
+        measurements.map((item: IAccordionItem) => {
+            if (item.value !== "-") {
+                return measurementCheck.push(item);
+            }
+        });
+        return measurementCheck;
+    }
+
     const handleMeasurementItemsIcons = (
         measurements: IAccordionItem[],
         canceled: boolean
@@ -400,7 +422,11 @@ export default function AccordionReport(props: IAccordionReport) {
                             }`,
                         }}
                     >
-                        {reportType === "Evolução" ? "Especialidade" : "Função"}
+                        {reportType === "Evolução"
+                            ? "Especialidade"
+                            : type === "event"
+                                ? "Item de prescrição"
+                                : "Função"}
                     </TextCenterDetails>
                     <TextCenterDetails
                         sx={{
@@ -453,97 +479,178 @@ export default function AccordionReport(props: IAccordionReport) {
     const handleRow = (list: any, type?: string) => {
         if (type) {
             if (type === "allergy") {
-                return list.map((column: any, index: number) => {
+                if (content.data.allergy.length === 0) {
                     return (
-                        <>
-                            <ContentDetailsAccordion key={column._id}>
-                                <TextCenterDetails sx={{width: "100px"}}>
-                                    {formatDate(column.created_at, "DD/MM/YY HH:mm")}
-                                </TextCenterDetails>
-                                <TextCenterDetails sx={{width: "250px"}}>
-                                    {column.created_by
-                                        ? integration
-                                            ? getFirstAndLastName(capitalizeText(column.created_by))
-                                            : getFirstAndLastName(
-                                                capitalizeText(column.created_by.name)
-                                            )
-                                        : "-"}
-                                </TextCenterDetails>
-                                <TextCenterDetails sx={{width: "250px"}}>
-                                    {handleFunction(column, company_id, type)}
-                                </TextCenterDetails>
-                                <TextCenterDetails sx={{width: "200px"}}>
-                                    <Box
-                                        sx={{
-                                            display: "flex",
-                                            flexWrap: "wrap",
-                                            justifyContent: "center",
-                                            alignItems: "center",
-                                            gap: "4px",
-                                            margin: "2px",
-                                        }}
-                                    >
-                                        {integration
-                                            ? capitalizeText(column.name)
-                                            : capitalizeText(column.description)}
-                                    </Box>
-                                </TextCenterDetails>
-                            </ContentDetailsAccordion>
-                            {list.length !== index + 1 ? (
-                                <Divider sx={{width: "100%", margin: "0 auto"}}/>
-                            ) : (
-                                ""
-                            )}
-                        </>
+                        <Box
+                            sx={{
+                                color: "var(--gray-dark)",
+                                textAlign: "center",
+                                margin: "16px 0 8px",
+                            }}
+                        >
+                            Não há alergias registrados para este paciente.
+                        </Box>
                     );
-                });
-            } else if (type === "event") {
-                return list.map((column: any, index: number) => {
-                    return (
-                        <>
-                            <ContentDetailsAccordion key={column._id}>
-                                <TextCenterDetails sx={{width: "100px"}}>
-                                    {formatDate(column.created_at, "DD/MM/YY HH:mm")}
-                                </TextCenterDetails>
-                                <TextCenterDetails sx={{width: "250px"}}>
-                                    {column.created_by
-                                        ? integration
-                                            ? typeof column.created_by === "string"
+                } else
+                    return list.map((column: any, index: number) => {
+                        return (
+                            <>
+                                <ContentDetailsAccordion key={column._id}>
+                                    <TextCenterDetails sx={{width: "100px"}}>
+                                        {formatDate(column.created_at, "DD/MM/YY HH:mm")}
+                                    </TextCenterDetails>
+                                    <TextCenterDetails sx={{width: "250px"}}>
+                                        {column.created_by
+                                            ? integration
                                                 ? getFirstAndLastName(capitalizeText(column.created_by))
-                                                : "-"
-                                            : typeof column.created_by === "string"
-                                                ? getFirstAndLastName(
+                                                : getFirstAndLastName(
                                                     capitalizeText(column.created_by.name)
                                                 )
-                                                : "-"
-                                        : "-"}
-                                </TextCenterDetails>
-                                <TextCenterDetails sx={{width: "250px"}}>
-                                    {handleFunction(column, company_id, type)}
-                                </TextCenterDetails>
-                                <TextCenterDetails sx={{width: "200px"}}>
-                                    <Box
-                                        sx={{
-                                            display: "flex",
-                                            flexWrap: "wrap",
-                                            justifyContent: "center",
-                                            alignItems: "center",
-                                            gap: "4px",
-                                            margin: "2px",
-                                        }}
-                                    >
-                                        {capitalizeText(column.event)}
-                                    </Box>
-                                </TextCenterDetails>
-                            </ContentDetailsAccordion>
-                            {list.length !== index + 1 ? (
-                                <Divider sx={{width: "100%", margin: "0 auto"}}/>
-                            ) : (
-                                ""
-                            )}
-                        </>
+                                            : "-"}
+                                    </TextCenterDetails>
+                                    <TextCenterDetails sx={{width: "250px"}}>
+                                        {handleFunction(column, company_id, type)}
+                                    </TextCenterDetails>
+                                    <TextCenterDetails sx={{width: "200px"}}>
+                                        <Box
+                                            sx={{
+                                                display: "flex",
+                                                flexWrap: "wrap",
+                                                justifyContent: "center",
+                                                alignItems: "center",
+                                                gap: "4px",
+                                                margin: "2px",
+                                            }}
+                                        >
+                                            {integration
+                                                ? capitalizeText(column.name)
+                                                : capitalizeText(column.description)}
+                                        </Box>
+                                    </TextCenterDetails>
+                                </ContentDetailsAccordion>
+                                {list.length !== index + 1 ? (
+                                    <Divider sx={{width: "100%", margin: "0 auto"}}/>
+                                ) : (
+                                    ""
+                                )}
+                            </>
+                        );
+                    });
+            } else if (type === "event") {
+                if (content.data.event.length === 0) {
+                    return (
+                        <Box
+                            sx={{
+                                color: "var(--gray-dark)",
+                                textAlign: "center",
+                                margin: "16px 0 8px",
+                            }}
+                        >
+                            Não há eventos adversos registrados para este paciente.
+                        </Box>
                     );
-                });
+                } else
+                    return list.map((column: any, index: number) => {
+                        return (
+                            <>
+                                <ContentDetailsAccordion key={column._id}>
+                                    <TextCenterDetails sx={{width: "100px"}}>
+                                        {formatDate(column.created_at, "DD/MM/YY HH:mm")}
+                                    </TextCenterDetails>
+                                    <TextCenterDetails sx={{width: "250px"}}>
+                                        {column.created_by
+                                            ? integration
+                                                ? typeof column.created_by === "string"
+                                                    ? getFirstAndLastName(capitalizeText(column.created_by))
+                                                    : "-"
+                                                : typeof column.created_by === "string"
+                                                    ? getFirstAndLastName(
+                                                        capitalizeText(column.created_by.name)
+                                                    )
+                                                    : "-"
+                                            : "-"}
+                                    </TextCenterDetails>
+                                    <TextCenterDetails sx={{width: "200px"}}>
+                                        <Box
+                                            sx={{
+                                                display: "flex",
+                                                flexWrap: "wrap",
+                                                justifyContent: "center",
+                                                alignItems: "center",
+                                                gap: "4px",
+                                                margin: "2px",
+                                            }}
+                                        >
+                                            <Badge
+                                                badgeContent={column.item.length}
+                                                showZero
+                                                color="primary"
+                                                overlap="rectangular"
+                                                sx={{
+                                                    ".MuiBadge-colorPrimary": {
+                                                        backgroundColor: "var(--secondary)",
+                                                        borderRadius: "4px",
+                                                        fontSize: "10px !important",
+                                                        right: "-2px",
+                                                        height: "16px",
+                                                        padding: "5px",
+                                                        minWidth: "min-content",
+                                                    },
+                                                }}
+                                            >
+                                                <Drug
+                                                    fill={"var(--secondary)"}
+                                                    width={"20px"}
+                                                    height={"20px"}
+                                                />
+                                            </Badge>
+                                        </Box>
+                                    </TextCenterDetails>
+                                    <TextCenterDetails sx={{width: "200px"}}>
+                                        <Box
+                                            sx={{
+                                                display: "flex",
+                                                flexWrap: "wrap",
+                                                justifyContent: "center",
+                                                alignItems: "center",
+                                                gap: "4px",
+                                                margin: "2px",
+                                            }}
+                                        >
+                                            <Badge
+                                                badgeContent={column.type.length}
+                                                showZero
+                                                color="primary"
+                                                overlap="rectangular"
+                                                sx={{
+                                                    ".MuiBadge-colorPrimary": {
+                                                        backgroundColor: "var(--secondary)",
+                                                        borderRadius: "4px",
+                                                        fontSize: "10px !important",
+                                                        right: "-9px",
+                                                        height: "14px",
+                                                        padding: "5px",
+                                                        minWidth: "min-content",
+                                                    },
+                                                }}
+                                            >
+                                                <AdverseEvent
+                                                    fill={"var(--secondary)"}
+                                                    width={"18px"}
+                                                    height={"18px"}
+                                                />
+                                            </Badge>
+                                        </Box>
+                                    </TextCenterDetails>
+                                </ContentDetailsAccordion>
+                                {list.length !== index + 1 ? (
+                                    <Divider sx={{width: "100%", margin: "0 auto"}}/>
+                                ) : (
+                                    ""
+                                )}
+                            </>
+                        );
+                    });
             }
         } else if (reportType === "Evolução") {
             return list.map((column: any, index: number) => {
@@ -565,7 +672,7 @@ export default function AccordionReport(props: IAccordionReport) {
                                     color: `${column.active ? "#333333" : "#7D7D7D"}`,
                                 }}
                             >
-                                {getFirstAndLastName(capitalizeText(column.created_by[0].name))}
+                                {getFirstAndLastName(capitalizeText(column.created_by[0]?.name))}
                             </TextCenterDetails>
                             <TextCenterDetails
                                 sx={{
@@ -573,7 +680,7 @@ export default function AccordionReport(props: IAccordionReport) {
                                     color: `${column.active ? "#333333" : "#7D7D7D"}`,
                                 }}
                             >
-                                {column.created_by[0].main_specialty_id[0].name
+                                {column.created_by[0]?.main_specialty_id[0]?.name
                                     ? column.created_by[0].main_specialty_id[0].name
                                     : "-"}
                             </TextCenterDetails>
@@ -586,10 +693,28 @@ export default function AccordionReport(props: IAccordionReport) {
                                 {column.type}
                             </TextCenterDetails>
                             <TextCenterDetails>
-                                <DownloadIcon
-                                    sx={{color: "var(--secondary)", marginRight: "8px"}}
-                                />
-                                <PrintIcon sx={{color: "var(--secondary)"}}/>
+                                {/*<DownloadIcon*/}
+                                {/*  sx={{ color: "var(--secondary)", marginRight: "8px" }}*/}
+                                {/*/>*/}
+                                <IconButton
+                                    color="secondary"
+                                    aria-label="print"
+                                    sx={{cursor: "pointer", height: "10px"}}
+                                    onClick={() => {
+                                        const payload = {
+                                            _id: column._id,
+                                            type: "Id",
+                                            name: column._id,
+                                            dataStart: '',
+                                            dataEnd: '',
+                                            reportType: "Evolução",
+                                            attendance_id: state?.data?._id,
+                                        };
+                                        dispatch(loadEvolutionFilterRequest(payload));
+                                    }}
+                                >
+                                    <PrintIcon sx={{cursor: "pointer", color: "var(--secondary)"}}/>
+                                </IconButton>
                             </TextCenterDetails>
                         </ContentDetailsAccordion>
                         {list.length !== index + 1 ? (
@@ -685,15 +810,12 @@ export default function AccordionReport(props: IAccordionReport) {
                                         margin: "2px",
                                     }}
                                 >
-                                    {handleMeasurementItemsIcons(column.itens, column.canceled)}
+                                    {handleMeasurementItemsIcons(checkMeasurementValue(column.itens), column.canceled)}
                                 </Box>
                             </TextCenterDetails>
                             <TextCenterDetails
-                                sx={{width: "100px", justifyContent: "flex-start"}}
+                                sx={{width: "100px", justifyContent: "center"}}
                             >
-                                <DownloadIcon
-                                    sx={{color: "var(--secondary)", marginRight: "8px"}}
-                                />
                                 <PrintIcon sx={{color: "var(--secondary)"}}/>
                             </TextCenterDetails>
                         </ContentDetailsAccordion>
@@ -783,16 +905,41 @@ export default function AccordionReport(props: IAccordionReport) {
                                                 </Box>
                                             </Box>
                                             <Box>
-                                                {reportType === "Evolução" && (
-                                                    <DownloadIcon
-                                                        sx={{cursor: "pointer", marginRight: "12px"}}
-                                                    />
-                                                )}
-                                                <IconButton color="secondary" aria-label="print"
-                                                            sx={{cursor: "pointer", height: "10px"}}
-                                                            onClick={() => {
-                                                                dispatch(loadCheckinReportRequest('asd'))
-                                                            }}>
+                                                {/*{reportType === "Evolução" && (*/}
+                                                {/*  <DownloadIcon*/}
+                                                {/*    sx={{ cursor: "pointer", marginRight: "12px" }}*/}
+                                                {/*  />*/}
+                                                {/*)}*/}
+                                                <IconButton
+                                                    color="secondary"
+                                                    aria-label="print"
+                                                    sx={{cursor: "pointer", height: "10px"}}
+                                                    onClick={() => {
+                                                        if (reportType === "Check-in/out") {
+                                                            const payload = {
+                                                                _id: "",
+                                                                type: "Group",
+                                                                name: "",
+                                                                dataStart: _id,
+                                                                dataEnd: _id,
+                                                                reportType: "Check-in/out",
+                                                                attendance_id: state?.data?._id,
+                                                            };
+                                                            dispatch(loadCheckinFilterRequest(payload));
+                                                        } else if (reportType === 'Evolução') {
+                                                            const payload = {
+                                                                _id: "",
+                                                                type: "Group",
+                                                                name: "",
+                                                                dataStart: _id,
+                                                                dataEnd: _id,
+                                                                reportType: "Evolução",
+                                                                attendance_id: state?.data?._id,
+                                                            };
+                                                            dispatch(loadEvolutionFilterRequest(payload))
+                                                        }
+                                                    }}
+                                                >
                                                     <PrintIcon
                                                         sx={{cursor: "pointer", marginRight: "12px"}}
                                                     />
@@ -853,9 +1000,9 @@ export default function AccordionReport(props: IAccordionReport) {
                                         <TextCenterDetails
                                             sx={{width: "100px", justifyContent: "flex-start"}}
                                         >
-                                            <DownloadIcon
-                                                sx={{cursor: "pointer", marginRight: "12px"}}
-                                            />
+                                            {/*<DownloadIcon*/}
+                                            {/*  sx={{ cursor: "pointer", marginRight: "12px" }}*/}
+                                            {/*/>*/}
                                             <PrintIcon
                                                 sx={{cursor: "pointer", marginRight: "12px"}}
                                             />
