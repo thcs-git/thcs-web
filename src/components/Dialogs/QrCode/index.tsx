@@ -13,7 +13,10 @@ import { formatDate } from "../../../helpers/date";
 import LOCALSTORAGE from "../../../helpers/constants/localStorage";
 import SESSIONSTORAGE from "../../../helpers/constants/sessionStorage";
 import ReactToPrint from "react-to-print";
-
+import {
+  checkViewPermission,
+  checkEditPermission,
+} from "../../../utils/permissions";
 import crypto from "crypto";
 
 // MUI
@@ -30,6 +33,7 @@ import { CareState } from "../../../store/ducks/cares/types";
 import { CachedTwoTone } from "@material-ui/icons";
 // components
 import Loading from "../../../components/Loading";
+import { toast } from "react-toastify";
 
 interface IQrCodeProps {
   tittle: any;
@@ -59,6 +63,8 @@ export default function DialogQrCode(props: IQrCodeProps) {
   const integration = sessionStorage.getItem(SESSIONSTORAGE.INTEGRATION);
   const dispatch = useDispatch();
   const user_id = localStorage.getItem(LOCALSTORAGE.USER_ID);
+  const company_id = localStorage.getItem(LOCALSTORAGE.COMPANY_SELECTED);
+
   const buttonNew = [
     {
       name: "Gerar novo QR Code",
@@ -78,7 +84,9 @@ export default function DialogQrCode(props: IQrCodeProps) {
       background: "secondary",
       show: true,
       onClick: () => {
-        dispatch(createQrCodeRequest(handlerQrCode()));
+        checkEditPermission("qrcode")
+          ? dispatch(createQrCodeRequest(handlerQrCode()))
+          : toast.error("Você não tem permissão de gerar QR Code");
       },
     },
   ];
@@ -94,6 +102,7 @@ export default function DialogQrCode(props: IQrCodeProps) {
       active: true,
       attendance_id: !integration ? careState.data._id : undefined,
       external_attendance_id: integration ? careState.data._id : undefined,
+      company_id: company_id,
     };
 
     qrCodeState.data = newQrCode;
@@ -142,7 +151,7 @@ export default function DialogQrCode(props: IQrCodeProps) {
                   {formatDate(qrCodeState.data.created_at, "HH:mm:ss")}
                 </>
               </Box>
-              <Box sx={{ display: "flex", gap: "10px" }}>
+              <Box sx={{ display: "flex", gap: "10px", alignItems: "center" }}>
                 <ButtonGeneration buttons={buttonNew} canEdit={true} />
                 <ReactToPrint
                   documentTitle={`QR Code do Paciente ${

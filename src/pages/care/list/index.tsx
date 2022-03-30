@@ -53,6 +53,8 @@ import { createInterface } from "readline";
 import { any } from "cypress/types/bluebird";
 import SESSIONSTORAGE from "../../../helpers/constants/sessionStorage";
 import HistoryDialog from "../../../components/Dialogs/History";
+import { checkViewPermission } from "../../../utils/permissions";
+import NoPermission from "../../../components/Erros/NoPermission";
 
 export default function CouncilList() {
   const history = useHistory();
@@ -199,36 +201,37 @@ export default function CouncilList() {
   return (
     <>
       <Sidebar>
-        {careState.loading && <Loading />}
-        <Container>
-          <FormTitle>Lista de Atendimentos</FormTitle>
+        {checkViewPermission("care") ? (
+          <Container>
+            {careState.loading && <Loading />}
+            <FormTitle>Lista de Atendimentos</FormTitle>
 
-          {integration ? (
-            <>
-              <SearchComponent
-                handleButton={() => history.push("/care/create/")}
-                buttonTitle=""
-                inputPlaceholder="Pesquise por nome, nº de atendimento, CPF, etc..."
-                switches={true}
-                setTabIndex={setTabIndex}
-                onChangeInput={handleChangeInput}
-                value={search}
-                onKeyEnter={handleKeyEnter}
-                onClickSearch={handleClickSearch}
-              />
-              <Table
-                tableCells={[
-                  { name: "Atendimento", align: "left" },
-                  { name: "Paciente", align: "left" },
-                  { name: "Tipo", align: "left" },
-                  { name: "CPF", align: "left" },
-                  { name: "Data de Atendimento", align: "center" },
-                ]}
-                careState={careState}
-                careFilter={careFilter}
-                toggleHistoryModal={toggleHistoryModal}
-              >
-                {/* {careState.list.data.map(
+            {integration ? (
+              <>
+                <SearchComponent
+                  handleButton={() => history.push("/care/create/")}
+                  buttonTitle=""
+                  inputPlaceholder="Pesquise por nome, nº de atendimento, CPF, etc..."
+                  switches={true}
+                  setTabIndex={setTabIndex}
+                  onChangeInput={handleChangeInput}
+                  value={search}
+                  onKeyEnter={handleKeyEnter}
+                  onClickSearch={handleClickSearch}
+                />
+                <Table
+                  tableCells={[
+                    { name: "Atendimento", align: "left" },
+                    { name: "Paciente", align: "left" },
+                    { name: "Tipo", align: "left" },
+                    { name: "CPF", align: "left" },
+                    { name: "Data de Atendimento", align: "center" },
+                  ]}
+                  careState={careState}
+                  careFilter={careFilter}
+                  toggleHistoryModal={toggleHistoryModal}
+                >
+                  {/* {careState.list.data.map(
                   (care: CareInterface, index: number) => (
                     <TableRow key={`care_${index}`}>
                       <TableCell>
@@ -260,38 +263,38 @@ export default function CouncilList() {
                     </TableRow>
                   )
                 )} */}
-              </Table>
-            </>
-          ) : (
-            <>
-              <SearchComponent
-                handleButton={() => history.push("/care/create/")}
-                buttonTitle=""
-                inputPlaceholder="Pesquise por nome, nº de atendimento, CPF, etc..."
-                switches={true}
-                setTabIndex={setTabIndex}
-                onChangeInput={handleChangeInput}
-                value={search}
-                onKeyEnter={handleKeyEnter}
-                onClickSearch={handleClickSearch}
-              />
+                </Table>
+              </>
+            ) : (
+              <>
+                <SearchComponent
+                  handleButton={() => history.push("/care/create/")}
+                  buttonTitle=""
+                  inputPlaceholder="Pesquise por nome, nº de atendimento, CPF, etc..."
+                  switches={true}
+                  setTabIndex={setTabIndex}
+                  onChangeInput={handleChangeInput}
+                  value={search}
+                  onKeyEnter={handleKeyEnter}
+                  onClickSearch={handleClickSearch}
+                />
 
-              <Table
-                tableCells={[
-                  { name: "Atendimento", align: "left" },
-                  { name: "Paciente", align: "left" },
-                  { name: "Tipo", align: "left" },
-                  { name: "CPF", align: "left" },
-                  { name: "Último Atendimento", align: "left" },
-                  { name: "Complexidade", align: "left" },
-                  { name: " ", align: "left" },
-                ]}
-                careState={careState}
-                careFilter={careFilter}
-                handleComplexity={handleComplexity}
-                toggleHistoryModal={toggleHistoryModal}
-              >
-                {/* {careFilter.map((care: CareInterface, index: number) => (
+                <Table
+                  tableCells={[
+                    { name: "Atendimento", align: "left" },
+                    { name: "Paciente", align: "left" },
+                    { name: "Tipo", align: "left" },
+                    { name: "CPF", align: "left" },
+                    { name: "Último Atendimento", align: "left" },
+                    { name: "Complexidade", align: "left" },
+                    { name: " ", align: "left" },
+                  ]}
+                  careState={careState}
+                  careFilter={careFilter}
+                  handleComplexity={handleComplexity}
+                  toggleHistoryModal={toggleHistoryModal}
+                >
+                  {/* {careFilter.map((care: CareInterface, index: number) => (
                   <TableRow key={`care_${index}`}>
                     <TableCell>{care?._id}</TableCell>
                     <TableCell>
@@ -350,71 +353,75 @@ export default function CouncilList() {
                     </TableCell>
                   </TableRow>
                 ))} */}
-              </Table>
-            </>
-          )}
-          <PaginationComponent
-            page={careState.list.page}
-            rowsPerPage={careState.list.limit}
-            totalRows={careState.list.total}
-            handleFirstPage={() =>
-              dispatch(
-                loadRequest({
-                  page: "1",
-                  limit: careState.list.limit,
-                  total: careState.list.total,
-                  status: valueStatus,
-                  search,
-                })
-              )
-            }
-            handleLastPage={() =>
-              dispatch(
-                loadRequest({
-                  page: Math.ceil(
-                    +careState.list.total / +careState.list.limit
-                  ).toString(),
-                  limit: careState.list.limit,
-                  total: careState.list.total,
-                  status: valueStatus,
-                  search,
-                })
-              )
-            }
-            handleNextPage={() =>
-              dispatch(
-                loadRequest({
-                  page: (+careState.list.page + 1).toString(),
-                  limit: careState.list.limit,
-                  total: careState.list.total,
-                  status: valueStatus,
-                  search,
-                })
-              )
-            }
-            handlePreviosPage={() =>
-              dispatch(
-                loadRequest({
-                  page: (+careState.list.page - 1).toString(),
-                  limit: careState.list.limit,
-                  total: careState.list.total,
-                  status: valueStatus,
-                  search,
-                })
-              )
-            }
-            handleChangeRowsPerPage={(event) =>
-              dispatch(
-                loadRequest({
-                  limit: event.target.value,
-                  page: "1",
-                  status: valueStatus,
-                  search,
-                })
-              )
-            }
-          />
-        </Container>
+                </Table>
+              </>
+            )}
+            <PaginationComponent
+              page={careState.list.page}
+              rowsPerPage={careState.list.limit}
+              totalRows={careState.list.total}
+              handleFirstPage={() =>
+                dispatch(
+                  loadRequest({
+                    page: "1",
+                    limit: careState.list.limit,
+                    total: careState.list.total,
+                    status: valueStatus,
+                    search,
+                  })
+                )
+              }
+              handleLastPage={() =>
+                dispatch(
+                  loadRequest({
+                    page: Math.ceil(
+                      +careState.list.total / +careState.list.limit
+                    ).toString(),
+                    limit: careState.list.limit,
+                    total: careState.list.total,
+                    status: valueStatus,
+                    search,
+                  })
+                )
+              }
+              handleNextPage={() =>
+                dispatch(
+                  loadRequest({
+                    page: (+careState.list.page + 1).toString(),
+                    limit: careState.list.limit,
+                    total: careState.list.total,
+                    status: valueStatus,
+                    search,
+                  })
+                )
+              }
+              handlePreviosPage={() =>
+                dispatch(
+                  loadRequest({
+                    page: (+careState.list.page - 1).toString(),
+                    limit: careState.list.limit,
+                    total: careState.list.total,
+                    status: valueStatus,
+                    search,
+                  })
+                )
+              }
+              handleChangeRowsPerPage={(event) =>
+                dispatch(
+                  loadRequest({
+                    limit: event.target.value,
+                    page: "1",
+                    status: valueStatus,
+                    search,
+                  })
+                )
+              }
+            />
+          </Container>
+        ) : (
+          <NoPermission />
+        )}
+
         {/* data(verificar)-atendimento-data alta(verifica)-tipo-empresa */}
         {/* {Histórico} */}
 
