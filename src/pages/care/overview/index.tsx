@@ -153,6 +153,7 @@ export default function PatientOverview(
   const [reportActive, setReportActive] = useState(false);
   const [reportType, setReportType] = useState("");
   const [openFilterReport, setOpenFilterReport] = useState(false);
+  const [selectReportCard, setSelectReportCard] = useState("");
 
   useEffect(() => {
     if (params.id) {
@@ -476,7 +477,8 @@ export default function PatientOverview(
     {
       name: "Voltar",
       onClick: () => {
-        reportActive ? setReportActive(false) : history.push("/care");
+        !reportActive ? history.push("/care") : setReportActive(false);
+        setSelectReportCard("");
       },
       variant: "contained",
       background: "secondary",
@@ -559,6 +561,8 @@ export default function PatientOverview(
                   reportType={reportType}
                   reportActive={reportActive}
                   existContent={!!handleContentReport(reportType)}
+                  selectCard={selectReportCard}
+                  setSelectCard={setSelectReportCard}
                 />
                 <FilterReport
                   openFilter={openFilterReport}

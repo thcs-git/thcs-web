@@ -43,6 +43,8 @@ interface IScroll {
   reportActive?: boolean;
   openFilter?: () => void;
   existContent?: boolean;
+  selectCard: string;
+  setSelectCard: React.Dispatch<React.SetStateAction<string>>;
 }
 
 export default function ScrollCard(props: IScroll) {
@@ -57,8 +59,9 @@ export default function ScrollCard(props: IScroll) {
     reportType,
     reportActive,
     existContent,
+    selectCard,
+    setSelectCard,
   } = props;
-  const [selectCard, setSelectCard] = useState("");
   const [openBackdrop, setOpenBackdrop] = useState(true);
 
   useEffect(() => {
