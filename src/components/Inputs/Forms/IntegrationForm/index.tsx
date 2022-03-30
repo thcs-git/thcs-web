@@ -16,15 +16,20 @@ import InputMask from "react-input-mask";
 import validator from "validator";
 import { validateCNPJ as validateCNPJHelper } from "../../../../helpers/validateCNPJ";
 import { formatDate } from "../../../../helpers/date";
+import {
+  checkViewPermission,
+  checkEditPermission,
+} from "../../../../utils/permissions";
 
-// Reux saga
+// Redux saga
 import {
   cleanAction,
   loadRequestByClient,
 } from "../../../../store/ducks/users/actions";
 //componentes
 import ToggleActive from "../../../Button/ToggleActive";
-
+import NoPermission from "../../../Erros/NoPermission";
+import { Box } from "@mui/material";
 interface IComponent {
   index: number;
   state: any;
@@ -48,11 +53,11 @@ const IntegrationForm = (props: IComponent) => {
       setIntegrationChecked(true);
     }
   }, [state]);
-  console.log(state);
   return (
     <FormGroupSection>
-      <Grid container>
-        {/* <Grid item md={8} xs={12}>
+      {checkViewPermission("integration") ? (
+        <Grid container>
+          {/* <Grid item md={8} xs={12}>
           <FormControlLabel
             control={
               // <Checkbox
@@ -81,51 +86,56 @@ const IntegrationForm = (props: IComponent) => {
             labelPlacement="start"
           />
         </Grid> */}
-        {integrationChecked ? (
-          <>
-            <Grid item xs={12} sx={{ marginLeft: "16px", marginTop: "16px" }}>
-              <Typography>
-                Data da integração:{" "}
-                {formatDate(state.created_at, "DD/MM/YYYY HH:mm")}
-              </Typography>
-              <Typography>
-                Origem do atendimento: ...... setor ......{" "}
-              </Typography>
-            </Grid>
+          {integrationChecked ? (
+            <>
+              <Grid item xs={12} sx={{ marginLeft: "16px", marginTop: "16px" }}>
+                <Typography>
+                  Data da integração:{" "}
+                  {formatDate(state.created_at, "DD/MM/YYYY HH:mm")}
+                </Typography>
+                <Typography>
+                  Origem do atendimento: ...... setor ......{" "}
+                </Typography>
+              </Grid>
 
-            <Grid
-              item
-              md={10}
-              xs={12}
-              sx={{ marginLeft: "16px", marginTop: "16px" }}
-            >
-              <TextField
-                label="Url de Integração"
-                variant="outlined"
-                size="small"
-                value={state.integration}
-                disabled={!canEdit}
-                fullWidth
-                InputProps={{
-                  endAdornment: (
-                    <InputAdornment position="end">
-                      <CheckCircleOutlineOutlinedIcon
-                        sx={{ color: "var(--action)" }}
-                      />
-                    </InputAdornment>
-                  ),
-                }}
-                onChange={(element) => {
-                  setState({ ...state, integration: element.target.value });
-                }}
-                {...a11yProps("input-url", index)}
-              />
-            </Grid>
-          </>
-        ) : (
-          <></>
-        )}
-      </Grid>
+              <Grid
+                item
+                md={10}
+                xs={12}
+                sx={{ marginLeft: "16px", marginTop: "16px" }}
+              >
+                <TextField
+                  label="Url de Integração"
+                  variant="outlined"
+                  size="small"
+                  value={state.integration}
+                  disabled={!canEdit}
+                  fullWidth
+                  InputProps={{
+                    endAdornment: (
+                      <InputAdornment position="end">
+                        <CheckCircleOutlineOutlinedIcon
+                          sx={{ color: "var(--action)" }}
+                        />
+                      </InputAdornment>
+                    ),
+                  }}
+                  onChange={(element) => {
+                    setState({ ...state, integration: element.target.value });
+                  }}
+                  {...a11yProps("input-url", index)}
+                />
+              </Grid>
+            </>
+          ) : (
+            <></>
+          )}
+        </Grid>
+      ) : (
+        <Box sx={{ padding: "24px" }}>
+          Vocês não tem permissão para acessar integração.
+        </Box>
+      )}
     </FormGroupSection>
   );
 };

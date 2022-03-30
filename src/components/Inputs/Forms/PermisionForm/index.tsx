@@ -157,15 +157,15 @@ const PermissionForm = (props: IComponent) => {
         { crud: "create", label: "Gerar" },
       ],
     },
-    // {
-    //   legend: "Empresas",
-    //   name: "company",
-    //   rights: [
-    //     { crud: "view", label: "Visualizar" },
-    //     { crud: "edit", label: "Criar/Editar" },
-    //     { crud: "create", label: "Gerar" },
-    //   ],
-    // },
+    {
+      legend: "Empresas",
+      name: "company",
+      rights: [
+        { crud: "view", label: "Visualizar" },
+        { crud: "edit", label: "Criar/Editar" },
+        { crud: "create", label: "Gerar" },
+      ],
+    },
     {
       legend: "Todos Profissionais",
       name: "userclient",
@@ -205,23 +205,23 @@ const PermissionForm = (props: IComponent) => {
     //   ]
     // },
     {
-      legend: "Todos Pacientes",
-      name: "allPatient",
+      legend: "Pacientes",
+      name: "patient",
       rights: [
         { crud: "view", label: "Visualizar" },
         { crud: "edit", label: "Criar/Editar" },
         { crud: "create", label: "Gerar" },
       ],
     },
-    {
-      legend: "Meus Pacientes",
-      name: "myPatient",
-      rights: [
-        { crud: "view", label: "Visualizar" },
-        { crud: "edit", label: "Criar/Editar" },
-        { crud: "create", label: "Gerar" },
-      ],
-    },
+    // {
+    //   legend: "Meus Pacientes",
+    //   name: "myPatient",
+    //   rights: [
+    //     { crud: "view", label: "Visualizar" },
+    //     { crud: "edit", label: "Criar/Editar" },
+    //     { crud: "create", label: "Gerar" },
+    //   ],
+    // },
     // {
     //   legend: 'Avaliação',
     //   name: 'avaliation',
@@ -233,23 +233,23 @@ const PermissionForm = (props: IComponent) => {
     //   ]
     // },
     {
-      legend: "Todos Atendimentos",
-      name: "allCare",
+      legend: "Atendimentos",
+      name: "care",
       rights: [
         { crud: "view", label: "Visualizar" },
         { crud: "edit", label: "Criar/Editar" },
         { crud: "create", label: "Gerar" },
       ],
     },
-    {
-      legend: "Meus Atendimento",
-      name: "myCare",
-      rights: [
-        { crud: "view", label: "Visualizar" },
-        { crud: "edit", label: "Criar/Editar" },
-        { crud: "create", label: "Gerar" },
-      ],
-    },
+    // {
+    //   legend: "Meus Atendimento",
+    //   name: "myCare",
+    //   rights: [
+    //     { crud: "view", label: "Visualizar" },
+    //     { crud: "edit", label: "Criar/Editar" },
+    //     { crud: "create", label: "Gerar" },
+    //   ],
+    // },
     {
       legend: "QR Code",
       name: "qrcode",
