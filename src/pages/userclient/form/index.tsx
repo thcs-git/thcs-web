@@ -22,7 +22,8 @@ import {
 import ButtonTabs from "../../../components/Button/ButtonTabs";
 import { toast } from "react-toastify";
 import SESSIONSTORAGE from "../../../helpers/constants/sessionStorage";
-
+import { checkViewPermission } from "../../../utils/permissions";
+import NoPermission from "../../../components/Erros/NoPermission";
 interface IPageParams {
   id?: string;
   mode?: string;
@@ -191,28 +192,32 @@ export default function UserClientForm(
   return (
     <>
       <Sidebar>
-        <Container>
-          {params.mode === "view" ? (
-            <>
-              {userState.loading && <Loading />}
-              <TabTittle tittle={"Detalhamento do profissional"} />
-              <TabForm
-                navItems={NavItems}
-                initialTab={0}
-                state={state}
-                setState={setState}
-                setValidations={setFieldValidations}
-                canEdit={canEdit}
-                cepStatus={userState.errorCep}
-                getAddress={getAddress}
-                params={params}
-              />
-              <ButtonTabs canEdit={canEdit} buttons={buttons} />
-            </>
-          ) : (
-            <NotFound backOnclick={() => history.push("/userclient")} />
-          )}
-        </Container>
+        {checkViewPermission("userclient") || checkViewPermission("user") ? (
+          <Container>
+            {params.mode === "view" ? (
+              <>
+                {userState.loading && <Loading />}
+                <TabTittle tittle={"Detalhamento do profissional"} />
+                <TabForm
+                  navItems={NavItems}
+                  initialTab={0}
+                  state={state}
+                  setState={setState}
+                  setValidations={setFieldValidations}
+                  canEdit={canEdit}
+                  cepStatus={userState.errorCep}
+                  getAddress={getAddress}
+                  params={params}
+                />
+                <ButtonTabs canEdit={canEdit} buttons={buttons} />
+              </>
+            ) : (
+              <NotFound backOnclick={() => history.push("/userclient")} />
+            )}
+          </Container>
+        ) : (
+          <NoPermission />
+        )}
       </Sidebar>
     </>
   );

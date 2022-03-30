@@ -22,6 +22,9 @@ import {
 import DialogInfo from "../../Dialogs/Card/Info";
 import DialogQrCode from "../../Dialogs/QrCode";
 import { QrCodeState } from "../../../store/ducks/qrCode/types";
+import { checkViewPermission } from "../../../utils/permissions";
+import NoPermission from "../../Erros/NoPermission";
+import { toast } from "react-toastify";
 
 interface IRows {
   name: string;
@@ -46,7 +49,9 @@ export default function HeaderOverview(props: IProps) {
   const [openDialog, setOpenDialog] = useState(false);
 
   const handleClickOpen = () => {
-    setOpenDialog(true);
+    checkViewPermission("qrcode")
+      ? setOpenDialog(true)
+      : toast.error("Você não tem permissão para visualizar o QR Code");
   };
 
   function handlerCID(rows: IRows[]) {

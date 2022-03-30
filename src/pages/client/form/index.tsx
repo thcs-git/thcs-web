@@ -2,7 +2,7 @@ import React, { useState, useEffect, useCallback } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useHistory, RouteComponentProps } from "react-router-dom";
 import debounce from "lodash.debounce";
-
+import SESSIONSTORAGE from "../../../helpers/constants/sessionStorage";
 import InputMask, { Props } from "react-input-mask";
 // redux saga
 import { ApplicationState } from "../../../store";
@@ -74,6 +74,11 @@ import { validateCNPJ as validateCNPJHelper } from "../../../helpers/validateCNP
 import _ from "lodash";
 import validator from "validator";
 import { toast } from "react-toastify";
+import {
+  checkViewPermission,
+  checkEditPermission,
+  checkCreatePermission,
+} from "../../../utils/permissions";
 
 import LOCALSTORAGE from "../../../helpers/constants/localStorage";
 //componentes
@@ -88,6 +93,7 @@ import ButtonEdit from "../../../components/Button/ButtonEdit";
 import ButtonTabs from "../../../components/Button/ButtonTabs";
 import PermissionForm from "../../../components/Inputs/Forms/PermisionForm";
 import FeedbackComponent from "../../../components/Feedback";
+import NoPermission from "../../../components/Erros/NoPermission";
 
 interface IFormFields extends CustomerInterface {
   form?: {
@@ -135,6 +141,8 @@ interface IPropsPermissionFrom {
 }
 
 export default function ClientForm(props: RouteComponentProps<IPageParams>) {
+  const rights = sessionStorage.getItem(SESSIONSTORAGE.RIGHTS);
+  // console.log(rights?.split('"'), "rights");
   const history = useHistory();
   const dispatch = useDispatch();
   const useStyles = makeStyles((theme) => ({
@@ -709,133 +717,143 @@ export default function ClientForm(props: RouteComponentProps<IPageParams>) {
 
   return (
     <Sidebar>
-      {customerState.loading && <Loading />}
-      <Container>
-        {params.mode === "permission//retirarTextoAposBarras" ? (
-          <>
-            <TabTittle
-              tittle={"Permissões Do Cliente"}
-              icon={
-                !canEditPermission && (
-                  <ButtonEdit
-                    setCanEdit={() => setCanEditPermission(!canEditPermission)}
-                    canEdit={canEditPermission}
-                  >
-                    Editar
-                  </ButtonEdit>
-                )
-              }
-            />
-            <PermissionForm
-              state={permissionState}
-              setState={setPermissionState}
-              customerState={customerState}
-              userState={userState}
-              params={params}
-            />
-            <ButtonTabs
-              canEdit={canEditPermission}
-              buttons={buttonsPermission}
-            />
-          </>
-        ) : (
-          <>
-            {initialTab === 1 ? (
-              <>
-                <WrapperTitle>
-                  <TabTittle tittle={"Detalhamento do Cliente"} />
-                  <ButtonStyle
-                    variant="contained"
-                    onClick={
-                      () => {
-                        setModePermission("create");
-                        cleanSelectProfession();
+      {checkViewPermission("client") ? (
+        <Container>
+          {customerState.loading && <Loading />}
+          {params.mode === "permission//retirarTextoAposBarras" ? (
+            <>
+              <TabTittle
+                tittle={"Permissões Do Cliente"}
+                icon={
+                  !canEditPermission && (
+                    <ButtonEdit
+                      setCanEdit={() =>
+                        setCanEditPermission(!canEditPermission)
                       }
-                      // history.push(
-                      //   `/client/${customerState.data._id}/permission/create/`
-                      // )
-                    }
-                  >
-                    Adicionar função
-                  </ButtonStyle>
-                </WrapperTitle>
-              </>
-            ) : (
-              <>
-                <TabTittle
-                  tittle={"Detalhamento do Cliente"}
-                  // icon={!canEdit &&
-                  // <ButtonEdit setCanEdit={() => setCanEdit(!canEdit)} canEdit={canEdit}>Editar</ButtonEdit>}
-                />
-              </>
-            )}
-            <TabForm
-              navItems={NavItems}
-              state={state}
-              setState={setState}
-              setValidations={setFieldValidations}
-              fieldsValidation={fieldsValidation}
-              canEdit={canEdit}
-              cepStatus={customerState.errorCep}
-              getAddress={getAddress}
-              user={User}
-              customerState={customerState}
-              tableCells={tableCells}
-              mode={params.mode ? params?.mode : ""}
-              initialTab={initialTab}
-              setInitialTab={setInitialTab}
-              params={params}
-              propsPermissionForm={propsPermissionForm}
-            />
-            {modePermission === "start" && (
-              <ButtonTabs canEdit={canEdit} buttons={buttons} />
-            )}
-          </>
-        )}
-
-        <Modal
-          aria-labelledby="transition-modal-title"
-          aria-describedby="transition-modal-description"
-          open={open}
-          onClose={handleClose}
-          closeAfterTransition
-          BackdropComponent={Backdrop}
-          BackdropProps={{
-            timeout: 500,
-          }}
-        >
-          <Fade in={open}>
-            <Box
-              sx={{
-                position: "absolute",
-                top: "50%",
-                left: "50%",
-                transform: "translate(-50%, -50%)",
-                width: 500,
-                bgcolor: "background.paper",
-                // border: "2px solid #000",
-                borderRadius: "12px",
-                boxShadow: 24,
-                p: 4,
-              }}
-            >
-              <FeedbackComponent
-                title="Função adicionada e/ou editada com sucesso!"
-                description="Os dados foram salvos no sistema."
-                type="success"
+                      canEdit={canEditPermission}
+                    >
+                      Editar
+                    </ButtonEdit>
+                  )
+                }
               />
-            </Box>
-          </Fade>
-        </Modal>
+              <PermissionForm
+                state={permissionState}
+                setState={setPermissionState}
+                customerState={customerState}
+                userState={userState}
+                params={params}
+              />
+              <ButtonTabs
+                canEdit={canEditPermission}
+                buttons={buttonsPermission}
+              />
+            </>
+          ) : (
+            <>
+              {initialTab === 1 ? (
+                <>
+                  <WrapperTitle>
+                    <TabTittle tittle={"Detalhamento do Cliente"} />
+                    <ButtonStyle
+                      variant="contained"
+                      onClick={
+                        () => {
+                          !checkEditPermission("permissions")
+                            ? toast.error(
+                                "Você não tem permissão para criar nova permissão."
+                              )
+                            : setModePermission("create");
+                          cleanSelectProfession();
+                        }
+                        // history.push(
+                        //   `/client/${customerState.data._id}/permission/create/`
+                        // )
+                      }
+                    >
+                      Adicionar função
+                    </ButtonStyle>
+                  </WrapperTitle>
+                </>
+              ) : (
+                <>
+                  <TabTittle
+                    tittle={"Detalhamento do Cliente"}
+                    // icon={!canEdit &&
+                    // <ButtonEdit setCanEdit={() => setCanEdit(!canEdit)} canEdit={canEdit}>Editar</ButtonEdit>}
+                  />
+                </>
+              )}
+              <TabForm
+                navItems={NavItems}
+                state={state}
+                setState={setState}
+                setValidations={setFieldValidations}
+                fieldsValidation={fieldsValidation}
+                canEdit={canEdit}
+                cepStatus={customerState.errorCep}
+                getAddress={getAddress}
+                user={User}
+                customerState={customerState}
+                tableCells={tableCells}
+                mode={params.mode ? params?.mode : ""}
+                initialTab={initialTab}
+                setInitialTab={setInitialTab}
+                params={params}
+                propsPermissionForm={propsPermissionForm}
+              />
+              {modePermission === "start" && (
+                <ButtonTabs canEdit={canEdit} buttons={buttons} />
+              )}
+            </>
+          )}
 
-        {/* <Modal open={openModal}>
+          <Modal
+            aria-labelledby="transition-modal-title"
+            aria-describedby="transition-modal-description"
+            open={open}
+            onClose={handleClose}
+            closeAfterTransition
+            BackdropComponent={Backdrop}
+            BackdropProps={{
+              timeout: 500,
+            }}
+          >
+            <Fade in={open}>
+              <Box
+                sx={{
+                  position: "absolute",
+                  top: "50%",
+                  left: "50%",
+                  transform: "translate(-50%, -50%)",
+                  width: 500,
+                  bgcolor: "background.paper",
+                  // border: "2px solid #000",
+                  borderRadius: "12px",
+                  boxShadow: 24,
+                  p: 4,
+                }}
+              >
+                <FeedbackComponent
+                  title="Função adicionada e/ou editada com sucesso!"
+                  description="Os dados foram salvos no sistema."
+                  type="success"
+                />
+              </Box>
+            </Fade>
+          </Modal>
+
+          {/* <Modal open={openModal}>
           <FeedbackComponent
             title="Função adicionada com sucesso!"
             description="Os dados foram salvos no sistema. Em segundos o modal desaparecerá."
             type="success"
           />
         </Modal> */}
-      </Container>
+        </Container>
+      ) : (
+        <NoPermission />
+      )}
     </Sidebar>
   );
 }

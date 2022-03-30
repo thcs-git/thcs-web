@@ -13,7 +13,10 @@ import { formatDate } from "../../../helpers/date";
 import LOCALSTORAGE from "../../../helpers/constants/localStorage";
 import SESSIONSTORAGE from "../../../helpers/constants/sessionStorage";
 import ReactToPrint from "react-to-print";
-
+import {
+  checkViewPermission,
+  checkEditPermission,
+} from "../../../utils/permissions";
 import crypto from "crypto";
 
 // MUI
@@ -30,6 +33,7 @@ import { CareState } from "../../../store/ducks/cares/types";
 import { CachedTwoTone } from "@material-ui/icons";
 // components
 import Loading from "../../../components/Loading";
+import { toast } from "react-toastify";
 
 interface IQrCodeProps {
   tittle: any;
@@ -80,7 +84,9 @@ export default function DialogQrCode(props: IQrCodeProps) {
       background: "secondary",
       show: true,
       onClick: () => {
-        dispatch(createQrCodeRequest(handlerQrCode()));
+        checkEditPermission("qrcode")
+          ? dispatch(createQrCodeRequest(handlerQrCode()))
+          : toast.error("Você não tem permissão de gerar QR Code");
       },
     },
   ];

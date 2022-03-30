@@ -56,7 +56,8 @@ import LOCALSTORAGE from "../../../helpers/constants/localStorage";
 import _ from "lodash";
 import MoreHorizTwoToneIcon from "@material-ui/icons/MoreHorizTwoTone";
 import SESSIONSTORAGE from "../../../helpers/constants/sessionStorage";
-
+import { checkViewPermission } from "../../../utils/permissions";
+import NoPermission from "../../../components/Erros/NoPermission";
 const token = window.localStorage.getItem("token");
 const currentCompany =
   localStorage.getItem(LOCALSTORAGE.COMPANY_SELECTED) || "";
@@ -159,131 +160,136 @@ export default function UserClientList() {
   return (
     <>
       <Sidebar>
-        {userState.loading && <Loading />}
-        <Container>
-          <FormTitle style={{ fontSize: "20px" }}>
-            Todos Profissionais
-          </FormTitle>
+        {checkViewPermission("userclient") ? (
+          <Container>
+            {userState.loading && <Loading />}
+            <FormTitle style={{ fontSize: "20px" }}>
+              Todos Profissionais
+            </FormTitle>
 
-          {integration ? (
-            <>
-              <SearchComponent
-                handleButton={() => history.push("/user/edit/create/")}
-                buttonTitle=""
-                inputPlaceholder="Pesquise por prestador, especialidades, status, etc..."
-                onChangeInput={handleChangeInput}
-                value={search}
-                onKeyEnter={handleKeyEnter}
-                onClickSearch={handleClickSearch}
-              />
-              <Table
-                tableCells={[
-                  { name: "Profissional", align: "left" },
-                  { name: "Usuário", align: "left" },
-                  { name: "CPF", align: "left" },
-                  { name: "Função", align: "left" },
-                  { name: "Especialidades", align: "left" },
-                ]}
-                userState={userState}
-                handleEmpty={handleEmpty}
-                handleCpf={handleCpf}
-                integration={integration}
-                users={users}
-              >
-                {"pages/userclient/list filho c/ integration"}
-              </Table>
-            </>
-          ) : (
-            <>
-              <SearchComponent
-                handleButton={() => history.push("/user/edit/create/")}
-                buttonTitle=""
-                inputPlaceholder="Pesquise por prestador, especialidades, status, etc..."
-                onChangeInput={handleChangeInput}
-                value={search}
-                onKeyEnter={handleKeyEnter}
-                onClickSearch={handleClickSearch}
-              />
-              <Table
-                tableCells={[
-                  { name: "Prestador", align: "left" },
-                  { name: "CPF", align: "left" },
-                  { name: "Função", align: "left" },
-                  { name: "Especialidades", align: "left" },
-                  // {name: '', align: 'left'},
-                  { name: "Adicionado em", align: "left" },
-                  { name: "Status", align: "left" },
-                  { name: "", align: "left" },
-                ]}
-                handleLinkedAt={handleLinkedAt}
-                handleActive={handleActive}
-                integration={integration}
-                users={users}
-                userState={userState}
-                handleCpf={handleCpf}
-              >
-                {"pages/userclient/list filho  s/ integration"}
-              </Table>
-            </>
-          )}
+            {integration ? (
+              <>
+                <SearchComponent
+                  handleButton={() => history.push("/user/edit/create/")}
+                  buttonTitle=""
+                  inputPlaceholder="Pesquise por prestador, especialidades, status, etc..."
+                  onChangeInput={handleChangeInput}
+                  value={search}
+                  onKeyEnter={handleKeyEnter}
+                  onClickSearch={handleClickSearch}
+                />
+                <Table
+                  tableCells={[
+                    { name: "Profissional", align: "left" },
+                    { name: "Usuário", align: "left" },
+                    { name: "CPF", align: "left" },
+                    { name: "Função", align: "left" },
+                    { name: "Especialidades", align: "left" },
+                  ]}
+                  userState={userState}
+                  handleEmpty={handleEmpty}
+                  handleCpf={handleCpf}
+                  integration={integration}
+                  users={users}
+                >
+                  {"pages/userclient/list filho c/ integration"}
+                </Table>
+              </>
+            ) : (
+              <>
+                <SearchComponent
+                  handleButton={() => history.push("/user/edit/create/")}
+                  buttonTitle=""
+                  inputPlaceholder="Pesquise por prestador, especialidades, status, etc..."
+                  onChangeInput={handleChangeInput}
+                  value={search}
+                  onKeyEnter={handleKeyEnter}
+                  onClickSearch={handleClickSearch}
+                />
+                <Table
+                  tableCells={[
+                    { name: "Prestador", align: "left" },
+                    { name: "CPF", align: "left" },
+                    { name: "Função", align: "left" },
+                    { name: "Especialidades", align: "left" },
+                    // {name: '', align: 'left'},
+                    { name: "Adicionado em", align: "left" },
+                    { name: "Status", align: "left" },
+                    { name: "", align: "left" },
+                  ]}
+                  handleLinkedAt={handleLinkedAt}
+                  handleActive={handleActive}
+                  integration={integration}
+                  users={users}
+                  userState={userState}
+                  handleCpf={handleCpf}
+                >
+                  {"pages/userclient/list filho  s/ integration"}
+                </Table>
+              </>
+            )}
 
-          <PaginationComponent
-            page={userState.list.page}
-            rowsPerPage={userState.list.limit}
-            totalRows={userState.list.total}
-            handleFirstPage={() =>
-              dispatch(
-                loadRequestByClient({
-                  page: "1",
-                  limit: userState.list.limit,
-                  total: userState.list.total,
-                  search,
-                })
-              )
-            }
-            handleLastPage={() =>
-              dispatch(
-                loadRequestByClient({
-                  page: Math.ceil(
-                    +userState.list.total / +userState.list.limit
-                  ).toString(),
-                  limit: userState.list.limit,
-                  total: userState.list.total,
-                  search,
-                })
-              )
-            }
-            handleNextPage={() =>
-              dispatch(
-                loadRequestByClient({
-                  page: (+userState.list.page + 1).toString(),
-                  limit: userState.list.limit,
-                  total: userState.list.total,
-                  search,
-                })
-              )
-            }
-            handlePreviosPage={() =>
-              dispatch(
-                loadRequestByClient({
-                  page: (+userState.list.page - 1).toString(),
-                  limit: userState.list.limit,
-                  total: userState.list.total,
-                  search,
-                })
-              )
-            }
-            handleChangeRowsPerPage={(event) =>
-              dispatch(
-                loadRequestByClient({
-                  limit: event.target.value,
-                  page: "1",
-                  search,
-                })
-              )
-            }
-          />
-        </Container>
+            <PaginationComponent
+              page={userState.list.page}
+              rowsPerPage={userState.list.limit}
+              totalRows={userState.list.total}
+              handleFirstPage={() =>
+                dispatch(
+                  loadRequestByClient({
+                    page: "1",
+                    limit: userState.list.limit,
+                    total: userState.list.total,
+                    search,
+                  })
+                )
+              }
+              handleLastPage={() =>
+                dispatch(
+                  loadRequestByClient({
+                    page: Math.ceil(
+                      +userState.list.total / +userState.list.limit
+                    ).toString(),
+                    limit: userState.list.limit,
+                    total: userState.list.total,
+                    search,
+                  })
+                )
+              }
+              handleNextPage={() =>
+                dispatch(
+                  loadRequestByClient({
+                    page: (+userState.list.page + 1).toString(),
+                    limit: userState.list.limit,
+                    total: userState.list.total,
+                    search,
+                  })
+                )
+              }
+              handlePreviosPage={() =>
+                dispatch(
+                  loadRequestByClient({
+                    page: (+userState.list.page - 1).toString(),
+                    limit: userState.list.limit,
+                    total: userState.list.total,
+                    search,
+                  })
+                )
+              }
+              handleChangeRowsPerPage={(event) =>
+                dispatch(
+                  loadRequestByClient({
+                    limit: event.target.value,
+                    page: "1",
+                    search,
+                  })
+                )
+              }
+            />
+          </Container>
+        ) : (
+          <NoPermission />
+        )}
+
         {/*Especialidades
         <Dialog
 
