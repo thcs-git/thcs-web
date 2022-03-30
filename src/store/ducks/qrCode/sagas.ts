@@ -37,8 +37,6 @@ export function* createQrCode({ payload }: any) {
 }
 
 export function* updateQrCode({ payload: { data } }: any) {
-  console.log(data, "PAYLOAD UPDATE");
-
   try {
     const response: AxiosResponse = yield call(
       apiSollar.put,

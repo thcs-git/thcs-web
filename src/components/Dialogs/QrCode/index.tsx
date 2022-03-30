@@ -59,6 +59,8 @@ export default function DialogQrCode(props: IQrCodeProps) {
   const integration = sessionStorage.getItem(SESSIONSTORAGE.INTEGRATION);
   const dispatch = useDispatch();
   const user_id = localStorage.getItem(LOCALSTORAGE.USER_ID);
+  const company_id = localStorage.getItem(LOCALSTORAGE.COMPANY_SELECTED);
+
   const buttonNew = [
     {
       name: "Gerar novo QR Code",
@@ -94,6 +96,7 @@ export default function DialogQrCode(props: IQrCodeProps) {
       active: true,
       attendance_id: !integration ? careState.data._id : undefined,
       external_attendance_id: integration ? careState.data._id : undefined,
+      company_id: company_id,
     };
 
     qrCodeState.data = newQrCode;
@@ -142,7 +145,7 @@ export default function DialogQrCode(props: IQrCodeProps) {
                   {formatDate(qrCodeState.data.created_at, "HH:mm:ss")}
                 </>
               </Box>
-              <Box sx={{ display: "flex", gap: "10px" }}>
+              <Box sx={{ display: "flex", gap: "10px", alignItems: "center" }}>
                 <ButtonGeneration buttons={buttonNew} canEdit={true} />
                 <ReactToPrint
                   documentTitle={`QR Code do Paciente ${

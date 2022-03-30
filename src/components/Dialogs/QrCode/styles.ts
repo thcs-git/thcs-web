@@ -7,7 +7,6 @@ export const ButtonGeneration = styled(ButtonTabs)``;
 export const ButtonPrint = styled.button`
   height: 36px;
   padding: 5px 33.5px;
-  margin-top: 25px;
   border-radius: 4px;
   background: var(--primary);
   color: var(--white);
@@ -16,4 +15,12 @@ export const ButtonPrint = styled.button`
   &:hover {
     background: var(--primary-hover);
   }
+  transition: background-color 250ms cubic-bezier(0.4, 0, 0.2, 1) 0ms,
+    box-shadow 250ms cubic-bezier(0.4, 0, 0.2, 1) 0ms,
+    border 250ms cubic-bezier(0.4, 0, 0.2, 1) 0ms;
+  transition-property: background-color, box-shadow, border;
+  transition-duration: 250ms, 250ms, 250ms;
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1),
+    cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1);
+  transition-delay: 0ms, 0ms, 0ms; ;
 `;
