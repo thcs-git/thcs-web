@@ -92,6 +92,9 @@ import { get as getMessage, getMessageById } from "./message/sagas";
 
 import { UserTypes } from "./users/types";
 
+import { PrescriptionTypes } from "./prescripition/types";
+import { loadPrescriptionByCareId } from "./prescripition/saga";
+
 //import { CareTypes } from './cares/types';
 import {
   get as getUsers,
@@ -371,5 +374,13 @@ export default function* rootSaga(): any {
     takeLatest(QrCodeTypes.LOAD_REQUEST, getQrCode),
     takeLatest(QrCodeTypes.CREATE_QRCODE_REQUEST, createQrCode),
     takeLatest(QrCodeTypes.UPDATE_QRCODE_REQUEST, updateQrCode),
+
+    /**
+     * PRESCRIPTION
+     */
+    takeLatest(
+      PrescriptionTypes.LOAD_REQUEST_PRESCRIPTION_BY_CARE_ID,
+      loadPrescriptionByCareId
+    ),
   ]);
 }

@@ -57,7 +57,6 @@ schedule.create
 
 const rights = sessionStorage.getItem(SESSIONSTORAGE.RIGHTS);
 export function checkViewPermission(permissionType: string) {
-
   let check = false;
   let permission = `${permissionType}.view`;
   rights?.split('"').forEach((permissionItem: string) => {

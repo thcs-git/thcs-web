@@ -16,6 +16,7 @@ import {
   TabNavItemPermission,
   TabNavPermission,
   WrapperHeaderForm,
+  ButtonStyle,
 } from "./styles";
 import ClientFormHeader from "../Inputs/Forms/ClientName";
 import _ from "lodash";
@@ -54,6 +55,8 @@ import Autocomplete from "@mui/material/Autocomplete";
 import { CustomerState } from "../../store/ducks/customers/types";
 import { UserState } from "../../store/ducks/users/types";
 import SESSIONSTORAGE from "../../helpers/constants/sessionStorage";
+import { checkEditPermission } from "../../utils/permissions";
+import { toast } from "react-toastify";
 
 interface IPropsPermissionFrom {
   state: {
@@ -87,6 +90,7 @@ interface IPropsPermissionFrom {
   }[];
   modePermission: string;
   setModePermission: React.Dispatch<React.SetStateAction<string>>;
+  cleanSelectProfession: () => void;
 }
 
 interface ITabprops {
@@ -682,10 +686,40 @@ const TabForm = (props: ITabprops) => {
               <>
                 {components[0] === "PermissionList" ? (
                   propsPermissionForm?.modePermission === "start" ? (
-                    <WrapperName>
-                      <CompanyIcon />
-                      Permissões - {state.name}
-                    </WrapperName>
+                    <Box
+                      sx={{ display: "flex", justifyContent: "space-between" }}
+                    >
+                      <WrapperName>
+                        <CompanyIcon />
+                        Permissões - {state.name}
+                      </WrapperName>
+                      <ButtonStyle
+                        variant="outlined"
+                        onClick={() => {
+                          !checkEditPermission("permissions")
+                            ? toast.error(
+                                "Você não tem permissão para criar nova função."
+                              )
+                            : propsPermissionForm.setModePermission("create");
+                          propsPermissionForm.cleanSelectProfession();
+                        }}
+                      >
+                        <Box
+                          sx={{
+                            border: " 1px solid var(--success)",
+                            borderRadius: "30px",
+                            width: "18px",
+                            height: "18px",
+                            display: "flex",
+                            alignItems: "center",
+                            justifyContent: "center",
+                          }}
+                        >
+                          +
+                        </Box>
+                        <Box>Adicionar função</Box>
+                      </ButtonStyle>
+                    </Box>
                   ) : (
                     ""
                   )
