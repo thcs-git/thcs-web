@@ -181,8 +181,8 @@ export default function PatientOverview(
   }, [patientState.data._id, integration]);
 
   useEffect(() => {
-    if (patientState?.data?._id && reportType === "Aferições") {
-      dispatch(loadRequestMeasurements(patientState?.data?._id));
+    if (careState?.data?._id && reportType === "Aferições") {
+      dispatch(loadRequestMeasurements(careState?.data?._id));
     }
     if (careState.data._id && reportType === "Evolução") {
       dispatch(loadEvolutionRequest(careState?.data?._id));

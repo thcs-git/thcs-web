@@ -736,6 +736,48 @@ const reducer: Reducer<CareState> = (state = INITIAL_STATE, action) => {
         success: true,
         error: false,
       };
+    case CareTypes.LOAD_MEASUREMENT_FILTER_REQUEST:
+      return {
+        ...state,
+        loading: true,
+        success: false,
+        error: false,
+      };
+    case CareTypes.LOAD_MEASUREMENT_FILTER_SUCCESS:
+      return {
+        ...state,
+        loading: false,
+        success: true,
+        error: false,
+      };
+    case CareTypes.LOAD_ALLERGY_FILTER_REQUEST:
+      return {
+        ...state,
+        loading: true,
+        success: false,
+        error: false,
+      };
+    case CareTypes.LOAD_ALLERGY_FILTER_SUCCESS:
+      return {
+        ...state,
+        loading: false,
+        success: true,
+        error: false,
+      };
+    case CareTypes.LOAD_ADVERSE_EVENT_FILTER_REQUEST:
+      return {
+        ...state,
+        loading: true,
+        success: false,
+        error: false,
+      };
+    case CareTypes.LOAD_ADVERSE_EVENT_FILTER_SUCCESS:
+      return {
+        ...state,
+        loading: false,
+        success: true,
+        error: false,
+      };
 
     case CareTypes.CLEAN:
       return INITIAL_STATE;
