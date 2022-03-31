@@ -50,6 +50,7 @@ import {
 import { loadRequest as loadRequestMeasurements } from "../../../store/ducks/measurements/actions";
 import { loadRequest as loadRequestQrCode } from "../../../store/ducks/qrCode/actions";
 import { ApplicationState } from "../../../store";
+import { loadRequestByCareId as loadRequestPrescriptionByCareId } from "../../../store/ducks/prescripition/actions";
 
 interface IPageParams {
   id?: string;
@@ -148,6 +149,9 @@ export default function PatientOverview(
   const measurementState = useSelector(
     (state: ApplicationState) => state.measurements
   );
+  const prescriptionState = useSelector(
+    (state: ApplicationState) => state.prescription
+  );
   const qrCodeState = useSelector((state: ApplicationState) => state.qrCode);
   const [team, setTeam] = useState<any[]>([]);
   const [reportActive, setReportActive] = useState(false);
@@ -191,8 +195,20 @@ export default function PatientOverview(
     if (careState?.data?._id && reportType === "Check-in/out") {
       dispatch(loadCheckinRequest(careState?.data?._id));
     }
+    if (careState?.data?._id && reportType === "Prescrições") {
+      integration
+        ? dispatch(
+            loadRequestPrescriptionByCareId({
+              external_attendance_id: careState.data._id,
+            })
+          )
+        : dispatch(
+            loadRequestPrescriptionByCareId({
+              attendance_id: careState.data._id,
+            })
+          );
+    }
   }, [careState.data._id, reportType]);
-
   const handleTeam = useCallback(() => {
     const teamUsers: any = [];
 
@@ -485,14 +501,17 @@ export default function PatientOverview(
       show: true,
     },
   ];
-
+  // console.log(
+  //   Object.entries(prescriptionState.data.prescriptionData).map((k, v) => {
+  //     k: v;
+  //   })
+  // );
   function handleReport(nameReport: string) {
     if (nameReport === reportType || reportActive === false) {
       setReportActive(!reportActive);
     }
     setReportType(nameReport);
   }
-
   function handleContentReport(report: string): any {
     if (report === "Aferições" && measurementState.data.length > 0) {
       return {
@@ -524,10 +543,20 @@ export default function PatientOverview(
         loading: false,
         error: false,
       };
+    } else if (
+      report === "Prescrições" &&
+      Object.keys(prescriptionState.data).length > 0
+    ) {
+      return {
+        data: Object.entries(prescriptionState.data.prescriptionData),
+        loading: prescriptionState.loading,
+        error: prescriptionState.error,
+      };
     } else {
       return "";
     }
   }
+  // console.log(prescriptionState.data);
 
   function handleOpenFilter() {
     setOpenFilterReport(true);
