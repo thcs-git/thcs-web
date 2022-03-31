@@ -1,4 +1,5 @@
 import styled from "styled-components";
+import { styled as styledMui } from "@mui/material/styles";
 import Accordion, { AccordionProps } from "@mui/material/Accordion";
 import AccordionDetails, {
   AccordionDetailsProps,
@@ -6,6 +7,7 @@ import AccordionDetails, {
 import AccordionSummary from "@mui/material/AccordionSummary";
 import Box from "@mui/material/Box";
 import Container from "@mui/material/Container";
+import Button, { ButtonProps } from "@mui/material/Button";
 
 export const AccordionStyled = styled(Accordion)`
   color: var(--black);
@@ -95,4 +97,3 @@ export const ContainerStyled = styled(Container)`
     color: var(--white);
   }
 `;
-// accordion css class

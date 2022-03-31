@@ -20,6 +20,7 @@ import message from "./message";
 import allergies from "./allergies";
 import measurements from "./measurements";
 import qrCode from "./qrCode";
+import prescription from "./prescripition";
 
 export default combineReducers<IInitialState>({
   areas,
@@ -39,4 +40,5 @@ export default combineReducers<IInitialState>({
   allergies,
   measurements,
   qrCode,
+  prescription,
 });
