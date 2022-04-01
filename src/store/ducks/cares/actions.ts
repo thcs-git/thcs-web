@@ -252,6 +252,32 @@ export const deleteScheduleSuccess = (data: any) =>
   action(CareTypes.DELETE_SCHEDULE_SUCCESS, { data });
 
 /**
+ * Measurement
+ */
+export const loadMeasurementFilterRequest = (data: IFilterReport) =>
+    action(CareTypes.LOAD_MEASUREMENT_FILTER_REQUEST, data);
+export const loadMeasurementFilterSuccess = (data: IFilterReport) =>
+    action(CareTypes.LOAD_MEASUREMENT_FILTER_SUCCESS, data);
+
+/**
+ * Allergy
+ */
+export const loadAllergyFilterRequest = (data: IFilterReport) =>
+    action(CareTypes.LOAD_ALLERGY_FILTER_REQUEST, data);
+export const loadAllergyFilterSuccess = (data: IFilterReport) =>
+    action(CareTypes.LOAD_ALLERGY_FILTER_SUCCESS, data);
+
+
+/**
+ * Adverse Event
+ */
+export const loadAdverseEventFilterRequest = (data: IFilterReport) =>
+    action(CareTypes.LOAD_ADVERSE_EVENT_FILTER_REQUEST, data);
+export const loadAdverseEventFilterSuccess = (data: IFilterReport) =>
+    action(CareTypes.LOAD_ADVERSE_EVENT_FILTER_SUCCESS, data);
+
+
+/**
  * evolution
  */
 

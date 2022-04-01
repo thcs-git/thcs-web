@@ -318,7 +318,6 @@ export default function FilterReport(props: IPropsFilter) {
         day.list.map((checks: any) => {
           if (checks.list) {
             checks.list.map((user: any) => {
-              console.log(careState);
               const itemList: any = {
                 name:
                   type === "Função"
