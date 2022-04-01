@@ -57,9 +57,12 @@ import {
 } from "../../../store/ducks/allergies/types";
 import { IconButton } from "@mui/material";
 import {
+  loadAdverseEventFilterRequest,
+  loadAllergyFilterRequest,
   loadCheckinFilterRequest,
   loadCheckinReportRequest,
   loadEvolutionFilterRequest,
+  loadMeasurementFilterRequest,
 } from "../../../store/ducks/cares/actions";
 import { useDispatch, useSelector } from "react-redux";
 import { CareState } from "../../../store/ducks/cares/types";
@@ -838,7 +841,31 @@ export default function AccordionReport(props: IAccordionReport) {
               <TextCenterDetails
                 sx={{ width: "100px", justifyContent: "center" }}
               >
-                <PrintIcon sx={{ color: "var(--secondary)" }} />
+                <IconButton
+                  color="secondary"
+                  aria-label="print"
+                  sx={{
+                    cursor: "pointer",
+                    height: "10px",
+                    color: "var(--secondary)",
+                  }}
+                  onClick={() => {
+                    if (reportType === "Aferições") {
+                      const payload = {
+                        _id: column._id,
+                        type: "Id",
+                        name: column._id,
+                        dataStart: "",
+                        dataEnd: "",
+                        reportType: "Aferições",
+                        attendance_id: state?.data?._id,
+                      };
+                      dispatch(loadMeasurementFilterRequest(payload));
+                    }
+                  }}
+                >
+                  <PrintIcon sx={{ cursor: "pointer", marginRight: "12px" }} />
+                </IconButton>
               </TextCenterDetails>
             </ContentDetailsAccordion>
             {list.length !== index + 1 ? (
@@ -1111,8 +1138,6 @@ export default function AccordionReport(props: IAccordionReport) {
       )}
     </Stack>
   );
-
-  console.log(content, "DATAAAA");
   return (
     <>
       {content.loading && <Loading />}
@@ -1220,6 +1245,17 @@ export default function AccordionReport(props: IAccordionReport) {
                                 attendance_id: state?.data?._id,
                               };
                               dispatch(loadEvolutionFilterRequest(payload));
+                            } else if (reportType === "Aferições") {
+                              const payload = {
+                                _id: "",
+                                type: "Group",
+                                name: "",
+                                dataStart: _id,
+                                dataEnd: _id,
+                                reportType: "Aferições",
+                                attendance_id: state?.data?._id,
+                              };
+                              dispatch(loadMeasurementFilterRequest(payload));
                             }
                           }}
                         >
@@ -1280,16 +1316,44 @@ export default function AccordionReport(props: IAccordionReport) {
                         {item === "event" && "Eventos adversos"}
                       </Box>
                     </Box>
-                    <TextCenterDetails
-                      sx={{ width: "100px", justifyContent: "flex-start" }}
-                    >
-                      {/*<DownloadIcon*/}
-                      {/*  sx={{ cursor: "pointer", marginRight: "12px" }}*/}
-                      {/*/>*/}
-                      <PrintIcon
-                        sx={{ cursor: "pointer", marginRight: "12px" }}
-                      />
-                    </TextCenterDetails>
+                    <Box>
+                      <IconButton
+                        color="secondary"
+                        aria-label="print"
+                        sx={{ cursor: "pointer", height: "10px" }}
+                        onClick={() => {
+                          if (item === "allergy") {
+                            const payload = {
+                              _id: "",
+                              type: "Group",
+                              name: "",
+                              dataStart: "",
+                              dataEnd: "",
+                              reportType: "Alergias",
+                              attendance_id: state?.data?._id,
+                              patient_id: state?.data?.patient_id?._id,
+                            };
+                            dispatch(loadAllergyFilterRequest(payload));
+                          } else if (item === "event") {
+                            const payload = {
+                              _id: "",
+                              type: "Group",
+                              name: "",
+                              dataStart: "",
+                              dataEnd: "",
+                              reportType: "Evento Adverso",
+                              attendance_id: state?.data?._id,
+                              patient_id: state?.data?.patient_id?._id,
+                            };
+                            dispatch(loadAdverseEventFilterRequest(payload));
+                          }
+                        }}
+                      >
+                        <PrintIcon
+                          sx={{ cursor: "pointer", marginRight: "12px" }}
+                        />
+                      </IconButton>
+                    </Box>
                   </AccordionSummary>
                   <AccordionDetails>
                     {handleHeaderDetails(item)}

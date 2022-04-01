@@ -160,6 +160,7 @@ export default function PatientOverview(
   const [reportActive, setReportActive] = useState(false);
   const [reportType, setReportType] = useState("");
   const [openFilterReport, setOpenFilterReport] = useState(false);
+  const [selectReportCard, setSelectReportCard] = useState("");
 
   useEffect(() => {
     if (params.id) {
@@ -188,8 +189,8 @@ export default function PatientOverview(
   }, [careState?.data?.patient_id?._id, integration]);
 
   useEffect(() => {
-    if (careState?.data?.patient_id?._id && reportType === "Aferições") {
-      dispatch(loadRequestMeasurements(careState?.data?.patient_id?._id));
+    if (careState?.data?._id && reportType === "Aferições") {
+      dispatch(loadRequestMeasurements(careState?.data?._id));
     }
     if (careState.data._id && reportType === "Evolução") {
       dispatch(loadEvolutionRequest(careState?.data?._id));
@@ -214,7 +215,6 @@ export default function PatientOverview(
       dispatch(loadRequestAntibiotic(careState?.data?.patient_id?._id));
     }
   }, [careState.data._id, reportType]);
-
   const handleTeam = useCallback(() => {
     const teamUsers: any = [];
 
@@ -499,7 +499,8 @@ export default function PatientOverview(
     {
       name: "Voltar",
       onClick: () => {
-        reportActive ? setReportActive(false) : history.push("/care");
+        !reportActive ? history.push("/care") : setReportActive(false);
+        setSelectReportCard("");
       },
       variant: "contained",
       background: "secondary",
@@ -604,6 +605,8 @@ export default function PatientOverview(
                   reportType={reportType}
                   reportActive={reportActive}
                   existContent={!!handleContentReport(reportType)}
+                  selectCard={selectReportCard}
+                  setSelectCard={setSelectReportCard}
                 />
                 <FilterReport
                   openFilter={openFilterReport}
