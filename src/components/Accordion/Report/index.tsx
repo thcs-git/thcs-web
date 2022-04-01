@@ -32,6 +32,7 @@ import Check from "../../Icons/Check";
 import Drug from "../../Icons/Drug";
 import AdverseEvent from "../../Icons/AdverseEvent";
 import Prescription from "../../Icons/Prescription";
+import Antibiotic from "../../Icons/Antibiotic";
 // styled components and style
 import {
   AccordionStyled as Accordion,
@@ -476,11 +477,7 @@ export default function AccordionReport(props: IAccordionReport) {
                     ? "200px"
                     : "100px"
                 }`,
-                justifyContent: `${
-                  reportType === "Evolução" || reportType === "Check-in/out"
-                    ? "center"
-                    : "flex-start"
-                }`,
+                justifyContent: "center",
               }}
             >
               {reportType === "Check-in/out" ? "Saída" : "Opções"}
@@ -719,7 +716,15 @@ export default function AccordionReport(props: IAccordionReport) {
                 <IconButton
                   color="secondary"
                   aria-label="print"
-                  sx={{ cursor: "pointer", height: "10px" }}
+                  sx={{
+                    display: "flex",
+                    justifyContent: "center",
+                    alignItems: "center",
+                    cursor: "pointer",
+                    height: "36px",
+                    width: "36px",
+                    "& svg, path": { cursor: "pointer" },
+                  }}
                   onClick={() => {
                     const payload = {
                       _id: column._id,
@@ -846,8 +851,12 @@ export default function AccordionReport(props: IAccordionReport) {
                   aria-label="print"
                   sx={{
                     cursor: "pointer",
-                    height: "10px",
                     color: "var(--secondary)",
+                    display: "flex",
+                    justifyContent: "center",
+                    alignItems: "center",
+                    height: "36px",
+                    width: "36px",
                   }}
                   onClick={() => {
                     if (reportType === "Aferições") {
@@ -864,7 +873,7 @@ export default function AccordionReport(props: IAccordionReport) {
                     }
                   }}
                 >
-                  <PrintIcon sx={{ cursor: "pointer", marginRight: "12px" }} />
+                  <PrintIcon sx={{ cursor: "pointer" }} />
                 </IconButton>
               </TextCenterDetails>
             </ContentDetailsAccordion>
@@ -882,68 +891,94 @@ export default function AccordionReport(props: IAccordionReport) {
   // Accordion das Prescrições
   const prescriptionAccordion = (data: any) =>
     data.map((day: any, index: number) => (
-      <Accordion
-        key={day[0]}
-        disableGutters={true}
-        expanded={expanded === `panel${index}`}
-        onChange={handleChange(`panel${index}`)}
-      >
-        <AccordionSummary
-          expandIcon={<ExpandMoreIcon />}
-          aria-controls={`panel${index}bh-content`}
-          id={`panel${index}bh-header`}
+      <Box sx={{ position: "relative" }}>
+        <Box
+          sx={{
+            position: "absolute",
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+            zIndex: 5000,
+            left: "57rem",
+            top: "0.4rem",
+          }}
         >
-          <Box
+          <IconButton
+            aria-label="print"
             sx={{
               display: "flex",
-              gap: "8px",
-              flexDirection: "row",
-              justifyContent: "space-between",
+              justifyContent: "center",
+              alignItems: "center",
+              cursor: "pointer",
+              height: "36px",
+              width: "36px",
+            }}
+            onClick={() => {
+              console.log("CLIQUEI");
             }}
           >
-            <Prescription
-              fill={
-                expanded === `panel${index}`
-                  ? "var(--white)"
-                  : "var(--gray-dark)"
-              }
-              width="22px"
-              height={"22px"}
+            <PrintIcon
+              sx={{
+                color:
+                  expanded === `panel${index}`
+                    ? "var(--white)"
+                    : "var(--secondary)",
+                cursor: "pointer",
+                "& path": { cursor: "pointer" },
+              }}
             />
-
+          </IconButton>
+        </Box>
+        <Accordion
+          key={day[0]}
+          disableGutters={true}
+          expanded={expanded === `panel${index}`}
+          onChange={handleChange(`panel${index}`)}
+        >
+          <AccordionSummary
+            expandIcon={<ExpandMoreIcon />}
+            aria-controls={`panel${index}bh-content`}
+            id={`panel${index}bh-header`}
+            sx={{
+              "& div, svg, path, circle, rect": { cursor: "pointer" },
+              cursor: "pointer",
+            }}
+          >
             <Box
               sx={{
                 display: "flex",
+                gap: "8px",
+                flexDirection: "row",
                 justifyContent: "space-between",
               }}
             >
-              {day[0]}
-            </Box>
-          </Box>
-          <Box sx={{ cursor: "pointer" }}>
-            <IconButton
-              color="secondary"
-              aria-label="print"
-              sx={{ cursor: "pointer", height: "10px" }}
-              onClick={() => {
-                console.log("CLIQUEI");
-              }}
-            >
-              <PrintIcon
-                sx={{
-                  cursor: "pointer",
-                  marginRight: "12px",
-                  "& path": { cursor: "pointer" },
-                }}
+              <Prescription
+                fill={
+                  expanded === `panel${index}`
+                    ? "var(--white)"
+                    : "var(--gray-dark)"
+                }
+                width="22px"
+                height={"22px"}
               />
-            </IconButton>
-          </Box>
-        </AccordionSummary>
-        <AccordionDetails>
-          {prescriptionAccordionHeader()}
-          {prescriptionAccordionDetails(day[1])}
-        </AccordionDetails>
-      </Accordion>
+
+              <Box
+                sx={{
+                  display: "flex",
+                  justifyContent: "space-between",
+                }}
+              >
+                {day[0]}
+              </Box>
+            </Box>
+            <Box sx={{ cursor: "pointer", width: "36px" }}></Box>
+          </AccordionSummary>
+          <AccordionDetails>
+            {prescriptionAccordionHeader()}
+            {prescriptionAccordionDetails(day[1])}
+          </AccordionDetails>
+        </Accordion>
+      </Box>
     ));
   const prescriptionAccordionHeader = () => (
     <HeaderDetailsAccordion>
@@ -977,13 +1012,28 @@ export default function AccordionReport(props: IAccordionReport) {
               : "Não informado"}
           </TextCenterDetails>
           <TextCenterDetails sx={{ width: "100px" }}>
-            <PrintIcon
+            <IconButton
+              aria-label="print"
               sx={{
-                color: "var(--secondary)",
+                display: "flex",
+                justifyContent: "center",
+                alignItems: "center",
                 cursor: "pointer",
-                "& > path": { cursor: "pointer" },
+                height: "36px",
+                width: "36px",
               }}
-            />
+              onClick={() => {
+                console.log("CLIQUEI");
+              }}
+            >
+              <PrintIcon
+                sx={{
+                  color: "var(--secondary)",
+                  cursor: "pointer",
+                  "& > path": { cursor: "pointer" },
+                }}
+              />
+            </IconButton>
           </TextCenterDetails>
         </ContentDetailsAccordion>
         {data.length !== index + 1 ? (
@@ -995,149 +1045,262 @@ export default function AccordionReport(props: IAccordionReport) {
     ));
   // Accordion dos Antibióticos
   const antibioticAccordion = (data: any) =>
-    data.map((day: any, index: number) => (
-      <Accordion
-        key={day[0]}
-        disableGutters={true}
-        expanded={expanded === `panel${index}`}
-        onChange={handleChange(`panel${index}`)}
-      >
-        <AccordionSummary
-          expandIcon={<ExpandMoreIcon />}
-          aria-controls={`panel${index}bh-content`}
-          id={`panel${index}bh-header`}
-          // disabled
-        >
+    data.map((day: any) =>
+      day[1].map((item: any) => (
+        <Box sx={{ position: "relative" }}>
           <Box
             sx={{
+              position: "absolute",
               display: "flex",
-              gap: "8px",
-              flexDirection: "row",
-              justifyContent: "space-between",
+              justifyContent: "center",
+              alignItems: "center",
+              zIndex: 5000,
+              left: "57rem",
+              top: "0.4rem",
             }}
           >
-            <Prescription
-              fill={
-                expanded === `panel${index}`
-                  ? "var(--white)"
-                  : "var(--gray-dark)"
-              }
-              width="22px"
-              height={"22px"}
-            />
-
-            <Box
+            <IconButton
+              aria-label="print"
               sx={{
                 display: "flex",
-                justifyContent: "space-between",
+                justifyContent: "center",
+                alignItems: "center",
+                cursor: "pointer",
+                height: "36px",
+                width: "36px",
               }}
-            >
-              {day[0]}
-            </Box>
-          </Box>
-          <Box sx={{ cursor: "pointer" }}>
-            <IconButton
-              color="secondary"
-              aria-label="print"
-              sx={{ cursor: "pointer", height: "10px" }}
               onClick={() => {
                 console.log("CLIQUEI");
               }}
             >
               <PrintIcon
                 sx={{
+                  color:
+                    expanded === `panel${item.id}`
+                      ? "var(--white)"
+                      : "var(--secondary)",
                   cursor: "pointer",
-                  marginRight: "12px",
                   "& path": { cursor: "pointer" },
                 }}
               />
             </IconButton>
           </Box>
-        </AccordionSummary>
-        <AccordionDetails>
-          {antibioticAccordionHeader()}
-          {antibioticAccordionDetails(day[1])}
-        </AccordionDetails>
-      </Accordion>
-    ));
-  const antibioticAccordionHeader = () => (
-    <HeaderDetailsAccordion>
-      <TextCenterDetails>Id. Prescrição</TextCenterDetails>
-      <TextCenterDetails>Profissional</TextCenterDetails>
-      <TextCenterDetails>Função</TextCenterDetails>
-      <TextCenterDetails>Data Início</TextCenterDetails>
-      <TextCenterDetails>Data Fim</TextCenterDetails>
-      <TextCenterDetails sx={{ width: "100px" }}>Opções</TextCenterDetails>
-    </HeaderDetailsAccordion>
-  );
-  const antibioticAccordionDetails = (data: any) =>
-    data.map((column: any, index: number) => (
-      <>
-        {console.log(column.id)}
-        <ContentDetailsAccordion key={column.id}>
-          <TextCenterDetails>{column.id}</TextCenterDetails>
-          <TextCenterDetails>
-            {getFirstAndLastName(capitalizeText(column.created_by))}
-          </TextCenterDetails>
-          <TextCenterDetails>
-            {capitalizeText(column.function)}
-          </TextCenterDetails>
-          <TextCenterDetails>
-            {column.start_at
-              ? formatDate(column.start_at, "DD/MM/YYYY")
-              : "Não informado"}
-          </TextCenterDetails>
-          <TextCenterDetails>
-            {column.end_at
-              ? formatDate(column.end_at, "DD/MM/YYYY")
-              : "Não informado"}
-          </TextCenterDetails>
-          <TextCenterDetails sx={{ width: "100px" }}>
-            <PrintIcon
+          <Accordion
+            key={item.id}
+            disableGutters={true}
+            expanded={expanded === `panel${item.id}`}
+            onChange={handleChange(`panel${item.id}`)}
+          >
+            <AccordionSummary
+              expandIcon={<ExpandMoreIcon />}
+              aria-controls={`panel${item.id}bh-content`}
+              id={`panel${item.id}bh-header`}
               sx={{
-                color: "var(--secondary)",
+                "& div, svg, path, circle, rect": { cursor: "pointer" },
                 cursor: "pointer",
-                "& > path": { cursor: "pointer" },
               }}
-            />
-          </TextCenterDetails>
-        </ContentDetailsAccordion>
-        {data.length !== index + 1 ? (
-          <Divider sx={{ width: "100%", margin: "0 auto" }} />
-        ) : (
-          ""
-        )}
-      </>
-    ));
-
-  const antibioticStack = (data: any) => (
-    <Stack spacing={1} sx={{ margin: "16px 16px 0" }}>
-      {data.map((day: any, index: number) =>
-        day[1].map((item: any, index: number) => (
-          <PaperStyled key={`${item.id}_${index}`}>
-            <Box sx={{ display: "flex", gap: "8px" }}>
-              <Box sx={{ width: "80px" }}>
-                {formatDate(item.start_at, "DD/MM/YYYY")}
-              </Box>
-              <Box>{capitalizeText(item.name)}</Box>
+            >
               <Box
-                sx={{ width: "40px" }}
-              >{`${item.actual_days}/${item.qtd_days}`}</Box>
-              <Box>{getFirstAndLastName(capitalizeText(item.created_by))}</Box>
-            </Box>
-            <Box>
-              <PrintIcon
                 sx={{
-                  cursor: "pointer",
-                  "& > path": { cursor: "pointer" },
+                  display: "flex",
+                  gap: "8px",
+                  flexDirection: "row",
+                  justifyContent: "flex-start",
+                  width: "100%",
                 }}
-              />
-            </Box>
-          </PaperStyled>
-        ))
-      )}
-    </Stack>
+              >
+                <Antibiotic
+                  fill={
+                    expanded === `panel${item.id}`
+                      ? "var(--white)"
+                      : "var(--gray-dark)"
+                  }
+                  width="22px"
+                  height={"22px"}
+                />
+
+                <Box>{formatDate(item.start_at, "DD/MM/YYYY")}</Box>
+                <Box
+                  sx={{
+                    display: "flex",
+                    justifyContent: "space-between",
+                    width: "85%",
+                  }}
+                >
+                  <Box>{item.name}</Box>
+                  <Box
+                    sx={{
+                      display: "flex",
+                      justifyContent: "center",
+                      border:
+                        expanded === `panel${item.id}`
+                          ? "1px solid var(--white)"
+                          : "1px solid var(--secondary)",
+                      borderRadius: "20px",
+                      padding: "0 4px",
+                      width: "115px",
+                    }}
+                  >
+                    {`Ciclo: D${item.actual_days}/D${item.qtd_days}`}
+                  </Box>
+                </Box>
+              </Box>
+              <Box sx={{ cursor: "pointer", width: "36px" }}></Box>
+            </AccordionSummary>
+            <AccordionDetails key={item.id}>
+              {antibioticAccordionDetailsRows(item)}
+            </AccordionDetails>
+          </Accordion>
+        </Box>
+      ))
+    );
+  const antibioticAccordionDetailsRows = (item: any) => (
+    <>
+      <ContentDetailsAccordion sx={{ gap: "8px" }}>
+        <TextCenterDetails
+          sx={{ width: "min-content", color: "var(--gray-dark)" }}
+        >
+          Unidade:
+        </TextCenterDetails>
+        <TextCenterDetails sx={{ width: "100%", justifyContent: "flex-start" }}>
+          {item.unity}
+        </TextCenterDetails>
+      </ContentDetailsAccordion>
+      <Divider sx={{ width: "100%", margin: "0 auto" }} />
+      <ContentDetailsAccordion sx={{ gap: "8px" }}>
+        <TextCenterDetails
+          sx={{ width: "min-content", color: "var(--gray-dark)" }}
+        >
+          Quantidade:
+        </TextCenterDetails>
+        <TextCenterDetails sx={{ width: "100%", justifyContent: "flex-start" }}>
+          {item.amount}
+        </TextCenterDetails>
+      </ContentDetailsAccordion>
+      <Divider sx={{ width: "100%", margin: "0 auto" }} />
+      <ContentDetailsAccordion sx={{ gap: "8px" }}>
+        <TextCenterDetails
+          sx={{ width: "min-content", color: "var(--gray-dark)" }}
+        >
+          Frequência:
+        </TextCenterDetails>
+        <TextCenterDetails sx={{ width: "100%", justifyContent: "flex-start" }}>
+          {item.frequency}
+        </TextCenterDetails>
+      </ContentDetailsAccordion>
+      <Divider sx={{ width: "100%", margin: "0 auto" }} />
+      <ContentDetailsAccordion sx={{ gap: "8px" }}>
+        <TextCenterDetails
+          sx={{ width: "min-content", color: "var(--gray-dark)" }}
+        >
+          Horários:
+        </TextCenterDetails>
+        <TextCenterDetails sx={{ width: "100%", justifyContent: "flex-start" }}>
+          {item.hritem.map(
+            (itemHora: any, index: number) =>
+              `${formatDate(itemHora.time, "HH:mm")} ${
+                item.hritem.length - 1 === index ? "" : " - "
+              }`
+          )}
+        </TextCenterDetails>
+      </ContentDetailsAccordion>
+      <Divider sx={{ width: "100%", margin: "0 auto" }} />
+      <ContentDetailsAccordion sx={{ gap: "8px" }}>
+        <TextCenterDetails
+          sx={{ width: "min-content", color: "var(--gray-dark)" }}
+        >
+          Observações:
+        </TextCenterDetails>
+        <TextCenterDetails
+          sx={{
+            width: "100%",
+            justifyContent: "flex-start",
+            whiteSpace: "nowrap",
+          }}
+        >
+          {item.description.length < 115 ? (
+            capitalizeText(item.description)
+          ) : (
+            <Tooltip title={item.description}>
+              <Box>{`${capitalizeText(
+                item.description.substr(0, 115)
+              )} ...`}</Box>
+            </Tooltip>
+          )}
+        </TextCenterDetails>
+      </ContentDetailsAccordion>
+      <Divider sx={{ width: "100%", margin: "0 auto" }} />
+      <ContentDetailsAccordion sx={{ gap: "8px" }}>
+        <TextCenterDetails
+          sx={{
+            width: "min-content",
+            color: "var(--gray-dark)",
+            justifyContent: "flex-start",
+          }}
+        >
+          Componentes:
+        </TextCenterDetails>
+        <TextCenterDetails
+          sx={{
+            width: "100%",
+            justifyContent: "center",
+            flexDirection: "column",
+            alignItems: "space-between",
+          }}
+        >
+          {item.components.map((component: any, index: number) => (
+            <>
+              <Box
+                sx={{
+                  display: "flex",
+                  justifyContent: "space-between",
+                  alignItems: "center",
+                  minHeight: "36px",
+                }}
+              >
+                <Box>
+                  {
+                    <Box sx={{ color: "var(--secondary)", display: "inline" }}>
+                      {index + 1}
+                    </Box>
+                  }{" "}
+                  - {capitalizeText(component.name)},{" "}
+                  {capitalizeText(component.unity)}
+                </Box>
+
+                <Box mr={"12px"}>Quantidade: {component.amount}</Box>
+              </Box>
+              {item.components.length === index + 1 ? (
+                ""
+              ) : (
+                <Divider
+                  component="li"
+                  sx={{ listStyle: "none", width: "100%" }}
+                />
+              )}
+            </>
+          ))}
+        </TextCenterDetails>
+      </ContentDetailsAccordion>
+      <Divider sx={{ width: "100%", margin: "0 auto" }} />
+      <ContentDetailsAccordion sx={{ gap: "8px" }}>
+        <TextCenterDetails
+          sx={{ width: "max-content", color: "var(--gray-dark)" }}
+        >
+          {capitalizeText(item.function)}:
+        </TextCenterDetails>
+        <TextCenterDetails
+          sx={{
+            width: "100%",
+            justifyContent: "flex-start",
+          }}
+        >
+          {capitalizeText(item.created_by)}
+        </TextCenterDetails>
+      </ContentDetailsAccordion>
+    </>
   );
+
   return (
     <>
       {content.loading && <Loading />}
@@ -1150,8 +1313,225 @@ export default function AccordionReport(props: IAccordionReport) {
             {content.data.map(
               ({ _id, list }: IDataAccordion, index: number) => {
                 return (
+                  <Box sx={{ position: "relative" }}>
+                    <Box
+                      sx={{
+                        position: "absolute",
+                        display: "flex",
+                        justifyContent: "center",
+                        alignItems: "center",
+                        zIndex: 5000,
+                        left: "57rem",
+                        top: "0.4rem",
+                      }}
+                    >
+                      <IconButton
+                        aria-label="print"
+                        sx={{
+                          display: "flex",
+                          justifyContent: "center",
+                          alignItems: "center",
+                          cursor: "pointer",
+                          height: "36px",
+                          width: "36px",
+                        }}
+                        onClick={() => {
+                          if (reportType === "Check-in/out") {
+                            const payload = {
+                              _id: "",
+                              type: "Group",
+                              name: "",
+                              dataStart: _id,
+                              dataEnd: _id,
+                              reportType: "Check-in/out",
+                              attendance_id: state?.data?._id,
+                            };
+                            dispatch(loadCheckinFilterRequest(payload));
+                          } else if (reportType === "Evolução") {
+                            const payload = {
+                              _id: "",
+                              type: "Group",
+                              name: "",
+                              dataStart: _id,
+                              dataEnd: _id,
+                              reportType: "Evolução",
+                              attendance_id: state?.data?._id,
+                            };
+                            dispatch(loadEvolutionFilterRequest(payload));
+                          } else if (reportType === "Aferições") {
+                            const payload = {
+                              _id: "",
+                              type: "Group",
+                              name: "",
+                              dataStart: _id,
+                              dataEnd: _id,
+                              reportType: "Aferições",
+                              attendance_id: state?.data?._id,
+                            };
+                            dispatch(loadMeasurementFilterRequest(payload));
+                          }
+                        }}
+                      >
+                        <PrintIcon
+                          sx={{
+                            color:
+                              expanded === `panel${index}`
+                                ? "var(--white)"
+                                : "var(--secondary)",
+                            cursor: "pointer",
+                            "& path": { cursor: "pointer" },
+                          }}
+                        />
+                      </IconButton>
+                    </Box>
+                    <Accordion
+                      key={_id}
+                      disableGutters={true}
+                      expanded={expanded === `panel${index}`}
+                      onChange={handleChange(`panel${index}`)}
+                    >
+                      <AccordionSummary
+                        expandIcon={<ExpandMoreIcon />}
+                        aria-controls={`panel${index}bh-content`}
+                        id={`panel${index}bh-header`}
+                        sx={{
+                          "& div, svg, path, circle, rect": {
+                            cursor: "pointer",
+                          },
+                          cursor: "pointer",
+                        }}
+                      >
+                        <Box
+                          sx={{
+                            display: "flex",
+                            gap: "8px",
+                            flexDirection: "row",
+                            justifyContent: "space-between",
+                          }}
+                        >
+                          {reportType === "Aferições" ? (
+                            <IconMeasurement
+                              fill={
+                                expanded === `panel${index}`
+                                  ? "var(--white)"
+                                  : "var(--gray-dark)"
+                              }
+                              width="22px"
+                              height={"22px"}
+                            />
+                          ) : reportType === "Evolução" ? (
+                            <Evolution
+                              fill={
+                                expanded === `panel${index}`
+                                  ? "var(--white)"
+                                  : "var(--gray-dark)"
+                              }
+                              width={"22px"}
+                              height={"22px"}
+                            />
+                          ) : reportType === "Check-in/out" ? (
+                            <Check
+                              fill={
+                                expanded === `panel${index}`
+                                  ? "var(--white)"
+                                  : "var(--gray-dark)"
+                              }
+                              width={"22px"}
+                              height={"22px"}
+                            />
+                          ) : (
+                            ""
+                          )}
+
+                          <Box
+                            sx={{
+                              display: "flex",
+                              justifyContent: "space-between",
+                            }}
+                          >
+                            {formatDate(_id, "DD/MM/YY")}
+                          </Box>
+                        </Box>
+                        <Box sx={{ width: "36px" }}></Box>
+                      </AccordionSummary>
+                      <AccordionDetails>
+                        {handleHeaderDetails()}
+                        {handleRow(list)}
+                      </AccordionDetails>
+                    </Accordion>
+                  </Box>
+                );
+              }
+            )}
+          </Container>
+        ) : reportType === "Alergias" ? (
+          <Container>
+            {Object.keys(content.data).map((item: any, index: number) => {
+              return (
+                <Box sx={{ position: "relative" }}>
+                  <Box
+                    sx={{
+                      position: "absolute",
+                      display: "flex",
+                      justifyContent: "center",
+                      alignItems: "center",
+                      zIndex: 5000,
+                      left: "57rem",
+                      top: "0.4rem",
+                    }}
+                  >
+                    <IconButton
+                      aria-label="print"
+                      sx={{
+                        display: "flex",
+                        justifyContent: "center",
+                        alignItems: "center",
+                        cursor: "pointer",
+                        height: "36px",
+                        width: "36px",
+                      }}
+                      onClick={() => {
+                        if (item === "allergy") {
+                          const payload = {
+                            _id: "",
+                            type: "Group",
+                            name: "",
+                            dataStart: "",
+                            dataEnd: "",
+                            reportType: "Alergias",
+                            attendance_id: state?.data?._id,
+                            patient_id: state?.data?.patient_id?._id,
+                          };
+                          dispatch(loadAllergyFilterRequest(payload));
+                        } else if (item === "event") {
+                          const payload = {
+                            _id: "",
+                            type: "Group",
+                            name: "",
+                            dataStart: "",
+                            dataEnd: "",
+                            reportType: "Evento Adverso",
+                            attendance_id: state?.data?._id,
+                            patient_id: state?.data?.patient_id?._id,
+                          };
+                          dispatch(loadAdverseEventFilterRequest(payload));
+                        }
+                      }}
+                    >
+                      <PrintIcon
+                        sx={{
+                          color:
+                            expanded === `panel${index}`
+                              ? "var(--white)"
+                              : "var(--secondary)",
+                          cursor: "pointer",
+                          "& path": { cursor: "pointer" },
+                        }}
+                      />
+                    </IconButton>
+                  </Box>
                   <Accordion
-                    key={_id}
+                    key={item}
                     disableGutters={true}
                     expanded={expanded === `panel${index}`}
                     onChange={handleChange(`panel${index}`)}
@@ -1160,6 +1540,10 @@ export default function AccordionReport(props: IAccordionReport) {
                       expandIcon={<ExpandMoreIcon />}
                       aria-controls={`panel${index}bh-content`}
                       id={`panel${index}bh-header`}
+                      sx={{
+                        "& div, svg, path, circle, rect": { cursor: "pointer" },
+                        cursor: "pointer",
+                      }}
                     >
                       <Box
                         sx={{
@@ -1169,197 +1553,33 @@ export default function AccordionReport(props: IAccordionReport) {
                           justifyContent: "space-between",
                         }}
                       >
-                        {reportType === "Aferições" ? (
-                          <IconMeasurement
-                            fill={
-                              expanded === `panel${index}`
-                                ? "var(--white)"
-                                : "var(--gray-dark)"
-                            }
-                            width="22px"
-                            height={"22px"}
-                          />
-                        ) : reportType === "Evolução" ? (
-                          <Evolution
-                            fill={
-                              expanded === `panel${index}`
-                                ? "var(--white)"
-                                : "var(--gray-dark)"
-                            }
-                            width={"22px"}
-                            height={"22px"}
-                          />
-                        ) : reportType === "Check-in/out" ? (
-                          <Check
-                            fill={
-                              expanded === `panel${index}`
-                                ? "var(--white)"
-                                : "var(--gray-dark)"
-                            }
-                            width={"22px"}
-                            height={"22px"}
-                          />
-                        ) : (
-                          ""
-                        )}
-
+                        <Allergy
+                          fill={
+                            expanded === `panel${index}`
+                              ? "var(--white)"
+                              : "var(--gray-dark)"
+                          }
+                          width="22px"
+                          height={"22px"}
+                        />
                         <Box
                           sx={{
                             display: "flex",
                             justifyContent: "space-between",
                           }}
                         >
-                          {formatDate(_id, "DD/MM/YY")}
+                          {item === "allergy" && "Alergias"}
+                          {item === "event" && "Eventos adversos"}
                         </Box>
                       </Box>
-                      <Box>
-                        {/*{reportType === "Evolução" && (*/}
-                        {/*  <DownloadIcon*/}
-                        {/*    sx={{ cursor: "pointer", marginRight: "12px" }}*/}
-                        {/*  />*/}
-                        {/*)}*/}
-                        <IconButton
-                          color="secondary"
-                          aria-label="print"
-                          sx={{ cursor: "pointer", height: "10px" }}
-                          onClick={() => {
-                            if (reportType === "Check-in/out") {
-                              const payload = {
-                                _id: "",
-                                type: "Group",
-                                name: "",
-                                dataStart: _id,
-                                dataEnd: _id,
-                                reportType: "Check-in/out",
-                                attendance_id: state?.data?._id,
-                              };
-                              dispatch(loadCheckinFilterRequest(payload));
-                            } else if (reportType === "Evolução") {
-                              const payload = {
-                                _id: "",
-                                type: "Group",
-                                name: "",
-                                dataStart: _id,
-                                dataEnd: _id,
-                                reportType: "Evolução",
-                                attendance_id: state?.data?._id,
-                              };
-                              dispatch(loadEvolutionFilterRequest(payload));
-                            } else if (reportType === "Aferições") {
-                              const payload = {
-                                _id: "",
-                                type: "Group",
-                                name: "",
-                                dataStart: _id,
-                                dataEnd: _id,
-                                reportType: "Aferições",
-                                attendance_id: state?.data?._id,
-                              };
-                              dispatch(loadMeasurementFilterRequest(payload));
-                            }
-                          }}
-                        >
-                          <PrintIcon
-                            sx={{ cursor: "pointer", marginRight: "12px" }}
-                          />
-                        </IconButton>
-                      </Box>
+                      <Box sx={{ width: "36px" }}></Box>
                     </AccordionSummary>
                     <AccordionDetails>
-                      {handleHeaderDetails()}
-                      {handleRow(list)}
+                      {handleHeaderDetails(item)}
+                      {handleRow(content.data[item], item)}
                     </AccordionDetails>
                   </Accordion>
-                );
-              }
-            )}
-          </Container>
-        ) : reportType === "Alergias" ? (
-          <Container>
-            {Object.keys(content.data).map((item: any, index: number) => {
-              return (
-                <Accordion
-                  key={item}
-                  disableGutters={true}
-                  expanded={expanded === `panel${index}`}
-                  onChange={handleChange(`panel${index}`)}
-                >
-                  <AccordionSummary
-                    expandIcon={<ExpandMoreIcon />}
-                    aria-controls={`panel${index}bh-content`}
-                    id={`panel${index}bh-header`}
-                  >
-                    <Box
-                      sx={{
-                        display: "flex",
-                        gap: "8px",
-                        flexDirection: "row",
-                        justifyContent: "space-between",
-                      }}
-                    >
-                      <Allergy
-                        fill={
-                          expanded === `panel${index}`
-                            ? "var(--white)"
-                            : "var(--gray-dark)"
-                        }
-                        width="22px"
-                        height={"22px"}
-                      />
-                      <Box
-                        sx={{
-                          display: "flex",
-                          justifyContent: "space-between",
-                        }}
-                      >
-                        {item === "allergy" && "Alergias"}
-                        {item === "event" && "Eventos adversos"}
-                      </Box>
-                    </Box>
-                    <Box>
-                      <IconButton
-                        color="secondary"
-                        aria-label="print"
-                        sx={{ cursor: "pointer", height: "10px" }}
-                        onClick={() => {
-                          if (item === "allergy") {
-                            const payload = {
-                              _id: "",
-                              type: "Group",
-                              name: "",
-                              dataStart: "",
-                              dataEnd: "",
-                              reportType: "Alergias",
-                              attendance_id: state?.data?._id,
-                              patient_id: state?.data?.patient_id?._id,
-                            };
-                            dispatch(loadAllergyFilterRequest(payload));
-                          } else if (item === "event") {
-                            const payload = {
-                              _id: "",
-                              type: "Group",
-                              name: "",
-                              dataStart: "",
-                              dataEnd: "",
-                              reportType: "Evento Adverso",
-                              attendance_id: state?.data?._id,
-                              patient_id: state?.data?.patient_id?._id,
-                            };
-                            dispatch(loadAdverseEventFilterRequest(payload));
-                          }
-                        }}
-                      >
-                        <PrintIcon
-                          sx={{ cursor: "pointer", marginRight: "12px" }}
-                        />
-                      </IconButton>
-                    </Box>
-                  </AccordionSummary>
-                  <AccordionDetails>
-                    {handleHeaderDetails(item)}
-                    {handleRow(content.data[item], item)}
-                  </AccordionDetails>
-                </Accordion>
+                </Box>
               );
             })}
           </Container>
@@ -1379,7 +1599,7 @@ export default function AccordionReport(props: IAccordionReport) {
             NoData()
           )
         ) : reportType === "Antibióticos" ? (
-          <Container>{antibioticStack(content.data)}</Container>
+          <Container>{antibioticAccordion(content.data)}</Container>
         ) : (
           ""
         )
