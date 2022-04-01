@@ -56,6 +56,9 @@ import { QrCodeState } from "./qrCode/types";
 import { INITIAL_STATE as INITIAL_STATE_PRESCRIPTION } from "./prescripition";
 import { PrescriptionState } from "./prescripition/types";
 
+import { INITIAL_STATE as INITIAL_STATE_ANTIBIOTIC } from "./antibiotic";
+import { AntibioticState } from "./antibiotic/types";
+
 /**
  * Initial state tree interface
  */
@@ -78,6 +81,7 @@ export interface IInitialState {
   measurements: Readonly<MeasurementsState>;
   qrCode: Readonly<QrCodeState>;
   prescription: Readonly<PrescriptionState>;
+  antibiotic: Readonly<AntibioticState>;
 }
 
 /**
@@ -102,4 +106,5 @@ export const InitialState: IInitialState = {
   measurements: INITIAL_STATE_MEASUREMENTS,
   qrCode: INITIAL_STATE_QR_CODE,
   prescription: INITIAL_STATE_PRESCRIPTION,
+  antibiotic: INITIAL_STATE_ANTIBIOTIC,
 };

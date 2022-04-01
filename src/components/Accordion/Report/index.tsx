@@ -9,6 +9,7 @@ import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import Divider from "@mui/material/Divider";
 import Tooltip from "@mui/material/Tooltip";
 import Badge from "@mui/material/Badge";
+import Stack from "@mui/material/Stack";
 
 // icons
 import IconMeasurement from "../../Icons/measurement";
@@ -40,6 +41,7 @@ import {
   ContentDetailsAccordion,
   TextCenterDetails,
   ContainerStyled as Container,
+  PaperStyled,
 } from "./style";
 
 // Helps
@@ -964,6 +966,153 @@ export default function AccordionReport(props: IAccordionReport) {
         )}
       </>
     ));
+  // Accordion dos Antibióticos
+  const antibioticAccordion = (data: any) =>
+    data.map((day: any, index: number) => (
+      <Accordion
+        key={day[0]}
+        disableGutters={true}
+        expanded={expanded === `panel${index}`}
+        onChange={handleChange(`panel${index}`)}
+      >
+        <AccordionSummary
+          expandIcon={<ExpandMoreIcon />}
+          aria-controls={`panel${index}bh-content`}
+          id={`panel${index}bh-header`}
+          // disabled
+        >
+          <Box
+            sx={{
+              display: "flex",
+              gap: "8px",
+              flexDirection: "row",
+              justifyContent: "space-between",
+            }}
+          >
+            <Prescription
+              fill={
+                expanded === `panel${index}`
+                  ? "var(--white)"
+                  : "var(--gray-dark)"
+              }
+              width="22px"
+              height={"22px"}
+            />
+
+            <Box
+              sx={{
+                display: "flex",
+                justifyContent: "space-between",
+              }}
+            >
+              {day[0]}
+            </Box>
+          </Box>
+          <Box sx={{ cursor: "pointer" }}>
+            <IconButton
+              color="secondary"
+              aria-label="print"
+              sx={{ cursor: "pointer", height: "10px" }}
+              onClick={() => {
+                console.log("CLIQUEI");
+              }}
+            >
+              <PrintIcon
+                sx={{
+                  cursor: "pointer",
+                  marginRight: "12px",
+                  "& path": { cursor: "pointer" },
+                }}
+              />
+            </IconButton>
+          </Box>
+        </AccordionSummary>
+        <AccordionDetails>
+          {antibioticAccordionHeader()}
+          {antibioticAccordionDetails(day[1])}
+        </AccordionDetails>
+      </Accordion>
+    ));
+  const antibioticAccordionHeader = () => (
+    <HeaderDetailsAccordion>
+      <TextCenterDetails>Id. Prescrição</TextCenterDetails>
+      <TextCenterDetails>Profissional</TextCenterDetails>
+      <TextCenterDetails>Função</TextCenterDetails>
+      <TextCenterDetails>Data Início</TextCenterDetails>
+      <TextCenterDetails>Data Fim</TextCenterDetails>
+      <TextCenterDetails sx={{ width: "100px" }}>Opções</TextCenterDetails>
+    </HeaderDetailsAccordion>
+  );
+  const antibioticAccordionDetails = (data: any) =>
+    data.map((column: any, index: number) => (
+      <>
+        {console.log(column.id)}
+        <ContentDetailsAccordion key={column.id}>
+          <TextCenterDetails>{column.id}</TextCenterDetails>
+          <TextCenterDetails>
+            {getFirstAndLastName(capitalizeText(column.created_by))}
+          </TextCenterDetails>
+          <TextCenterDetails>
+            {capitalizeText(column.function)}
+          </TextCenterDetails>
+          <TextCenterDetails>
+            {column.start_at
+              ? formatDate(column.start_at, "DD/MM/YYYY")
+              : "Não informado"}
+          </TextCenterDetails>
+          <TextCenterDetails>
+            {column.end_at
+              ? formatDate(column.end_at, "DD/MM/YYYY")
+              : "Não informado"}
+          </TextCenterDetails>
+          <TextCenterDetails sx={{ width: "100px" }}>
+            <PrintIcon
+              sx={{
+                color: "var(--secondary)",
+                cursor: "pointer",
+                "& > path": { cursor: "pointer" },
+              }}
+            />
+          </TextCenterDetails>
+        </ContentDetailsAccordion>
+        {data.length !== index + 1 ? (
+          <Divider sx={{ width: "100%", margin: "0 auto" }} />
+        ) : (
+          ""
+        )}
+      </>
+    ));
+
+  const antibioticStack = (data: any) => (
+    <Stack spacing={1} sx={{ margin: "16px 16px 0" }}>
+      {data.map((day: any, index: number) =>
+        day[1].map((item: any, index: number) => (
+          <PaperStyled key={`${item.id}_${index}`}>
+            <Box sx={{ display: "flex", gap: "8px" }}>
+              <Box sx={{ width: "80px" }}>
+                {formatDate(item.start_at, "DD/MM/YYYY")}
+              </Box>
+              <Box>{capitalizeText(item.name)}</Box>
+              <Box
+                sx={{ width: "40px" }}
+              >{`${item.actual_days}/${item.qtd_days}`}</Box>
+              <Box>{getFirstAndLastName(capitalizeText(item.created_by))}</Box>
+            </Box>
+            <Box>
+              <PrintIcon
+                sx={{
+                  cursor: "pointer",
+                  "& > path": { cursor: "pointer" },
+                }}
+              />
+            </Box>
+          </PaperStyled>
+        ))
+      )}
+    </Stack>
+  );
+
+  console.log(content, "DATAAAA");
   return (
     <>
       {content.loading && <Loading />}
@@ -1165,6 +1314,8 @@ export default function AccordionReport(props: IAccordionReport) {
           ) : (
             NoData()
           )
+        ) : reportType === "Antibióticos" ? (
+          <Container>{antibioticStack(content.data)}</Container>
         ) : (
           ""
         )

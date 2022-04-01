@@ -95,6 +95,9 @@ import { UserTypes } from "./users/types";
 import { PrescriptionTypes } from "./prescripition/types";
 import { loadPrescriptionByCareId } from "./prescripition/saga";
 
+import { AntibioticTypes } from "./antibiotic/types";
+import { get as getAntibiotic } from "./antibiotic/sagas";
+
 //import { CareTypes } from './cares/types';
 import {
   get as getUsers,
@@ -379,5 +382,10 @@ export default function* rootSaga(): any {
       PrescriptionTypes.LOAD_REQUEST_PRESCRIPTION_BY_CARE_ID,
       loadPrescriptionByCareId
     ),
+
+    /**
+     * ANTIBIOTIC
+     */
+    takeLatest(AntibioticTypes.LOAD_REQUEST, getAntibiotic),
   ]);
 }

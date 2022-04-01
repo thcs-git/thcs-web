@@ -51,7 +51,7 @@ import { loadRequest as loadRequestMeasurements } from "../../../store/ducks/mea
 import { loadRequest as loadRequestQrCode } from "../../../store/ducks/qrCode/actions";
 import { ApplicationState } from "../../../store";
 import { loadRequestByCareId as loadRequestPrescriptionByCareId } from "../../../store/ducks/prescripition/actions";
-
+import { loadRequest as loadRequestAntibiotic } from "../../../store/ducks/antibiotic/actions";
 interface IPageParams {
   id?: string;
 }
@@ -152,6 +152,9 @@ export default function PatientOverview(
   const prescriptionState = useSelector(
     (state: ApplicationState) => state.prescription
   );
+  const antibioticState = useSelector(
+    (state: ApplicationState) => state.antibiotic
+  );
   const qrCodeState = useSelector((state: ApplicationState) => state.qrCode);
   const [team, setTeam] = useState<any[]>([]);
   const [reportActive, setReportActive] = useState(false);
@@ -179,14 +182,14 @@ export default function PatientOverview(
   }, [careState.schedule]);
 
   useEffect(() => {
-    if (patientState.data._id) {
-      dispatch(loadRequestAllergies(patientState.data._id));
+    if (careState?.data?.patient_id?._id) {
+      dispatch(loadRequestAllergies(careState?.data?.patient_id?._id));
     }
-  }, [patientState.data._id, integration]);
+  }, [careState?.data?.patient_id?._id, integration]);
 
   useEffect(() => {
-    if (patientState?.data?._id && reportType === "Aferições") {
-      dispatch(loadRequestMeasurements(patientState?.data?._id));
+    if (careState?.data?.patient_id?._id && reportType === "Aferições") {
+      dispatch(loadRequestMeasurements(careState?.data?.patient_id?._id));
     }
     if (careState.data._id && reportType === "Evolução") {
       dispatch(loadEvolutionRequest(careState?.data?._id));
@@ -207,7 +210,11 @@ export default function PatientOverview(
             })
           );
     }
+    if (careState?.data?.patient_id?._id && reportType === "Antibióticos") {
+      dispatch(loadRequestAntibiotic(careState?.data?.patient_id?._id));
+    }
   }, [careState.data._id, reportType]);
+
   const handleTeam = useCallback(() => {
     const teamUsers: any = [];
 
@@ -549,6 +556,15 @@ export default function PatientOverview(
         data: Object.entries(prescriptionState.data.prescriptionData),
         loading: prescriptionState.loading,
         error: prescriptionState.error,
+      };
+    } else if (
+      report === "Antibióticos" &&
+      Object.keys(antibioticState.data).length > 0
+    ) {
+      return {
+        data: Object.entries(antibioticState.data),
+        loading: antibioticState.loading,
+        error: antibioticState.error,
       };
     } else {
       return "";

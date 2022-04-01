@@ -8,6 +8,8 @@ import AccordionSummary from "@mui/material/AccordionSummary";
 import Box from "@mui/material/Box";
 import Container from "@mui/material/Container";
 import Button, { ButtonProps } from "@mui/material/Button";
+import Paper, { PaperProps } from "@mui/material/Paper";
+import Stack, { StackProps } from "@mui/material/Stack";
 
 export const AccordionStyled = styled(Accordion)`
   color: var(--black);
@@ -97,3 +99,22 @@ export const ContainerStyled = styled(Container)`
     color: var(--white);
   }
 `;
+
+export const PaperStyled = styledMui(Paper)<PaperProps>(({ theme }) => ({
+  minHeight: "48px",
+  display: "flex",
+  flexDirection: "row",
+  alignItems: "center",
+  justifyContent: "space-between",
+  padding: "0 16px",
+  gap: "4px",
+  borderRadius: "12px",
+  color: "var(--black)",
+  svg: { color: "var(--secondary)" },
+  transition: "200ms",
+  "&:hover": {
+    backgroundColor: "var(--secondary)",
+    color: "var(--white)",
+    svg: { color: "var(--white)" },
+  },
+}));
