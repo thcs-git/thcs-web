@@ -50,6 +50,10 @@ import {
   loadCheckinReportSuccess,
   loadCheckinReportFailure,
   loadEvolutionFilterSuccess,
+  loadMeasurementFilterRequest,
+  loadMeasurementFilterSuccess,
+  loadAllergyFilterRequest,
+  loadAdverseEventFilterRequest, loadAllergyFilterSuccess, loadAdverseEventFilterSuccess,
 } from "./actions";
 
 import { apiIntegra, apiSollar } from "../../../services/axios";
@@ -203,6 +207,7 @@ export function* createCare({ payload: { data } }: any) {
 export function* updateCare({ payload: { data } }: any) {
   const { _id } = data;
 
+  console.log(data, " DATA REQUESTTT");
   try {
     const response: AxiosResponse = yield call(
       apiSollar.put,
@@ -212,6 +217,7 @@ export function* updateCare({ payload: { data } }: any) {
     );
 
     toast.success("Atendimento atualizado com sucesso!");
+    console.log(response.data, "DATAA RESPONSE");
     yield put(updateCareSuccess(response.data));
   } catch (error) {
     toast.error("Não foi possível atualizar os dados do atendimento");
@@ -864,11 +870,105 @@ export function* getFilterEvolution({ payload }: any) {
       `/evolution?dataStart=${dataStart}&dataEnd=${dataEnd}&name=${name}&type=${type}`,
       { responseType: "blob", headers: { ...headers } }
     );
-    console.log("dasdsadsadsa");
     yield put(loadEvolutionFilterSuccess(response.data));
-    console.log("1");
   } catch (err) {
     toast.error("Erro ao Filtrar Relatório De Evolução");
+    yield put(loadCheckinReportFailure());
+  }
+}
+
+export function* getFilterMeasurement({ payload }: any) {
+  try {
+    let { dataStart, dataEnd, type, name } = payload;
+    dataStart =
+        typeof dataStart === "string"
+            ? dataStart
+            : formatDate(dataStart["$d"], "YYYY-MM-DD");
+    dataEnd =
+        typeof dataEnd === "string"
+            ? dataEnd
+            : formatDate(dataEnd["$d"], "YYYY-MM-DD");
+    payload = {
+      ...payload,
+      dataStart,
+      dataEnd,
+    };
+    const integration = sessionStorage.getItem(SESSIONSTORAGE.INTEGRATION);
+    const headers = integration
+        ? { token, external_attendance_id: payload.attendance_id }
+        : { token, attendance_id: payload.attendance_id };
+    const response: AxiosResponse = yield call(
+        apiSollarReport.get,
+        `/measurement?dataStart=${dataStart}&dataEnd=${dataEnd}&name=${name}&type=${type}`,
+        { responseType: "blob", headers: { ...headers } }
+    );
+    yield put(loadMeasurementFilterSuccess(response.data));
+  } catch (err) {
+    toast.error("Erro ao Filtrar Relatório De Aferição");
+    yield put(loadCheckinReportFailure());
+  }
+}
+
+export function* getFilterAllergy({ payload }: any) {
+  try {
+    let { dataStart, dataEnd, type, name } = payload;
+    dataStart =
+        typeof dataStart === "string"
+            ? dataStart
+            : formatDate(dataStart["$d"], "YYYY-MM-DD");
+    dataEnd =
+        typeof dataEnd === "string"
+            ? dataEnd
+            : formatDate(dataEnd["$d"], "YYYY-MM-DD");
+    payload = {
+      ...payload,
+      dataStart,
+      dataEnd,
+    };
+    const integration = sessionStorage.getItem(SESSIONSTORAGE.INTEGRATION);
+    const headers = integration
+        ? { token, external_attendance_id: payload.attendance_id }
+        : { token, attendance_id: payload.attendance_id };
+    const response: AxiosResponse = yield call(
+        apiSollarReport.get,
+        `/allergy?dataStart=${dataStart}&dataEnd=${dataEnd}&name=${name}&type=${type}&patient_id=${payload.patient_id}`,
+        { responseType: "blob", headers: { ...headers } }
+    );
+    yield put(loadAllergyFilterSuccess(response.data));
+  } catch (err) {
+    toast.error("Erro ao Filtrar Relatório De Alergia");
+    yield put(loadCheckinReportFailure());
+  }
+}
+
+export function* getFilterAdverseEvent({ payload }: any) {
+  try {
+    let { dataStart, dataEnd, type, name } = payload;
+    dataStart =
+        typeof dataStart === "string"
+            ? dataStart
+            : formatDate(dataStart["$d"], "YYYY-MM-DD");
+    dataEnd =
+        typeof dataEnd === "string"
+            ? dataEnd
+            : formatDate(dataEnd["$d"], "YYYY-MM-DD");
+    payload = {
+      ...payload,
+      dataStart,
+      dataEnd,
+    };
+    const integration = sessionStorage.getItem(SESSIONSTORAGE.INTEGRATION);
+    const headers = integration
+        ? { token, external_attendance_id: payload.attendance_id }
+        : { token, attendance_id: payload.attendance_id };
+    const response: AxiosResponse = yield call(
+        apiSollarReport.get,
+        `/allergy/event?dataStart=${dataStart}&dataEnd=${dataEnd}&name=${name}&type=${type}&patient_id=${payload.patient_id}`,
+        { responseType: "blob", headers: { ...headers } }
+    );
+    yield put(loadAdverseEventFilterSuccess(response.data));
+  } catch (err) {
+    toast.error("Erro ao Filtrar Relatório De Evento Adverso");
     yield put(loadCheckinReportFailure());
   }
 }

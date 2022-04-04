@@ -1,10 +1,12 @@
 import styled from "styled-components";
+import { styled as styledMui } from "@mui/system";
 
 import AppBar from "@material-ui/core/AppBar";
 import Tabs from "@material-ui/core/Tabs";
 import Tab from "@material-ui/core/Tab";
 import { FormControl } from "@material-ui/core";
 import Box from "@mui/material/Box";
+import Button, { ButtonProps } from "@mui/material/Button";
 
 export const TabContent = styled(AppBar)`
   //margin-bottom: 10px;
@@ -213,3 +215,19 @@ export const WrapperHeaderForm = styled(Box)`
   margin-right: 1.7px;
   margin-bottom: 4px;
 `;
+
+export const ButtonStyle = styledMui(Button)<ButtonProps>(({ theme }) => ({
+  border: "1px solid var(--success)",
+  gap: "9px",
+  color: "var(--success)",
+  fontWeight: "600",
+  textTransform: "capitalize",
+  cursor: "pointer",
+
+  "&> div": {
+    cursor: "pointer",
+  },
+  "&:hover": {
+    border: "1px solid  var(--success-hover)",
+  },
+}));

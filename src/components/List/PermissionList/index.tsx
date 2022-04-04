@@ -32,6 +32,7 @@ import {
   checkEditPermission,
 } from "../../../utils/permissions";
 import { toast } from "react-toastify";
+import NoPermission from "../../Erros/NoPermission";
 interface IComponent {
   customerState: any;
   mode: string;
@@ -124,9 +125,6 @@ const PermissionList = (props: IComponent) => {
                               )
                             : setModePermission("view");
                           setIdPermission(permissions);
-                          // history.push(
-                          //   `/client/${customerState.data._id}/permission/${permissions}/view/`
-                          // );
                         }}
                       ></ButtonView>
                     </TableCell>
@@ -135,7 +133,9 @@ const PermissionList = (props: IComponent) => {
                         canEdit={true}
                         setCanEdit={() => {
                           !checkEditPermission("permissions")
-                            ? toast.error("Você não tem permissão para Editar.")
+                            ? toast.error(
+                                "Você não tem permissão para editar permissões."
+                              )
                             : setModePermission("edit");
                           setIdPermission(permissions);
 
@@ -153,29 +153,41 @@ const PermissionList = (props: IComponent) => {
         </Table>
       ) : modePermission === "view" ? (
         <>
-          <PermissionForm
-            state={state}
-            setState={setState}
-            customerState={customerState}
-            userState={userState}
-            params={params}
-            modePermission={modePermission}
-            idPermission={idPermission}
-          />
-          <ButtonTabs canEdit={false} buttons={buttonsPermission} />
+          {checkViewPermission("permissions") ? (
+            <>
+              <PermissionForm
+                state={state}
+                setState={setState}
+                customerState={customerState}
+                userState={userState}
+                params={params}
+                modePermission={modePermission}
+                idPermission={idPermission}
+              />
+              <ButtonTabs canEdit={false} buttons={buttonsPermission} />
+            </>
+          ) : (
+            <NoPermission />
+          )}
         </>
       ) : modePermission === "edit" || modePermission === "create" ? (
         <>
-          <PermissionForm
-            state={state}
-            setState={setState}
-            customerState={customerState}
-            userState={userState}
-            params={params}
-            modePermission={modePermission}
-            idPermission={idPermission}
-          />
-          <ButtonTabs canEdit={true} buttons={buttonsPermission} />
+          {checkEditPermission("permissions") ? (
+            <>
+              <PermissionForm
+                state={state}
+                setState={setState}
+                customerState={customerState}
+                userState={userState}
+                params={params}
+                modePermission={modePermission}
+                idPermission={idPermission}
+              />
+              <ButtonTabs canEdit={true} buttons={buttonsPermission} />
+            </>
+          ) : (
+            <NoPermission />
+          )}
         </>
       ) : (
         ""

@@ -86,13 +86,13 @@ export default function Configuration() {
             company.companie_id.external_id
           );
           localStorage.setItem(
-            LOCALSTORAGE.SOLLAR_INTEGRATION_USE_ID,
+            LOCALSTORAGE.SOLLAR_INTEGRATION_USER_ID,
             company.user_external_id
           );
         } else {
           sessionStorage.removeItem(SESSIONSTORAGE.INTEGRATION);
           localStorage.removeItem(LOCALSTORAGE.INTEGRATION_COMPANY_SELECTED);
-          localStorage.removeItem(LOCALSTORAGE.SOLLAR_INTEGRATION_USE_ID);
+          localStorage.removeItem(LOCALSTORAGE.SOLLAR_INTEGRATION_USER_ID);
         }
 
         setUser((prevState) => ({

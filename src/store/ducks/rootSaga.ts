@@ -92,6 +92,9 @@ import { get as getMessage, getMessageById } from "./message/sagas";
 
 import { UserTypes } from "./users/types";
 
+import { PrescriptionTypes } from "./prescripition/types";
+import { loadPrescriptionByCareId } from "./prescripition/saga";
+
 //import { CareTypes } from './cares/types';
 import {
   get as getUsers,
@@ -153,7 +156,7 @@ import {
   getChekin,
   getChekInReport,
   getFilterCheckin,
-  getFilterEvolution,
+  getFilterEvolution, getFilterMeasurement, getFilterAllergy, getFilterAdverseEvent,
 } from "./cares/sagas";
 
 import { get as getProfession } from "./professions/sagas";
@@ -252,6 +255,9 @@ export default function* rootSaga(): any {
     takeLatest(CareTypes.LOAD_CHECKIN_REPORT_REQUEST, getChekInReport),
     takeLatest(CareTypes.LOAD_CHECKIN_FILTER_REQUEST, getFilterCheckin),
     takeLatest(CareTypes.LOAD_EVOLUTION_FILTER_REQUEST, getFilterEvolution),
+    takeLatest(CareTypes.LOAD_MEASUREMENT_FILTER_REQUEST, getFilterMeasurement),
+    takeLatest(CareTypes.LOAD_ALLERGY_FILTER_REQUEST, getFilterAllergy),
+    takeLatest(CareTypes.LOAD_ADVERSE_EVENT_FILTER_REQUEST, getFilterAdverseEvent),
 
     // Council
     takeLatest(CouncilTypes.LOAD_REQUEST, getCouncils),
@@ -368,5 +374,13 @@ export default function* rootSaga(): any {
     takeLatest(QrCodeTypes.LOAD_REQUEST, getQrCode),
     takeLatest(QrCodeTypes.CREATE_QRCODE_REQUEST, createQrCode),
     takeLatest(QrCodeTypes.UPDATE_QRCODE_REQUEST, updateQrCode),
+
+    /**
+     * PRESCRIPTION
+     */
+    takeLatest(
+      PrescriptionTypes.LOAD_REQUEST_PRESCRIPTION_BY_CARE_ID,
+      loadPrescriptionByCareId
+    ),
   ]);
 }

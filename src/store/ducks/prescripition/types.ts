@@ -12,13 +12,14 @@ export enum PrescriptionTypes {
   UPDATE_PRESCRIPTION_REQUEST = "@prescripition/UPDATE_PRESCRIPTION_REQUEST",
   UPDATE_PRESCRIPTION_SUCCESS = "@prescripition/UPDATE_PRESCRIPTION_SUCCESS",
 
-
-
   LOAD_REQUEST_PRESCRIPTION_BY_ID = "@prescripition/LOAD_REQUEST_PRESCRIPTION_BY_ID",
   LOAD_SUCCCES_PRESCRIPTION_BY_ID = "@prescripition/LOAD_SUCCCES_PRESCRIPTION_BY_ID",
 
   SEARCH_REQUEST = "@prescripition/SEARCH_REQUEST",
 
+  LOAD_REQUEST_PRESCRIPTION_BY_CARE_ID = "@prescripition/LOAD_REQUEST_PRESCRIPTION_BY_CARE_ID",
+  LOAD_SUCCESS_PRESCRIPTION_BY_CARE_ID = "@prescripition/LOAD_SUCCESS_PRESCRIPTION_BY_CARE_ID",
+  LOAD_FAILURE_PRESCRIPTION_BY_CARE_ID = "@prescripition/LOAD_FAILURE_PRESCRIPTION_BY_CARE_ID",
 }
 
 /**
@@ -27,8 +28,8 @@ export enum PrescriptionTypes {
 
 export interface PrescriptionAddressInterface {
   postal_code: string;
-  street: string,
-  number: string,
+  street: string;
+  number: string;
   district: string;
   city: string;
   state: string;
@@ -40,32 +41,33 @@ export interface PrescriptionPhonesInterface {
   telegram: boolean;
   cellnumber?: string;
   number?: string;
-};
+}
 
 export interface PrescriptionInterface {
   _id?: string;
   companies: [string] | [];
-	name: string;
+  name: string;
   social_name: string;
   birthdate: string;
   gender: string;
-	mother_name: string;
-	profession: string;
-	nationality: string;
+  mother_name: string;
+  profession: string;
+  nationality: string;
   naturalness: string;
   marital_status: string;
   fiscal_number: string;
   national_id: string;
   issuing_organ: string;
-	address_id: PrescriptionAddressInterface;
-	email: string;
+  address_id: PrescriptionAddressInterface;
+  email: string;
   phones: PrescriptionPhonesInterface[] | [];
-	sus_card: string;
-	blood_type: string;
-	organ_donor: boolean;
-	active: boolean;
+  sus_card: string;
+  blood_type: string;
+  organ_donor: boolean;
+  active: boolean;
+  prescriptionData: any;
 }
-
+export interface IPrescripstionData {}
 export interface PrescriptionList {
   data: PrescriptionDataItems[];
   limit: string;
@@ -83,13 +85,13 @@ export interface PrescriptionDataItems {
 }
 
 export interface ViacepDataInterface {
-  cep: string,
-  logradouro: string,
-  complemento: string,
-  bairro: string,
-  localidade: string,
-  uf: string,
-  erro?: boolean,
+  cep: string;
+  logradouro: string;
+  complemento: string;
+  bairro: string;
+  localidade: string;
+  uf: string;
+  erro?: boolean;
 }
 
 /**
@@ -103,4 +105,4 @@ export interface PrescriptionState {
   success: boolean;
 }
 
-export type LoadRequestParams = Partial<Omit<PrescriptionList, 'data'>>
+export type LoadRequestParams = Partial<Omit<PrescriptionList, "data">>;

@@ -30,6 +30,7 @@ import Evolution from "../../Icons/Evolution";
 import Check from "../../Icons/Check";
 import Drug from "../../Icons/Drug";
 import AdverseEvent from "../../Icons/AdverseEvent";
+import Prescription from "../../Icons/Prescription";
 // styled components and style
 import {
     AccordionStyled as Accordion,
@@ -54,8 +55,10 @@ import {
 } from "../../../store/ducks/allergies/types";
 import {IconButton} from "@mui/material";
 import {
+    loadAdverseEventFilterRequest,
+    loadAllergyFilterRequest,
     loadCheckinFilterRequest,
-    loadCheckinReportRequest, loadEvolutionFilterRequest,
+    loadCheckinReportRequest, loadEvolutionFilterRequest, loadMeasurementFilterRequest,
 } from "../../../store/ducks/cares/actions";
 import {useDispatch, useSelector} from "react-redux";
 import {CareState} from "../../../store/ducks/cares/types";
@@ -174,7 +177,17 @@ export default function AccordionReport(props: IAccordionReport) {
         },
     ];
     // console.log(content.data, "DATAAA");
-
+    const NoData = () => (
+        <Box
+            sx={{
+                textAlign: "center",
+                color: "var(--gray-dark)",
+                padding: "8px 0 16px",
+            }}
+        >
+            Não há relatórios para o prontuário de {reportType}
+        </Box>
+    );
     const handleChange =
         (panel: string) => (event: React.SyntheticEvent, isExpanded: boolean) => {
             setExpanded(isExpanded ? panel : false);
@@ -197,7 +210,6 @@ export default function AccordionReport(props: IAccordionReport) {
             fullName.split(" ")[fullName.split(" ").length - 1]
         }`;
     };
-
     const handleFunction = (list: any, company: string, type?: string) => {
         if (type === "allergy" || type === "event") {
             if (!list.created_by?.companies_links || list.created_by === null)
@@ -561,7 +573,9 @@ export default function AccordionReport(props: IAccordionReport) {
                                         {column.created_by
                                             ? integration
                                                 ? typeof column.created_by === "string"
-                                                    ? getFirstAndLastName(capitalizeText(column.created_by))
+                                                    ? getFirstAndLastName(
+                                                        capitalizeText(column.created_by)
+                                                    )
                                                     : "-"
                                                 : typeof column.created_by === "string"
                                                     ? getFirstAndLastName(
@@ -672,7 +686,9 @@ export default function AccordionReport(props: IAccordionReport) {
                                     color: `${column.active ? "#333333" : "#7D7D7D"}`,
                                 }}
                             >
-                                {getFirstAndLastName(capitalizeText(column.created_by[0]?.name))}
+                                {getFirstAndLastName(
+                                    capitalizeText(column.created_by[0]?.name)
+                                )}
                             </TextCenterDetails>
                             <TextCenterDetails
                                 sx={{
@@ -705,15 +721,17 @@ export default function AccordionReport(props: IAccordionReport) {
                                             _id: column._id,
                                             type: "Id",
                                             name: column._id,
-                                            dataStart: '',
-                                            dataEnd: '',
+                                            dataStart: "",
+                                            dataEnd: "",
                                             reportType: "Evolução",
                                             attendance_id: state?.data?._id,
                                         };
                                         dispatch(loadEvolutionFilterRequest(payload));
                                     }}
                                 >
-                                    <PrintIcon sx={{cursor: "pointer", color: "var(--secondary)"}}/>
+                                    <PrintIcon
+                                        sx={{cursor: "pointer", color: "var(--secondary)"}}
+                                    />
                                 </IconButton>
                             </TextCenterDetails>
                         </ContentDetailsAccordion>
@@ -810,13 +828,38 @@ export default function AccordionReport(props: IAccordionReport) {
                                         margin: "2px",
                                     }}
                                 >
-                                    {handleMeasurementItemsIcons(checkMeasurementValue(column.itens), column.canceled)}
+                                    {handleMeasurementItemsIcons(
+                                        checkMeasurementValue(column.itens),
+                                        column.canceled
+                                    )}
                                 </Box>
                             </TextCenterDetails>
                             <TextCenterDetails
                                 sx={{width: "100px", justifyContent: "center"}}
                             >
-                                <PrintIcon sx={{color: "var(--secondary)"}}/>
+                                <IconButton
+                                    color="secondary"
+                                    aria-label="print"
+                                    sx={{cursor: "pointer", height: "10px", color: 'var(--secondary)'}}
+                                    onClick={() => {
+                                        if (reportType === 'Aferições') {
+                                            const payload = {
+                                                _id: column._id,
+                                                type: "Id",
+                                                name: column._id,
+                                                dataStart: '',
+                                                dataEnd: '',
+                                                reportType: "Aferições",
+                                                attendance_id: state?.data?._id,
+                                            };
+                                            dispatch(loadMeasurementFilterRequest(payload));
+                                        }
+                                    }}
+                                >
+                                    <PrintIcon
+                                        sx={{cursor: "pointer", marginRight: "12px"}}
+                                    />
+                                </IconButton>
                             </TextCenterDetails>
                         </ContentDetailsAccordion>
                         {list.length !== index + 1 ? (
@@ -830,6 +873,120 @@ export default function AccordionReport(props: IAccordionReport) {
         }
     };
 
+    // Accordion das Prescrições
+    const prescriptionAccordion = (data: any) =>
+        data.map((day: any, index: number) => (
+            <Accordion
+                key={day[0]}
+                disableGutters={true}
+                expanded={expanded === `panel${index}`}
+                onChange={handleChange(`panel${index}`)}
+            >
+                <AccordionSummary
+                    expandIcon={<ExpandMoreIcon/>}
+                    aria-controls={`panel${index}bh-content`}
+                    id={`panel${index}bh-header`}
+                >
+                    <Box
+                        sx={{
+                            display: "flex",
+                            gap: "8px",
+                            flexDirection: "row",
+                            justifyContent: "space-between",
+                        }}
+                    >
+                        <Prescription
+                            fill={
+                                expanded === `panel${index}`
+                                    ? "var(--white)"
+                                    : "var(--gray-dark)"
+                            }
+                            width="22px"
+                            height={"22px"}
+                        />
+
+                        <Box
+                            sx={{
+                                display: "flex",
+                                justifyContent: "space-between",
+                            }}
+                        >
+                            {day[0]}
+                        </Box>
+                    </Box>
+                    <Box sx={{cursor: "pointer"}}>
+                        <IconButton
+                            color="secondary"
+                            aria-label="print"
+                            sx={{cursor: "pointer", height: "10px"}}
+                            onClick={() => {
+                                console.log("CLIQUEI");
+                            }}
+                        >
+                            <PrintIcon
+                                sx={{
+                                    cursor: "pointer",
+                                    marginRight: "12px",
+                                    "& path": {cursor: "pointer"},
+                                }}
+                            />
+                        </IconButton>
+                    </Box>
+                </AccordionSummary>
+                <AccordionDetails>
+                    {prescriptionAccordionHeader()}
+                    {prescriptionAccordionDetails(day[1])}
+                </AccordionDetails>
+            </Accordion>
+        ));
+    const prescriptionAccordionHeader = () => (
+        <HeaderDetailsAccordion>
+            <TextCenterDetails>Id. Prescrição</TextCenterDetails>
+            <TextCenterDetails>Profissional</TextCenterDetails>
+            <TextCenterDetails>Função</TextCenterDetails>
+            <TextCenterDetails>Data Início</TextCenterDetails>
+            <TextCenterDetails>Data Fim</TextCenterDetails>
+            <TextCenterDetails sx={{width: "100px"}}>Opções</TextCenterDetails>
+        </HeaderDetailsAccordion>
+    );
+    const prescriptionAccordionDetails = (data: any) =>
+        data.map((column: any, index: number) => (
+            <>
+                <ContentDetailsAccordion key={column._id}>
+                    <TextCenterDetails>{column._id}</TextCenterDetails>
+                    <TextCenterDetails>
+                        {getFirstAndLastName(capitalizeText(column.created_by))}
+                    </TextCenterDetails>
+                    <TextCenterDetails>
+                        {capitalizeText(column.function)}
+                    </TextCenterDetails>
+                    <TextCenterDetails>
+                        {column.start_at
+                            ? formatDate(column.start_at, "DD/MM/YYYY")
+                            : "Não informado"}
+                    </TextCenterDetails>
+                    <TextCenterDetails>
+                        {column.end_at
+                            ? formatDate(column.end_at, "DD/MM/YYYY")
+                            : "Não informado"}
+                    </TextCenterDetails>
+                    <TextCenterDetails sx={{width: "100px"}}>
+                        <PrintIcon
+                            sx={{
+                                color: "var(--secondary)",
+                                cursor: "pointer",
+                                "& > path": {cursor: "pointer"},
+                            }}
+                        />
+                    </TextCenterDetails>
+                </ContentDetailsAccordion>
+                {data.length !== index + 1 ? (
+                    <Divider sx={{width: "100%", margin: "0 auto"}}/>
+                ) : (
+                    ""
+                )}
+            </>
+        ));
     return (
         <>
             {content.loading && <Loading/>}
@@ -926,7 +1083,7 @@ export default function AccordionReport(props: IAccordionReport) {
                                                                 attendance_id: state?.data?._id,
                                                             };
                                                             dispatch(loadCheckinFilterRequest(payload));
-                                                        } else if (reportType === 'Evolução') {
+                                                        } else if (reportType === "Evolução") {
                                                             const payload = {
                                                                 _id: "",
                                                                 type: "Group",
@@ -937,6 +1094,17 @@ export default function AccordionReport(props: IAccordionReport) {
                                                                 attendance_id: state?.data?._id,
                                                             };
                                                             dispatch(loadEvolutionFilterRequest(payload))
+                                                        } else if (reportType === 'Aferições') {
+                                                            const payload = {
+                                                                _id: "",
+                                                                type: "Group",
+                                                                name: "",
+                                                                dataStart: _id,
+                                                                dataEnd: _id,
+                                                                reportType: "Aferições",
+                                                                attendance_id: state?.data?._id,
+                                                            };
+                                                            dispatch(loadMeasurementFilterRequest(payload))
                                                         }
                                                     }}
                                                 >
@@ -997,16 +1165,44 @@ export default function AccordionReport(props: IAccordionReport) {
                                                 {item === "event" && "Eventos adversos"}
                                             </Box>
                                         </Box>
-                                        <TextCenterDetails
-                                            sx={{width: "100px", justifyContent: "flex-start"}}
-                                        >
-                                            {/*<DownloadIcon*/}
-                                            {/*  sx={{ cursor: "pointer", marginRight: "12px" }}*/}
-                                            {/*/>*/}
-                                            <PrintIcon
-                                                sx={{cursor: "pointer", marginRight: "12px"}}
-                                            />
-                                        </TextCenterDetails>
+                                        <Box>
+                                            <IconButton
+                                                color="secondary"
+                                                aria-label="print"
+                                                sx={{cursor: "pointer", height: "10px"}}
+                                                onClick={() => {
+                                                    if (item === "allergy") {
+                                                        const payload = {
+                                                            _id: "",
+                                                            type: "Group",
+                                                            name: "",
+                                                            dataStart: "",
+                                                            dataEnd: "",
+                                                            reportType: "Alergias",
+                                                            attendance_id: state?.data?._id,
+                                                            patient_id: state?.data?.patient_id?._id,
+                                                        };
+                                                        dispatch(loadAllergyFilterRequest(payload));
+                                                    } else if (item === "event") {
+                                                        const payload = {
+                                                            _id: "",
+                                                            type: "Group",
+                                                            name: "",
+                                                            dataStart: "",
+                                                            dataEnd: "",
+                                                            reportType: "Evento Adverso",
+                                                            attendance_id: state?.data?._id,
+                                                            patient_id: state?.data?.patient_id?._id,
+                                                        };
+                                                        dispatch(loadAdverseEventFilterRequest(payload));
+                                                    }
+                                                }}
+                                            >
+                                                <PrintIcon
+                                                    sx={{cursor: "pointer", marginRight: "12px"}}
+                                                />
+                                            </IconButton>
+                                        </Box>
                                     </AccordionSummary>
                                     <AccordionDetails>
                                         {handleHeaderDetails(item)}
@@ -1016,19 +1212,26 @@ export default function AccordionReport(props: IAccordionReport) {
                             );
                         })}
                     </Container>
+                ) : reportType === "Prescrições" ? (
+                    content.data.length > 0 ? (
+                        <Container>
+                            {integration ? (
+                                prescriptionAccordion(content.data)
+                            ) : (
+                                <Box sx={{textAlign: "center", color: "var(--gray-dark)"}}>
+                                    Acordion de Prescrição não configurada para ambiente sem
+                                    integração
+                                </Box>
+                            )}
+                        </Container>
+                    ) : (
+                        NoData()
+                    )
                 ) : (
                     ""
                 )
             ) : (
-                <Box
-                    sx={{
-                        textAlign: "center",
-                        color: "var(--gray-dark)",
-                        padding: "8px 0 16px",
-                    }}
-                >
-                    Não há relatórios para o prontuário de {reportType}
-                </Box>
+                NoData()
             )}
 
             {content.error &&

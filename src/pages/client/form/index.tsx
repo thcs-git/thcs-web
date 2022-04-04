@@ -138,6 +138,7 @@ interface IPropsPermissionFrom {
   }[];
   modePermission: string;
   setModePermission: React.Dispatch<React.SetStateAction<string>>;
+  cleanSelectProfession: () => void;
 }
 
 export default function ClientForm(props: RouteComponentProps<IPageParams>) {
@@ -703,6 +704,7 @@ export default function ClientForm(props: RouteComponentProps<IPageParams>) {
     buttonsPermission: buttonsPermission,
     modePermission: modePermission,
     setModePermission: setModePermission,
+    cleanSelectProfession: cleanSelectProfession,
   };
   function cleanSelectProfession() {
     setPermissionState((prevState: any) => ({
@@ -751,39 +753,7 @@ export default function ClientForm(props: RouteComponentProps<IPageParams>) {
             </>
           ) : (
             <>
-              {initialTab === 1 ? (
-                <>
-                  <WrapperTitle>
-                    <TabTittle tittle={"Detalhamento do Cliente"} />
-                    <ButtonStyle
-                      variant="contained"
-                      onClick={
-                        () => {
-                          !checkEditPermission("permissions")
-                            ? toast.error(
-                                "Você não tem permissão para criar nova permissão."
-                              )
-                            : setModePermission("create");
-                          cleanSelectProfession();
-                        }
-                        // history.push(
-                        //   `/client/${customerState.data._id}/permission/create/`
-                        // )
-                      }
-                    >
-                      Adicionar função
-                    </ButtonStyle>
-                  </WrapperTitle>
-                </>
-              ) : (
-                <>
-                  <TabTittle
-                    tittle={"Detalhamento do Cliente"}
-                    // icon={!canEdit &&
-                    // <ButtonEdit setCanEdit={() => setCanEdit(!canEdit)} canEdit={canEdit}>Editar</ButtonEdit>}
-                  />
-                </>
-              )}
+              <TabTittle tittle={"Detalhamento do Cliente"} />
               <TabForm
                 navItems={NavItems}
                 state={state}
