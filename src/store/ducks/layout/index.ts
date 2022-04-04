@@ -1,10 +1,10 @@
-import {Reducer} from "redux";
-import {LayoutState, LayoutTypes} from "./types"
-import {UserTypes} from "../users/types";
+import { Reducer } from "redux";
+import { LayoutState, LayoutTypes } from "./types";
+import { UserTypes } from "../users/types";
 
 export const INITIAL_STATE: LayoutState = {
   data: {
-    token: '',
+    token: "",
     rights: [],
     integration: null,
     integration_name: null,
@@ -32,12 +32,12 @@ const reducer: Reducer<LayoutState> = (state = INITIAL_STATE, action) => {
         data: action.payload.data,
         loading: false,
         error: true,
-        success: true,
+        success: false,
       };
-    case UserTypes.CLEAN:
+    case LayoutTypes.CLEAN:
       return INITIAL_STATE;
     default:
       return state;
   }
-}
+};
 export default reducer;

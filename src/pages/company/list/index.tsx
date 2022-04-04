@@ -53,6 +53,9 @@ export default function CompanyList() {
   const companyState = useSelector(
     (state: ApplicationState) => state.companies
   );
+  const rightsOfLayoutState = useSelector(
+    (state: ApplicationState) => state.layout.data.rights
+  );
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const [search, setSearch] = useState("");
 
@@ -112,7 +115,7 @@ export default function CompanyList() {
   return (
     <>
       <Sidebar>
-        {checkViewPermission("company") ? (
+        {checkViewPermission("company", JSON.stringify(rightsOfLayoutState)) ? (
           <Container>
             {companyState.loading && <Loading />}
             <FormTitle>Lista de Empresas</FormTitle>

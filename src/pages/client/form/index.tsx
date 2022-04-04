@@ -142,7 +142,6 @@ interface IPropsPermissionFrom {
 }
 
 export default function ClientForm(props: RouteComponentProps<IPageParams>) {
-  const rights = sessionStorage.getItem(SESSIONSTORAGE.RIGHTS);
   // console.log(rights?.split('"'), "rights");
   const history = useHistory();
   const dispatch = useDispatch();
@@ -171,7 +170,9 @@ export default function ClientForm(props: RouteComponentProps<IPageParams>) {
     (state: ApplicationState) => state.customers
   );
   const userState = useSelector((state: ApplicationState) => state.users);
-
+  const rightsOfLayoutState = useSelector(
+    (state: ApplicationState) => state.layout.data.rights
+  );
   const [inputUf, setInputUf] = useState({ index: 0 });
   const [inputPhone, setInputPhone] = useState({ value: "", error: false });
   const [inputCellPhone, setInputCellPhone] = useState({
@@ -719,7 +720,7 @@ export default function ClientForm(props: RouteComponentProps<IPageParams>) {
 
   return (
     <Sidebar>
-      {checkViewPermission("client") ? (
+      {checkViewPermission("client", JSON.stringify(rightsOfLayoutState)) ? (
         <Container>
           {customerState.loading && <Loading />}
           {params.mode === "permission//retirarTextoAposBarras" ? (

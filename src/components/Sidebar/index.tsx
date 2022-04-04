@@ -1,71 +1,78 @@
-import React, {useState, useEffect, Props, useCallback} from 'react';
-import {useDispatch, useSelector} from 'react-redux';
+import React, { useState, useEffect, Props, useCallback } from "react";
+import { useDispatch, useSelector } from "react-redux";
 
-import {ApplicationState} from '../../store';
+import { ApplicationState } from "../../store";
 
-import {loadCompanyById} from '../../store/ducks/companies/actions';
+import { loadCompanyById } from "../../store/ducks/companies/actions";
 
-import clsx from 'clsx';
-import {createStyles, makeStyles, useTheme, Theme} from '@material-ui/core/styles';
-import Drawer from '@material-ui/core/Drawer';
-import List from '@material-ui/core/List';
-import CssBaseline from '@material-ui/core/CssBaseline';
-import Divider from '@material-ui/core/Divider';
-import IconButton from '@material-ui/core/IconButton';
-import EditIcon from '@material-ui/icons/Edit';
-import MenuIcon from '@material-ui/icons/Menu';
-import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
-import ListItem from '@material-ui/core/ListItem';
-import ListItemIcon from '@material-ui/core/ListItemIcon';
-import ListItemText from '@material-ui/core/ListItemText';
-import ExitToApp from '@material-ui/icons/ExitToApp';
-import AccountCircle from '@material-ui/icons/AccountCircle';
-import SettingsIcon from '@material-ui/icons/Settings';
-import Slide from '@material-ui/core/Slide';
-import {TransitionProps} from '@material-ui/core/transitions';
-import ExpansionPanel from '@material-ui/core/ExpansionPanel';
-import ExpansionPanelSummary from '@material-ui/core/ExpansionPanelSummary';
-import ExpansionPanelDetails from '@material-ui/core/ExpansionPanelDetails';
+import clsx from "clsx";
+import {
+  createStyles,
+  makeStyles,
+  useTheme,
+  Theme,
+} from "@material-ui/core/styles";
+import Drawer from "@material-ui/core/Drawer";
+import List from "@material-ui/core/List";
+import CssBaseline from "@material-ui/core/CssBaseline";
+import Divider from "@material-ui/core/Divider";
+import IconButton from "@material-ui/core/IconButton";
+import EditIcon from "@material-ui/icons/Edit";
+import MenuIcon from "@material-ui/icons/Menu";
+import ChevronLeftIcon from "@material-ui/icons/ChevronLeft";
+import ListItem from "@material-ui/core/ListItem";
+import ListItemIcon from "@material-ui/core/ListItemIcon";
+import ListItemText from "@material-ui/core/ListItemText";
+import ExitToApp from "@material-ui/icons/ExitToApp";
+import AccountCircle from "@material-ui/icons/AccountCircle";
+import SettingsIcon from "@material-ui/icons/Settings";
+import Slide from "@material-ui/core/Slide";
+import { TransitionProps } from "@material-ui/core/transitions";
+import ExpansionPanel from "@material-ui/core/ExpansionPanel";
+import ExpansionPanelSummary from "@material-ui/core/ExpansionPanelSummary";
+import ExpansionPanelDetails from "@material-ui/core/ExpansionPanelDetails";
 
 import {
   Accordion,
   AccordionDetails,
-  AccordionSummary, Badge,
+  AccordionSummary,
+  Badge,
   Button,
   Dialog,
   DialogActions,
   DialogContent,
   DialogContentText,
-  DialogTitle, Grid,
+  DialogTitle,
+  Grid,
   MenuItem,
   Typography,
-} from '@material-ui/core';
+} from "@material-ui/core";
 
-import {useHistory} from "react-router-dom";
+import { useHistory } from "react-router-dom";
 
 /**
  * Icons
  */
-import DashboardIcon from '@material-ui/icons/Dashboard';
-import AssignmentIndIcon from '@material-ui/icons/AssignmentInd';
-import BusinessIcon from '@material-ui/icons/Business';
-import LocationOncon from '@material-ui/icons/LocationOn';
-import PersonIcon from '@material-ui/icons/Person';
-import GroupAddIcon from '@material-ui/icons/GroupAdd';
-import LocalHospital from '@material-ui/icons/LocalHospital';
-import StarRateIcon from '@material-ui/icons/StarRate';
-import FavoriteIcon from '@material-ui/icons/Favorite';
-import NotificationsIcon from '@material-ui/icons/Notifications';
+import DashboardIcon from "@material-ui/icons/Dashboard";
+import AssignmentIndIcon from "@material-ui/icons/AssignmentInd";
+import BusinessIcon from "@material-ui/icons/Business";
+import LocationOncon from "@material-ui/icons/LocationOn";
+import PersonIcon from "@material-ui/icons/Person";
+import GroupAddIcon from "@material-ui/icons/GroupAdd";
+import LocalHospital from "@material-ui/icons/LocalHospital";
+import StarRateIcon from "@material-ui/icons/StarRate";
+import FavoriteIcon from "@material-ui/icons/Favorite";
+import NotificationsIcon from "@material-ui/icons/Notifications";
 
-import {Logo, UserContent} from './styles';
-import LOCALSTORAGE from '../../helpers/constants/localStorage';
+import { Logo, UserContent } from "./styles";
+import LOCALSTORAGE from "../../helpers/constants/localStorage";
 
 // Components
-import ConfigComponent from '../Configuration';
+import ConfigComponent from "../Configuration";
 import SESSIONSTORAGE from "../../helpers/constants/sessionStorage";
-import {toast} from "react-toastify";
-import _ from 'lodash';
-import {loadRequest} from "../../store/ducks/layout/actions";
+import { toast } from "react-toastify";
+import _ from "lodash";
+import { loadRequest } from "../../store/ducks/layout/actions";
 import Message from "../Message";
 
 const drawerWidth = 270;
@@ -88,44 +95,44 @@ const drawerWidth = 270;
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     root: {
-      display: 'flex',
+      display: "flex",
       flex: 1,
     },
     hide: {
-      display: 'none',
+      display: "none",
     },
     drawer: {
       width: drawerWidth,
       flexShrink: 0,
-      whiteSpace: 'nowrap',
-      background: '#0899BA',
+      whiteSpace: "nowrap",
+      background: "#0899BA",
     },
     drawerOpen: {
       width: drawerWidth,
-      transition: theme.transitions.create('width', {
+      transition: theme.transitions.create("width", {
         easing: theme.transitions.easing.sharp,
         duration: theme.transitions.duration.enteringScreen,
       }),
-      background: '#0899BA',
-      color: '#fff',
+      background: "#0899BA",
+      color: "#fff",
     },
     drawerClose: {
-      transition: theme.transitions.create('width', {
+      transition: theme.transitions.create("width", {
         easing: theme.transitions.easing.sharp,
         duration: theme.transitions.duration.leavingScreen,
       }),
-      overflowX: 'hidden',
+      overflowX: "hidden",
       width: theme.spacing(7) + 1,
-      [theme.breakpoints.up('sm')]: {
+      [theme.breakpoints.up("sm")]: {
         width: theme.spacing(9) + 1,
       },
-      background: '#0899BA',
-      color: '#fff',
+      background: "#0899BA",
+      color: "#fff",
     },
     toolbar: {
-      display: 'flex',
-      alignItems: 'center',
-      justifyContent: 'flex-end',
+      display: "flex",
+      alignItems: "center",
+      justifyContent: "flex-end",
       padding: theme.spacing(0, 1),
       // necessary for content to be below app bar
       ...theme.mixins.toolbar,
@@ -133,10 +140,10 @@ const useStyles = makeStyles((theme: Theme) =>
     content: {
       flex: 1,
       padding: theme.spacing(3),
-      paddingBottom: 20
+      paddingBottom: 20,
     },
     logOutButton: {
-      cursor: 'pointer',
+      cursor: "pointer",
       marginLeft: 5,
     },
     indicator: {
@@ -147,20 +154,20 @@ const useStyles = makeStyles((theme: Theme) =>
     },
     customBadge: {
       backgroundColor: "var(--secondary)",
-      color: "white"
-    }
+      color: "white",
+    },
   })
 );
 
 const Transition = React.forwardRef(function Transition(
   props: TransitionProps & { children?: React.ReactElement },
-  ref: React.Ref<unknown>,
+  ref: React.Ref<unknown>
 ) {
   return <Slide direction="up" ref={ref} {...props} />;
 });
 
 interface PropsSidebar {
-  permission?: boolean
+  permission?: boolean;
 }
 
 const Sibebar = (props: Props<any>) => {
@@ -171,18 +178,21 @@ const Sibebar = (props: Props<any>) => {
   const layoutState = useSelector((state: ApplicationState) => state.layout);
 
   const [open, setOpen] = useState<Boolean>(() => {
-    let toggleSidebar = localStorage.getItem(LOCALSTORAGE.TOGGLE_SIDEBAR) || 'false';
-    return JSON.parse(toggleSidebar)
+    let toggleSidebar =
+      localStorage.getItem(LOCALSTORAGE.TOGGLE_SIDEBAR) || "false";
+    return JSON.parse(toggleSidebar);
   });
-  const [username, setUsername] = useState(localStorage.getItem(LOCALSTORAGE.USERNAME) || '');
+  const [username, setUsername] = useState(
+    localStorage.getItem(LOCALSTORAGE.USERNAME) || ""
+  );
   const [company, setCompany] = useState({
-    _id: localStorage.getItem(LOCALSTORAGE.COMPANY_SELECTED) || '',
-    name: localStorage.getItem(LOCALSTORAGE.COMPANY_NAME) || '',
+    _id: localStorage.getItem(LOCALSTORAGE.COMPANY_SELECTED) || "",
+    name: localStorage.getItem(LOCALSTORAGE.COMPANY_NAME) || "",
   });
 
   const [customer, setCustomer] = useState({
-    _id: localStorage.getItem(LOCALSTORAGE.CUSTOMER) || '',
-    name: localStorage.getItem(LOCALSTORAGE.CUSTOMER_NAME) || '',
+    _id: localStorage.getItem(LOCALSTORAGE.CUSTOMER) || "",
+    name: localStorage.getItem(LOCALSTORAGE.CUSTOMER_NAME) || "",
   });
 
   const [openModalLogout, setOpenModalLogout] = useState(false);
@@ -190,25 +200,24 @@ const Sibebar = (props: Props<any>) => {
   const [openModalMessage, setOpenModalMessage] = useState(false);
 
   const handleDrawerClose = useCallback(() => {
-    setOpen(prev => {
+    setOpen((prev) => {
       localStorage.setItem(LOCALSTORAGE.TOGGLE_SIDEBAR, JSON.stringify(!prev));
-      return !prev
+      return !prev;
     });
   }, []);
 
   const handleLogout = useCallback(() => {
-    localStorage.removeItem('@sollar_token');
-    localStorage.removeItem('@sollar_username');
-    localStorage.removeItem('@sollar_user_id');
+    localStorage.removeItem("@sollar_token");
+    localStorage.removeItem("@sollar_username");
+    localStorage.removeItem("@sollar_user_id");
     // localStorage.removeItem('@sollar_company_selected');
     // localStorage.removeItem('@sollar_company_name');
-    localStorage.removeItem('@sollar_customer');
+    localStorage.removeItem("@sollar_customer");
 
     sessionStorage.removeItem(SESSIONSTORAGE.MENU);
     sessionStorage.removeItem(SESSIONSTORAGE.RIGHTS);
     sessionStorage.removeItem(SESSIONSTORAGE.INTEGRATION);
     sessionStorage.removeItem(SESSIONSTORAGE.INTEGRATION_NAME);
-
 
     window.location.reload();
   }, []);
@@ -216,24 +225,24 @@ const Sibebar = (props: Props<any>) => {
   const handleCustomerName = useCallback((name: string) => {
     if (name.length > 25) {
       return _.truncate(name, {
-        'length': 25,
-        'separator': ' ',
-        'omission': ' ...'
+        length: 25,
+        separator: " ",
+        omission: " ...",
       });
     } else {
-      return name
+      return name;
     }
   }, []);
 
   const handleCompanyName = useCallback((name: string) => {
     if (name.length > 25) {
       return _.truncate(name, {
-        'length': 25,
-        'separator': ' ',
-        'omission': ' ...'
+        length: 25,
+        separator: " ",
+        omission: " ...",
       });
     } else {
-      return name
+      return name;
     }
   }, []);
 
@@ -276,59 +285,79 @@ const Sibebar = (props: Props<any>) => {
     StarRateIcon: StarRateIcon,
     SettingsIcon: SettingsIcon,
     default: AssignmentIndIcon,
-  }
+  };
 
   const modalTypes: any = {
     ExitToApp: handleOpenModalLogout,
     default: handleOpenModalLogout,
-  }
+  };
 
-  const IconComponent = ({name, ...props}: iconInterface) => {
-    let Icon = iconTypes[name] ?? iconTypes.default
+  const IconComponent = ({ name, ...props }: iconInterface) => {
+    let Icon = iconTypes[name] ?? iconTypes.default;
     return <Icon {...props} />;
   };
 
   useEffect(() => {
-    let menu = JSON.parse(sessionStorage.getItem(SESSIONSTORAGE.MENU) ?? '[]')
-    if (itemsMenu.length <= 0 && menu.length <= 0) {
-      dispatch(loadRequest())
-    } else if (itemsMenu.length <= 0 && menu.length > 0) {
-      const items: itemsInterface[] = []
+    let menu = JSON.parse(sessionStorage.getItem(SESSIONSTORAGE.MENU) ?? "[]");
+    if (itemsMenu.length === 0 && menu.length === 0) {
+      dispatch(loadRequest());
+    } else if (itemsMenu.length === 0 && menu.length > 0) {
+      const items: itemsInterface[] = [];
 
-      _.sortBy(menu, ['id']).map((item: any) => {
+      _.sortBy(menu, ["id"]).map((item: any) => {
         items.push({
           title: item.name,
           route: item.slug,
-          modal: item.modal ? modalTypes[item.icon] : '',
-          icon: <IconComponent name={item.icon} style={{color: item.color}}/>
-        })
-      })
-      setItemsMenu(items)
+          modal: item.modal ? modalTypes[item.icon] : "",
+          icon: (
+            <IconComponent name={item.icon} style={{ color: item.color }} />
+          ),
+        });
+      });
+      setItemsMenu(items);
     }
-  }, [])
+  }, []);
 
   useEffect(() => {
     if (layoutState.success) {
-      localStorage.setItem(LOCALSTORAGE.TOKEN, layoutState.data.token)
+      localStorage.setItem(LOCALSTORAGE.TOKEN, layoutState.data.token);
 
-      sessionStorage.setItem(SESSIONSTORAGE.MENU, JSON.stringify(layoutState.data.menu))
-      sessionStorage.setItem(SESSIONSTORAGE.RIGHTS, JSON.stringify(layoutState.data.rights))
-      layoutState.data.integration ? sessionStorage.setItem(SESSIONSTORAGE.INTEGRATION, layoutState.data.integration) : sessionStorage.removeItem(SESSIONSTORAGE.INTEGRATION)
-      layoutState.data.integration_name ? sessionStorage.setItem(SESSIONSTORAGE.INTEGRATION_NAME, layoutState.data.integration_name) : sessionStorage.removeItem(SESSIONSTORAGE.INTEGRATION_NAME)
+      sessionStorage.setItem(
+        SESSIONSTORAGE.MENU,
+        JSON.stringify(layoutState.data.menu)
+      );
+      sessionStorage.setItem(
+        SESSIONSTORAGE.RIGHTS,
+        JSON.stringify(layoutState.data.rights)
+      );
+      layoutState.data.integration
+        ? sessionStorage.setItem(
+            SESSIONSTORAGE.INTEGRATION,
+            layoutState.data.integration
+          )
+        : sessionStorage.removeItem(SESSIONSTORAGE.INTEGRATION);
+      layoutState.data.integration_name
+        ? sessionStorage.setItem(
+            SESSIONSTORAGE.INTEGRATION_NAME,
+            layoutState.data.integration_name
+          )
+        : sessionStorage.removeItem(SESSIONSTORAGE.INTEGRATION_NAME);
 
-      const items: itemsInterface[] = []
+      const items: itemsInterface[] = [];
 
-      _.sortBy(layoutState.data.menu, ['id']).map((item: any) => {
+      _.sortBy(layoutState.data.menu, ["id"]).map((item: any) => {
         items.push({
           title: item.name,
           route: item.slug,
-          modal: item.modal ? modalTypes[item.icon] : '',
-          icon: <IconComponent name={item.icon} style={{color: item.color}}/>
-        })
-      })
-      setItemsMenu(items)
+          modal: item.modal ? modalTypes[item.icon] : "",
+          icon: (
+            <IconComponent name={item.icon} style={{ color: item.color }} />
+          ),
+        });
+      });
+      setItemsMenu(items);
     }
-  }, [layoutState])
+  }, [layoutState]);
 
   // useEffect(() => {
   //   let menu = JSON.parse(sessionStorage.getItem(SESSIONSTORAGE.MENU) ?? '[]')
@@ -375,7 +404,7 @@ const Sibebar = (props: Props<any>) => {
 
   return (
     <div className={classes.root}>
-      <CssBaseline/>
+      <CssBaseline />
       <Drawer
         variant="permanent"
         className={clsx(classes.drawer, {
@@ -390,69 +419,124 @@ const Sibebar = (props: Props<any>) => {
         }}
       >
         <div className={classes.toolbar}>
-          <Logo/>
+          <Logo />
           <IconButton onClick={handleDrawerClose}>
-            {open ? <ChevronLeftIcon style={{color: '#fff'}}/> : <MenuIcon style={{color: '#fff'}}/>}
+            {open ? (
+              <ChevronLeftIcon style={{ color: "#fff" }} />
+            ) : (
+              <MenuIcon style={{ color: "#fff" }} />
+            )}
           </IconButton>
         </div>
         {/* <Divider /> */}
 
-        <UserContent style={{marginBottom: '0px'}}>
-          <AccountCircle/>
+        <UserContent style={{ marginBottom: "0px" }}>
+          <AccountCircle />
         </UserContent>
 
         <UserContent>
           {open ? (
             <>
               <div>
-                <Grid container spacing={2} xs={12} md={12} style={{justifyContent: 'space-evenly'}}>
+                <Grid
+                  container
+                  spacing={2}
+                  xs={12}
+                  md={12}
+                  style={{ justifyContent: "space-evenly" }}
+                >
                   <Grid item>
                     <h3>{username}</h3>
                   </Grid>
-                  <ListItem className={classes.logOutButton}
-                            onClick={() => setOpenModalMessage(true)}>
+                  <ListItem
+                    className={classes.logOutButton}
+                    onClick={() => setOpenModalMessage(true)}
+                  >
                     <Grid item>
-                      <Badge classes={{badge: classes.customBadge}} className={classes.padding} color="primary"
-                             badgeContent={1} max={99}><NotificationsIcon/></Badge>
+                      <Badge
+                        classes={{ badge: classes.customBadge }}
+                        className={classes.padding}
+                        color="primary"
+                        badgeContent={1}
+                        max={99}
+                      >
+                        <NotificationsIcon />
+                      </Badge>
                     </Grid>
                   </ListItem>
                 </Grid>
-                <br/>
+                <br />
                 <div
-                  style={{display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center',}}>
-                  <ListItem style={{padding: 0}} className={classes.logOutButton}
-                            onClick={() => setOpenModalConfig(true)}>
-                    <BusinessIcon/>
-                    <ListItemText style={{color: "#ffff", cursor: "pointer"}}>
+                  style={{
+                    display: "flex",
+                    flexDirection: "column",
+                    alignItems: "center",
+                    justifyContent: "center",
+                  }}
+                >
+                  <ListItem
+                    style={{ padding: 0 }}
+                    className={classes.logOutButton}
+                    onClick={() => setOpenModalConfig(true)}
+                  >
+                    <BusinessIcon />
+                    <ListItemText style={{ color: "#ffff", cursor: "pointer" }}>
                       <div
                         style={{
-                          display: 'flex',
-                          flexDirection: 'column',
-                          alignItems: 'center',
-                          justifyContent: 'center',
-                        }}>
-                        <h4 style={{color: '#ffffff', marginLeft: 10}}>{handleCustomerName(customer.name)}</h4>
-                        <h4 style={{color: '#ffffff', marginLeft: 10}}>{handleCompanyName(company.name)}</h4>
+                          display: "flex",
+                          flexDirection: "column",
+                          alignItems: "center",
+                          justifyContent: "center",
+                        }}
+                      >
+                        <h4 style={{ color: "#ffffff", marginLeft: 10 }}>
+                          {handleCustomerName(customer.name)}
+                        </h4>
+                        <h4 style={{ color: "#ffffff", marginLeft: 10 }}>
+                          {handleCompanyName(company.name)}
+                        </h4>
                       </div>
                     </ListItemText>
-                    <EditIcon style={{color: '#fff', fontSize: '14px', marginLeft: '10px'}}/>
+                    <EditIcon
+                      style={{
+                        color: "#fff",
+                        fontSize: "14px",
+                        marginLeft: "10px",
+                      }}
+                    />
                   </ListItem>
                 </div>
               </div>
             </>
           ) : (
             <>
-              <div style={{paddingRight: '60px'}}>
-                <Grid container spacing={2} xs={12} md={12} style={{justifyContent: 'space-evenly'}}>
-                  <ListItem style={{padding: 0}} className={classes.logOutButton}
-                            onClick={() => setOpenModalMessage(true)}>
+              <div style={{ paddingRight: "60px" }}>
+                <Grid
+                  container
+                  spacing={2}
+                  xs={12}
+                  md={12}
+                  style={{ justifyContent: "space-evenly" }}
+                >
+                  <ListItem
+                    style={{ padding: 0 }}
+                    className={classes.logOutButton}
+                    onClick={() => setOpenModalMessage(true)}
+                  >
                     <Grid item>
-                      <Badge classes={{badge: classes.customBadge}} className={classes.padding} color="primary"
-                             badgeContent={1} max={99}><NotificationsIcon/></Badge>
+                      <Badge
+                        classes={{ badge: classes.customBadge }}
+                        className={classes.padding}
+                        color="primary"
+                        badgeContent={1}
+                        max={99}
+                      >
+                        <NotificationsIcon />
+                      </Badge>
                     </Grid>
                   </ListItem>
                 </Grid>
-                <br/>
+                <br />
               </div>
             </>
           )}
@@ -461,18 +545,28 @@ const Sibebar = (props: Props<any>) => {
           {itemsMenu.map((item: any, index: any) => (
             <>
               {item.modal ? (
-                <ListItem className={classes.logOutButton} key={index} onClick={item.modal}>
-                  <ListItemIcon>
-                    {item.icon}
-                  </ListItemIcon>
-                  <ListItemText primary={item.title} style={{color: "#ffff", cursor: "pointer"}}/>
+                <ListItem
+                  className={classes.logOutButton}
+                  key={index}
+                  onClick={item.modal}
+                >
+                  <ListItemIcon>{item.icon}</ListItemIcon>
+                  <ListItemText
+                    primary={item.title}
+                    style={{ color: "#ffff", cursor: "pointer" }}
+                  />
                 </ListItem>
               ) : (
-                <ListItem className={classes.logOutButton} key={index} onClick={() => history.push(item.route)}>
-                  <ListItemIcon>
-                    {item.icon}
-                  </ListItemIcon>
-                  <ListItemText primary={item.title} style={{color: "#ffff", cursor: "pointer"}}/>
+                <ListItem
+                  className={classes.logOutButton}
+                  key={index}
+                  onClick={() => history.push(item.route)}
+                >
+                  <ListItemIcon>{item.icon}</ListItemIcon>
+                  <ListItemText
+                    primary={item.title}
+                    style={{ color: "#ffff", cursor: "pointer" }}
+                  />
                 </ListItem>
               )}
             </>
@@ -494,9 +588,7 @@ const Sibebar = (props: Props<any>) => {
         {/*  </ListItem>*/}
         {/*</List>*/}
       </Drawer>
-      <main className={classes.content}>
-        {props.children}
-      </main>
+      <main className={classes.content}>{props.children}</main>
 
       <Dialog
         open={openModalLogout}
@@ -529,15 +621,16 @@ const Sibebar = (props: Props<any>) => {
       >
         <DialogTitle id="alert-dialog-title">Configurações</DialogTitle>
         <DialogContent>
-          <ConfigComponent/>
+          <ConfigComponent />
         </DialogContent>
         <DialogActions>
-          <Button onClick={() => {
-            setOpenModalConfig(false)
-            history.push(`/dashboard`);
-            //location.reload()
-          }}
-                  color="primary"
+          <Button
+            onClick={() => {
+              setOpenModalConfig(false);
+              history.push(`/dashboard`);
+              //location.reload()
+            }}
+            color="primary"
           >
             Fechar
           </Button>
@@ -553,15 +646,16 @@ const Sibebar = (props: Props<any>) => {
       >
         <DialogTitle id="alert-dialog-title">Mensagens</DialogTitle>
         <DialogContent>
-          <Message/>
+          <Message />
         </DialogContent>
         <DialogActions>
-          <Button onClick={() => {
-            setOpenModalMessage(false)
-            // history.push(`/dashboard`);
-            //location.reload()
-          }}
-                  color="primary"
+          <Button
+            onClick={() => {
+              setOpenModalMessage(false);
+              // history.push(`/dashboard`);
+              //location.reload()
+            }}
+            color="primary"
           >
             Fechar
           </Button>
@@ -569,6 +663,6 @@ const Sibebar = (props: Props<any>) => {
       </Dialog>
     </div>
   );
-}
+};
 
 export default React.memo(Sibebar);
