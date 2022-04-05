@@ -1,4 +1,7 @@
 import React, { useState } from "react";
+// redux e saga
+import { useSelector } from "react-redux";
+import { ApplicationState } from "../../../store";
 
 //types
 import { CareState } from "../../../store/ducks/cares/types";
@@ -47,9 +50,11 @@ interface IProps {
 export default function HeaderOverview(props: IProps) {
   const { content, allergic, integration } = props;
   const [openDialog, setOpenDialog] = useState(false);
-
+  const rightsOfLayoutState = useSelector(
+    (state: ApplicationState) => state.layout.data.rights
+  );
   const handleClickOpen = () => {
-    checkViewPermission("qrcode")
+    checkViewPermission("qrcode", JSON.stringify(rightsOfLayoutState))
       ? setOpenDialog(true)
       : toast.error("Você não tem permissão para visualizar o QR Code");
   };

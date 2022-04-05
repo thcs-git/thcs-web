@@ -131,6 +131,9 @@ export default function PatientForm(props: RouteComponentProps<IPageParams>) {
   const dispatch = useDispatch();
   const patientState = useSelector((state: ApplicationState) => state.patients);
   const areaState = useSelector((state: ApplicationState) => state.areas);
+  const rightsOfLayoutState = useSelector(
+    (state: ApplicationState) => state.layout.data.rights
+  );
   const [inputPhone, setInputPhone] = useState({ value: "", error: false });
 
   const [inputCellPhone, setInputCellPhone] = useState({
@@ -683,7 +686,7 @@ export default function PatientForm(props: RouteComponentProps<IPageParams>) {
 
   return (
     <Sidebar>
-      {checkViewPermission("patient") ? (
+      {checkViewPermission("patient", JSON.stringify(rightsOfLayoutState)) ? (
         <>
           {patientState.loading && <Loading />}
           {patientState.isRegistrationCompleted ? (

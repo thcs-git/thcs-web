@@ -39,7 +39,9 @@ export default function UserClientForm(
   const history = useHistory();
 
   const userState = useSelector((state: ApplicationState) => state.users);
-
+  const rightsOfLayoutState = useSelector(
+    (state: ApplicationState) => state.layout.data.rights
+  );
   const [state, setState] = useState<UserInterface>({
     companies: [],
     companies_links: [],
@@ -192,7 +194,11 @@ export default function UserClientForm(
   return (
     <>
       <Sidebar>
-        {checkViewPermission("userclient") || checkViewPermission("user") ? (
+        {checkViewPermission(
+          "userclient",
+          JSON.stringify(rightsOfLayoutState)
+        ) ||
+        checkViewPermission("user", JSON.stringify(rightsOfLayoutState)) ? (
           <Container>
             {params.mode === "view" ? (
               <>

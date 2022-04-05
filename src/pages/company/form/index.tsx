@@ -79,7 +79,9 @@ export default function CompanyForm(props: RouteComponentProps<IPageParams>) {
   const companyState = useSelector(
     (state: ApplicationState) => state.companies
   );
-
+  const rightsOfLayoutState = useSelector(
+    (state: ApplicationState) => state.layout.data.rights
+  );
   const { params } = props.match;
 
   const [canEdit, setCanEdit] = useState(true);
@@ -363,7 +365,7 @@ export default function CompanyForm(props: RouteComponentProps<IPageParams>) {
     //   toast.error('Existem campos que precisam ser preenchidos para continuar');
     //   return;
     // }
-    if (checkEditPermission("company")) {
+    if (checkEditPermission("company", JSON.stringify(rightsOfLayoutState))) {
       if (params.id) {
         dispatch(updateCompanyRequest(state));
       } else {
@@ -403,7 +405,7 @@ export default function CompanyForm(props: RouteComponentProps<IPageParams>) {
 
   return (
     <Sidebar>
-      {checkViewPermission("company") ? (
+      {checkViewPermission("company", JSON.stringify(rightsOfLayoutState)) ? (
         <Container>
           {companyState.loading && <Loading />}
           {params.mode === "view" ? (
@@ -420,7 +422,10 @@ export default function CompanyForm(props: RouteComponentProps<IPageParams>) {
                       !canEdit && (
                         <ButtonEdit
                           setCanEdit={() => {
-                            !checkEditPermission("company")
+                            !checkEditPermission(
+                              "company",
+                              JSON.stringify(rightsOfLayoutState)
+                            )
                               ? toast.error(
                                   "Você não tem permissão para Editar esta empresa."
                                 )

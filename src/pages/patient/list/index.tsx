@@ -79,6 +79,9 @@ export default function PatientList() {
   const dispatch = useDispatch();
   const patientState = useSelector((state: ApplicationState) => state.patients);
   const careState = useSelector((state: ApplicationState) => state.cares);
+  const rightsOfLayoutState = useSelector(
+    (state: ApplicationState) => state.layout.data.rights
+  );
   const [search, setSearch] = useState("");
 
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
@@ -148,7 +151,7 @@ export default function PatientList() {
   };
 
   const handleClickButton = useCallback(() => {
-    !checkEditPermission("patient")
+    !checkEditPermission("patient", JSON.stringify(rightsOfLayoutState))
       ? toast.error("Você não tem permissão para adicionar novo paciente")
       : clickButton;
   }, []);
@@ -301,7 +304,7 @@ export default function PatientList() {
   return (
     <>
       <Sidebar>
-        {checkViewPermission("patient") ? (
+        {checkViewPermission("patient", JSON.stringify(rightsOfLayoutState)) ? (
           <Container>
             {patientState.loading && <Loading />}
             <FormTitle>Lista de Pacientes</FormTitle>

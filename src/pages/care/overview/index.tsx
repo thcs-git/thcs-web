@@ -153,6 +153,9 @@ export default function PatientOverview(
     (state: ApplicationState) => state.prescription
   );
   const qrCodeState = useSelector((state: ApplicationState) => state.qrCode);
+  const rightsOfLayoutState = useSelector(
+    (state: ApplicationState) => state.layout.data.rights
+  );
   const [team, setTeam] = useState<any[]>([]);
   const [reportActive, setReportActive] = useState(false);
   const [reportType, setReportType] = useState("");
@@ -567,7 +570,7 @@ export default function PatientOverview(
 
   return (
     <Sidebar>
-      {checkViewPermission("care") ? (
+      {checkViewPermission("care", JSON.stringify(rightsOfLayoutState)) ? (
         <Container style={{ padding: "20px", maxWidth: "1100px" }}>
           {careState.loading && <Loading />}
           <FormTitle>Overview de Paciente</FormTitle>
