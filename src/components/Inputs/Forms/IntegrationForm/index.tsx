@@ -26,10 +26,13 @@ import {
   cleanAction,
   loadRequestByClient,
 } from "../../../../store/ducks/users/actions";
+import { useSelector } from "react-redux";
+import { ApplicationState } from "../../../../store";
 //componentes
 import ToggleActive from "../../../Button/ToggleActive";
 import NoPermission from "../../../Erros/NoPermission";
 import { Box } from "@mui/material";
+
 interface IComponent {
   index: number;
   state: any;
@@ -47,7 +50,9 @@ const IntegrationForm = (props: IComponent) => {
   const { index, state, setState, canEdit } = props;
 
   const [integrationChecked, setIntegrationChecked] = useState(false);
-
+  const rightsOfLayoutState = useSelector(
+    (state: ApplicationState) => state.layout.data.rights
+  );
   useEffect(() => {
     if (state.integration) {
       setIntegrationChecked(true);
@@ -55,7 +60,10 @@ const IntegrationForm = (props: IComponent) => {
   }, [state]);
   return (
     <FormGroupSection>
-      {checkViewPermission("integration") ? (
+      {checkViewPermission(
+        "integration",
+        JSON.stringify(rightsOfLayoutState)
+      ) ? (
         <Grid container>
           {/* <Grid item md={8} xs={12}>
           <FormControlLabel

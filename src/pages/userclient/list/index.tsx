@@ -66,7 +66,9 @@ export default function UserClientList() {
   const dispatch = useDispatch();
   const history = useHistory();
   const userState = useSelector((state: ApplicationState) => state.users);
-
+  const rightsOfLayoutState = useSelector(
+    (state: ApplicationState) => state.layout.data.rights
+  );
   const [search, setSearch] = useState("");
 
   const [users, setUsers] = useState<UserInterface[]>([]);
@@ -160,7 +162,10 @@ export default function UserClientList() {
   return (
     <>
       <Sidebar>
-        {checkViewPermission("userclient") ? (
+        {checkViewPermission(
+          "userclient",
+          JSON.stringify(rightsOfLayoutState)
+        ) ? (
           <Container>
             {userState.loading && <Loading />}
             <FormTitle style={{ fontSize: "20px" }}>

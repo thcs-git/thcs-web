@@ -1,3 +1,5 @@
+import { ApplicationState } from "../store/index";
+import { useSelector } from "react-redux";
 import SESSIONSTORAGE from "../helpers/constants/sessionStorage";
 import { toast } from "react-toastify";
 import { useHistory } from "react-router-dom";
@@ -55,11 +57,14 @@ schedule.create
 
 // checa se existe permissão view (visualizar)
 
-const rights = sessionStorage.getItem(SESSIONSTORAGE.RIGHTS);
-export function checkViewPermission(permissionType: string) {
+export function checkViewPermission(
+  permissionType: string,
+  rightsOfLayoutState: string
+) {
   let check = false;
   let permission = `${permissionType}.view`;
-  rights?.split('"').forEach((permissionItem: string) => {
+
+  rightsOfLayoutState?.split('"').forEach((permissionItem: string) => {
     if (permissionItem === permission) {
       check = true;
       return permissionItem;
@@ -70,10 +75,14 @@ export function checkViewPermission(permissionType: string) {
 }
 
 // checa se existe permissão edit (editar e criar)
-export function checkEditPermission(permissionType: string) {
+export function checkEditPermission(
+  permissionType: string,
+  rightsOfLayoutState: string
+) {
   let check = false;
   let permission = `${permissionType}.edit`;
-  rights?.split('"').forEach((permissionItem: string) => {
+
+  rightsOfLayoutState?.split('"').forEach((permissionItem: string) => {
     if (permissionItem === permission) {
       check = true;
       return permissionItem;
@@ -84,10 +93,14 @@ export function checkEditPermission(permissionType: string) {
 }
 
 // checa se existe permissão create (gerar)
-export function checkCreatePermission(permissionType: string) {
+export function checkCreatePermission(
+  permissionType: string,
+  rightsOfLayoutState: string
+) {
   let check = false;
   let permission = `${permissionType}.create`;
-  rights?.split('"').forEach((permissionItem: string) => {
+
+  rightsOfLayoutState?.split('"').forEach((permissionItem: string) => {
     if (permissionItem === permission) {
       check = true;
       return permissionItem;
