@@ -313,27 +313,46 @@ export default function FilterReport(props: IPropsFilter) {
 
   function handleAutocompleteData(type: string) {
     let List: any[] = [];
-    careState.checkin.map((day: any) => {
-      if (day) {
-        day.list.map((checks: any) => {
-          if (checks.list) {
-            checks.list.map((user: any) => {
-              const itemList: any = {
-                name:
-                  type === "Função"
-                    ? handleFunction(
-                        user[0].user_id[0].companies_links,
-                        careState.data.company_id
-                      )
-                    : capitalizeText(user[0].user_id[0].name),
-                _id: type === "Função" ? "" : user[0].user_id[0]._id,
-              };
-              List.push(itemList);
-            });
-          }
-        });
-      }
-    });
+    if (reportType === "Check-in/out") {
+      careState.checkin.map((day: any) => {
+        if (day) {
+          day.list.map((checks: any) => {
+            if (checks.list) {
+              checks.list.map((user: any) => {
+                const itemList: any = {
+                  name:
+                    type === "Função"
+                      ? handleFunction(
+                          user[0].user_id[0].companies_links,
+                          careState.data.company_id
+                        )
+                      : capitalizeText(user[0].user_id[0].name),
+                  _id: type === "Função" ? "" : user[0].user_id[0]._id,
+                };
+                List.push(itemList);
+              });
+            }
+          });
+        }
+      });
+    } else if (reportType === "Evolução") {
+      careState.evolution.map((day) =>
+        day.list.map((evolution) => {
+          const itemList: any = {
+            name:
+              type === "Função"
+                ? handleFunction(
+                    evolution.created_by[0].companies_links,
+                    careState.data.company_id
+                  )
+                : evolution.created_by[0].name,
+            _id: type === "Função" ? "" : evolution.created_by[0]._id,
+          };
+          List.push(itemList);
+        })
+      );
+    }
+
     if (type === "Função") {
       return _.uniqBy(List, "name").sort((a: any, b: any) => {
         return a.name < b.name ? -1 : a.name > b.name ? 1 : 0;
