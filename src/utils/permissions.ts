@@ -61,6 +61,7 @@ export function checkViewPermission(
   permissionType: string,
   rightsOfLayoutState: string
 ) {
+  // console.log(rights);
   let check = false;
   let permission = `${permissionType}.view`;
 

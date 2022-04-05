@@ -19,6 +19,7 @@ import { MessageState } from "./ducks/message/types";
 import { AllergiesState } from "./ducks/allergies/types";
 import { MeasurementsState } from "./ducks/measurements/types";
 import { QrCodeState } from "./ducks/qrCode/types";
+import { AntibioticState } from "./ducks/antibiotic/types";
 
 import { InitialState } from "./ducks/states";
 import combinedReducers from "./ducks/rootReducer";
@@ -43,6 +44,7 @@ export interface ApplicationState {
   allergies: AllergiesState;
   measurements: MeasurementsState;
   qrCode: QrCodeState;
+  antibiotic: AntibioticState;
 }
 
 const sagaMiddleware = createSagaMiddleware();
