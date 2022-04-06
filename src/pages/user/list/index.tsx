@@ -74,7 +74,9 @@ export default function UserList() {
   const dispatch = useDispatch();
   const history = useHistory();
   const userState = useSelector((state: ApplicationState) => state.users);
-
+  const rightsOfLayoutState = useSelector(
+    (state: ApplicationState) => state.layout.data.rights
+  );
   const [search, setSearch] = useState("");
 
   const [users, setUsers] = useState<UserInterface[]>([]);
@@ -170,7 +172,7 @@ export default function UserList() {
   return (
     <>
       <Sidebar>
-        {checkViewPermission("user") ? (
+        {checkViewPermission("user", JSON.stringify(rightsOfLayoutState)) ? (
           <Container>
             {userState.loading && <Loading />}
             <FormTitle>Meus Profissionais</FormTitle>

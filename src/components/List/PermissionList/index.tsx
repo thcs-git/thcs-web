@@ -1,4 +1,7 @@
 import React, { useEffect, useState } from "react";
+// Redux e Redux-saga
+import { ApplicationState } from "../../../store";
+import { useDispatch, useSelector } from "react-redux";
 
 //MUI
 import Table from "@mui/material/Table";
@@ -17,7 +20,6 @@ import ButtonView from "../../Button/ButtonView";
 import { useHistory } from "react-router-dom";
 import { ButtonStyle } from "./styles";
 import { ButtonsContent } from "../../Button/ButtonTabs/styles";
-import { useDispatch } from "react-redux";
 import {
   loadPermissionRequest,
   cleanAction,
@@ -54,7 +56,9 @@ const PermissionList = (props: IComponent) => {
   const dispatch = useDispatch();
   const history = useHistory();
   const [idPermission, setIdPermission] = useState("");
-
+  const rightsOfLayoutState = useSelector(
+    (state: ApplicationState) => state.layout.data.rights
+  );
   const headData: string[] = ["Função", "Status", "Adicionado em", "", ""];
 
   useEffect(() => {
@@ -92,7 +96,10 @@ const PermissionList = (props: IComponent) => {
                       <ItemTable
                         style={{ color: "var(--black)" }}
                         onClick={() => {
-                          !checkViewPermission("permissions")
+                          !checkViewPermission(
+                            "permissions",
+                            JSON.stringify(rightsOfLayoutState)
+                          )
                             ? toast.error(
                                 "Você não tem permissão para visualizar permissões."
                               )
@@ -119,7 +126,10 @@ const PermissionList = (props: IComponent) => {
                       <ButtonView
                         canEdit={true}
                         setCanEdit={() => {
-                          !checkViewPermission("permissions")
+                          !checkViewPermission(
+                            "permissions",
+                            JSON.stringify(rightsOfLayoutState)
+                          )
                             ? toast.error(
                                 "Você não tem permissão para visualizar permissões."
                               )
@@ -132,7 +142,10 @@ const PermissionList = (props: IComponent) => {
                       <ButtonEdit
                         canEdit={true}
                         setCanEdit={() => {
-                          !checkEditPermission("permissions")
+                          !checkEditPermission(
+                            "permissions",
+                            JSON.stringify(rightsOfLayoutState)
+                          )
                             ? toast.error(
                                 "Você não tem permissão para editar permissões."
                               )
@@ -153,7 +166,10 @@ const PermissionList = (props: IComponent) => {
         </Table>
       ) : modePermission === "view" ? (
         <>
-          {checkViewPermission("permissions") ? (
+          {checkViewPermission(
+            "permissions",
+            JSON.stringify(rightsOfLayoutState)
+          ) ? (
             <>
               <PermissionForm
                 state={state}
@@ -172,7 +188,10 @@ const PermissionList = (props: IComponent) => {
         </>
       ) : modePermission === "edit" || modePermission === "create" ? (
         <>
-          {checkEditPermission("permissions") ? (
+          {checkEditPermission(
+            "permissions",
+            JSON.stringify(rightsOfLayoutState)
+          ) ? (
             <>
               <PermissionForm
                 state={state}

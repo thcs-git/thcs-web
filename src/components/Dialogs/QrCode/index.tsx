@@ -6,6 +6,7 @@ import {
   createQrCodeRequest,
   updateQrCodeRequest,
 } from "../../../store/ducks/qrCode/actions";
+import { ApplicationState } from "../../../store";
 
 // Helpers
 import QRCode from "react-qr-code";
@@ -59,7 +60,9 @@ export default function DialogQrCode(props: IQrCodeProps) {
     openDialog,
     setOpenDialog,
   } = props;
-
+  const rightsOfLayoutState = useSelector(
+    (state: ApplicationState) => state.layout.data.rights
+  );
   const integration = sessionStorage.getItem(SESSIONSTORAGE.INTEGRATION);
   const dispatch = useDispatch();
   const user_id = localStorage.getItem(LOCALSTORAGE.USER_ID);
@@ -84,7 +87,7 @@ export default function DialogQrCode(props: IQrCodeProps) {
       background: "secondary",
       show: true,
       onClick: () => {
-        checkEditPermission("qrcode")
+        checkEditPermission("qrcode", JSON.stringify(rightsOfLayoutState))
           ? dispatch(createQrCodeRequest(handlerQrCode()))
           : toast.error("Você não tem permissão de gerar QR Code");
       },

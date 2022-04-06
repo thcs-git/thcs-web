@@ -51,7 +51,7 @@ import { loadRequest as loadRequestMeasurements } from "../../../store/ducks/mea
 import { loadRequest as loadRequestQrCode } from "../../../store/ducks/qrCode/actions";
 import { ApplicationState } from "../../../store";
 import { loadRequestByCareId as loadRequestPrescriptionByCareId } from "../../../store/ducks/prescripition/actions";
-
+import { loadRequest as loadRequestAntibiotic } from "../../../store/ducks/antibiotic/actions";
 interface IPageParams {
   id?: string;
 }
@@ -152,7 +152,13 @@ export default function PatientOverview(
   const prescriptionState = useSelector(
     (state: ApplicationState) => state.prescription
   );
+  const antibioticState = useSelector(
+    (state: ApplicationState) => state.antibiotic
+  );
   const qrCodeState = useSelector((state: ApplicationState) => state.qrCode);
+  const rightsOfLayoutState = useSelector(
+    (state: ApplicationState) => state.layout.data.rights
+  );
   const [team, setTeam] = useState<any[]>([]);
   const [reportActive, setReportActive] = useState(false);
   const [reportType, setReportType] = useState("");
@@ -180,10 +186,10 @@ export default function PatientOverview(
   }, [careState.schedule]);
 
   useEffect(() => {
-    if (patientState.data._id) {
-      dispatch(loadRequestAllergies(patientState.data._id));
+    if (careState?.data?.patient_id?._id) {
+      dispatch(loadRequestAllergies(careState?.data?.patient_id?._id));
     }
-  }, [patientState.data._id, integration]);
+  }, [careState?.data?.patient_id?._id, integration]);
 
   useEffect(() => {
     if (careState?.data?._id && reportType === "Aferições") {
@@ -207,6 +213,9 @@ export default function PatientOverview(
               attendance_id: careState.data._id,
             })
           );
+    }
+    if (careState?.data?.patient_id?._id && reportType === "Antibióticos") {
+      dispatch(loadRequestAntibiotic(careState?.data?.patient_id?._id));
     }
   }, [careState.data._id, reportType]);
   const handleTeam = useCallback(() => {
@@ -552,6 +561,15 @@ export default function PatientOverview(
         loading: prescriptionState.loading,
         error: prescriptionState.error,
       };
+    } else if (
+      report === "Antibióticos" &&
+      Object.keys(antibioticState.data).length > 0
+    ) {
+      return {
+        data: Object.entries(antibioticState.data),
+        loading: antibioticState.loading,
+        error: antibioticState.error,
+      };
     } else {
       return "";
     }
@@ -567,7 +585,7 @@ export default function PatientOverview(
 
   return (
     <Sidebar>
-      {checkViewPermission("care") ? (
+      {checkViewPermission("care", JSON.stringify(rightsOfLayoutState)) ? (
         <Container style={{ padding: "20px", maxWidth: "1100px" }}>
           {careState.loading && <Loading />}
           <FormTitle>Overview de Paciente</FormTitle>

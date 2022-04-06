@@ -165,9 +165,11 @@ export default function UserDisengaged() {
                 <TableCell align="left">
                   <div style={{ display: "flex" }}>
                     <p style={{ marginTop: "0.3rem" }}>
-                      {user.main_specialty_id?.name}
+                      {user.main_specialty_id?.name
+                        ? user.main_specialty_id?.name
+                        : "-"}
                     </p>
-                    {user.specialties.length > 0 ? (
+                    {user?.specialties?.length > 0 ? (
                       <Tooltip
                         style={{ fontSize: "10pt", marginTop: "0.8rem" }}
                         title={user.specialties.map(

@@ -57,6 +57,8 @@ import { UserState } from "../../store/ducks/users/types";
 import SESSIONSTORAGE from "../../helpers/constants/sessionStorage";
 import { checkEditPermission } from "../../utils/permissions";
 import { toast } from "react-toastify";
+import { useSelector } from "react-redux";
+import { ApplicationState } from "../../store";
 
 interface IPropsPermissionFrom {
   state: {
@@ -212,7 +214,9 @@ const TabForm = (props: ITabprops) => {
   };
   const [value, setValue] = useState(initialTab);
   const integration = sessionStorage.getItem(SESSIONSTORAGE.INTEGRATION);
-
+  const rightsOfLayoutState = useSelector(
+    (state: ApplicationState) => state.layout.data.rights
+  );
   function handleComponents(component: string, index: number) {
     switch (component) {
       case "ClientFormHeader":
@@ -696,7 +700,10 @@ const TabForm = (props: ITabprops) => {
                       <ButtonStyle
                         variant="outlined"
                         onClick={() => {
-                          !checkEditPermission("permissions")
+                          !checkEditPermission(
+                            "permissions",
+                            JSON.stringify(rightsOfLayoutState)
+                          )
                             ? toast.error(
                                 "Você não tem permissão para criar nova função."
                               )

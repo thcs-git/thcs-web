@@ -61,7 +61,9 @@ export default function CouncilList() {
   const dispatch = useDispatch();
   const careState = useSelector((state: ApplicationState) => state.cares);
   const [tabIndex, setTabIndex] = useState(0);
-
+  const rightsOfLayoutState = useSelector(
+    (state: ApplicationState) => state.layout.data.rights
+  );
   let valueStatus: string;
 
   useEffect(() => {
@@ -201,7 +203,7 @@ export default function CouncilList() {
   return (
     <>
       <Sidebar>
-        {checkViewPermission("care") ? (
+        {checkViewPermission("care", JSON.stringify(rightsOfLayoutState)) ? (
           <Container>
             {careState.loading && <Loading />}
             <FormTitle>Lista de Atendimentos</FormTitle>
