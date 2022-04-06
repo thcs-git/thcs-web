@@ -1302,6 +1302,7 @@ export default function AccordionReport(props: IAccordionReport) {
       </ContentDetailsAccordion>
     </>
   );
+  // Accordion de Exames
   const examsAccordion = (data: any) =>
     data.map((date: any, index: number) => (
       <Accordion
@@ -1348,14 +1349,15 @@ export default function AccordionReport(props: IAccordionReport) {
         </AccordionDetails>
       </Accordion>
     ));
-
   const examsAccordionHeader = () => (
     <>
       <HeaderDetailsAccordion>
-        <TextCenterDetails>Hora</TextCenterDetails>
-        <TextCenterDetails>Solicitante</TextCenterDetails>
-        <TextCenterDetails>Exame</TextCenterDetails>
-        <TextCenterDetails>Opções</TextCenterDetails>
+        <TextCenterDetails sx={{ width: "100px" }}>Hora</TextCenterDetails>
+        <TextCenterDetails sx={{ width: "350px" }}>
+          Solicitante
+        </TextCenterDetails>
+        <TextCenterDetails sx={{ width: "350px" }}>Exame</TextCenterDetails>
+        <TextCenterDetails sx={{ width: "100px" }}>Opções</TextCenterDetails>
       </HeaderDetailsAccordion>
       <Divider sx={{ width: "100%", margin: "0 auto" }} />
     </>
@@ -1372,21 +1374,21 @@ export default function AccordionReport(props: IAccordionReport) {
       .map((column: any, index: number) => (
         <>
           <ContentDetailsAccordion key={index}>
-            <TextCenterDetails>
+            <TextCenterDetails sx={{ width: "100px" }}>
               {formatDate(column.DataCriacao, "HH:mm")}
             </TextCenterDetails>
-            <TextCenterDetails>
+            <TextCenterDetails sx={{ width: "350px" }}>
               {column?.Prescritor?.Nome
                 ? getFirstAndLastName(capitalizeText(column?.Prescritor?.Nome))
-                : "-"}
+                : "Não informado"}
             </TextCenterDetails>
-            <TextCenterDetails>
+            <TextCenterDetails sx={{ width: "350px" }}>
               {column?.Exames[0]?.Nome
                 ? capitalizeText(column.Exames[0].Nome)
                 : "Não informado"}
             </TextCenterDetails>
 
-            <TextCenterDetails>
+            <TextCenterDetails sx={{ width: "100px" }}>
               <IconButton
                 aria-label="print"
                 sx={{
@@ -1416,11 +1418,10 @@ export default function AccordionReport(props: IAccordionReport) {
           )}
         </>
       ));
-
   function groupExamsByDate(data: any) {
     const group: any[] = [];
 
-    content.data.map((exams: any) => {
+    data.map((exams: any) => {
       let existDate = false;
       let indexExistDate = -1;
       group.map((data: any, index: number) => {

@@ -14,7 +14,7 @@ export function* get({ payload }: any) {
       apiSollarNexoData.post,
       `/paciente/exames`,
       "",
-      { headers: { external_patient_id: payload } } // if de paciente com exames para teste : "1459408"
+      { headers: { external_patient_id: payload } }
     );
     yield put(loadSuccess(response.data));
   } catch (error) {
