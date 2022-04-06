@@ -195,37 +195,33 @@ export default function PatientOverview(
   }, [careState?.data?.patient_id?._id, integration]);
 
   useEffect(() => {
-    if (careState?.data?._id && reportType === "Aferições") {
-      dispatch(loadRequestMeasurements(careState?.data?._id));
-    }
-    if (careState.data._id && reportType === "Evolução") {
-      dispatch(loadEvolutionRequest(careState?.data?._id));
-    }
-    if (careState?.data?._id && reportType === "Check-in/out") {
-      dispatch(loadCheckinRequest(careState?.data?._id));
-    }
-    if (careState?.data?._id && reportType === "Prescrições") {
+    const attendanceId = careState?.data?._id;
+    const patientId = careState?.data?.patient_id?._id;
+    if (attendanceId && reportType === "Aferições") {
+      dispatch(loadRequestMeasurements(attendanceId));
+    } else if (attendanceId && reportType === "Evolução") {
+      dispatch(loadEvolutionRequest(attendanceId));
+    } else if (attendanceId && reportType === "Check-in/out") {
+      dispatch(loadCheckinRequest(attendanceId));
+    } else if (attendanceId && reportType === "Prescrições") {
       integration
         ? dispatch(
             loadRequestPrescriptionByCareId({
-              external_attendance_id: careState.data._id,
+              external_attendance_id: attendanceId,
             })
           )
         : dispatch(
             loadRequestPrescriptionByCareId({
-              attendance_id: careState.data._id,
+              attendance_id: attendanceId,
             })
           );
-    }
-    if (careState?.data?.patient_id?._id && reportType === "Antibióticos") {
-      dispatch(loadRequestAntibiotic(careState?.data?.patient_id?._id));
-    }
-    if (careState?.data?.patient_id?._id && reportType === "Exames") {
-      dispatch(loadRequestExams(careState?.data?.patient_id?._id));
+    } else if (patientId && reportType === "Antibióticos") {
+      dispatch(loadRequestAntibiotic(patientId));
+    } else if (patientId && reportType === "Exames") {
+      dispatch(loadRequestExams(patientId));
     }
   }, [careState.data._id, reportType]);
 
-  console.log(examsState.loading, "examsState.loading");
   const handleTeam = useCallback(() => {
     const teamUsers: any = [];
 
@@ -499,8 +495,11 @@ export default function PatientOverview(
     Object.keys(allergie).map((item: any) => {
       if (item === "data" && allergie[item]["allergy"]) {
         if (allergie[item]["allergy"].length > 0) allergicExist = true;
-      } else if (item === "data" && allergie[item]["event"]) {
-        if (allergie[item]["event"].length > 0) allergicExist = true;
+      }
+      if (item === "data" && allergie[item]["event"]) {
+        if (allergie[item]["event"].length > 0) {
+          allergicExist = true;
+        }
       }
     });
     return allergicExist;
@@ -518,11 +517,7 @@ export default function PatientOverview(
       show: true,
     },
   ];
-  // console.log(
-  //   Object.entries(prescriptionState.data.prescriptionData).map((k, v) => {
-  //     k: v;
-  //   })
-  // );
+
   function handleReport(nameReport: string) {
     if (nameReport === reportType || reportActive === false) {
       setReportActive(!reportActive);
@@ -533,31 +528,26 @@ export default function PatientOverview(
     if (report === "Aferições" && measurementState.data.length > 0) {
       return {
         data: measurementState.data,
-        loading: measurementState.loading,
         error: measurementState.error,
       };
     } else if (
       report === "Alergias" &&
       Object.keys(allergiesState.data).length > 0
     ) {
-      contentAllergyExist(allergiesState);
       return contentAllergyExist(allergiesState)
         ? {
             data: allergiesState.data,
-            loading: allergiesState.loading,
             error: allergiesState.error,
           }
         : "";
     } else if (report === "Evolução" && careState.evolution.length > 0) {
       return {
         data: careState.evolution,
-        loading: false,
         error: false,
       };
     } else if (report === "Check-in/out" && careState.checkin.length > 0) {
       return {
         data: careState.checkin,
-        loading: false,
         error: false,
       };
     } else if (
@@ -566,7 +556,6 @@ export default function PatientOverview(
     ) {
       return {
         data: Object.entries(prescriptionState.data.prescriptionData),
-        loading: prescriptionState.loading,
         error: prescriptionState.error,
       };
     } else if (
@@ -575,13 +564,11 @@ export default function PatientOverview(
     ) {
       return {
         data: Object.entries(antibioticState.data),
-        loading: antibioticState.loading,
         error: antibioticState.error,
       };
     } else if (report === "Exames" && examsState.data.data.length > 0) {
       return {
         data: examsState.data.data,
-        loading: examsState.loading,
         error: examsState.error,
       };
     } else {
@@ -595,7 +582,26 @@ export default function PatientOverview(
   function handleCloseFilter() {
     setOpenFilterReport(false);
   }
-
+  function handleLoadinfReport(type: string) {
+    switch (type) {
+      case "Aferições":
+        return measurementState.loading;
+      case "Alergias":
+        return allergiesState.loading;
+      case "Evolução":
+        return false;
+      case "Check-in/out":
+        return false;
+      case "Prescrições":
+        return prescriptionState.loading;
+      case "Antibióticos":
+        return antibioticState.loading;
+      case "Exames":
+        return examsState.loading;
+      default:
+        return false;
+    }
+  }
   return (
     <Sidebar>
       {checkViewPermission("care", JSON.stringify(rightsOfLayoutState)) ? (
@@ -640,6 +646,7 @@ export default function PatientOverview(
                     }
                     reportType={reportType}
                     state={careState}
+                    loading={handleLoadinfReport(reportType)}
                   />
                 ) : (
                   <Container

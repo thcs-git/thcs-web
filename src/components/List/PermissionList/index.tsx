@@ -97,7 +97,7 @@ const PermissionList = (props: IComponent) => {
                         style={{ color: "var(--black)" }}
                         onClick={() => {
                           !checkViewPermission(
-                            "permissions",
+                            "permission",
                             JSON.stringify(rightsOfLayoutState)
                           )
                             ? toast.error(
@@ -127,7 +127,7 @@ const PermissionList = (props: IComponent) => {
                         canEdit={true}
                         setCanEdit={() => {
                           !checkViewPermission(
-                            "permissions",
+                            "permission",
                             JSON.stringify(rightsOfLayoutState)
                           )
                             ? toast.error(
@@ -143,7 +143,7 @@ const PermissionList = (props: IComponent) => {
                         canEdit={true}
                         setCanEdit={() => {
                           !checkEditPermission(
-                            "permissions",
+                            "permission",
                             JSON.stringify(rightsOfLayoutState)
                           )
                             ? toast.error(
@@ -167,7 +167,7 @@ const PermissionList = (props: IComponent) => {
       ) : modePermission === "view" ? (
         <>
           {checkViewPermission(
-            "permissions",
+            "permission",
             JSON.stringify(rightsOfLayoutState)
           ) ? (
             <>
@@ -189,7 +189,7 @@ const PermissionList = (props: IComponent) => {
       ) : modePermission === "edit" || modePermission === "create" ? (
         <>
           {checkEditPermission(
-            "permissions",
+            "permission",
             JSON.stringify(rightsOfLayoutState)
           ) ? (
             <>

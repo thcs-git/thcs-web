@@ -1,4 +1,7 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+// React router dom
+
+import { Link } from "react-router-dom";
 // aplication
 import SESSIONSTORAGE from "../../../helpers/constants/sessionStorage";
 
@@ -74,10 +77,10 @@ import { ExamsItem } from "../../../store/ducks/exams/types";
 
 interface IAccordionReport {
   content: {
-    loading: boolean;
     error: boolean;
     data: any;
   };
+  loading: boolean;
   company_id: string;
   reportType: string;
   allergic?: boolean;
@@ -128,7 +131,7 @@ interface IAccordionItem {
 }
 
 export default function AccordionReport(props: IAccordionReport) {
-  const { content, company_id, reportType, state } = props;
+  const { content, company_id, reportType, state, loading } = props;
   const dispatch = useDispatch();
   const integration = sessionStorage.getItem(SESSIONSTORAGE.INTEGRATION);
 
@@ -183,7 +186,7 @@ export default function AccordionReport(props: IAccordionReport) {
       name: "Temperatura",
     },
   ];
-  // console.log(content.data, "DATAAA");
+
   const NoData = () => (
     <Box
       sx={{
@@ -500,10 +503,10 @@ export default function AccordionReport(props: IAccordionReport) {
               sx={{
                 color: "var(--gray-dark)",
                 textAlign: "center",
-                margin: "16px 0 8px",
+                margin: "16px 0",
               }}
             >
-              Não há alergias registrados para este paciente.
+              Não há alergias registradas para este paciente.
             </Box>
           );
         } else
@@ -558,7 +561,7 @@ export default function AccordionReport(props: IAccordionReport) {
               sx={{
                 color: "var(--gray-dark)",
                 textAlign: "center",
-                margin: "16px 0 8px",
+                margin: "16px 0",
               }}
             >
               Não há eventos adversos registrados para este paciente.
@@ -915,9 +918,7 @@ export default function AccordionReport(props: IAccordionReport) {
               height: "36px",
               width: "36px",
             }}
-            onClick={() => {
-              console.log("CLIQUEI");
-            }}
+            onClick={() => {}}
           >
             <PrintIcon
               sx={{
@@ -1027,9 +1028,7 @@ export default function AccordionReport(props: IAccordionReport) {
                 height: "36px",
                 width: "36px",
               }}
-              onClick={() => {
-                console.log("CLIQUEI");
-              }}
+              onClick={() => {}}
             >
               <PrintIcon
                 sx={{
@@ -1074,9 +1073,7 @@ export default function AccordionReport(props: IAccordionReport) {
                 height: "36px",
                 width: "36px",
               }}
-              onClick={() => {
-                console.log("CLIQUEI");
-              }}
+              onClick={() => {}}
             >
               <PrintIcon
                 sx={{
@@ -1307,89 +1304,49 @@ export default function AccordionReport(props: IAccordionReport) {
   );
   const examsAccordion = (data: any) =>
     data.map((date: any, index: number) => (
-      <Box sx={{ position: "relative" }}>
-        <Box
+      <Accordion
+        key={index}
+        disableGutters={true}
+        expanded={expanded === `panel${index}`}
+        onChange={handleChange(`panel${index}`)}
+      >
+        <AccordionSummary
+          expandIcon={<ExpandMoreIcon />}
+          aria-controls={`panel${index}bh-content`}
+          id={`panel${index}bh-header`}
           sx={{
-            position: "absolute",
-            display: "flex",
-            justifyContent: "center",
-            alignItems: "center",
-            zIndex: 5000,
-            left: "57rem",
-            top: "0.4rem",
+            "& div, svg, path, circle, rect": { cursor: "pointer" },
+            cursor: "pointer",
           }}
         >
-          <IconButton
-            aria-label="print"
+          <Box
             sx={{
               display: "flex",
-              justifyContent: "center",
-              alignItems: "center",
-              cursor: "pointer",
-              height: "36px",
-              width: "36px",
-            }}
-            onClick={() => {
-              console.log("CLIQUEI");
+              gap: "8px",
+              flexDirection: "row",
+              justifyContent: "flex-start",
+              width: "100%",
             }}
           >
-            <PrintIcon
-              sx={{
-                color:
-                  expanded === `panel${index}`
-                    ? "var(--white)"
-                    : "var(--secondary)",
-                cursor: "pointer",
-                "& path": { cursor: "pointer" },
-              }}
+            <ExamsIcon
+              fill={
+                expanded === `panel${index}`
+                  ? "var(--white)"
+                  : "var(--gray-dark)"
+              }
+              width="22px"
+              height={"22px"}
             />
-          </IconButton>
-        </Box>
-        <Accordion
-          key={index}
-          disableGutters={true}
-          expanded={expanded === `panel${index}`}
-          onChange={handleChange(`panel${index}`)}
-        >
-          <AccordionSummary
-            expandIcon={<ExpandMoreIcon />}
-            aria-controls={`panel${index}bh-content`}
-            id={`panel${index}bh-header`}
-            sx={{
-              "& div, svg, path, circle, rect": { cursor: "pointer" },
-              cursor: "pointer",
-            }}
-          >
-            <Box
-              sx={{
-                display: "flex",
-                gap: "8px",
-                flexDirection: "row",
-                justifyContent: "flex-start",
-                width: "100%",
-              }}
-            >
-              <ExamsIcon
-                fill={
-                  expanded === `panel${index}`
-                    ? "var(--white)"
-                    : "var(--gray-dark)"
-                }
-                width="22px"
-                height={"22px"}
-              />
 
-              <Box>{date.day}</Box>
-            </Box>
-            <Box sx={{ cursor: "pointer", width: "36px" }}></Box>
-          </AccordionSummary>
-          <AccordionDetails key={index}>
-            {examsAccordionHeader()}
-            {examsAccordionDetails(date.exams)}
-            {/* {antibioticAccordionDetailsRows(item)} */}
-          </AccordionDetails>
-        </Accordion>
-      </Box>
+            <Box>{date.day}</Box>
+          </Box>
+          <Box sx={{ cursor: "pointer", width: "36px" }}></Box>
+        </AccordionSummary>
+        <AccordionDetails key={index}>
+          {examsAccordionHeader()}
+          {examsAccordionDetails(date.exams)}
+        </AccordionDetails>
+      </Accordion>
     ));
 
   const examsAccordionHeader = () => (
@@ -1404,55 +1361,61 @@ export default function AccordionReport(props: IAccordionReport) {
     </>
   );
   const examsAccordionDetails = (data: any) =>
-    data.map((column: any, index: number) => (
-      <>
-        <ContentDetailsAccordion key={index}>
-          <TextCenterDetails>
-            {formatDate(column.DataCriacao, "HH:mm")}
-          </TextCenterDetails>
-          <TextCenterDetails>
-            {column?.Prescritor?.Nome
-              ? getFirstAndLastName(capitalizeText(column?.Prescritor?.Nome))
-              : "-"}
-          </TextCenterDetails>
-          <TextCenterDetails>
-            {column?.Exames[0]?.Nome
-              ? capitalizeText(column.Exames[0].Nome)
-              : "Não informado"}
-          </TextCenterDetails>
+    data
+      .sort((a: any, b: any) => {
+        return a.DataCriacao < b.DataCriacao
+          ? -1
+          : a.DataCriacao > b.DataCriacao
+          ? 1
+          : 0;
+      })
+      .map((column: any, index: number) => (
+        <>
+          <ContentDetailsAccordion key={index}>
+            <TextCenterDetails>
+              {formatDate(column.DataCriacao, "HH:mm")}
+            </TextCenterDetails>
+            <TextCenterDetails>
+              {column?.Prescritor?.Nome
+                ? getFirstAndLastName(capitalizeText(column?.Prescritor?.Nome))
+                : "-"}
+            </TextCenterDetails>
+            <TextCenterDetails>
+              {column?.Exames[0]?.Nome
+                ? capitalizeText(column.Exames[0].Nome)
+                : "Não informado"}
+            </TextCenterDetails>
 
-          <TextCenterDetails>
-            <IconButton
-              aria-label="print"
-              sx={{
-                display: "flex",
-                justifyContent: "center",
-                alignItems: "center",
-                cursor: "pointer",
-                height: "36px",
-                width: "36px",
-              }}
-              onClick={() => {
-                console.log("CLIQUEI");
-              }}
-            >
-              <PrintIcon
+            <TextCenterDetails>
+              <IconButton
+                aria-label="print"
                 sx={{
-                  color: "var(--secondary)",
+                  display: "flex",
+                  justifyContent: "center",
+                  alignItems: "center",
                   cursor: "pointer",
-                  "& > path": { cursor: "pointer" },
+                  height: "36px",
+                  width: "36px",
                 }}
-              />
-            </IconButton>
-          </TextCenterDetails>
-        </ContentDetailsAccordion>
-        {data.length !== index + 1 ? (
-          <Divider sx={{ width: "100%", margin: "0 auto" }} />
-        ) : (
-          ""
-        )}
-      </>
-    ));
+                onClick={() => window.open(column.ExamePDFUrl, "_blank")}
+              >
+                <PrintIcon
+                  sx={{
+                    color: "var(--secondary)",
+                    cursor: "pointer",
+                    "& > path": { cursor: "pointer" },
+                  }}
+                />
+              </IconButton>
+            </TextCenterDetails>
+          </ContentDetailsAccordion>
+          {data.length !== index + 1 ? (
+            <Divider sx={{ width: "100%", margin: "0 auto" }} />
+          ) : (
+            ""
+          )}
+        </>
+      ));
 
   function groupExamsByDate(data: any) {
     const group: any[] = [];
@@ -1478,12 +1441,10 @@ export default function AccordionReport(props: IAccordionReport) {
     });
     return group;
   }
-  console.log(content.data, "DATA");
-  console.log(content.loading, "LOADING");
 
   return (
     <>
-      {content.loading && <Loading />}
+      {loading && <Loading />}
 
       {content.data ? (
         reportType === "Aferições" ||

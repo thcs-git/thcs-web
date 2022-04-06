@@ -128,4 +128,4 @@ export interface ExamsState {
   success: boolean;
   error: boolean;
 }
-export type LoadRequestParams = Partial<Omit<string, "data">>;
+export type LoadRequestParams = Partial<Omit<any, "data">>;

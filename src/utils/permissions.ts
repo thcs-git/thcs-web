@@ -12,9 +12,9 @@ client.edit
 client.create
 
 PERMISSÕES
-permissions.view
-permissions.edit
-permissions.create
+permission.view
+permission.edit
+permission.create
 
 INTEGRAÇÃO
 integration.view
@@ -56,22 +56,26 @@ schedule.create
  */
 
 // checa se existe permissão view (visualizar)
+const rigthsOfSessionStorage = sessionStorage.getItem(SESSIONSTORAGE.RIGHTS);
 
 export function checkViewPermission(
   permissionType: string,
   rightsOfLayoutState: string
 ) {
-  // console.log(rights);
+  // console.log(rigthsOfSessionStorage);
   let check = false;
   let permission = `${permissionType}.view`;
 
   rightsOfLayoutState?.split('"').forEach((permissionItem: string) => {
     if (permissionItem === permission) {
       check = true;
-      return permissionItem;
     }
   });
-
+  rigthsOfSessionStorage?.split('"').forEach((permissionItem: string) => {
+    if (permissionItem === permission) {
+      check = true;
+    }
+  });
   return check;
 }
 
@@ -86,7 +90,11 @@ export function checkEditPermission(
   rightsOfLayoutState?.split('"').forEach((permissionItem: string) => {
     if (permissionItem === permission) {
       check = true;
-      return permissionItem;
+    }
+  });
+  rigthsOfSessionStorage?.split('"').forEach((permissionItem: string) => {
+    if (permissionItem === permission) {
+      check = true;
     }
   });
 
@@ -104,7 +112,11 @@ export function checkCreatePermission(
   rightsOfLayoutState?.split('"').forEach((permissionItem: string) => {
     if (permissionItem === permission) {
       check = true;
-      return permissionItem;
+    }
+  });
+  rigthsOfSessionStorage?.split('"').forEach((permissionItem: string) => {
+    if (permissionItem === permission) {
+      check = true;
     }
   });
 
