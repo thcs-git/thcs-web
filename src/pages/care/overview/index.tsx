@@ -52,6 +52,7 @@ import { loadRequest as loadRequestQrCode } from "../../../store/ducks/qrCode/ac
 import { ApplicationState } from "../../../store";
 import { loadRequestByCareId as loadRequestPrescriptionByCareId } from "../../../store/ducks/prescripition/actions";
 import { loadRequest as loadRequestAntibiotic } from "../../../store/ducks/antibiotic/actions";
+import { loadRequest as loadRequestExams } from "../../../store/ducks/exams/actions";
 interface IPageParams {
   id?: string;
 }
@@ -156,6 +157,8 @@ export default function PatientOverview(
     (state: ApplicationState) => state.antibiotic
   );
   const qrCodeState = useSelector((state: ApplicationState) => state.qrCode);
+  const examsState = useSelector((state: ApplicationState) => state.exams);
+
   const [team, setTeam] = useState<any[]>([]);
   const [reportActive, setReportActive] = useState(false);
   const [reportType, setReportType] = useState("");
@@ -214,7 +217,12 @@ export default function PatientOverview(
     if (careState?.data?.patient_id?._id && reportType === "Antibióticos") {
       dispatch(loadRequestAntibiotic(careState?.data?.patient_id?._id));
     }
+    if (careState?.data?.patient_id?._id && reportType === "Exames") {
+      dispatch(loadRequestExams(careState?.data?.patient_id?._id));
+    }
   }, [careState.data._id, reportType]);
+
+  console.log(examsState.loading, "examsState.loading");
   const handleTeam = useCallback(() => {
     const teamUsers: any = [];
 
@@ -446,13 +454,13 @@ export default function PatientOverview(
     md: 6,
   };
   const cards = [
+    "Exames",
     "Check-in/out",
     "Prescrições",
     "Aferições",
     "Alergias",
     "Antibióticos",
     "Evolução",
-    "Exames",
     "Atestados",
   ];
   const personalCard = {
@@ -567,11 +575,16 @@ export default function PatientOverview(
         loading: antibioticState.loading,
         error: antibioticState.error,
       };
+    } else if (report === "Exames" && examsState.data.data.length > 0) {
+      return {
+        data: examsState.data.data,
+        loading: examsState.loading,
+        error: examsState.error,
+      };
     } else {
       return "";
     }
   }
-  // console.log(prescriptionState.data);
 
   function handleOpenFilter() {
     setOpenFilterReport(true);

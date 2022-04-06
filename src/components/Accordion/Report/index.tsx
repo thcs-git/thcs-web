@@ -33,6 +33,7 @@ import Drug from "../../Icons/Drug";
 import AdverseEvent from "../../Icons/AdverseEvent";
 import Prescription from "../../Icons/Prescription";
 import Antibiotic from "../../Icons/Antibiotic";
+import ExamsIcon from "../../Icons/ExamsReport";
 // styled components and style
 import {
   AccordionStyled as Accordion,
@@ -48,7 +49,7 @@ import {
 // Helps
 import { formatDate } from "../../../helpers/date";
 import { toast } from "react-toastify";
-import _ from "lodash";
+import _, { groupBy } from "lodash";
 // components
 import Loading from "../../Loading";
 // types
@@ -69,6 +70,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { CareState } from "../../../store/ducks/cares/types";
 import { ApplicationState } from "../../../store";
 import dayjs from "dayjs";
+import { ExamsItem } from "../../../store/ducks/exams/types";
 
 interface IAccordionReport {
   content: {
@@ -981,14 +983,17 @@ export default function AccordionReport(props: IAccordionReport) {
       </Box>
     ));
   const prescriptionAccordionHeader = () => (
-    <HeaderDetailsAccordion>
-      <TextCenterDetails>Id. Prescrição</TextCenterDetails>
-      <TextCenterDetails>Profissional</TextCenterDetails>
-      <TextCenterDetails>Função</TextCenterDetails>
-      <TextCenterDetails>Data Início</TextCenterDetails>
-      <TextCenterDetails>Data Fim</TextCenterDetails>
-      <TextCenterDetails sx={{ width: "100px" }}>Opções</TextCenterDetails>
-    </HeaderDetailsAccordion>
+    <>
+      <HeaderDetailsAccordion>
+        <TextCenterDetails>Id. Prescrição</TextCenterDetails>
+        <TextCenterDetails>Profissional</TextCenterDetails>
+        <TextCenterDetails>Função</TextCenterDetails>
+        <TextCenterDetails>Data Início</TextCenterDetails>
+        <TextCenterDetails>Data Fim</TextCenterDetails>
+        <TextCenterDetails sx={{ width: "100px" }}>Opções</TextCenterDetails>
+      </HeaderDetailsAccordion>
+      <Divider sx={{ width: "100%", margin: "0 auto" }} />
+    </>
   );
   const prescriptionAccordionDetails = (data: any) =>
     data.map((column: any, index: number) => (
@@ -1300,6 +1305,181 @@ export default function AccordionReport(props: IAccordionReport) {
       </ContentDetailsAccordion>
     </>
   );
+  const examsAccordion = (data: any) =>
+    data.map((date: any, index: number) => (
+      <Box sx={{ position: "relative" }}>
+        <Box
+          sx={{
+            position: "absolute",
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+            zIndex: 5000,
+            left: "57rem",
+            top: "0.4rem",
+          }}
+        >
+          <IconButton
+            aria-label="print"
+            sx={{
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
+              cursor: "pointer",
+              height: "36px",
+              width: "36px",
+            }}
+            onClick={() => {
+              console.log("CLIQUEI");
+            }}
+          >
+            <PrintIcon
+              sx={{
+                color:
+                  expanded === `panel${index}`
+                    ? "var(--white)"
+                    : "var(--secondary)",
+                cursor: "pointer",
+                "& path": { cursor: "pointer" },
+              }}
+            />
+          </IconButton>
+        </Box>
+        <Accordion
+          key={index}
+          disableGutters={true}
+          expanded={expanded === `panel${index}`}
+          onChange={handleChange(`panel${index}`)}
+        >
+          <AccordionSummary
+            expandIcon={<ExpandMoreIcon />}
+            aria-controls={`panel${index}bh-content`}
+            id={`panel${index}bh-header`}
+            sx={{
+              "& div, svg, path, circle, rect": { cursor: "pointer" },
+              cursor: "pointer",
+            }}
+          >
+            <Box
+              sx={{
+                display: "flex",
+                gap: "8px",
+                flexDirection: "row",
+                justifyContent: "flex-start",
+                width: "100%",
+              }}
+            >
+              <ExamsIcon
+                fill={
+                  expanded === `panel${index}`
+                    ? "var(--white)"
+                    : "var(--gray-dark)"
+                }
+                width="22px"
+                height={"22px"}
+              />
+
+              <Box>{date.day}</Box>
+            </Box>
+            <Box sx={{ cursor: "pointer", width: "36px" }}></Box>
+          </AccordionSummary>
+          <AccordionDetails key={index}>
+            {examsAccordionHeader()}
+            {examsAccordionDetails(date.exams)}
+            {/* {antibioticAccordionDetailsRows(item)} */}
+          </AccordionDetails>
+        </Accordion>
+      </Box>
+    ));
+
+  const examsAccordionHeader = () => (
+    <>
+      <HeaderDetailsAccordion>
+        <TextCenterDetails>Hora</TextCenterDetails>
+        <TextCenterDetails>Solicitante</TextCenterDetails>
+        <TextCenterDetails>Exame</TextCenterDetails>
+        <TextCenterDetails>Opções</TextCenterDetails>
+      </HeaderDetailsAccordion>
+      <Divider sx={{ width: "100%", margin: "0 auto" }} />
+    </>
+  );
+  const examsAccordionDetails = (data: any) =>
+    data.map((column: any, index: number) => (
+      <>
+        <ContentDetailsAccordion key={index}>
+          <TextCenterDetails>
+            {formatDate(column.DataCriacao, "HH:mm")}
+          </TextCenterDetails>
+          <TextCenterDetails>
+            {column?.Prescritor?.Nome
+              ? getFirstAndLastName(capitalizeText(column?.Prescritor?.Nome))
+              : "-"}
+          </TextCenterDetails>
+          <TextCenterDetails>
+            {column?.Exames[0]?.Nome
+              ? capitalizeText(column.Exames[0].Nome)
+              : "Não informado"}
+          </TextCenterDetails>
+
+          <TextCenterDetails>
+            <IconButton
+              aria-label="print"
+              sx={{
+                display: "flex",
+                justifyContent: "center",
+                alignItems: "center",
+                cursor: "pointer",
+                height: "36px",
+                width: "36px",
+              }}
+              onClick={() => {
+                console.log("CLIQUEI");
+              }}
+            >
+              <PrintIcon
+                sx={{
+                  color: "var(--secondary)",
+                  cursor: "pointer",
+                  "& > path": { cursor: "pointer" },
+                }}
+              />
+            </IconButton>
+          </TextCenterDetails>
+        </ContentDetailsAccordion>
+        {data.length !== index + 1 ? (
+          <Divider sx={{ width: "100%", margin: "0 auto" }} />
+        ) : (
+          ""
+        )}
+      </>
+    ));
+
+  function groupExamsByDate(data: any) {
+    const group: any[] = [];
+
+    content.data.map((exams: any) => {
+      let existDate = false;
+      let indexExistDate = -1;
+      group.map((data: any, index: number) => {
+        if (data.day === formatDate(exams.DataCriacao, "DD/MM/YYYY")) {
+          existDate = true;
+          indexExistDate = index;
+        }
+      });
+
+      if (!existDate) {
+        group.push({
+          day: formatDate(exams.DataCriacao, "DD/MM/YYYY"),
+          exams: [{ ...exams }],
+        });
+      } else {
+        group[indexExistDate].exams.push(exams);
+      }
+    });
+    return group;
+  }
+  console.log(content.data, "DATA");
+  console.log(content.loading, "LOADING");
 
   return (
     <>
@@ -1600,6 +1780,10 @@ export default function AccordionReport(props: IAccordionReport) {
           )
         ) : reportType === "Antibióticos" ? (
           <Container>{antibioticAccordion(content.data)}</Container>
+        ) : reportType === "Exames" ? (
+          <Container>
+            {examsAccordion(groupExamsByDate(content.data))}
+          </Container>
         ) : (
           ""
         )

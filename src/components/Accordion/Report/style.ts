@@ -29,7 +29,11 @@ export const AccordionStyled = styled(Accordion)`
   }
 `;
 
-export const AccordionDetailsStyled = styled(AccordionDetails)``;
+export const AccordionDetailsStyled = styledMui(
+  AccordionDetails
+)<AccordionDetailsProps>(({ theme }) => ({
+  padding: "0 16px",
+}));
 
 export const AccordionSummaryStyled = styled(AccordionSummary)``;
 
