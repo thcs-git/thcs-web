@@ -49,7 +49,7 @@ import {
 // Helps
 import { formatDate } from "../../../helpers/date";
 import { toast } from "react-toastify";
-import _, { groupBy } from "lodash";
+import _ from "lodash";
 // components
 import Loading from "../../Loading";
 // types
