@@ -1010,12 +1010,18 @@ export default function AccordionReport(props: IAccordionReport) {
           </TextCenterDetails>
           <TextCenterDetails>
             {column.start_at
-              ? formatDate(column.start_at, "DD/MM/YYYY")
+              ? `${formatDate(column.start_at, "DD/MM/YYYY")} às ${formatDate(
+                  column.start_at,
+                  "HH:mm"
+                )}`
               : "Não informado"}
           </TextCenterDetails>
           <TextCenterDetails>
             {column.end_at
-              ? formatDate(column.end_at, "DD/MM/YYYY")
+              ? `${formatDate(column.end_at, "DD/MM/YYYY")} às ${formatDate(
+                  column.end_at,
+                  "HH:mm"
+                )}`
               : "Não informado"}
           </TextCenterDetails>
           <TextCenterDetails sx={{ width: "100px" }}>
