@@ -2,7 +2,7 @@ import React, { useState } from "react";
 // components
 import DialogInfo from "../../Dialogs/Card/Info";
 // MUI
-import Box from "@material-ui/core/Box";
+import Box from "@mui/material/Box";
 //style
 import {
   GridStyle as Grid,
@@ -245,6 +245,7 @@ export default function CardInfo(props: ICardInfo) {
               cursor: "pointer",
             }}
             onClick={handleClickOpen}
+            sx={{ "& svg, path": { cursor: "pointer" } }}
           >
             <IconEye style={{ cursor: "pointer" }} />
           </Box>

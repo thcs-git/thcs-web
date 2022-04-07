@@ -181,6 +181,9 @@ import { QrCode } from "@mui/icons-material";
 import { ExamsTypes } from "./exams/types";
 import { get as getExams } from "./exams/sagas";
 
+import { AttestTypes } from "./attest/types";
+import { get as getAttests } from "./attest/sagas";
+
 export default function* rootSaga(): any {
   return yield all([
     takeLatest(LoginTypes.LOAD_REQUEST, doLogin),
@@ -405,5 +408,10 @@ export default function* rootSaga(): any {
      */
 
     takeLatest(ExamsTypes.LOAD_REQUEST, getExams),
+
+    /**
+     * ATTESTS
+     */
+    takeLatest(AttestTypes.LOAD_REQUEST, getAttests),
   ]);
 }

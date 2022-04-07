@@ -49,7 +49,6 @@ export const BoxIcon = styled(Box)`
   gap: 8px;
   flex-direction: column;
   font-weight: bold;
-  //color: var(--success-hover);
   color: var(--black);
   font-size: 12px;
   text-align: center;
@@ -57,4 +56,14 @@ export const BoxIcon = styled(Box)`
   border-radius: 8px;
   height: 70px;
   background-color: var(--white);
+  cursor: pointer;
+  svg {
+    cursor: pointer;
+    & path {
+      cursor: pointer;
+    }
+  }
+  div {
+    cursor: pointer;
+  }
 `;
