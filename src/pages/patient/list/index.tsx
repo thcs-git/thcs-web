@@ -313,7 +313,7 @@ export default function PatientList() {
                 <SearchComponent
                   handleButton={handleClickButton}
                   inputPlaceholder="Pesquise por nome, CPF, data, etc..."
-                  buttonTitle="Novo"
+                  // buttonTitle="Novo"
                   onChangeInput={handleChangeInput}
                   value={search}
                   onKeyEnter={handleKeyEnter}

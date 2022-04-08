@@ -93,6 +93,8 @@ const CompanyForm = (props: IComponent) => {
   if (state.tipo?.length > 0) {
     rows.push({ name: "Tipo", value: state.tipo });
   }
+  if (state.responsable_fiscal_number)
+    rows.push({ name: "CPF/CNPJ", value: state.responsable_fiscal_number });
 
   const content = {
     tittle: state.fantasy_name,
@@ -100,7 +102,6 @@ const CompanyForm = (props: IComponent) => {
     // icon: <InfoRoundedIcon style={{color: "#ffffff"}}/>,
     rows: rows,
   };
-
   return (
     <FormGroupSection>
       <Grid container>

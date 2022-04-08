@@ -102,7 +102,7 @@ const IntegrationForm = (props: IComponent) => {
                   {formatDate(state.created_at, "DD/MM/YYYY HH:mm")}
                 </Typography>
                 <Typography>
-                  Origem do atendimento: ...... setor ......{" "}
+                  Origem do atendimento: 194 - INTEGRACAO Setor: 763 - INTEGRAÇÃO{" "}
                 </Typography>
               </Grid>
 
