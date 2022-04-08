@@ -615,76 +615,91 @@ export default function AccordionReport(props: IAccordionReport) {
                       : "-"}
                   </TextCenterDetails>
                   <TextCenterDetails sx={{ width: "200px" }}>
-                    <Box
-                      sx={{
-                        display: "flex",
-                        flexWrap: "wrap",
-                        justifyContent: "center",
-                        alignItems: "center",
-                        gap: "4px",
-                        margin: "2px",
-                      }}
+                    <Tooltip
+                      title={column.item.map((item: any, index: number) =>
+                        index === column.item.length - 1 ? item : item + " + "
+                      )}
                     >
-                      <Badge
-                        badgeContent={column.item.length}
-                        showZero
-                        color="primary"
-                        overlap="rectangular"
+                      <Box
                         sx={{
-                          ".MuiBadge-colorPrimary": {
-                            backgroundColor: "var(--secondary)",
-                            borderRadius: "4px",
-                            fontSize: "10px !important",
-                            right: "-2px",
-                            height: "16px",
-                            padding: "5px",
-                            minWidth: "min-content",
-                          },
+                          display: "flex",
+                          flexWrap: "wrap",
+                          justifyContent: "center",
+                          alignItems: "center",
+                          gap: "4px",
+                          margin: "2px",
                         }}
                       >
-                        <Drug
-                          fill={"var(--secondary)"}
-                          width={"20px"}
-                          height={"20px"}
-                        />
-                      </Badge>
-                    </Box>
+                        <Badge
+                          badgeContent={column.item.length}
+                          showZero
+                          color="primary"
+                          overlap="rectangular"
+                          sx={{
+                            ".MuiBadge-colorPrimary": {
+                              backgroundColor: "var(--secondary)",
+                              borderRadius: "4px",
+                              fontSize: "10px !important",
+                              right: "-2px",
+                              height: "16px",
+                              padding: "5px",
+                              minWidth: "min-content",
+                            },
+                          }}
+                        >
+                          <Drug
+                            fill={"var(--secondary)"}
+                            width={"20px"}
+                            height={"20px"}
+                          />
+                        </Badge>
+                      </Box>
+                    </Tooltip>
                   </TextCenterDetails>
                   <TextCenterDetails sx={{ width: "200px" }}>
-                    <Box
-                      sx={{
-                        display: "flex",
-                        flexWrap: "wrap",
-                        justifyContent: "center",
-                        alignItems: "center",
-                        gap: "4px",
-                        margin: "2px",
-                      }}
+                    <Tooltip
+                      title={column.type.map((item: any, index: number) =>
+                        index === column.type.length - 1
+                          ? capitalizeText(item)
+                          : capitalizeText(item) + "; "
+                      )}
                     >
-                      <Badge
-                        badgeContent={column.type.length}
-                        showZero
-                        color="primary"
-                        overlap="rectangular"
+                      <Box
                         sx={{
-                          ".MuiBadge-colorPrimary": {
-                            backgroundColor: "var(--secondary)",
-                            borderRadius: "4px",
-                            fontSize: "10px !important",
-                            right: "-9px",
-                            height: "14px",
-                            padding: "5px",
-                            minWidth: "min-content",
-                          },
+                          display: "flex",
+                          flexWrap: "wrap",
+                          justifyContent: "center",
+                          alignItems: "center",
+                          gap: "4px",
+                          margin: "2px",
                         }}
                       >
-                        <AdverseEvent
-                          fill={"var(--secondary)"}
-                          width={"18px"}
-                          height={"18px"}
-                        />
-                      </Badge>
-                    </Box>
+                        {console.log(column)}
+                        <Badge
+                          badgeContent={column.type.length}
+                          showZero
+                          color="primary"
+                          overlap="rectangular"
+                          sx={{
+                            ".MuiBadge-colorPrimary": {
+                              backgroundColor: "var(--secondary)",
+                              borderRadius: "4px",
+                              fontSize: "10px !important",
+                              right: "-9px",
+                              height: "14px",
+                              padding: "5px",
+                              minWidth: "min-content",
+                            },
+                          }}
+                        >
+                          <AdverseEvent
+                            fill={"var(--secondary)"}
+                            width={"18px"}
+                            height={"18px"}
+                          />
+                        </Badge>
+                      </Box>
+                    </Tooltip>
                   </TextCenterDetails>
                 </ContentDetailsAccordion>
                 {list.length !== index + 1 ? (
