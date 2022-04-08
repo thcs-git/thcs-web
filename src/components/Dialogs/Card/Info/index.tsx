@@ -203,7 +203,7 @@ export default function DialogInfo(props: IDialogProps) {
 
   function handleTeamData(content: IContent) {
     let team: ITeam[] = [];
-    content.careState.checkin.map((day: any, index: number) => {
+    content.careState.checkin.data.map((day: any, index: number) => {
       if (day) {
         day.list.map((checks: any, index: number) => {
           if (checks.list) {
