@@ -25,6 +25,13 @@ const reducer: Reducer<AttestState> = (state = INITIAL_STATE, action) => {
         success: true,
         error: false,
       };
+    case AttestTypes.LOAD_FAILURE:
+      return {
+        data: INITIAL_STATE.data,
+        loading: false,
+        success: false,
+        error: true,
+      };
 
     default:
       return state;

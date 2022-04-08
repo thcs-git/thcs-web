@@ -314,7 +314,7 @@ export default function FilterReport(props: IPropsFilter) {
   function handleAutocompleteData(type: string) {
     let List: any[] = [];
     if (reportType === "Check-in/out") {
-      careState.checkin.map((day: any) => {
+      careState.checkin.data.map((day: any) => {
         if (day) {
           day.list.map((checks: any) => {
             if (checks.list) {
@@ -336,7 +336,7 @@ export default function FilterReport(props: IPropsFilter) {
         }
       });
     } else if (reportType === "Evolução") {
-      careState.evolution.map((day) =>
+      careState.evolution.data.map((day) =>
         day.list.map((evolution) => {
           const itemList: any = {
             name:
