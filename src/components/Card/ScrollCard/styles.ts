@@ -16,6 +16,10 @@ export const Card = styled(Box)`
   flex-direction: column;
   justify-content: space-between;
   align-items: center;
+  & svg,
+  path {
+    cursor: pointer;
+  }
 `;
 export const IconCard = styled(Box)`
   height: 100%;
@@ -23,6 +27,11 @@ export const IconCard = styled(Box)`
   align-items: center;
   justify-content: center;
   width: 100%;
+  cursor: pointer;
+  & path,
+  circle {
+    cursor: pointer;
+  }
 `;
 export const FooterCard = styled(Box)`
   background-color: var(--gray-light);
@@ -30,6 +39,7 @@ export const FooterCard = styled(Box)`
   border-radius: 0 0 8px 8px;
   color: #666666;
   text-align: center;
+  cursor: pointer;
 `;
 
 export const GliderStyle = styled(Glider)`
@@ -59,7 +69,7 @@ export const ContainerStyle = styled(Container)`
       width: 125px;
       position: absolute;
       background: 0 0;
-      z-index: 2;
+      z-index: 10;
       font-size: 80px;
       text-decoration: none;
       top: 0;
@@ -67,7 +77,7 @@ export const ContainerStyle = styled(Container)`
       color: #666;
       opacity: 1;
       line-height: 1;
-      transition: opacity 0.5s cubic-bezier(0.17, 0.67, 0.83, 0.67);
+      transition: all 0.5s cubic-bezier(0.17, 0.67, 0.83, 0.67);
       color: var(--gray);
       height: 100%;
       cursor: pointer;
@@ -75,6 +85,14 @@ export const ContainerStyle = styled(Container)`
       display: flex;
       justify-content: center;
       align-items: center;
+      &:hover {
+        svg {
+          fill: var(--gray-dark);
+          path {
+            cursor: pointer;
+          }
+        }
+      }
     }
 
     .glider-dot,

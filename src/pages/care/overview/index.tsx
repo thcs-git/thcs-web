@@ -53,6 +53,7 @@ import { ApplicationState } from "../../../store";
 import { loadRequestByCareId as loadRequestPrescriptionByCareId } from "../../../store/ducks/prescripition/actions";
 import { loadRequest as loadRequestAntibiotic } from "../../../store/ducks/antibiotic/actions";
 import { loadRequest as loadRequestExams } from "../../../store/ducks/exams/actions";
+import { loadRequest as loadRequestAttests } from "../../../store/ducks/attest/actions";
 interface IPageParams {
   id?: string;
 }
@@ -158,7 +159,7 @@ export default function PatientOverview(
   );
   const qrCodeState = useSelector((state: ApplicationState) => state.qrCode);
   const examsState = useSelector((state: ApplicationState) => state.exams);
-
+  const attestState = useSelector((state: ApplicationState) => state.attest);
   const rightsOfLayoutState = useSelector(
     (state: ApplicationState) => state.layout.data.rights
   );
@@ -219,6 +220,8 @@ export default function PatientOverview(
       dispatch(loadRequestAntibiotic(patientId));
     } else if (patientId && reportType === "Exames") {
       dispatch(loadRequestExams(patientId));
+    } else if (patientId && reportType === "Atestados") {
+      dispatch(loadRequestAttests(patientId));
     }
   }, [careState.data._id, reportType]);
 
@@ -453,6 +456,7 @@ export default function PatientOverview(
     md: 6,
   };
   const cards = [
+    "Atestados",
     "Exames",
     "Check-in/out",
     "Prescrições",
@@ -460,7 +464,6 @@ export default function PatientOverview(
     "Alergias",
     "Antibióticos",
     "Evolução",
-    "Atestados",
   ];
   const personalCard = {
     card: "Dados Pessoais",
@@ -571,6 +574,11 @@ export default function PatientOverview(
         data: examsState.data.data,
         error: examsState.error,
       };
+    } else if (report === "Atestados" && attestState.data.data.length > 0) {
+      return {
+        data: attestState.data.data,
+        error: attestState.error,
+      };
     } else {
       return "";
     }
@@ -598,10 +606,13 @@ export default function PatientOverview(
         return antibioticState.loading;
       case "Exames":
         return examsState.loading;
+      case "Atestados":
+        return attestState.loading;
       default:
         return false;
     }
   }
+
   return (
     <Sidebar>
       {checkViewPermission("care", JSON.stringify(rightsOfLayoutState)) ? (

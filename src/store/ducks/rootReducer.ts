@@ -23,6 +23,7 @@ import qrCode from "./qrCode";
 import prescription from "./prescripition";
 import antibiotic from "./antibiotic";
 import exams from "./exams";
+import attest from "./attest";
 
 export default combineReducers<IInitialState>({
   areas,
@@ -45,4 +46,5 @@ export default combineReducers<IInitialState>({
   prescription,
   antibiotic,
   exams,
+  attest,
 });

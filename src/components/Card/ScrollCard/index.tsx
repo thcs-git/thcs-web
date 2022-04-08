@@ -11,6 +11,7 @@ import { ReactComponent as HistoryIcon } from "../../../assets/img/icon-history.
 import AlergicIcon from "../../Icons/allergic";
 import CheckIcon from "../../Icons/Check";
 import FilterListIcon from "@mui/icons-material/FilterList";
+import AttestIcon from "../../Icons/Attest";
 //MUI
 import Box from "@mui/material/Box";
 import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
@@ -132,9 +133,10 @@ export default function ScrollCard(props: IScroll) {
           {name === "Antibióticos" && <AntibioticsIcon />}
           {name === "Evolução" && <DiagnosisIcon />}
           {name === "Exames" && <ExamIcon />}
-          {name === "Atestados" && <HistoryIcon />}
+          {name === "Atestados" && <AttestIcon fill={"#0899BA"} />}
         </IconCard>
         <FooterCard
+          className="FoorterCard"
           sx={{
             backgroundColor: `${
               name === selectCard

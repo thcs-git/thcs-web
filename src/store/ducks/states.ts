@@ -61,6 +61,9 @@ import { AntibioticState } from "./antibiotic/types";
 
 import { INITIAL_STATE as INITIAL_STATE_EXAMS } from "./exams";
 import { ExamsState } from "./exams/types";
+
+import { INITIAL_STATE as INITIAL_STATE_ATTEST } from "./attest";
+import { AttestState } from "./attest/types";
 /**
  * Initial state tree interface
  */
@@ -85,6 +88,7 @@ export interface IInitialState {
   prescription: Readonly<PrescriptionState>;
   antibiotic: Readonly<AntibioticState>;
   exams: Readonly<ExamsState>;
+  attest: Readonly<AttestState>;
 }
 
 /**
@@ -111,4 +115,5 @@ export const InitialState: IInitialState = {
   prescription: INITIAL_STATE_PRESCRIPTION,
   antibiotic: INITIAL_STATE_ANTIBIOTIC,
   exams: INITIAL_STATE_EXAMS,
+  attest: INITIAL_STATE_ATTEST,
 };
