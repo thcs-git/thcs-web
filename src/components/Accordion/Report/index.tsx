@@ -37,6 +37,7 @@ import AdverseEvent from "../../Icons/AdverseEvent";
 import Prescription from "../../Icons/Prescription";
 import Antibiotic from "../../Icons/Antibiotic";
 import ExamsIcon from "../../Icons/ExamsReport";
+import AttestIcon from "../../Icons/Attest";
 // styled components and style
 import {
   AccordionStyled as Accordion,
@@ -1009,12 +1010,18 @@ export default function AccordionReport(props: IAccordionReport) {
           </TextCenterDetails>
           <TextCenterDetails>
             {column.start_at
-              ? formatDate(column.start_at, "DD/MM/YYYY")
+              ? `${formatDate(column.start_at, "DD/MM/YYYY")} às ${formatDate(
+                  column.start_at,
+                  "HH:mm"
+                )}`
               : "Não informado"}
           </TextCenterDetails>
           <TextCenterDetails>
             {column.end_at
-              ? formatDate(column.end_at, "DD/MM/YYYY")
+              ? `${formatDate(column.end_at, "DD/MM/YYYY")} às ${formatDate(
+                  column.end_at,
+                  "HH:mm"
+                )}`
               : "Não informado"}
           </TextCenterDetails>
           <TextCenterDetails sx={{ width: "100px" }}>
@@ -1443,6 +1450,161 @@ export default function AccordionReport(props: IAccordionReport) {
     return group;
   }
 
+  // accordion de Atestados
+  const attestAccordion = (data: any) =>
+    data.map((date: any, index: number) => (
+      <Accordion
+        key={index}
+        disableGutters={true}
+        expanded={expanded === `panel${index}`}
+        onChange={handleChange(`panel${index}`)}
+      >
+        <AccordionSummary
+          expandIcon={<ExpandMoreIcon />}
+          aria-controls={`panel${index}bh-content`}
+          id={`panel${index}bh-header`}
+          sx={{
+            "& div, svg, path, circle, rect": { cursor: "pointer" },
+            cursor: "pointer",
+          }}
+        >
+          <Box
+            sx={{
+              display: "flex",
+              gap: "8px",
+              flexDirection: "row",
+              justifyContent: "flex-start",
+              width: "100%",
+            }}
+          >
+            <AttestIcon
+              fill={
+                expanded === `panel${index}`
+                  ? "var(--white)"
+                  : "var(--gray-dark)"
+              }
+              width="22px"
+              height={"22px"}
+            />
+
+            <Box>{date.day}</Box>
+          </Box>
+          <Box sx={{ cursor: "pointer", width: "36px" }}></Box>
+        </AccordionSummary>
+        <AccordionDetails key={index}>
+          {attestAccordionHeader()}
+          {attestAccordionDetails(date.attest)}
+        </AccordionDetails>
+      </Accordion>
+    ));
+  const attestAccordionHeader = () => (
+    <>
+      <HeaderDetailsAccordion>
+        <TextCenterDetails sx={{ width: "300px" }}>
+          Prescritor
+        </TextCenterDetails>
+        <TextCenterDetails sx={{ width: "100px" }}>CID</TextCenterDetails>
+        <TextCenterDetails sx={{ width: "140px" }}>Início</TextCenterDetails>
+        <TextCenterDetails sx={{ width: "140px" }}>Término</TextCenterDetails>
+        <TextCenterDetails sx={{ width: "100px" }}>Opções</TextCenterDetails>
+      </HeaderDetailsAccordion>
+      <Divider sx={{ width: "100%", margin: "0 auto" }} />
+    </>
+  );
+  const attestAccordionDetails = (data: any) =>
+    data
+      .sort((a: any, b: any) => {
+        return a.DataCriacao < b.DataCriacao
+          ? -1
+          : a.DataCriacao > b.DataCriacao
+          ? 1
+          : 0;
+      })
+      .map((column: any, index: number) => (
+        <>
+          <ContentDetailsAccordion key={index}>
+            <TextCenterDetails sx={{ width: "300px" }}>
+              {column?.Prescritor?.Nome
+                ? column?.Prescritor?.Nome.length > 35
+                  ? getFirstAndLastName(
+                      capitalizeText(column?.Prescritor?.Nome)
+                    )
+                  : capitalizeText(column?.Prescritor?.Nome)
+                : "Não informado"}
+            </TextCenterDetails>
+            <Tooltip title={column?.Atestado?.CID10Estruturado[0]?.Descricao}>
+              <TextCenterDetails sx={{ cursor: "help", width: "100px" }}>
+                {column?.Atestado?.CID10Estruturado[0]?.Codigo}
+              </TextCenterDetails>
+            </Tooltip>
+
+            <TextCenterDetails sx={{ width: "140px" }}>
+              {`${formatDate(
+                column.Atestado.DataInicio,
+                "DD/MM/YY"
+              )} às ${formatDate(column.Atestado.DataInicio, "HH:mm")}`}
+            </TextCenterDetails>
+            <TextCenterDetails sx={{ width: "140px" }}>
+              {`${formatDate(
+                column.Atestado.DataTermino,
+                "DD/MM/YY"
+              )} às ${formatDate(column.Atestado.DataTermino, "HH:mm")}`}
+            </TextCenterDetails>
+
+            <TextCenterDetails sx={{ width: "100px" }}>
+              <IconButton
+                aria-label="print"
+                sx={{
+                  display: "flex",
+                  justifyContent: "center",
+                  alignItems: "center",
+                  cursor: "pointer",
+                  height: "36px",
+                  width: "36px",
+                }}
+                onClick={() => window.open(column.AtestadoPDFUrl, "_blank")}
+              >
+                <PrintIcon
+                  sx={{
+                    color: "var(--secondary)",
+                    cursor: "pointer",
+                    "& > path": { cursor: "pointer" },
+                  }}
+                />
+              </IconButton>
+            </TextCenterDetails>
+          </ContentDetailsAccordion>
+          {data.length !== index + 1 ? (
+            <Divider sx={{ width: "100%", margin: "0 auto" }} />
+          ) : (
+            ""
+          )}
+        </>
+      ));
+  function groupAttestsByDate(data: any) {
+    const group: any[] = [];
+
+    data.map((attest: any) => {
+      let existDate = false;
+      let indexExistDate = -1;
+      group.map((data: any, index: number) => {
+        if (data.day === formatDate(attest.DataCriacao, "DD/MM/YYYY")) {
+          existDate = true;
+          indexExistDate = index;
+        }
+      });
+
+      if (!existDate) {
+        group.push({
+          day: formatDate(attest.DataCriacao, "DD/MM/YYYY"),
+          attest: [{ ...attest }],
+        });
+      } else {
+        group[indexExistDate].attest.push(attest);
+      }
+    });
+    return group;
+  }
   return (
     <>
       {loading && <Loading />}
@@ -1745,6 +1907,10 @@ export default function AccordionReport(props: IAccordionReport) {
         ) : reportType === "Exames" ? (
           <Container>
             {examsAccordion(groupExamsByDate(content.data))}
+          </Container>
+        ) : reportType === "Atestados" ? (
+          <Container>
+            {attestAccordion(groupAttestsByDate(content.data))}
           </Container>
         ) : (
           ""
