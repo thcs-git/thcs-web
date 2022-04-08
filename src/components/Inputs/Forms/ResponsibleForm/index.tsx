@@ -70,11 +70,11 @@ const ResponsibleForm = (props: IComponent) => {
 
   state.responsible_user &&
     rows.push({ name: "Nome", value: state.responsible_user });
-  state.email && rows.push({ name: "CPF/CNPJ", value: state.responsable_fiscal_number });
+  state.responsable_fiscal_number &&
+    rows.push({ name: "CPF/CNPJ", value: state.responsable_fiscal_number });
   state.email && rows.push({ name: "E-mail", value: state.email });
   state.phone && rows.push({ name: "Telefone", value: state.phone });
   state.cellphone && rows.push({ name: "Celular", value: state.cellphone });
-
   const content = {
     tittle: "Dados do Responsável",
     // icon: <InfoRoundedIcon style={{color: "#ffffff"}}/>,
