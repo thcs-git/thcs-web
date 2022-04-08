@@ -701,7 +701,7 @@ const TabForm = (props: ITabprops) => {
                         variant="outlined"
                         onClick={() => {
                           !checkEditPermission(
-                            "permissions",
+                            "permission",
                             JSON.stringify(rightsOfLayoutState)
                           )
                             ? toast.error(

@@ -178,6 +178,12 @@ import { QrCodeTypes } from "./qrCode/types";
 import { updateQrCode, createQrCode, get as getQrCode } from "./qrCode/sagas";
 import { QrCode } from "@mui/icons-material";
 
+import { ExamsTypes } from "./exams/types";
+import { get as getExams } from "./exams/sagas";
+
+import { AttestTypes } from "./attest/types";
+import { get as getAttests } from "./attest/sagas";
+
 export default function* rootSaga(): any {
   return yield all([
     takeLatest(LoginTypes.LOAD_REQUEST, doLogin),
@@ -396,5 +402,16 @@ export default function* rootSaga(): any {
      * ANTIBIOTIC
      */
     takeLatest(AntibioticTypes.LOAD_REQUEST, getAntibiotic),
+
+    /**
+     * EXAMS
+     */
+
+    takeLatest(ExamsTypes.LOAD_REQUEST, getExams),
+
+    /**
+     * ATTESTS
+     */
+    takeLatest(AttestTypes.LOAD_REQUEST, getAttests),
   ]);
 }

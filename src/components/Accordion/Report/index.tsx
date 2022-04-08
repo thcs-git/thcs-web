@@ -1,4 +1,7 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+// React router dom
+
+import { Link } from "react-router-dom";
 // aplication
 import SESSIONSTORAGE from "../../../helpers/constants/sessionStorage";
 
@@ -33,6 +36,8 @@ import Drug from "../../Icons/Drug";
 import AdverseEvent from "../../Icons/AdverseEvent";
 import Prescription from "../../Icons/Prescription";
 import Antibiotic from "../../Icons/Antibiotic";
+import ExamsIcon from "../../Icons/ExamsReport";
+import AttestIcon from "../../Icons/Attest";
 // styled components and style
 import {
   AccordionStyled as Accordion,
@@ -69,13 +74,14 @@ import { useDispatch, useSelector } from "react-redux";
 import { CareState } from "../../../store/ducks/cares/types";
 import { ApplicationState } from "../../../store";
 import dayjs from "dayjs";
+import { ExamsItem } from "../../../store/ducks/exams/types";
 
 interface IAccordionReport {
   content: {
-    loading: boolean;
     error: boolean;
     data: any;
   };
+  loading: boolean;
   company_id: string;
   reportType: string;
   allergic?: boolean;
@@ -126,7 +132,7 @@ interface IAccordionItem {
 }
 
 export default function AccordionReport(props: IAccordionReport) {
-  const { content, company_id, reportType, state } = props;
+  const { content, company_id, reportType, state, loading } = props;
   const dispatch = useDispatch();
   const integration = sessionStorage.getItem(SESSIONSTORAGE.INTEGRATION);
 
@@ -181,7 +187,7 @@ export default function AccordionReport(props: IAccordionReport) {
       name: "Temperatura",
     },
   ];
-  // console.log(content.data, "DATAAA");
+
   const NoData = () => (
     <Box
       sx={{
@@ -255,24 +261,14 @@ export default function AccordionReport(props: IAccordionReport) {
     measurements: IAccordionItem[],
     canceled: boolean
   ) => {
-    return measurements.map(
+    const measurementsItems = measurements.map(
       (measurementItem: IAccordionItem, index: number) => {
         switch (measurementItem.name) {
-          case "PAD":
-            return (
-              <Tooltip title={measurementItem.name}>
-                <Box>
-                  <Presure
-                    fill={canceled ? "#7D7D7D" : "var(--secondary)"}
-                    width={"20px"}
-                    height={"20px"}
-                  />
-                </Box>
-              </Tooltip>
-            );
           case "Frequência Respiratória":
             return (
-              <Tooltip title={measurementItem.name}>
+              <Tooltip
+                title={`${measurementItem.name}: ${measurementItem.value} ${measurementItem.unit_id[0].short_name}`}
+              >
                 <Box>
                   <Lung
                     fill={canceled ? "#7D7D7D" : "var(--secondary)"}
@@ -284,7 +280,9 @@ export default function AccordionReport(props: IAccordionReport) {
             );
           case "Frequência Cardíaca":
             return (
-              <Tooltip title={measurementItem.name}>
+              <Tooltip
+                title={`${measurementItem.name}: ${measurementItem.value} ${measurementItem.unit_id[0].short_name}`}
+              >
                 <Box>
                   <Frequency
                     fill={canceled ? "#7D7D7D" : "var(--secondary)"}
@@ -296,7 +294,9 @@ export default function AccordionReport(props: IAccordionReport) {
             );
           case "Superfície Corpórea":
             return (
-              <Tooltip title={measurementItem.name}>
+              <Tooltip
+                title={`${measurementItem.name}: ${measurementItem.value} ${measurementItem.unit_id[0].short_name}`}
+              >
                 <Box>
                   <BodilySurface
                     fill={canceled ? "#7D7D7D" : "var(--secondary)"}
@@ -308,7 +308,9 @@ export default function AccordionReport(props: IAccordionReport) {
             );
           case "IMC":
             return (
-              <Tooltip title={measurementItem.name}>
+              <Tooltip
+                title={`${measurementItem.name}: ${measurementItem.value} ${measurementItem.unit_id[0].short_name}`}
+              >
                 <Box>
                   <Exam
                     fill={canceled ? "#7D7D7D" : "var(--secondary)"}
@@ -320,7 +322,9 @@ export default function AccordionReport(props: IAccordionReport) {
             );
           case "Altura":
             return (
-              <Tooltip title={measurementItem.name}>
+              <Tooltip
+                title={`${measurementItem.name}: ${measurementItem.value} ${measurementItem.unit_id[0].short_name}`}
+              >
                 <Box>
                   <Height
                     fill={canceled ? "#7D7D7D" : "var(--secondary)"}
@@ -332,7 +336,9 @@ export default function AccordionReport(props: IAccordionReport) {
             );
           case "Peso":
             return (
-              <Tooltip title={measurementItem.name}>
+              <Tooltip
+                title={`${measurementItem.name}: ${measurementItem.value} ${measurementItem.unit_id[0].short_name}`}
+              >
                 <Box>
                   <Weight
                     fill={canceled ? "#7D7D7D" : "var(--secondary)"}
@@ -344,7 +350,9 @@ export default function AccordionReport(props: IAccordionReport) {
             );
           case "HGT":
             return (
-              <Tooltip title={measurementItem.name}>
+              <Tooltip
+                title={`${measurementItem.name}: ${measurementItem.value} ${measurementItem.unit_id[0].short_name}`}
+              >
                 <Box>
                   <BloodGlucose
                     fill={canceled ? "#7D7D7D" : "var(--secondary)"}
@@ -356,7 +364,9 @@ export default function AccordionReport(props: IAccordionReport) {
             );
           case "Dor":
             return (
-              <Tooltip title={measurementItem.name}>
+              <Tooltip
+                title={`${measurementItem.name}: ${measurementItem.value} ${measurementItem.unit_id[0].short_name}`}
+              >
                 <Box>
                   <Pain
                     fill={canceled ? "#7D7D7D" : "var(--secondary)"}
@@ -366,10 +376,11 @@ export default function AccordionReport(props: IAccordionReport) {
                 </Box>
               </Tooltip>
             );
-
           case "SpO2":
             return (
-              <Tooltip title={measurementItem.name}>
+              <Tooltip
+                title={`${measurementItem.name}: ${measurementItem.value} ${measurementItem.unit_id[0].short_name}`}
+              >
                 <Box>
                   <Saturation
                     fill={canceled ? "#7D7D7D" : "var(--secondary)"}
@@ -379,21 +390,11 @@ export default function AccordionReport(props: IAccordionReport) {
                 </Box>
               </Tooltip>
             );
-          case "PAS":
-            return (
-              <Tooltip title={measurementItem.name}>
-                <Box>
-                  <Presure
-                    fill={canceled ? "#7D7D7D" : "var(--secondary)"}
-                    width={"20px"}
-                    height={"20px"}
-                  />
-                </Box>
-              </Tooltip>
-            );
           case "Temperatura":
             return (
-              <Tooltip title={measurementItem.name}>
+              <Tooltip
+                title={`${measurementItem.name}: ${measurementItem.value} ${measurementItem.unit_id[0].short_name}`}
+              >
                 <Box>
                   <Temperature
                     fill={canceled ? "#7D7D7D" : "var(--secondary)"}
@@ -406,6 +407,34 @@ export default function AccordionReport(props: IAccordionReport) {
         }
       }
     );
+    let padOrPas: IAccordionItem[] = [];
+    measurements.map((measurementItem: IAccordionItem, index: number) => {
+      if (measurementItem.name === "PAD" || measurementItem.name === "PAS") {
+        padOrPas.push(measurementItem);
+      }
+    });
+    if (padOrPas.length > 0) {
+      measurementsItems.push(
+        <Tooltip
+          title={
+            padOrPas.length === 1
+              ? `${padOrPas[0].name}: ${padOrPas[0].value} ${padOrPas[0].unit_id[0].short_name}`
+              : padOrPas[0].name === "PAS"
+              ? `PA: ${padOrPas[0].value}/ ${padOrPas[1].value} ${padOrPas[1].unit_id[0].short_name}`
+              : `PA: ${padOrPas[1].value}/ ${padOrPas[0].value} ${padOrPas[1].unit_id[0].short_name}`
+          }
+        >
+          <Box>
+            <Presure
+              fill={canceled ? "#7D7D7D" : "var(--secondary)"}
+              width={"20px"}
+              height={"20px"}
+            />
+          </Box>
+        </Tooltip>
+      );
+    }
+    return measurementsItems;
   };
 
   function handleHeaderDetails(type?: any) {
@@ -498,10 +527,10 @@ export default function AccordionReport(props: IAccordionReport) {
               sx={{
                 color: "var(--gray-dark)",
                 textAlign: "center",
-                margin: "16px 0 8px",
+                margin: "16px 0",
               }}
             >
-              Não há alergias registrados para este paciente.
+              Não há alergias registradas para este paciente.
             </Box>
           );
         } else
@@ -556,7 +585,7 @@ export default function AccordionReport(props: IAccordionReport) {
               sx={{
                 color: "var(--gray-dark)",
                 textAlign: "center",
-                margin: "16px 0 8px",
+                margin: "16px 0",
               }}
             >
               Não há eventos adversos registrados para este paciente.
@@ -586,76 +615,91 @@ export default function AccordionReport(props: IAccordionReport) {
                       : "-"}
                   </TextCenterDetails>
                   <TextCenterDetails sx={{ width: "200px" }}>
-                    <Box
-                      sx={{
-                        display: "flex",
-                        flexWrap: "wrap",
-                        justifyContent: "center",
-                        alignItems: "center",
-                        gap: "4px",
-                        margin: "2px",
-                      }}
+                    <Tooltip
+                      title={column.item.map((item: any, index: number) =>
+                        index === column.item.length - 1 ? item : item + " + "
+                      )}
                     >
-                      <Badge
-                        badgeContent={column.item.length}
-                        showZero
-                        color="primary"
-                        overlap="rectangular"
+                      <Box
                         sx={{
-                          ".MuiBadge-colorPrimary": {
-                            backgroundColor: "var(--secondary)",
-                            borderRadius: "4px",
-                            fontSize: "10px !important",
-                            right: "-2px",
-                            height: "16px",
-                            padding: "5px",
-                            minWidth: "min-content",
-                          },
+                          display: "flex",
+                          flexWrap: "wrap",
+                          justifyContent: "center",
+                          alignItems: "center",
+                          gap: "4px",
+                          margin: "2px",
                         }}
                       >
-                        <Drug
-                          fill={"var(--secondary)"}
-                          width={"20px"}
-                          height={"20px"}
-                        />
-                      </Badge>
-                    </Box>
+                        <Badge
+                          badgeContent={column.item.length}
+                          showZero
+                          color="primary"
+                          overlap="rectangular"
+                          sx={{
+                            ".MuiBadge-colorPrimary": {
+                              backgroundColor: "var(--secondary)",
+                              borderRadius: "4px",
+                              fontSize: "10px !important",
+                              right: "-2px",
+                              height: "16px",
+                              padding: "5px",
+                              minWidth: "min-content",
+                            },
+                          }}
+                        >
+                          <Drug
+                            fill={"var(--secondary)"}
+                            width={"20px"}
+                            height={"20px"}
+                          />
+                        </Badge>
+                      </Box>
+                    </Tooltip>
                   </TextCenterDetails>
                   <TextCenterDetails sx={{ width: "200px" }}>
-                    <Box
-                      sx={{
-                        display: "flex",
-                        flexWrap: "wrap",
-                        justifyContent: "center",
-                        alignItems: "center",
-                        gap: "4px",
-                        margin: "2px",
-                      }}
+                    <Tooltip
+                      title={column.type.map((item: any, index: number) =>
+                        index === column.type.length - 1
+                          ? capitalizeText(item)
+                          : capitalizeText(item) + "; "
+                      )}
                     >
-                      <Badge
-                        badgeContent={column.type.length}
-                        showZero
-                        color="primary"
-                        overlap="rectangular"
+                      <Box
                         sx={{
-                          ".MuiBadge-colorPrimary": {
-                            backgroundColor: "var(--secondary)",
-                            borderRadius: "4px",
-                            fontSize: "10px !important",
-                            right: "-9px",
-                            height: "14px",
-                            padding: "5px",
-                            minWidth: "min-content",
-                          },
+                          display: "flex",
+                          flexWrap: "wrap",
+                          justifyContent: "center",
+                          alignItems: "center",
+                          gap: "4px",
+                          margin: "2px",
                         }}
                       >
-                        <AdverseEvent
-                          fill={"var(--secondary)"}
-                          width={"18px"}
-                          height={"18px"}
-                        />
-                      </Badge>
-                    </Box>
+                        {console.log(column)}
+                        <Badge
+                          badgeContent={column.type.length}
+                          showZero
+                          color="primary"
+                          overlap="rectangular"
+                          sx={{
+                            ".MuiBadge-colorPrimary": {
+                              backgroundColor: "var(--secondary)",
+                              borderRadius: "4px",
+                              fontSize: "10px !important",
+                              right: "-9px",
+                              height: "14px",
+                              padding: "5px",
+                              minWidth: "min-content",
+                            },
+                          }}
+                        >
+                          <AdverseEvent
+                            fill={"var(--secondary)"}
+                            width={"18px"}
+                            height={"18px"}
+                          />
+                        </Badge>
+                      </Box>
+                    </Tooltip>
                   </TextCenterDetails>
                 </ContentDetailsAccordion>
                 {list.length !== index + 1 ? (
@@ -913,9 +957,7 @@ export default function AccordionReport(props: IAccordionReport) {
               height: "36px",
               width: "36px",
             }}
-            onClick={() => {
-              console.log("CLIQUEI");
-            }}
+            onClick={() => {}}
           >
             <PrintIcon
               sx={{
@@ -981,14 +1023,17 @@ export default function AccordionReport(props: IAccordionReport) {
       </Box>
     ));
   const prescriptionAccordionHeader = () => (
-    <HeaderDetailsAccordion>
-      <TextCenterDetails>Id. Prescrição</TextCenterDetails>
-      <TextCenterDetails>Profissional</TextCenterDetails>
-      <TextCenterDetails>Função</TextCenterDetails>
-      <TextCenterDetails>Data Início</TextCenterDetails>
-      <TextCenterDetails>Data Fim</TextCenterDetails>
-      <TextCenterDetails sx={{ width: "100px" }}>Opções</TextCenterDetails>
-    </HeaderDetailsAccordion>
+    <>
+      <HeaderDetailsAccordion>
+        <TextCenterDetails>Id. Prescrição</TextCenterDetails>
+        <TextCenterDetails>Profissional</TextCenterDetails>
+        <TextCenterDetails>Função</TextCenterDetails>
+        <TextCenterDetails>Data Início</TextCenterDetails>
+        <TextCenterDetails>Data Fim</TextCenterDetails>
+        <TextCenterDetails sx={{ width: "100px" }}>Opções</TextCenterDetails>
+      </HeaderDetailsAccordion>
+      <Divider sx={{ width: "100%", margin: "0 auto" }} />
+    </>
   );
   const prescriptionAccordionDetails = (data: any) =>
     data.map((column: any, index: number) => (
@@ -1003,12 +1048,18 @@ export default function AccordionReport(props: IAccordionReport) {
           </TextCenterDetails>
           <TextCenterDetails>
             {column.start_at
-              ? formatDate(column.start_at, "DD/MM/YYYY")
+              ? `${formatDate(column.start_at, "DD/MM/YYYY")} às ${formatDate(
+                  column.start_at,
+                  "HH:mm"
+                )}`
               : "Não informado"}
           </TextCenterDetails>
           <TextCenterDetails>
             {column.end_at
-              ? formatDate(column.end_at, "DD/MM/YYYY")
+              ? `${formatDate(column.end_at, "DD/MM/YYYY")} às ${formatDate(
+                  column.end_at,
+                  "HH:mm"
+                )}`
               : "Não informado"}
           </TextCenterDetails>
           <TextCenterDetails sx={{ width: "100px" }}>
@@ -1022,9 +1073,7 @@ export default function AccordionReport(props: IAccordionReport) {
                 height: "36px",
                 width: "36px",
               }}
-              onClick={() => {
-                console.log("CLIQUEI");
-              }}
+              onClick={() => {}}
             >
               <PrintIcon
                 sx={{
@@ -1069,9 +1118,7 @@ export default function AccordionReport(props: IAccordionReport) {
                 height: "36px",
                 width: "36px",
               }}
-              onClick={() => {
-                console.log("CLIQUEI");
-              }}
+              onClick={() => {}}
             >
               <PrintIcon
                 sx={{
@@ -1300,10 +1347,305 @@ export default function AccordionReport(props: IAccordionReport) {
       </ContentDetailsAccordion>
     </>
   );
+  // Accordion de Exames
+  const examsAccordion = (data: any) =>
+    data.map((date: any, index: number) => (
+      <Accordion
+        key={index}
+        disableGutters={true}
+        expanded={expanded === `panel${index}`}
+        onChange={handleChange(`panel${index}`)}
+      >
+        <AccordionSummary
+          expandIcon={<ExpandMoreIcon />}
+          aria-controls={`panel${index}bh-content`}
+          id={`panel${index}bh-header`}
+          sx={{
+            "& div, svg, path, circle, rect": { cursor: "pointer" },
+            cursor: "pointer",
+          }}
+        >
+          <Box
+            sx={{
+              display: "flex",
+              gap: "8px",
+              flexDirection: "row",
+              justifyContent: "flex-start",
+              width: "100%",
+            }}
+          >
+            <ExamsIcon
+              fill={
+                expanded === `panel${index}`
+                  ? "var(--white)"
+                  : "var(--gray-dark)"
+              }
+              width="22px"
+              height={"22px"}
+            />
 
+            <Box>{date.day}</Box>
+          </Box>
+          <Box sx={{ cursor: "pointer", width: "36px" }}></Box>
+        </AccordionSummary>
+        <AccordionDetails key={index}>
+          {examsAccordionHeader()}
+          {examsAccordionDetails(date.exams)}
+        </AccordionDetails>
+      </Accordion>
+    ));
+  const examsAccordionHeader = () => (
+    <>
+      <HeaderDetailsAccordion>
+        <TextCenterDetails sx={{ width: "100px" }}>Hora</TextCenterDetails>
+        <TextCenterDetails sx={{ width: "350px" }}>
+          Solicitante
+        </TextCenterDetails>
+        <TextCenterDetails sx={{ width: "350px" }}>Exame</TextCenterDetails>
+        <TextCenterDetails sx={{ width: "100px" }}>Opções</TextCenterDetails>
+      </HeaderDetailsAccordion>
+      <Divider sx={{ width: "100%", margin: "0 auto" }} />
+    </>
+  );
+  const examsAccordionDetails = (data: any) =>
+    data
+      .sort((a: any, b: any) => {
+        return a.DataCriacao < b.DataCriacao
+          ? -1
+          : a.DataCriacao > b.DataCriacao
+          ? 1
+          : 0;
+      })
+      .map((column: any, index: number) => (
+        <>
+          <ContentDetailsAccordion key={index}>
+            <TextCenterDetails sx={{ width: "100px" }}>
+              {formatDate(column.DataCriacao, "HH:mm")}
+            </TextCenterDetails>
+            <TextCenterDetails sx={{ width: "350px" }}>
+              {column?.Prescritor?.Nome
+                ? getFirstAndLastName(capitalizeText(column?.Prescritor?.Nome))
+                : "Não informado"}
+            </TextCenterDetails>
+            <TextCenterDetails sx={{ width: "350px" }}>
+              {column?.Exames[0]?.Nome
+                ? capitalizeText(column.Exames[0].Nome)
+                : "Não informado"}
+            </TextCenterDetails>
+
+            <TextCenterDetails sx={{ width: "100px" }}>
+              <IconButton
+                aria-label="print"
+                sx={{
+                  display: "flex",
+                  justifyContent: "center",
+                  alignItems: "center",
+                  cursor: "pointer",
+                  height: "36px",
+                  width: "36px",
+                }}
+                onClick={() => window.open(column.ExamePDFUrl, "_blank")}
+              >
+                <PrintIcon
+                  sx={{
+                    color: "var(--secondary)",
+                    cursor: "pointer",
+                    "& > path": { cursor: "pointer" },
+                  }}
+                />
+              </IconButton>
+            </TextCenterDetails>
+          </ContentDetailsAccordion>
+          {data.length !== index + 1 ? (
+            <Divider sx={{ width: "100%", margin: "0 auto" }} />
+          ) : (
+            ""
+          )}
+        </>
+      ));
+  function groupExamsByDate(data: any) {
+    const group: any[] = [];
+
+    data.map((exams: any) => {
+      let existDate = false;
+      let indexExistDate = -1;
+      group.map((data: any, index: number) => {
+        if (data.day === formatDate(exams.DataCriacao, "DD/MM/YYYY")) {
+          existDate = true;
+          indexExistDate = index;
+        }
+      });
+
+      if (!existDate) {
+        group.push({
+          day: formatDate(exams.DataCriacao, "DD/MM/YYYY"),
+          exams: [{ ...exams }],
+        });
+      } else {
+        group[indexExistDate].exams.push(exams);
+      }
+    });
+    return group;
+  }
+
+  // accordion de Atestados
+  const attestAccordion = (data: any) =>
+    data.map((date: any, index: number) => (
+      <Accordion
+        key={index}
+        disableGutters={true}
+        expanded={expanded === `panel${index}`}
+        onChange={handleChange(`panel${index}`)}
+      >
+        <AccordionSummary
+          expandIcon={<ExpandMoreIcon />}
+          aria-controls={`panel${index}bh-content`}
+          id={`panel${index}bh-header`}
+          sx={{
+            "& div, svg, path, circle, rect": { cursor: "pointer" },
+            cursor: "pointer",
+          }}
+        >
+          <Box
+            sx={{
+              display: "flex",
+              gap: "8px",
+              flexDirection: "row",
+              justifyContent: "flex-start",
+              width: "100%",
+            }}
+          >
+            <AttestIcon
+              fill={
+                expanded === `panel${index}`
+                  ? "var(--white)"
+                  : "var(--gray-dark)"
+              }
+              width="22px"
+              height={"22px"}
+            />
+
+            <Box>{date.day}</Box>
+          </Box>
+          <Box sx={{ cursor: "pointer", width: "36px" }}></Box>
+        </AccordionSummary>
+        <AccordionDetails key={index}>
+          {attestAccordionHeader()}
+          {attestAccordionDetails(date.attest)}
+        </AccordionDetails>
+      </Accordion>
+    ));
+  const attestAccordionHeader = () => (
+    <>
+      <HeaderDetailsAccordion>
+        <TextCenterDetails sx={{ width: "300px" }}>
+          Prescritor
+        </TextCenterDetails>
+        <TextCenterDetails sx={{ width: "100px" }}>CID</TextCenterDetails>
+        <TextCenterDetails sx={{ width: "140px" }}>Início</TextCenterDetails>
+        <TextCenterDetails sx={{ width: "140px" }}>Término</TextCenterDetails>
+        <TextCenterDetails sx={{ width: "100px" }}>Opções</TextCenterDetails>
+      </HeaderDetailsAccordion>
+      <Divider sx={{ width: "100%", margin: "0 auto" }} />
+    </>
+  );
+  const attestAccordionDetails = (data: any) =>
+    data
+      .sort((a: any, b: any) => {
+        return a.DataCriacao < b.DataCriacao
+          ? -1
+          : a.DataCriacao > b.DataCriacao
+          ? 1
+          : 0;
+      })
+      .map((column: any, index: number) => (
+        <>
+          <ContentDetailsAccordion key={index}>
+            <TextCenterDetails sx={{ width: "300px" }}>
+              {column?.Prescritor?.Nome
+                ? column?.Prescritor?.Nome.length > 35
+                  ? getFirstAndLastName(
+                      capitalizeText(column?.Prescritor?.Nome)
+                    )
+                  : capitalizeText(column?.Prescritor?.Nome)
+                : "Não informado"}
+            </TextCenterDetails>
+            <Tooltip title={column?.Atestado?.CID10Estruturado[0]?.Descricao}>
+              <TextCenterDetails sx={{ cursor: "help", width: "100px" }}>
+                {column?.Atestado?.CID10Estruturado[0]?.Codigo}
+              </TextCenterDetails>
+            </Tooltip>
+
+            <TextCenterDetails sx={{ width: "140px" }}>
+              {`${formatDate(
+                column.Atestado.DataInicio,
+                "DD/MM/YY"
+              )} às ${formatDate(column.Atestado.DataInicio, "HH:mm")}`}
+            </TextCenterDetails>
+            <TextCenterDetails sx={{ width: "140px" }}>
+              {`${formatDate(
+                column.Atestado.DataTermino,
+                "DD/MM/YY"
+              )} às ${formatDate(column.Atestado.DataTermino, "HH:mm")}`}
+            </TextCenterDetails>
+
+            <TextCenterDetails sx={{ width: "100px" }}>
+              <IconButton
+                aria-label="print"
+                sx={{
+                  display: "flex",
+                  justifyContent: "center",
+                  alignItems: "center",
+                  cursor: "pointer",
+                  height: "36px",
+                  width: "36px",
+                }}
+                onClick={() => window.open(column.AtestadoPDFUrl, "_blank")}
+              >
+                <PrintIcon
+                  sx={{
+                    color: "var(--secondary)",
+                    cursor: "pointer",
+                    "& > path": { cursor: "pointer" },
+                  }}
+                />
+              </IconButton>
+            </TextCenterDetails>
+          </ContentDetailsAccordion>
+          {data.length !== index + 1 ? (
+            <Divider sx={{ width: "100%", margin: "0 auto" }} />
+          ) : (
+            ""
+          )}
+        </>
+      ));
+  function groupAttestsByDate(data: any) {
+    const group: any[] = [];
+
+    data.map((attest: any) => {
+      let existDate = false;
+      let indexExistDate = -1;
+      group.map((data: any, index: number) => {
+        if (data.day === formatDate(attest.DataCriacao, "DD/MM/YYYY")) {
+          existDate = true;
+          indexExistDate = index;
+        }
+      });
+
+      if (!existDate) {
+        group.push({
+          day: formatDate(attest.DataCriacao, "DD/MM/YYYY"),
+          attest: [{ ...attest }],
+        });
+      } else {
+        group[indexExistDate].attest.push(attest);
+      }
+    });
+    return group;
+  }
   return (
     <>
-      {content.loading && <Loading />}
+      {loading && <Loading />}
 
       {content.data ? (
         reportType === "Aferições" ||
@@ -1600,6 +1942,14 @@ export default function AccordionReport(props: IAccordionReport) {
           )
         ) : reportType === "Antibióticos" ? (
           <Container>{antibioticAccordion(content.data)}</Container>
+        ) : reportType === "Exames" ? (
+          <Container>
+            {examsAccordion(groupExamsByDate(content.data))}
+          </Container>
+        ) : reportType === "Atestados" ? (
+          <Container>
+            {attestAccordion(groupAttestsByDate(content.data))}
+          </Container>
         ) : (
           ""
         )

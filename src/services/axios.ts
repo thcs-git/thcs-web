@@ -16,6 +16,9 @@ export const apiSollarMobi = axios.create({
 export const apiSollarReport = axios.create({
   baseURL: process.env.REACT_APP_BASE_API_REPORT,
 });
+export const apiSollarNexoData = axios.create({
+  baseURL: process.env.REACT_APP_BASE_API_NEXODATA,
+});
 
 export function apiIntegra(url: string) {
   return axios.create({
@@ -196,6 +199,59 @@ apiSollarReport.interceptors.response.use(
     //     );
     //     window.location.href = "/login";
     // }
+    return Promise.reject(error);
+  }
+);
+apiSollarNexoData.interceptors.request.use(
+  function (config) {
+    // Do something before request is sent
+    const token = localStorage.getItem(LOCALSTORAGE.TOKEN);
+    const username = localStorage.getItem(LOCALSTORAGE.USERNAME) || "";
+    const user_id = localStorage.getItem(LOCALSTORAGE.USER_ID) || "";
+    const company_id =
+      localStorage.getItem(LOCALSTORAGE.COMPANY_SELECTED) || "";
+    const customer_id = localStorage.getItem(LOCALSTORAGE.CUSTOMER) || "";
+    const integration_url =
+      sessionStorage.getItem(SESSIONSTORAGE.INTEGRATION) || "";
+    const external_company_id =
+      localStorage.getItem(LOCALSTORAGE.INTEGRATION_COMPANY_SELECTED) || "";
+
+    if (token) {
+      config.headers.token = `${token}`;
+      config.headers.user = JSON.stringify({ id: user_id, username });
+      config.headers.company_id = company_id;
+      config.headers.customer_id = customer_id;
+    }
+
+    if (integration_url) {
+      config.headers.integration_url = integration_url;
+      config.headers.external_company_id = external_company_id;
+    }
+
+    return config;
+  },
+  function (error) {
+    // Do something with request error
+    return Promise.reject(error);
+  }
+);
+
+apiSollarNexoData.interceptors.response.use(
+  (response) => {
+    return response;
+  },
+  (error) => {
+    if (!error.response) return;
+
+    const { errors } = error.response.data;
+    if (errors?.name === "TokenExpiredError") {
+      localStorage.removeItem(LOCALSTORAGE.TOKEN);
+      localStorage.setItem(
+        LOCALSTORAGE.EXPIRED_SESSION,
+        JSON.stringify(errors)
+      );
+      window.location.href = "/login";
+    }
     return Promise.reject(error);
   }
 );
