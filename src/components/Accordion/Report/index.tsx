@@ -261,24 +261,14 @@ export default function AccordionReport(props: IAccordionReport) {
     measurements: IAccordionItem[],
     canceled: boolean
   ) => {
-    return measurements.map(
+    const measurementsItems = measurements.map(
       (measurementItem: IAccordionItem, index: number) => {
         switch (measurementItem.name) {
-          case "PAD":
-            return (
-              <Tooltip title={measurementItem.name}>
-                <Box>
-                  <Presure
-                    fill={canceled ? "#7D7D7D" : "var(--secondary)"}
-                    width={"20px"}
-                    height={"20px"}
-                  />
-                </Box>
-              </Tooltip>
-            );
           case "Frequência Respiratória":
             return (
-              <Tooltip title={measurementItem.name}>
+              <Tooltip
+                title={`${measurementItem.name}: ${measurementItem.value} ${measurementItem.unit_id[0].short_name}`}
+              >
                 <Box>
                   <Lung
                     fill={canceled ? "#7D7D7D" : "var(--secondary)"}
@@ -290,7 +280,9 @@ export default function AccordionReport(props: IAccordionReport) {
             );
           case "Frequência Cardíaca":
             return (
-              <Tooltip title={measurementItem.name}>
+              <Tooltip
+                title={`${measurementItem.name}: ${measurementItem.value} ${measurementItem.unit_id[0].short_name}`}
+              >
                 <Box>
                   <Frequency
                     fill={canceled ? "#7D7D7D" : "var(--secondary)"}
@@ -302,7 +294,9 @@ export default function AccordionReport(props: IAccordionReport) {
             );
           case "Superfície Corpórea":
             return (
-              <Tooltip title={measurementItem.name}>
+              <Tooltip
+                title={`${measurementItem.name}: ${measurementItem.value} ${measurementItem.unit_id[0].short_name}`}
+              >
                 <Box>
                   <BodilySurface
                     fill={canceled ? "#7D7D7D" : "var(--secondary)"}
@@ -314,7 +308,9 @@ export default function AccordionReport(props: IAccordionReport) {
             );
           case "IMC":
             return (
-              <Tooltip title={measurementItem.name}>
+              <Tooltip
+                title={`${measurementItem.name}: ${measurementItem.value} ${measurementItem.unit_id[0].short_name}`}
+              >
                 <Box>
                   <Exam
                     fill={canceled ? "#7D7D7D" : "var(--secondary)"}
@@ -326,7 +322,9 @@ export default function AccordionReport(props: IAccordionReport) {
             );
           case "Altura":
             return (
-              <Tooltip title={measurementItem.name}>
+              <Tooltip
+                title={`${measurementItem.name}: ${measurementItem.value} ${measurementItem.unit_id[0].short_name}`}
+              >
                 <Box>
                   <Height
                     fill={canceled ? "#7D7D7D" : "var(--secondary)"}
@@ -338,7 +336,9 @@ export default function AccordionReport(props: IAccordionReport) {
             );
           case "Peso":
             return (
-              <Tooltip title={measurementItem.name}>
+              <Tooltip
+                title={`${measurementItem.name}: ${measurementItem.value} ${measurementItem.unit_id[0].short_name}`}
+              >
                 <Box>
                   <Weight
                     fill={canceled ? "#7D7D7D" : "var(--secondary)"}
@@ -350,7 +350,9 @@ export default function AccordionReport(props: IAccordionReport) {
             );
           case "HGT":
             return (
-              <Tooltip title={measurementItem.name}>
+              <Tooltip
+                title={`${measurementItem.name}: ${measurementItem.value} ${measurementItem.unit_id[0].short_name}`}
+              >
                 <Box>
                   <BloodGlucose
                     fill={canceled ? "#7D7D7D" : "var(--secondary)"}
@@ -362,7 +364,9 @@ export default function AccordionReport(props: IAccordionReport) {
             );
           case "Dor":
             return (
-              <Tooltip title={measurementItem.name}>
+              <Tooltip
+                title={`${measurementItem.name}: ${measurementItem.value} ${measurementItem.unit_id[0].short_name}`}
+              >
                 <Box>
                   <Pain
                     fill={canceled ? "#7D7D7D" : "var(--secondary)"}
@@ -372,10 +376,11 @@ export default function AccordionReport(props: IAccordionReport) {
                 </Box>
               </Tooltip>
             );
-
           case "SpO2":
             return (
-              <Tooltip title={measurementItem.name}>
+              <Tooltip
+                title={`${measurementItem.name}: ${measurementItem.value} ${measurementItem.unit_id[0].short_name}`}
+              >
                 <Box>
                   <Saturation
                     fill={canceled ? "#7D7D7D" : "var(--secondary)"}
@@ -385,21 +390,11 @@ export default function AccordionReport(props: IAccordionReport) {
                 </Box>
               </Tooltip>
             );
-          case "PAS":
-            return (
-              <Tooltip title={measurementItem.name}>
-                <Box>
-                  <Presure
-                    fill={canceled ? "#7D7D7D" : "var(--secondary)"}
-                    width={"20px"}
-                    height={"20px"}
-                  />
-                </Box>
-              </Tooltip>
-            );
           case "Temperatura":
             return (
-              <Tooltip title={measurementItem.name}>
+              <Tooltip
+                title={`${measurementItem.name}: ${measurementItem.value} ${measurementItem.unit_id[0].short_name}`}
+              >
                 <Box>
                   <Temperature
                     fill={canceled ? "#7D7D7D" : "var(--secondary)"}
@@ -412,6 +407,34 @@ export default function AccordionReport(props: IAccordionReport) {
         }
       }
     );
+    let padOrPas: IAccordionItem[] = [];
+    measurements.map((measurementItem: IAccordionItem, index: number) => {
+      if (measurementItem.name === "PAD" || measurementItem.name === "PAS") {
+        padOrPas.push(measurementItem);
+      }
+    });
+    if (padOrPas.length > 0) {
+      measurementsItems.push(
+        <Tooltip
+          title={
+            padOrPas.length === 1
+              ? `${padOrPas[0].name}: ${padOrPas[0].value} ${padOrPas[0].unit_id[0].short_name}`
+              : padOrPas[0].name === "PAS"
+              ? `PA: ${padOrPas[0].value}/ ${padOrPas[1].value} ${padOrPas[1].unit_id[0].short_name}`
+              : `PA: ${padOrPas[1].value}/ ${padOrPas[0].value} ${padOrPas[1].unit_id[0].short_name}`
+          }
+        >
+          <Box>
+            <Presure
+              fill={canceled ? "#7D7D7D" : "var(--secondary)"}
+              width={"20px"}
+              height={"20px"}
+            />
+          </Box>
+        </Tooltip>
+      );
+    }
+    return measurementsItems;
   };
 
   function handleHeaderDetails(type?: any) {
