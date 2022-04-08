@@ -141,7 +141,7 @@ const PermissionForm = (props: IComponent) => {
     },
     {
       legend: "Permissões",
-      name: "permissions",
+      name: "permission",
       rights: [
         { crud: "view", label: "Visualizar" },
         { crud: "edit", label: "Criar/Editar" },

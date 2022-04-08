@@ -109,6 +109,9 @@ export default function ViewCard(props: IProps) {
       case "Tipo":
         dataResponsible.push(e);
         break;
+      case "CPF/CNPJ":
+        dataResponsible.push(e);
+        break;
       case "Nome":
         patientData.push(e);
         break;
@@ -392,8 +395,9 @@ export default function ViewCard(props: IProps) {
           <WrapperContentData>
             {content.rows.map(({ name, value }: Irows, index: number) => (
               <>
-              
-              <Grid item>{`${name ==="CPF" ? "CNPJ": name }: ${value}`}</Grid>
+                <Grid item>{`${
+                  name === "CPF" ? "CNPJ" : name
+                }: ${value}`}</Grid>
               </>
             ))}
           </WrapperContentData>
@@ -412,22 +416,23 @@ export default function ViewCard(props: IProps) {
       >
         <Grid item style={{ paddingBottom: "0" }}>
           <WrapperTitleData>
-          <ProfessionalIcon />
+            <ProfessionalIcon />
 
             {content.tittle}
           </WrapperTitleData>
           <WrapperContentData>
             {content.rows.map(({ name, value }: Irows, index: number) => (
               <>
-              
-              <Grid item>{`${name ==="CPF" ? "CNPJ": name }: ${value}`}</Grid>
+                <Grid item>{`${
+                  name === "CPF" ? "CNPJ" : name
+                }: ${value}`}</Grid>
               </>
             ))}
           </WrapperContentData>
         </Grid>
       </Grid>
     </Grid>
-  ): (
+  ) : (
     <Grid item md={md_value}>
       <Grid
         container
