@@ -15,7 +15,7 @@ import {
 } from "./areas/sagas";
 
 import { LoginTypes } from "./login/types";
-import { doLogin } from "./login/sagas";
+import { doLogin, checkEmail as checkEmailLogin } from "./login/sagas";
 
 import { CustomerTypes } from "./customers/types";
 import {
@@ -25,6 +25,9 @@ import {
   createCompanyCustomer,
   updateCompanyCustomer,
   searchCustomer,
+  createPermission,
+  loadPermission,
+  updatePermissionCustomer,
 } from "./customers/sagas";
 
 import { CompanyTypes } from "./companies/types";
@@ -35,6 +38,7 @@ import {
   getById as getCompanyById,
   update as updateCompany,
   searchCompany,
+  getCompaniesById,
 } from "./companies/sagas";
 
 import { SpecialtyTypes } from "./specialties/types";
@@ -60,6 +64,7 @@ import {
   store as storeDocuments,
   getByCareId as getDocumentsByCareId,
   get as getDocuments,
+  getByScore as getByScoreDocuments,
 } from "./documents/sagas";
 
 import { DocumentGroupTypes } from "./documentGroups/types";
@@ -79,7 +84,19 @@ import {
   getPatientCapture,
 } from "./patients/sagas";
 
+import { LayoutTypes } from "./layout/types";
+import { get as getLayout } from "./layout/sagas";
+
+import { MessageTypes } from "./message/types";
+import { get as getMessage, getMessageById } from "./message/sagas";
+
 import { UserTypes } from "./users/types";
+
+import { PrescriptionTypes } from "./prescripition/types";
+import { loadPrescriptionByCareId } from "./prescripition/saga";
+
+import { AntibioticTypes } from "./antibiotic/types";
+import { get as getAntibiotic } from "./antibiotic/sagas";
 
 //import { CareTypes } from './cares/types';
 import {
@@ -97,11 +114,14 @@ import {
   getUserByEmail,
   recoveryPassword,
   recoverypasswordiftoken,
+  getByClient,
+  updateUserPassword,
 } from "./users/sagas";
 
 import { CareTypes } from "./cares/types";
 import {
   get as getCares,
+  getPopUp as getPatient,
   createCare,
   getCareById,
   updateCare,
@@ -129,13 +149,46 @@ import {
   storeSchedule,
   updateSchedule,
   deleteSchedule,
+  getHistory,
+  getAllCid,
+  getReleaseReason,
+  getReleaseReferral,
+  transferCare,
+  deleteCare,
+  getEvolution,
+  getChekin,
+  getChekInReport,
+  getFilterCheckin,
+  getFilterEvolution,
+  getFilterMeasurement,
+  getFilterAllergy,
+  getFilterAdverseEvent,
 } from "./cares/sagas";
 
 import { get as getProfession } from "./professions/sagas";
 import { ProfessionTypes } from "./professions/types";
-export default function* rootSaga() {
+
+import { AllergiesTypes } from "./allergies/types";
+import { load as getAllergies } from "./allergies/sagas";
+
+import { MeasurementsTypes } from "./measurements/types";
+import { get as getMeasurements } from "./measurements/sagas";
+
+import { QrCodeTypes } from "./qrCode/types";
+import { updateQrCode, createQrCode, get as getQrCode } from "./qrCode/sagas";
+import { QrCode } from "@mui/icons-material";
+
+import { ExamsTypes } from "./exams/types";
+import { get as getExams } from "./exams/sagas";
+
+import { AttestTypes } from "./attest/types";
+import { get as getAttests } from "./attest/sagas";
+
+export default function* rootSaga(): any {
   return yield all([
     takeLatest(LoginTypes.LOAD_REQUEST, doLogin),
+    takeLatest(LoginTypes.EMAIL_REQUEST, checkEmailLogin),
+    takeLatest(UserTypes.UPDATE_USER_PASSWORD, updateUserPassword),
     // takeLatest(AreaTypes.LOAD_REQUEST, getAreas),
     // takeLatest(EspecialtyTypes.LOAD_REQUEST, getEspecialty),
     // takeLatest(CouncilTypes.LOAD_REQUEST, getCouncil),
@@ -155,6 +208,7 @@ export default function* rootSaga() {
 
     // Care
     takeLatest(CareTypes.LOAD_REQUEST, getCares),
+    takeLatest(CareTypes.LOAD_PATIENT_REQUEST, getPatient),
     takeLatest(CareTypes.LOAD_REQUEST_CARE_BY_ID, getCareById),
     takeLatest(CareTypes.CREATE_CARE_REQUEST, createCare),
     takeLatest(CareTypes.UPDATE_CARE_REQUEST, updateCare),
@@ -193,12 +247,32 @@ export default function* rootSaga() {
     takeLatest(CareTypes.TYPE_ACCOMMODATION_REQUEST, getAccommodationType),
     takeLatest(CareTypes.CARE_TYPE_REQUEST, getCareType),
     takeLatest(CareTypes.SEARCH_CID_REQUEST, searchCid),
+    takeLatest(CareTypes.LOAD_CID_REQUEST, getAllCid),
+    takeLatest(CareTypes.LOAD_RELEASE_REASON_REQUEST, getReleaseReason),
+    takeLatest(CareTypes.LOAD_RELEASE_REFERRAL_REQUEST, getReleaseReferral),
     //takeLatest(CareTypes.LOAD_DOCUMENT_REQUEST, getDocumentById),
 
     takeLatest(CareTypes.LOAD_SCHEDULE_REQUEST, getSchedule),
     takeLatest(CareTypes.CREATE_SCHEDULE_REQUEST, storeSchedule),
     takeLatest(CareTypes.DELETE_SCHEDULE_REQUEST, deleteSchedule),
     takeLatest(CareTypes.UPDATE_SCHEDULE_REQUEST, updateSchedule),
+
+    takeLatest(CareTypes.LOAD_HISTORY_REQUEST, getHistory),
+    takeLatest(CareTypes.TRANSFER_CARE_REQUEST, transferCare),
+    takeLatest(CareTypes.DELETE_CARE_REQUEST, deleteCare),
+
+    takeLatest(CareTypes.LOAD_EVOLUTION_REQUEST, getEvolution),
+
+    takeLatest(CareTypes.LOAD_CHECKIN_REQUEST, getChekin),
+    takeLatest(CareTypes.LOAD_CHECKIN_REPORT_REQUEST, getChekInReport),
+    takeLatest(CareTypes.LOAD_CHECKIN_FILTER_REQUEST, getFilterCheckin),
+    takeLatest(CareTypes.LOAD_EVOLUTION_FILTER_REQUEST, getFilterEvolution),
+    takeLatest(CareTypes.LOAD_MEASUREMENT_FILTER_REQUEST, getFilterMeasurement),
+    takeLatest(CareTypes.LOAD_ALLERGY_FILTER_REQUEST, getFilterAllergy),
+    takeLatest(
+      CareTypes.LOAD_ADVERSE_EVENT_FILTER_REQUEST,
+      getFilterAdverseEvent
+    ),
 
     // Council
     takeLatest(CouncilTypes.LOAD_REQUEST, getCouncils),
@@ -221,6 +295,7 @@ export default function* rootSaga() {
     takeLatest(CompanyTypes.CREATE_COMPANY_REQUEST, createCompany),
     takeLatest(CompanyTypes.UPDATE_COMPANY_REQUEST, updateCompany),
     takeLatest(CompanyTypes.SEARCH_REQUEST, searchCompany),
+    takeLatest(CompanyTypes.LOAD_REQUEST_CUSTOMER_BY_ID, getCompaniesById),
 
     /** Customers */
     takeLatest(CustomerTypes.LOAD_REQUEST, get),
@@ -229,11 +304,18 @@ export default function* rootSaga() {
     takeLatest(CustomerTypes.CREATE_CUSTOMER_REQUEST, createCompanyCustomer),
     takeLatest(CustomerTypes.UPDATE_CUSTOMER_REQUEST, updateCompanyCustomer),
     takeLatest(CustomerTypes.SEARCH_REQUEST, searchCustomer),
+    takeLatest(CustomerTypes.LOAD_REQUEST_PERMISSION, loadPermission),
+    takeLatest(
+      CustomerTypes.UPDATE_PERMISSION_REQUEST,
+      updatePermissionCustomer
+    ),
+    takeLatest(CustomerTypes.CREATE_PERMISSION_REQUEST, createPermission),
 
     // Documents
     takeLatest(DocumentTypes.LOAD_REQUEST, getDocuments),
     takeLatest(DocumentTypes.CREATE_DOCUMENT_REQUEST, storeDocuments),
     takeLatest(DocumentTypes.LOAD_REQUEST_BY_CARE_ID, getDocumentsByCareId),
+    takeLatest(DocumentTypes.LOAD_REQUEST_GET_BY_SCORE, getByScoreDocuments),
 
     // Document Groups
     takeLatest(DocumentGroupTypes.LOAD_REQUEST, getDocumentGroups),
@@ -269,6 +351,7 @@ export default function* rootSaga() {
       UserTypes.LOAD_REQUEST_RECOVERY_PASSWORD_TOKEN,
       recoverypasswordiftoken
     ),
+    takeLatest(UserTypes.LOAD_REQUEST_BY_CLIENT, getByClient),
 
     /** Profession */
     takeLatest(ProfessionTypes.LOAD_REQUEST, getProfession),
@@ -282,5 +365,53 @@ export default function* rootSaga() {
     //  ),
     // takeLatest(UnconfirmedUserTypes.UPDATE_USER_REQUEST, updateUnconfirmedUser),
     // takeLatest(UnconfirmedUserTypes.SEARCH_REQUEST, searchUnconfirmedUser),
+
+    /** Layout */
+    takeLatest(LayoutTypes.LOAD_REQUEST, getLayout),
+
+    /** Message */
+    takeLatest(MessageTypes.LOAD_REQUEST, getMessage),
+    takeLatest(MessageTypes.LOAD_REQUEST_MESSAGE_BY_ID, getMessageById),
+
+    /**
+     * ALLERGIES
+     */
+    takeLatest(AllergiesTypes.LOAD_REQUEST, getAllergies),
+
+    /**
+     * MEASUREMENT
+     */
+    takeLatest(MeasurementsTypes.LOAD_REQUEST, getMeasurements),
+
+    /**
+     * QR CODE
+     */
+    takeLatest(QrCodeTypes.LOAD_REQUEST, getQrCode),
+    takeLatest(QrCodeTypes.CREATE_QRCODE_REQUEST, createQrCode),
+    takeLatest(QrCodeTypes.UPDATE_QRCODE_REQUEST, updateQrCode),
+
+    /**
+     * PRESCRIPTION
+     */
+    takeLatest(
+      PrescriptionTypes.LOAD_REQUEST_PRESCRIPTION_BY_CARE_ID,
+      loadPrescriptionByCareId
+    ),
+
+    /**
+     * ANTIBIOTIC
+     */
+    takeLatest(AntibioticTypes.LOAD_REQUEST, getAntibiotic),
+
+    /**
+     * EXAMS
+     */
+
+    takeLatest(ExamsTypes.LOAD_REQUEST, getExams),
+
+    /**
+     * ATTESTS
+     */
+    takeLatest(AttestTypes.LOAD_REQUEST, getAttests),
   ]);
 }

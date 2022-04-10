@@ -11,7 +11,6 @@ export enum PatientTypes {
 
   CREATE_PATIENT_REQUEST = "@patient/CREATE_PATIENT_REQUEST",
   CREATE_PATIENT_SUCCESS = "@patient/CREATE_PATIENT_SUCCESS",
-  CLEAN = "@customer/CLEAN",
 
   UPDATE_PATIENT_REQUEST = "@patient/UPDATE_PATIENT_REQUEST",
   UPDATE_PATIENT_SUCCESS = "@patient/UPDATE_PATIENT_SUCCESS",
@@ -27,6 +26,8 @@ export enum PatientTypes {
   REGISTRAION_COMPLETED = "@patient/REGISTRAION_COMPLETED",
   LOAD_PATIENT_CAPTURE = "@patient/LOAD_PATIENT_CAPTURE",
   LOAD_PATIENT_CAPTURE_SUCCESS = "@patient/LOAD_PATIENT_CAPTURE_SUCCESS",
+
+  CLEAN = "@patient/CLEAN",
 }
 
 /**
@@ -51,6 +52,7 @@ export interface PatientPhonesInterface {
 }
 
 export interface PatientInterface {
+  social_status: boolean;
   _id?: string;
   companies: [string] | [];
   name: string;
@@ -68,7 +70,15 @@ export interface PatientInterface {
   address_id: PatientAddressInterface;
   area_id?: any;
   email: string;
-  phones: PatientPhonesInterface[] | [];
+  phones: [
+    {
+      cellnumber?: string;
+      number?: string;
+      telegram: boolean;
+      whatsapp: boolean;
+    }
+  ];
+  // phones: PatientPhonesInterface[] | [];
   sus_card: string;
   blood_type: string;
   organ_donor: boolean;
@@ -87,10 +97,11 @@ export interface PatientInterface {
   convenio?: string;
   health_insurance?: string;
   sub_health_insurance?: string;
+  created_at: string;
 }
 
 export interface PatientList {
-  data: PatientDataItems[];
+  data: PatientInterface[];
   limit: string;
   page: string;
   total: number;
@@ -116,6 +127,7 @@ export interface ViacepDataInterface {
   localidade: string;
   uf: string;
   erro?: boolean;
+  errorCep?: boolean;
 }
 
 /**

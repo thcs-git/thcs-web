@@ -22,7 +22,14 @@ export const INITIAL_STATE: CompanyState = {
     phone: '',
     cellphone: '',
     active: true,
-    created_by: { _id: '' }
+    created_by: { _id: '' },
+    phones: [{
+      cellnumber: "",
+      number: "",
+      telegram: false,
+      whatsapp: false,
+    }],
+    tipo: '',
   },
   list: {
     data: [],
@@ -56,15 +63,18 @@ const reducer: Reducer<CompanyState> = (state = INITIAL_STATE, action) => {
         list: INITIAL_STATE.list,
         loading: false,
         error: true,
-        success: false
+        success: false,
+        errorCep:true,
       };
     case CompanyTypes.LOAD_RESPONSE_ADDRESS:
       return {
         ...state,
+        success: true,
         loading: false,
         error: false,
+        errorCep: false,
         data: {
-          ...state.data,
+          // ...state.data,
           address: {
             ...state.data.address,
             postal_code: action.payload.data.cep,
@@ -126,6 +136,19 @@ const reducer: Reducer<CompanyState> = (state = INITIAL_STATE, action) => {
         error: false,
         success: true
       }
+    case CompanyTypes.LOAD_REQUEST_CUSTOMER_BY_ID:
+      return {
+        ...state,
+        loading: true,
+        error: false,
+        success: false
+      };
+    case CompanyTypes.LOAD_SUCCESS_CUSTOMER_BY_ID:
+      return {
+        ...state,
+        list: action.payload.data,
+        loading: false,
+      };
     case CompanyTypes.SEARCH_REQUEST:
       return { ...state, loading: true, error: false };
 

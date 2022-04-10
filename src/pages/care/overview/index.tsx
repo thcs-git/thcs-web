@@ -1,418 +1,706 @@
-import React, { useCallback, useEffect } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import { Box, Divider, Grid, List, ListItem, ListItemText, Menu, MenuItem, Tooltip, Typography } from '@material-ui/core';
-import Card from '@material-ui/core/Card';
-import { useHistory } from "react-router-dom";
+import React, { useCallback, useEffect, useState } from "react";
 
-import QueueIcon from '@material-ui/icons/Queue';
-import TodayRoundedIcon from '@material-ui/icons/TodayRounded';
-import { FormTitle } from '../../../styles/components/Form';
-import Sidebar from '../../../components/Sidebar';
+// Router
+import { Link, useHistory } from "react-router-dom";
+import { RouteComponentProps } from "react-router-dom";
 
-import { loadCareById } from '../../../store/ducks/cares/actions';
+// MUI
+import { makeStyles } from "@material-ui/core";
+import {
+  MoreVert,
+  Check as CheckIcon,
+  Close as CloseIcon,
+} from "@material-ui/icons";
+// Components
+import { FieldContent, FormTitle } from "../../../styles/components/Form";
+import Sidebar from "../../../components/Sidebar";
+import Header from "../../../components/Header/Overview";
+import ScrollCard from "../../../components/Card/ScrollCard";
+import CardInfo from "../../../components/Card/Info";
+import ButtonTabs from "../../../components/Button/ButtonTabs";
+import AccordionReport from "../../../components/Accordion/Report";
+import Loading from "../../../components/Loading";
+import FilterReport from "../../../components/Dialogs/Filter/Report";
+import NoPermission from "../../../components/Erros/NoPermission";
 
-import { ReactComponent as IconProfile } from '../../../assets/img/icon-profile.svg';
-import { ReactComponent as IconProntuario } from '../../../assets/img/icon-prontuario.svg';
-import IconMultidisciplinar from '../../../assets/img/icon-equipe-medica.svg';
-import IconDadosPessoais from '../../../assets/img/icon-dados-pessoais.svg';
-import IconPlanoInternacoes from '../../../assets/img/icon-plano-internacoes.svg';
-import IconUltimosProced from '../../../assets/img/icon-ultimos-procedimentos.svg';
+// Styles
+import { ContainerStyle as Container } from "./styles";
 
-import IconAfericao from '../../../assets/img/icon-afericao.svg';
-import IconCurativos from '../../../assets/img/icon-curativos.svg';
-import IconMedicacao from '../../../assets/img/icon-medicacao.svg';
-import IconStatus from '../../../assets/img/icon-status.svg';
+// Helper
+import SESSIONSTORAGE from "../../../helpers/constants/sessionStorage";
+import { age, formatDate } from "../../../helpers/date";
+import { checkViewPermission } from "../../../utils/permissions";
 
-import { ContainerStyle as Container, Profile } from './styles';
-import ButtonComponent from '../../../styles/components/Button';
-import Button from '../../../styles/components/Button';
-import { MoreVert, Check as CheckIcon, Close as CloseIcon, Add as AddIcon } from '@material-ui/icons';
-import { ApplicationState } from '../../../store';
-import { RouteComponentProps } from 'react-router-dom';
-import { age, formatDate } from '../../../helpers/date';
-import mask from '../../../utils/mask';
-import Loading from '../../../components/Loading';
-import QRCode from "react-qr-code";
+// Redux e Sagas
+import { useDispatch, useSelector } from "react-redux";
+import {
+  deleteCareRequest,
+  loadCareById,
+  updateCareRequest,
+  loadScheduleRequest,
+  loadEvolutionRequest,
+  loadCheckinRequest,
+} from "../../../store/ducks/cares/actions";
+import { loadPatientById } from "../../../store/ducks/patients/actions";
+import { loadRequest as loadRequestAllergies } from "../../../store/ducks/allergies/actions";
+import {
+  AllergiesInterface,
+  AllergiesState,
+} from "../../../store/ducks/allergies/types";
+import { loadRequest as loadRequestMeasurements } from "../../../store/ducks/measurements/actions";
+import { loadRequest as loadRequestQrCode } from "../../../store/ducks/qrCode/actions";
+import { ApplicationState } from "../../../store";
+import { loadRequestByCareId as loadRequestPrescriptionByCareId } from "../../../store/ducks/prescripition/actions";
+import { loadRequest as loadRequestAntibiotic } from "../../../store/ducks/antibiotic/actions";
+import { loadRequest as loadRequestExams } from "../../../store/ducks/exams/actions";
+import { loadRequest as loadRequestAttests } from "../../../store/ducks/attest/actions";
 interface IPageParams {
   id?: string;
 }
+interface IAllergiIntegration {
+  allergie: {
+    data: {
+      allergy: [
+        {
+          active: number;
+          created_at: string;
+          created_by: string;
+          description: string;
+          id: number;
+          name: string;
+          severity: string;
+          type: string;
+        }
+      ];
+      event: [];
+    };
+    error: boolean;
+    loading: boolean;
+    success: boolean;
+  };
+}
 
-export default function PatientOverview(props: RouteComponentProps<IPageParams>) {
+const useStyles = makeStyles((theme) => ({
+  root: {
+    display: "flex",
+    // flexWrap: 'wrap',
+    justifyContent: "space-evenly",
+    paddingTop: "25px",
+    "& > *": {
+      margin: theme.spacing(1),
+      width: theme.spacing(16),
+      height: theme.spacing(16),
+    },
+  },
+  itens: {
+    display: "flex",
+    flexWrap: "wrap",
+    justifyContent: "space-evenly",
+    paddingTop: "25px",
+    "& > *": {
+      margin: theme.spacing(1),
+      width: theme.spacing(16),
+      height: theme.spacing(16),
+    },
+  },
+  item_button: {
+    height: "100px !important",
+    width: "150px !important",
+    maxHeight: "100px !important",
+    display: "block",
+  },
+  item_box: {
+    display: "flex",
+    width: "115px",
+    height: "105px",
+  },
+  item_svg: {
+    height: "25px",
+    width: "25px",
+  },
+  box: {
+    display: "flex",
+    width: "125px",
+    height: "175px",
+  },
+  button: {
+    height: "175px !important",
+    width: "250px !important",
+    maxHeight: "175px !important",
+    display: "block",
+  },
+  svg: {
+    height: "85px",
+    width: "100px",
+  },
+}));
+
+export default function PatientOverview(
+  props: RouteComponentProps<IPageParams>
+) {
+  const integration = sessionStorage.getItem(SESSIONSTORAGE.INTEGRATION);
+
   const history = useHistory();
   const dispatch = useDispatch();
   const { params } = props.match;
   const careState = useSelector((state: ApplicationState) => state.cares);
-
-  const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
+  const patientState = useSelector((state: ApplicationState) => state.patients);
+  const allergiesState = useSelector(
+    (state: ApplicationState) => state.allergies
+  );
+  const measurementState = useSelector(
+    (state: ApplicationState) => state.measurements
+  );
+  const prescriptionState = useSelector(
+    (state: ApplicationState) => state.prescription
+  );
+  const antibioticState = useSelector(
+    (state: ApplicationState) => state.antibiotic
+  );
+  const qrCodeState = useSelector((state: ApplicationState) => state.qrCode);
+  const examsState = useSelector((state: ApplicationState) => state.exams);
+  const attestState = useSelector((state: ApplicationState) => state.attest);
+  const rightsOfLayoutState = useSelector(
+    (state: ApplicationState) => state.layout.data.rights
+  );
+  const [team, setTeam] = useState<any[]>([]);
+  const [reportActive, setReportActive] = useState(false);
+  const [reportType, setReportType] = useState("");
+  const [openFilterReport, setOpenFilterReport] = useState(false);
+  const [selectReportCard, setSelectReportCard] = useState("");
 
   useEffect(() => {
     if (params.id) {
       dispatch(loadCareById(params.id));
+      dispatch(loadRequestQrCode(params.id));
+      dispatch(loadCheckinRequest(params.id));
+      // dispatch(loadScheduleRequest({ attendance_id: params.id }));
     }
+  }, [params.id]);
 
-  }, [dispatch]);
+  useEffect(() => {
+    if (careState.data.patient_id) {
+      dispatch(loadPatientById(careState.data.patient_id._id));
+      dispatch(loadRequestAllergies(careState.data.patient_id._id));
+    }
+  }, [careState?.data?.patient_id, integration]);
+  useEffect(() => {
+    handleTeam();
+  }, [careState.schedule]);
 
-  const handleOpenRowMenu = useCallback((event: React.MouseEvent<HTMLButtonElement>) => {
-    setAnchorEl(event.currentTarget);
-  }, [anchorEl]);
+  useEffect(() => {
+    const attendanceId = careState?.data?._id;
+    const patientId = careState?.data?.patient_id?._id;
+    if (attendanceId && reportType === "Aferições") {
+      dispatch(loadRequestMeasurements(attendanceId));
+    } else if (attendanceId && reportType === "Evolução") {
+      dispatch(loadEvolutionRequest(attendanceId));
+    } else if (attendanceId && reportType === "Check-in/out") {
+      dispatch(loadCheckinRequest(attendanceId));
+    } else if (attendanceId && reportType === "Prescrições") {
+      integration
+        ? dispatch(
+            loadRequestPrescriptionByCareId({
+              external_attendance_id: attendanceId,
+            })
+          )
+        : dispatch(
+            loadRequestPrescriptionByCareId({
+              attendance_id: attendanceId,
+            })
+          );
+    } else if (patientId && reportType === "Antibióticos") {
+      dispatch(loadRequestAntibiotic(patientId));
+    } else if (patientId && reportType === "Exames") {
+      dispatch(loadRequestExams(patientId));
+    } else if (patientId && reportType === "Atestados") {
+      dispatch(loadRequestAttests(patientId));
+    }
+  }, [careState.data._id, reportType]);
 
-  const handleCloseRowMenu = useCallback(() => {
-    setAnchorEl(null);
-  }, [anchorEl]);
+  const handleTeam = useCallback(() => {
+    const teamUsers: any = [];
 
-  const renderPatientStatus = useCallback((status: string) => {
-    switch (status) {
-      case 'Não Elegível':
-        return <CloseIcon style={{ color: '#FF6565', cursor: 'pointer' }} />
-      case 'Elegível':
-        return <CheckIcon style={{ color: '#4FC66A', cursor: 'pointer' }} />
+    try {
+      careState.schedule?.forEach((item) => {
+        if (teamUsers.length === 0) {
+          teamUsers.push(item.user_id);
+        } else {
+          const founded = teamUsers.findIndex((user: any) => {
+            if (typeof item.user_id === "object") {
+              return user._id === item.user_id._id;
+            }
+          });
+
+          if (founded < 0) {
+            teamUsers.push(item.user_id);
+          }
+        }
+      });
+    } catch (error) {}
+
+    setTeam(teamUsers);
+  }, [careState.schedule]);
+
+  const rows = [];
+  (function handleDataRows() {
+    careState?.data?.patient_id?.name &&
+      rows.push({ name: "Nome", value: careState?.data?.patient_id?.name });
+    patientState?.data?.gender &&
+      rows.push({
+        name: "Gênero",
+        value: patientState?.data?.gender,
+      });
+    patientState?.data?.marital_status &&
+      rows.push({
+        name: "Estado Civil ",
+        value: patientState?.data?.marital_status,
+      });
+    careState?.data?.patient_id?.birthdate &&
+      rows.push({
+        name: "Data de nascimento",
+        value: formatDate(careState.data.patient_id.birthdate, "DD/MM/YYYY"),
+      });
+    careState?.data?.patient_id?.mother_name &&
+      rows.push({
+        name: "Mãe",
+        value: careState.data.patient_id.mother_name,
+      });
+    patientState?.data?.national_id &&
+      rows.push({
+        name: "RG",
+        value: patientState?.data?.national_id,
+      });
+
+    careState?.data?.patient_id?.fiscal_number &&
+      rows.push({
+        name: "CPF",
+        value: careState?.data?.patient_id?.fiscal_number,
+      });
+    patientState?.data?.phones &&
+      patientState.data.phones.forEach((phone) => {
+        if (phone.cellnumber) {
+          rows.push({
+            name: "Celular",
+            value: phone.cellnumber,
+          });
+        }
+        if (phone.number) {
+          rows.push({
+            name: "Telefone",
+            value: phone.number,
+          });
+        }
+      });
+    careState?.data?.patient_id?.organ_donor &&
+      rows.push({
+        name: "Doador de órgãos",
+        value: careState.data.patient_id.organ_donor,
+      });
+
+    careState?.data?.patient_id?.birthdate &&
+      rows.push({
+        name: "Idade",
+        value: age(careState.data.patient_id.birthdate),
+      });
+
+    careState?.data?.patient_id?.blood_type &&
+      rows.push({
+        name: "Tipo sanguíneo",
+        value: careState.data.patient_id.blood_type,
+      });
+
+    careState?.data?.patient_id?._id &&
+      rows.push({
+        name: "Código do paciente",
+        value: careState.data.patient_id._id,
+      });
+    patientState?.data?.nationality &&
+      rows.push({
+        name: "Nacionalidade",
+        value: patientState?.data?.nationality,
+      });
+    patientState?.data?.address_id?.postal_code &&
+      rows.push({
+        name: "CEP",
+        value: patientState?.data?.address_id?.postal_code,
+      });
+    patientState?.data?.address_id?.street &&
+      rows.push({ name: "Rua", value: patientState?.data?.address_id?.street });
+    patientState?.data?.address_id?.number &&
+      rows.push({
+        name: "Número",
+        value: patientState?.data?.address_id?.number,
+      });
+
+    patientState?.data?.address_id?.district &&
+      rows.push({
+        name: "Bairro",
+        value: patientState?.data?.address_id?.district,
+      });
+    patientState?.data?.address_id?.city &&
+      rows.push({
+        name: "Cidade",
+        value: patientState?.data?.address_id?.city,
+      });
+    patientState?.data?.address_id?.complement &&
+      rows.push({
+        name: "Complemento",
+        value: patientState?.data?.address_id?.complement,
+      });
+    patientState?.data?.address_id?.state &&
+      rows.push({ name: "UF", value: patientState?.data?.address_id?.state });
+
+    careState?.data?.tipo &&
+      rows.push({ name: "Tipo de Atendimento", value: careState?.data?.tipo });
+    careState?.data?._id &&
+      rows.push({ name: "Número do Atendimento", value: careState?.data?._id });
+    careState?.data?.capture?.assistant_doctor &&
+      rows.push({
+        name: "Médico Assistente",
+        value: careState?.data?.capture?.assistant_doctor,
+      });
+    careState?.data?.cid_id &&
+      rows.push({
+        name: "CID",
+        value: integration
+          ? careState?.data?.cid_id
+          : careState?.data?.cid_id.name,
+      });
+    careState?.data?.health_insurance_id &&
+      rows.push({
+        name: "Convênio",
+        value: integration
+          ? { name: careState?.data?.health_insurance_id }
+          : careState?.data?.health_insurance_id,
+      });
+    careState?.data?.health_plan_id &&
+      rows.push({
+        name: "Plano",
+        value: integration
+          ? { name: careState?.data?.health_plan_id }
+          : careState?.data?.health_plan_id,
+      });
+    careState?.data?.health_sub_plan_id &&
+      rows.push({
+        name: "Subplano",
+        value: integration
+          ? { name: careState?.data?.health_sub_plan_id }
+          : careState?.data?.health_sub_plan_id,
+      });
+
+    careState?.data?.capture?.unity &&
+      rows.push({ name: "Unidade", value: careState?.data?.capture?.unity });
+    careState?.data?.capture?.sector &&
+      rows.push({ name: "Setor", value: careState?.data?.capture?.sector });
+    careState?.data?.capture?.type &&
+      rows.push({ name: "Acomodação", value: careState?.data?.capture?.type });
+    careState?.data?.capture?.bed &&
+      rows.push({ name: "Leito", value: careState?.data?.capture?.bed });
+    careState?.data?.created_at &&
+      rows.push({
+        name: "Data de Atendimento",
+        value: formatDate(careState?.data?.created_at, "DD/MM/YYYY HH:mm"),
+      });
+    careState?.data?.mot_alta &&
+      rows.push({ name: "Motivo de Alta", value: careState?.data?.mot_alta });
+    careState?.data?.health_plan_card_number &&
+      rows.push({
+        name: "Número da carteira",
+        value: careState?.data?.health_plan_card_number,
+      });
+    careState?.data?.health_plan_card_validate &&
+      rows.push({
+        name: "Data de validade",
+        value: formatDate(
+          careState?.data?.health_plan_card_validate,
+          "DD/MM/YYYY"
+        ),
+      });
+    careState?.data?.speciality &&
+      rows.push({
+        name: "Especialidade do Atendimento",
+        value: integration
+          ? { name: careState?.data?.speciality }
+          : careState?.data?.speciality,
+      });
+    careState?.data?.dt_alta &&
+      rows.push({
+        name: "Data de Alta",
+        value: formatDate(careState?.data?.dt_alta, "DD/MM/YYYY HH:mm"),
+      });
+
+    rows.push({
+      name: "Equipe",
+      value: team,
+    });
+  })();
+
+  const content = {
+    tittle: "HeaderOverview",
+    rows: rows,
+    qrCodeState: qrCodeState,
+    careState: careState,
+  };
+  const gridPropsPlan = {
+    lg: 6,
+    xl: 6,
+    sx: 6,
+    md: 6,
+  };
+  const cards = [
+    "Check-in/out",
+    "Alergias",
+    "Prescrições",
+    "Checagens",
+    "Antibióticos",
+    "Evolução",
+    "Aferições",
+    "Exames",
+    "Atestados",
+  ];
+  const personalCard = {
+    card: "Dados Pessoais",
+    info: ["Dados Pessoais"],
+  };
+  const planCard = {
+    card: "Plano e Internação",
+    info: ["Dados de atendimento", "Dados do Plano"],
+  };
+  const teamCard = {
+    card: "Equipe Multidisciplinar",
+    info: ["Equipe Multidisciplinar"],
+  };
+
+  function isAllergic(allergie: any) {
+    let allergic = false;
+    Object.keys(allergie).map((item: any) => {
+      if (item === "data" && allergie[item]["allergy"]) {
+        allergie[item]["allergy"].map((item: any) => {
+          if (integration && item.active === 1) {
+            allergic = true;
+          } else if (!integration && item.active) {
+            allergic = true;
+          }
+        });
+      }
+    });
+    return allergic;
+  }
+  const contentAllergyExist = (allergie: any) => {
+    let allergicExist = false;
+    Object.keys(allergie).map((item: any) => {
+      if (item === "data" && allergie[item]["allergy"]) {
+        if (allergie[item]["allergy"].length > 0) allergicExist = true;
+      }
+      if (item === "data" && allergie[item]["event"]) {
+        if (allergie[item]["event"].length > 0) {
+          allergicExist = true;
+        }
+      }
+    });
+    return allergicExist;
+  };
+
+  const buttons = [
+    {
+      name: "Voltar",
+      onClick: () => {
+        !reportActive ? history.push("/care") : setReportActive(false);
+        setSelectReportCard("");
+      },
+      variant: "contained",
+      background: "secondary",
+      show: true,
+    },
+  ];
+
+  function handleReport(nameReport: string) {
+    if (nameReport === reportType || reportActive === false) {
+      setReportActive(!reportActive);
+    }
+    setReportType(nameReport);
+  }
+  function handleContentReport(report: string): any {
+    if (report === "Aferições" && measurementState.data.length > 0) {
+      return {
+        data: measurementState.data,
+        error: measurementState.error,
+      };
+    } else if (
+      report === "Alergias" &&
+      Object.keys(allergiesState.data).length > 0
+    ) {
+      return contentAllergyExist(allergiesState)
+        ? {
+            data: allergiesState.data,
+            error: allergiesState.error,
+          }
+        : "";
+    } else if (report === "Evolução" && careState.evolution.data.length > 0) {
+      return {
+        data: careState.evolution.data,
+        error: careState.evolution.error,
+      };
+    } else if (report === "Check-in/out" && careState.checkin.data.length > 0) {
+      return {
+        data: careState.checkin.data,
+        error: false,
+      };
+    } else if (
+      report === "Prescrições" &&
+      Object.keys(prescriptionState.data).length > 0
+    ) {
+      return {
+        data: Object.entries(prescriptionState.data.prescriptionData),
+        error: prescriptionState.error,
+      };
+    } else if (
+      report === "Antibióticos" &&
+      Object.keys(antibioticState.data).length > 0
+    ) {
+      return {
+        data: Object.entries(antibioticState.data),
+        error: antibioticState.error,
+      };
+    } else if (report === "Exames" && examsState.data.data.length > 0) {
+      return {
+        data: examsState.data.data,
+        error: examsState.error,
+      };
+    } else if (report === "Atestados" && attestState.data.data.length > 0) {
+      return {
+        data: attestState.data.data,
+        error: attestState.error,
+      };
+    } else {
+      return "";
+    }
+  }
+
+  function handleOpenFilter() {
+    setOpenFilterReport(true);
+  }
+  function handleCloseFilter() {
+    setOpenFilterReport(false);
+  }
+  function handleLoadingReport(type: string) {
+    switch (type) {
+      case "Aferições":
+        return measurementState.loading;
+      case "Alergias":
+        return allergiesState.loading;
+      case "Evolução":
+        return careState.evolution.loading;
+      case "Check-in/out":
+        return careState.checkin.loading;
+      case "Prescrições":
+        return prescriptionState.loading;
+      case "Antibióticos":
+        return antibioticState.loading;
+      case "Exames":
+        return examsState.loading;
+      case "Atestados":
+        return attestState.loading;
       default:
-        return <CheckIcon style={{ color: '#EBEBEB' }} />
+        return false;
     }
-  }, []);
-
-  const getLastDocument = useCallback(() => {
-    const { documents_id: documents } = careState.data;
-
-    return documents ? documents[documents.length - 1]?.created_at : '';
-  }, [careState]);
-
-  const getPatientPhone = useCallback(() => {
-    const { patient_id: patient } = careState.data;
-
-    const number = patient?.phones[0].number
-
-    return number;
-  }, [careState]);
+  }
 
   return (
-    <>
-      <Sidebar>
-        {careState.loading && <Loading />}
-        <Container>
+    <Sidebar>
+      {checkViewPermission("care", JSON.stringify(rightsOfLayoutState)) ? (
+        <Container style={{ padding: "20px", maxWidth: "1100px" }}>
+          {careState.loading && <Loading />}
           <FormTitle>Overview de Paciente</FormTitle>
-
-          <Card>
-            <Box mb={2} mt={2} paddingLeft={5} paddingRight={5} display="flex" justifyContent="space-between" alignItems="center">
-              <Profile>
-                <IconProfile />
-                <div>
-                  <h5>{careState.data.patient_id?.name}</h5>
-                  <p>{careState.data.patient_id?.birthdate ? age(careState.data.patient_id?.birthdate) : ''}</p>
-                </div>
-              </Profile>
-              <div>
-                <ButtonComponent background="success">
-                  <QueueIcon />
-                  <p>Protuário do paciente</p>
-                </ButtonComponent>
-              </div>
-            </Box>
-          </Card>
-
-          <Grid container xs={12}>
-            <Grid container md={8} xs={12} style={{ marginTop: '2%' }}>
-
-              {/* Avalicao paciente */}
-              <Grid item md={6} xs={12} style={{ paddingRight: '10px' }}>
-                <Card className="card-styles">
-                  <Box display="flex" alignItems="center" justifyContent="space-between" padding={2}>
-                    <IconProntuario />
-                    <h5>Avaliação do paciente</h5>
-                    <Button className="btn-dropwdown" aria-controls={`menu-prontuario`} id={`btn_menu-prontuario`} aria-haspopup="true" onClick={handleOpenRowMenu}>
-                      <MoreVert />
-                    </Button>
-                    <Menu
-                      id={`menu-prontuario`}
-                      anchorEl={anchorEl}
-                      keepMounted
-                      open={anchorEl?.id === `btn_menu-prontuario`}
-                      onClose={handleCloseRowMenu}
+          <Container style={{ backgroundColor: "#f5f5f5" }}>
+            {true ? (
+              <>
+                <Header
+                  content={content}
+                  allergic={isAllergic(allergiesState)}
+                  integration={integration}
+                />
+                <ScrollCard
+                  tittle="Relatório de Prontuário"
+                  iconName="ChartIcon"
+                  cards={cards}
+                  onClickCard={handleReport}
+                  allergic={isAllergic(allergiesState)}
+                  loadingCard={allergiesState.loading}
+                  openFilter={handleOpenFilter}
+                  reportType={reportType}
+                  reportActive={reportActive}
+                  existContent={!!handleContentReport(reportType)}
+                  selectCard={selectReportCard}
+                  setSelectCard={setSelectReportCard}
+                />
+                <FilterReport
+                  openFilter={openFilterReport}
+                  closeFilter={handleCloseFilter}
+                  reportType={reportType}
+                  content={rows}
+                  careState={careState}
+                  contentReport={handleContentReport(reportType)}
+                />
+                {reportActive ? (
+                  <AccordionReport
+                    content={handleContentReport(reportType)}
+                    company_id={
+                      careState.data.company_id ? careState.data.company_id : ""
+                    }
+                    reportType={reportType}
+                    state={careState}
+                    loading={handleLoadingReport(reportType)}
+                  />
+                ) : (
+                  <Container
+                    style={{
+                      padding: "0 32px 20px ",
+                    }}
+                  >
+                    <Container
+                      style={{
+                        display: "flex",
+                        flexWrap: "wrap",
+                        justifyContent: "space-between",
+                      }}
                     >
-                      <MenuItem onClick={() => { }}>Visualizar</MenuItem>
-                      <Divider />
-                      <MenuItem onClick={() => { }}>Editar</MenuItem>
-                    </Menu>
-                  </Box>
+                      <CardInfo
+                        content={content}
+                        tittle={personalCard}
+                        alergicIs={true}
+                        gridProps={gridPropsPlan}
+                        integration={integration}
+                      />
 
-                  <List className="text-list" component="ul" aria-label="mailbox folders">
-                    {careState.data.documents_id?.map(document => (
-                      <ListItem>
-                        {renderPatientStatus(document.status)}
-                        <p>{document.document_group_id.name} : {document.complexity}</p>
-                      </ListItem>
-                    ))}
-                  </List>
-
-                  <Box display="flex" justifyContent="center" paddingTop={2} paddingBottom={1}>
-                    <Button background="primary" onClick={() => { }}>Adicionar manutenção</Button>
-                  </Box>
-
-                  <footer>
-                    <Typography variant="caption" color="textSecondary">
-                      Última avaliação:
-                      {formatDate(getLastDocument(), ' DD/MM/YYYY [às] HH:mm')}
-                    </Typography>
-                  </footer>
-                </Card>
-              </Grid>
-
-              {/* Dados pessoais */}
-              <Grid item md={6} xs={12} style={{ paddingRight: '10px' }}>
-                <Card className="card-styles">
-                  <Box display="flex" alignItems="center" justifyContent="space-between" padding={2}>
-                    <img src={IconDadosPessoais} alt="Dados pessoais" />
-                    <h5>Dados pessoais</h5>
-                    <Button className="btn-dropwdown" aria-controls={`menu-prontuario`} id={`btn_menu-prontuario`} aria-haspopup="true" onClick={handleOpenRowMenu}>
-                      <MoreVert />
-                    </Button>
-                    <Menu
-                      id={`menu-prontuario`}
-                      anchorEl={anchorEl}
-                      keepMounted
-                      open={anchorEl?.id === `btn_menu-prontuario`}
-                      onClose={handleCloseRowMenu}
-                    >
-                      <MenuItem onClick={() => { }}>Visualizar</MenuItem>
-                      <Divider />
-                      <MenuItem onClick={() => { }}>Editar</MenuItem>
-                    </Menu>
-                  </Box>
-
-                  <List className="text-list" component="ul" aria-label="mailbox folders">
-                    <ListItem >
-                      <p>CPF: {mask(careState.data.patient_id?.fiscal_number, '###.###.###-##')}</p>
-                    </ListItem>
-                    <ListItem>
-                      <p>RG: {mask(careState.data.patient_id?.national_id, '#.###.###')} {careState.data.patient_id?.issuing_organ.toString().toUpperCase()}</p>
-                    </ListItem>
-                    <ListItem>
-                      <p>DN: {formatDate(careState.data.patient_id?.birthdate, ' DD/MM/YYYY')}</p>
-                    </ListItem>
-                    <ListItem>
-                      <p>Mãe: {careState.data.patient_id?.mother_name}</p>
-                    </ListItem>
-                    <ListItem>
-                      <p>Tipo Sanguíneo: {careState.data.patient_id?.blood_type}</p>
-                    </ListItem>
-                    <ListItem>
-                      <p>Doador de órgãos: {careState.data.patient_id?.organ_donor ? 'Sim' : 'Não'}</p>
-                    </ListItem>
-                    <ListItem>
-                      <p>Sexo: {careState.data.patient_id?.gender}</p>
-                    </ListItem>
-                    <ListItem>
-                      <p>Telefone: {mask(getPatientPhone(), '(##) #####-####')}</p>
-                    </ListItem>
-                  </List>
-
-                  <footer>
-                    <Typography variant="caption" color="textSecondary">
-                      Última avaliação:
-                        {formatDate(careState.data.patient_id?.created_at, ' DD/MM/YYYY [às] HH:mm')}
-                      {/* {formatDate(state?.started_at ?? '', 'DD/MM/YYYY HH:mm:ss')} */}
-                    </Typography>
-                  </footer>
-                </Card>
-              </Grid>
-
-              {/* Equipe Multidisciplinar */}
-              <Grid item md={6} xs={12} style={{ paddingRight: '10px', marginTop: '20px' }}>
-                <Card className="card-styles">
-                  <Box display="flex" alignItems="center" justifyContent="space-between" padding={2}>
-                    <img src={IconMultidisciplinar} alt="Equipe médica" />
-                    <h5>Equipe multidisciplinar</h5>
-                    <Button className="btn-dropwdown" aria-controls={`menu-prontuario`} id={`btn_menu-prontuario`} aria-haspopup="true" onClick={handleOpenRowMenu}>
-                      <MoreVert />
-                    </Button>
-                    <Menu
-                      id={`menu-prontuario`}
-                      anchorEl={anchorEl}
-                      keepMounted
-                      open={anchorEl?.id === `btn_menu-prontuario`}
-                      onClose={handleCloseRowMenu}
-                    >
-                      <MenuItem onClick={() => { }}>Visualizar</MenuItem>
-                      <Divider />
-                      <MenuItem onClick={() => { }}>Editar</MenuItem>
-                    </Menu>
-                  </Box>
-
-                  <List className="text-list" component="ul" aria-label="mailbox folders">
-                    <ListItem >
-                      <CheckIcon style={{ color: '#4FC66A' }} />
-                      <p>texto</p>
-                    </ListItem>
-                    <ListItem>
-                      <CloseIcon style={{ color: '#FF6565' }} />
-                      <p>texto</p>
-                    </ListItem>
-                    <ListItem>
-                      <AddIcon style={{ color: '#0899BA' }} />
-                      <p>texto</p>
-                    </ListItem>
-                    <ListItem>
-
-                    </ListItem>
-                  </List>
-
-                  <footer>
-                    <Typography variant="caption" color="textSecondary">
-                      Última avaliação: 08/11/2020, às 14h25
-                        {/* {formatDate(state?.started_at ?? '', 'DD/MM/YYYY HH:mm:ss')} */}
-                    </Typography>
-                  </footer>
-                </Card>
-              </Grid>
-
-              {/* Plano de internacao */}
-              <Grid item md={6} xs={12} style={{ paddingRight: '10px', marginTop: '20px' }}>
-                <Card className="card-styles">
-                  <Box display="flex" alignItems="center" justifyContent="space-between" padding={2}>
-                    <img src={IconPlanoInternacoes} alt="Plano Internações" />
-                    <h5>Plano e internação</h5>
-                    <Button className="btn-dropwdown" aria-controls={`menu-prontuario`} id={`btn_menu-prontuario`} aria-haspopup="true" onClick={handleOpenRowMenu}>
-                      <MoreVert />
-                    </Button>
-                    <Menu
-                      id={`menu-prontuario`}
-                      anchorEl={anchorEl}
-                      keepMounted
-                      open={anchorEl?.id === `btn_menu-prontuario`}
-                      onClose={handleCloseRowMenu}
-                    >
-                      <MenuItem onClick={() => { }}>Visualizar</MenuItem>
-                      <Divider />
-                      <MenuItem onClick={() => { }}>Editar</MenuItem>
-                    </Menu>
-                  </Box>
-
-                  <List className="text-list" component="ul" aria-label="mailbox folders">
-                    <ListItem >
-                      <p>Hospital: {careState.data.capture?.hospital}</p>
-                    </ListItem>
-                    <ListItem>
-                      <p>Unidade: {careState.data.capture?.unity}</p>
-                    </ListItem>
-                    <ListItem>
-                      <p>Setor: {careState.data.capture?.sector}</p>
-                    </ListItem>
-                    <ListItem>
-                      <p>Leito: {careState.data.capture?.bed}</p>
-                    </ListItem>
-                    <ListItem>
-                      <p>Convênio: {careState.data.health_insurance_id?.name}</p>
-                    </ListItem>
-                    <ListItem>
-                      <p>Plano: {careState.data.health_plan_id?.name}</p>
-                    </ListItem>
-                    <ListItem>
-                      <p>Sub Plano: {careState.data.health_sub_plan_id?.name}</p>
-                    </ListItem>
-                  </List>
-
-                  <footer>
-                    <Typography variant="caption" color="textSecondary">
-                      Última avaliação:
-                        {formatDate(careState.data.updated_at, 'DD/MM/YYYY [às] HH:mm')}
-                    </Typography>
-                  </footer>
-                </Card>
-              </Grid>
-
-              {/* Ultimos procedimentos */}
-              <Grid item md={12} xs={12} style={{ paddingRight: '10px', marginTop: '20px', marginBottom: '10%' }}>
-                <Card className="card-styles">
-                  <Box display="flex" alignItems="center" justifyContent="space-between" padding={2}>
-                    <img src={IconUltimosProced} style={{ marginLeft: '2%' }} alt="Dados pessoais" />
-                    <div className="card-styles-footer">
-                      <h5>Últimos procedimentos</h5>
-                      <Typography variant="caption" component="p" color="textSecondary">
-                        Check in na Rua Conde da Boa Vista, 705 - Boa Vista
-                        </Typography>
-                      <Typography variant="caption" component="p" color="textSecondary">
-                        Atualizado em 12/11/2020, às 19h04
-                        </Typography>
-                    </div>
-                    <Button className="btn-dropwdown" aria-controls={`menu-prontuario`} id={`btn_menu-prontuario`} aria-haspopup="true" onClick={handleOpenRowMenu}>
-                      <MoreVert />
-                    </Button>
-                    <Menu
-                      id={`menu-prontuario`}
-                      anchorEl={anchorEl}
-                      keepMounted
-                      open={anchorEl?.id === `btn_menu-prontuario`}
-                      onClose={handleCloseRowMenu}
-                    >
-                      <MenuItem onClick={() => { }}>Visualizar</MenuItem>
-                      <Divider />
-                      <MenuItem onClick={() => { }}>Editar</MenuItem>
-                    </Menu>
-                  </Box>
-
-                  <Grid container>
-                    <Grid item md={4} xs={12} style={{ paddingLeft: '6%' }}>
-                      <Box display="flex" mt={4}>
-                        <img src={IconCurativos} alt="Curativo" />
-                        <p>Curativo A</p>
-                      </Box>
-                      <Box display="flex" mt={4}>
-                        <img src={IconMedicacao} alt="Medicação" />
-                        <p>Medicação A</p>
-                      </Box>
-                    </Grid>
-                    <Grid item md={4} xs={12} style={{ paddingLeft: '6%' }}>
-                      <Box display="flex" mt={4}>
-                        <img src={IconStatus} alt="Status" />
-                        <p>Informação importante Y</p>
-                      </Box>
-                      <Box display="flex" mt={4}>
-                        <img src={IconMedicacao} alt="Medicação" />
-                        <p>Aplicação de soro C 5%</p>
-                      </Box>
-                    </Grid>
-                    <Grid item md={4} xs={12} style={{ paddingLeft: '6%' }}>
-                      <Box display="flex" mt={4}>
-                        <img src={IconAfericao} alt="Aferição" />
-                        <p>Aferição de pressão A</p>
-                      </Box>
-                      <Box display="flex" mt={4}>
-                        <img src={IconCurativos} alt="Curativo" />
-                        <p>Remoção de curativo B</p>
-                      </Box>
-                    </Grid>
-                  </Grid>
-                </Card>
-              </Grid>
-            </Grid> {/* grid container */}
-
-            <Grid container md={4} xs={12} style={{ marginTop: '2%' }}> {/** Aside */}
-              <Grid item md={12}>
-                <ButtonComponent onClick={() => history.push(`/care/${params.id}/overview/schedule`)} background="primary" fullWidth>
-                  <TodayRoundedIcon />
-                  <p>Agenda</p>
-                </ButtonComponent>
-                {careState.data._id && (
-                  <Card  style={{display:"flex", flexDirection:"row", justifyContent:"center"}}>
-                   <p style={{paddingTop:"1.6rem"}}>
-                  <QRCode value={JSON.stringify(careState.data._id)}  />
-                </p>
-                </Card>
+                      <CardInfo
+                        content={content}
+                        tittle={planCard}
+                        alergicIs={false}
+                        gridProps={gridPropsPlan}
+                        integration={integration}
+                      />
+                      <CardInfo
+                        content={content}
+                        tittle={teamCard}
+                        alergicIs={false}
+                        gridProps={gridPropsPlan}
+                        integration={integration}
+                      />
+                    </Container>
+                  </Container>
                 )}
-
-
-
-
-              </Grid>
-              <Grid item md={4}>
-
-
-              </Grid>
-            </Grid>
-          </Grid>
+              </>
+            ) : (
+              <></>
+            )}
+          </Container>
+          <ButtonTabs buttons={buttons} canEdit={false} />
         </Container>
-      </Sidebar>
-    </>
+      ) : (
+        <NoPermission />
+      )}
+    </Sidebar>
   );
 }
-

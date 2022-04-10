@@ -15,6 +15,15 @@ import specialties from "./specialties";
 import patients from "./patients";
 import users from "./users";
 import profession from "./professions";
+import layout from "./layout";
+import message from "./message";
+import allergies from "./allergies";
+import measurements from "./measurements";
+import qrCode from "./qrCode";
+import prescription from "./prescripition";
+import antibiotic from "./antibiotic";
+import exams from "./exams";
+import attest from "./attest";
 
 export default combineReducers<IInitialState>({
   areas,
@@ -29,4 +38,13 @@ export default combineReducers<IInitialState>({
   patients,
   users,
   profession,
+  layout,
+  message,
+  allergies,
+  measurements,
+  qrCode,
+  prescription,
+  antibiotic,
+  exams,
+  attest,
 });

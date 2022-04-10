@@ -1,6 +1,3 @@
-import { CustomerInterface } from "./../customers/types";
-import { CompanyInterface } from "./../companies/types";
-
 /**
  * Action types
  */
@@ -9,11 +6,14 @@ export enum UserTypes {
   LOAD_SUCCESS = "@user/LOAD_SUCCESS",
   LOAD_FAILURE = "@user/LOAD_FAILURE",
 
+  LOAD_REQUEST_BY_CLIENT = "@user/LOAD_REQUEST_BY_CLIENT",
+
   CREATE_USER_REQUEST = "@user/CREATE_USER_REQUEST",
   REGISTER_USER_REQUEST = "@user/REGISTER_USER_REQUEST",
   CREATE_USER_SUCCESS = "@user/CREATE_USER_SUCCESS",
 
   UPDATE_USER_REQUEST = "@user/UPDATE_USER_REQUEST",
+  UPDATE_USER_PASSWORD = "@user/UPDATE_USER_PASSWORD",
   UPDATE_USER_SUCCESS = "@user/UPDATE_USER_SUCCESS",
 
   LOAD_REQUEST_ADDRESS = "@user/LOAD_REQUEST_ADDRESS",
@@ -58,6 +58,7 @@ export enum UserTypes {
 export interface Phones {
   _id: string;
   number: string;
+  cellnumber: string;
   whatapp: string;
   telegram: string;
 }
@@ -70,7 +71,9 @@ export interface SpecialtiesUserInterface {
 export interface UserRecoveryPassword {
   _id: string;
   password: string;
+  oldPassword?: string;
 }
+
 export interface ProfessionUserInterface {
   _id: string;
   name: string;
@@ -80,6 +83,7 @@ export interface UserTypesInterface {
   _id: string;
   name: string;
 }
+
 export interface CustomerUserInterface {
   name: string;
   _id: string;
@@ -88,7 +92,18 @@ export interface CustomerUserInterface {
 export interface CompanyUserInterface {
   _id: string;
   name: string;
-  customer_id: CustomerUserInterface;
+  customer_id?: CustomerUserInterface;
+}
+
+export interface CompanyUserLinkInterface {
+  function: string | null | undefined;
+  exp?: string;
+  permissions?: string | UserTypeInterface;
+  _id?: string;
+  companie_id?: string | CompanyUserInterface;
+  user_type_id?: string;
+  active?: boolean;
+  linked_at?: any;
 }
 
 export interface UserTypeInterface {
@@ -102,11 +117,15 @@ export interface MainSpecialtyInterface {
 }
 
 export interface UserListItems {
+  profession_external?: string;
+  main_specialty_external?: string;
+  specialties_external?: string;
+  companies_links: CompanyUserLinkInterface[];
   _id: string;
   name: string;
   email: string;
   profession_id: ProfessionUserInterface;
-  main_specialty_id?: string;
+  main_specialty_id?: any;
   created_at: string;
   address: {
     postal_code: string;
@@ -120,11 +139,14 @@ export interface UserListItems {
   };
   specialties: SpecialtiesUserInterface[];
   active: boolean;
+  fiscal_number: string;
+  username?: string;
 }
 
 export interface UserInterface {
   _id?: string;
   companies: CompanyUserInterface[];
+  companies_links: CompanyUserLinkInterface[];
   customer_id?: string;
   name: string; // name
   birthdate: string;
@@ -145,10 +167,18 @@ export interface UserInterface {
     geolocation?: { latitude: number; longitude: number };
   };
   email: string; // email
+  phones: [
+    {
+      cellnumber?: string;
+      number?: string;
+      telegram: boolean;
+      whatsapp: boolean;
+    }
+  ];
   phone: string;
   cellphone: string;
   user_type_id: string | UserTypeInterface;
-  profession_id?: string | ProfessionUserInterface;
+  profession_id?: ProfessionUserInterface | string;
   main_specialty_id?: any;
   specialties: (SpecialtiesUserInterface | {})[];
   council_id?: {
@@ -197,6 +227,7 @@ export interface UserState {
   loading: boolean;
   error: boolean;
   success: boolean;
+  errorCep?: boolean;
   successRecovery: boolean;
 }
 

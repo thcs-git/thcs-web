@@ -63,6 +63,8 @@ export const ListItemCaptureStatus = styled.div<IListItemCaptureStatus>`
         return `var(--yellow)`;
       case 'Em Andamento':
         return `var(--purple)`;
+      case 'Cancelado':
+        return `var(--orange)`;
       default:
         return `var(--black)`;
     }
@@ -135,5 +137,9 @@ export const CaptionList = styled.div`
 
   & > div.captionItem.andamento > span, & > div.captionItem.andamento > svg {
     color: var(--purple);
+  }
+
+  & > div.captionItem.cancelado > span, & > div.captionItem.cancelado > svg {
+    color: var(--orange);
   }
 `;

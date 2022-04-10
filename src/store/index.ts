@@ -1,6 +1,6 @@
 import { ProfessionState } from "./ducks/professions/types";
 import { PrescriptionState } from "./ducks/prescripition/types";
-import { createStore, applyMiddleware, compose } from "redux";
+import { createStore, applyMiddleware, compose, Store } from "redux";
 import createSagaMiddleware from "redux-saga";
 
 import { AreaState } from "./ducks/areas/types";
@@ -14,6 +14,14 @@ import { SpecialtyState } from "./ducks/specialties/types";
 import { LoginState } from "./ducks/login/types";
 import { PatientState } from "./ducks/patients/types";
 import { UserState } from "./ducks/users/types";
+import { LayoutState } from "./ducks/layout/types";
+import { MessageState } from "./ducks/message/types";
+import { AllergiesState } from "./ducks/allergies/types";
+import { MeasurementsState } from "./ducks/measurements/types";
+import { QrCodeState } from "./ducks/qrCode/types";
+import { AntibioticState } from "./ducks/antibiotic/types";
+import { ExamsState } from "./ducks/exams/types";
+import { AttestState } from "./ducks/attest/types";
 
 import { InitialState } from "./ducks/states";
 import combinedReducers from "./ducks/rootReducer";
@@ -33,13 +41,21 @@ export interface ApplicationState {
   prescription: PrescriptionState;
   users: UserState;
   profession: ProfessionState;
+  layout: LayoutState;
+  message: MessageState;
+  allergies: AllergiesState;
+  measurements: MeasurementsState;
+  qrCode: QrCodeState;
+  antibiotic: AntibioticState;
+  exams: ExamsState;
+  attest: AttestState;
 }
 
 const sagaMiddleware = createSagaMiddleware();
 
 const middlewares = [sagaMiddleware];
 
-const store = createStore(
+const store: Store = createStore(
   combinedReducers,
   InitialState,
   compose(applyMiddleware(...middlewares))

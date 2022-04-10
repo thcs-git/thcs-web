@@ -1,12 +1,12 @@
-import styled from 'styled-components';
-import { Container } from '@material-ui/core';
+import styled from "styled-components";
+import { Container } from "@material-ui/core";
 
 export const ContainerStyle = styled(Container)`
+  padding: 0;
+
   .card-styles {
     min-height: 324px;
     position: relative;
-
-
   }
 
   .card-styles-footer {
@@ -19,7 +19,7 @@ export const ContainerStyle = styled(Container)`
     }
 
     p {
-      color: #CCCCCC !important;
+      color: #cccccc !important;
       font-size: 10px;
     }
 
@@ -70,9 +70,7 @@ export const ContainerStyle = styled(Container)`
       color: rgb(0 0 0 / 32%) !important;
     }
   }
-
 `;
-
 
 export const Profile = styled.div`
   display: flex;

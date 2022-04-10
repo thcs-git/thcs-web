@@ -10,6 +10,8 @@ import TextField from '@material-ui/core/TextField';
 import Typography from '@material-ui/core/Typography';
 import InputLabel from '@material-ui/core/InputLabel';
 import FormControl from '@material-ui/core/FormControl';
+import InputMask from 'react-input-mask';
+import validator from 'validator';
 
 import {
   Collapse,
@@ -201,6 +203,7 @@ export default function RegisterForm() {
 
   const [state, setState] = useState<UserInterface>({
     companies: [],
+    companies_links: [],
     name: "",
     birthdate: "",
     gender: "",
@@ -218,6 +221,12 @@ export default function RegisterForm() {
       state: "",
       complement: "",
     },
+    phones: [{
+      cellnumber: "",
+      number: "",
+      telegram: false,
+      whatsapp: false,
+    }],
     email: "",
     phone: "",
     cellphone: "",
@@ -257,7 +266,7 @@ export default function RegisterForm() {
   ////////// form verify functions /////////////////
 
   const handleNameValidator = useCallback(()=>{
-    console.log("rodei");
+
     if(!validateName(inputName.value)){
 
       setInputName(prev=>({
@@ -278,7 +287,7 @@ export default function RegisterForm() {
   },[inputName,state]);
 
   const handleCpfValidator = useCallback(()=>{
-    console.log("rodei");
+
     if(validateCPF(inputCpf.value)){
       setInputCpf(prev=>({
         ...prev,
@@ -296,24 +305,23 @@ export default function RegisterForm() {
     }
   },[inputCpf]);
 
-  const handlePhoneValidator = useCallback(()=>{
-    console.log("rodei");
-    if(!validatePhone(inputPhone.value)){
-      setInputPhone(prev=>({
-        ...prev,
-        error:true
-      }))
-    }else{
-      setInputPhone(prev=>({
-        ...prev,
-        error:false
-      }))
-      setState(prev=>({
-        ...prev,
-        phone:inputPhone.value
-      }))
-    }
-  },[inputPhone]);
+  // const handlePhoneValidator = useCallback(()=>{
+  //   if(!validatePhone(inputPhone.value)){
+  //     setInputPhone(prev=>({
+  //       ...prev,
+  //       error:true
+  //     }))
+  //   }else{
+  //     setInputPhone(prev=>({
+  //       ...prev,
+  //       error:false
+  //     }))
+  //     setState(prev=>({
+  //       ...prev,
+  //       phone:inputPhone.value
+  //     }))
+  //   }
+  // },[inputPhone]);
 
   const handleProfessionValidator = useCallback(() => {
       if(validateEmpty(inputProfession.value)){
@@ -364,7 +372,7 @@ export default function RegisterForm() {
   }, [inputSpecialty]);
 
   const handleConcilValidator = useCallback(() => {
-    console.log(validateEmpty(inputConcil.value))
+
     if (!validateEmpty(inputConcil.value)) {
       setInputConcil(prev => ({
         ...prev,
@@ -460,7 +468,7 @@ export default function RegisterForm() {
   }
 
   function handleSelectUf(value:any){
-    console.log(value)
+
     if(value){
       setState((prevState)=>({
         ...prevState,
@@ -503,12 +511,27 @@ export default function RegisterForm() {
       }))
   }, [inputPassword,inputPasswordConfirm]);
 
+/////////// Validate Phone //////////////
+
+var isValidPhoneNumber: any;
+
+const validatePhone = () => {
+
+  if (state.phones[0]?.number) {
+    const landline = state.phones[0]?.number.replace('(', '').replace(')', '9').replace(' ', '').replace(' ', '').replace('-', '');
+
+    isValidPhoneNumber = validator.isMobilePhone(landline, 'pt-BR');
+
+    return (isValidPhoneNumber)
+  }
+}
+
 ////////// form verify functions /////////////////
 const  handleFormUser = useCallback(()=>{
 
   handleNameValidator();
   handleEmailValidator();
-  handlePhoneValidator();
+  // handlePhoneValidator();
   handleProfessionValidator();
   handlePasswordValitor();
   handleConcilValidator();
@@ -517,14 +540,16 @@ const  handleFormUser = useCallback(()=>{
   handleStateValidator();
   handleNumberConcilValidator();
 
+
   switch(userSelectType.value){
 
   case "Administrativo":
 
-    if(inputName.error || inputEmail.error || inputCpf.error || inputPhone.error || inputProfession.error){
+    if(inputName.error || inputEmail.error || inputCpf.error || inputProfession.error){
+
       return;
     }else{
-         console.log(state);
+
          dispatch(createUserRequest(state));
         // history.push(`/${state.email}/confirmEmail`);
 
@@ -533,7 +558,7 @@ const  handleFormUser = useCallback(()=>{
     break;
 
   case "Saúde":
-    if(inputEmail.error || inputPassword.error || inputCpf.error || inputName.error || inputPhone.error || inputProfession.error
+    if(inputEmail.error || inputPassword.error || inputCpf.error || inputName.error || inputProfession.error
       || inputConcil.error || inputNumberConcil.error || inputSpecialty.error || inputUf.error){
 
         return;
@@ -544,11 +569,11 @@ const  handleFormUser = useCallback(()=>{
 
     break;
   case "Outros":
-      if(inputEmail.error || inputPassword.error || inputCpf.error || inputName.error || inputPhone.error){
-          console.log(state);
+      if(inputEmail.error || inputPassword.error || inputCpf.error || inputName.error ){
+
           return;
       }else{
-        console.log(state);
+
         dispatch(createUserRequest(state));
       }
 
@@ -640,26 +665,31 @@ const  handleFormUser = useCallback(()=>{
             </Grid>
               <Grid item md={6} xs={12}  className={classes.form}>
               <FormControl variant="outlined" fullWidth>
-                <TextField
-                  error={inputPhone.error}
-                  id="input-phone-number"
-                  label="Telefone"
-                  variant="outlined"
+                    <TextField
+                      error={!validatePhone()}
+                      id="input-phone-number"
+                      label="Telefone"
+                      variant="outlined"
+                      size="small"
+                      required
+                      placeholder="(00) 0000-0000"
+                      fullWidth
+                      onChange={(element) =>{
+                        {setState(prevState => ({
+                          ...prevState,
+                          phones: [
+                            {
+                            ...prevState.phones[0],
+                            number : element.target.value
+                            }
+                        ]
+                        }))
+                      }}}
 
-                  size="small"
-                  required
-                  placeholder="(00) 0000-0000"
-                  fullWidth
-                  onChange={
-                    element=>setInputPhone(prev=>({
-                      ...prev,
-                      value:element.target.value
-                    }))
-                  }
-                  onBlur={handlePhoneValidator}
-                />
-                </FormControl>
-              </Grid>
+                      onBlur={validatePhone()}
+                    />
+            </FormControl>
+            </Grid>
           </Grid>
 
             <Grid container item md={12} xs={12} className={classes.form}>

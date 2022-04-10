@@ -6,7 +6,7 @@ import { loadCustomerById, getAddress as getAddressAction, updateCustomerRequest
 import { CustomerInterface } from '../../../store/ducks/customers/types';
 import { createUserRequest as createUserAction } from '../../../store/ducks/users/actions';
 import { UserInterface } from '../../../store/ducks/users/types';
-import { SearchOutlined, Edit, CodeOutlined } from '@material-ui/icons';
+import { SearchOutlined, Edit, CodeOutlined, TrackChangesTwoTone } from '@material-ui/icons';
 import { useHistory, RouteComponentProps } from 'react-router-dom';
 import {
   Button,
@@ -105,8 +105,6 @@ export default function CustomerForm(props: RouteComponentProps<IPageParams>) {
     city:false,
     state: false,
     email:false,
-    phone:false
-
   });
   const States = [
     {id:1,name:"São Paulo",sigla:'SP'},
@@ -151,13 +149,14 @@ export default function CustomerForm(props: RouteComponentProps<IPageParams>) {
       complement: '',
     },
     email: '',
-    phones: {
-      number: '',
+    phones: [{
+      cellphone: '',
+      phone:'',
       telegram: false,
       whatsapp: false,
-    },
-    cellphone: '',
-    phone:'',
+    }],
+    // cellphone: '',
+    // phone:'',
     responsible_user:'',
     active: true,
 
@@ -185,7 +184,7 @@ export default function CustomerForm(props: RouteComponentProps<IPageParams>) {
   useEffect(() => {
     if (params.id) {
       if(params.mode === "view"){
-        setCanEdit(false)
+        setCanEdit(!canEdit)
       }
 
         const uf = States.find(uf => uf.sigla === customerState.data.address.state) || null;
@@ -202,11 +201,11 @@ export default function CustomerForm(props: RouteComponentProps<IPageParams>) {
         });
         setInputPhone(prev =>({
           ...prev,
-          value:customerState.data.phone || ''
+          value:customerState.data.phones[0]?.phone || ''
         }));
         setInputCellPhone(prev =>({
           ...prev,
-          value:customerState.data.cellphone || ''
+          value:customerState.data.phones[0]?.cellphone || ''
         }));
 
       setFieldValidations({
@@ -220,7 +219,8 @@ export default function CustomerForm(props: RouteComponentProps<IPageParams>) {
         city:true,
         state:true,
         email:true,
-        phone:true
+        // phone:true,
+        // cellphone: true,
        })
 
     }
@@ -261,9 +261,11 @@ export default function CustomerForm(props: RouteComponentProps<IPageParams>) {
     }));
   }, [customerState.data?.address]);
 
-  useEffect(() => {
-    if (customerState.success && customerState.data?._id && !customerState.isRegistrationCompleted) history.push('/customer');
-  }, [customerState.success])
+
+  // useEffect QUEBRADO!!!!
+  // useEffect(() => {
+  //   if (customerState.success && customerState.data?._id && !customerState.isRegistrationCompleted) history.push('/customer');
+  // }, [customerState.success])
 
 
   useEffect(() => {
@@ -290,7 +292,6 @@ export default function CustomerForm(props: RouteComponentProps<IPageParams>) {
 
   useEffect(() => {
     const field = customerState.errorCep ? 'input-postal-code' : 'input-address-number';
-    console.log(customerState.errorCep);
 
 
     customerState.errorCep && setState(prevState => ({
@@ -309,15 +310,22 @@ export default function CustomerForm(props: RouteComponentProps<IPageParams>) {
   }, [customerState.errorCep]);
 
   const handleSaveFormCustomer = useCallback(() => {
-    console.log(fieldsValidation);
 
-    if (!fieldsValidation.name || !fieldsValidation.social_name  || !fieldsValidation.fiscal_number || !fieldsValidation.responsible_user ||
-      !fieldsValidation.phone || !fieldsValidation.email || !fieldsValidation.phone || !fieldsValidation.postal_code  || !fieldsValidation.street ) {
-      toast.error('Existem campos que precisam ser preenchidos para continuar');
-      return;
-    }
-    else if (params.id && ModifiCondition() ) {
 
+    // if (!fieldsValidation.name || !fieldsValidation.social_name  || !fieldsValidation.fiscal_number || !fieldsValidation.responsible_user ||
+    //   !fieldsValidation.phone || !fieldsValidation.email || !fieldsValidation.phone || !fieldsValidation.postal_code  || !fieldsValidation.street ) {
+    //   toast.error('Existem campos que precisam ser preenchidos para continuar');
+    //   return;
+    // }
+    // else if (params.id && ModifiCondition() ) {
+    //
+    //   dispatch(updateCustomerRequest(state));
+    //
+    // }else{
+    //   dispatch(createCustomerRequest(state));
+    //
+    // }
+    if (params.id && ModifiCondition() ) {
       dispatch(updateCustomerRequest(state));
 
     }else{
@@ -345,13 +353,12 @@ export default function CustomerForm(props: RouteComponentProps<IPageParams>) {
    }, [state])
 
 
-
   ///////// Validação ////////////////
 
   const validatePhone = () => {
 
-    if ( state.phone){
-      const landline =  state.phone.replace('(','').replace(')','9').replace(' ','').replace(' ','').replace('-','');
+    if (state.phones[0]?.phone){
+      const landline =  state.phones[0]?.phone.replace('(','').replace(')','9').replace(' ','').replace(' ','').replace('-','');
 
      isValidPhoneNumber = validator.isMobilePhone(landline, 'pt-BR');
 
@@ -463,7 +470,7 @@ export default function CustomerForm(props: RouteComponentProps<IPageParams>) {
             <FormTitle>Cadastro de Cliente</FormTitle>
 
             {(params.id && params.mode == 'view' && !canEdit)&& (
-              <Button style={{ marginTop: -20, marginLeft: 15, color: '#0899BA' }} onClick={() => setCanEdit(!canEdit)}>
+              <Button style={{ marginTop: -20, marginLeft: 15, color: '#0899BA' }} onClick={() => setCanEdit(true)}>
                 <Edit style={{ marginRight: 5, width: 18 }} />
               Editar
               </Button>
@@ -493,7 +500,7 @@ export default function CustomerForm(props: RouteComponentProps<IPageParams>) {
                   <Grid item md={7} xs={12}>
                     <TextField
                       id="input-social-name"
-                      label="Nome Social"
+                      label="Razão Social"
                       variant="outlined"
                       size="small"
 
@@ -562,7 +569,7 @@ export default function CustomerForm(props: RouteComponentProps<IPageParams>) {
                         setState({ ...state, address: { ...state.address, postal_code: element.target.value } })
                         setFieldValidations((prevState: any) => ({ ...prevState, postal_code: !validator.isEmpty(element.target.value) }));
                       }}
-                     onBlur={getAddress}
+                      onBlur={getAddress}
                     >
                       {(inputProps: Props) => (
                         <OutlinedInputFiled
@@ -717,13 +724,21 @@ export default function CustomerForm(props: RouteComponentProps<IPageParams>) {
               <Grid item md={4} xs={12}>
                 <InputMask
                   mask="(99) 9999-9999"
-                  value={state.phone}
+                  value={state.phone? state.phone : state.phones[0]?.phone}
                   disabled={!canEdit}
                   onChange={(element) =>{
-                    setState({...state,phone:element.target.value})
+                    {setState(prevState => ({
+                      ...prevState,
+                      phone: element.target.value,
+                      phones: [
+                        {
+                        ...prevState.phones[0],
+                        phone : element.target.value
+                        }
+                    ]
+                    }))
                     setFieldValidations((prevState: any) => ({ ...prevState, phone: !validator.isEmpty(element.target.value) }));
-                  }
-                  }
+                  }}}
                   onBlur={validatePhone}
                     // onBlur={(element)=>{
                     //   setFieldValidations((prevState: any) => ({ ...prevState, phone: !validator.isEmpty(element.target.value) }));}}
@@ -737,14 +752,14 @@ export default function CustomerForm(props: RouteComponentProps<IPageParams>) {
                       variant="outlined"
                       size="small"
                       placeholder="(00) 0000-0000"
-                      error ={!validatePhone() && state.phone != ''}
+                      error ={!validatePhone() && state.phones[0].phone != ''}
 
                       fullWidth
 
                     />
                   )}
                 </InputMask>
-                {!validatePhone() && state.phone &&(
+                {!validatePhone() && state.phones[0].phone &&(
                       <p style={{ color: '#f44336', margin:'-10px 5px 10px' }}>
                        Por favor insira um número válido
                       </p>
@@ -770,10 +785,22 @@ export default function CustomerForm(props: RouteComponentProps<IPageParams>) {
                   <InputMask
                     mask="(99) 9 9999-9999"
                     disabled={!canEdit}
-                    value={inputCellPhone.value}
+                    value={state.cellphone? state.cellphone : state.phones[0]?.cellphone }
                     onBlur={validateCellPhone}
-                    onChange={(element) => setInputCellPhone({ ...inputCellPhone, value: element.target.value })}
-
+                    onChange={(element) =>{
+                      {setState(prevState => ({
+                        ...prevState,
+                        cellphone: element.target.value,
+                        phones: [
+                          {
+                          ...prevState.phones[0],
+                          cellphone : element.target.value
+                          }
+                      ]
+                      }))
+                      setFieldValidations((prevState: any) => ({ ...prevState, phone: !validator.isEmpty(element.target.value) }));
+                      // setInputCellPhone({...inputCellPhone, value: element.target.value})
+                    }}}
                   >
                     {(inputProps: any) => (
                       <TextField
@@ -784,13 +811,13 @@ export default function CustomerForm(props: RouteComponentProps<IPageParams>) {
                         variant="outlined"
                         size="small"
                         placeholder="(00) 0 0000-0000"
-                        error ={!validateCellPhone() && state.cellphone != ''}
+                        error ={!validateCellPhone() && state.phones[0]?.cellphone != ''}
                         fullWidth
 
                       />
                     )}
                   </InputMask>
-                  {!validateCellPhone() && state.cellphone &&(
+                  {!validateCellPhone() && state.phones[0]?.cellphone &&(
                       <p style={{ color: '#f44336', margin: '4px 4px' }}>
                        Por favor insira um número válido
                       </p>

@@ -2,7 +2,12 @@ import { put, call } from "redux-saga/effects";
 import { toast } from "react-toastify";
 import { AxiosResponse } from "axios";
 
-import { apiSollar, viacep, googleMaps } from "../../../services/axios";
+import {
+  apiSollar,
+  viacep,
+  googleMaps,
+  apiIntegra,
+} from "../../../services/axios";
 import LOCALSTORAGE from "../../../helpers/constants/localStorage";
 import {
   loadSuccess,
@@ -24,19 +29,30 @@ import {
 import { ViacepDataInterface } from "./types";
 
 import { getGeolocation } from "../__globalReducer/saga";
+import SESSIONSTORAGE from "../../../helpers/constants/sessionStorage";
 
 const token = localStorage.getItem("token");
 
 export function* get({ payload }: any) {
-  const { params } = payload;
-
   try {
-    const response: AxiosResponse = yield call(
+    const { params } = payload;
+    let response: AxiosResponse;
+    const integration = sessionStorage.getItem(SESSIONSTORAGE.INTEGRATION);
+
+    // if (integration) {
+    //   const company = localStorage.getItem(LOCALSTORAGE.INTEGRATION_COMPANY_SELECTED)
+    //   response = yield call(
+    //     apiIntegra(integration),
+    //     `/user/getUserByCompany/${company}?limit=${params.limit ?? 10}&page=${params.page || 1}`
+    //   );
+    // } else {
+    response = yield call(
       apiSollar.get,
       `/user?limit=${params.limit ?? 10}&page=${params.page || 1}${
         params.search ? "&search=" + params.search : ""
       }${params.profession_id ? "&profession_id=" + params.profession_id : ""}`
     );
+    // }
     yield put(loadSuccess(response.data));
   } catch (error) {
     toast.error("Não foi possível atualizar os dados do usuario");
@@ -44,12 +60,20 @@ export function* get({ payload }: any) {
   }
 }
 
-export function* getUserById({ payload: { id: _id } }: any) {
+export function* getUserById({ payload: { id: _id, page: page } }: any) {
   try {
-    const response: AxiosResponse = yield call(apiSollar.get, `/user`, {
+    let response: AxiosResponse;
+    const integration = sessionStorage.getItem(SESSIONSTORAGE.INTEGRATION);
+
+    // if (integration && !(page === 'sidebar' || page === 'userconfiguration')) {
+    //   response = yield call(apiIntegra(integration), `/user/${_id}`, {});
+    // } else {
+    response = yield call(apiSollar.get, `/user`, {
       headers: { token },
       params: { _id },
     });
+    // }
+
     yield put(loadSuccessGetUserById(response.data));
   } catch (error) {
     yield put(loadFailure());
@@ -91,28 +115,28 @@ export function* loadGetUserDisengaged({ payload }: any) {
 }
 
 export async function* registerUser({ payload: { data } }: any) {
-  const phones = [];
+  // const phones = [];
 
-  if (data.phone.length > 0) {
-    phones.push({
-      whatsapp: false,
-      telegram: false,
-      number: data.phone,
-    });
-  }
+  // if (data.phone.length > 0) {
+  //   phones.push({
+  //     whatsapp: false,
+  //     telegram: false,
+  //     number: data.phone,
+  //   });
+  // }
 
-  if (data.cellphone.length > 0) {
-    phones.push({
-      whatsapp: false,
-      telegram: false,
-      number: data.cellphone,
-    });
-  }
+  // if (data.cellphone.length > 0) {
+  //   phones.push({
+  //     whatsapp: false,
+  //     telegram: false,
+  //     number: data.cellphone,
+  //   });
+  // }
 
   data.username = data.email;
   data.password = data.fiscal_number;
 
-  data.phones = phones;
+  // data.phones = phones;
 
   data.user_type_id = { _id: "5fc05d1803058800244bc41b" };
 
@@ -125,10 +149,8 @@ export async function* registerUser({ payload: { data } }: any) {
       );
 
       if (googleAddressData.results) {
-        const {
-          lat: latitude,
-          lng: longitude,
-        } = googleAddressData.results[0].geometry.location;
+        const { lat: latitude, lng: longitude } =
+          googleAddressData.results[0].geometry.location;
         data.address.geolocation = { latitude, longitude };
       }
     } catch (e) {
@@ -152,24 +174,23 @@ export async function* registerUser({ payload: { data } }: any) {
 }
 
 export function* createUser({ payload: { data } }: any) {
-  console.log(data);
-  const phones = [];
+  // const phones = [];
 
-  if (data.phone.length > 0) {
-    phones.push({
-      whatsapp: false,
-      telegram: false,
-      number: data.phone,
-    });
-  }
+  // if (data.phone.length > 0) {
+  //   phones.push({
+  //     whatsapp: false,
+  //     telegram: false,
+  //     number: data.phone,
+  //   });
+  // }
 
-  if (data.cellphone.length > 0) {
-    phones.push({
-      whatsapp: false,
-      telegram: false,
-      number: data.cellphone,
-    });
-  }
+  // if (data.cellphone.length > 0) {
+  //   phones.push({
+  //     whatsapp: false,
+  //     telegram: false,
+  //     number: data.cellphone,
+  //   });
+  // }
 
   data.username = data.email;
   data.fiscal_number = data.fiscal_number
@@ -182,7 +203,7 @@ export function* createUser({ payload: { data } }: any) {
   //   .replaceAll("-", "");
 
   data.password = data.password;
-  data.phones = phones;
+  // data.phones = phones;
 
   try {
     const response: AxiosResponse = yield call(
@@ -195,7 +216,6 @@ export function* createUser({ payload: { data } }: any) {
     yield put(createUserSuccess(response.data));
     toast.success("Usuário cadastrado com sucesso!");
   } catch (e) {
-    console.log("e", e);
     toast.error("Não foi possível cadastrar o usuário");
     yield put(loadFailure());
   }
@@ -204,25 +224,25 @@ export function* createUser({ payload: { data } }: any) {
 export function* updateUser({ payload: { data } }: any) {
   const { _id } = data;
 
-  const phones = [];
+  // const phones = [];
 
-  if (data?.phone?.length > 0) {
-    phones.push({
-      whatsapp: false,
-      telegram: false,
-      number: data.phone,
-    });
-  }
+  // if (data?.phone) {
+  //   phones.push({
+  //     whatsapp: false,
+  //     telegram: false,
+  //     number: data.phone,
+  //   });
+  // }
 
-  if (data?.cellphone?.length > 0) {
-    phones.push({
-      whatsapp: false,
-      telegram: false,
-      number: data.cellphone,
-    });
-  }
+  // if (data?.cellphone) {
+  //   phones.push({
+  //     whatsapp: false,
+  //     telegram: false,
+  //     cellnumber: data.cellphone,
+  //   });
+  // }
 
-  data.phones = phones;
+  // data.phones = phones;
 
   delete data.phone;
   delete data.cellphone;
@@ -236,10 +256,8 @@ export function* updateUser({ payload: { data } }: any) {
       );
 
       if (googleAddressData.results) {
-        const {
-          lat: latitude,
-          lng: longitude,
-        } = googleAddressData.results[0].geometry.location;
+        const { lat: latitude, lng: longitude } =
+          googleAddressData.results[0].geometry.location;
         data.address.geolocation = { latitude, longitude };
       }
     } catch (e) {
@@ -255,12 +273,26 @@ export function* updateUser({ payload: { data } }: any) {
       { headers: { token } }
     );
 
-    console.log(response.data);
-
     toast.success("Usuário atualizado com sucesso!");
     yield put(updateUserSuccess(response.data));
   } catch (error) {
     toast.error("Não foi possível atualizar os dados do usuario");
+    yield put(loadFailure());
+  }
+}
+
+export function* updateUserPassword({ payload: { data } }: any) {
+  try {
+    const response: AxiosResponse = yield call(
+      apiSollar.patch,
+      `/user/updatepassword`,
+      { ...data },
+      { headers: { token } }
+    );
+
+    yield put(updateUserSuccess(response.data));
+  } catch (error) {
+    // toast.error("Não foi possível atualizar os dados do usuario");
     yield put(loadFailure());
   }
 }
@@ -288,7 +320,6 @@ export function* getProfessions() {
     const response: AxiosResponse = yield call(apiSollar.get, `/profession`, {
       headers: { token },
     });
-    console.log(response);
 
     yield put(loadProfessionsSuccess(response.data));
   } catch (error) {
@@ -324,6 +355,7 @@ export function* searchUserDisengaged({ payload: { value } }: any) {
     yield put(loadFailure());
   }
 }
+
 export function* getUserTypes({ payload: { value } }: any) {
   try {
     const response: AxiosResponse = yield call(
@@ -343,12 +375,12 @@ export function* checkEmail({ payload: { token } }: any) {
       apiSollar.get,
       `/email?token=${token}`
     );
-    console.log(response.data);
     yield put(loadCheckSuccess(response.data));
   } catch (error) {
     yield put(loadFailure());
   }
 }
+
 export function* recoveryPassword({ payload: { data } }: any) {
   localStorage.removeItem(LOCALSTORAGE.TOKEN);
   localStorage.removeItem(LOCALSTORAGE.USERNAME);
@@ -362,12 +394,12 @@ export function* recoveryPassword({ payload: { data } }: any) {
       `/users/recoverypassword`,
       { ...data }
     );
-    console.log(response.data);
     yield put(loadRecoverySuccess(response.data));
   } catch (error) {
     yield put(loadFailure());
   }
 }
+
 export function* recoverypasswordiftoken({ payload: { data } }: any) {
   try {
     const response: AxiosResponse = yield call(
@@ -375,20 +407,50 @@ export function* recoverypasswordiftoken({ payload: { data } }: any) {
       `/users/recoverypasswordiftoken`,
       { ...data }
     );
-    console.log(response.data);
+    if (response.data.value === "senha atualizada") {
+      toast.success("Senha atualizada.");
+    } else {
+      toast.error("Senha antiga errada.");
+    }
     yield put(loadRecoverySuccess(response.data));
   } catch (error) {
     yield put(loadFailure());
   }
 }
+
 export function* loadConfirmUser({ payload: { token } }: any) {
   try {
     const response: AxiosResponse = yield call(
       apiSollar.get,
       `/user/confirm?token=${token}`
     );
-    console.log(response.data);
     yield put(loadSuccessConfirm(response.data));
+  } catch (error) {
+    yield put(loadFailure());
+  }
+}
+
+export function* getByClient({ payload }: any) {
+  try {
+    const { params } = payload;
+    let response: AxiosResponse;
+    const integration = sessionStorage.getItem(SESSIONSTORAGE.INTEGRATION);
+
+    // if (integration) {
+    //   response = yield call(
+    //     apiIntegra(integration),
+    //     `/user?limit=${params.limit ?? 10}&page=${params.page || 1}`
+    //   );
+    // } else {
+    response = yield call(
+      apiSollar.get,
+      `/user/getByClient?limit=${params.limit ?? 10}&page=${params.page || 1}${
+        params.search ? "&search=" + params.search : ""
+      }${params.profession_id ? "&profession_id=" + params.profession_id : ""}`
+    );
+    // }
+
+    yield put(loadSuccess(response.data));
   } catch (error) {
     yield put(loadFailure());
   }

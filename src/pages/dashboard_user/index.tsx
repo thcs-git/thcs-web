@@ -29,6 +29,7 @@ export default function Dashboard_user() {
   const [firstCall, setFirstcall] = useState(false);
   const [state, setState] = useState<UserInterface>({
     companies: [],
+    companies_links: [],
     name: "",
     birthdate: "",
     gender: "",
@@ -46,6 +47,12 @@ export default function Dashboard_user() {
       state: "",
       complement: "",
     },
+    phones: [{
+      cellnumber: "",
+      number: "",
+      telegram: false,
+      whatsapp: false,
+    }],
     email: "",
     phone: "",
     cellphone: "",
@@ -81,7 +88,7 @@ export default function Dashboard_user() {
   useEffect(() => {
     dispatch(cleanAction());
     if (user?.id) {
-      dispatch(loadUserById(user.id));
+      dispatch(loadUserById(user.id, ''));
     }
   }, [user]);
 
@@ -152,7 +159,7 @@ export default function Dashboard_user() {
         </>
       ) : (
         <>
-          <Sidebar_menu>
+          <Sidebar>
             <Container>
               <Title>Dashboard User (Desvinculado)</Title>
               <InfoSection>
@@ -172,7 +179,7 @@ export default function Dashboard_user() {
 
               </InfoSection>
             </Container>
-          </Sidebar_menu>
+          </Sidebar>
         </>
       )}
     </>

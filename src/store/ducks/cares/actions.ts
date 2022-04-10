@@ -7,6 +7,9 @@ import {
   DocumentInterface,
   HealthInsuranceInterface,
   HealthPlanInterface,
+  ReleaseReasonInterface,
+  ReleaseReferralInterface,
+  IFilterReport,
 } from "./types";
 
 export const loadRequest = (params: LoadRequestParams = {}) =>
@@ -27,6 +30,15 @@ export const updateCareRequest = (data: CareInterface) =>
 export const updateCareSuccess = (data: CareInterface) =>
   action(CareTypes.UPDATE_CARE_SUCCESS, { data });
 
+export const transferCareRequest = (data: CareInterface) =>
+  action(CareTypes.TRANSFER_CARE_REQUEST, { data });
+export const transferCareSuccess = (data: CareInterface) =>
+  action(CareTypes.TRANSFER_CARE_SUCCESS, { data });
+
+export const deleteCareRequest = (id: string) =>
+  action(CareTypes.DELETE_CARE_REQUEST, { id });
+export const deleteCareSuccess = () => action(CareTypes.DELETE_CARE_SUCCESS);
+
 export const loadCareById = (id: string) =>
   action(CareTypes.LOAD_REQUEST_CARE_BY_ID, { id });
 export const loadSuccessGetCareById = (data: CareInterface) =>
@@ -36,6 +48,12 @@ export const searchCareRequest = (params: any) =>
   action(CareTypes.SEARCH_CARE_REQUEST, { params });
 export const searchCareSuccess = (data: CareInterface) =>
   action(CareTypes.SEARCH_CARE_SUCCESS, { data });
+
+export const loadRequestPopUp = (params: LoadRequestParams = {}) =>
+  action(CareTypes.LOAD_PATIENT_REQUEST, { params });
+
+export const searchPatientSuccess = (data: CareInterface) =>
+  action(CareTypes.SEARCH_PATIENT_SUCCESS, { data });
 
 /**
  * Documento Socioambiental
@@ -170,10 +188,29 @@ export const careTypeSuccess = (data: HealthPlanInterface) =>
 /**
  * CID
  */
+export const cidAllRequest = () => action(CareTypes.LOAD_CID_REQUEST);
 export const cidRequest = (cid: string) =>
   action(CareTypes.SEARCH_CID_REQUEST, { cid });
 export const cidSuccess = (data: HealthPlanInterface) =>
   action(CareTypes.SEARCH_CID_SUCCESS, { data });
+
+/**
+ * Release Reasons
+ */
+
+export const releaseReasonRequest = () =>
+  action(CareTypes.LOAD_RELEASE_REASON_REQUEST);
+export const releaseReasonSuccess = (data: ReleaseReasonInterface) =>
+  action(CareTypes.RELEASE_REASON_SUCCESS, { data });
+
+/**
+ * Release Referral
+ */
+
+export const releaseReferralRequest = () =>
+  action(CareTypes.LOAD_RELEASE_REFERRAL_REQUEST);
+export const releaseReferralSuccess = (data: ReleaseReferralInterface) =>
+  action(CareTypes.RELEASE_REFERRAL_SUCCESS, { data });
 
 /**
  * Document
@@ -182,6 +219,14 @@ export const loadDocumentRequest = (id: string) =>
   action(CareTypes.LOAD_DOCUMENT_REQUEST, { id });
 export const loadDocumentSuccess = (data: any) =>
   action(CareTypes.LOAD_DOCUMENT_SUCCESS, { data });
+
+/**
+ * History
+ */
+export const loadHistoryRequest = (id: string, type: string) =>
+  action(CareTypes.LOAD_HISTORY_REQUEST, { id, type });
+export const loadHistorySuccess = (data: any) =>
+  action(CareTypes.LOAD_HISTORY_SUCCESS, { data });
 
 /**
  * Schedule
@@ -205,3 +250,85 @@ export const deleteScheduleRequest = (id: string, type?: string) =>
   action(CareTypes.DELETE_SCHEDULE_REQUEST, { id, type });
 export const deleteScheduleSuccess = (data: any) =>
   action(CareTypes.DELETE_SCHEDULE_SUCCESS, { data });
+
+/**
+ * Measurement
+ */
+export const loadMeasurementFilterRequest = (data: IFilterReport) =>
+    action(CareTypes.LOAD_MEASUREMENT_FILTER_REQUEST, data);
+export const loadMeasurementFilterSuccess = (data: IFilterReport) =>
+    action(CareTypes.LOAD_MEASUREMENT_FILTER_SUCCESS, data);
+
+/**
+ * Allergy
+ */
+export const loadAllergyFilterRequest = (data: IFilterReport) =>
+    action(CareTypes.LOAD_ALLERGY_FILTER_REQUEST, data);
+export const loadAllergyFilterSuccess = (data: IFilterReport) =>
+    action(CareTypes.LOAD_ALLERGY_FILTER_SUCCESS, data);
+
+
+/**
+ * Adverse Event
+ */
+export const loadAdverseEventFilterRequest = (data: IFilterReport) =>
+    action(CareTypes.LOAD_ADVERSE_EVENT_FILTER_REQUEST, data);
+export const loadAdverseEventFilterSuccess = (data: IFilterReport) =>
+    action(CareTypes.LOAD_ADVERSE_EVENT_FILTER_SUCCESS, data);
+
+
+/**
+ * evolution
+ */
+
+export const loadEvolutionRequest = (id: any) =>
+  action(CareTypes.LOAD_EVOLUTION_REQUEST, id);
+
+export const loadEvolutionSuccess = (data: any) =>
+  action(CareTypes.LOAD_EVOLUTION_SUCCESS, data);
+
+export const loadEvolutionFailure = () =>
+  action(CareTypes.LOAD_EVOLUTION_FAILURE);
+
+export const loadEvolutionFilterRequest = (data: IFilterReport) =>
+  action(CareTypes.LOAD_EVOLUTION_FILTER_REQUEST, data);
+export const loadEvolutionFilterSuccess = (data: IFilterReport) =>
+  action(CareTypes.LOAD_EVOLUTION_FILTER_SUCCESS, data);
+
+export const loadEvolutionReportRequest = (id: any) =>
+  action(CareTypes.LOAD_EVOLUTION_REPORT_REQUEST, id);
+
+export const loadEvolutionReportSuccess = (data: any) =>
+  action(CareTypes.LOAD_EVOLUTION_REPORT_SUCCESS, data);
+
+export const loadEvolutionReportFailure = () =>
+  action(CareTypes.LOAD_EVOLUTION_REPORT_FAILURE);
+
+/**
+ * check-in/out
+ */
+
+export const loadCheckinRequest = (id: any) =>
+  action(CareTypes.LOAD_CHECKIN_REQUEST, id);
+
+export const loadCheckinSuccess = (data: any) =>
+  action(CareTypes.LOAD_CHECKIN_SUCCESS, data);
+
+export const loadCheckinFailure = () => action(CareTypes.LOAD_CHECKIN_FAILURE);
+
+export const loadCheckinFilterRequest = (data: IFilterReport) =>
+  action(CareTypes.LOAD_CHECKIN_FILTER_REQUEST, data);
+export const loadCheckinFilterSuccess = (data: IFilterReport) =>
+  action(CareTypes.LOAD_CHECKIN_FILTER_SUCCESS, data);
+/**
+ * check-in/out report
+ */
+
+export const loadCheckinReportRequest = (id: any) =>
+  action(CareTypes.LOAD_CHECKIN_REPORT_REQUEST, id);
+
+export const loadCheckinReportSuccess = (data: any) =>
+  action(CareTypes.LOAD_CHECKIN_REPORT_SUCCESS, data);
+
+export const loadCheckinReportFailure = () =>
+  action(CareTypes.LOAD_CHECKIN_REPORT_FAILURE);

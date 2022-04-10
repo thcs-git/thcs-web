@@ -19,6 +19,7 @@ import CompanyForm from '../pages/company/form';
 
 import CustomerList from '../pages/customer/list';
 import CustomerForm from '../pages/customer/form';
+import ClientForm from '../pages/client/form'
 
 import SpecialtyList from '../pages/specialty/list';
 import SpecialtyForm from '../pages/specialty/form';
@@ -32,8 +33,11 @@ import AreaForm from '../pages/area/form';
 import UserList from '../pages/user/list';
 import UserForm from '../pages/user/form';
 
+import UserClientList from '../pages/userclient/list/index';
+import UserClientForm from '../pages/userclient/form/index';
 import UserDisengaged from '../pages/user_disengaged/list/index';
 import UserConfiguration from '../pages/userconfiguration/form/index';
+import ClientConfiguration from '../pages/clientconfiguration/form/index';
 import PatientList from '../pages/patient/list';
 import PatientForm from '../pages/patient/form';
 import PatientCaptureCreate from '../pages/patient/capture/form';
@@ -69,20 +73,23 @@ const Routes = () => (
       <Route path="/register" component={RegisterForm} />
       <Route path="/:email/confirmemail" component={ConfirmEmail} />
       <Route path="/confirmemail/:token" component={VerifyEmail} />
-      <Route path="/:token/recoverypass" component={RecoveryPassword}/>
+      <Route path="/recoverypass/:token" component={RecoveryPassword}/>
       <Route path="/forgotpassword" component={ForgotPassword}/>
 
-      <PrivateRoute path="/userconfiguration" component={UserConfiguration} />
       <PrivateRoute path="/recoverypassmenu" component={RecoveryPassMenu} />
       <PrivateRoute path="/" component={Dashboard} exact />
       <PrivateRoute path="/dashboard_user" component={Dashboard_user} exact />
       <PrivateRoute path="/dashboard" component={Dashboard} />
 
+      {/* Configuration */}
+      <PrivateRoute path="/userconfiguration" component={UserConfiguration} />
+      <PrivateRoute path="/clientconfiguration" component={ClientConfiguration} />
 
       {/* Clientes */}
       <PrivateRoute path="/customer" component={CustomerList} exact />
       <PrivateRoute path="/customer/:id/:mode/edit" component={CustomerForm} />
       <PrivateRoute path="/customer/create" component={CustomerForm} />
+      <PrivateRoute path="/client/:id/:mode" component={ClientForm} />
 
       {/* Empresas */}
       <PrivateRoute path="/company" component={CompanyList} exact />
@@ -110,14 +117,16 @@ const Routes = () => (
       <PrivateRoute path="/user/:id/:mode/edit" component={UserForm} />
       <PrivateRoute path="/user/:mode/create" component={UserForm} />
       <PrivateRoute path="/userdesengaged" component={UserDisengaged} />
+      <PrivateRoute path="/userclient" component={UserClientList} exact/>
+      <PrivateRoute path="/userclient/:id/:mode/:callback" component={UserClientForm} />
+      <PrivateRoute path="/userclient/:id/:mode" component={UserClientForm} />
 
 
       {/* Patient */}
-      <PrivateRoute path="/patient" component={PatientList} exact />
-      <PrivateRoute path="/patient/:id/:mode/edit" component={PatientForm} />
-      <PrivateRoute path="/patient/create" component={PatientForm} />
       <PrivateRoute path="/patient/capture/create" component={PatientCaptureCreate} />
-      <PrivateRoute path="/patient/capture/:id/overview" component={PatientCaptureOverview} />
+      <PrivateRoute path="/patient/capture/:id/overview" component={PatientCaptureOverview}/>
+      <PrivateRoute path="/patient" component={PatientList} exact />
+      <PrivateRoute path="/patient/create" component={PatientForm} exact />
 
       <PrivateRoute path="/patient/capture/:id/nead" component={PatientCaptureNead} exact />
       <PrivateRoute path="/patient/capture/:id/nead/:documentId" component={PatientCaptureNead} />
@@ -127,6 +136,9 @@ const Routes = () => (
 
       <PrivateRoute path="/patient/capture/:id/socioambiental" component={PatientCaptureSocioAmbiental} exact />
       <PrivateRoute path="/patient/capture/:id/socioambiental/:documentId" component={PatientCaptureSocioAmbiental} />
+
+      <PrivateRoute path="/patient/:id/:mode/:callback/:callback_id" component={PatientForm} exact />
+      <PrivateRoute path="/patient/:id/:mode" component={PatientForm} />
 
       {/* Care */}
       <PrivateRoute path="/care" component={CareList} exact />

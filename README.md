@@ -54,3 +54,31 @@ CYPRESS_HOST=https://sollar-web.vercel.app (run tests in vercel ambient)
 CYPRESS_HOST=http://localhost:3000 (run tests in local development ambient)
 
 yarn run cypress run
+
+## Jira Smart Commit
+
+To use jira smart commit a commit must have the following pattern:
+
+`type ticket: description #time 0w 0d 0h 0m`
+
+Types are:
+
+1. feat(epic): Introduces a new feature
+2. fix(epic): Patches a bug
+3. hot-fix(epic): Emergency patches a bug
+4. style: Changes that do not affect the meaning of the code (white-space, formatting, missing semi-colons, etc)
+5. ci: Changes to our CI configuration files and scripts
+6. docs: Documentation only changes
+7. refactor: A code change that neither fixes a bug nor adds a feature
+8. test: Adding missing tests or correcting existing tests
+9. perf: A code change that improves performance
+10. revert: If the commit reverts a previous commit
+
+
+Functional Examples:
+
+`feat(login) SOLLAR-0: Adicionando página de login #time 2h 30m`
+
+`fix(perfil) SOLLAR-0: Adicionando a lógica de permissões #time 1d 4h 30m`
+
+`hot-fix(usuário) SOLLAR-0: Ajuste no título do banco de talentos #time 10m`

@@ -1,4 +1,5 @@
 import { PatientInterface } from "../patients/types";
+
 /**
  * Action types
  */
@@ -15,11 +16,20 @@ export enum CareTypes {
   UPDATE_CARE_REQUEST = "@care/UPDATE_CARE_REQUEST",
   UPDATE_CARE_SUCCESS = "@care/UPDATE_CARE_SUCCESS",
 
+  TRANSFER_CARE_REQUEST = "@care/TRANSFER_CARE_REQUEST",
+  TRANSFER_CARE_SUCCESS = "@care/TRANSFER_CARE_SUCCESS",
+
+  DELETE_CARE_REQUEST = "@care/DELETE_CARE_REQUEST",
+  DELETE_CARE_SUCCESS = "@care/DELETE_CARE_SUCCESS",
+
   LOAD_REQUEST_CARE_BY_ID = "@care/LOAD_REQUEST_CARE_BY_ID",
   LOAD_SUCCESS_CARE_BY_ID = "@care/LOAD_SUCCESS_CARE_BY_ID",
 
   SEARCH_CARE_REQUEST = "@care/SEARCH_CARE_REQUEST",
   SEARCH_CARE_SUCCESS = "@care/SEARCH_CARE_SUCCESS",
+
+  LOAD_PATIENT_REQUEST = "@care/LOAD_PATIENT_REQUEST",
+  SEARCH_PATIENT_SUCCESS = "@care/SEARCH_PATIENT_SUCCESS",
 
   // Documento Socioambiental
 
@@ -84,8 +94,17 @@ export enum CareTypes {
   CARE_TYPE_SUCCESS = "@care/CARE_TYPE_SUCCESS",
 
   // CID
+  LOAD_CID_REQUEST = "@care/LOAD_CID_REQUEST",
   SEARCH_CID_REQUEST = "@care/SEARCH_CID_REQUEST",
   SEARCH_CID_SUCCESS = "@care/SEARCH_CID_SUCCESS",
+
+  // Release Reason
+  LOAD_RELEASE_REASON_REQUEST = "@care/LOAD_RELEASE_REASON_REQUEST",
+  RELEASE_REASON_SUCCESS = "@care/RELEASE_REASON_SUCCESS",
+
+  // Release Referral
+  LOAD_RELEASE_REFERRAL_REQUEST = "@care/LOAD_RELEASE_REFERRAL_REQUEST",
+  RELEASE_REFERRAL_SUCCESS = "@care/RELEASE_REFERRAL_SUCCESS",
 
   // Document
   LOAD_DOCUMENT_REQUEST = "@care/LOAD_DOCUMENT_REQUEST",
@@ -103,14 +122,74 @@ export enum CareTypes {
 
   DELETE_SCHEDULE_REQUEST = "@care/DELETE_SCHEDULE_REQUEST",
   DELETE_SCHEDULE_SUCCESS = "@care/DELETE_SCHEDULE_SUCCESS",
+
+  LOAD_HISTORY_REQUEST = "@care/LOAD_HISTORY_REQUEST",
+  LOAD_HISTORY_SUCCESS = "@care/LOAD_HISTORY_SUCCESS",
+
+  // Allergy
+  LOAD_ALLERGY_FILTER_REQUEST = "@care/LOAD_ALLERGY_FILTER_REQUEST",
+  LOAD_ALLERGY_FILTER_SUCCESS = "@care/LOAD_ALLERGY_FILTER_SUCCESS",
+
+  // Adverse Event
+  LOAD_ADVERSE_EVENT_FILTER_REQUEST = "@care/LOAD_ADVERSE_EVENT_FILTER_REQUEST",
+  LOAD_ADVERSE_EVENT_FILTER_SUCCESS = "@care/LOAD_ADVERSE_EVENT_FILTER_SUCCESS",
+
+  // Measurement
+  LOAD_MEASUREMENT_FILTER_REQUEST = "@care/LOAD_MEASUREMENT_FILTER_REQUEST",
+  LOAD_MEASUREMENT_FILTER_SUCCESS = "@care/LOAD_MEASUREMENT_FILTER_SUCCESS",
+
+  // evolution
+
+  LOAD_EVOLUTION_REQUEST = "@care/LOAD_EVOLUTION_REQUEST",
+  LOAD_EVOLUTION_SUCCESS = "@care/LOAD_EVOLUTION_SUCCESS",
+  LOAD_EVOLUTION_FAILURE = "@care/LOAD_EVOLUTION_FAILURE",
+
+  LOAD_EVOLUTION_FILTER_REQUEST = "@care/LOAD_EVOLUTION_FILTER_REQUEST",
+  LOAD_EVOLUTION_FILTER_SUCCESS = "@care/LOAD_EVOLUTION_FILTER_SUCCESS",
+
+  LOAD_EVOLUTION_REPORT_REQUEST = "@care/LOAD_EVOLUTION_REPORT_REQUEST",
+  LOAD_EVOLUTION_REPORT_SUCCESS = "@care/LOAD_EVOLUTION_REPORT_SUCCESS",
+  LOAD_EVOLUTION_REPORT_FAILURE = "@care/LOAD_EVOLUTION_REPORT_FAILURE",
+
+  // check-in/out
+
+  LOAD_CHECKIN_REQUEST = "@care/LOAD_CHECKIN_REQUEST",
+  LOAD_CHECKIN_SUCCESS = "@care/LOAD_CHECKIN_SUCCESS",
+  LOAD_CHECKIN_FAILURE = "@care/LOAD_CHECKIN_FAILURE",
+
+  // check-in/out report
+  LOAD_CHECKIN_REPORT_REQUEST = "@care/LOAD_CHECKIN_REPORT_REQUEST",
+  LOAD_CHECKIN_REPORT_SUCCESS = "@care/LOAD_CHECKIN_REPORT_SUCCESS",
+  LOAD_CHECKIN_REPORT_FAILURE = "@care/LOAD_CHECKIN_REPORT_FAILURE",
+
+  LOAD_CHECKIN_FILTER_REQUEST = "@care/LOAD_CHECKIN_FILTER_REQUEST",
+  LOAD_CHECKIN_FILTER_SUCCESS = "@care/LOAD_CHECKIN_FILTER_SUCCESS",
 }
 
 /**
  * Data types
  */
-
+export interface IEvolution {
+  _id: string;
+  list: [
+    {
+      _id: string;
+      active: boolean;
+      attendance_id: string;
+      created_at: string;
+      created_by: any;
+      evolution: string;
+      type: string;
+    }
+  ];
+}
 export interface CareInterface {
+  transferred_from?: string;
+  death?: boolean;
+  tipo?: string;
+  speciality?: string;
   _id?: string;
+  name?: string;
   patient_id?: any; // *
   company_id?: any; // *
   health_insurance_id?: any;
@@ -121,19 +200,22 @@ export interface CareInterface {
   health_plan_card_validate?: string;
   origin_id?: string;
   accommodation_type_id?: string;
-  care_type_id?: string | CareTypeInterface;
+  care_type_id?: any;
   procedure_id?: string;
-  cid_id?: string | CidPopulateInterface;
+  // cid_id?: string | CidPopulateInterface;
+  cid_id?: any;
   area_id?: any;
   user_id?: string; // *
   status?: string; // * Pre-Atendimento, Em atendimento, Cancelado, Finalizado
+  mot_alta?: string;
   complexity?: string;
   started_at?: string;
   created_at?: string;
+  dt_alta?: string;
   created_by?: { _id: string };
   updated_at?: string;
   updated_by?: { _id: string };
-  documents_id?: Array<any>;
+  documents_id?: any[];
   capture?: {
     type?: string;
     order_number?: string;
@@ -147,7 +229,15 @@ export interface CareInterface {
     assistant_doctor?: string;
     sector?: string;
     bed?: string;
+    health_insurance_id?: string;
+    health_plan_id?: string;
+    health_sub_plan_id?: string;
   };
+  medical_release?: IMedicalReleaseData | null;
+  adm_release?: IAdmReleaseData | null;
+  medical_release_status?: boolean;
+  adm_release_status?: boolean;
+  qrCode?: string;
 }
 
 export interface CareList {
@@ -158,13 +248,26 @@ export interface CareList {
   search?: string;
   status?: string;
 }
-
+export interface ICheckins {
+  loading: boolean;
+  error: boolean;
+  success: boolean;
+  data: any;
+}
+export interface IEvolutionState {
+  data: IEvolution[];
+  loading: boolean;
+  success: boolean;
+  error: boolean;
+}
 /**
  * State type
  */
 export interface CareState {
   data: CareInterface;
   list: CareList;
+  list2: CareList;
+  history: CareList;
   loading: boolean;
   error: boolean;
   success: boolean;
@@ -174,6 +277,8 @@ export interface CareState {
   accommondation_type: HealthPlanInterface[];
   care_type: HealthPlanInterface[];
   cid: CidInterface[];
+  release_reason: ReleaseReasonInterface[];
+  release_referral: ReleaseReferralInterface[];
   documentGroupSocioAmbiental: DocumentGroupInterface;
   documentGroupAbemid: DocumentGroupInterface;
   documentSocioAmbiental: DocumentState;
@@ -182,6 +287,9 @@ export interface CareState {
   documentNead: DocumentState;
   document: any;
   schedule?: ScheduleInterface[];
+  evolution: IEvolutionState;
+  checkin: ICheckins;
+
   // document?: {
   //   document_group_id: DocumentGroupInterface
   // } & DocumentGroupInterface;
@@ -239,12 +347,27 @@ export interface CareTypeInterface {
   name: string;
   description: string;
 }
+
 export interface CidInterface {
   _id: string;
   name: string;
   cid: string;
   gender: string;
   active: boolean;
+}
+
+export interface ReleaseReasonInterface {
+  type?: string;
+  _id: string;
+  name: string;
+  active?: boolean;
+}
+
+export interface ReleaseReferralInterface {
+  cid?: boolean;
+  _id: string;
+  name: string;
+  active?: boolean;
 }
 
 export interface DocumentGroupInterface {
@@ -323,6 +446,7 @@ interface DocumentGroupData {
   _id: string;
   name: string;
 }
+
 export interface DocumentList {
   data?: DocumentInterface[];
   fields?: any[];
@@ -330,6 +454,7 @@ export interface DocumentList {
   page?: string;
   total?: number;
 }
+
 export interface DocumentState {
   data?: DocumentInterface;
   list?: DocumentInterface[];
@@ -353,4 +478,54 @@ export interface ICaptureData {
   status: string;
 }
 
-export type LoadRequestParams = Partial<Omit<CareList, "data">>;
+export interface IMedicalReleaseData {
+  release_at: string;
+  release_reason: {
+    type?: string;
+    _id: string;
+    name: string;
+  };
+  release_cid: {
+    _id: string;
+    name: string;
+  };
+  release_referral: {
+    _id: string;
+    name: string;
+  };
+  release_observation: string;
+  release_responsible: {
+    _id: string;
+    name: string;
+  };
+}
+
+export interface IAdmReleaseData {
+  release_at: string;
+  release_reason: {
+    _id: string;
+    name: string;
+  };
+  release_cid: {
+    _id: string;
+    name: string;
+  };
+  release_referral: string;
+  release_observation: string;
+  release_responsible: {
+    _id: string;
+    name: string;
+  };
+}
+
+export interface IFilterReport {
+  _id: string;
+  type: string;
+  name: string;
+  dataStart: any;
+  dataEnd: any;
+  reportType: string;
+  attendance_id: string;
+}
+
+export type LoadRequestParams = Partial<Omit<CareList | IFilterReport, "data">>;

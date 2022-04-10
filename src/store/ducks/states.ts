@@ -38,6 +38,32 @@ import { ProfessionState, ProfessionTypes } from "./professions/types";
 import { INITIAL_STATE as INITIAL_STATE_UNCONFIRMEDUSER } from "./unconfirmeduser";
 import { UnconfirmedUserState } from "./unconfirmeduser/types";
 
+import { INITIAL_STATE as INITIAL_STATE_LAYOUT } from "./layout";
+import { LayoutState, LayoutTypes } from "./layout/types";
+
+import { INITIAL_STATE as INITIAL_STATE_MESSAGE } from "./message";
+import { MessageState, MessageTypes } from "./message/types";
+
+import { INITIAL_STATE as INITIAL_STATE_ALLERGIES } from "./allergies";
+import { AllergiesState } from "./allergies/types";
+
+import { INITIAL_STATE as INITIAL_STATE_MEASUREMENTS } from "./measurements";
+import { MeasurementsState } from "./measurements/types";
+
+import { INITIAL_STATE as INITIAL_STATE_QR_CODE } from "./qrCode";
+import { QrCodeState } from "./qrCode/types";
+
+import { INITIAL_STATE as INITIAL_STATE_PRESCRIPTION } from "./prescripition";
+import { PrescriptionState } from "./prescripition/types";
+
+import { INITIAL_STATE as INITIAL_STATE_ANTIBIOTIC } from "./antibiotic";
+import { AntibioticState } from "./antibiotic/types";
+
+import { INITIAL_STATE as INITIAL_STATE_EXAMS } from "./exams";
+import { ExamsState } from "./exams/types";
+
+import { INITIAL_STATE as INITIAL_STATE_ATTEST } from "./attest";
+import { AttestState } from "./attest/types";
 /**
  * Initial state tree interface
  */
@@ -54,6 +80,15 @@ export interface IInitialState {
   patients: Readonly<PatientState>;
   users: Readonly<UserState>;
   profession: Readonly<ProfessionState>;
+  layout: Readonly<LayoutState>;
+  message: Readonly<MessageState>;
+  allergies: Readonly<AllergiesState>;
+  measurements: Readonly<MeasurementsState>;
+  qrCode: Readonly<QrCodeState>;
+  prescription: Readonly<PrescriptionState>;
+  antibiotic: Readonly<AntibioticState>;
+  exams: Readonly<ExamsState>;
+  attest: Readonly<AttestState>;
 }
 
 /**
@@ -72,4 +107,13 @@ export const InitialState: IInitialState = {
   patients: INITIAL_STATE_PATIENT,
   users: INITIAL_STATE_USER,
   profession: INITIAL_STATE_PROFESSION,
+  layout: INITIAL_STATE_LAYOUT,
+  message: INITIAL_STATE_MESSAGE,
+  allergies: INITIAL_STATE_ALLERGIES,
+  measurements: INITIAL_STATE_MEASUREMENTS,
+  qrCode: INITIAL_STATE_QR_CODE,
+  prescription: INITIAL_STATE_PRESCRIPTION,
+  antibiotic: INITIAL_STATE_ANTIBIOTIC,
+  exams: INITIAL_STATE_EXAMS,
+  attest: INITIAL_STATE_ATTEST,
 };

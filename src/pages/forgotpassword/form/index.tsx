@@ -63,6 +63,7 @@ export default function ForgotPasswordPage(props: RouteComponentProps<IPageParam
   const userState = useSelector((state: ApplicationState) => state.users);
   const [state, setState] = useState<UserInterface>({
     companies: [],
+    companies_links: [],
     name: "",
     birthdate: "",
     gender: "",
@@ -80,6 +81,12 @@ export default function ForgotPasswordPage(props: RouteComponentProps<IPageParam
       state: "",
       complement: "",
     },
+    phones: [{
+      cellnumber: "",
+      number: "",
+      telegram: false,
+      whatsapp: false,
+    }],
     email: "",
     phone: "",
     cellphone: "",

@@ -1,23 +1,35 @@
-import { AxiosResponse } from "axios";
-import { put, call } from "redux-saga/effects";
-import { toast } from "react-toastify";
+import {AxiosResponse} from "axios";
+import {call, put} from "redux-saga/effects";
+import {toast} from "react-toastify";
 
-import { viacep, apiSollar } from "../../../services/axios";
+import {apiIntegra, apiSollar, viacep} from "../../../services/axios";
 
 import {
-  loadSuccess,
-  loadFailure,
-  successGetAddress,
   createCompanySuccess,
+  loadFailure,
+  loadSuccess,
+  loadSuccessGetCompanyByCustomer,
   loadSuccessGetCompanyById,
+  successGetAddress,
   updateCompanySuccess,
 } from "./actions";
-import { ViacepDataInterface } from "./types";
+import {ViacepDataInterface} from "./types";
+import LOCALSTORAGE from "../../../helpers/constants/localStorage";
+import SESSIONSTORAGE from '../../../helpers/constants/sessionStorage';
+import _ from "lodash";
 
 const token = localStorage.getItem("token");
 
-export function* get({ payload }: any) {
-  const { params } = payload;
+export function* get({payload}: any) {
+  const {params} = payload;
+  const integration = sessionStorage.getItem(SESSIONSTORAGE.INTEGRATION)
+
+  // const response: AxiosResponse = yield call(
+  //   integration ? apiIntegra(integration).get : apiSollar.get,
+  //   `/companies?limit=${params.limit ?? 10}&page=${params.page || 1}${
+  //     params.search ? "&search=" + params.search : ""
+  //   }`
+  // );
 
   const response: AxiosResponse = yield call(
     apiSollar.get,
@@ -34,9 +46,9 @@ export function* get({ payload }: any) {
   }
 }
 
-export function* getAddress({ payload }: any) {
+export function* getAddress({payload}: any) {
   try {
-    const { data }: AxiosResponse<ViacepDataInterface> = yield call(
+    const {data}: AxiosResponse<ViacepDataInterface> = yield call(
       viacep.get,
       `${payload.postalCode}/json`
     );
@@ -52,7 +64,7 @@ export function* getAddress({ payload }: any) {
   }
 }
 
-export function* store({ payload: { data } }: any) {
+export function* store({payload: {data}}: any) {
   try {
     const phones = [];
 
@@ -81,7 +93,7 @@ export function* store({ payload: { data } }: any) {
       apiSollar.post,
       `/companies/store`,
       data,
-      { headers: { token } }
+      {headers: {token}}
     );
 
     yield put(createCompanySuccess(response.data));
@@ -92,12 +104,27 @@ export function* store({ payload: { data } }: any) {
   }
 }
 
-export function* getById({ payload: { id: _id } }: any) {
+export function* getById({payload: {id: _id}}: any) {
   try {
-    const response: AxiosResponse = yield call(apiSollar.get, `/companies`, {
-      params: { _id },
-    });
-    const { phones = [] } = response.data;
+    let response: AxiosResponse
+    const integration = sessionStorage.getItem(SESSIONSTORAGE.INTEGRATION)
+
+    // if (integration) {
+    //   response = yield call(
+    //     apiIntegra(integration),
+    //     `/companies/${_id}`,
+    //     {});
+    // } else {
+      response = yield call(
+        apiSollar.get,
+        `/companies`,
+        {
+          params: {_id},
+        });
+    // }
+
+
+    const {phones = []} = response.data;
 
     if (phones.length > 0) {
       phones.forEach((phone: any) => {
@@ -114,8 +141,8 @@ export function* getById({ payload: { id: _id } }: any) {
   }
 }
 
-export function* update({ payload: { data } }: any) {
-  const { _id } = data;
+export function* update({payload: {data}}: any) {
+  const {_id} = data;
 
   try {
     const phones = [];
@@ -146,7 +173,7 @@ export function* update({ payload: { data } }: any) {
     const response: AxiosResponse = yield call(
       apiSollar.put,
       `/companies/${_id}/update`,
-      { ...data }
+      {...data}
     );
 
     toast.success("Empresa atualizada com sucesso!");
@@ -157,13 +184,34 @@ export function* update({ payload: { data } }: any) {
   }
 }
 
-export function* searchCompany({ payload: { value } }: any) {
+export function* searchCompany({payload: {value}}: any) {
   try {
     const response: AxiosResponse = yield call(
       apiSollar.get,
       `/companies/?limit=10${!!value ? "&search=" + value : ""}`
     );
     yield put(loadSuccess(response.data));
+  } catch (error) {
+    console.log("error", error);
+    toast.info("Não foi possível buscar os dados da empresa");
+    yield put(loadFailure());
+  }
+}
+
+export function* getCompaniesById({payload: {id: _id}}: any) {
+  try {
+    const response: AxiosResponse = yield call(
+      apiSollar.get,
+      `/companies/?customer_id=${_id}&active=true`
+    );
+
+    //filter
+    const filter = _.filter(response.data.data, {active: true});
+
+    const company_id = localStorage.getItem(LOCALSTORAGE.COMPANY_SELECTED)
+    response.data.data = _.reject(filter, {_id: company_id})
+
+    yield put(loadSuccessGetCompanyByCustomer(response.data));
   } catch (error) {
     console.log("error", error);
     toast.info("Não foi possível buscar os dados da empresa");

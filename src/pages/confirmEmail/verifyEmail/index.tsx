@@ -25,6 +25,7 @@ export default function VerifyEmailForm(props: RouteComponentProps<IPageParams>)
   const userState = useSelector((state: ApplicationState) => state.users);
   const [state, setState] = useState<UserInterface>({
     companies: [],
+    companies_links: [],
     name: "",
     birthdate: "",
     gender: "",
@@ -42,6 +43,12 @@ export default function VerifyEmailForm(props: RouteComponentProps<IPageParams>)
       state: "",
       complement: "",
     },
+    phones: [{
+      cellnumber: "",
+      number: "",
+      telegram: false,
+      whatsapp: false,
+    }],
     email: "",
     phone: "",
     cellphone: "",

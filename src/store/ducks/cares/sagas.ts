@@ -1,6 +1,9 @@
+import { apiSollarMobi, apiSollarReport } from "./../../../services/axios";
 import { put, call } from "redux-saga/effects";
 import { toast } from "react-toastify";
 import { AxiosResponse } from "axios";
+// helps
+import { formatDate } from "./../../../helpers/date";
 
 import LOCALSTORAGE from "../../../helpers/constants/localStorage";
 
@@ -11,6 +14,7 @@ import {
   loadSuccessGetCareById,
   updateCareSuccess,
   searchCareSuccess,
+  searchPatientSuccess,
   actionDocumentGroupSocioAmbiental,
   actionDocumentSocioAmbiental,
   actionDocumentSocioAmbientalStore,
@@ -34,27 +38,53 @@ import {
   createScheduleSuccess,
   updateScheduleSuccess,
   deleteScheduleSuccess,
+  loadHistorySuccess,
+  releaseReasonSuccess,
+  releaseReferralSuccess,
+  deleteCareSuccess,
+  loadEvolutionRequest,
+  loadEvolutionSuccess,
+  loadEvolutionFailure,
+  loadCheckinSuccess,
+  loadCheckinFailure,
+  loadCheckinReportSuccess,
+  loadCheckinReportFailure,
+  loadEvolutionFilterSuccess,
+  loadMeasurementFilterRequest,
+  loadMeasurementFilterSuccess,
+  loadAllergyFilterRequest,
+  loadAdverseEventFilterRequest, loadAllergyFilterSuccess, loadAdverseEventFilterSuccess,
 } from "./actions";
 
-import { apiSollar } from "../../../services/axios";
+import { apiIntegra, apiSollar } from "../../../services/axios";
 
 import { handleCompanySelected } from "../../../helpers/localStorage";
+import SESSIONSTORAGE from "../../../helpers/constants/sessionStorage";
+import { pull } from "cypress/types/lodash";
+import { IFilterReport } from "./types";
 
 const token = localStorage.getItem("token");
 
 export function* get({ payload }: any) {
   try {
     const { params } = payload;
-
-    console.log(`/attendance/getAttendance?limit=${params.limit ?? 10}&page=${
-      params.page || 1
-    }${params.search ? "&search=" + params.search : ""}${params.status ? "&status=" + params.status : ""}`)
-
-    const response: AxiosResponse = yield call(
+    let response: AxiosResponse;
+    // const integration = sessionStorage.getItem(SESSIONSTORAGE.INTEGRATION)
+    // console.log('here')
+    // if (integration) {
+    //   response = yield call(
+    //     apiIntegra(integration),
+    //     `/attendance?limit=${params.limit ?? 10}&page=${
+    //       params.page || 1}`
+    //   );
+    // } else {
+    response = yield call(
       apiSollar.get,
       `/attendance/getAttendance?limit=${params.limit ?? 10}&page=${
         params.page || 1
-      }${params.search ? "&search=" + params.search : ""}${params.status ? "&status=" + params.status : ""}`
+      }${params.search ? "&search=" + params.search : ""}${
+        params.status ? "&status=" + params.status : ""
+      }${params.patient_id ? "&patient_id=" + params.patient_id : ""}`
     );
 
     yield put(searchCareSuccess(response.data));
@@ -64,15 +94,57 @@ export function* get({ payload }: any) {
   }
 }
 
+export function* getPopUp({ payload }: any) {
+  try {
+    const { params } = payload;
+    let response: AxiosResponse;
+    // const integration = sessionStorage.getItem(SESSIONSTORAGE.INTEGRATION)
+
+    // if (integration) {
+    //   response = yield call(
+    //     apiSollar.get,
+    //     `/attendance/getAttendance?limit=${params.limit ?? 10}&page=${
+    //       params.page || 1
+    //     }${params.search ? "&search=" + params.search : ""}${params.status ? "&status=" + params.status : ""}${params.patient_id ? "&patient_id=" + params.patient_id : ""}`
+    //   );
+    // } else {
+    response = yield call(
+      apiSollar.get,
+      `/attendance/getAttendance?limit=${params.limit ?? 10}&page=${
+        params.page || 1
+      }${params.search ? "&search=" + params.search : ""}${
+        params.status ? "&status=" + params.status : ""
+      }${params.patient_id ? "&patient_id=" + params.patient_id : ""}`
+    );
+
+    yield put(searchPatientSuccess(response.data));
+  } catch (error) {
+    toast.error("Erro ao buscar o Paciente");
+    yield put(loadFailure());
+  }
+}
+
 export function* search({ payload }: any) {
   try {
     const { params } = payload;
     const searchParams = params;
 
+    let response: AxiosResponse;
+    // const integration = sessionStorage.getItem(SESSIONSTORAGE.INTEGRATION)
+
     delete searchParams.limit;
     delete searchParams.page;
 
-    const response: AxiosResponse = yield call(
+    // if (integration) {
+    //   response = yield call(
+    //     apiIntegra(integration),
+    //     `/attendance?limit=${params.limit ?? 10}&page=${
+    //       params.page || 1
+    //     }`,
+    //     {params: searchParams}
+    //   );
+    // } else {
+    response = yield call(
       apiSollar.get,
       `/attendance/getAttendance?limit=${params.limit ?? 10}&page=${
         params.page || 1
@@ -89,7 +161,15 @@ export function* search({ payload }: any) {
 
 export function* getCareById({ payload: { id: _id } }: any) {
   try {
-    const response: AxiosResponse = yield call(apiSollar.get, `/care`, {
+    let response: AxiosResponse;
+    // const integration = sessionStorage.getItem(SESSIONSTORAGE.INTEGRATION)
+
+    // if (integration) {
+    //   response = yield call(
+    //     apiIntegra(integration),
+    //     `/attendance/${_id}`, {});
+    // } else {
+    response = yield call(apiSollar.get, `/care`, {
       headers: { token },
       params: { _id },
     });
@@ -127,8 +207,8 @@ export function* createCare({ payload: { data } }: any) {
 export function* updateCare({ payload: { data } }: any) {
   const { _id } = data;
 
+  console.log(data, " DATA REQUESTTT");
   try {
-    console.log(data);
     const response: AxiosResponse = yield call(
       apiSollar.put,
       `/care/${_id}/update`,
@@ -137,9 +217,45 @@ export function* updateCare({ payload: { data } }: any) {
     );
 
     toast.success("Atendimento atualizado com sucesso!");
+    console.log(response.data, "DATAA RESPONSE");
     yield put(updateCareSuccess(response.data));
   } catch (error) {
     toast.error("Não foi possível atualizar os dados do atendimento");
+    yield put(loadFailure());
+  }
+}
+
+export function* transferCare({ payload: { data } }: any) {
+  const { _id } = data;
+
+  try {
+    const response: AxiosResponse = yield call(
+      apiSollar.put,
+      `/care/${_id}/transfer`,
+      { ...data },
+      { headers: { token } }
+    );
+
+    toast.success("Atendimento transferido com sucesso!");
+    yield put(updateCareSuccess(response.data));
+  } catch (error) {
+    toast.error("Não foi possível atualizar os dados do atendimento");
+    yield put(loadFailure());
+  }
+}
+
+export function* deleteCare({ payload: { id: _id } }: any) {
+  try {
+    const response: AxiosResponse = yield call(
+      apiSollar.delete,
+      `/care/${_id}/delete`,
+      { headers: { token } }
+    );
+
+    toast.success("Atendimento deletado com sucesso!");
+    yield put(deleteCareSuccess());
+  } catch (error) {
+    toast.error("Não foi possível deletar o dados do atendimento");
     yield put(loadFailure());
   }
 }
@@ -207,8 +323,6 @@ export function* storeDocumentSocioAmbiental({ payload }: any) {
 export function* updateDocumentSocioAmbiental({ payload }: any) {
   try {
     const { _id } = payload;
-
-    console.log("payload", payload);
 
     delete payload._id;
 
@@ -455,7 +569,6 @@ export function* getCareType() {
   try {
     const { data }: AxiosResponse = yield call(apiSollar.get, `/caretype`);
 
-    console.log(data);
     yield put(careTypeSuccess(data.data));
   } catch (error) {
     console.log(error);
@@ -474,6 +587,48 @@ export function* searchCid({ payload }: any) {
     );
 
     yield put(cidSuccess(data.data));
+  } catch (error) {
+    console.log(error);
+    toast.error("Erro ao buscar CID");
+    yield put(loadFailure());
+  }
+}
+
+export function* getAllCid() {
+  try {
+    const { data }: AxiosResponse = yield call(apiSollar.get, `/cid/getAll`);
+
+    yield put(cidSuccess(data));
+  } catch (error) {
+    console.log(error);
+    toast.error("Erro ao buscar CID");
+    yield put(loadFailure());
+  }
+}
+
+export function* getReleaseReason() {
+  try {
+    const { data }: AxiosResponse = yield call(
+      apiSollar.get,
+      `/releaseReasons/getAll`
+    );
+
+    yield put(releaseReasonSuccess(data));
+  } catch (error) {
+    console.log(error);
+    toast.error("Erro ao buscar CID");
+    yield put(loadFailure());
+  }
+}
+
+export function* getReleaseReferral() {
+  try {
+    const { data }: AxiosResponse = yield call(
+      apiSollar.get,
+      `/releaseReferrals/getAll`
+    );
+
+    yield put(releaseReferralSuccess(data));
   } catch (error) {
     console.log(error);
     toast.error("Erro ao buscar CID");
@@ -583,5 +738,237 @@ export function* deleteSchedule({ payload }: any) {
     console.log(error);
     toast.error("Erro ao obter a agenda");
     yield put(loadFailure());
+  }
+}
+
+export function* getHistory({ payload }: any) {
+  try {
+    const { id, type } = payload;
+    const { data }: AxiosResponse = yield call(
+      apiSollar.get,
+      `/attendance/getHistory?patient_id=${id}${type ? "&status=" + type : ""}`
+    );
+
+    yield put(loadHistorySuccess(data));
+  } catch (error) {
+    console.log(error);
+    toast.error("Erro ao obter o histórico");
+    yield put(loadFailure());
+  }
+}
+
+export function* getEvolution({ payload }: any) {
+  try {
+    const integration = sessionStorage.getItem(SESSIONSTORAGE.INTEGRATION);
+    const headers = integration
+        ? { external_attendance_id: payload }
+        : { attendance_id: payload };
+    const response: AxiosResponse = yield call(
+      apiSollarMobi.post,
+      `/evolution/getGroup`,
+      { attendance_id: payload },
+        { headers: { ...headers } }
+    );
+    yield put(loadEvolutionSuccess(response.data));
+  } catch (err) {
+    yield put(loadEvolutionFailure());
+    toast.error("Erro ao buscar Evoluções");
+  }
+}
+
+export function* getChekin({ payload }: any) {
+  try {
+    const integration = sessionStorage.getItem(SESSIONSTORAGE.INTEGRATION);
+    const headers = integration
+      ? { external_attendance_id: payload }
+      : { attendance_id: payload };
+    const response: AxiosResponse = yield call(
+      apiSollarMobi.post,
+      `/checkin/getGroup`,
+      { attendance_id: payload },
+      { headers: { ...headers } }
+    );
+    yield put(loadCheckinSuccess(response.data));
+  } catch (err) {
+    yield put(loadCheckinFailure());
+    toast.error("Erro ao buscar Evoluções");
+  }
+}
+
+export function* getChekInReport({ payload }: any) {
+  try {
+    const integration = sessionStorage.getItem(SESSIONSTORAGE.INTEGRATION);
+    const headers = integration
+      ? { token, external_attendance_id: payload }
+      : { token, attendance_id: payload };
+    const response: AxiosResponse = yield call(
+      apiSollarReport.get,
+      `/checkin`,
+      { responseType: "blob", headers: { ...headers } }
+    );
+    yield put(loadCheckinReportSuccess(response.data));
+  } catch (err) {
+    yield put(loadCheckinReportFailure());
+    toast.error("Erro Ao Buscar Relatório De Check-In/Out");
+  }
+}
+
+export function* getFilterCheckin({ payload }: any) {
+  try {
+    let { dataStart, dataEnd, type, name } = payload;
+    dataStart =
+      typeof dataStart === "string"
+        ? dataStart
+        : formatDate(dataStart["$d"], "YYYY-MM-DD");
+    dataEnd =
+      typeof dataEnd === "string"
+        ? dataEnd
+        : formatDate(dataEnd["$d"], "YYYY-MM-DD");
+    payload = {
+      ...payload,
+      dataStart,
+      dataEnd,
+    };
+    const integration = sessionStorage.getItem(SESSIONSTORAGE.INTEGRATION);
+    const headers = integration
+      ? { token, external_attendance_id: payload.attendance_id }
+      : { token, attendance_id: payload.attendance_id };
+    const response: AxiosResponse = yield call(
+      apiSollarReport.get,
+      `/checkin?dataStart=${dataStart}&dataEnd=${dataEnd}&name=${name}&type=${type}`,
+      { responseType: "blob", headers: { ...headers } }
+    );
+    yield put(loadCheckinReportSuccess(response.data));
+  } catch (err) {
+    toast.error("Erro ao Filtrar Relatório De Check-In/Out");
+    yield put(loadCheckinReportFailure());
+  }
+}
+
+export function* getFilterEvolution({ payload }: any) {
+  try {
+    let { dataStart, dataEnd, type, name } = payload;
+    dataStart =
+      typeof dataStart === "string"
+        ? dataStart
+        : formatDate(dataStart["$d"], "YYYY-MM-DD");
+    dataEnd =
+      typeof dataEnd === "string"
+        ? dataEnd
+        : formatDate(dataEnd["$d"], "YYYY-MM-DD");
+    payload = {
+      ...payload,
+      dataStart,
+      dataEnd,
+    };
+    const integration = sessionStorage.getItem(SESSIONSTORAGE.INTEGRATION);
+    const headers = integration
+      ? { token, external_attendance_id: payload.attendance_id }
+      : { token, attendance_id: payload.attendance_id };
+    const response: AxiosResponse = yield call(
+      apiSollarReport.get,
+      `/evolution?dataStart=${dataStart}&dataEnd=${dataEnd}&name=${name}&type=${type}`,
+      { responseType: "blob", headers: { ...headers } }
+    );
+    yield put(loadEvolutionFilterSuccess(response.data));
+  } catch (err) {
+    toast.error("Erro ao Filtrar Relatório De Evolução");
+    yield put(loadCheckinReportFailure());
+  }
+}
+
+export function* getFilterMeasurement({ payload }: any) {
+  try {
+    let { dataStart, dataEnd, type, name } = payload;
+    dataStart =
+        typeof dataStart === "string"
+            ? dataStart
+            : formatDate(dataStart["$d"], "YYYY-MM-DD");
+    dataEnd =
+        typeof dataEnd === "string"
+            ? dataEnd
+            : formatDate(dataEnd["$d"], "YYYY-MM-DD");
+    payload = {
+      ...payload,
+      dataStart,
+      dataEnd,
+    };
+    const integration = sessionStorage.getItem(SESSIONSTORAGE.INTEGRATION);
+    const headers = integration
+        ? { token, external_attendance_id: payload.attendance_id }
+        : { token, attendance_id: payload.attendance_id };
+    const response: AxiosResponse = yield call(
+        apiSollarReport.get,
+        `/measurement?dataStart=${dataStart}&dataEnd=${dataEnd}&name=${name}&type=${type}`,
+        { responseType: "blob", headers: { ...headers } }
+    );
+    yield put(loadMeasurementFilterSuccess(response.data));
+  } catch (err) {
+    toast.error("Erro ao Filtrar Relatório De Aferição");
+    yield put(loadCheckinReportFailure());
+  }
+}
+
+export function* getFilterAllergy({ payload }: any) {
+  try {
+    let { dataStart, dataEnd, type, name } = payload;
+    dataStart =
+        typeof dataStart === "string"
+            ? dataStart
+            : formatDate(dataStart["$d"], "YYYY-MM-DD");
+    dataEnd =
+        typeof dataEnd === "string"
+            ? dataEnd
+            : formatDate(dataEnd["$d"], "YYYY-MM-DD");
+    payload = {
+      ...payload,
+      dataStart,
+      dataEnd,
+    };
+    const integration = sessionStorage.getItem(SESSIONSTORAGE.INTEGRATION);
+    const headers = integration
+        ? { token, external_attendance_id: payload.attendance_id }
+        : { token, attendance_id: payload.attendance_id };
+    const response: AxiosResponse = yield call(
+        apiSollarReport.get,
+        `/allergy?dataStart=${dataStart}&dataEnd=${dataEnd}&name=${name}&type=${type}&patient_id=${payload.patient_id}`,
+        { responseType: "blob", headers: { ...headers } }
+    );
+    yield put(loadAllergyFilterSuccess(response.data));
+  } catch (err) {
+    toast.error("Erro ao Filtrar Relatório De Alergia");
+    yield put(loadCheckinReportFailure());
+  }
+}
+
+export function* getFilterAdverseEvent({ payload }: any) {
+  try {
+    let { dataStart, dataEnd, type, name } = payload;
+    dataStart =
+        typeof dataStart === "string"
+            ? dataStart
+            : formatDate(dataStart["$d"], "YYYY-MM-DD");
+    dataEnd =
+        typeof dataEnd === "string"
+            ? dataEnd
+            : formatDate(dataEnd["$d"], "YYYY-MM-DD");
+    payload = {
+      ...payload,
+      dataStart,
+      dataEnd,
+    };
+    const integration = sessionStorage.getItem(SESSIONSTORAGE.INTEGRATION);
+    const headers = integration
+        ? { token, external_attendance_id: payload.attendance_id }
+        : { token, attendance_id: payload.attendance_id };
+    const response: AxiosResponse = yield call(
+        apiSollarReport.get,
+        `/allergy/event?dataStart=${dataStart}&dataEnd=${dataEnd}&name=${name}&type=${type}&patient_id=${payload.patient_id}`,
+        { responseType: "blob", headers: { ...headers } }
+    );
+    yield put(loadAdverseEventFilterSuccess(response.data));
+  } catch (err) {
+    toast.error("Erro ao Filtrar Relatório De Evento Adverso");
+    yield put(loadCheckinReportFailure());
   }
 }

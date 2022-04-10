@@ -35,6 +35,7 @@ import { SliderComponent as Slider } from '../../../styles/components/Slider';
 import { SwitchComponent as Switch } from '../../../styles/components/Switch';
 import { TabContent, TabNav, TabNavItem, TabBody, TabBodyItem } from '../../../styles/components/Tabs';
 
+// @ts-ignore
 import MyComponent from '../../../components/Maps';
 import {
   ButtonsContent,

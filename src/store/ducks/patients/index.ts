@@ -3,9 +3,11 @@ import { PatientState, PatientTypes } from "./types";
 
 export const INITIAL_STATE: PatientState = {
   data: {
+    social_status: false,
     companies: [],
     name: "",
     social_name: "",
+    created_at: "",
     birthdate: "",
     gender: "",
     mother_name: "",
@@ -26,7 +28,12 @@ export const INITIAL_STATE: PatientState = {
       complement: "",
     },
     area_id: "",
-    phones: [],
+    phones: [{
+        cellnumber:"",
+        number:"",
+        whatsapp: false,
+        telegram:false
+    }],
     email: "",
     sus_card: "FIELD_NOT_EXISTS_IN_PATIENT_REGISTRATION",
     blood_type: "",
@@ -69,7 +76,7 @@ const reducer: Reducer<PatientState> = (state = INITIAL_STATE, action) => {
         ...state,
         list: action.payload.data,
         loading: false,
-        success: false,
+        success: true,
         error: false,
       };
     case PatientTypes.LOAD_REQUEST_PATIENT_BY_ID:
@@ -105,9 +112,10 @@ const reducer: Reducer<PatientState> = (state = INITIAL_STATE, action) => {
       };
     case PatientTypes.LOAD_FAILURE:
       return {
-        ...INITIAL_STATE,
+        ...state,
         loading: false,
         error: true,
+        errorCep: true,
         success: false,
         list: {
           data: [],
@@ -129,6 +137,7 @@ const reducer: Reducer<PatientState> = (state = INITIAL_STATE, action) => {
         loading: true,
         error: false,
         success: false,
+        isRegistrationCompleted: true,
       };
     case PatientTypes.CREATE_PATIENT_SUCCESS:
       return {
@@ -137,12 +146,16 @@ const reducer: Reducer<PatientState> = (state = INITIAL_STATE, action) => {
         loading: false,
         error: false,
         success: true,
+        isRegistrationCompleted: true,
       };
     case PatientTypes.LOAD_RESPONSE_ADDRESS:
       return {
         ...state,
+        loading: false,
+        error: false,
+        success: true,
+        errorCep: false,
         data: {
-          ...state.data,
           address_id: {
             ...state.data.address_id,
             postal_code: action.payload.data.cep,
@@ -154,9 +167,6 @@ const reducer: Reducer<PatientState> = (state = INITIAL_STATE, action) => {
             complement: action.payload.data.complemento,
           },
         },
-        loading: false,
-        error: false,
-        success: false,
       };
     case PatientTypes.LOAD_PATIENT_CAPTURE:
       return { ...state, loading: true, success: false };
@@ -170,8 +180,11 @@ const reducer: Reducer<PatientState> = (state = INITIAL_STATE, action) => {
       };
     case PatientTypes.SEARCH_REQUEST:
       return { ...state, loading: true, error: false };
+
+    case PatientTypes.CLEAN:
+      return INITIAL_STATE;
     default:
-      return state;
+        return state;
   }
 };
 

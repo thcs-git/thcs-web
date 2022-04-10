@@ -15,6 +15,9 @@ export enum CompanyTypes {
   LOAD_REQUEST_COMPANY_BY_ID = "@council/LOAD_REQUEST_COMPANY_BY_ID",
   LOAD_SUCCESS_COMPANY_BY_ID = "@council/LOAD_SUCCESS_COMPANY_BY_ID",
 
+  LOAD_REQUEST_CUSTOMER_BY_ID = "@council/LOAD_REQUEST_CUSTOMER_BY_ID",
+  LOAD_SUCCESS_CUSTOMER_BY_ID = "@council/LOAD_SUCCESS_CUSTOMER_BY_ID",
+
   UPDATE_COMPANY_REQUEST = "@company/UPDATE_COMPANY_REQUEST",
   UPDATE_COMPANY_SUCCESS = "@company/UPDATE_COMPANY_SUCCESS",
 
@@ -28,6 +31,8 @@ export enum CompanyTypes {
  */
 
 export interface CompanyInterface {
+  data?: any;
+  tipo: string;
   _id?: string;
   customer_id: string;
   name: string;
@@ -35,8 +40,8 @@ export interface CompanyInterface {
   fiscal_number: string;
   address: {
     postal_code: string;
-    street: string,
-    number: string,
+    street: string;
+    number: string;
     district: string;
     city: string;
     state: string;
@@ -49,44 +54,52 @@ export interface CompanyInterface {
   settings?: {
     document?: [
       {
-        specialty: string,
-        document_group: string,
-        order: Number,
-        created_at: string,
-        created_by: string,
+        specialty: string;
+        document_group: string;
+        order: Number;
+        created_at: string;
+        created_by: string;
       }
-    ],
+    ];
     complexity?: [
       {
-        title: string,
-        description: string,
-        color: string,
-        severity: string,
+        title: string;
+        description: string;
+        color: string;
+        severity: string;
         recommendation: [
           {
-            profession_id: string | IProfession,
-            description: string,
-            amount: string,
-            interval: string,
-            frequency: string,
+            profession_id: string | IProfession;
+            description: string;
+            amount: string;
+            interval: string;
+            frequency: string;
           }
-        ],
+        ];
       }
-    ],
-  },
+    ];
+  };
   active: boolean;
   created_by: { _id: string };
   created_at?: string;
+  phones: [
+    {
+      cellnumber?: string;
+      number?: string;
+      telegram: boolean;
+      whatsapp: boolean;
+    }
+  ];
 }
 
 export interface ViacepDataInterface {
-  cep: string,
-  logradouro: string,
-  complemento: string,
-  bairro: string,
-  localidade: string,
-  uf: string,
-  erro?: boolean,
+  cep: string;
+  logradouro: string;
+  complemento: string;
+  bairro: string;
+  localidade: string;
+  uf: string;
+  erro?: boolean;
 }
 
 export interface CompanyList {
@@ -110,11 +123,11 @@ export interface CompanyState {
 }
 
 export interface IProfession {
-  active: boolean,
+  active: boolean;
   created_at: string;
   describe: string;
   name: string;
   _id: string;
 }
 
-export type LoadRequestParams = Partial<Omit<CompanyList, 'data'>>
+export type LoadRequestParams = Partial<Omit<CompanyList, "data">>;

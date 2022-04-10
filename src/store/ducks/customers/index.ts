@@ -20,11 +20,14 @@ export const INITIAL_STATE: CustomerState = {
       complement: "",
     },
     email: "",
-    phones: {
-      number: "",
-      telegram: false,
-      whatsapp: false,
-    },
+    phones: [
+      {
+        cellphone: "",
+        phone: "",
+        telegram: false,
+        whatsapp: false,
+      },
+    ],
     responsible_user: "",
     cellphone: "",
     phone: "",
@@ -35,10 +38,20 @@ export const INITIAL_STATE: CustomerState = {
     page: "1",
     total: 0,
   },
+  permission: {
+    _id: "",
+    rights: [],
+    customer_id: "",
+    name: "",
+    active: false,
+  },
   error: false,
   loading: false,
   success: false,
   errorCep: false,
+  permissionLoad: false,
+  permissionSuccess: false,
+  requestSucess: false,
 };
 
 const reducer: Reducer<CustomerState> = (state = INITIAL_STATE, action) => {
@@ -56,6 +69,13 @@ const reducer: Reducer<CustomerState> = (state = INITIAL_STATE, action) => {
         list: action.payload.data,
         loading: false,
       };
+    case CustomerTypes.LOAD_REQUEST_BY_ID:
+      return {
+        ...state,
+        loading: true,
+        success: false,
+        error: false,
+      };
     case CustomerTypes.LOAD_SUCCESS_BY_ID:
       return {
         ...state,
@@ -63,6 +83,8 @@ const reducer: Reducer<CustomerState> = (state = INITIAL_STATE, action) => {
         loading: false,
         success: false,
         list: INITIAL_STATE.list,
+        requestSucess: true,
+        permissionSuccess: false,
       };
     case CustomerTypes.LOAD_FAILURE:
       return {
@@ -132,6 +154,50 @@ const reducer: Reducer<CustomerState> = (state = INITIAL_STATE, action) => {
       };
     case CustomerTypes.SEARCH_REQUEST:
       return { ...state, loading: true, error: false };
+
+    case CustomerTypes.LOAD_REQUEST_PERMISSION:
+      return {
+        ...state,
+        loading: true,
+        error: false,
+        success: false,
+        permissionLoad: false,
+      };
+    case CustomerTypes.LOAD_RESPONSE_PERMISSION:
+      return {
+        ...state,
+        permission: action.payload.data,
+        loading: false,
+        permissionLoad: true,
+      };
+    case CustomerTypes.CLEAN_PERMISSION:
+      return {
+        ...state,
+        permission: {
+          _id: "",
+          rights: [],
+          customer_id: "",
+          name: "",
+          active: false,
+        },
+        loading: false,
+        permissionLoad: false,
+      };
+    case CustomerTypes.UPDATE_PERMISSION_SUCCESS:
+      return {
+        ...state,
+        permission: action.payload.data,
+        loading: false,
+        error: false,
+        permissionSuccess: true,
+      };
+    case CustomerTypes.CREATE_PERMISSION_SUCCESS:
+      return {
+        ...state,
+        permission: action.payload.data,
+        loading: false,
+        permissionSuccess: true,
+      };
 
     case CustomerTypes.CLEAN:
       return INITIAL_STATE;

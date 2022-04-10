@@ -4,6 +4,7 @@ import { UserState, UserTypes } from "./types";
 export const INITIAL_STATE: UserState = {
   data: {
     companies: [],
+    companies_links: [],
     name: "",
     birthdate: "",
     gender: "",
@@ -21,6 +22,14 @@ export const INITIAL_STATE: UserState = {
       state: "",
       complement: "",
     },
+    phones: [
+      {
+        cellnumber: "",
+        number: "",
+        telegram: false,
+        whatsapp: false,
+      },
+    ],
     email: "",
     phone: "",
     cellphone: "",
@@ -32,6 +41,10 @@ export const INITIAL_STATE: UserState = {
     customer_id: "",
     active: true,
     professions: [],
+    profession_id: {
+      _id: "",
+      name: "",
+    },
   },
   list: {
     data: [],
@@ -44,6 +57,7 @@ export const INITIAL_STATE: UserState = {
   error: false,
   loading: false,
   successRecovery: false,
+  errorCep: false,
 };
 
 const reducer: Reducer<UserState> = (state = INITIAL_STATE, action) => {
@@ -87,6 +101,14 @@ const reducer: Reducer<UserState> = (state = INITIAL_STATE, action) => {
         success: false,
       };
     case UserTypes.UPDATE_USER_REQUEST:
+      return {
+        ...state,
+        data: action.payload.data,
+        loading: true,
+        error: false,
+        success: true,
+      };
+    case UserTypes.UPDATE_USER_PASSWORD:
       return {
         ...state,
         data: action.payload.data,
@@ -158,6 +180,7 @@ const reducer: Reducer<UserState> = (state = INITIAL_STATE, action) => {
         loading: false,
         error: true,
         success: false,
+        errorCep: true,
       };
     case UserTypes.LOAD_RESPONSE_ADDRESS:
       return {
@@ -178,6 +201,7 @@ const reducer: Reducer<UserState> = (state = INITIAL_STATE, action) => {
         loading: false,
         error: false,
         success: false,
+        errorCep: false,
       };
     case UserTypes.SEARCH_REQUEST:
       return { ...state, loading: true, error: false };
@@ -187,20 +211,6 @@ const reducer: Reducer<UserState> = (state = INITIAL_STATE, action) => {
         data: {
           ...state.data,
           professions: action.payload.data.data,
-        },
-        loading: false,
-        error: false,
-        success: false,
-        successRecovery: false,
-      };
-
-    case UserTypes.LOAD_RESPONSE_PROFESSION:
-      console.log("action", action);
-      return {
-        ...state,
-        data: {
-          ...state.data,
-          professions: action.payload.data,
         },
         loading: false,
         error: false,
@@ -246,6 +256,13 @@ const reducer: Reducer<UserState> = (state = INITIAL_STATE, action) => {
         loading: false,
         error: false,
         success: true,
+      };
+    case UserTypes.LOAD_REQUEST_RECOVERY_PASSWORD_TOKEN:
+      return {
+        ...state,
+        loading: true,
+        error: false,
+        success: false,
       };
     case UserTypes.LOAD_SUCCESS_RECOVERY_PASSWORD:
       return {

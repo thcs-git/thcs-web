@@ -6,11 +6,15 @@ import {
   LoadRequestParams,
   UserRecoveryPassword,
 } from "./types";
+import {CredentialsInterface} from "../login/types";
 
 export const loadRequest = (params: LoadRequestParams = {}) =>
   action(UserTypes.LOAD_REQUEST, { params });
 export const loadSuccess = (data: UserInterface) =>
   action(UserTypes.LOAD_SUCCESS, { data });
+
+export const loadRequestByClient = (params: LoadRequestParams = {}) =>
+  action(UserTypes.LOAD_REQUEST_BY_CLIENT, { params });
 
 export const getAddress = (postalCode: string) =>
   action(UserTypes.LOAD_REQUEST_ADDRESS, { postalCode });
@@ -38,11 +42,14 @@ export const createUserSuccess = (data: UserInterface) =>
 export const updateUserRequest = (data: UserInterface) =>
   action(UserTypes.UPDATE_USER_REQUEST, { data });
 
+export const updateUserPasswordRequest = (data: CredentialsInterface) =>
+  action(UserTypes.UPDATE_USER_PASSWORD, { data });
+
 export const updateUserSuccess = (data: UserInterface) =>
   action(UserTypes.UPDATE_USER_SUCCESS, { data });
 
-export const loadUserById = (id: string) =>
-  action(UserTypes.LOAD_REQUEST_USER_BY_ID, { id });
+export const loadUserById = (id: string, page: string) =>
+  action(UserTypes.LOAD_REQUEST_USER_BY_ID, { id, page });
 
 export const loadUserByEmail = (email: string) =>
   action(UserTypes.LOAD_REQUEST_USER_BY_EMAIL, { email });

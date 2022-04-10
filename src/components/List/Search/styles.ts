@@ -12,6 +12,7 @@ export const FormSearch = styled.form`
 
   > div {
     width: 50%;
+    min-width: 450px;
     background: #ffffff;
   }
 `;
@@ -20,6 +21,6 @@ export const ButtonStyle = styled(Button).attrs({
   background: "success",
   variant: "contained",
 })`
-  width: 180px;
+  width: 200px;
   margin-left: 10px;
 `;
