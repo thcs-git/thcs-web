@@ -5,21 +5,21 @@ import { CustomerState, CustomerTypes } from "./types";
 export const INITIAL_STATE: CustomerState = {
   data: {
     active: true,
-    _id: "",
-    name: "",
-    social_name: "",
+    _id: "1",
+    name: "TASCOM TECNOLOGIA",
+    social_name: "TASCOM TECNOLOGIA",
 
-    fiscal_number: "",
+    fiscal_number: "06.312.868/0001-03",
     address: {
-      postal_code: "",
-      street: "",
-      number: "",
+      postal_code: "50.751-340",
+      street: "RUA PEDRO AMÉRICO",
+      number: "193",
       district: "",
-      city: "",
-      state: "",
-      complement: "",
+      city: "RECIFE",
+      state: "PE",
+      complement: "CASA",
     },
-    email: "",
+    email: "comercial@tascominformatica.com.br",
     phones: [
       {
         cellphone: "",
@@ -28,8 +28,8 @@ export const INITIAL_STATE: CustomerState = {
         whatsapp: false,
       },
     ],
-    responsible_user: "",
-    cellphone: "",
+    responsible_user: "TERCIO ARRUDA DE SANTANA",
+    cellphone: "(081) 9 9121-2553",
     phone: "",
   },
   list: {

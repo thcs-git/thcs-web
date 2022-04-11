@@ -229,7 +229,7 @@ export default function ClientForm(props: RouteComponentProps<IPageParams>) {
     { id: 27, name: "Espírito Santo", sigla: "ES" },
   ];
   const [state, setState] = useState<IFormFields>({
-    name: "",
+    name: '',
     social_name: "",
     fiscal_number: "",
     address: {
@@ -413,7 +413,7 @@ export default function ClientForm(props: RouteComponentProps<IPageParams>) {
       // !permissionState.mode &&
       params.id != ":id"
     ) {
-      dispatch(loadCustomerById(params.id));
+      // dispatch(loadCustomerById(params.id));
     }
   }, [dispatch, params]);
 
@@ -423,7 +423,7 @@ export default function ClientForm(props: RouteComponentProps<IPageParams>) {
       params.mode != "permission" &&
       customerState.permissionSuccess
     ) {
-      dispatch(loadCustomerById(params.id));
+      // dispatch(loadCustomerById(params.id));
     }
   }, [customerState.permissionSuccess]);
 
