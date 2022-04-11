@@ -248,7 +248,18 @@ export interface CareList {
   search?: string;
   status?: string;
 }
-
+export interface ICheckins {
+  loading: boolean;
+  error: boolean;
+  success: boolean;
+  data: any;
+}
+export interface IEvolutionState {
+  data: IEvolution[];
+  loading: boolean;
+  success: boolean;
+  error: boolean;
+}
 /**
  * State type
  */
@@ -276,8 +287,9 @@ export interface CareState {
   documentNead: DocumentState;
   document: any;
   schedule?: ScheduleInterface[];
-  evolution: IEvolution[];
-  checkin: any;
+  evolution: IEvolutionState;
+  checkin: ICheckins;
+
   // document?: {
   //   document_group_id: DocumentGroupInterface
   // } & DocumentGroupInterface;

@@ -408,7 +408,7 @@ export function* recoverypasswordiftoken({ payload: { data } }: any) {
       { ...data }
     );
     if (response.data.value === "senha atualizada") {
-      toast.success("Senha atulizada.");
+      toast.success("Senha atualizada.");
     } else {
       toast.error("Senha antiga errada.");
     }
