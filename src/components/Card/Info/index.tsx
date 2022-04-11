@@ -148,7 +148,7 @@ export default function CardInfo(props: ICardInfo) {
             checks.list.map((user: any) => {
               const professional: ITeam = {
                 name: getFirstAndLastName(
-                  capitalizeText(user[0].user_id[0].name)
+                  capitalizeText(user[0].user_id[0].name ?? '')
                 ),
                 function: handleFunction(
                   user[0].user_id[0].companies_links,

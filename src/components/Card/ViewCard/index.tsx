@@ -103,9 +103,6 @@ export default function ViewCard(props: IProps) {
         dataResponsible.push(e);
         patientData.push(e);
         break;
-      case "Telefone":
-        dataResponsible.push(e);
-        break;
       case "Tipo":
         dataResponsible.push(e);
         break;
@@ -244,6 +241,7 @@ export default function ViewCard(props: IProps) {
           <PhoneIcon />
           <p>Contato</p>
         </WrapperTitleData>
+        {console.log('sdaasdasdsad', patientContact)}
         <WrapperContentData>
           {patientContact.map(({ name, value }: Irows, index: number) => (
             <Grid item>{`${name}: ${value}`}</Grid>
