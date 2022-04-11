@@ -42,6 +42,7 @@ export default function UserCongiguration(props: RouteComponentProps<any>) {
     { name: "Senha", components: ["ChangePassword"] },
   ];
   const [state, setState] = useState<UserInterface>({
+    profession_external: '',
     companies: [],
     companies_links: [],
     name: "",

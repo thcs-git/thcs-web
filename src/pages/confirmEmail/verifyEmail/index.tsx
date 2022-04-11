@@ -24,6 +24,7 @@ export default function VerifyEmailForm(props: RouteComponentProps<IPageParams>)
   const [inputEmail, setInputEmail]=useState({value:""});
   const userState = useSelector((state: ApplicationState) => state.users);
   const [state, setState] = useState<UserInterface>({
+    profession_external: '',
     companies: [],
     companies_links: [],
     name: "",

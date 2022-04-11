@@ -127,6 +127,7 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
   const [companyLink, setcompanyLink] = useState('');
   const [add, setAdd] = useState(false);
   const [state, setState] = useState<UserInterface>({
+    profession_external: '',
     companies: [],
     companies_links: [],
     name: "",
@@ -700,6 +701,9 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
 
 
   function viewProfession() {
+    if (userState?.data?.profession_external) {
+      return userState.data.profession_external
+    }
     if (!userState.data.professions) {
       // return null;
     } else {
@@ -1926,7 +1930,7 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
                                   <h3>{viewProfession()}</h3>
                                 </Grid>
                                 <Grid item style={{paddingTop: '10px'}}>
-                                  Função:{viewProfession()}
+                                  Função:{'viewProfession()'}
                                 </Grid>
                                 <Grid item>
                                   Conselho: {state.council_state}

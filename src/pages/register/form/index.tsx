@@ -202,6 +202,7 @@ export default function RegisterForm() {
 ////////// form verify variables //////////////
 
   const [state, setState] = useState<UserInterface>({
+    profession_external: '',
     companies: [],
     companies_links: [],
     name: "",

@@ -28,6 +28,7 @@ export default function Dashboard_user() {
   const userState = useSelector((state: ApplicationState) => state.users);
   const [firstCall, setFirstcall] = useState(false);
   const [state, setState] = useState<UserInterface>({
+    profession_external: '',
     companies: [],
     companies_links: [],
     name: "",

@@ -43,6 +43,7 @@ export default function UserClientForm(
     (state: ApplicationState) => state.layout.data.rights
   );
   const [state, setState] = useState<UserInterface>({
+    profession_external: '',
     companies: [],
     companies_links: [],
     name: "",

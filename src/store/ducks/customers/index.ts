@@ -14,10 +14,10 @@ export const INITIAL_STATE: CustomerState = {
       postal_code: "50.751-340",
       street: "RUA PEDRO AMÉRICO",
       number: "193",
-      district: "",
+      district: "BONGI",
       city: "RECIFE",
       state: "PE",
-      complement: "CASA",
+      complement: "",
     },
     email: "comercial@tascominformatica.com.br",
     phones: [
@@ -29,7 +29,7 @@ export const INITIAL_STATE: CustomerState = {
       },
     ],
     responsible_user: "TERCIO ARRUDA DE SANTANA",
-    cellphone: "(081) 9 9121-2553",
+    cellphone: "(81) 9 9121-2553",
     phone: "",
   },
   list: {

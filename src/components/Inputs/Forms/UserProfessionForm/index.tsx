@@ -30,7 +30,7 @@ const UserProfessionForm = (props: IComponent) => {
     rows: [
       {
         name: "Função",
-        value: state.profession_id ? state.profession_id.name : "",
+        value: state.profession_external ?  state.profession_external : state.main_specialty_id ? state.main_specialty_id.name : "",
       },
       {
         name: "Conselho",
@@ -47,9 +47,9 @@ const UserProfessionForm = (props: IComponent) => {
     rows: [
       {
         name: "Principal",
-        value: state.main_specialty_id ? state.main_specialty_id.name : "",
+        value: state.main_specialty_external ?  state.main_specialty_external : state.main_specialty_id ? state.main_specialty_id.name : "",
       },
-      { name: "Outras", value: specialties.join(", ") },
+      { name: "Outras", value: state.specialties_external ? state.specialties_external : specialties ? specialties.join(", ") : '' },
     ],
     details: "UserProfessionForm",
   };

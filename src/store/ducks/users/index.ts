@@ -3,6 +3,7 @@ import { UserState, UserTypes } from "./types";
 
 export const INITIAL_STATE: UserState = {
   data: {
+    profession_external:'',
     companies: [],
     companies_links: [],
     name: "",

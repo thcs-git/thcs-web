@@ -144,6 +144,7 @@ export interface UserListItems {
 }
 
 export interface UserInterface {
+    profession_external: any;
   _id?: string;
   companies: CompanyUserInterface[];
   companies_links: CompanyUserLinkInterface[];
