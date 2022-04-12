@@ -271,6 +271,13 @@ const reducer: Reducer<UserState> = (state = INITIAL_STATE, action) => {
         error: false,
         success: true,
       };
+    case UserTypes.LOAD_REQUEST_BY_CLIENT:
+      return {
+        ...state,
+        loading: true,
+        error: false,
+        success: false,
+      };
     case UserTypes.CLEAN:
       return INITIAL_STATE;
 
