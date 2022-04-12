@@ -413,7 +413,7 @@ export default function ClientForm(props: RouteComponentProps<IPageParams>) {
       // !permissionState.mode &&
       params.id != ":id"
     ) {
-      // dispatch(loadCustomerById(params.id));
+      dispatch(loadCustomerById(params.id));
     }
   }, [dispatch, params]);
 
@@ -423,7 +423,7 @@ export default function ClientForm(props: RouteComponentProps<IPageParams>) {
       params.mode != "permission" &&
       customerState.permissionSuccess
     ) {
-      // dispatch(loadCustomerById(params.id));
+      dispatch(loadCustomerById(params.id));
     }
   }, [customerState.permissionSuccess]);
 
