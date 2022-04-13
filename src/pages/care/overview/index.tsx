@@ -27,6 +27,7 @@ import NoPermission from "../../../components/Erros/NoPermission";
 import { ContainerStyle as Container } from "./styles";
 
 // Helper
+import LOCALSTORAGE from "../../../helpers/constants/localStorage";
 import SESSIONSTORAGE from "../../../helpers/constants/sessionStorage";
 import { age, formatDate } from "../../../helpers/date";
 import { checkViewPermission } from "../../../utils/permissions";
@@ -54,6 +55,7 @@ import { loadRequestByCareId as loadRequestPrescriptionByCareId } from "../../..
 import { loadRequest as loadRequestAntibiotic } from "../../../store/ducks/antibiotic/actions";
 import { loadRequest as loadRequestExams } from "../../../store/ducks/exams/actions";
 import { loadRequest as loadRequestAttests } from "../../../store/ducks/attest/actions";
+import { loadRequest as loadRequestCompanyLogo } from "../../../store/ducks/logo/actions";
 interface IPageParams {
   id?: string;
 }
@@ -139,7 +141,7 @@ export default function PatientOverview(
   props: RouteComponentProps<IPageParams>
 ) {
   const integration = sessionStorage.getItem(SESSIONSTORAGE.INTEGRATION);
-
+  const currentCompanyiD = localStorage.getItem(LOCALSTORAGE.COMPANY_SELECTED);
   const history = useHistory();
   const dispatch = useDispatch();
   const { params } = props.match;
@@ -163,6 +165,7 @@ export default function PatientOverview(
   const rightsOfLayoutState = useSelector(
     (state: ApplicationState) => state.layout.data.rights
   );
+  const logoState = useSelector((state: ApplicationState) => state.logo);
   const [team, setTeam] = useState<any[]>([]);
   const [reportActive, setReportActive] = useState(false);
   const [reportType, setReportType] = useState("");
@@ -174,6 +177,7 @@ export default function PatientOverview(
       dispatch(loadCareById(params.id));
       dispatch(loadRequestQrCode(params.id));
       dispatch(loadCheckinRequest(params.id));
+      dispatch(loadRequestCompanyLogo());
       // dispatch(loadScheduleRequest({ attendance_id: params.id }));
     }
   }, [params.id]);

@@ -13,7 +13,7 @@ import QRCode from "react-qr-code";
 import { formatDate } from "../../../helpers/date";
 import LOCALSTORAGE from "../../../helpers/constants/localStorage";
 import SESSIONSTORAGE from "../../../helpers/constants/sessionStorage";
-import ReactToPrint from "react-to-print";
+import ReactToPrint, { useReactToPrint } from "react-to-print";
 import {
   checkViewPermission,
   checkEditPermission,
@@ -24,18 +24,23 @@ import crypto from "crypto";
 import Dialog from "@mui/material/Dialog";
 import DialogActions from "@mui/material/DialogActions";
 import Box from "@mui/material/Box";
+import Grid from "@mui/material/Grid";
+
 // styles e styledComponents
-import { ButtonGeneration, ButtonPrint } from "./styles";
+import { ButtonGeneration, ButtonToPrint } from "./styles";
 // icons
 import CloseIcon from "@mui/icons-material/Close";
 import PrintIcon from "../../Icons/Print";
 import { qrCode, QrCodeState } from "../../../store/ducks/qrCode/types";
 import { CareState } from "../../../store/ducks/cares/types";
 import { CachedTwoTone } from "@material-ui/icons";
+import { ReactComponent as MarcaSollarAzul } from "../../../assets/img/marca-sollar-azul.svg";
+
 // components
 import Loading from "../../../components/Loading";
 import { toast } from "react-toastify";
-
+import { Typography } from "@mui/material";
+import { Link } from "react-router-dom";
 interface IQrCodeProps {
   tittle: any;
   content: IContent;
@@ -63,22 +68,14 @@ export default function DialogQrCode(props: IQrCodeProps) {
   const rightsOfLayoutState = useSelector(
     (state: ApplicationState) => state.layout.data.rights
   );
+  const logoState = useSelector((state: ApplicationState) => state.logo);
+  console.log(logoState);
   const integration = sessionStorage.getItem(SESSIONSTORAGE.INTEGRATION);
   const dispatch = useDispatch();
   const user_id = localStorage.getItem(LOCALSTORAGE.USER_ID);
   const company_id = localStorage.getItem(LOCALSTORAGE.COMPANY_SELECTED);
-
-  const buttonNew = [
-    {
-      name: "Gerar novo QR Code",
-      variant: "contained",
-      background: "secondary",
-      show: true,
-      onClick: () => {
-        dispatch(createQrCodeRequest(handlerQrCode()));
-      },
-    },
-  ];
+  const company_Name = localStorage.getItem(LOCALSTORAGE.COMPANY_NAME);
+  const logoCompany = Buffer.from(logoState.data.logo.data).toString("base64");
 
   const buttonCreateQrcode = [
     {
@@ -94,6 +91,12 @@ export default function DialogQrCode(props: IQrCodeProps) {
     },
   ];
   const componentRef = useRef(null);
+  const handlePrint = useReactToPrint({
+    content: () => componentRef.current,
+    documentTitle: `QR Code do Paciente ${
+      careState.data.patient_id?.name ? careState.data.patient_id?.name : ""
+    }`,
+  });
 
   const handleClose = () => {
     setOpenDialog(false);
@@ -111,15 +114,68 @@ export default function DialogQrCode(props: IQrCodeProps) {
     qrCodeState.data = newQrCode;
     return newQrCode;
   }
+  function QrCodeToPrint() {
+    return qrCodeState.data && qrCodeState.data.qr_code ? (
+      <>
+        <Grid
+          container
+          sx={{
+            display: "flex",
+            flexDirection: "column",
+            height: "100vh",
+            textAlign: "center",
+            justifyContent: "center",
+            alignItems: "center",
+            gap: "12px",
+          }}
+        >
+          {/* <MarcaSollarAzul style={{ width: 300, height: 300 }} /> */}
 
+          <QRCode
+            value={qrCodeState.data.qr_code}
+            fgColor="var(--black)"
+            size={450}
+          />
+          <Box
+            sx={{
+              fontSize: "26px",
+              textAlign: "center",
+              fontWeight: "bold",
+              margin: "8px 0",
+            }}
+          >{`Paciente ${careState?.data?.patient_id?.name}`}</Box>
+          <Box
+            sx={{ fontSize: "22px" }}
+          >{`Atendimento nº ${careState.data._id}`}</Box>
+          <Box sx={{ fontSize: "22px" }}>{company_Name}</Box>
+          <Box sx={{ marginTop: "8px", fontSize: "22px", textAlign: "center" }}>
+            <>
+              QR Code Gerado em:{" "}
+              {formatDate(qrCodeState.data.created_at, "DD/MM/YYYY")} às{" "}
+              {formatDate(qrCodeState.data.created_at, "HH:mm:ss")}
+            </>
+          </Box>
+          <img
+            src={`data:image/png;base64,${logoCompany ? logoCompany : ""}`}
+            style={{ width: "150px" }}
+          ></img>
+        </Grid>
+      </>
+    ) : (
+      <Grid container>
+        <Box>Não existe QR Code para este atendimento</Box>
+      </Grid>
+    );
+  }
   return (
     <>
       {qrCodeState.loading && <Loading />}
-      <Dialog open={openDialog} onClose={handleClose} ref={componentRef}>
+      <Dialog open={openDialog} onClose={handleClose}>
         <DialogActions style={{ textAlign: "right" }}>
           <CloseIcon
             onClick={handleClose}
             sx={{
+              cursor: "pointer",
               fontWeight: "bold",
               color: "var(--gray)",
               border: " 2px solid var(--gray)",
@@ -129,6 +185,7 @@ export default function DialogQrCode(props: IQrCodeProps) {
                 color: "var(--gray-dark)",
                 border: " 2px solid var(--gray-dark)",
               },
+              "& svg, path": { cursor: "pointer" },
             }}
           />
         </DialogActions>
@@ -155,27 +212,40 @@ export default function DialogQrCode(props: IQrCodeProps) {
                 </>
               </Box>
               <Box sx={{ display: "flex", gap: "10px", alignItems: "center" }}>
-                <ButtonGeneration buttons={buttonNew} canEdit={true} />
-                <ReactToPrint
-                  documentTitle={`QR Code do Paciente ${
-                    careState.data.patient_id?.name
-                      ? careState.data.patient_id?.name
-                      : ""
-                  }`}
-                  trigger={() => (
-                    <ButtonPrint>
-                      <PrintIcon fill={"var(--white"} />
-                    </ButtonPrint>
-                    // <ButtonGeneration buttons={buttonPrint} canEdit={false} />
-                  )}
-                  content={() => componentRef.current}
-                />
+                <ButtonGeneration
+                  onClick={() =>
+                    checkEditPermission(
+                      "qrcode",
+                      JSON.stringify(rightsOfLayoutState)
+                    )
+                      ? dispatch(createQrCodeRequest(handlerQrCode()))
+                      : toast.error("Você não tem permissão de gerar QR Code")
+                  }
+                >
+                  Gerar novo QR Code
+                </ButtonGeneration>
+                <ButtonToPrint onClick={handlePrint}>
+                  <PrintIcon fill={"var(--white"} />
+                </ButtonToPrint>
+                {/* <ButtonPrint >
+                  
+                </ButtonPrint> */}
               </Box>
+
+              <div style={{ display: "none" }}>
+                <div ref={componentRef}>
+                  <QrCodeToPrint />
+                </div>
+              </div>
             </>
           ) : (
             <>
               <Box>Não existe nenhum QR Code ativo</Box>
-              <ButtonGeneration buttons={buttonCreateQrcode} canEdit={true} />
+              <ButtonGeneration
+                onClick={() => dispatch(createQrCodeRequest(handlerQrCode()))}
+              >
+                Gerar novo QR Code
+              </ButtonGeneration>
             </>
           )}
         </Box>
