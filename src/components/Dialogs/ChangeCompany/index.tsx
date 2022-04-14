@@ -13,6 +13,7 @@ import SESSIONSTORAGE from "../../../helpers/constants/sessionStorage";
 import { handleCompanySelected } from "../../../helpers/localStorage";
 import { CompanyUserLinkInterface } from "../../../store/ducks/users/types";
 import _ from "lodash";
+import { toast } from "react-toastify";
 
 // MUI
 import Button from "@mui/material/Button";
@@ -22,11 +23,9 @@ import DialogActions from "@mui/material/DialogActions";
 import DialogContent from "@mui/material/DialogContent";
 import DialogContentText from "@mui/material/DialogContentText";
 import DialogTitle from "@mui/material/DialogTitle";
-import Slide from "@mui/material/Slide";
-import { TransitionProps } from "@mui/material/transitions";
-import Autocomplete from "@mui/material/Autocomplete";
+
 // styles
-import { ButtonGreen } from "./styles";
+import { ButtonGreen, AutocompleteStyled as Autocomplete } from "./styles";
 import { ApplicationState } from "../../../store";
 
 interface IChangeCompany {
@@ -50,7 +49,7 @@ export default function DialogChangeCompany(props: IChangeCompany) {
   const userState = useSelector((state: ApplicationState) => state.users);
   const [companySelected, setCompanySelected] = useState<any>("");
   const [tochedAutocomplete, setTouchedAutocomplete] = useState(false);
-
+  const currentCompany = localStorage.getItem(LOCALSTORAGE.COMPANY_SELECTED);
   useEffect(() => {
     dispatch(loadUserById(user.id, "sidebar"));
   }, []);
@@ -72,6 +71,12 @@ export default function DialogChangeCompany(props: IChangeCompany) {
   }, [userState]);
 
   const handleClose = () => {
+    setUser((state) => {
+      return {
+        ...state,
+        companySelected: handleCompanySelected(),
+      };
+    });
     setOpen(false);
   };
 
@@ -85,11 +90,9 @@ export default function DialogChangeCompany(props: IChangeCompany) {
   const changeCompanySelected = useCallback((company: any) => {
     setCompanySelected(company);
   }, []);
-
   const changeCompany = useCallback(
     (company: any) => {
       if (company) {
-        // console.log(company.companie_id.id);
         localStorage.setItem(
           LOCALSTORAGE.COMPANY_SELECTED,
           company.companie_id._id
@@ -134,7 +137,6 @@ export default function DialogChangeCompany(props: IChangeCompany) {
     },
     [user]
   );
-  console.log(companySelected);
 
   return (
     <Dialog open={open} onClose={handleClose} keepMounted>
@@ -148,13 +150,26 @@ export default function DialogChangeCompany(props: IChangeCompany) {
           </p>
         </DialogContentText>
         <Autocomplete
+          sx={{
+            width: 500,
+            "&		.MuiOutlinedInput-notchedOutline .Mui-focused": {
+              border: "2px solid black",
+            },
+          }}
           value={selectCompany()}
-          onChange={(event, value) => changeCompany(value)}
+          onChange={(event, value: any) => {
+            changeCompanySelected(value);
+            setUser((state) => {
+              return {
+                ...state,
+                companySelected: value?.companie_id?._id,
+              };
+            });
+          }}
           loading={loading}
           id="controllable-states-demo"
           options={companies}
           getOptionLabel={(option: any) => option.customer}
-          sx={{ width: 500 }}
           noOptionsText={"Nenhuma empresa encontrada"}
           renderInput={(params) => <TextField {...params} label="Empresas" />}
         />
@@ -162,11 +177,15 @@ export default function DialogChangeCompany(props: IChangeCompany) {
       <DialogActions sx={{ margin: "0 24px 16px" }}>
         <ButtonGreen
           onClick={() => {
-            handleClose();
-            changeCompany(companySelected);
-            dispatch(loadRequestLayout());
-            dispatch(loadRequestLogo());
-            history.push(`/dashboard`);
+            if (user.companySelected) {
+              setOpen(false);
+              changeCompany(companySelected);
+              dispatch(loadRequestLayout());
+              dispatch(loadRequestLogo());
+              history.push(`/dashboard`);
+            } else {
+              toast.warning("Você deve escolher a empresa.");
+            }
             // setUser((state) => {
             //   return {
             //     ...state,
@@ -180,13 +199,13 @@ export default function DialogChangeCompany(props: IChangeCompany) {
         </ButtonGreen>
         <Button
           onClick={() => {
+            // setUser((state) => {
+            //   return {
+            //     ...state,
+            //     companySelected: handleCompanySelected(),
+            //   };
+            // });
             handleClose();
-            setUser((state) => {
-              return {
-                ...state,
-                companySelected: handleCompanySelected(),
-              };
-            });
           }}
           variant="outlined"
         >

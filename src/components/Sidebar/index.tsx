@@ -538,9 +538,9 @@ const Sibebar = (props: Props<any>) => {
                   >
                     <Grid item>
                       <Badge
-                        classes={{ badge: classes.customBadge }}
-                        className={classes.padding}
-                        color="primary"
+                        // classes={{ badge: classes.customBadge }}
+                        // className={classes.padding}
+                        // sx={{ backgroundColor: "var(--secondary)" }}
                         badgeContent={1}
                         max={99}
                       >
