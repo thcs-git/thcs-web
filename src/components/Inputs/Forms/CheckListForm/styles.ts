@@ -1,5 +1,6 @@
 import styled from "styled-components";
-import Box from "@mui/material/Box";
+import { styled as styledMui } from "@mui/material/styles";
+import Box, { BoxProps } from "@mui/material/Box";
 import { FormControl } from "@material-ui/core";
 
 export const FormGroupSection = styled(FormControl)`
@@ -8,6 +9,20 @@ export const FormGroupSection = styled(FormControl)`
 
   margin-bottom: 30px;
 `;
+export const CheckBoxInvalid = styledMui(Box)<BoxProps>(({ theme }) => ({
+  width: "1.2rem",
+  height: "1.2rem",
+  borderRadius: "30px",
+  border: "3px solid var(--gray)",
+  color: "var(--gray)",
+  display: "flex",
+  flexShrink: 0,
+  justifyContent: "center",
+  alignItems: "center",
+  position: "absolute",
+  fontWeight: "bold",
+  fontSize: "1.5rem",
+}));
 
 export const WrapperHeaderForm = styled(Box)`
   font-size: 12px;
