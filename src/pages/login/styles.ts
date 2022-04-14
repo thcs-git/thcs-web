@@ -1,7 +1,14 @@
 import styled from "styled-components";
+import { styled as styledMui } from "@mui/material/styles";
 import Container from "@material-ui/core/Container";
 import Typography from "@material-ui/core/Typography";
 import { ReactComponent as HomeIcon } from "../../assets/img/marca-sollar-azul.svg";
+import Button, { ButtonProps } from "@mui/material/Button";
+
+interface IButton extends ButtonProps {
+  background?: any;
+  colorText?: any;
+}
 
 export const ContainerLogin = styled(Container)`
   display: flex;
@@ -32,6 +39,12 @@ export const TextGray = styled.p`
   color: #666;
 `;
 export const TextBlue = styled.a`
-  font-size: 12px;
+  font-size: 14px;
   color: #0899ba;
+  cursor: pointer;
 `;
+export const ButtonGreen = styledMui(Button)<IButton>(({ theme }) => ({
+  backgroundColor: "var(--success)",
+  color: "var(--white)",
+  "&:hover": { backgroundColor: "#4fc66ae3" },
+}));
