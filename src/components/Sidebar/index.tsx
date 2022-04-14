@@ -46,7 +46,7 @@ import {
   Grid,
   MenuItem,
   Typography,
-} from "@material-ui/core";
+} from "@mui/material";
 
 import { useHistory } from "react-router-dom";
 
@@ -74,7 +74,7 @@ import { toast } from "react-toastify";
 import _ from "lodash";
 import { loadRequest } from "../../store/ducks/layout/actions";
 import Message from "../Message";
-
+import DialogChangeCompany from "../Dialogs/ChangeCompany";
 const drawerWidth = 270;
 
 // const itemsMenu = [
@@ -176,6 +176,7 @@ const Sibebar = (props: Props<any>) => {
   const dispatch = useDispatch();
 
   const layoutState = useSelector((state: ApplicationState) => state.layout);
+  const currentCompany = localStorage.getItem(LOCALSTORAGE.COMPANY_SELECTED);
 
   const [open, setOpen] = useState<Boolean>(() => {
     let toggleSidebar =
@@ -194,10 +195,19 @@ const Sibebar = (props: Props<any>) => {
     _id: localStorage.getItem(LOCALSTORAGE.CUSTOMER) || "",
     name: localStorage.getItem(LOCALSTORAGE.CUSTOMER_NAME) || "",
   });
-
   const [openModalLogout, setOpenModalLogout] = useState(false);
   const [openModalConfig, setOpenModalConfig] = useState(false);
   const [openModalMessage, setOpenModalMessage] = useState(false);
+
+  const [openDialogCompany, setOpenDialogCompany] = React.useState(false);
+
+  const handleClickOpenDialogCompany = () => {
+    setOpenDialogCompany(true);
+  };
+
+  const handleCloseDialogCompany = () => {
+    setOpenDialogCompany(false);
+  };
 
   const handleDrawerClose = useCallback(() => {
     setOpen((prev) => {
@@ -477,7 +487,10 @@ const Sibebar = (props: Props<any>) => {
                   <ListItem
                     style={{ padding: 0 }}
                     className={classes.logOutButton}
-                    onClick={() => setOpenModalConfig(true)}
+                    onClick={() => {
+                      handleClickOpenDialogCompany();
+                      setOpenModalConfig(true);
+                    }}
                   >
                     <BusinessIcon />
                     <ListItemText style={{ color: "#ffff", cursor: "pointer" }}>
@@ -611,8 +624,9 @@ const Sibebar = (props: Props<any>) => {
           </Button>
         </DialogActions>
       </Dialog>
+      {/* {console.log(openDialogCompany)} */}
 
-      <Dialog
+      {/* <Dialog
         open={openModalConfig}
         // onClose={handleToggleModalConfig}
         aria-labelledby="alert-dialog-title"
@@ -635,7 +649,7 @@ const Sibebar = (props: Props<any>) => {
             Fechar
           </Button>
         </DialogActions>
-      </Dialog>
+      </Dialog> */}
 
       <Dialog
         open={openModalMessage}
@@ -661,6 +675,10 @@ const Sibebar = (props: Props<any>) => {
           </Button>
         </DialogActions>
       </Dialog>
+      <DialogChangeCompany
+        open={openDialogCompany}
+        setOpen={setOpenDialogCompany}
+      />
     </div>
   );
 };
