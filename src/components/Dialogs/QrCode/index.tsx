@@ -69,7 +69,6 @@ export default function DialogQrCode(props: IQrCodeProps) {
     (state: ApplicationState) => state.layout.data.rights
   );
   const logoState = useSelector((state: ApplicationState) => state.logo);
-  console.log(logoState);
   const integration = sessionStorage.getItem(SESSIONSTORAGE.INTEGRATION);
   const dispatch = useDispatch();
   const user_id = localStorage.getItem(LOCALSTORAGE.USER_ID);
@@ -155,10 +154,14 @@ export default function DialogQrCode(props: IQrCodeProps) {
               {formatDate(qrCodeState.data.created_at, "HH:mm:ss")}
             </>
           </Box>
-          <img
-            src={`data:image/png;base64,${logoCompany ? logoCompany : ""}`}
-            style={{ width: "150px" }}
-          ></img>
+          {logoCompany ? (
+            <img
+              src={`data:image/png;base64,${logoCompany}`}
+              style={{ width: "150px" }}
+            ></img>
+          ) : (
+            ""
+          )}
         </Grid>
       </>
     ) : (

@@ -6,11 +6,10 @@ import { loadFailure, loadSuccess } from "./actions";
 
 export function* get() {
   try {
-    console.log("entrou");
     const response: AxiosResponse = yield call(apiSollar.get, "/logo");
     yield put(loadSuccess(response.data));
   } catch (err) {
     yield put(loadFailure());
-    toast.error("Erro ao buscar Aferições");
+    toast.error("Erro ao buscar logo");
   }
 }
