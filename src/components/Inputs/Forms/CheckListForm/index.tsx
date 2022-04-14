@@ -241,10 +241,10 @@ const CheckListForm = (props: Iprops) => {
           <Box style={{ display: "flex", justifyContent: "space-between" }}>
             <Box style={{ width: "190px" }}></Box>
             <WrapperHeaderForm style={{ padding: "12.3px" }}>
-              <Box>Checagem</Box>
-              <Box>Aferiçãor</Box>
-              <Box>Evolução</Box>
-              <Box>Recetuários</Box>
+              <Box>Checagens</Box>
+              <Box>Aferições</Box>
+              <Box>Evoluções</Box>
+              <Box>Receituários</Box>
               <Box>Atestados</Box>
               <Box>Exames</Box>
             </WrapperHeaderForm>
