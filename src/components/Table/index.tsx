@@ -1,5 +1,5 @@
-import React, {ReactNode, useCallback} from "react";
-import {useHistory, Link} from "react-router-dom";
+import React, { ReactNode, useCallback } from "react";
+import { useHistory, Link } from "react-router-dom";
 
 import Table from "@material-ui/core/Table";
 import TableBody from "@material-ui/core/TableBody";
@@ -8,24 +8,26 @@ import TableContainer from "@material-ui/core/TableContainer";
 import TableHead from "@material-ui/core/TableHead";
 import TableRow from "@material-ui/core/TableRow";
 import Paper from "@material-ui/core/Paper";
-import {Visibility as VisibilityIcon} from "@material-ui/icons";
+import { Visibility as VisibilityIcon } from "@material-ui/icons";
 
 MenuItem;
 import FilterListIcon from "@material-ui/icons/FilterList";
 import Checkbox from "@material-ui/core/Checkbox";
-import {MoreVert} from "@material-ui/icons";
-import {ComplexityStatus} from "../../styles/components/Table";
+import { MoreVert } from "@material-ui/icons";
+import { ComplexityStatus } from "../../styles/components/Table";
 
 import Button from "../Button";
-import {MenuFilter as Menu, Th} from "./styles";
-import {UserInterface, UserState} from "../../store/ducks/users/types";
-import {MenuItem, Tooltip} from "@material-ui/core";
+import { MenuFilter as Menu, Th } from "./styles";
+import { UserInterface, UserState } from "../../store/ducks/users/types";
+import { MenuItem, Tooltip } from "@material-ui/core";
 import MoreHorizTwoToneIcon from "@material-ui/icons/MoreHorizTwoTone";
-import {ListItemStatus} from "../../pages/userclient/list/styles";
-import {any} from "cypress/types/bluebird";
-import {formatDate} from "../../helpers/date";
-import {PatientState} from "../../store/ducks/patients/types";
-import {CareState, CareInterface} from "../../store/ducks/cares/types";
+import { ListItemStatus } from "../../pages/userclient/list/styles";
+import { any } from "cypress/types/bluebird";
+import { formatDate } from "../../helpers/date";
+import { PatientState } from "../../store/ducks/patients/types";
+import { CareState, CareInterface } from "../../store/ducks/cares/types";
+import LOCALSTORAGE from "../../helpers/constants/localStorage";
+
 interface ICellProps {
   name: string;
   align: "right" | "left" | "center";
@@ -71,6 +73,7 @@ const TableComponent = (props: ITableProps) => {
     historyModalOpen,
   } = props;
   const history = useHistory();
+  const currentCompanyId = localStorage.getItem(LOCALSTORAGE.COMPANY_SELECTED);
 
   const handleClick = useCallback(
     (event: React.MouseEvent<HTMLButtonElement>) => {
@@ -96,6 +99,38 @@ const TableComponent = (props: ITableProps) => {
   const handleClose = useCallback(() => {
     setAnchorEl(null);
   }, []);
+
+  const capitalizeText = (words: string) => {
+    if (words) {
+      return words
+        .toLowerCase()
+        .split(" ")
+        .map((text: string) => {
+          return (text = text.charAt(0).toUpperCase() + text.substring(1));
+        })
+        .join(" ");
+    } else return "";
+  };
+
+  function handleCompanie_link(
+    list: any,
+    company: string | null,
+    type: string
+  ) {
+    for (let i = 0; i < list.length; i++) {
+      if (list[i].companie_id._id === company) {
+        if (type === "function") {
+          return list[i].function;
+        } else if (type === "main") {
+          return list[i].main_specialty;
+        } else if (type === "specialties") {
+          return list[i].specialties;
+        } else {
+          return "";
+        }
+      }
+    }
+  }
   return (
     <TableContainer component={Paper}>
       <Table aria-label="simple table">
@@ -122,7 +157,7 @@ const TableComponent = (props: ITableProps) => {
                   onClick={handleClick}
                   size="small"
                 >
-                  <FilterListIcon/>
+                  <FilterListIcon />
                 </Button>
                 <Menu
                   id="simple-menu"
@@ -142,7 +177,7 @@ const TableComponent = (props: ITableProps) => {
                   <p>Filtrar resultados por</p>
                   {props.fieldsFilter?.map((field, fieldIndex) => (
                     <li key={`fields_filter_${fieldIndex}`}>
-                      <Checkbox name={field} onChange={props.onChangeFilter}/>
+                      <Checkbox name={field} onChange={props.onChangeFilter} />
                       {field}
                     </li>
                   ))}
@@ -174,24 +209,52 @@ const TableComponent = (props: ITableProps) => {
                 )}
                 {
                   <TableCell>
-                    {handleEmpty(user?.profession_external)}
+                    {handleEmpty(
+                      capitalizeText(
+                        handleCompanie_link(
+                          user?.companies_links,
+                          currentCompanyId,
+                          "function"
+                        )
+                      )
+                    )}
                   </TableCell>
                 }
 
                 <TableCell align="left">
-                  <div style={{display: "flex"}}>
-                    <p style={{marginTop: "0.3rem"}}>
-                      {user.main_specialty_external
-                        ? user.main_specialty_external
+                  <div style={{ display: "flex" }}>
+                    <p style={{ marginTop: "0.3rem" }}>
+                      {handleCompanie_link(
+                        user?.companies_links,
+                        currentCompanyId,
+                        "main"
+                      )
+                        ? capitalizeText(
+                            handleCompanie_link(
+                              user?.companies_links,
+                              currentCompanyId,
+                              "main"
+                            )
+                          )
                         : "-"}
                     </p>
 
-                    {user?.specialties_external ? (
+                    {handleCompanie_link(
+                      user?.companies_links,
+                      currentCompanyId,
+                      "specialties"
+                    ) ? (
                       <Tooltip
-                        style={{fontSize: "10pt", marginTop: "0.8rem"}}
-                        title={user.specialties_external}
+                        style={{ fontSize: "10pt", marginTop: "0.8rem" }}
+                        title={capitalizeText(
+                          handleCompanie_link(
+                            user?.companies_links,
+                            currentCompanyId,
+                            "specialties"
+                          )
+                        )}
                       >
-                        <MoreHorizTwoToneIcon/>
+                        <MoreHorizTwoToneIcon />
                       </Tooltip>
                     ) : (
                       ""
@@ -220,13 +283,13 @@ const TableComponent = (props: ITableProps) => {
                   {user?.profession_id?.name ? user.profession_id.name : "-"}
                 </TableCell>
                 <TableCell align="left">
-                  <div style={{display: "flex"}}>
-                    <p style={{marginTop: "0.3rem"}}>
+                  <div style={{ display: "flex" }}>
+                    <p style={{ marginTop: "0.3rem" }}>
                       {user?.main_specialty_id?.name}
                     </p>
                     {user?.specialties?.length > 0 ? (
                       <Tooltip
-                        style={{fontSize: "10pt", marginTop: "0.8rem"}}
+                        style={{ fontSize: "10pt", marginTop: "0.8rem" }}
                         title={user.specialties.map(
                           (specialty, index) =>
                             `${specialty.name}${
@@ -234,7 +297,7 @@ const TableComponent = (props: ITableProps) => {
                             }`
                         )}
                       >
-                        <MoreHorizTwoToneIcon/>
+                        <MoreHorizTwoToneIcon />
                       </Tooltip>
                     ) : null}
                   </div>
@@ -284,7 +347,7 @@ const TableComponent = (props: ITableProps) => {
                     aria-haspopup="true"
                     onClick={handleOpenRowMenu}
                   >
-                    <MoreVert style={{color: "#0899BA"}}/>
+                    <MoreVert style={{ color: "#0899BA" }} />
                   </Button>
                   <Menu
                     id={`user-menu${index}`}
@@ -353,7 +416,7 @@ const TableComponent = (props: ITableProps) => {
                       aria-haspopup="true"
                       onClick={handleOpenRowMenu}
                     >
-                      <MoreVert style={{color: "#0899BA"}}/>
+                      <MoreVert style={{ color: "#0899BA" }} />
                     </Button>
                   )}
 
@@ -408,37 +471,45 @@ const TableComponent = (props: ITableProps) => {
 
           {/*/!*Historico de Atendimento*!/*/}
           {historyModalOpen &&
-            careState?.history?.data.map((care: any, index: number) =>
-            <TableRow key={`patient_${index}`}>
-              <TableCell>
-                <p>{care?.created_at ? formatDate(care?.created_at ?? "", "DD/MM/YYYY") : "-"}</p>
-              </TableCell>
-              <TableCell align="center">
-                <p>{care?._id}</p>
-              </TableCell>
-              <TableCell>
-                <p>{care?.released_at ? formatDate(care?.released_at ?? "", "DD/MM/YYYY") : "-"}</p>
-              </TableCell>
-              {/*<TableCell align="center">*/}
-              {/*  <p>*/}
-              {/*    {typeof care?.care_type_id === "object"*/}
-              {/*      ? care?.care_type_id.name*/}
-              {/*      : care?.care_type_id}*/}
-              {/*  </p>*/}
-              {/*</TableCell>*/}
-              <TableCell>
-                {care?.tipo}
-              </TableCell>
-              <TableCell align="center">
-                <p>{care?.company_id}</p>
-              </TableCell>
-              <TableCell align="center">
-                <Button onClick={() => history.push(`/care/${care?._id}/overview`)}>
-                  <VisibilityIcon style={{color: '#0899BA'}}/>
-                </Button>
-              </TableCell>
-            </TableRow>
-          )}
+            careState?.history?.data.map((care: any, index: number) => (
+              <TableRow key={`patient_${index}`}>
+                <TableCell>
+                  <p>
+                    {care?.created_at
+                      ? formatDate(care?.created_at ?? "", "DD/MM/YYYY")
+                      : "-"}
+                  </p>
+                </TableCell>
+                <TableCell align="center">
+                  <p>{care?._id}</p>
+                </TableCell>
+                <TableCell>
+                  <p>
+                    {care?.released_at
+                      ? formatDate(care?.released_at ?? "", "DD/MM/YYYY")
+                      : "-"}
+                  </p>
+                </TableCell>
+                {/*<TableCell align="center">*/}
+                {/*  <p>*/}
+                {/*    {typeof care?.care_type_id === "object"*/}
+                {/*      ? care?.care_type_id.name*/}
+                {/*      : care?.care_type_id}*/}
+                {/*  </p>*/}
+                {/*</TableCell>*/}
+                <TableCell>{care?.tipo}</TableCell>
+                <TableCell align="center">
+                  <p>{care?.company_id}</p>
+                </TableCell>
+                <TableCell align="center">
+                  <Button
+                    onClick={() => history.push(`/care/${care?._id}/overview`)}
+                  >
+                    <VisibilityIcon style={{ color: "#0899BA" }} />
+                  </Button>
+                </TableCell>
+              </TableRow>
+            ))}
 
           {careFilter &&
             !integration &&
@@ -455,9 +526,7 @@ const TableComponent = (props: ITableProps) => {
                 {/*    ? care?.care_type_id.name*/}
                 {/*    : care?.care_type_id}*/}
                 {/*</TableCell>*/}
-                <TableCell>
-                  {care?.tipo}
-                </TableCell>
+                <TableCell>{care?.tipo}</TableCell>
                 <TableCell>{care.patient_id?.fiscal_number}</TableCell>
 
                 {/*<TableCell align="center">*/}
@@ -489,7 +558,7 @@ const TableComponent = (props: ITableProps) => {
                     aria-haspopup="true"
                     onClick={handleOpenRowMenu}
                   >
-                    <MoreVert style={{color: "#0899BA"}}/>
+                    <MoreVert style={{ color: "#0899BA" }} />
                   </Button>
                   <Menu
                     id={`simple-menu${index}`}
@@ -499,11 +568,12 @@ const TableComponent = (props: ITableProps) => {
                     onClose={handleCloseRowMenu}
                   >
                     {toggleHistoryModal && (
-                      <MenuItem onClick={() => {
-                        toggleHistoryModal(index, care)
-                        handleCloseRowMenu()
-                      }
-                      }>
+                      <MenuItem
+                        onClick={() => {
+                          toggleHistoryModal(index, care);
+                          handleCloseRowMenu();
+                        }}
+                      >
                         Histórico
                       </MenuItem>
                     )}
