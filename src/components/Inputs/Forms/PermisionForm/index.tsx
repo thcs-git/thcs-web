@@ -259,15 +259,15 @@ const PermissionForm = (props: IComponent) => {
         { crud: "create", label: "Gerar" },
       ],
     },
-    {
-      legend: "Agenda",
-      name: "schedule",
-      rights: [
-        { crud: "view", label: "Visualizar" },
-        { crud: "edit", label: "Criar/Editar" },
-        { crud: "create", label: "Gerar" },
-      ],
-    },
+    // {
+    //   legend: "Agenda",
+    //   name: "schedule",
+    //   rights: [
+    //     { crud: "view", label: "Visualizar" },
+    //     { crud: "edit", label: "Criar/Editar" },
+    //     { crud: "create", label: "Gerar" },
+    //   ],
+    // },
   ];
 
   const rowsApp = [

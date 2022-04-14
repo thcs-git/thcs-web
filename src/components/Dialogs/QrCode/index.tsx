@@ -17,6 +17,7 @@ import ReactToPrint, { useReactToPrint } from "react-to-print";
 import {
   checkViewPermission,
   checkEditPermission,
+  checkCreatePermission,
 } from "../../../utils/permissions";
 import crypto from "crypto";
 
@@ -38,6 +39,7 @@ import { ReactComponent as MarcaSollarAzul } from "../../../assets/img/marca-sol
 
 // components
 import Loading from "../../../components/Loading";
+import NoPermission from "../../Erros/NoPermission";
 import { toast } from "react-toastify";
 import { Typography } from "@mui/material";
 import { Link } from "react-router-dom";
@@ -83,7 +85,7 @@ export default function DialogQrCode(props: IQrCodeProps) {
       background: "secondary",
       show: true,
       onClick: () => {
-        checkEditPermission("qrcode", JSON.stringify(rightsOfLayoutState))
+        checkCreatePermission("qrcode", JSON.stringify(rightsOfLayoutState))
           ? dispatch(createQrCodeRequest(handlerQrCode()))
           : toast.error("Você não tem permissão de gerar QR Code");
       },
@@ -172,87 +174,100 @@ export default function DialogQrCode(props: IQrCodeProps) {
   }
   return (
     <>
-      {qrCodeState.loading && <Loading />}
-      <Dialog open={openDialog} onClose={handleClose}>
-        <DialogActions style={{ textAlign: "right" }}>
-          <CloseIcon
-            onClick={handleClose}
-            sx={{
-              cursor: "pointer",
-              fontWeight: "bold",
-              color: "var(--gray)",
-              border: " 2px solid var(--gray)",
-              borderRadius: "30px",
-              transition: "200ms",
-              "&:hover": {
-                color: "var(--gray-dark)",
-                border: " 2px solid var(--gray-dark)",
-              },
-              "& svg, path": { cursor: "pointer" },
-            }}
-          />
-        </DialogActions>
+      {checkViewPermission("qrcode", JSON.stringify(rightsOfLayoutState)) ? (
+        <>
+          {qrCodeState.loading && <Loading />}
+          <Dialog open={openDialog} onClose={handleClose}>
+            <DialogActions style={{ textAlign: "right" }}>
+              <CloseIcon
+                onClick={handleClose}
+                sx={{
+                  fontWeight: "bold",
+                  color: "var(--gray)",
+                  border: " 2px solid var(--gray)",
+                  borderRadius: "30px",
+                  transition: "200ms",
+                  "&:hover": {
+                    color: "var(--gray-dark)",
+                    border: " 2px solid var(--gray-dark)",
+                  },
+                }}
+              />
+            </DialogActions>
 
-        <Box
-          sx={{
-            width: "400px",
-            height: "400px",
-            display: "flex",
-            flexDirection: "column",
-            alignItems: "center",
-            justifyContent: "center",
-            gap: "8px",
-          }}
-        >
-          {qrCodeState.data && qrCodeState.data.qr_code ? (
-            <>
-              <QRCode value={qrCodeState.data.qr_code} fgColor="var(--black)" />
-              <Box sx={{ marginTop: "8px" }}>
+            <Box
+              sx={{
+                width: "400px",
+                height: "400px",
+                display: "flex",
+                flexDirection: "column",
+                alignItems: "center",
+                justifyContent: "center",
+                gap: "8px",
+              }}
+            >
+              {qrCodeState.data && qrCodeState.data.qr_code ? (
                 <>
-                  Gerado em:{" "}
-                  {formatDate(qrCodeState.data.created_at, "DD/MM/YYYY")} às{" "}
-                  {formatDate(qrCodeState.data.created_at, "HH:mm:ss")}
-                </>
-              </Box>
-              <Box sx={{ display: "flex", gap: "10px", alignItems: "center" }}>
-                <ButtonGeneration
-                  onClick={() =>
-                    checkEditPermission(
-                      "qrcode",
-                      JSON.stringify(rightsOfLayoutState)
-                    )
-                      ? dispatch(createQrCodeRequest(handlerQrCode()))
-                      : toast.error("Você não tem permissão de gerar QR Code")
-                  }
-                >
-                  Gerar novo QR Code
-                </ButtonGeneration>
-                <ButtonToPrint onClick={handlePrint}>
-                  <PrintIcon fill={"var(--white"} />
-                </ButtonToPrint>
-                {/* <ButtonPrint >
+                  <QRCode
+                    value={qrCodeState.data.qr_code}
+                    fgColor="var(--black)"
+                  />
+                  <Box sx={{ marginTop: "8px" }}>
+                    <>
+                      Gerado em:{" "}
+                      {formatDate(qrCodeState.data.created_at, "DD/MM/YYYY")} às{" "}
+                      {formatDate(qrCodeState.data.created_at, "HH:mm:ss")}
+                    </>
+                  </Box>
+                  <Box
+                    sx={{ display: "flex", gap: "10px", alignItems: "center" }}
+                  >
+                    <ButtonGeneration
+                      onClick={() =>
+                        checkEditPermission(
+                          "qrcode",
+                          JSON.stringify(rightsOfLayoutState)
+                        )
+                          ? dispatch(createQrCodeRequest(handlerQrCode()))
+                          : toast.error(
+                              "Você não tem permissão de gerar QR Code"
+                            )
+                      }
+                    >
+                      Gerar novo QR Code
+                    </ButtonGeneration>
+                    <ButtonToPrint onClick={handlePrint}>
+                      <PrintIcon fill={"var(--white"} />
+                    </ButtonToPrint>
+                    {/* <ButtonPrint >
                   
                 </ButtonPrint> */}
-              </Box>
+                  </Box>
 
-              <div style={{ display: "none" }}>
-                <div ref={componentRef}>
-                  <QrCodeToPrint />
-                </div>
-              </div>
-            </>
-          ) : (
-            <>
-              <Box>Não existe nenhum QR Code ativo</Box>
-              <ButtonGeneration
-                onClick={() => dispatch(createQrCodeRequest(handlerQrCode()))}
-              >
-                Gerar novo QR Code
-              </ButtonGeneration>
-            </>
-          )}
-        </Box>
-      </Dialog>
+                  <div style={{ display: "none" }}>
+                    <div ref={componentRef}>
+                      <QrCodeToPrint />
+                    </div>
+                  </div>
+                </>
+              ) : (
+                <>
+                  <Box>Não existe nenhum QR Code ativo</Box>
+                  <ButtonGeneration
+                    onClick={() =>
+                      dispatch(createQrCodeRequest(handlerQrCode()))
+                    }
+                  >
+                    Gerar novo QR Code
+                  </ButtonGeneration>
+                </>
+              )}
+            </Box>
+          </Dialog>
+        </>
+      ) : (
+        <NoPermission />
+      )}
     </>
   );
 }

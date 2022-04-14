@@ -5,10 +5,10 @@ import { ApplicationState } from "../../store";
 
 import Container from "@material-ui/core/Container";
 import Box from "@mui/material/Box";
-import Grid from "@material-ui/core/Grid";
+import Grid from "@mui/material/Grid";
 import Link from "@material-ui/core/Link";
-import Checkbox from "@material-ui/core/Checkbox";
-import TextField from "@material-ui/core/TextField";
+import Checkbox from "@mui/material/Checkbox";
+import TextField from "@mui/material/TextField";
 // import Typography from "@material-ui/core/Typography";
 import InputLabel from "@material-ui/core/InputLabel";
 import IconButton from "@material-ui/core/IconButton";
@@ -31,6 +31,7 @@ import {
   LogoText,
   TextGray,
   TextBlue,
+  ButtonGreen,
 } from "./styles";
 
 import Button from "../../styles/components/Button";
@@ -51,8 +52,11 @@ import {
   Fab,
   FormGroup,
 } from "@material-ui/core";
+import FormHelperText from "@mui/material/FormHelperText";
 import Typography from "@mui/material/Typography";
 import { updateUserPasswordRequest } from "../../store/ducks/users/actions";
+import { useFormik } from "formik";
+import * as yup from "yup";
 
 function Copyright() {
   return (
@@ -151,8 +155,33 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const SIZE_INPUT_PASSWORD = 3;
+const SIZE_INPUT_PASSWORD = 6;
 
+const validationSchema = yup.object({
+  password: yup
+    .string()
+    .min(
+      SIZE_INPUT_PASSWORD,
+      `A senha deve ter no mínimo ${SIZE_INPUT_PASSWORD} caracteres`
+    )
+    .max(20, "Senha deve ter no maximo 20 caracteres")
+    .required("Campo obrigatório"),
+  confirmPassword: yup
+    .string()
+    .min(
+      SIZE_INPUT_PASSWORD,
+      `A senha deve ter no mínimo ${SIZE_INPUT_PASSWORD} caracteres`
+    )
+    .required("Campo obrigatório")
+    .oneOf(
+      [yup.ref("password"), null],
+      "Nova senha e confirmar senha devem ser iguais"
+    ),
+  policyAccepted: yup
+    .boolean()
+    .required("Os termos e condições devem ser aceitos.")
+    .oneOf([true], "Os termos e políticas devem ser aceitos."),
+});
 const policity = () => {
   return (
     <>
@@ -931,11 +960,11 @@ const policity = () => {
     </>
   );
 };
-
 export default function SignIn() {
   const history = useHistory();
   const dispatch = useDispatch();
   const loginState = useSelector((state: ApplicationState) => state.login);
+  console.log(loginState);
 
   const [inputEmail, setInputEmail] = useState({ value: "", error: false });
   const [inputPassword, setInputPassword] = useState({
@@ -1070,12 +1099,9 @@ export default function SignIn() {
 
   function handleVerifyEmailAndPassword(e: any) {
     handleVerifyEmail(e);
-    if (valid) {
-      handlePassword(e);
-      handleLogin(e);
-    }
+    handlePassword(e);
+    handleLogin(e);
   }
-
   useEffect(() => {
     let minSizePass = inputPassword.value.length >= SIZE_INPUT_PASSWORD;
     let minSizePassConfirm =
@@ -1092,6 +1118,34 @@ export default function SignIn() {
       setValid(false);
     }
   }, [inputConfirmPassword, inputPassword, checkPolicy]);
+  useEffect(() => {}, [loginState]);
+  const handleMouseDownPassword = (
+    event: React.MouseEvent<HTMLButtonElement>
+  ) => {
+    event.preventDefault();
+  };
+
+  const formik = useFormik({
+    initialValues: {
+      email: loginState.email.user,
+      password: "",
+      confirmPassword: "",
+      policyAccepted: false,
+    },
+    validationSchema: validationSchema,
+    onSubmit: (values) => {
+      dispatch(
+        updateUserPasswordRequest({
+          email: inputEmail.value,
+          password: values.password,
+        })
+      );
+      dispatch(
+        loadRequest({ email: inputEmail.value, password: values.password })
+      );
+    },
+  });
+
   return (
     <>
       {loginState.loading && <Loading />}
@@ -1171,14 +1225,12 @@ export default function SignIn() {
                             value: inputValue.target.value,
                           }))
                         }
-                        // onBlur={handlePasswordValitor}
                         error={inputPassword.error}
                         endAdornment={
                           <InputAdornment position="end">
                             <IconButton
                               aria-label="toggle password visibility"
                               onClick={handleClickShowPassword}
-                              // onMouseDown={handleMouseDownPassword}
                               edge="end"
                             >
                               {showPassword ? (
@@ -1209,113 +1261,127 @@ export default function SignIn() {
                   </>
                 ) : (
                   <>
-                    <FormControl
-                      size="small"
-                      fullWidth
-                      margin="normal"
-                      variant="outlined"
-                    >
-                      <InputLabel htmlFor="outlined-adornment-password">
-                        Senha
-                      </InputLabel>
-                      <OutlinedInput
-                        id="outlined-adornment-password"
+                    <form onSubmit={formik.handleSubmit}>
+                      <TextField
+                        fullWidth
+                        sx={{ margin: "8px 0" }}
+                        id="password"
+                        name="password"
+                        label="Nova senha"
                         type={showPassword ? "text" : "password"}
-                        value={inputPassword.value}
-                        onChange={(inputValue) =>
-                          setInputPassword((prev) => ({
-                            ...prev,
-                            value: inputValue.target.value,
-                          }))
+                        value={formik.values.password}
+                        onChange={formik.handleChange}
+                        error={
+                          formik.touched.password &&
+                          Boolean(formik.errors.password)
                         }
-                        // onBlur={handlePasswordValitor}
-                        error={inputPassword.error}
-                        endAdornment={
-                          <InputAdornment position="end">
-                            <IconButton
-                              aria-label="toggle password visibility"
-                              onClick={handleClickShowPassword}
-                              // onMouseDown={handleMouseDownPassword}
-                              edge="end"
-                            >
-                              {showPassword ? (
-                                <Visibility />
-                              ) : (
-                                <VisibilityOff />
-                              )}
-                            </IconButton>
-                          </InputAdornment>
+                        helperText={
+                          formik.touched.password && formik.errors.password
                         }
-                        labelWidth={60}
+                        InputProps={{
+                          endAdornment: (
+                            <InputAdornment position="end">
+                              <IconButton
+                                aria-label="toggle password visibility"
+                                onClick={handleClickShowPassword}
+                                onMouseDown={handleMouseDownPassword}
+                                edge="end"
+                              >
+                                {showPassword ? (
+                                  <VisibilityOff />
+                                ) : (
+                                  <Visibility />
+                                )}
+                              </IconButton>
+                            </InputAdornment>
+                          ),
+                        }}
                       />
-                    </FormControl>
-                    <FormControl
-                      size="small"
-                      fullWidth
-                      margin="normal"
-                      variant="outlined"
-                    >
-                      <InputLabel htmlFor="outlined-adornment-password-comfirm">
-                        Senha
-                      </InputLabel>
-                      <OutlinedInput
-                        id="outlined-adornment-password-confirm"
+                      <TextField
+                        fullWidth
+                        sx={{ margin: "8px 0" }}
+                        id="confirmPassword"
+                        name="confirmPassword"
+                        label="Confirmar senha"
                         type={showPassword ? "text" : "password"}
-                        value={inputConfirmPassword.value}
-                        onChange={(inputValue) =>
-                          setInputConfirmPassword((prev) => ({
-                            ...prev,
-                            value: inputValue.target.value,
-                          }))
+                        value={formik.values.confirmPassword}
+                        onChange={formik.handleChange}
+                        error={
+                          formik.touched.confirmPassword &&
+                          Boolean(formik.errors.confirmPassword)
                         }
-                        // onBlur={handlePasswordValitor}
-                        error={inputConfirmPassword.error}
-                        endAdornment={
-                          <InputAdornment position="end">
-                            <IconButton
-                              aria-label="toggle password visibility"
-                              onClick={handleClickShowPassword}
-                              // onMouseDown={handleMouseDownPassword}
-                              edge="end"
-                            >
-                              {showPassword ? (
-                                <Visibility />
-                              ) : (
-                                <VisibilityOff />
-                              )}
-                            </IconButton>
-                          </InputAdornment>
+                        helperText={
+                          formik.touched.confirmPassword &&
+                          formik.errors.confirmPassword
                         }
-                        labelWidth={60}
+                        InputProps={{
+                          endAdornment: (
+                            <InputAdornment position="end">
+                              <IconButton
+                                aria-label="toggle password visibility"
+                                onClick={handleClickShowPassword}
+                                onMouseDown={handleMouseDownPassword}
+                                edge="end"
+                              >
+                                {showPassword ? (
+                                  <VisibilityOff />
+                                ) : (
+                                  <Visibility />
+                                )}
+                              </IconButton>
+                            </InputAdornment>
+                          ),
+                        }}
                       />
-                    </FormControl>
-                    <FormGroup row style={{ alignItems: "center" }}>
-                      <Checkbox
-                        checked={checkPolicy}
-                        // onBlur={handleValidator}
-                        onChange={() => setCheckPolicy(!checkPolicy)}
-                        name="checkedB"
-                        color="primary"
-                      />
-                      <TextGray>
-                        Li e concordo com os{" "}
-                        <TextBlue onClick={() => setOpenPolicyModal(true)}>
-                          termos e politicas{" "}
-                        </TextBlue>
-                        de privacidade
-                      </TextGray>
-                    </FormGroup>
-                    <Button
-                      type="submit"
-                      fullWidth
-                      variant="contained"
-                      color="primary"
-                      className={classes.submit}
-                      onClick={handleVerifyEmailAndPassword}
-                      disabled={!valid}
-                    >
-                      Cadastrar
-                    </Button>
+
+                      <FormGroup
+                        row
+                        style={{
+                          margin: "8px 0",
+                          alignItems: "center",
+                          display: "flex",
+                        }}
+                      >
+                        <Checkbox
+                          id="policyAccepted"
+                          name="policyAccepted"
+                          checked={formik.values.policyAccepted}
+                          onChange={formik.handleChange}
+                          color="primary"
+                          sx={{
+                            width: "24px",
+                            height: "24px",
+                          }}
+                        />
+                        <TextGray>
+                          Li e concordo com os{" "}
+                          <TextBlue onClick={() => setOpenPolicyModal(true)}>
+                            termos e politicas{" "}
+                          </TextBlue>
+                          de privacidade
+                        </TextGray>
+                        <FormHelperText error sx={{ marginLeft: "14px" }}>
+                          {formik.submitCount && !formik.values.policyAccepted
+                            ? formik.errors.policyAccepted
+                            : ""}
+                        </FormHelperText>
+                      </FormGroup>
+                      <ButtonGreen
+                        variant="contained"
+                        fullWidth
+                        onClick={() => formik.handleSubmit()}
+                        sx={{
+                          textTransform: "capitalize",
+                          marginTop: 1,
+                          background: "var(--success)",
+                          "&:hover": {
+                            background: "var(--success-hover)",
+                          },
+                        }}
+                      >
+                        Salvar senha
+                      </ButtonGreen>
+                    </form>
                   </>
                 )}
               </>
@@ -1343,7 +1409,7 @@ export default function SignIn() {
             {/*>*/}
             {/*  Criar conta*/}
             {/*</Button>*/}
-            <Grid container>
+            <Grid container sx={{ marginTop: "22px" }}>
               <Box textAlign="center" width="100%">
                 <TextGray>
                   Esqueceu a senha?{" "}
@@ -1382,7 +1448,9 @@ export default function SignIn() {
           <Button
             onClick={() => {
               setOpenPolicyModal(false);
-              setCheckPolicy(false);
+
+              formik.values.policyAccepted = false;
+              // setCheckPolicy(false);
             }}
             color="primary"
           >
@@ -1391,7 +1459,8 @@ export default function SignIn() {
           <Button
             onClick={() => {
               setOpenPolicyModal(false);
-              setCheckPolicy(true);
+              formik.values.policyAccepted = true;
+              // setCheckPolicy(true);
             }}
             color="primary"
           >
