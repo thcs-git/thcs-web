@@ -112,7 +112,7 @@ export default function UserCongiguration(props: RouteComponentProps<any>) {
     {
       name: "Voltar",
       onClick: () => {
-        history.push("/dashboard");
+        history.push("/");
       },
       variant: "contained",
       background: "secondary",

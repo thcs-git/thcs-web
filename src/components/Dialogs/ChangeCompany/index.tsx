@@ -182,7 +182,7 @@ export default function DialogChangeCompany(props: IChangeCompany) {
               changeCompany(companySelected);
               dispatch(loadRequestLayout());
               dispatch(loadRequestLogo());
-              history.push(`/dashboard`);
+              history.push(`/`);
             } else {
               toast.warning("Você deve escolher a empresa.");
             }
