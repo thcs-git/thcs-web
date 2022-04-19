@@ -44,6 +44,7 @@ export default createGlobalStyle`
 
   a, a:hover, a:visited, a:active {
     text-decoration: none;
+    cursor:pointer;
     color: var(--black);
   }
 

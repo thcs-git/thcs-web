@@ -1,25 +1,23 @@
 import React, { ReactNode, useCallback } from "react";
 import { useHistory, Link } from "react-router-dom";
 
-import Table from "@material-ui/core/Table";
-import TableBody from "@material-ui/core/TableBody";
-import TableCell from "@material-ui/core/TableCell";
-import TableContainer from "@material-ui/core/TableContainer";
-import TableHead from "@material-ui/core/TableHead";
-import TableRow from "@material-ui/core/TableRow";
-import Paper from "@material-ui/core/Paper";
+import Table from "@mui/material/Table";
+import TableBody from "@mui/material/TableBody";
+import TableCell from "@mui/material/TableCell";
+import TableContainer from "@mui/material/TableContainer";
+import TableHead from "@mui/material/TableHead";
+import TableRow from "@mui/material/TableRow";
+import Paper from "@mui/material/Paper";
 import { Visibility as VisibilityIcon } from "@material-ui/icons";
-
-MenuItem;
 import FilterListIcon from "@material-ui/icons/FilterList";
 import Checkbox from "@material-ui/core/Checkbox";
 import { MoreVert } from "@material-ui/icons";
 import { ComplexityStatus } from "../../styles/components/Table";
 
-import Button from "../Button";
+import Button from "@mui/material/Button";
 import { MenuFilter as Menu, Th } from "./styles";
 import { UserInterface, UserState } from "../../store/ducks/users/types";
-import { MenuItem, Tooltip } from "@material-ui/core";
+import { MenuItem, Tooltip } from "@mui/material";
 import MoreHorizTwoToneIcon from "@material-ui/icons/MoreHorizTwoTone";
 import { ListItemStatus } from "../../pages/userclient/list/styles";
 import { any } from "cypress/types/bluebird";
@@ -27,7 +25,7 @@ import { formatDate } from "../../helpers/date";
 import { PatientState } from "../../store/ducks/patients/types";
 import { CareState, CareInterface } from "../../store/ducks/cares/types";
 import LOCALSTORAGE from "../../helpers/constants/localStorage";
-
+import SESSIONSTORAGE from "../../helpers/constants/sessionStorage";
 interface ICellProps {
   name: string;
   align: "right" | "left" | "center";
@@ -54,6 +52,7 @@ interface ITableProps {
   toggleHistoryModal_2?: (index: number, patient: any) => void;
   handleComplexity?: (complexity: any) => any;
   historyModalOpen?: boolean;
+  typeTable?: string;
 }
 
 const TableComponent = (props: ITableProps) => {
@@ -64,14 +63,16 @@ const TableComponent = (props: ITableProps) => {
     careState,
     careFilter,
     handleCpf,
-    integration,
     handleLinkedAt,
     handleActive,
     toggleHistoryModal,
     toggleHistoryModal_2,
     handleComplexity,
     historyModalOpen,
+    integration,
+    typeTable,
   } = props;
+
   const history = useHistory();
   const currentCompanyId = localStorage.getItem(LOCALSTORAGE.COMPANY_SELECTED);
 
@@ -81,7 +82,6 @@ const TableComponent = (props: ITableProps) => {
     },
     []
   );
-
   const handleOpenRowMenu = useCallback(
     (event: React.MouseEvent<HTMLButtonElement>) => {
       setAnchorEl(event.currentTarget);
@@ -192,12 +192,18 @@ const TableComponent = (props: ITableProps) => {
             integration &&
             userState?.list.data.map((user, index) => (
               <TableRow key={`user_${index}`}>
-                <TableCell align="left">
+                <TableCell
+                  align="left"
+                  sx={{ cursor: "pointer", "& a": { cursor: "pointer" } }}
+                >
                   <Link key={index} to={`/userclient/${user._id}/view`}>
                     {user?.name}
                   </Link>
                 </TableCell>
-                <TableCell align="left">
+                <TableCell
+                  align="left"
+                  sx={{ cursor: "pointer", "& a": { cursor: "pointer" } }}
+                >
                   <Link key={index} to={`/userclient/${user._id}/view`}>
                     {user?.username}
                   </Link>
@@ -271,7 +277,10 @@ const TableComponent = (props: ITableProps) => {
             userState?.list.data.map((user, index) => (
               <TableRow key={`user_${index}`}>
                 {" "}
-                <TableCell align="left">
+                <TableCell
+                  align="left"
+                  sx={{ cursor: "pointer", "& a": { cursor: "pointer" } }}
+                >
                   <Link key={index} to={`/userclient/${user._id}/view`}>
                     {user?.name}
                   </Link>
@@ -373,12 +382,18 @@ const TableComponent = (props: ITableProps) => {
             integration &&
             patientState.list.data.map((patient, index) => (
               <TableRow key={`patient_${index}`}>
-                <TableCell align="left">
+                <TableCell
+                  align="left"
+                  sx={{ cursor: "pointer", "& a": { cursor: "pointer" } }}
+                >
                   <Link key={index} to={`/patient/${patient?._id}/view`}>
                     {patient._id}
                   </Link>
                 </TableCell>
-                <TableCell align="left">
+                <TableCell
+                  align="left"
+                  sx={{ cursor: "pointer", "& a": { cursor: "pointer" } }}
+                >
                   <Link key={index} to={`/patient/${patient?._id}/view`}>
                     {patient.social_status ? patient.social_name : patient.name}
                   </Link>
@@ -398,7 +413,10 @@ const TableComponent = (props: ITableProps) => {
             !integration &&
             patientState.list.data.map((patient, index) => (
               <TableRow key={`patient_${index}`}>
-                <TableCell align="left">
+                <TableCell
+                  align="left"
+                  sx={{ cursor: "pointer", "& a": { cursor: "pointer" } }}
+                >
                   <Link key={index} to={`/patient/${patient?._id}/view/edit`}>
                     {patient.social_name || patient.name}
                   </Link>
@@ -470,93 +488,134 @@ const TableComponent = (props: ITableProps) => {
             ))}
 
           {/*/!*Historico de Atendimento*!/*/}
-          {historyModalOpen &&
-            careState?.history?.data.map((care: any, index: number) => (
-              <TableRow key={`patient_${index}`}>
-                <TableCell>
-                  <p>
-                    {care?.created_at
-                      ? formatDate(care?.created_at ?? "", "DD/MM/YYYY")
+
+          {typeTable === "historyCare" &&
+          integration &&
+          careState?.history?.data?.length > 0
+            ? careState?.history?.data.map((care: any, index: number) => (
+                <TableRow key={`patient_${index}`}>
+                  <TableCell>
+                    {handleEmpty(formatDate(care?.created_at, "DD/MM/YYYY"))}
+                  </TableCell>
+                  <TableCell>{handleEmpty(care?._id)}</TableCell>
+                  <TableCell>
+                    {care?.medical_release?.release_at
+                      ? handleEmpty(
+                          formatDate(
+                            care.medical_release.release_at,
+                            "DD/MM/YYYY"
+                          )
+                        )
                       : "-"}
-                  </p>
-                </TableCell>
-                <TableCell align="center">
-                  <p>{care?._id}</p>
-                </TableCell>
-                <TableCell>
-                  <p>
-                    {care?.released_at
-                      ? formatDate(care?.released_at ?? "", "DD/MM/YYYY")
-                      : "-"}
-                  </p>
-                </TableCell>
-                {/*<TableCell align="center">*/}
-                {/*  <p>*/}
-                {/*    {typeof care?.care_type_id === "object"*/}
-                {/*      ? care?.care_type_id.name*/}
-                {/*      : care?.care_type_id}*/}
-                {/*  </p>*/}
-                {/*</TableCell>*/}
-                <TableCell>{care?.tipo}</TableCell>
-                <TableCell align="center">
-                  <p>{care?.company_id}</p>
-                </TableCell>
-                <TableCell align="center">
-                  <Button
-                    onClick={() => history.push(`/care/${care?._id}/overview`)}
-                  >
-                    <VisibilityIcon style={{ color: "#0899BA" }} />
-                  </Button>
-                </TableCell>
-              </TableRow>
-            ))}
+                  </TableCell>
+                  <TableCell align="center">
+                    {handleEmpty(care?.tipo)}
+                  </TableCell>
+                  <TableCell>{handleEmpty(care?.company)}</TableCell>
+                  <TableCell align="center">
+                    <Button
+                      sx={{
+                        cursor: "pointer",
+                        "& svg, path": { cursor: "pointer" },
+                      }}
+                      onClick={() =>
+                        history.push(`/care/${care?._id}/overview`)
+                      }
+                    >
+                      <VisibilityIcon style={{ color: "#0899BA" }} />
+                    </Button>
+                  </TableCell>
+                </TableRow>
+              ))
+            : ""}
+
+          {typeTable === "historyCare" &&
+          !integration &&
+          careState?.history?.length > 0
+            ? careState?.history?.map((care: any, index: number) => (
+                <TableRow key={`patient_${index}`}>
+                  <TableCell>
+                    <p>
+                      {care?.created_at
+                        ? formatDate(care?.created_at ?? "", "DD/MM/YYYY")
+                        : "-"}
+                    </p>
+                  </TableCell>
+                  <TableCell align="center">
+                    <p>{care?._id}</p>
+                  </TableCell>
+                  <TableCell>
+                    <p>
+                      {care?.released_at
+                        ? formatDate(care?.released_at ?? "", "DD/MM/YYYY")
+                        : "-"}
+                    </p>
+                  </TableCell>
+
+                  <TableCell>{care?.tipo}</TableCell>
+                  <TableCell align="center">
+                    <p>{care?.company_id.name}</p>
+                  </TableCell>
+                  <TableCell align="center">
+                    <Button
+                      onClick={() =>
+                        history.push(`/care/${care?._id}/overview`)
+                      }
+                    >
+                      <VisibilityIcon style={{ color: "#0899BA" }} />
+                    </Button>
+                  </TableCell>
+                </TableRow>
+              ))
+            : ""}
 
           {careFilter &&
-            !integration &&
+            // !integration &&
             careFilter.map((care: CareInterface, index: number) => (
               <TableRow key={`care_${index}`}>
                 <TableCell>{care?._id}</TableCell>
-                <TableCell>
+                <TableCell
+                  sx={{ cursor: "pointer", "& a": { cursor: "pointer" } }}
+                >
                   <Link to={`/care/${care._id}/overview`}>
                     {care.patient_id?.social_name || care.patient_id?.name}
                   </Link>
                 </TableCell>
-                {/*<TableCell>*/}
-                {/*  {typeof care?.care_type_id === "object"*/}
-                {/*    ? care?.care_type_id.name*/}
-                {/*    : care?.care_type_id}*/}
-                {/*</TableCell>*/}
-                <TableCell>{care?.tipo}</TableCell>
-                <TableCell>{care.patient_id?.fiscal_number}</TableCell>
+                <TableCell>{handleEmpty(care?.tipo)}</TableCell>
+                <TableCell>
+                  {handleEmpty(care.patient_id?.fiscal_number)}
+                </TableCell>
 
-                {/*<TableCell align="center">*/}
-                {/*  {care?.started_at*/}
-                {/*    ? formatDate(care?.started_at ?? "", "DD/MM/YYYY HH:mm:ss")*/}
-                {/*    : "-"}*/}
-                {/*</TableCell>*/}
                 <TableCell align="center">
                   {care?.created_at
                     ? formatDate(care?.created_at ?? "", "DD/MM/YYYY HH:mm:ss")
                     : "-"}
                 </TableCell>
-                <TableCell align="left">
-                  <ComplexityStatus
-                    status={care?.complexity || care?.capture?.complexity}
-                  >
-                    <p>
-                      {handleComplexity &&
-                        handleComplexity(
-                          care?.complexity || care?.capture?.complexity
-                        )}
-                    </p>
-                  </ComplexityStatus>
-                </TableCell>
+                {handleComplexity && (
+                  <TableCell align="left">
+                    <ComplexityStatus
+                      status={care?.complexity || care?.capture?.complexity}
+                    >
+                      <p>
+                        {handleComplexity &&
+                          handleComplexity(
+                            care?.complexity || care?.capture?.complexity
+                          )}
+                      </p>
+                    </ComplexityStatus>
+                  </TableCell>
+                )}
+
                 <TableCell>
                   <Button
                     aria-controls={`simple-menu${index}`}
                     id={`btn_simple-menu${index}`}
                     aria-haspopup="true"
                     onClick={handleOpenRowMenu}
+                    sx={{
+                      cursor: "pointer",
+                      "& svg, path": { cursor: "pointer" },
+                    }}
                   >
                     <MoreVert style={{ color: "#0899BA" }} />
                   </Button>
@@ -586,6 +645,7 @@ const TableComponent = (props: ITableProps) => {
             !patientState &&
             !careState &&
             !careFilter &&
+            !historyModalOpen &&
             props.children}
         </TableBody>
       </Table>

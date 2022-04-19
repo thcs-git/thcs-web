@@ -227,7 +227,7 @@ export const loadHistoryRequest = (id: string, type: string) =>
   action(CareTypes.LOAD_HISTORY_REQUEST, { id, type });
 export const loadHistorySuccess = (data: any) =>
   action(CareTypes.LOAD_HISTORY_SUCCESS, { data });
-
+export const loadHistoryFailure = () => action(CareTypes.LOAD_HISTORY_FAILURE);
 /**
  * Schedule
  */
@@ -255,27 +255,25 @@ export const deleteScheduleSuccess = (data: any) =>
  * Measurement
  */
 export const loadMeasurementFilterRequest = (data: IFilterReport) =>
-    action(CareTypes.LOAD_MEASUREMENT_FILTER_REQUEST, data);
+  action(CareTypes.LOAD_MEASUREMENT_FILTER_REQUEST, data);
 export const loadMeasurementFilterSuccess = (data: IFilterReport) =>
-    action(CareTypes.LOAD_MEASUREMENT_FILTER_SUCCESS, data);
+  action(CareTypes.LOAD_MEASUREMENT_FILTER_SUCCESS, data);
 
 /**
  * Allergy
  */
 export const loadAllergyFilterRequest = (data: IFilterReport) =>
-    action(CareTypes.LOAD_ALLERGY_FILTER_REQUEST, data);
+  action(CareTypes.LOAD_ALLERGY_FILTER_REQUEST, data);
 export const loadAllergyFilterSuccess = (data: IFilterReport) =>
-    action(CareTypes.LOAD_ALLERGY_FILTER_SUCCESS, data);
-
+  action(CareTypes.LOAD_ALLERGY_FILTER_SUCCESS, data);
 
 /**
  * Adverse Event
  */
 export const loadAdverseEventFilterRequest = (data: IFilterReport) =>
-    action(CareTypes.LOAD_ADVERSE_EVENT_FILTER_REQUEST, data);
+  action(CareTypes.LOAD_ADVERSE_EVENT_FILTER_REQUEST, data);
 export const loadAdverseEventFilterSuccess = (data: IFilterReport) =>
-    action(CareTypes.LOAD_ADVERSE_EVENT_FILTER_SUCCESS, data);
-
+  action(CareTypes.LOAD_ADVERSE_EVENT_FILTER_SUCCESS, data);
 
 /**
  * evolution

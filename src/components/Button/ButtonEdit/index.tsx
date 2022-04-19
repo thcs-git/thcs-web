@@ -1,5 +1,5 @@
 import React, { ReactNode } from "react";
-import { Button, Grid } from "@material-ui/core";
+import { Button, Grid } from "@mui/material";
 import { Edit } from "@material-ui/icons";
 import Box from "@material-ui/core/Box";
 import { ReactComponent as IconEdit } from "../../../assets/img/icon editar.svg";
@@ -15,9 +15,9 @@ const ButtonEdit = (props: IComponent) => {
 
   return (
     <Grid item md={2} xs={12} style={{ paddingTop: "5px" }}>
-      <button
+      <Button
         onClick={setCanEdit}
-        style={{
+        sx={{
           cursor: "pointer",
           border: "2px solid var(--secondary)",
           borderRadius: "4px",
@@ -26,6 +26,8 @@ const ButtonEdit = (props: IComponent) => {
           alignItems: "center",
           padding: "4px",
           gap: "6px",
+          textTransform: "capitalize",
+          "& svg, path": { cursor: "pointer" },
         }}
       >
         <IconEdit style={{ cursor: "pointer" }} />
@@ -39,7 +41,7 @@ const ButtonEdit = (props: IComponent) => {
         >
           Editar
         </Box>
-      </button>
+      </Button>
 
       {/* <Button style={{ marginLeft: 15, color: '#0899BA' }} onClick={setCanEdit}>
         <Edit style={{ marginRight: 5, width: 18 }} />

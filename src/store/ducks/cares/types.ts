@@ -125,6 +125,7 @@ export enum CareTypes {
 
   LOAD_HISTORY_REQUEST = "@care/LOAD_HISTORY_REQUEST",
   LOAD_HISTORY_SUCCESS = "@care/LOAD_HISTORY_SUCCESS",
+  LOAD_HISTORY_FAILURE = "@care/LOAD_HISTORY_FAILURE",
 
   // Allergy
   LOAD_ALLERGY_FILTER_REQUEST = "@care/LOAD_ALLERGY_FILTER_REQUEST",
@@ -267,7 +268,7 @@ export interface CareState {
   data: CareInterface;
   list: CareList;
   list2: CareList;
-  history: CareList;
+  history: any;
   loading: boolean;
   error: boolean;
   success: boolean;

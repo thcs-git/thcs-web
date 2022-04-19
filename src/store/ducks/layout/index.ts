@@ -8,6 +8,7 @@ export const INITIAL_STATE: LayoutState = {
     rights: [],
     integration: null,
     integration_name: null,
+    menuSelected: "",
   },
   success: false,
   error: false,
@@ -36,6 +37,14 @@ const reducer: Reducer<LayoutState> = (state = INITIAL_STATE, action) => {
       };
     case LayoutTypes.CLEAN:
       return INITIAL_STATE;
+    case LayoutTypes.CHANGE_MENU_SELECTED:
+      return {
+        ...state,
+        data: {
+          ...state.data,
+          menuSelected: action.payload,
+        },
+      };
     default:
       return state;
   }
