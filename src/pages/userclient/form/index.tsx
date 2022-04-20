@@ -202,7 +202,7 @@ export default function UserClientForm(
           <Container>
             {params.mode === "view" ? (
               <>
-                {userState.loading && <Loading />}
+                {/* {userState.loading && <Loading />} */}
                 <TabTittle tittle={"Detalhamento do profissional"} />
                 <TabForm
                   navItems={NavItems}

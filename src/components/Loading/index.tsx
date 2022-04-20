@@ -1,42 +1,42 @@
-import React, { useEffect, useRef } from 'react';
-import { createPortal } from 'react-dom';
-import { makeStyles, createStyles, Theme } from '@material-ui/core/styles';
-import { CircularProgressProps } from '@material-ui/core/CircularProgress';
+import React, { useEffect, useRef } from "react";
+import { createPortal } from "react-dom";
+import { makeStyles, createStyles, Theme } from "@material-ui/core/styles";
+import { CircularProgressProps } from "@material-ui/core/CircularProgress";
 
-import { ReactComponent as LoadingSollar } from '../../assets/img/loading-sollar.svg';
+import { ReactComponent as LoadingSollar } from "../../assets/img/loading-sollar.svg";
 
-const useStylesFacebook = makeStyles((theme: Theme) =>
-  createStyles({
-    bottom: {
-      color: theme.palette.grey[theme.palette.type === 'light' ? 200 : 700],
-    },
-    top: {
-      color: '#0899BA',
-      animationDuration: '550ms',
-      position: 'absolute',
-      left: 0,
-    },
-    circle: {
-      strokeLinecap: 'round',
-    },
-  }),
-);
+// const useStylesFacebook = makeStyles((theme: Theme) =>
+//   createStyles({
+//     bottom: {
+//       color: theme.palette.grey[theme.palette.type === "light" ? 200 : 700],
+//     },
+//     top: {
+//       color: "#0899BA",
+//       animationDuration: "550ms",
+//       position: "absolute",
+//       left: 0,
+//     },
+//     circle: {
+//       strokeLinecap: "round",
+//     },
+//   })
+// );
 
 const body = document.querySelector("body");
-const divRoot = document.querySelector('#root');
+const divRoot = document.querySelector("#root");
 
 const FacebookCircularProgress = (props: CircularProgressProps) => {
-  const classes = useStylesFacebook();
-  const elementSpinner = useRef(document.createElement("div"))
-  elementSpinner.current.setAttribute('class', 'spinner-loading');
+  // const classes = useStylesFacebook();
+  const elementSpinner = useRef(document.createElement("div"));
+  elementSpinner.current.setAttribute("class", "spinner-loading");
 
   useEffect(() => {
     body?.appendChild(elementSpinner.current);
-    divRoot?.classList.add('blur');
+    divRoot?.classList.add("blur");
 
     return () => {
-      body?.removeChild(elementSpinner.current)
-      divRoot?.classList.remove('blur');
+      body?.removeChild(elementSpinner.current);
+      divRoot?.classList.remove("blur");
     };
   }, []);
 
@@ -63,9 +63,9 @@ const FacebookCircularProgress = (props: CircularProgressProps) => {
       /> */}
       <LoadingSollar width={80} />
     </>
-  )
+  );
 
   return createPortal(spinner, elementSpinner.current);
-}
+};
 
 export default React.memo(FacebookCircularProgress);

@@ -269,7 +269,12 @@ export default function AccordionReport(props: IAccordionReport) {
               <Tooltip
                 title={`${measurementItem.name}: ${measurementItem.value} ${measurementItem.unit_id[0].short_name}`}
               >
-                <Box>
+                <Box
+                  sx={{
+                    cursor: "help",
+                    "& svg, path, circle": { cursor: "help" },
+                  }}
+                >
                   <Lung
                     fill={canceled ? "#7D7D7D" : "var(--secondary)"}
                     width={"20px"}
@@ -283,7 +288,12 @@ export default function AccordionReport(props: IAccordionReport) {
               <Tooltip
                 title={`${measurementItem.name}: ${measurementItem.value} ${measurementItem.unit_id[0].short_name}`}
               >
-                <Box>
+                <Box
+                  sx={{
+                    cursor: "help",
+                    "& svg, path, circle": { cursor: "help" },
+                  }}
+                >
                   <Frequency
                     fill={canceled ? "#7D7D7D" : "var(--secondary)"}
                     width={"20px"}
@@ -297,7 +307,12 @@ export default function AccordionReport(props: IAccordionReport) {
               <Tooltip
                 title={`${measurementItem.name}: ${measurementItem.value} ${measurementItem.unit_id[0].short_name}`}
               >
-                <Box>
+                <Box
+                  sx={{
+                    cursor: "help",
+                    "& svg, path, circle": { cursor: "help" },
+                  }}
+                >
                   <BodilySurface
                     fill={canceled ? "#7D7D7D" : "var(--secondary)"}
                     width={"20px"}
@@ -311,7 +326,12 @@ export default function AccordionReport(props: IAccordionReport) {
               <Tooltip
                 title={`${measurementItem.name}: ${measurementItem.value} ${measurementItem.unit_id[0].short_name}`}
               >
-                <Box>
+                <Box
+                  sx={{
+                    cursor: "help",
+                    "& svg, path, circle": { cursor: "help" },
+                  }}
+                >
                   <Exam
                     fill={canceled ? "#7D7D7D" : "var(--secondary)"}
                     width={"20px"}
@@ -325,7 +345,12 @@ export default function AccordionReport(props: IAccordionReport) {
               <Tooltip
                 title={`${measurementItem.name}: ${measurementItem.value} ${measurementItem.unit_id[0].short_name}`}
               >
-                <Box>
+                <Box
+                  sx={{
+                    cursor: "help",
+                    "& svg, path, circle": { cursor: "help" },
+                  }}
+                >
                   <Height
                     fill={canceled ? "#7D7D7D" : "var(--secondary)"}
                     width={"20px"}
@@ -339,7 +364,12 @@ export default function AccordionReport(props: IAccordionReport) {
               <Tooltip
                 title={`${measurementItem.name}: ${measurementItem.value} ${measurementItem.unit_id[0].short_name}`}
               >
-                <Box>
+                <Box
+                  sx={{
+                    cursor: "help",
+                    "& svg, path, circle": { cursor: "help" },
+                  }}
+                >
                   <Weight
                     fill={canceled ? "#7D7D7D" : "var(--secondary)"}
                     width={"20px"}
@@ -353,7 +383,12 @@ export default function AccordionReport(props: IAccordionReport) {
               <Tooltip
                 title={`${measurementItem.name}: ${measurementItem.value} ${measurementItem.unit_id[0].short_name}`}
               >
-                <Box>
+                <Box
+                  sx={{
+                    cursor: "help",
+                    "& svg, path, circle": { cursor: "help" },
+                  }}
+                >
                   <BloodGlucose
                     fill={canceled ? "#7D7D7D" : "var(--secondary)"}
                     width={"20px"}
@@ -367,7 +402,12 @@ export default function AccordionReport(props: IAccordionReport) {
               <Tooltip
                 title={`${measurementItem.name}: ${measurementItem.value} ${measurementItem.unit_id[0].short_name}`}
               >
-                <Box>
+                <Box
+                  sx={{
+                    cursor: "help",
+                    "& svg, path, circle": { cursor: "help" },
+                  }}
+                >
                   <Pain
                     fill={canceled ? "#7D7D7D" : "var(--secondary)"}
                     width={"20px"}
@@ -381,7 +421,12 @@ export default function AccordionReport(props: IAccordionReport) {
               <Tooltip
                 title={`${measurementItem.name}: ${measurementItem.value} ${measurementItem.unit_id[0].short_name}`}
               >
-                <Box>
+                <Box
+                  sx={{
+                    cursor: "help",
+                    "& svg, path, circle": { cursor: "help" },
+                  }}
+                >
                   <Saturation
                     fill={canceled ? "#7D7D7D" : "var(--secondary)"}
                     width={"20px"}
@@ -395,7 +440,12 @@ export default function AccordionReport(props: IAccordionReport) {
               <Tooltip
                 title={`${measurementItem.name}: ${measurementItem.value} ${measurementItem.unit_id[0].short_name}`}
               >
-                <Box>
+                <Box
+                  sx={{
+                    cursor: "help",
+                    "& svg, path, circle": { cursor: "help" },
+                  }}
+                >
                   <Temperature
                     fill={canceled ? "#7D7D7D" : "var(--secondary)"}
                     width={"20px"}
@@ -424,7 +474,9 @@ export default function AccordionReport(props: IAccordionReport) {
               : `PA: ${padOrPas[1].value}/ ${padOrPas[0].value} ${padOrPas[1].unit_id[0].short_name}`
           }
         >
-          <Box>
+          <Box
+            sx={{ "& svg, path, circle": { cursor: "help" }, cursor: "help" }}
+          >
             <Presure
               fill={canceled ? "#7D7D7D" : "var(--secondary)"}
               width={"20px"}
@@ -674,7 +726,6 @@ export default function AccordionReport(props: IAccordionReport) {
                           margin: "2px",
                         }}
                       >
-                        {console.log(column)}
                         <Badge
                           badgeContent={column.type.length}
                           showZero
@@ -917,7 +968,12 @@ export default function AccordionReport(props: IAccordionReport) {
                     }
                   }}
                 >
-                  <PrintIcon sx={{ cursor: "pointer" }} />
+                  <PrintIcon
+                    sx={{
+                      cursor: "pointer",
+                      "& svg, path": { cursor: "pointer" },
+                    }}
+                  />
                 </IconButton>
               </TextCenterDetails>
             </ContentDetailsAccordion>
@@ -1645,7 +1701,7 @@ export default function AccordionReport(props: IAccordionReport) {
   }
   return (
     <>
-      {loading && <Loading />}
+      {/* {loading && <Loading />} */}
 
       {content.data ? (
         reportType === "Aferições" ||

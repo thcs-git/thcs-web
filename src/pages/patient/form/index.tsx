@@ -688,7 +688,7 @@ export default function PatientForm(props: RouteComponentProps<IPageParams>) {
     <Sidebar>
       {checkViewPermission("patient", JSON.stringify(rightsOfLayoutState)) ? (
         <>
-          {patientState.loading && <Loading />}
+          {/* {patientState.loading && <Loading />} */}
           {patientState.isRegistrationCompleted ? (
             <RegistrationCompleted {...props} />
           ) : (

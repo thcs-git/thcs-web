@@ -75,6 +75,7 @@ import _ from "lodash";
 import { loadRequest } from "../../store/ducks/layout/actions";
 import Message from "../Message";
 import DialogChangeCompany from "../Dialogs/ChangeCompany";
+import Loading from "../Loading";
 const drawerWidth = 270;
 
 // const itemsMenu = [
@@ -174,7 +175,7 @@ const Sibebar = (props: Props<any>) => {
   const history = useHistory();
   const classes = useStyles();
   const dispatch = useDispatch();
-
+  const applicationState = useSelector((state: any) => state);
   const layoutState = useSelector((state: ApplicationState) => state.layout);
   const currentCompany = localStorage.getItem(LOCALSTORAGE.COMPANY_SELECTED);
 
@@ -200,6 +201,10 @@ const Sibebar = (props: Props<any>) => {
   const [openModalMessage, setOpenModalMessage] = useState(false);
 
   const [openDialogCompany, setOpenDialogCompany] = React.useState(false);
+  const currentCompanyName =
+    localStorage.getItem(LOCALSTORAGE.COMPANY_NAME) || "";
+  const currentCustomerName =
+    localStorage.getItem(LOCALSTORAGE.CUSTOMER_NAME) || "";
 
   const handleClickOpenDialogCompany = () => {
     setOpenDialogCompany(true);
@@ -412,8 +417,47 @@ const Sibebar = (props: Props<any>) => {
   //   }
   // }, []);
 
+  const checkLoading = useCallback(() => {
+    let loading = false;
+
+    const states: any = [
+      // "allergies",
+      "antibiotic",
+      "areas",
+      "attest",
+      "cares",
+      "companies",
+      "councils",
+      "customers",
+      "documentGroups",
+      "documents",
+      "exams",
+      "layout",
+      "login",
+      // "logo", // a logo
+      "measurements",
+      "message",
+      "patients",
+      "prescription",
+      "profession",
+      "qrCode",
+      "specialties",
+      "users",
+      "cares.checkin",
+      "cares.evolution",
+    ];
+
+    for (let i = 0; i < states.length; i++) {
+      if (applicationState[`${states[i]}`]?.loading) {
+        loading = true;
+      }
+    }
+    return loading;
+  }, [applicationState]);
+
   return (
     <div className={classes.root}>
+      {checkLoading() && <Loading />}
       <CssBaseline />
       <Drawer
         variant="permanent"
@@ -503,10 +547,10 @@ const Sibebar = (props: Props<any>) => {
                         }}
                       >
                         <h4 style={{ color: "#ffffff", marginLeft: 10 }}>
-                          {handleCustomerName(customer.name)}
+                          {handleCustomerName(currentCustomerName)}
                         </h4>
                         <h4 style={{ color: "#ffffff", marginLeft: 10 }}>
-                          {handleCompanyName(company.name)}
+                          {handleCompanyName(currentCompanyName)}
                         </h4>
                       </div>
                     </ListItemText>

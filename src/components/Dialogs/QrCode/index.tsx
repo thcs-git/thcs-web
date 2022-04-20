@@ -176,7 +176,7 @@ export default function DialogQrCode(props: IQrCodeProps) {
     <>
       {checkViewPermission("qrcode", JSON.stringify(rightsOfLayoutState)) ? (
         <>
-          {qrCodeState.loading && <Loading />}
+          {/* {qrCodeState.loading && <Loading />} */}
           <Dialog open={openDialog} onClose={handleClose}>
             <DialogActions style={{ textAlign: "right" }}>
               <CloseIcon

@@ -166,7 +166,7 @@ export default function UserClientList() {
           JSON.stringify(rightsOfLayoutState)
         ) ? (
           <Container>
-            {userState.loading && <Loading />}
+            {/* {userState.loading && <Loading />} */}
             <FormTitle style={{ fontSize: "20px" }}>
               Todos Profissionais
             </FormTitle>

@@ -117,7 +117,7 @@ export default function CompanyList() {
       <Sidebar>
         {checkViewPermission("company", JSON.stringify(rightsOfLayoutState)) ? (
           <Container>
-            {companyState.loading && <Loading />}
+            {/* {companyState.loading && <Loading />} */}
             <FormTitle>Lista de Empresas</FormTitle>
 
             {integration ? (

@@ -1,11 +1,22 @@
-import React, { useEffect, useCallback } from 'react';
-import { Grid, Dialog, DialogTitle, DialogContent, DialogContentText, DialogActions, Radio, RadioGroup, FormControlLabel, TextField } from '@material-ui/core';
-import { Autocomplete } from '@material-ui/lab';
+import React, { useEffect, useCallback } from "react";
+import {
+  Grid,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogContentText,
+  DialogActions,
+  Radio,
+  RadioGroup,
+  FormControlLabel,
+  TextField,
+} from "@material-ui/core";
+import { Autocomplete } from "@material-ui/lab";
 
-import { useDispatch, useSelector } from 'react-redux';
-import { ApplicationState } from '../../../store';
+import { useDispatch, useSelector } from "react-redux";
+import { ApplicationState } from "../../../store";
 
-import Loading from '../../Loading';
+import Loading from "../../Loading";
 
 interface IDialogProps {
   modalOpen: any;
@@ -13,7 +24,7 @@ interface IDialogProps {
 }
 
 export default function ReleaseDialog(props: IDialogProps) {
-  const {modalOpen, setModalOpen} = props
+  const { modalOpen, setModalOpen } = props;
   const dispatch = useDispatch();
 
   const careState = useSelector((state: ApplicationState) => state.cares);
@@ -22,10 +33,9 @@ export default function ReleaseDialog(props: IDialogProps) {
     // dispatch(healthInsuranceRequest());
   }, []);
 
-
   return (
     <>
-      {careState.loading && <Loading />}
+      {/* {careState.loading && <Loading />} */}
       <Dialog
         open={modalOpen}
         onClose={() => setModalOpen(false)}
@@ -33,12 +43,14 @@ export default function ReleaseDialog(props: IDialogProps) {
         aria-describedby="scroll-dialog-description"
         maxWidth="md"
       >
-        <DialogTitle id="scroll-dialog-title">Preencha os dados da captação</DialogTitle>
+        <DialogTitle id="scroll-dialog-title">
+          Preencha os dados da captação
+        </DialogTitle>
         <DialogContent>
-          <DialogContentText
-            id="scroll-dialog-description"
-            tabIndex={-1}
-          >Para iniciar a captação, é obrigatório preencher as informações abaixo.</DialogContentText>
+          <DialogContentText id="scroll-dialog-description" tabIndex={-1}>
+            Para iniciar a captação, é obrigatório preencher as informações
+            abaixo.
+          </DialogContentText>
 
           <div>
             <Grid container>
@@ -79,7 +91,6 @@ export default function ReleaseDialog(props: IDialogProps) {
               {/*    />*/}
               {/*  </FieldContent>*/}
               {/*</Grid>*/}
-
             </Grid>
           </div>
         </DialogContent>

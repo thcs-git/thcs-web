@@ -1,4 +1,4 @@
-import React, {useEffect, useCallback} from 'react';
+import React, { useEffect, useCallback } from "react";
 import {
   Grid,
   Dialog,
@@ -10,29 +10,38 @@ import {
   RadioGroup,
   FormControlLabel,
   TextField,
-  TableRow, TableCell
-} from '@material-ui/core';
-import {Autocomplete} from '@material-ui/lab';
+  TableRow,
+  TableCell,
+} from "@material-ui/core";
+import { Autocomplete } from "@material-ui/lab";
 
-import {useDispatch, useSelector} from 'react-redux';
-import {ApplicationState} from '../../../store';
+import { useDispatch, useSelector } from "react-redux";
+import { ApplicationState } from "../../../store";
 import {
   healthInsuranceRequest,
   healthPlanRequest,
   healthSubPlanRequest,
-  loadHistoryRequest
-} from '../../../store/ducks/cares/actions';
+  loadHistoryRequest,
+} from "../../../store/ducks/cares/actions";
 
-import Loading from '../../Loading';
+import Loading from "../../Loading";
 
-import {FieldContent} from '../../../styles/components/Form';
-import Button from '../../../styles/components/Button';
-import {AccountCircle as AccountCircleIcon, FiberManualRecord, Visibility as VisibilityIcon} from "@material-ui/icons";
+import { FieldContent } from "../../../styles/components/Form";
+import Button from "../../../styles/components/Button";
+import {
+  AccountCircle as AccountCircleIcon,
+  FiberManualRecord,
+  Visibility as VisibilityIcon,
+} from "@material-ui/icons";
 import Table from "../../Table";
-import {formatDate} from "../../../helpers/date";
-import {useHistory} from "react-router-dom";
-import {ListItemCaptureStatus} from "../../../pages/avaliation/list/styles";
-import {HighComplexityLabel, LowerComplexityLabel, MediumComplexityLabel} from "../../../styles/components/Text";
+import { formatDate } from "../../../helpers/date";
+import { useHistory } from "react-router-dom";
+import { ListItemCaptureStatus } from "../../../pages/avaliation/list/styles";
+import {
+  HighComplexityLabel,
+  LowerComplexityLabel,
+  MediumComplexityLabel,
+} from "../../../styles/components/Text";
 
 interface IDialogProps {
   modalOpen: any;
@@ -44,106 +53,121 @@ interface IDialogProps {
 }
 
 export default function HistoryDialog(props: IDialogProps) {
-  const {modalOpen, setModalOpen, historyPatient, historyPatientName, tableCells, historyType} = props
+  const {
+    modalOpen,
+    setModalOpen,
+    historyPatient,
+    historyPatientName,
+    tableCells,
+    historyType,
+  } = props;
   const dispatch = useDispatch();
   const history = useHistory();
 
   const careState = useSelector((state: ApplicationState) => state.cares);
 
-  const handleType = useCallback((care: any) => {
-    let complexitiesArray: any = []
-    let complexity: string = ""
-    //console.log(care)
-    care?.documents_id?.map((field: any) => {
-      complexitiesArray.push(field.complexity);
-    })
-    if (
-      complexitiesArray.findIndex(
-        (item: string) => item === "Alta Complexidade"
-      ) > -1
-    ) {
-      complexity = "Internação";
-    } else if (
-      complexitiesArray.findIndex(
-        (item: string) => item === "Média Complexidade"
-      ) > -1
-    ) {
-      complexity = "Internação";
-    } else if (
-      complexitiesArray.findIndex(
-        (item: string) => item === "Baixa Complexidade"
-      ) > -1
-    ) {
-      complexity = "Internação";
-    } else if (
-      complexitiesArray.findIndex(
-        (item: string) => item === "Sem Complexidade"
-      ) > -1
-    ) {
-      complexity = "Atenção";
-    } else {
-      complexity = "-";
-    }
+  const handleType = useCallback(
+    (care: any) => {
+      let complexitiesArray: any = [];
+      let complexity: string = "";
+      //console.log(care)
+      care?.documents_id?.map((field: any) => {
+        complexitiesArray.push(field.complexity);
+      });
+      if (
+        complexitiesArray.findIndex(
+          (item: string) => item === "Alta Complexidade"
+        ) > -1
+      ) {
+        complexity = "Internação";
+      } else if (
+        complexitiesArray.findIndex(
+          (item: string) => item === "Média Complexidade"
+        ) > -1
+      ) {
+        complexity = "Internação";
+      } else if (
+        complexitiesArray.findIndex(
+          (item: string) => item === "Baixa Complexidade"
+        ) > -1
+      ) {
+        complexity = "Internação";
+      } else if (
+        complexitiesArray.findIndex(
+          (item: string) => item === "Sem Complexidade"
+        ) > -1
+      ) {
+        complexity = "Atenção";
+      } else {
+        complexity = "-";
+      }
 
-    return complexity
-  }, [careState]);
+      return complexity;
+    },
+    [careState]
+  );
 
-  const handleCoplexities = useCallback((care: any) => {
-    let complexitiesArray: any = []
-    let complexity: string = ""
-    care?.documents_id?.map((field: any) => {
-      // complexitiesArray.push(field.complexity);
-      complexitiesArray.push(care?.capture.complexity);
-    })
-    if (
-      complexitiesArray.findIndex(
-        (item: string) => item === "Alta Complexidade"
-      ) > -1
-    ) {
-      complexity = "Alta";
-    } else if (
-      complexitiesArray.findIndex(
-        (item: string) => item === "Média Complexidade"
-      ) > -1
-    ) {
-      complexity = "Média";
-    } else if (
-      complexitiesArray.findIndex(
-        (item: string) => item === "Baixa Complexidade"
-      ) > -1
-    ) {
-      complexity = "Baixa";
-    } else {
-      complexity = "-";
-    }
+  const handleCoplexities = useCallback(
+    (care: any) => {
+      let complexitiesArray: any = [];
+      let complexity: string = "";
+      care?.documents_id?.map((field: any) => {
+        // complexitiesArray.push(field.complexity);
+        complexitiesArray.push(care?.capture.complexity);
+      });
+      if (
+        complexitiesArray.findIndex(
+          (item: string) => item === "Alta Complexidade"
+        ) > -1
+      ) {
+        complexity = "Alta";
+      } else if (
+        complexitiesArray.findIndex(
+          (item: string) => item === "Média Complexidade"
+        ) > -1
+      ) {
+        complexity = "Média";
+      } else if (
+        complexitiesArray.findIndex(
+          (item: string) => item === "Baixa Complexidade"
+        ) > -1
+      ) {
+        complexity = "Baixa";
+      } else {
+        complexity = "-";
+      }
 
-    switch (complexity.toLocaleLowerCase()) {
-      case 'sem complexidade':
-        return '-';
+      switch (complexity.toLocaleLowerCase()) {
+        case "sem complexidade":
+          return "-";
 
-      case 'baixa':
-        return <LowerComplexityLabel>{complexity}</LowerComplexityLabel>;
+        case "baixa":
+          return <LowerComplexityLabel>{complexity}</LowerComplexityLabel>;
 
-      case 'média':
-        return <MediumComplexityLabel>{complexity}</MediumComplexityLabel>;
+        case "média":
+          return <MediumComplexityLabel>{complexity}</MediumComplexityLabel>;
 
-      case 'alta':
-        return <HighComplexityLabel>{complexity}</HighComplexityLabel>;
+        case "alta":
+          return <HighComplexityLabel>{complexity}</HighComplexityLabel>;
 
-      default:
-        return '-';
-    }
-  }, [careState]);
+        default:
+          return "-";
+      }
+    },
+    [careState]
+  );
 
   useEffect(() => {
     if (historyPatient) {
-      historyType === 'care' ? dispatch(loadHistoryRequest(historyPatient, 'Atendimento')) : dispatch(loadHistoryRequest(historyPatient, ''))
+      historyType === "care"
+        ? dispatch(loadHistoryRequest(historyPatient, "Atendimento"))
+        : dispatch(loadHistoryRequest(historyPatient, ""));
     }
   }, [historyPatient]);
 
   return (
     <>
-      {careState.loading && <Loading/>}
+      {/* {careState.loading && <Loading/>} */}
       <Dialog
         maxWidth="lg"
         open={modalOpen}
@@ -151,22 +175,32 @@ export default function HistoryDialog(props: IDialogProps) {
         aria-labelledby="scroll-dialog-title"
         aria-describedby="scroll-dialog-description"
       >
-        {historyType === 'care' ? (
-          <DialogTitle id="scroll-dialog-title"><h3>Histórico de Atendimento</h3></DialogTitle>
+        {historyType === "care" ? (
+          <DialogTitle id="scroll-dialog-title">
+            <h3>Histórico de Atendimento</h3>
+          </DialogTitle>
         ) : (
-          <DialogTitle id="scroll-dialog-title"><h3>Histórico de Captações</h3></DialogTitle>
+          <DialogTitle id="scroll-dialog-title">
+            <h3>Histórico de Captações</h3>
+          </DialogTitle>
         )}
         <DialogContent>
-          <DialogContentText
-            id="scroll-dialog-description"
-            tabIndex={-1}
-          >
-            <Grid container style={{display: "flex", flexDirection: "row", justifyContent: "space-between"}}>
-              <Grid item md={1} style={{padding: "0"}}>
-                <AccountCircleIcon style={{color: '#0899BA', fontSize: '30pt'}}/>
+          <DialogContentText id="scroll-dialog-description" tabIndex={-1}>
+            <Grid
+              container
+              style={{
+                display: "flex",
+                flexDirection: "row",
+                justifyContent: "space-between",
+              }}
+            >
+              <Grid item md={1} style={{ padding: "0" }}>
+                <AccountCircleIcon
+                  style={{ color: "#0899BA", fontSize: "30pt" }}
+                />
               </Grid>
-              <Grid item md={11} style={{padding: "0", paddingTop: "0.4rem"}}>
-                <h3 style={{color: '#333333'}}>{historyPatientName}</h3>
+              <Grid item md={11} style={{ padding: "0", paddingTop: "0.4rem" }}>
+                <h3 style={{ color: "#333333" }}>{historyPatientName}</h3>
               </Grid>
             </Grid>
             <Table
@@ -271,7 +305,7 @@ export default function HistoryDialog(props: IDialogProps) {
         </DialogContent>
         <DialogActions>
           <Button onClick={() => setModalOpen(false)} color="primary">
-            <h3 style={{color: '#0899BA', fontSize: '11pt'}}>Fechar</h3>
+            <h3 style={{ color: "#0899BA", fontSize: "11pt" }}>Fechar</h3>
           </Button>
         </DialogActions>
       </Dialog>

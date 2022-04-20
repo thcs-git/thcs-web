@@ -722,7 +722,7 @@ export default function ClientForm(props: RouteComponentProps<IPageParams>) {
     <Sidebar>
       {checkViewPermission("client", JSON.stringify(rightsOfLayoutState)) ? (
         <Container>
-          {customerState.loading && <Loading />}
+          {/* {customerState.loading && <Loading />} */}
           {params.mode === "permission//retirarTextoAposBarras" ? (
             <>
               <TabTittle

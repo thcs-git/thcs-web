@@ -52,7 +52,7 @@ export default function DialogChangeCompany(props: IChangeCompany) {
   const currentCompany = localStorage.getItem(LOCALSTORAGE.COMPANY_SELECTED);
   useEffect(() => {
     dispatch(loadUserById(user.id, "sidebar"));
-  }, []);
+  }, [user.id]);
 
   useEffect(() => {
     const { companies_links: userCompanies } = userState.data;

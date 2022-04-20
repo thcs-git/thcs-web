@@ -144,7 +144,7 @@ export default function UserCongiguration(props: RouteComponentProps<any>) {
   return (
     <Sidebar>
       <Container>
-        {userState?.loading && <Loading />}
+        {/* {userState?.loading && <Loading />} */}
         <TabTittle tittle={"Meus dados"} />
         <TabForm
           navItems={NavItems}
