@@ -10,15 +10,10 @@ import {
   Grid,
 } from "@material-ui/core";
 import Box from "@mui/material/Box";
-import Autocomplete from "@material-ui/lab/Autocomplete";
-
 import { makeStyles, Theme, withStyles } from "@material-ui/core/styles";
-import { FormGroupSection, WrapperHeaderForm } from "./styles";
-
+import { FormGroupSection, WrapperHeaderForm, CheckBoxInvalid } from "./styles";
 import CheckCircleOutlineOutlinedIcon from "@mui/icons-material/CheckCircleOutlineOutlined";
-import { height } from "@mui/system";
-
-import { InputFiled as TextField } from "../IntegrationForm/styles";
+import DashCircleIcon from "../../../Icons/DashCircle";
 
 interface Iprops {
   state: any;
@@ -59,17 +54,9 @@ const CustomCheckbox = withStyles({
 })((props: CheckboxProps) => <Checkbox color="default" {...props} />);
 
 const CheckListForm = (props: Iprops) => {
-  const { state, setState, rows, mode, checkList, autoCompleteSetting } = props;
-  const {
-    handleProfessionList,
-    selectProfession,
-    handleSelectProfession,
-    userState,
-  } = autoCompleteSetting;
+  const { state, setState, rows, mode, checkList } = props;
   const classes = useStyles();
-
-  // const mode = _.split(window.location.pathname, '/').slice(-2)[0]
-  console.log(checkList, "check list");
+  console.log(rows);
   function handleChecked(name: string, crud: string) {
     return _.indexOf(state.rights, `${name}.${crud}`) > -1;
   }
@@ -89,33 +76,158 @@ const CheckListForm = (props: Iprops) => {
     }
     return "#F3F3F3";
   }
+  const handleIconPermission = (name: string, crud: string, index: number) => {
+    const validPermissions = [
+      "client.view",
+      "permission.view",
+      "permission.edit",
+      "integration.view",
+      "userclient.view",
+      "user.view",
+      "patient.view",
+      "care.view",
+      "qrcode.create",
+      "schedule.view",
+      "schedule.edit",
+      "company.view",
+      "check.create",
+      "admeasurement.create",
+      "evolution.create",
+      "prescription.create",
+      "certificate.create",
+      "exam.create",
+    ];
+    if (validPermissions.includes(`${name}.${crud}`) || checkList === "app") {
+      return (
+        <FormControlLabel
+          style={{
+            display: "flex",
+            margin: "0 2px",
+          }}
+          value={crud}
+          control={
+            <CustomCheckbox
+              style={{
+                width: "70px",
+                height: "35px",
+                backgroundColor: handleBackgroundColorCheckBox(index),
+                borderRadius: "0",
+              }}
+              checked={handleChecked(name, crud)}
+              icon={<CheckCircleOutlineOutlinedIcon />}
+              checkedIcon={<CheckCircleOutlineOutlinedIcon />}
+            />
+          }
+          label={""}
+          labelPlacement="end"
+          disabled={mode === "view"}
+          onChange={(event, value) => {
+            const rights = [...state.rights];
+            const right = `${name}.${crud}`;
 
+            if (value) {
+              setState((prevState: any) => ({
+                ...prevState,
+                rights: [...prevState.rights, right],
+              }));
+            } else {
+              _.pull(rights, right);
+              setState((prevState: any) => ({
+                ...prevState,
+                rights: rights,
+              }));
+            }
+          }}
+        />
+      );
+    } else {
+      return (
+        <FormControlLabel
+          style={{
+            display: "flex",
+            margin: "0 2px",
+          }}
+          value={crud}
+          control={
+            <CustomCheckbox
+              style={{
+                width: "70px",
+                height: "35px",
+                backgroundColor: handleBackgroundColorCheckBox(index),
+                borderRadius: "0",
+              }}
+              checked={handleChecked(name, crud)}
+              icon={
+                <Box
+                  sx={{
+                    display: "flex",
+                    justifyContent: "center",
+                    alignItems: "center",
+                    position: "relative",
+                  }}
+                >
+                  <Box
+                    sx={{
+                      fontSize: "2rem",
+                      position: "absolute",
+                      bottom: "-20px  ",
+                      color: "var(--gray)",
+                    }}
+                  >
+                    -
+                  </Box>
+                </Box>
+              }
+              checkedIcon={
+                <Box
+                  sx={{
+                    display: "flex",
+                    justifyContent: "center",
+                    alignItems: "center",
+                    position: "relative",
+                  }}
+                >
+                  <Box
+                    sx={{
+                      fontSize: "2rem",
+                      position: "absolute",
+                      bottom: "-20px  ",
+                      color: "var(--gray)",
+                    }}
+                  >
+                    -
+                  </Box>
+                </Box>
+              }
+            />
+          }
+          label={""}
+          labelPlacement="end"
+          disabled
+          onChange={(event, value) => {
+            const rights = [...state.rights];
+            const right = `${name}.${crud}`;
+
+            if (value) {
+              setState((prevState: any) => ({
+                ...prevState,
+                rights: [...prevState.rights, right],
+              }));
+            } else {
+              _.pull(rights, right);
+              setState((prevState: any) => ({
+                ...prevState,
+                rights: rights,
+              }));
+            }
+          }}
+        />
+      );
+    }
+  };
   return (
     <>
       <FormGroupSection>
-        {/* {mode === "create" && (
-          <Autocomplete
-            id="combo-box-profession"
-            // disabled={mode === "view"}
-            options={handleProfessionList()}
-            getOptionLabel={(option) => option.name}
-            renderInput={(params) => (
-              <TextField {...params} label="Função" variant="outlined" />
-            )}
-            // getOptionSelected={(option, value) =>
-            //   option._id == userState.data.professions[0]._id
-            // }
-            // defaultValue={selectProfession()}
-            value={selectProfession()}
-            onChange={(event, value) => {
-              if (value) {
-                handleSelectProfession(value);
-              }
-            }}
-            size="small"
-            fullWidth
-          />
-        )} */}
         {checkList == "portal" ? (
           <Box style={{ display: "flex", justifyContent: "space-between" }}>
             <Box style={{ width: "190px" }}></Box>
@@ -129,10 +241,10 @@ const CheckListForm = (props: Iprops) => {
           <Box style={{ display: "flex", justifyContent: "space-between" }}>
             <Box style={{ width: "190px" }}></Box>
             <WrapperHeaderForm style={{ padding: "12.3px" }}>
-              <Box>Checagem</Box>
-              <Box>Aferiçãor</Box>
-              <Box>Evolução</Box>
-              <Box>Recetuários</Box>
+              <Box>Checagens</Box>
+              <Box>Aferições</Box>
+              <Box>Evoluções</Box>
+              <Box>Receituários</Box>
               <Box>Atestados</Box>
               <Box>Exames</Box>
             </WrapperHeaderForm>
@@ -153,6 +265,7 @@ const CheckListForm = (props: Iprops) => {
             <FormLabel className={classes.formLabel} style={{ width: "200px" }}>
               {legend}
             </FormLabel>
+
             <FormGroup
               aria-label="position"
               row
@@ -161,48 +274,9 @@ const CheckListForm = (props: Iprops) => {
                 flexWrap: "nowrap",
               }}
             >
-              {rights.map(({ crud, label }: any, index: number) => (
-                <FormControlLabel
-                  style={{
-                    display: "flex",
-                    margin: "0 2px",
-                  }}
-                  value={crud}
-                  control={
-                    <CustomCheckbox
-                      style={{
-                        width: "70px",
-                        height: "35px",
-                        backgroundColor: handleBackgroundColorCheckBox(index),
-                        borderRadius: "0",
-                      }}
-                      checked={handleChecked(name, crud)}
-                      icon={<CheckCircleOutlineOutlinedIcon />}
-                      checkedIcon={<CheckCircleOutlineOutlinedIcon />}
-                    />
-                  }
-                  label={""}
-                  labelPlacement="end"
-                  disabled={mode === "view"}
-                  onChange={(event, value) => {
-                    const rights = [...state.rights];
-                    const right = `${name}.${crud}`;
-
-                    if (value) {
-                      setState((prevState: any) => ({
-                        ...prevState,
-                        rights: [...prevState.rights, right],
-                      }));
-                    } else {
-                      _.pull(rights, right);
-                      setState((prevState: any) => ({
-                        ...prevState,
-                        rights: rights,
-                      }));
-                    }
-                  }}
-                />
-              ))}
+              {rights.map(({ crud, label }: any, index: number) =>
+                handleIconPermission(name, crud, index)
+              )}
             </FormGroup>
           </FormControl>
         ))}

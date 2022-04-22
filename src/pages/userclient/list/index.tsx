@@ -158,7 +158,6 @@ export default function UserClientList() {
   function handleEmpty(value: any) {
     return value ? value : "-";
   }
-  // console.log(users);
   return (
     <>
       <Sidebar>

@@ -62,8 +62,18 @@ export const INITIAL_STATE: CareState = {
   documentNead: {},
   document: "",
   schedule: [],
-  evolution: [],
-  checkin: [],
+  evolution: {
+    data: [],
+    error: false,
+    loading: false,
+    success: false,
+  },
+  checkin: {
+    loading: false,
+    success: false,
+    error: false,
+    data: [],
+  },
 };
 
 const reducer: Reducer<CareState> = (state = INITIAL_STATE, action) => {
@@ -646,46 +656,57 @@ const reducer: Reducer<CareState> = (state = INITIAL_STATE, action) => {
     case CareTypes.LOAD_EVOLUTION_REQUEST:
       return {
         ...state,
-        loading: true,
-        error: false,
-        success: false,
+        evolution: {
+          ...state.evolution,
+          loading: true,
+          success: false,
+          error: false,
+        },
       };
     case CareTypes.LOAD_EVOLUTION_SUCCESS:
       return {
         ...state,
-        loading: false,
-        success: true,
-        error: false,
-        evolution: action.payload,
+        evolution: {
+          data: action.payload,
+          loading: false,
+          error: false,
+          success: true,
+        },
       };
     case CareTypes.LOAD_EVOLUTION_FAILURE:
       return {
         ...state,
-        loading: false,
-        evolution: [],
+        evolution: {
+          data: [],
+          loading: false,
+          error: true,
+          success: false,
+        },
       };
     case CareTypes.LOAD_CHECKIN_REQUEST:
       return {
         ...state,
-        loading: true,
-        succes: false,
-        error: false,
+        checkin: {
+          ...state.checkin,
+          loading: true,
+          success: false,
+          error: false,
+        },
       };
     case CareTypes.LOAD_CHECKIN_SUCCESS:
       return {
         ...state,
-        loading: false,
-        success: true,
-        error: false,
-        checkin: action.payload,
+        checkin: {
+          data: action.payload,
+          loading: false,
+          success: true,
+          error: false,
+        },
       };
     case CareTypes.LOAD_CHECKIN_FAILURE:
       return {
         ...state,
-        loading: false,
-        success: false,
-        error: true,
-        checkin: [],
+        checkin: { data: [], loading: false, success: false, error: true },
       };
     case CareTypes.LOAD_CHECKIN_REPORT_REQUEST:
       return {

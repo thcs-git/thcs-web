@@ -27,6 +27,7 @@ import NoPermission from "../../../components/Erros/NoPermission";
 import { ContainerStyle as Container } from "./styles";
 
 // Helper
+import LOCALSTORAGE from "../../../helpers/constants/localStorage";
 import SESSIONSTORAGE from "../../../helpers/constants/sessionStorage";
 import { age, formatDate } from "../../../helpers/date";
 import { checkViewPermission } from "../../../utils/permissions";
@@ -54,6 +55,7 @@ import { loadRequestByCareId as loadRequestPrescriptionByCareId } from "../../..
 import { loadRequest as loadRequestAntibiotic } from "../../../store/ducks/antibiotic/actions";
 import { loadRequest as loadRequestExams } from "../../../store/ducks/exams/actions";
 import { loadRequest as loadRequestAttests } from "../../../store/ducks/attest/actions";
+import { loadRequest as loadRequestCompanyLogo } from "../../../store/ducks/logo/actions";
 interface IPageParams {
   id?: string;
 }
@@ -139,7 +141,7 @@ export default function PatientOverview(
   props: RouteComponentProps<IPageParams>
 ) {
   const integration = sessionStorage.getItem(SESSIONSTORAGE.INTEGRATION);
-
+  const currentCompanyiD = localStorage.getItem(LOCALSTORAGE.COMPANY_SELECTED);
   const history = useHistory();
   const dispatch = useDispatch();
   const { params } = props.match;
@@ -163,6 +165,7 @@ export default function PatientOverview(
   const rightsOfLayoutState = useSelector(
     (state: ApplicationState) => state.layout.data.rights
   );
+  const logoState = useSelector((state: ApplicationState) => state.logo);
   const [team, setTeam] = useState<any[]>([]);
   const [reportActive, setReportActive] = useState(false);
   const [reportType, setReportType] = useState("");
@@ -174,7 +177,8 @@ export default function PatientOverview(
       dispatch(loadCareById(params.id));
       dispatch(loadRequestQrCode(params.id));
       dispatch(loadCheckinRequest(params.id));
-      dispatch(loadScheduleRequest({ attendance_id: params.id }));
+      dispatch(loadRequestCompanyLogo());
+      // dispatch(loadScheduleRequest({ attendance_id: params.id }));
     }
   }, [params.id]);
 
@@ -184,16 +188,9 @@ export default function PatientOverview(
       dispatch(loadRequestAllergies(careState.data.patient_id._id));
     }
   }, [careState?.data?.patient_id, integration]);
-
   useEffect(() => {
     handleTeam();
   }, [careState.schedule]);
-
-  useEffect(() => {
-    if (careState?.data?.patient_id?._id) {
-      dispatch(loadRequestAllergies(careState?.data?.patient_id?._id));
-    }
-  }, [careState?.data?.patient_id?._id, integration]);
 
   useEffect(() => {
     const attendanceId = careState?.data?._id;
@@ -224,7 +221,6 @@ export default function PatientOverview(
       dispatch(loadRequestAttests(patientId));
     }
   }, [careState.data._id, reportType]);
-  // console.log(attestState, "attest");
   const handleTeam = useCallback(() => {
     const teamUsers: any = [];
 
@@ -459,11 +455,14 @@ export default function PatientOverview(
     "Atestados",
     "Exames",
     "Check-in/out",
-    "Prescrições",
-    "Aferições",
     "Alergias",
+    "Prescrições",
+    "Checagens",
     "Antibióticos",
     "Evolução",
+    "Aferições",
+    "Exames",
+    "Atestados",
   ];
   const personalCard = {
     card: "Dados Pessoais",
@@ -543,14 +542,14 @@ export default function PatientOverview(
             error: allergiesState.error,
           }
         : "";
-    } else if (report === "Evolução" && careState.evolution.length > 0) {
+    } else if (report === "Evolução" && careState.evolution.data.length > 0) {
       return {
-        data: careState.evolution,
-        error: false,
+        data: careState.evolution.data,
+        error: careState.evolution.error,
       };
-    } else if (report === "Check-in/out" && careState.checkin.length > 0) {
+    } else if (report === "Check-in/out" && careState.checkin.data.length > 0) {
       return {
-        data: careState.checkin,
+        data: careState.checkin.data,
         error: false,
       };
     } else if (
@@ -590,16 +589,16 @@ export default function PatientOverview(
   function handleCloseFilter() {
     setOpenFilterReport(false);
   }
-  function handleLoadinfReport(type: string) {
+  function handleLoadingReport(type: string) {
     switch (type) {
       case "Aferições":
         return measurementState.loading;
       case "Alergias":
         return allergiesState.loading;
       case "Evolução":
-        return false;
+        return careState.evolution.loading;
       case "Check-in/out":
-        return false;
+        return careState.checkin.loading;
       case "Prescrições":
         return prescriptionState.loading;
       case "Antibióticos":
@@ -657,7 +656,7 @@ export default function PatientOverview(
                     }
                     reportType={reportType}
                     state={careState}
-                    loading={handleLoadinfReport(reportType)}
+                    loading={handleLoadingReport(reportType)}
                   />
                 ) : (
                   <Container

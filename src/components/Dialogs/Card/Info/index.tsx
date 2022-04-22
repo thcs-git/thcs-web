@@ -23,6 +23,10 @@ import QRCode from "react-qr-code";
 import _ from "lodash";
 import LOCALSTORAGE from "../../../../helpers/constants/localStorage";
 import { formatDate } from "../../../../helpers/date";
+// types
+import { QrCodeState } from "../../../../store/ducks/qrCode/types";
+import { CareState } from "../../../../store/ducks/cares/types";
+import { Grid } from "@mui/material";
 
 interface IDialogProps {
   tittle: { card: string; info?: string[] };
@@ -35,10 +39,18 @@ interface IDialogProps {
 interface IContent {
   tittle: string;
   rows: IRows[];
+  qrCodeState: QrCodeState;
+  careState: CareState;
 }
+
 interface IRows {
   name: string;
   value: any;
+}
+interface ITeam {
+  name: string;
+  function: string;
+  user_id: string;
 }
 
 export default function DialogInfo(props: IDialogProps) {
@@ -50,6 +62,28 @@ export default function DialogInfo(props: IDialogProps) {
   const handleClose = () => {
     setOpenDialog(false);
   };
+  const capitalizeText = (words: string) => {
+    return words
+      .toLowerCase()
+      .split(" ")
+      .map((text: string) => {
+        return (text = text.charAt(0).toUpperCase() + text.substring(1));
+      })
+      .join(" ");
+  };
+
+  const getFirstAndLastName = (fullName: string) => {
+    return `${fullName.split(" ")[0]} ${
+      fullName.split(" ")[fullName.split(" ").length - 1]
+    }`;
+  };
+  function handleFunction(list: any, company: string) {
+    for (let i = 0; i < list.length; i++) {
+      if (list[i].companie_id === company) {
+        return list[i].function;
+      }
+    }
+  }
   const namePatient = (data: IContent) => {
     const name = data.rows.map(({ name, value }: IRows) => {
       if (name === "Nome" && tittle.card !== "Plano e Internação")
@@ -168,34 +202,49 @@ export default function DialogInfo(props: IDialogProps) {
   };
 
   function handleTeamData(content: IContent) {
-    let team: object[] = [];
-    content.rows.map(({ name, value }: IRows) => {
-      if (name === "Equipe") {
-        value.map((item: any) => {
-          if (item.name) team.push(item);
+    let team: ITeam[] = [];
+    content.careState.checkin.data.map((day: any, index: number) => {
+      if (day) {
+        day.list.map((checks: any, index: number) => {
+          if (checks.list) {
+            checks.list.map((user: any) => {
+              const professional: ITeam = {
+                name: getFirstAndLastName(
+                  capitalizeText(user[0].user_id[0].name)
+                ),
+                function: handleFunction(
+                  user[0].user_id[0].companies_links,
+                  content.careState.data.company_id
+                ),
+                user_id: user[0].user_id[0]._id,
+              };
+              team.push(professional);
+            });
+          }
         });
       }
     });
-    return team;
+    return _.uniqBy(team, "user_id").sort((a: any, b: any) => {
+      return a.name < b.name ? -1 : a.name > b.name ? 1 : 0;
+    });
   }
 
-  function teamData(arr: object[]) {
-    let itens = arr.map((item: any, index: number) => {
-      if (item.name) {
-        let profession: string = item.profession_id.map((profession: any) => {
-          return profession.name ? profession.name : false;
-        });
+  function teamData(arr: ITeam[]) {
+    let team = arr.map((professional: ITeam, index: number) => {
+      if (professional.name)
         return (
-          <Box
-            key={index}
-            style={{ color: "var(--black)", marginLeft: "24px" }}
-          >
-            - {item.name} {profession.length > 0 && `(${profession})`}
+          <Box key={index}>
+            {" "}
+            - {professional.name} {"(" + professional.function + ")"}
           </Box>
         );
-      }
     });
-    return itens;
+
+    const arrEmpty = (
+      <Box>Não foram realizados nenhum check-in/out neste atendimento.</Box>
+    );
+
+    return arr.length > 0 ? team : arrEmpty;
   }
 
   function careData(content: IContent) {

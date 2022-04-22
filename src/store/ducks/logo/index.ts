@@ -1,40 +1,45 @@
 import { Reducer } from "redux";
-import { AttestState, AttestTypes } from "./types";
+import { LogoState, LogoTypes } from "./types";
 
-export const INITIAL_STATE: AttestState = {
+export const INITIAL_STATE: LogoState = {
   data: {
-    data: [],
-    total: 0,
+    name: "",
+    logo: {
+      type: "",
+      data: [],
+    },
   },
+  loading: false,
   error: false,
   success: false,
-  loading: false,
 };
 
-const reducer: Reducer<AttestState> = (state = INITIAL_STATE, action) => {
+export const reducer: Reducer<LogoState> = (state = INITIAL_STATE, action) => {
   switch (action.type) {
-    case AttestTypes.LOAD_REQUEST:
+    case LogoTypes.LOAD_REQUEST:
       return {
         ...state,
         loading: true,
+        error: false,
+        success: false,
       };
-    case AttestTypes.LOAD_SUCCESS:
+    case LogoTypes.LOAD_SUCCESS:
       return {
         data: action.payload,
         loading: false,
-        success: true,
         error: false,
+        success: false,
       };
-    case AttestTypes.LOAD_FAILURE:
+    case LogoTypes.LOAD_FAILURE:
       return {
         data: INITIAL_STATE.data,
         loading: false,
         success: false,
         error: true,
       };
-
     default:
       return state;
   }
 };
+
 export default reducer;

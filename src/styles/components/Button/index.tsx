@@ -1,11 +1,15 @@
-import { HTMLProps } from 'react';
-import styled, { css, StyledComponent, StyledComponentProps } from 'styled-components';
-import Button, { ButtonProps } from '@material-ui/core/Button';
-import { ButtonTypes } from './types';
+import { HTMLProps } from "react";
+import styled, {
+  css,
+  StyledComponent,
+  StyledComponentProps,
+} from "styled-components";
+import Button, { ButtonProps } from "@material-ui/core/Button";
+import { ButtonTypes } from "./types";
 
 interface IButtonProps extends ButtonProps {
   background?: string;
-  center?: boolean
+  center?: boolean;
 }
 
 const background: any = {
@@ -58,7 +62,7 @@ const background: any = {
   `,
   disable: css`
     background: var(--disable) !important;
-    color: #ADADAD67  !important;
+    color: #adadad67 !important;
     &:hover {
       background: var(--disable) !important;
     }
@@ -67,21 +71,27 @@ const background: any = {
 
 const size: any = {
   sm: css`
-  padding: 3px;
-`,
+    padding: 3px;
+  `,
   md: css`
-  padding: 5px;
-`,
+    padding: 5px;
+  `,
   lg: css`
-  padding: 10px;
-`,
+    padding: 10px;
+  `,
 };
 
 const ButtonComponent = styled(Button)`
-  ${(props: IButtonProps) => background[props.background || 'var(--primary)']}
-  ${(props: IButtonProps) => props.center ? 'text-align: center;' : null}
-  ${(props: IButtonProps) => props.variant === 'outlined' ? `background: transparent !important; color: var(--black); color: ${`var(--${props.background});` || 'var(--primary);'}` : null}
+  ${(props: IButtonProps) => background[props.background || "var(--primary)"]}
+  ${(props: IButtonProps) => (props.center ? "text-align: center;" : null)}
+  ${(props: IButtonProps) =>
+    props.variant === "outlined"
+      ? `background: transparent !important; color: var(--black); color: ${
+          `var(--${props.background});` || "var(--primary);"
+        }`
+      : null}
 
+  cursor:pointer;
   min-width: 95px;
   max-height: 36px;
   text-transform: capitalize;

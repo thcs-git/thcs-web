@@ -2,6 +2,7 @@ import React from "react";
 import { FormGroupSection } from "./styles";
 import { Grid } from "@material-ui/core";
 import ViewCard from "../../../Card/ViewCard";
+import LOCALSTORAGE from "../../../../helpers/constants/localStorage";
 
 interface IComponent {
   state: any;
@@ -18,6 +19,7 @@ interface IPageParams {
 
 const UserProfessionForm = (props: IComponent) => {
   const { state, setState, setValidations, canEdit, params } = props;
+  const currentCompanyId = localStorage.getItem(LOCALSTORAGE.COMPANY_SELECTED);
 
   const specialties: any[] = [];
   state.specialties.lenght > 0 &&
@@ -25,16 +27,43 @@ const UserProfessionForm = (props: IComponent) => {
       specialties.push(item.name);
     });
 
+  function handleCompanie_link(
+    list: any,
+    company: string | null,
+    type: string
+  ) {
+    for (let i = 0; i < list.length; i++) {
+      if (list[i].companie_id._id === company) {
+        if (type === "function") {
+          return list[i].function ? list[i].function : "";
+        } else if (type === "main") {
+          return list[i].main_specialty ? list[i].main_specialty : "";
+        } else if (type === "specialties") {
+          return list[i].specialties ? list[i].specialties : "";
+        } else {
+          return "";
+        }
+      }
+    }
+  }
+
   const content1 = {
     tittle: "Função",
     rows: [
       {
         name: "Função",
-        value: state.profession_id ? state.profession_id.name : "",
+        value:
+          state.profession_id && state.companies_links && currentCompanyId
+            ? handleCompanie_link(
+                state.companies_links,
+                currentCompanyId,
+                "function"
+              )
+            : "",
       },
       {
         name: "Conselho",
-        value: state.council_id ? state.council_id.name : "",
+        value: state.council_id?.name ? state.council_id.name : state.council ? state.council : "",
       },
       { name: "UF", value: state.council_state },
       { name: "Número", value: state.council_number },
@@ -47,9 +76,26 @@ const UserProfessionForm = (props: IComponent) => {
     rows: [
       {
         name: "Principal",
-        value: state.main_specialty_id ? state.main_specialty_id.name : "",
+        value:
+          state.companies_links.length > 0
+            ? handleCompanie_link(
+                state.companies_links,
+                currentCompanyId,
+                "main"
+              )
+            : "",
       },
-      { name: "Outras", value: specialties.join(", ") },
+      {
+        name: "Outras",
+        value:
+          state.companies_links.length > 0
+            ? handleCompanie_link(
+                state.companies_links,
+                currentCompanyId,
+                "specialties"
+              )
+            : "",
+      },
     ],
     details: "UserProfessionForm",
   };

@@ -184,6 +184,9 @@ import { get as getExams } from "./exams/sagas";
 import { AttestTypes } from "./attest/types";
 import { get as getAttests } from "./attest/sagas";
 
+import { LogoTypes } from "./logo/types";
+import { get as getLogo } from "./logo/sagas";
+
 export default function* rootSaga(): any {
   return yield all([
     takeLatest(LoginTypes.LOAD_REQUEST, doLogin),
@@ -413,5 +416,10 @@ export default function* rootSaga(): any {
      * ATTESTS
      */
     takeLatest(AttestTypes.LOAD_REQUEST, getAttests),
+
+    /**
+     * LOGO
+     */
+    takeLatest(LogoTypes.LOAD_REQUEST, getLogo),
   ]);
 }
