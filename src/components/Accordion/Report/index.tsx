@@ -223,7 +223,9 @@ export default function AccordionReport(props: IAccordionReport) {
   };
   const handleFunction = (list: any, company: string, type?: string) => {
     if (type === "allergy" || type === "event") {
-      if (!list.created_by?.companies_links || list.created_by === null)
+      if (integration) {
+        return list.function ? capitalizeText(list.function) : "-";
+      } else if (!list.created_by?.companies_links || list.created_by === null)
         return "-";
       return list.created_by.companies_links.map((item: any, index: number) => {
         if (item.companie_id === company) {
