@@ -31,7 +31,7 @@ interface IPageParams {
   state: UserState;
 }
 
-const SIZE_INPUT_PASSWORD = 3;
+const SIZE_INPUT_PASSWORD = 6;
 
 const validationSchema = yup.object({
   oldPassword: yup.string().required("Campo obrigatório"),

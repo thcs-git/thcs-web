@@ -63,7 +63,7 @@ const UserProfessionForm = (props: IComponent) => {
       },
       {
         name: "Conselho",
-        value: state.council_id ? state.council_id.name : "",
+        value: state.council_id?.name ? state.council_id.name : state.council ? state.council : "",
       },
       { name: "UF", value: state.council_state },
       { name: "Número", value: state.council_number },

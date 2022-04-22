@@ -22,6 +22,7 @@ import { QrCodeState } from "./ducks/qrCode/types";
 import { AntibioticState } from "./ducks/antibiotic/types";
 import { ExamsState } from "./ducks/exams/types";
 import { AttestState } from "./ducks/attest/types";
+import { LogoState } from "./ducks/logo/types";
 
 import { InitialState } from "./ducks/states";
 import combinedReducers from "./ducks/rootReducer";
@@ -49,6 +50,7 @@ export interface ApplicationState {
   antibiotic: AntibioticState;
   exams: ExamsState;
   attest: AttestState;
+  logo: LogoState;
 }
 
 const sagaMiddleware = createSagaMiddleware();
