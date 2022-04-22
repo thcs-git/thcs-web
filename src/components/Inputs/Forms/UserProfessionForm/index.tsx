@@ -20,7 +20,7 @@ interface IPageParams {
 const UserProfessionForm = (props: IComponent) => {
   const { state, setState, setValidations, canEdit, params } = props;
   const currentCompanyId = localStorage.getItem(LOCALSTORAGE.COMPANY_SELECTED);
-
+  const currentCustomerId = localStorage.getItem(LOCALSTORAGE.CUSTOMER);
   const specialties: any[] = [];
   state.specialties.lenght > 0 &&
     state.specialties.map((item: any) => {
@@ -30,21 +30,32 @@ const UserProfessionForm = (props: IComponent) => {
   function handleCompanie_link(
     list: any,
     company: string | null,
-    type: string
+    type: string,
+    customer?: string | null
   ) {
     for (let i = 0; i < list.length; i++) {
       if (list[i].companie_id._id === company) {
         if (type === "function") {
-          return list[i].function ? list[i].function : "";
+          return list[i].function;
         } else if (type === "main") {
-          return list[i].main_specialty ? list[i].main_specialty : "";
+          return list[i].main_specialty;
         } else if (type === "specialties") {
-          return list[i].specialties ? list[i].specialties : "";
-        } else {
-          return "";
+          return list[i].specialties;
         }
       }
     }
+    for (let i = 0; i < list.length; i++) {
+      if (list[i].companie_id.customer_id._id === customer) {
+        if (type === "function") {
+          return list[i].function;
+        } else if (type === "main") {
+          return list[i].main_specialty;
+        } else if (type === "specialties") {
+          return list[i].specialties;
+        }
+      }
+    }
+    return "";
   }
 
   const content1 = {
@@ -57,13 +68,18 @@ const UserProfessionForm = (props: IComponent) => {
             ? handleCompanie_link(
                 state.companies_links,
                 currentCompanyId,
-                "function"
+                "function",
+                currentCustomerId
               )
             : "",
       },
       {
         name: "Conselho",
-        value: state.council_id?.name ? state.council_id.name : state.council ? state.council : "",
+        value: state.council_id?.name
+          ? state.council_id.name
+          : state.council
+          ? state.council
+          : "",
       },
       { name: "UF", value: state.council_state },
       { name: "Número", value: state.council_number },
@@ -81,7 +97,8 @@ const UserProfessionForm = (props: IComponent) => {
             ? handleCompanie_link(
                 state.companies_links,
                 currentCompanyId,
-                "main"
+                "main",
+                currentCustomerId
               )
             : "",
       },
@@ -92,7 +109,8 @@ const UserProfessionForm = (props: IComponent) => {
             ? handleCompanie_link(
                 state.companies_links,
                 currentCompanyId,
-                "specialties"
+                "specialties",
+                currentCustomerId
               )
             : "",
       },

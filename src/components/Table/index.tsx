@@ -74,6 +74,7 @@ const TableComponent = (props: ITableProps) => {
   } = props;
   const history = useHistory();
   const currentCompanyId = localStorage.getItem(LOCALSTORAGE.COMPANY_SELECTED);
+  const currentCustomerId = localStorage.getItem(LOCALSTORAGE.CUSTOMER);
 
   const handleClick = useCallback(
     (event: React.MouseEvent<HTMLButtonElement>) => {
@@ -115,7 +116,8 @@ const TableComponent = (props: ITableProps) => {
   function handleCompanie_link(
     list: any,
     company: string | null,
-    type: string
+    type: string,
+    customer?: string | null
   ) {
     for (let i = 0; i < list.length; i++) {
       if (list[i].companie_id._id === company) {
@@ -125,11 +127,21 @@ const TableComponent = (props: ITableProps) => {
           return list[i].main_specialty;
         } else if (type === "specialties") {
           return list[i].specialties;
-        } else {
-          return "";
         }
       }
     }
+    for (let i = 0; i < list.length; i++) {
+      if (list[i].companie_id.customer_id._id === customer) {
+        if (type === "function") {
+          return list[i].function;
+        } else if (type === "main") {
+          return list[i].main_specialty;
+        } else if (type === "specialties") {
+          return list[i].specialties;
+        }
+      }
+    }
+    return "";
   }
   return (
     <TableContainer component={Paper}>
@@ -214,7 +226,8 @@ const TableComponent = (props: ITableProps) => {
                         handleCompanie_link(
                           user?.companies_links,
                           currentCompanyId,
-                          "function"
+                          "function",
+                          currentCustomerId
                         )
                       )
                     )}
