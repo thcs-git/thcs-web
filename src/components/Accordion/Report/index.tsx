@@ -1247,6 +1247,21 @@ export default function AccordionReport(props: IAccordionReport) {
       {console.log(item)}
       <ContentDetailsAccordion sx={{ gap: "8px" }}>
         <TextCenterDetails
+          sx={{
+            width: "min-content",
+            color: "var(--gray-dark)",
+            whiteSpace: "nowrap",
+          }}
+        >
+          Id. Prescrição:
+        </TextCenterDetails>
+        <TextCenterDetails sx={{ width: "100%", justifyContent: "flex-start" }}>
+          {item.prescription_id}
+        </TextCenterDetails>
+      </ContentDetailsAccordion>
+      <Divider sx={{ width: "100%", margin: "0 auto" }} />
+      <ContentDetailsAccordion sx={{ gap: "8px" }}>
+        <TextCenterDetails
           sx={{ width: "min-content", color: "var(--gray-dark)" }}
         >
           Unidade:
