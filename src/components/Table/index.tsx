@@ -387,7 +387,7 @@ const TableComponent = (props: ITableProps) => {
                   {formatDate(patient.birthdate, "DD/MM/YYYY")}
                 </TableCell>
                 <TableCell align="center">
-                  {patient.fiscal_number ? patient.fiscal_number : "-"}
+                  {handleEmpty(patient.fiscal_number)}
                 </TableCell>
                 <TableCell align="left">{patient.mother_name}</TableCell>
               </TableRow>
@@ -403,8 +403,12 @@ const TableComponent = (props: ITableProps) => {
                     {patient.social_name || patient.name}
                   </Link>
                 </TableCell>
-                <TableCell align="left">{patient.fiscal_number}</TableCell>
-                <TableCell align="left">{patient.mother_name}</TableCell>
+                <TableCell align="left">
+                  {handleEmpty(patient.fiscal_number)}
+                </TableCell>
+                <TableCell align="left">
+                  {handleEmpty(patient.mother_name)}
+                </TableCell>
                 <TableCell align="left">
                   {formatDate(patient.created_at, "DD/MM/YYYY HH:mm:ss")}
                 </TableCell>
@@ -518,7 +522,9 @@ const TableComponent = (props: ITableProps) => {
                 <TableCell>{care?._id}</TableCell>
                 <TableCell>
                   <Link to={`/care/${care._id}/overview`}>
-                    {care.patient_id?.social_name || care.patient_id?.name}
+                    {care.patient_id?.social_name
+                      ? handleEmpty(care.patient_id?.social_name)
+                      : handleEmpty(care.patient_id?.name)}
                   </Link>
                 </TableCell>
                 {/*<TableCell>*/}
@@ -526,8 +532,10 @@ const TableComponent = (props: ITableProps) => {
                 {/*    ? care?.care_type_id.name*/}
                 {/*    : care?.care_type_id}*/}
                 {/*</TableCell>*/}
-                <TableCell>{care?.tipo}</TableCell>
-                <TableCell>{care.patient_id?.fiscal_number}</TableCell>
+                <TableCell>{handleEmpty(care?.tipo)}</TableCell>
+                <TableCell align="center">
+                  {handleEmpty(care.patient_id?.fiscal_number)}
+                </TableCell>
 
                 {/*<TableCell align="center">*/}
                 {/*  {care?.started_at*/}
