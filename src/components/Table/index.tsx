@@ -117,9 +117,11 @@ const TableComponent = (props: ITableProps) => {
     list: any,
     company: string | null,
     type: string,
-    customer?: string | null
+    customer: string | null
   ) {
     for (let i = 0; i < list.length; i++) {
+      // console.log(list[i].main_specialty_external);
+      // console.log(list[i].main_specialty);
       if (list[i].companie_id._id === company) {
         if (type === "function") {
           return list[i].function;
@@ -225,6 +227,7 @@ const TableComponent = (props: ITableProps) => {
                     {handleEmpty(handleCpf(user?.fiscal_number))}
                   </TableCell>
                 )}
+                {/* {console.log(user)} */}
                 {
                   <TableCell>
                     {handleEmpty(
@@ -243,25 +246,23 @@ const TableComponent = (props: ITableProps) => {
                 <TableCell align="left">
                   <div style={{ display: "flex" }}>
                     <p style={{ marginTop: "0.3rem" }}>
-                      {handleCompanie_link(
-                        user?.companies_links,
-                        currentCompanyId,
-                        "main"
-                      )
-                        ? capitalizeText(
-                            handleCompanie_link(
-                              user?.companies_links,
-                              currentCompanyId,
-                              "main"
-                            )
+                      {handleEmpty(
+                        capitalizeText(
+                          handleCompanie_link(
+                            user?.companies_links,
+                            currentCompanyId,
+                            "main",
+                            currentCustomerId
                           )
-                        : "-"}
+                        )
+                      )}
                     </p>
 
                     {handleCompanie_link(
                       user?.companies_links,
                       currentCompanyId,
-                      "specialties"
+                      "specialties",
+                      currentCustomerId
                     ) ? (
                       <Tooltip
                         style={{ fontSize: "10pt", marginTop: "0.8rem" }}
@@ -269,7 +270,8 @@ const TableComponent = (props: ITableProps) => {
                           handleCompanie_link(
                             user?.companies_links,
                             currentCompanyId,
-                            "specialties"
+                            "specialties",
+                            currentCustomerId
                           )
                         )}
                       >

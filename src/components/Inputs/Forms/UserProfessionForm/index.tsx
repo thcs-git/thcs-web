@@ -31,7 +31,7 @@ const UserProfessionForm = (props: IComponent) => {
     list: any,
     company: string | null,
     type: string,
-    customer?: string | null
+    customer: string | null
   ) {
     for (let i = 0; i < list.length; i++) {
       if (list[i].companie_id._id === company) {
@@ -57,21 +57,22 @@ const UserProfessionForm = (props: IComponent) => {
     }
     return "";
   }
-
+  function handleEmpty(value: any) {
+    return value ? value : "";
+  }
   const content1 = {
     tittle: "Função",
     rows: [
       {
         name: "Função",
-        value:
-          state.profession_id && state.companies_links && currentCompanyId
-            ? handleCompanie_link(
-                state.companies_links,
-                currentCompanyId,
-                "function",
-                currentCustomerId
-              )
-            : "",
+        value: handleEmpty(
+          handleCompanie_link(
+            state?.companies_links,
+            currentCompanyId,
+            "function",
+            currentCustomerId
+          )
+        ),
       },
       {
         name: "Conselho",
@@ -92,27 +93,25 @@ const UserProfessionForm = (props: IComponent) => {
     rows: [
       {
         name: "Principal",
-        value:
-          state.companies_links.length > 0
-            ? handleCompanie_link(
-                state.companies_links,
-                currentCompanyId,
-                "main",
-                currentCustomerId
-              )
-            : "",
+        value: handleEmpty(
+          handleCompanie_link(
+            state?.companies_links,
+            currentCompanyId,
+            "main",
+            currentCustomerId
+          )
+        ),
       },
       {
         name: "Outras",
-        value:
-          state.companies_links.length > 0
-            ? handleCompanie_link(
-                state.companies_links,
-                currentCompanyId,
-                "specialties",
-                currentCustomerId
-              )
-            : "",
+        value: handleEmpty(
+          handleCompanie_link(
+            state?.companies_links,
+            currentCompanyId,
+            "specialties",
+            currentCustomerId
+          )
+        ),
       },
     ],
     details: "UserProfessionForm",
@@ -142,19 +141,13 @@ const UserProfessionForm = (props: IComponent) => {
       {params.mode === "view" && !canEdit ? (
         <>
           <Grid container>
-            <>
-              <ViewCard content={content3} />
-            </>
+            <ViewCard content={content3} />
           </Grid>
           <Grid container>
-            <>
-              <ViewCard content={content1} />
-            </>
+            <ViewCard content={content1} />
           </Grid>
           <Grid container>
-            <>
-              <ViewCard content={content2} />
-            </>
+            <ViewCard content={content2} />
           </Grid>
         </>
       ) : (
