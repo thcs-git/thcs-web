@@ -47,6 +47,7 @@ export const GliderStyle = styled(Glider)`
   display: flex;
   flex-direction: row;
   gap: 16px;
+  scrollbar-width: none;
 
   .glider-track {
     display: flex;
