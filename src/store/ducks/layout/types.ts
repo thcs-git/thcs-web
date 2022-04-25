@@ -6,6 +6,8 @@ export enum LayoutTypes {
   LOAD_SUCCESS = "@layout/LOAD_SUCCESS",
   LOAD_FAILURE = "@layout/LOAD_FAILURE",
 
+  CHANGE_MENU_SELECTED = "layout/CHANGE_MENU_SELECTED",
+
   CLEAN = "@layout/CLEAN",
 }
 
@@ -27,6 +29,7 @@ export interface LayoutInterface {
   rights?: string[];
   integration?: string | null;
   integration_name?: string | null;
+  menuSelected?: string;
 }
 
 /**

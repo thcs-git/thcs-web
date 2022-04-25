@@ -94,7 +94,10 @@ export const ButtonComponent = styled(Button)`
   min-width: 95px;
   max-height: 36px;
   text-transform: capitalize;
-
+  cursor: pointer;
+  span {
+    cursor: pointer;
+  }
   & svg {
     /* margin-right: 10px; */
 

@@ -6,6 +6,14 @@ export const Th = styled.th`
 `;
 
 export const MenuFilter = styled(Menu)`
+  cursor: pointer;
+  svg,
+  path {
+    cursor: pointer;
+  }
+  ul {
+    padding: 0;
+  }
   p {
     padding: 10px 14px;
     color: #666666;

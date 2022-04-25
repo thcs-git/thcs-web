@@ -8,7 +8,7 @@ import {
   FormGroup,
   FormLabel,
   Grid,
-} from "@material-ui/core";
+} from "@mui/material";
 import Box from "@mui/material/Box";
 import { makeStyles, Theme, withStyles } from "@material-ui/core/styles";
 import { FormGroupSection, WrapperHeaderForm, CheckBoxInvalid } from "./styles";
@@ -106,12 +106,14 @@ const CheckListForm = (props: Iprops) => {
           }}
           value={crud}
           control={
-            <CustomCheckbox
-              style={{
+            <Checkbox
+              sx={{
                 width: "70px",
                 height: "35px",
                 backgroundColor: handleBackgroundColorCheckBox(index),
                 borderRadius: "0",
+                color: "var(--gray)",
+                "&.Mui-checked": { color: "var(--action)" },
               }}
               checked={handleChecked(name, crud)}
               icon={<CheckCircleOutlineOutlinedIcon />}
@@ -149,12 +151,14 @@ const CheckListForm = (props: Iprops) => {
           }}
           value={crud}
           control={
-            <CustomCheckbox
-              style={{
+            <Checkbox
+              sx={{
                 width: "70px",
                 height: "35px",
                 backgroundColor: handleBackgroundColorCheckBox(index),
                 borderRadius: "0",
+                color: "var(--gray)",
+                "&.Mui-checked": { color: "var(--action)" },
               }}
               checked={handleChecked(name, crud)}
               icon={

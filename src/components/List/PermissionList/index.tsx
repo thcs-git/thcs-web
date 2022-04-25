@@ -92,27 +92,22 @@ const PermissionList = (props: IComponent) => {
               ) => {
                 return (
                   <TableRow key={`${name}_${index}`}>
-                    <TableCell align="left">
-                      <ItemTable
-                        style={{ color: "var(--black)" }}
-                        onClick={() => {
-                          !checkViewPermission(
-                            "permission",
-                            JSON.stringify(rightsOfLayoutState)
-                          )
-                            ? toast.error(
-                                "Você não tem permissão para visualizar permissões."
-                              )
-                            : setModePermission("view");
-                          setIdPermission(permissions);
-
-                          // history.push(
-                          //   `/client/${customerState.data._id}/permission/${permissions}/view/`
-                          // );
-                        }}
-                      >
-                        {name}
-                      </ItemTable>
+                    <TableCell
+                      sx={{ color: "var(--black)", cursor: "pointer" }}
+                      align="left"
+                      onClick={() => {
+                        !checkViewPermission(
+                          "permission",
+                          JSON.stringify(rightsOfLayoutState)
+                        )
+                          ? toast.error(
+                              "Você não tem permissão para visualizar permissões."
+                            )
+                          : setModePermission("view");
+                        setIdPermission(permissions);
+                      }}
+                    >
+                      {name}
                     </TableCell>
                     <TableCell align="left">
                       <ListItemStatus active={active}>
