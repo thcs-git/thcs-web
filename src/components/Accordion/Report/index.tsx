@@ -1649,12 +1649,19 @@ export default function AccordionReport(props: IAccordionReport) {
                   : capitalizeText(column?.Prescritor?.Nome)
                 : "Não informado"}
             </TextCenterDetails>
-            <Tooltip title={column?.Atestado?.CID10Estruturado[0]?.Descricao}>
+            <Tooltip
+              title={cidSplit(
+                column?.Atestado?.CID10Estruturado[0]?.Codigo,
+                "description"
+              )}
+            >
               <TextCenterDetails sx={{ cursor: "help", width: "100px" }}>
-                {column?.Atestado?.CID10Estruturado[0]?.Codigo}
+                {cidSplit(
+                  column?.Atestado?.CID10Estruturado[0]?.Codigo,
+                  "codigo"
+                )}
               </TextCenterDetails>
             </Tooltip>
-
             <TextCenterDetails sx={{ width: "140px" }}>
               {`${formatDate(
                 column.Atestado.DataInicio,
@@ -1721,6 +1728,11 @@ export default function AccordionReport(props: IAccordionReport) {
       }
     });
     return group;
+  }
+  function cidSplit(data: any, type: string) {
+    const dataSlit = data.split("-");
+
+    return type === "description" ? dataSlit[1] : dataSlit[0];
   }
   return (
     <>

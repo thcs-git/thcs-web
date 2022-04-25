@@ -221,7 +221,6 @@ export default function PatientOverview(
       dispatch(loadRequestAttests(patientId));
     }
   }, [careState.data._id, reportType]);
-
   const handleTeam = useCallback(() => {
     const teamUsers: any = [];
 
@@ -453,6 +452,8 @@ export default function PatientOverview(
     md: 6,
   };
   const cards = [
+    "Atestados",
+    "Exames",
     "Check-in/out",
     "Alergias",
     "Prescrições",
