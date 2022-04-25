@@ -195,7 +195,7 @@ export default function CouncilList() {
     { name: "Data do Atendimento", align: "left" },
     { name: "Atendimento", align: "left" },
     { name: "Data da Alta", align: "left" },
-    { name: "Tipo", align: "center" },
+    { name: "Área", align: "center" },
     { name: "Empresa", align: "center" },
     { name: "Visualizar", align: "center" },
   ];
@@ -225,7 +225,7 @@ export default function CouncilList() {
                   tableCells={[
                     { name: "Atendimento", align: "left" },
                     { name: "Paciente", align: "left" },
-                    { name: "Tipo", align: "left" },
+                    { name: "Área", align: "left" },
                     { name: "CPF", align: "left" },
                     { name: "Data de Atendimento", align: "center" },
                     { name: " ", align: "left" },
