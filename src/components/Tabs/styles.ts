@@ -34,7 +34,9 @@ export const TabNavItem = styled(Tab)`
 
   max-width: 100%;
   box-shadow: none;
-
+  span {
+    cursor: pointer;
+  }
   &.active {
     color: var(--secondary);
   }

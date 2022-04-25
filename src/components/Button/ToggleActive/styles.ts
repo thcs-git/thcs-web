@@ -1,7 +1,8 @@
-import styled from 'styled-components';
-import { Switch } from '@material-ui/core';
+import styled from "styled-components";
+import Switch from "@mui/material/Switch";
 
 export const SwitchComponent = styled(Switch)`
+  cursor: "pointer";
   .Mui-checked {
     color: var(--secondary);
   }

@@ -17,13 +17,7 @@ import {
 } from "../../../store/ducks/companies/actions";
 import { CompanyInterface } from "../../../store/ducks/companies/types";
 
-import {
-  Container,
-  Menu,
-  MenuItem,
-  TableRow,
-  TableCell,
-} from "@material-ui/core";
+import { Container, Menu, MenuItem, TableRow, TableCell } from "@mui/material";
 import { SearchOutlined, MoreVert } from "@material-ui/icons";
 
 import PaginationComponent from "../../../components/Pagination";
@@ -149,6 +143,10 @@ export default function CompanyList() {
                               <TableCell
                                 align="left"
                                 style={{ color: "var(--primary)" }}
+                                sx={{
+                                  cursor: "pointer",
+                                  "& a": { cursor: "pointer" },
+                                }}
                               >
                                 <Link
                                   key={index}
@@ -158,7 +156,13 @@ export default function CompanyList() {
                                 </Link>
                               </TableCell>
                             ) : (
-                              <TableCell align="left">
+                              <TableCell
+                                align="left"
+                                sx={{
+                                  cursor: "pointer",
+                                  "& a": { cursor: "pointer" },
+                                }}
+                              >
                                 <Link
                                   key={index}
                                   to={`/company/${company._id}/view`}
@@ -200,7 +204,13 @@ export default function CompanyList() {
                     companyState.list.data.map(
                       (company: CompanyInterface, index: number) => (
                         <TableRow key={`patient_${index}`}>
-                          <TableCell align="left">
+                          <TableCell
+                            align="left"
+                            sx={{
+                              cursor: "pointer",
+                              "& a": { cursor: "pointer" },
+                            }}
+                          >
                             <Link
                               key={index}
                               to={`/company/${company._id}/view`}

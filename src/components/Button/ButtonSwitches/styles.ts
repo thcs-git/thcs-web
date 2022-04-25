@@ -19,6 +19,9 @@ export const ButtonComponent = styled(Button)`
   cursor: pointer;
   text-transform: none;
   font-weight: bold;
+  span {
+    cursor: pointer;
+  }
 
   &:hover {
     background-color: ${(props) =>
