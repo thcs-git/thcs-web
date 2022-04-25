@@ -964,7 +964,6 @@ export default function SignIn() {
   const history = useHistory();
   const dispatch = useDispatch();
   const loginState = useSelector((state: ApplicationState) => state.login);
-  console.log(loginState);
 
   const [inputEmail, setInputEmail] = useState({ value: "", error: false });
   const [inputPassword, setInputPassword] = useState({

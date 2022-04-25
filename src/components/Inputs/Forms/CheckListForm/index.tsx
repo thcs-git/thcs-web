@@ -56,7 +56,6 @@ const CustomCheckbox = withStyles({
 const CheckListForm = (props: Iprops) => {
   const { state, setState, rows, mode, checkList } = props;
   const classes = useStyles();
-  console.log(rows);
   function handleChecked(name: string, crud: string) {
     return _.indexOf(state.rights, `${name}.${crud}`) > -1;
   }
@@ -87,6 +86,7 @@ const CheckListForm = (props: Iprops) => {
       "patient.view",
       "care.view",
       "qrcode.create",
+      "qrcode.view",
       "schedule.view",
       "schedule.edit",
       "company.view",

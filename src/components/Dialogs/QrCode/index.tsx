@@ -174,27 +174,30 @@ export default function DialogQrCode(props: IQrCodeProps) {
   }
   return (
     <>
-      {checkViewPermission("qrcode", JSON.stringify(rightsOfLayoutState)) ? (
-        <>
-          {qrCodeState.loading && <Loading />}
-          <Dialog open={openDialog} onClose={handleClose}>
-            <DialogActions style={{ textAlign: "right" }}>
-              <CloseIcon
-                onClick={handleClose}
-                sx={{
-                  fontWeight: "bold",
-                  color: "var(--gray)",
-                  border: " 2px solid var(--gray)",
-                  borderRadius: "30px",
-                  transition: "200ms",
-                  "&:hover": {
-                    color: "var(--gray-dark)",
-                    border: " 2px solid var(--gray-dark)",
-                  },
-                }}
-              />
-            </DialogActions>
-
+      {/* {checkViewPermission("qrcode", JSON.stringify(rightsOfLayoutState)) ? ( */}
+      <>
+        {qrCodeState.loading && <Loading />}
+        <Dialog open={openDialog} onClose={handleClose}>
+          <DialogActions style={{ textAlign: "right" }}>
+            <CloseIcon
+              onClick={handleClose}
+              sx={{
+                fontWeight: "bold",
+                color: "var(--gray)",
+                border: " 2px solid var(--gray)",
+                borderRadius: "30px",
+                transition: "200ms",
+                "&:hover": {
+                  color: "var(--gray-dark)",
+                  border: " 2px solid var(--gray-dark)",
+                },
+              }}
+            />
+          </DialogActions>
+          {checkViewPermission(
+            "qrcode",
+            JSON.stringify(rightsOfLayoutState)
+          ) ? (
             <Box
               sx={{
                 width: "400px",
@@ -263,11 +266,14 @@ export default function DialogQrCode(props: IQrCodeProps) {
                 </>
               )}
             </Box>
-          </Dialog>
-        </>
-      ) : (
+          ) : (
+            <NoPermission />
+          )}
+        </Dialog>
+      </>
+      {/* ) : (
         <NoPermission />
-      )}
+      )} */}
     </>
   );
 }

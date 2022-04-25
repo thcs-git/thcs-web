@@ -584,7 +584,7 @@ export default function ClientForm(props: RouteComponentProps<IPageParams>) {
   function handleCancelForm() {
     dispatch(cleanAction());
     setOpenModalCancel(false);
-    history.push("/dashboard");
+    history.push("/");
   }
 
   function handlePermissionReturn() {
