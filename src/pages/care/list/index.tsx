@@ -228,6 +228,7 @@ export default function CouncilList() {
                     { name: "Tipo", align: "left" },
                     { name: "CPF", align: "left" },
                     { name: "Data de Atendimento", align: "center" },
+                    { name: " ", align: "left" },
                   ]}
                   careState={careState}
                   careFilter={careFilter}

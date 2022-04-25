@@ -27,14 +27,15 @@ import {
   FormGroup,
   FormLabel,
   Grid,
-} from "@material-ui/core";
+  Checkbox,
+} from "@mui/material";
 import Box from "@mui/material/Box";
 import Tooltip from "@mui/material/Tooltip";
 // icon
 import CheckCircleOutlineOutlinedIcon from "@mui/icons-material/CheckCircleOutlineOutlined";
 import { ReactComponent as InactiveIcon } from "../../../../assets/img/icon-inative.svg";
 // styles
-import { FormLabelComponent, CheckboxStyle as Checkbox } from "./styles";
+
 interface IComponent {
   state: any;
   setState: any;
@@ -87,16 +88,6 @@ const useStyles = makeStyles((theme: Theme) => ({
     // '&.Mui-disabled:hover': { background:theme.palette.secondary.main },
   },
 }));
-
-const CustomCheckbox = withStyles({
-  root: {
-    color: "var(--primary)",
-    "&$checked": {
-      color: "var(--secondary)",
-    },
-  },
-  checked: {},
-})((props: CheckboxProps) => <Checkbox color="default" {...props} />);
 
 const PermissionForm = (props: IComponent) => {
   const {
@@ -390,26 +381,19 @@ const PermissionForm = (props: IComponent) => {
     },
   ];
 
-  const CustomCheckbox = withStyles({
-    root: {
-      color: "var(--gray)",
-      "&$checked": {
-        color: "var(--action)",
-      },
-    },
-    checked: {},
-  })((props: CheckboxProps) => <Checkbox color="default" {...props} />);
-
   const handleControlForm = (mode: string) => {
     if (mode === "view") {
       return (
-        <CustomCheckbox
-          style={{
+        <Checkbox
+          sx={{
             width: "35px",
             height: "35px",
             backgroundColor: "none",
             borderRadius: "0",
+            color: "var(--gray)",
+            "&.Mui-checked": { color: "var(--action)" },
           }}
+          disabled
           checked={state.active}
           icon={<InactiveIcon />}
           checkedIcon={<CheckCircleOutlineOutlinedIcon />}
