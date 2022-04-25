@@ -17,7 +17,7 @@ export default function NoPermission(props: any) {
       }}
     >
       <h2>Vocês não tem permissão para acesar esta página</h2>
-      <Button variant="contained" onClick={() => history.push("/dashboard")}>
+      <Button variant="contained" onClick={() => history.push("/")}>
         Início
       </Button>
     </Container>

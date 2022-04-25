@@ -4,6 +4,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { ApplicationState } from "../../store";
 
 import { loadCompanyById } from "../../store/ducks/companies/actions";
+import { changeMenuSelected } from "../../store/ducks/layout/actions";
 
 import clsx from "clsx";
 import {
@@ -16,18 +17,19 @@ import Drawer from "@material-ui/core/Drawer";
 import List from "@material-ui/core/List";
 import CssBaseline from "@material-ui/core/CssBaseline";
 import Divider from "@material-ui/core/Divider";
-import IconButton from "@material-ui/core/IconButton";
+import IconButton from "@mui/material/IconButton";
 import EditIcon from "@material-ui/icons/Edit";
 import MenuIcon from "@material-ui/icons/Menu";
 import ChevronLeftIcon from "@material-ui/icons/ChevronLeft";
-import ListItem from "@material-ui/core/ListItem";
-import ListItemIcon from "@material-ui/core/ListItemIcon";
+import ListItem from "@mui/material/ListItem";
+import ListItemIcon from "@mui/material/ListItemIcon";
 import ListItemText from "@material-ui/core/ListItemText";
 import ExitToApp from "@material-ui/icons/ExitToApp";
 import AccountCircle from "@material-ui/icons/AccountCircle";
 import SettingsIcon from "@material-ui/icons/Settings";
-import Slide from "@material-ui/core/Slide";
-import { TransitionProps } from "@material-ui/core/transitions";
+import Slide from "@mui/material/Slide";
+import { TransitionProps } from "@mui/material/transitions";
+
 import ExpansionPanel from "@material-ui/core/ExpansionPanel";
 import ExpansionPanelSummary from "@material-ui/core/ExpansionPanelSummary";
 import ExpansionPanelDetails from "@material-ui/core/ExpansionPanelDetails";
@@ -37,6 +39,7 @@ import {
   AccordionDetails,
   AccordionSummary,
   Badge,
+  Box,
   Button,
   Dialog,
   DialogActions,
@@ -144,7 +147,7 @@ const useStyles = makeStyles((theme: Theme) =>
     },
     logOutButton: {
       cursor: "pointer",
-      marginLeft: 5,
+      // marginLeft: 5,
     },
     indicator: {
       borderBottom: "2px solid var(--secondary)",
@@ -160,7 +163,9 @@ const useStyles = makeStyles((theme: Theme) =>
 );
 
 const Transition = React.forwardRef(function Transition(
-  props: TransitionProps & { children?: React.ReactElement },
+  props: TransitionProps & {
+    children: React.ReactElement<any, any>;
+  },
   ref: React.Ref<unknown>
 ) {
   return <Slide direction="up" ref={ref} {...props} />;
@@ -411,7 +416,6 @@ const Sibebar = (props: Props<any>) => {
   //     setItemsMenu(items)
   //   }
   // }, []);
-
   return (
     <div className={classes.root}>
       <CssBaseline />
@@ -429,8 +433,23 @@ const Sibebar = (props: Props<any>) => {
         }}
       >
         <div className={classes.toolbar}>
-          <Logo />
-          <IconButton onClick={handleDrawerClose}>
+          <Box sx={{ marginTop: "32px" }}>
+            <Logo />
+          </Box>
+          <IconButton
+            sx={{
+              marginRight: "4px",
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
+              width: "48px",
+              height: "48px",
+              cursor: "pointer",
+              "& svg, path": { cursor: "pointer" },
+              "& svg": { margin: "0px" },
+            }}
+            onClick={handleDrawerClose}
+          >
             {open ? (
               <ChevronLeftIcon style={{ color: "#fff" }} />
             ) : (
@@ -459,16 +478,31 @@ const Sibebar = (props: Props<any>) => {
                     <h3>{username}</h3>
                   </Grid>
                   <ListItem
+                    sx={{
+                      display: "flex",
+                      justifyContent: "center",
+                      cursor: "auto",
+                    }}
                     className={classes.logOutButton}
                     onClick={() => setOpenModalMessage(true)}
                   >
-                    <Grid item>
+                    <Grid
+                      item
+                      sx={{
+                        "& svg, path": { cursor: "pointer" },
+                      }}
+                    >
                       <Badge
                         classes={{ badge: classes.customBadge }}
                         className={classes.padding}
                         color="primary"
                         badgeContent={1}
                         max={99}
+                        sx={{
+                          "& span": {
+                            backgroundColor: "var(--primary-foccus)",
+                          },
+                        }}
                       >
                         <NotificationsIcon />
                       </Badge>
@@ -482,9 +516,14 @@ const Sibebar = (props: Props<any>) => {
                     flexDirection: "column",
                     alignItems: "center",
                     justifyContent: "center",
+                    cursor: "pointer",
                   }}
                 >
                   <ListItem
+                    sx={{
+                      cursor: "pointer",
+                      "& svg, path, span, div, h4": { cursor: "pointer" },
+                    }}
                     style={{ padding: 0 }}
                     className={classes.logOutButton}
                     onClick={() => {
@@ -523,7 +562,7 @@ const Sibebar = (props: Props<any>) => {
             </>
           ) : (
             <>
-              <div style={{ paddingRight: "60px" }}>
+              <div>
                 <Grid
                   container
                   spacing={2}
@@ -536,11 +575,17 @@ const Sibebar = (props: Props<any>) => {
                     className={classes.logOutButton}
                     onClick={() => setOpenModalMessage(true)}
                   >
-                    <Grid item>
+                    <Grid item sx={{ margin: "20px 0 0 26px" }}>
                       <Badge
                         // classes={{ badge: classes.customBadge }}
                         // className={classes.padding}
-                        // sx={{ backgroundColor: "var(--secondary)" }}
+                        sx={{
+                          "& svg, path": { cursor: "pointer" },
+                          "& span": {
+                            backgroundColor: "var(--primary-foccus)",
+                            margin: "-2px",
+                          },
+                        }}
                         badgeContent={1}
                         max={99}
                       >
@@ -562,8 +607,23 @@ const Sibebar = (props: Props<any>) => {
                   className={classes.logOutButton}
                   key={index}
                   onClick={item.modal}
+                  sx={{
+                    backgroundColor: `${
+                      layoutState.data.menuSelected === item.title
+                        ? "#64BCD0"
+                        : ""
+                    }`,
+                    "&:hover": {
+                      transition: "ease-in-out 200ms",
+                      backgroundColor: "#64BCD0",
+                      cursor: "pointer",
+                      "& svg, path, span, div, h4": { cursor: "pointer" },
+                    },
+                  }}
                 >
-                  <ListItemIcon>{item.icon}</ListItemIcon>
+                  <ListItemIcon sx={{ marginLeft: "6px" }}>
+                    {item.icon}
+                  </ListItemIcon>
                   <ListItemText
                     primary={item.title}
                     style={{ color: "#ffff", cursor: "pointer" }}
@@ -573,9 +633,27 @@ const Sibebar = (props: Props<any>) => {
                 <ListItem
                   className={classes.logOutButton}
                   key={index}
-                  onClick={() => history.push(item.route)}
+                  onClick={() => {
+                    history.push(item.route);
+                    dispatch(changeMenuSelected(item.title));
+                  }}
+                  sx={{
+                    backgroundColor: `${
+                      layoutState.data.menuSelected === item.title
+                        ? "#64BCD0"
+                        : ""
+                    }`,
+                    "&:hover": {
+                      transition: "ease-in-out 200ms",
+                      backgroundColor: "#64BCD0",
+                      cursor: "pointer",
+                      "& svg, path, span, div, h4": { cursor: "pointer" },
+                    },
+                  }}
                 >
-                  <ListItemIcon>{item.icon}</ListItemIcon>
+                  <ListItemIcon sx={{ marginLeft: "6px" }}>
+                    {item.icon}
+                  </ListItemIcon>
                   <ListItemText
                     primary={item.title}
                     style={{ color: "#ffff", cursor: "pointer" }}

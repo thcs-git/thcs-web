@@ -90,6 +90,11 @@ const useStyles = makeStyles((theme) => ({
   form: {
     width: "100%", // Fix IE 11 issue.
     marginTop: theme.spacing(1),
+    // "& .MuiOutlinedInput-root": {
+    //   "&.Mui-focused fieldset": {
+    //     borderColor: "var(--secondary)",
+    //   },
+    // },
   },
   create_account: {
     marginBottom: "14px",
@@ -964,7 +969,6 @@ export default function SignIn() {
   const history = useHistory();
   const dispatch = useDispatch();
   const loginState = useSelector((state: ApplicationState) => state.login);
-  console.log(loginState);
 
   const [inputEmail, setInputEmail] = useState({ value: "", error: false });
   const [inputPassword, setInputPassword] = useState({

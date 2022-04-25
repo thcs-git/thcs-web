@@ -8,7 +8,7 @@ import {
   FormGroup,
   FormLabel,
   Grid,
-} from "@material-ui/core";
+} from "@mui/material";
 import Box from "@mui/material/Box";
 import { makeStyles, Theme, withStyles } from "@material-ui/core/styles";
 import { FormGroupSection, WrapperHeaderForm, CheckBoxInvalid } from "./styles";
@@ -56,7 +56,6 @@ const CustomCheckbox = withStyles({
 const CheckListForm = (props: Iprops) => {
   const { state, setState, rows, mode, checkList } = props;
   const classes = useStyles();
-  console.log(rows);
   function handleChecked(name: string, crud: string) {
     return _.indexOf(state.rights, `${name}.${crud}`) > -1;
   }
@@ -87,6 +86,7 @@ const CheckListForm = (props: Iprops) => {
       "patient.view",
       "care.view",
       "qrcode.create",
+      "qrcode.view",
       "schedule.view",
       "schedule.edit",
       "company.view",
@@ -106,12 +106,14 @@ const CheckListForm = (props: Iprops) => {
           }}
           value={crud}
           control={
-            <CustomCheckbox
-              style={{
+            <Checkbox
+              sx={{
                 width: "70px",
                 height: "35px",
                 backgroundColor: handleBackgroundColorCheckBox(index),
                 borderRadius: "0",
+                color: "var(--gray)",
+                "&.Mui-checked": { color: "var(--action)" },
               }}
               checked={handleChecked(name, crud)}
               icon={<CheckCircleOutlineOutlinedIcon />}
@@ -149,12 +151,14 @@ const CheckListForm = (props: Iprops) => {
           }}
           value={crud}
           control={
-            <CustomCheckbox
-              style={{
+            <Checkbox
+              sx={{
                 width: "70px",
                 height: "35px",
                 backgroundColor: handleBackgroundColorCheckBox(index),
                 borderRadius: "0",
+                color: "var(--gray)",
+                "&.Mui-checked": { color: "var(--action)" },
               }}
               checked={handleChecked(name, crud)}
               icon={

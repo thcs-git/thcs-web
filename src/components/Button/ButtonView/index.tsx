@@ -1,5 +1,5 @@
 import React, { ReactNode } from "react";
-import { Button, Grid } from "@material-ui/core";
+import { Button, Grid } from "@mui/material";
 import { Visibility } from "@material-ui/icons";
 
 interface IComponent {
@@ -15,6 +15,7 @@ const ButtonView = (props: IComponent) => {
     <Grid item md={2} xs={12} style={{ paddingTop: "5px" }}>
       <Button
         style={{ color: "#0899BA", textAlign: "center" }}
+        sx={{ cursor: "pointer", "& svg, path": { cursor: "pointer" } }}
         onClick={setCanEdit}
       >
         <Visibility style={{ width: 18 }} />

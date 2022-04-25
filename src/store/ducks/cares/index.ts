@@ -649,9 +649,18 @@ const reducer: Reducer<CareState> = (state = INITIAL_STATE, action) => {
       return {
         ...state,
         history: action.payload.data,
+
         loading: false,
         error: false,
         success: true,
+      };
+    case CareTypes.LOAD_HISTORY_FAILURE:
+      return {
+        ...state,
+        history: INITIAL_STATE.history,
+        loading: false,
+        success: false,
+        error: true,
       };
     case CareTypes.LOAD_EVOLUTION_REQUEST:
       return {

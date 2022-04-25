@@ -23,7 +23,8 @@ import DialogActions from "@mui/material/DialogActions";
 import DialogContent from "@mui/material/DialogContent";
 import DialogContentText from "@mui/material/DialogContentText";
 import DialogTitle from "@mui/material/DialogTitle";
-
+import { TransitionProps } from "@mui/material/transitions";
+import Slide from "@mui/material/Slide";
 // styles
 import { ButtonGreen, AutocompleteStyled as Autocomplete } from "./styles";
 import { ApplicationState } from "../../../store";
@@ -137,9 +138,16 @@ export default function DialogChangeCompany(props: IChangeCompany) {
     },
     [user]
   );
-
+  const Transition = React.forwardRef(function Transition(
+    props: TransitionProps & {
+      children: React.ReactElement<any, any>;
+    },
+    ref: React.Ref<unknown>
+  ) {
+    return <Slide direction="up" ref={ref} {...props} />;
+  });
   return (
-    <Dialog open={open} onClose={handleClose} keepMounted>
+    <Dialog open={open} onClose={handleClose} TransitionComponent={Transition}>
       <DialogTitle>Configurações</DialogTitle>
       <DialogContent>
         <DialogContentText>
@@ -182,7 +190,7 @@ export default function DialogChangeCompany(props: IChangeCompany) {
               changeCompany(companySelected);
               dispatch(loadRequestLayout());
               dispatch(loadRequestLogo());
-              history.push(`/dashboard`);
+              history.push(`/`);
             } else {
               toast.warning("Você deve escolher a empresa.");
             }

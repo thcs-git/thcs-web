@@ -223,7 +223,9 @@ export default function AccordionReport(props: IAccordionReport) {
   };
   const handleFunction = (list: any, company: string, type?: string) => {
     if (type === "allergy" || type === "event") {
-      if (!list.created_by?.companies_links || list.created_by === null)
+      if (integration) {
+        return list.function ? capitalizeText(list.function) : "-";
+      } else if (!list.created_by?.companies_links || list.created_by === null)
         return "-";
       return list.created_by.companies_links.map((item: any, index: number) => {
         if (item.companie_id === company) {
@@ -674,7 +676,6 @@ export default function AccordionReport(props: IAccordionReport) {
                           margin: "2px",
                         }}
                       >
-                        {console.log(column)}
                         <Badge
                           badgeContent={column.type.length}
                           showZero
@@ -1039,14 +1040,36 @@ export default function AccordionReport(props: IAccordionReport) {
     data.map((column: any, index: number) => (
       <>
         <ContentDetailsAccordion key={column._id}>
-          <TextCenterDetails>{column._id}</TextCenterDetails>
-          <TextCenterDetails>
+          <TextCenterDetails
+            sx={{
+              textDecoration: `${!column.active ? "line-through" : "none"}`,
+              color: `${!column.active ? "#7D7D7D" : "#333333"}`,
+            }}
+          >
+            {column._id}
+          </TextCenterDetails>
+          <TextCenterDetails
+            sx={{
+              textDecoration: `${!column.active ? "line-through" : "none"}`,
+              color: `${!column.active ? "#7D7D7D" : "#333333"}`,
+            }}
+          >
             {getFirstAndLastName(capitalizeText(column.created_by))}
           </TextCenterDetails>
-          <TextCenterDetails>
+          <TextCenterDetails
+            sx={{
+              textDecoration: `${!column.active ? "line-through" : "none"}`,
+              color: `${!column.active ? "#7D7D7D" : "#333333"}`,
+            }}
+          >
             {capitalizeText(column.function)}
           </TextCenterDetails>
-          <TextCenterDetails>
+          <TextCenterDetails
+            sx={{
+              textDecoration: `${!column.active ? "line-through" : "none"}`,
+              color: `${!column.active ? "#7D7D7D" : "#333333"}`,
+            }}
+          >
             {column.start_at
               ? `${formatDate(column.start_at, "DD/MM/YYYY")} às ${formatDate(
                   column.start_at,
@@ -1054,7 +1077,12 @@ export default function AccordionReport(props: IAccordionReport) {
                 )}`
               : "Não informado"}
           </TextCenterDetails>
-          <TextCenterDetails>
+          <TextCenterDetails
+            sx={{
+              textDecoration: `${!column.active ? "line-through" : "none"}`,
+              color: `${!column.active ? "#7D7D7D" : "#333333"}`,
+            }}
+          >
             {column.end_at
               ? `${formatDate(column.end_at, "DD/MM/YYYY")} às ${formatDate(
                   column.end_at,
@@ -1174,7 +1202,16 @@ export default function AccordionReport(props: IAccordionReport) {
                     width: "85%",
                   }}
                 >
-                  <Box>{item.name}</Box>
+                  <Box
+                    sx={{
+                      textDecoration: `${
+                        !item.active ? "line-through" : "none"
+                      }`,
+                      // color: `${!item.active ? "#7D7D7D" : "#333333"}`,
+                    }}
+                  >
+                    {item.name}
+                  </Box>
                   <Box
                     sx={{
                       display: "flex",
@@ -1182,7 +1219,11 @@ export default function AccordionReport(props: IAccordionReport) {
                       border:
                         expanded === `panel${item.id}`
                           ? "1px solid var(--white)"
-                          : "1px solid var(--secondary)",
+                          : `${
+                              item.active
+                                ? "1px solid var(--secondary)"
+                                : "1px solid var(--gray-dark)"
+                            }`,
                       borderRadius: "20px",
                       padding: "0 4px",
                       width: "115px",
@@ -1203,13 +1244,36 @@ export default function AccordionReport(props: IAccordionReport) {
     );
   const antibioticAccordionDetailsRows = (item: any) => (
     <>
+      {console.log(item)}
+      <ContentDetailsAccordion sx={{ gap: "8px" }}>
+        <TextCenterDetails
+          sx={{
+            width: "min-content",
+            color: "var(--gray-dark)",
+            whiteSpace: "nowrap",
+          }}
+        >
+          Id. Prescrição:
+        </TextCenterDetails>
+        <TextCenterDetails sx={{ width: "100%", justifyContent: "flex-start" }}>
+          {item.prescription_id}
+        </TextCenterDetails>
+      </ContentDetailsAccordion>
+      <Divider sx={{ width: "100%", margin: "0 auto" }} />
       <ContentDetailsAccordion sx={{ gap: "8px" }}>
         <TextCenterDetails
           sx={{ width: "min-content", color: "var(--gray-dark)" }}
         >
           Unidade:
         </TextCenterDetails>
-        <TextCenterDetails sx={{ width: "100%", justifyContent: "flex-start" }}>
+        <TextCenterDetails
+          sx={{
+            width: "100%",
+            justifyContent: "flex-start",
+            textDecoration: `${!item.active ? "line-through" : "none"}`,
+            color: `${!item.active ? "#7D7D7D" : "#333333"}`,
+          }}
+        >
           {item.unity}
         </TextCenterDetails>
       </ContentDetailsAccordion>
@@ -1220,7 +1284,14 @@ export default function AccordionReport(props: IAccordionReport) {
         >
           Quantidade:
         </TextCenterDetails>
-        <TextCenterDetails sx={{ width: "100%", justifyContent: "flex-start" }}>
+        <TextCenterDetails
+          sx={{
+            width: "100%",
+            justifyContent: "flex-start",
+            textDecoration: `${!item.active ? "line-through" : "none"}`,
+            color: `${!item.active ? "#7D7D7D" : "#333333"}`,
+          }}
+        >
           {item.amount}
         </TextCenterDetails>
       </ContentDetailsAccordion>
@@ -1231,7 +1302,14 @@ export default function AccordionReport(props: IAccordionReport) {
         >
           Frequência:
         </TextCenterDetails>
-        <TextCenterDetails sx={{ width: "100%", justifyContent: "flex-start" }}>
+        <TextCenterDetails
+          sx={{
+            width: "100%",
+            justifyContent: "flex-start",
+            textDecoration: `${!item.active ? "line-through" : "none"}`,
+            color: `${!item.active ? "#7D7D7D" : "#333333"}`,
+          }}
+        >
           {item.frequency}
         </TextCenterDetails>
       </ContentDetailsAccordion>
@@ -1242,7 +1320,14 @@ export default function AccordionReport(props: IAccordionReport) {
         >
           Horários:
         </TextCenterDetails>
-        <TextCenterDetails sx={{ width: "100%", justifyContent: "flex-start" }}>
+        <TextCenterDetails
+          sx={{
+            width: "100%",
+            justifyContent: "flex-start",
+            textDecoration: `${!item.active ? "line-through" : "none"}`,
+            color: `${!item.active ? "#7D7D7D" : "#333333"}`,
+          }}
+        >
           {item.hritem.map(
             (itemHora: any, index: number) =>
               `${formatDate(itemHora.time, "HH:mm")} ${
@@ -1263,6 +1348,8 @@ export default function AccordionReport(props: IAccordionReport) {
             width: "100%",
             justifyContent: "flex-start",
             whiteSpace: "nowrap",
+            textDecoration: `${!item.active ? "line-through" : "none"}`,
+            color: `${!item.active ? "#7D7D7D" : "#333333"}`,
           }}
         >
           {item.description.length < 115 ? (
@@ -1303,11 +1390,18 @@ export default function AccordionReport(props: IAccordionReport) {
                   justifyContent: "space-between",
                   alignItems: "center",
                   minHeight: "36px",
+                  textDecoration: `${!item.active ? "line-through" : "none"}`,
+                  color: `${!item.active ? "#7D7D7D" : "#333333"}`,
                 }}
               >
                 <Box>
                   {
-                    <Box sx={{ color: "var(--secondary)", display: "inline" }}>
+                    <Box
+                      sx={{
+                        color: "var(--secondary)",
+                        display: "inline",
+                      }}
+                    >
                       {index + 1}
                     </Box>
                   }{" "}
@@ -1340,6 +1434,8 @@ export default function AccordionReport(props: IAccordionReport) {
           sx={{
             width: "100%",
             justifyContent: "flex-start",
+            textDecoration: `${!item.active ? "line-through" : "none"}`,
+            color: `${!item.active ? "#7D7D7D" : "#333333"}`,
           }}
         >
           {capitalizeText(item.created_by)}
@@ -1570,12 +1666,19 @@ export default function AccordionReport(props: IAccordionReport) {
                   : capitalizeText(column?.Prescritor?.Nome)
                 : "Não informado"}
             </TextCenterDetails>
-            <Tooltip title={column?.Atestado?.CID10Estruturado[0]?.Descricao}>
+            <Tooltip
+              title={cidSplit(
+                column?.Atestado?.CID10Estruturado[0]?.Codigo,
+                "description"
+              )}
+            >
               <TextCenterDetails sx={{ cursor: "help", width: "100px" }}>
-                {column?.Atestado?.CID10Estruturado[0]?.Codigo}
+                {cidSplit(
+                  column?.Atestado?.CID10Estruturado[0]?.Codigo,
+                  "codigo"
+                )}
               </TextCenterDetails>
             </Tooltip>
-
             <TextCenterDetails sx={{ width: "140px" }}>
               {`${formatDate(
                 column.Atestado.DataInicio,
@@ -1642,6 +1745,11 @@ export default function AccordionReport(props: IAccordionReport) {
       }
     });
     return group;
+  }
+  function cidSplit(data: any, type: string) {
+    const dataSlit = data.split("-");
+
+    return type === "description" ? dataSlit[1] : dataSlit[0];
   }
   return (
     <>
