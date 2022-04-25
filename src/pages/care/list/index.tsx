@@ -205,7 +205,7 @@ export default function CouncilList() {
       <Sidebar>
         {checkViewPermission("care", JSON.stringify(rightsOfLayoutState)) ? (
           <Container>
-            {careState.loading && <Loading />}
+            {/* {careState.loading && <Loading />} */}
             <FormTitle>Lista de Atendimentos</FormTitle>
 
             {integration ? (

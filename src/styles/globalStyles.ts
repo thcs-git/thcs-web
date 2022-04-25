@@ -95,12 +95,12 @@ export default createGlobalStyle`
   }
 
   .blur {
-    filter: blur(2px);
+    /* filter: blur(1px); */
   }
 
   /* Spinner */
   body .spinner-loading {
-    position: absolute !important;
+    position: fixed !important;
     width: 100%;
     height: 100%;
     display: flex;

@@ -126,7 +126,7 @@ export default function UserDisengaged() {
   return (
     <>
       <Sidebar>
-        {userState.loading && <Loading />}
+        {/* {userState.loading && <Loading />} */}
         <Container>
           <FormTitle>Lista de Profissionais Desvinculados</FormTitle>
           <SearchComponent

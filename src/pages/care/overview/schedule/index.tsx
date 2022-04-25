@@ -1093,7 +1093,7 @@ export default function SchedulePage(props: RouteComponentProps<IPageParams>) {
   return (
     <>
       <Sidebar>
-        {careState.loading && <Loading />}
+        {/* {careState.loading && <Loading />} */}
 
         <HeaderContent>
           <FormTitle>Agenda do Paciente</FormTitle>

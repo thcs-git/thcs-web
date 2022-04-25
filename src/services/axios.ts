@@ -47,7 +47,6 @@ apiSollar.interceptors.request.use(
       sessionStorage.getItem(SESSIONSTORAGE.INTEGRATION) || "";
     const external_company_id =
       localStorage.getItem(LOCALSTORAGE.INTEGRATION_COMPANY_SELECTED) || "";
-
     const external_user_id =
       localStorage.getItem(LOCALSTORAGE.SOLLAR_INTEGRATION_USER_ID) || "";
 
@@ -105,6 +104,8 @@ apiSollarMobi.interceptors.request.use(
       sessionStorage.getItem(SESSIONSTORAGE.INTEGRATION) || "";
     const external_company_id =
       localStorage.getItem(LOCALSTORAGE.INTEGRATION_COMPANY_SELECTED) || "";
+    const external_user_id =
+      localStorage.getItem(LOCALSTORAGE.SOLLAR_INTEGRATION_USER_ID) || "";
 
     if (token) {
       config.headers.token = `${token}`;
@@ -159,6 +160,8 @@ apiSollarReport.interceptors.request.use(
       sessionStorage.getItem(SESSIONSTORAGE.INTEGRATION) || "";
     const external_company_id =
       localStorage.getItem(LOCALSTORAGE.INTEGRATION_COMPANY_SELECTED) || "";
+    const external_user_id =
+      localStorage.getItem(LOCALSTORAGE.SOLLAR_INTEGRATION_USER_ID) || "";
 
     if (token) {
       config.headers.token = `${token}`;
@@ -215,6 +218,8 @@ apiSollarNexoData.interceptors.request.use(
       sessionStorage.getItem(SESSIONSTORAGE.INTEGRATION) || "";
     const external_company_id =
       localStorage.getItem(LOCALSTORAGE.INTEGRATION_COMPANY_SELECTED) || "";
+    const external_user_id =
+      localStorage.getItem(LOCALSTORAGE.SOLLAR_INTEGRATION_USER_ID) || "";
 
     if (token) {
       config.headers.token = `${token}`;

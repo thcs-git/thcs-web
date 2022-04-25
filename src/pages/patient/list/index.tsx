@@ -306,7 +306,7 @@ export default function PatientList() {
       <Sidebar>
         {checkViewPermission("patient", JSON.stringify(rightsOfLayoutState)) ? (
           <Container>
-            {patientState.loading && <Loading />}
+            {/* {patientState.loading && <Loading />} */}
             <FormTitle>Lista de Pacientes</FormTitle>
             {integration ? (
               <>
