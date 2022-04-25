@@ -52,6 +52,7 @@ import { uniqBy } from "cypress/types/lodash";
 import { createInterface } from "readline";
 import { any } from "cypress/types/bluebird";
 import SESSIONSTORAGE from "../../../helpers/constants/sessionStorage";
+import LOCALSTORAGE from "../../../helpers/constants/localStorage";
 import HistoryDialog from "../../../components/Dialogs/History";
 import { checkViewPermission } from "../../../utils/permissions";
 import NoPermission from "../../../components/Erros/NoPermission";
@@ -64,6 +65,7 @@ export default function CouncilList() {
   const rightsOfLayoutState = useSelector(
     (state: ApplicationState) => state.layout.data.rights
   );
+  const currentCompany = localStorage.getItem(LOCALSTORAGE.COMPANY_SELECTED);
   let valueStatus: string;
 
   useEffect(() => {
@@ -86,7 +88,7 @@ export default function CouncilList() {
     //     search
     //   }));
     // }
-  }, [tabIndex]);
+  }, [tabIndex, currentCompany]);
 
   useEffect(() => {
     let array = _.uniqBy(careState.list.data, "patient_id.name");
