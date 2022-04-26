@@ -218,7 +218,7 @@ export default function UserClientForm(
                 <ButtonTabs canEdit={canEdit} buttons={buttons} />
               </>
             ) : (
-              <NotFound backOnclick={() => history.push("/userclient")} />
+              <NotFound backOnclick={() => history.push("/")} />
             )}
           </Container>
         ) : (

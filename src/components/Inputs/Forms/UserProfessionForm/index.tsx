@@ -20,7 +20,7 @@ interface IPageParams {
 const UserProfessionForm = (props: IComponent) => {
   const { state, setState, setValidations, canEdit, params } = props;
   const currentCompanyId = localStorage.getItem(LOCALSTORAGE.COMPANY_SELECTED);
-
+  const currentCustomerId = localStorage.getItem(LOCALSTORAGE.CUSTOMER);
   const specialties: any[] = [];
   state.specialties.lenght > 0 &&
     state.specialties.map((item: any) => {
@@ -30,40 +30,57 @@ const UserProfessionForm = (props: IComponent) => {
   function handleCompanie_link(
     list: any,
     company: string | null,
-    type: string
+    type: string,
+    customer: string | null
   ) {
     for (let i = 0; i < list.length; i++) {
       if (list[i].companie_id._id === company) {
         if (type === "function") {
-          return list[i].function ? list[i].function : "";
+          return list[i].function;
         } else if (type === "main") {
-          return list[i].main_specialty ? list[i].main_specialty : "";
+          return list[i].main_specialty;
         } else if (type === "specialties") {
-          return list[i].specialties ? list[i].specialties : "";
-        } else {
-          return "";
+          return list[i].specialties;
         }
       }
     }
+    for (let i = 0; i < list.length; i++) {
+      if (list[i].companie_id.customer_id._id === customer) {
+        if (type === "function") {
+          return list[i].function;
+        } else if (type === "main") {
+          return list[i].main_specialty;
+        } else if (type === "specialties") {
+          return list[i].specialties;
+        }
+      }
+    }
+    return "";
   }
-
+  function handleEmpty(value: any) {
+    return value ? value : "";
+  }
   const content1 = {
     tittle: "Função",
     rows: [
       {
         name: "Função",
-        value:
-          state.profession_id && state.companies_links && currentCompanyId
-            ? handleCompanie_link(
-                state.companies_links,
-                currentCompanyId,
-                "function"
-              )
-            : "",
+        value: handleEmpty(
+          handleCompanie_link(
+            state?.companies_links,
+            currentCompanyId,
+            "function",
+            currentCustomerId
+          )
+        ),
       },
       {
         name: "Conselho",
-        value: state.council_id?.name ? state.council_id.name : state.council ? state.council : "",
+        value: state.council_id?.name
+          ? state.council_id.name
+          : state.council
+          ? state.council
+          : "",
       },
       { name: "UF", value: state.council_state },
       { name: "Número", value: state.council_number },
@@ -76,25 +93,25 @@ const UserProfessionForm = (props: IComponent) => {
     rows: [
       {
         name: "Principal",
-        value:
-          state.companies_links.length > 0
-            ? handleCompanie_link(
-                state.companies_links,
-                currentCompanyId,
-                "main"
-              )
-            : "",
+        value: handleEmpty(
+          handleCompanie_link(
+            state?.companies_links,
+            currentCompanyId,
+            "main",
+            currentCustomerId
+          )
+        ),
       },
       {
         name: "Outras",
-        value:
-          state.companies_links.length > 0
-            ? handleCompanie_link(
-                state.companies_links,
-                currentCompanyId,
-                "specialties"
-              )
-            : "",
+        value: handleEmpty(
+          handleCompanie_link(
+            state?.companies_links,
+            currentCompanyId,
+            "specialties",
+            currentCustomerId
+          )
+        ),
       },
     ],
     details: "UserProfessionForm",
@@ -124,19 +141,13 @@ const UserProfessionForm = (props: IComponent) => {
       {params.mode === "view" && !canEdit ? (
         <>
           <Grid container>
-            <>
-              <ViewCard content={content3} />
-            </>
+            <ViewCard content={content3} />
           </Grid>
           <Grid container>
-            <>
-              <ViewCard content={content1} />
-            </>
+            <ViewCard content={content1} />
           </Grid>
           <Grid container>
-            <>
-              <ViewCard content={content2} />
-            </>
+            <ViewCard content={content2} />
           </Grid>
         </>
       ) : (
