@@ -5,7 +5,6 @@ import { loadSuccess, loadFailure } from "./actions";
 import { toast } from "react-toastify";
 
 export function* get({ payload }: any) {
-  console.log(payload);
   try {
     const response: AxiosResponse = yield call(
       apiSollar.get,

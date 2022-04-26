@@ -1,6 +1,6 @@
-import React, {useState, useEffect, useCallback} from "react";
-import {useHistory, RouteComponentProps, Link} from "react-router-dom";
-import {cpf} from 'cpf-cnpj-validator';
+import React, { useState, useEffect, useCallback } from "react";
+import { useHistory, RouteComponentProps, Link } from "react-router-dom";
+import { cpf } from "cpf-cnpj-validator";
 import {
   Button,
   Container,
@@ -13,16 +13,20 @@ import {
   Grid,
   FormControlLabel,
   makeStyles,
-  Collapse, FormControl, FormLabel, FormGroup, Checkbox,
-} from '@material-ui/core';
-import {AccountCircle, Edit} from '@material-ui/icons';
-import Autocomplete from '@material-ui/lab/Autocomplete';
-import InputMask from 'react-input-mask';
-import validator from 'validator';
-import {toast} from 'react-toastify';
-import {loadCustomerById} from "../../../store/ducks/customers/actions";
-import {CustomerInterface} from "../../../store/ducks/customers/types";
-import {useDispatch, useSelector} from "react-redux";
+  Collapse,
+  FormControl,
+  FormLabel,
+  FormGroup,
+  Checkbox,
+} from "@material-ui/core";
+import { AccountCircle, Edit } from "@material-ui/icons";
+import Autocomplete from "@material-ui/lab/Autocomplete";
+import InputMask from "react-input-mask";
+import validator from "validator";
+import { toast } from "react-toastify";
+import { loadCustomerById } from "../../../store/ducks/customers/actions";
+import { CustomerInterface } from "../../../store/ducks/customers/types";
+import { useDispatch, useSelector } from "react-redux";
 import {
   createUserRequest,
   updateUserRequest,
@@ -35,27 +39,31 @@ import {
 import {
   UserInterface,
   ProfessionUserInterface,
-  CompanyUserInterface, CompanyUserLinkInterface,
+  CompanyUserInterface,
+  CompanyUserLinkInterface,
 } from "../../../store/ducks/users/types";
 
-import {loadRequest as getSpecialtiesAction} from "../../../store/ducks/specialties/actions";
-import {SpecialtyInterface} from "../../../store/ducks/specialties/types";
+import { loadRequest as getSpecialtiesAction } from "../../../store/ducks/specialties/actions";
+import { SpecialtyInterface } from "../../../store/ducks/specialties/types";
 
-import {loadRequest as getCouncilsAction} from "../../../store/ducks/councils/actions";
-import {CouncilInterface} from "../../../store/ducks/councils/types";
+import { loadRequest as getCouncilsAction } from "../../../store/ducks/councils/actions";
+import { CouncilInterface } from "../../../store/ducks/councils/types";
 
-import {loadCompanyById, loadRequest as getCompaniesAction} from "../../../store/ducks/companies/actions";
-import {CompanyInterface} from "../../../store/ducks/companies/types";
+import {
+  loadCompanyById,
+  loadRequest as getCompaniesAction,
+} from "../../../store/ducks/companies/actions";
+import { CompanyInterface } from "../../../store/ducks/companies/types";
 
-import {ApplicationState} from "../../../store";
+import { ApplicationState } from "../../../store";
 
-import {ufs} from "../../../helpers/constants/address";
+import { ufs } from "../../../helpers/constants/address";
 import Loading from "../../../components/Loading";
 
 import Sidebar from "../../../components/Sidebar";
-import {FormTitle} from "../../../styles/components/Form";
-import {SwitchComponent as Switch} from "../../../styles/components/Switch";
-import {ChipComponent as Chip} from "../../../styles/components/Chip";
+import { FormTitle } from "../../../styles/components/Form";
+import { SwitchComponent as Switch } from "../../../styles/components/Switch";
+import { ChipComponent as Chip } from "../../../styles/components/Chip";
 
 import DatePicker from "../../../styles/components/DatePicker";
 import {
@@ -67,9 +75,9 @@ import {
 } from "../../../styles/components/Tabs";
 import ButtonComponent from "../../../styles/components/Button";
 // @ts-ignore
-import FeedbackUserComponent from '../../../components/FeedbackUser';
+import FeedbackUserComponent from "../../../components/FeedbackUser";
 
-import {formatDate, age} from "../../../helpers/date";
+import { formatDate, age } from "../../../helpers/date";
 import LOCALSTORAGE from "../../../helpers/constants/localStorage";
 
 import {
@@ -79,19 +87,18 @@ import {
   InputFiled as TextField,
   FormGroupSection,
   ChipList,
-  DivideTitle
-} from './styles';
-import {UserContent} from "../../../components/Sidebar/styles";
-import AddIcon from '@material-ui/icons/Add';
-import RemoveIcon from '@material-ui/icons/Remove';
-import LocationOnIcon from '@material-ui/icons/LocationOn'
-import CheckCircleRoundedIcon from '@material-ui/icons/CheckCircleRounded';
-import {BoxCustom} from "../../customer/form/styles";
+  DivideTitle,
+} from "./styles";
+import { UserContent } from "../../../components/Sidebar/styles";
+import AddIcon from "@material-ui/icons/Add";
+import RemoveIcon from "@material-ui/icons/Remove";
+import LocationOnIcon from "@material-ui/icons/LocationOn";
+import CheckCircleRoundedIcon from "@material-ui/icons/CheckCircleRounded";
+import { BoxCustom } from "../../customer/form/styles";
 import _ from "lodash";
 // @ts-ignore
 import Sidebar_menu from "../../../components/Sidebar_menu";
 import moment from "moment";
-
 
 interface IFormFields {
   userType: { id: string; description: string } | null;
@@ -101,7 +108,6 @@ interface IFormFields {
 interface IPageParams {
   id?: string;
   mode?: string;
-
 }
 
 export default function UserForm(props: RouteComponentProps<IPageParams>) {
@@ -113,18 +119,23 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
     (state: ApplicationState) => state.specialties
   );
   const councilState = useSelector((state: ApplicationState) => state.councils);
-  const companyState = useSelector((state: ApplicationState) => state.companies);
-  const customerState = useSelector((state: ApplicationState) => state.customers);
+  const companyState = useSelector(
+    (state: ApplicationState) => state.companies
+  );
+  const customerState = useSelector(
+    (state: ApplicationState) => state.customers
+  );
   const [canEdit, setCanEdit] = useState(true);
   const [linkChecked, setLinkChecked] = useState(false);
-  const {params} = props.match;
+  const { params } = props.match;
 
-  const currentCompany = localStorage.getItem(LOCALSTORAGE.COMPANY_SELECTED) || '';
-  const currentCustomer = localStorage.getItem(LOCALSTORAGE.CUSTOMER) || '';
+  const currentCompany =
+    localStorage.getItem(LOCALSTORAGE.COMPANY_SELECTED) || "";
+  const currentCustomer = localStorage.getItem(LOCALSTORAGE.CUSTOMER) || "";
 
   const [currentTab, setCurrentTab] = useState(0);
   const [engaged, setEngaged] = useState(false);
-  const [companyLink, setcompanyLink] = useState('');
+  const [companyLink, setcompanyLink] = useState("");
   const [add, setAdd] = useState(false);
   const [state, setState] = useState<UserInterface>({
     companies: [],
@@ -146,12 +157,14 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
       state: "",
       complement: "",
     },
-    phones: [{
-      cellnumber: "",
-      number: "",
-      telegram: false,
-      whatsapp: false,
-    }],
+    phones: [
+      {
+        cellnumber: "",
+        number: "",
+        telegram: false,
+        whatsapp: false,
+      },
+    ],
     email: "",
     phone: "",
     cellphone: "",
@@ -161,41 +174,42 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
     council_number: "",
     verified: "",
     active: true,
-    professions: []
+    professions: [],
   });
 
   const [specialties, setSpecialties] = useState<any[]>([]);
   const [companies, setCompanies] = useState<any[]>([]);
-  const [company, setCompany] = useState<CompanyInterface>(
-    {
-      _id: params.id || '',
-      customer_id: localStorage.getItem(LOCALSTORAGE.CUSTOMER) || '',
-      name: '',
-      fantasy_name: '',
-      fiscal_number: '',
-      address: {
-        postal_code: '',
-        street: '',
-        number: '',
-        district: '',
-        city: '',
-        state: '',
-        complement: '',
-      },
-      responsable_name: '',
-      email: '',
-      phone: '',
-      cellphone: '',
-      active: true,
-      created_by: {_id: localStorage.getItem(LOCALSTORAGE.USER_ID) || ''},
-      phones: [{
+  const [company, setCompany] = useState<CompanyInterface>({
+    _id: params.id || "",
+    customer_id: localStorage.getItem(LOCALSTORAGE.CUSTOMER) || "",
+    name: "",
+    fantasy_name: "",
+    fiscal_number: "",
+    address: {
+      postal_code: "",
+      street: "",
+      number: "",
+      district: "",
+      city: "",
+      state: "",
+      complement: "",
+    },
+    responsable_name: "",
+    email: "",
+    phone: "",
+    cellphone: "",
+    active: true,
+    created_by: { _id: localStorage.getItem(LOCALSTORAGE.USER_ID) || "" },
+    phones: [
+      {
         cellnumber: "",
         number: "",
         telegram: false,
         whatsapp: false,
-      }],
-      tipo: '',
-    });
+      },
+    ],
+    tipo: "",
+  });
 
   const [customer, setCustomer] = useState<CustomerInterface>();
   const [fieldsValidation, setFieldValidations] = useState<any>({
@@ -217,10 +231,12 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
       state: false,
       complement: true,
     },
-    phones:[{
-      number: false,
-      cellnumber: false,
-    }],
+    phones: [
+      {
+        number: false,
+        cellnumber: false,
+      },
+    ],
     email: false,
     phone: false,
     cellphone: false,
@@ -248,34 +264,42 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
   var formValid: any;
 
   var cepError = false;
-  if (userState.error && state.address.postal_code != '') {
+  if (userState.error && state.address.postal_code != "") {
     cepError = true;
   }
 
   const validatePhone = () => {
-
     if (state.phones[0]?.number) {
-      const landline = state.phones[0]?.number.replace('(', '').replace(')', '9').replace(' ', '').replace(' ', '').replace('-', '');
+      const landline = state.phones[0]?.number
+        .replace("(", "")
+        .replace(")", "9")
+        .replace(" ", "")
+        .replace(" ", "")
+        .replace("-", "");
 
-      isValidPhoneNumber = validator.isMobilePhone(landline, 'pt-BR');
+      isValidPhoneNumber = validator.isMobilePhone(landline, "pt-BR");
 
-      return (isValidPhoneNumber)
+      return isValidPhoneNumber;
     }
-  }
+  };
 
   const validateCellPhone = () => {
     if (state.phones[0]?.cellnumber) {
-      const landline = state.phones[0]?.cellnumber.replace('(', '').replace(')', '').replace(' ', '').replace(' ', '').replace('-', '');
+      const landline = state.phones[0]?.cellnumber
+        .replace("(", "")
+        .replace(")", "")
+        .replace(" ", "")
+        .replace(" ", "")
+        .replace("-", "");
 
-      isValidCellPhoneNumber = validator.isMobilePhone(landline, 'pt-BR');
+      isValidCellPhoneNumber = validator.isMobilePhone(landline, "pt-BR");
 
-      return (isValidCellPhoneNumber)
+      return isValidCellPhoneNumber;
     }
-  }
+  };
   const checkIsCpfValid = useCallback(() => {
     return !!cpf.isValid(state.fiscal_number);
   }, [state.fiscal_number]);
-
 
   // const validateCellPhone = () => {
   //   try {
@@ -291,44 +315,39 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
     formValid = true;
   }
 
-
   const useStyles = makeStyles((theme) => ({
     cancel: {
-      textTransform: 'capitalize',
-      fontSize: '18px',
-      '&:hover': {
-        backgroundColor: '#f1d4d4',
-        color: 'var(--danger)',
-        borderColor: 'var(--danger-hover)',
-
+      textTransform: "capitalize",
+      fontSize: "18px",
+      "&:hover": {
+        backgroundColor: "#f1d4d4",
+        color: "var(--danger)",
+        borderColor: "var(--danger-hover)",
       },
-      maxHeight: '38px',
+      maxHeight: "38px",
 
-      borderColor: 'var(--danger-hover)',
-      color: 'var(--danger-hover)',
-      contrastText: "#fff"
+      borderColor: "var(--danger-hover)",
+      color: "var(--danger-hover)",
+      contrastText: "#fff",
     },
   }));
   const classes = useStyles();
   useEffect(() => {
-
     dispatch(cleanAction());
     dispatch(getSpecialtiesAction());
     dispatch(getCouncilsAction());
     dispatch(getProfessionsAction());
     dispatch(getUserTypesAction());
-    if (currentC != 'SEM') {
+    if (currentC != "SEM") {
       dispatch(getCompaniesAction());
       dispatch(loadCompanyById(currentCompany));
       dispatch(loadCustomerById(currentCustomer));
     }
-
-
   }, [currentCustomer]);
   const currentC = window.localStorage.getItem(LOCALSTORAGE.CUSTOMER_NAME);
   useEffect(() => {
     if (params.id) {
-      dispatch(loadUserById(params.id, 'user'));
+      dispatch(loadUserById(params.id, "user"));
     } else {
       dispatch(cleanAction());
     }
@@ -339,25 +358,25 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
   }, [specialtyState.list.data]);
   useEffect(() => {
     setCompany(companyState.data);
-  }, [companyState])
+  }, [companyState]);
 
   useEffect(() => {
     setCompanies(companyState.list.data);
   }, [companyState.list.data]);
 
   useEffect(() => {
-    checkUserPerfilCompany(company)
-  }, [state, companyState])
+    checkUserPerfilCompany(company);
+  }, [state, companyState]);
 
   useEffect(() => {
     setCustomer(customerState.data);
-  }, [customerState])
+  }, [customerState]);
   useEffect(() => {
     if (userState.data._id) {
       let joinState = [state, userState.data];
 
       if (!firstCall && params.mode === "linking") {
-        setCurrentTab(2)
+        setCurrentTab(2);
       }
 
       setState((prevState) => ({
@@ -367,12 +386,16 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
         //     ? userState.data.user_type_id._id
         //     : userState.data.user_type_id,
       }));
-      setFirstcall(true)
+      setFirstcall(true);
     }
     // Força o validador em 'true' quando entrar na tela para editar
     if (params?.id) {
-      if (params.mode === "view" || params.mode === "link" || params.mode === "linking") {
-        setCanEdit(false)
+      if (
+        params.mode === "view" ||
+        params.mode === "link" ||
+        params.mode === "linking"
+      ) {
+        setCanEdit(false);
       }
       setFieldValidations({
         companies: true,
@@ -405,7 +428,6 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
     }
   }, [userState]);
 
-
   useEffect(() => {
     setState((prevState) => {
       return {
@@ -428,7 +450,7 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
           state: true,
           complement: true,
         },
-        national_id: false
+        national_id: false,
       }));
     }
 
@@ -464,14 +486,13 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
 
       return;
     } else {
-
     }
   }, [userState.data.address]);
 
   const handleValidateFields = useCallback(() => {
     let isValid: boolean = true;
 
-    delete fieldsValidation.national_id
+    delete fieldsValidation.national_id;
 
     for (let key of Object.keys(fieldsValidation)) {
       if (!fieldsValidation[key]) {
@@ -534,8 +555,8 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
   function checkUserPerfilCompany(company: CompanyInterface) {
     let companiesSelected = [...state.companies];
     const companyFounded = companiesSelected.findIndex((item: any) => {
-      return company._id === item._id
-    })
+      return company._id === item._id;
+    });
     if (companyFounded > -1) {
       setCheckCompany(true);
     }
@@ -543,10 +564,10 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
 
   function handleCancelForm() {
     setOpenModalCancel(false);
-    if (params?.mode == 'config') {
+    if (params?.mode == "config") {
       history.push(`/userconfiguration`);
-    } else if (params?.mode == 'link') {
-      history.push(`/user`)
+    } else if (params?.mode == "link") {
+      history.push(`/user`);
     } else {
       history.push(`/user`);
     }
@@ -557,53 +578,55 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
 
     if (customer && customer._id) {
       var com: CompanyUserInterface = {
-        _id: company._id ? company._id : '',
+        _id: company._id ? company._id : "",
         name: company.name,
         customer_id: {
           _id: customer._id,
-          name: customer.name
-        }
-      }
+          name: customer.name,
+        },
+      };
 
       var companiesLinkSelected = [...state.companies_links];
-      const companyLinkFounded = companiesLinkSelected.findIndex((item: any) => {
-        return company._id === item.companie_id._id
-      })
-
+      const companyLinkFounded = companiesLinkSelected.findIndex(
+        (item: any) => {
+          return company._id === item.companie_id._id;
+        }
+      );
 
       if (companyLinkFounded > -1) {
         let selected = companiesLinkSelected.splice(companyLinkFounded, 1)[0];
-        selected.function = viewProfession()
-        selected.active = true
-        selected.linked_at = new Date
+        selected.function = viewProfession();
+        selected.active = true;
+        selected.linked_at = new Date();
 
         if (linkChecked) {
-          selected.exp = String(moment(companyLink).unix() + 86399)
+          selected.exp = String(moment(companyLink).unix() + 86399);
         } else {
-          selected.exp = '0'
-
+          selected.exp = "0";
         }
 
-        companyLinkSelected.push(...companiesLinkSelected)
-        companyLinkSelected.push(selected)
+        companyLinkSelected.push(...companiesLinkSelected);
+        companyLinkSelected.push(selected);
       } else {
-        let selected = linkChecked ? {
-          companie_id: company._id,
-          customer_id: customer._id,
-          function: viewProfession(),
-          active: true,
-          linked_at: new Date,
-          exp: String(moment(companyLink).unix() + 86399)
-        } : {
-          companie_id: company._id,
-          customer_id: customer._id,
-          function: viewProfession(),
-          active: true,
-          linked_at: new Date,
-          exp: '0'
-        };
-        companyLinkSelected.push(...companiesLinkSelected)
-        companyLinkSelected.push(selected)
+        let selected = linkChecked
+          ? {
+              companie_id: company._id,
+              customer_id: customer._id,
+              function: viewProfession(),
+              active: true,
+              linked_at: new Date(),
+              exp: String(moment(companyLink).unix() + 86399),
+            }
+          : {
+              companie_id: company._id,
+              customer_id: customer._id,
+              function: viewProfession(),
+              active: true,
+              linked_at: new Date(),
+              exp: "0",
+            };
+        companyLinkSelected.push(...companiesLinkSelected);
+        companyLinkSelected.push(selected);
       }
     }
 
@@ -618,60 +641,67 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
     setEngaged(true);
   }
 
-  const dengagedUser = useCallback((company: CompanyInterface) => {
-    let companiesSelected = [...state.companies];
-    let companiesLinkSelected = [...state.companies_links];
-    const companyFounded = companiesSelected.findIndex((item: any) => {
-      return company._id === item._id
-    })
-    const companyLinkFounded = companiesLinkSelected.findIndex((item: any) => {
-      return company._id === item.companie_id._id
-    })
-
-    if (companyFounded > -1) {
-      const companyData = companiesSelected.find((item: any) => {
-        return company._id === item._id
+  const dengagedUser = useCallback(
+    (company: CompanyInterface) => {
+      let companiesSelected = [...state.companies];
+      let companiesLinkSelected = [...state.companies_links];
+      const companyFounded = companiesSelected.findIndex((item: any) => {
+        return company._id === item._id;
       });
-      companiesSelected.splice(companyFounded, 1);
+      const companyLinkFounded = companiesLinkSelected.findIndex(
+        (item: any) => {
+          return company._id === item.companie_id._id;
+        }
+      );
 
-      setState(prevState => ({
-        ...prevState,
-        companies: companiesSelected
-      }))
-    }
+      if (companyFounded > -1) {
+        const companyData = companiesSelected.find((item: any) => {
+          return company._id === item._id;
+        });
+        companiesSelected.splice(companyFounded, 1);
 
-    if (companyLinkFounded > -1) {
-      let companyLink = companiesLinkSelected.splice(companyLinkFounded, 1)[0];
-      companyLink.active = false
+        setState((prevState) => ({
+          ...prevState,
+          companies: companiesSelected,
+        }));
+      }
 
-      companiesLinkSelected.push(companyLink)
+      if (companyLinkFounded > -1) {
+        let companyLink = companiesLinkSelected.splice(
+          companyLinkFounded,
+          1
+        )[0];
+        companyLink.active = false;
 
-      setState(prevState => ({
-        ...prevState,
-        companies_links: companiesLinkSelected,
-      }))
-    }
-    setEngaged(true);
+        companiesLinkSelected.push(companyLink);
 
-  }, [state.companies]);
+        setState((prevState) => ({
+          ...prevState,
+          companies_links: companiesLinkSelected,
+        }));
+      }
+      setEngaged(true);
+    },
+    [state.companies]
+  );
 
   function handlerReturn() {
-    if (params.mode == 'link' || params.mode === "linking") {
-      history.push('/userdesengaged');
+    if (params.mode == "link" || params.mode === "linking") {
+      history.push("/userdesengaged");
     } else {
-      history.push('/user');
+      history.push("/user");
     }
   }
 
   const handleBackStep = useCallback(() => {
     setCurrentTab((prevState) => prevState - 1);
-    window.scrollTo(0, 200)
+    window.scrollTo(0, 200);
   }, [currentTab]);
 
   function handleSelectProfession(value: ProfessionUserInterface) {
     setState((prevState) => ({
       ...prevState,
-      profession_id: value
+      profession_id: value,
     }));
   }
 
@@ -679,7 +709,7 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
     if (typeof state.profession_id === "object") {
       return state?.profession_id?._id;
     } else {
-      return state?.profession_id
+      return state?.profession_id;
     }
   }
 
@@ -691,13 +721,13 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
         }
       });
 
-
-
-
-      return selected[0] ? selected[0] : {_id: '', name: ''}
+      return selected[0] ? selected[0] : { _id: "", name: "" };
     }
-  }, [userState.data.profession_id, userState.data.professions, state.profession_id]);
-
+  }, [
+    userState.data.profession_id,
+    userState.data.professions,
+    state.profession_id,
+  ]);
 
   function viewProfession() {
     if (!userState.data.professions) {
@@ -711,29 +741,27 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
 
       return selected[0] ? selected[0].name : null;
     }
-
   }
 
   function viewMainSpecialty() {
     if (!userState.data.main_specialty_id) {
       // return null;
     } else {
-      return userState.data.main_specialty_id ? userState.data.main_specialty_id.name : null
+      return userState.data.main_specialty_id
+        ? userState.data.main_specialty_id.name
+        : null;
     }
-
   }
 
   function viewSpecialtes() {
     let especialidades = "";
     if (_.isEmpty(state.specialties)) {
-
     } else {
       state.specialties.map((specialty, index) => {
-        especialidades = especialidades + ','
+        especialidades = especialidades + ",";
       });
       return especialidades;
     }
-
   }
 
   // Especialides
@@ -770,9 +798,8 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
       let specialtiesSelected = [...state.specialties];
 
       const especialtyFounded = specialtiesSelected.findIndex((item: any) => {
-        return especialty._id === item._id
+        return especialty._id === item._id;
       });
-
 
       if (especialtyFounded > -1) {
         const specialtyData = specialtiesSelected.find((item: any) => {
@@ -784,17 +811,15 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
         specialtiesCopy.push(specialtyData);
         setSpecialties(specialtiesCopy);
 
-        setState(prevState => ({
+        setState((prevState) => ({
           ...prevState,
-          specialties: specialtiesSelected
-        }))
+          specialties: specialtiesSelected,
+        }));
       }
-      ;
     }
-  };
+  }
 
   const selectMainSpecialty = useCallback(() => {
-
     const selected = specialtyState.list.data.filter((item) => {
       if (typeof state.main_specialty_id === "object") {
         return item._id === state?.main_specialty_id?._id;
@@ -841,8 +866,6 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
 
   //Empresas
   function handleSelectCompany(value: CompanyUserInterface) {
-
-
     setState((prevState) => ({
       ...prevState,
       companies: [...prevState.companies, value],
@@ -867,16 +890,15 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
   }
 
   async function handleDeleteCompany(company: CompanyInterface) {
-
     if (canEdit) {
       let companiesSelected = [...state.companies];
       const companyFounded = companiesSelected.findIndex((item: any) => {
-        return company._id === item._id
-      })
+        return company._id === item._id;
+      });
 
       if (companyFounded > -1) {
         const companyData = companiesSelected.find((item: any) => {
-          return company._id === item._id
+          return company._id === item._id;
         });
         companiesSelected.splice(companyFounded, 1);
 
@@ -885,25 +907,23 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
         companiesCopy.push(companyData);
         setCompanies(companiesCopy);
 
-        setState(prevState => ({
+        setState((prevState) => ({
           ...prevState,
-          companies: companiesSelected
-        }))
+          companies: companiesSelected,
+        }));
       }
     }
-
-  };
+  }
 
   function mycompanys() {
     const customer = localStorage.getItem(LOCALSTORAGE.CUSTOMER);
 
     let mycompanies: CompanyUserInterface[] = [];
     state?.companies?.map((value, index) => {
-
       if (value?.customer_id?._id === customer) {
         mycompanies.push(value);
       }
-    })
+    });
 
     return mycompanies;
   }
@@ -915,10 +935,10 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
     }
     if (state?._id) {
       dispatch(updateUserRequest(state));
-      if (params.mode == 'link' || params.mode === "linking") {
-        history.push('/userdesengaged');
-      } else if (params.mode == 'view') {
-        history.push('/userdesengaged');
+      if (params.mode == "link" || params.mode === "linking") {
+        history.push("/userdesengaged");
+      } else if (params.mode == "view") {
+        history.push("/userdesengaged");
       }
     } else {
       dispatch(createUserRequest(state));
@@ -926,25 +946,24 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
   }, [state]);
 
   const handleBackFormUser = useCallback(() => {
-
     if (state?._id) {
-      if (params.mode == 'link' || params.mode === "linking") {
-        history.push('/user');
-      } else if (params.mode == 'view') {
-        history.push('/user');
-      } else if (params.mode == 'config') {
-        history.push('/userconfiguration');
+      if (params.mode == "link" || params.mode === "linking") {
+        history.push("/user");
+      } else if (params.mode == "view") {
+        history.push("/user");
+      } else if (params.mode == "config") {
+        history.push("/userconfiguration");
       } else {
-        history.push('/user');
+        history.push("/user");
       }
     }
   }, [state]);
 
   return (
     <>
-      {currentC != 'SEM' ? (
+      {currentC != "SEM" ? (
         <Sidebar>
-          {userState.loading && <Loading/>}
+          {/* {userState.loading && <Loading/>} */}
           <Container>
             {userState.success ? (
               <FeedbackUserComponent
@@ -954,7 +973,7 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
                 buttons
                 successAction={() => {
                   dispatch(cleanAction());
-                  if (currentC != 'SEM') {
+                  if (currentC != "SEM") {
                     history.push("/dashboard_user");
                   } else {
                     history.push("/dashboard_user");
@@ -963,14 +982,18 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
                 defaultAction={() => {
                   dispatch(cleanAction());
                   history.push("/dashboard_user");
-
-
                 }}
               />
             ) : (
               <FormSection>
                 <FormContent>
-                  <div style={{display: 'flex', alignItems: 'center', flexDirection: 'row'}}>
+                  <div
+                    style={{
+                      display: "flex",
+                      alignItems: "center",
+                      flexDirection: "row",
+                    }}
+                  >
                     <FormTitle>Dados de usuário</FormTitle>
 
                     {/*{(params.id && params.mode == 'view' && !canEdit) && (*/}
@@ -996,7 +1019,7 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
                       >
                         Dados Profissionais
                       </TabNavItem>
-                      {state.professions && !(params.mode === 'config') && (
+                      {state.professions && !(params.mode === "config") && (
                         <TabNavItem
                           className={currentTab === 2 ? "active" : ""}
                           onClick={() => selectTab(2)}
@@ -1004,7 +1027,6 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
                           Selecione Empresa
                         </TabNavItem>
                       )}
-
                     </TabNav>
                     <TabBody>
                       <TabBodyItem className={currentTab === 0 ? "show" : ""}>
@@ -1018,10 +1040,15 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
                               size="small"
                               value={state.name}
                               onChange={(element) => {
-                                setState({...state, name: element.target.value});
+                                setState({
+                                  ...state,
+                                  name: element.target.value,
+                                });
                                 setFieldValidations((prevState: any) => ({
                                   ...prevState,
-                                  name: !validator.isEmpty(element.target.value),
+                                  name: !validator.isEmpty(
+                                    element.target.value
+                                  ),
                                 }));
                               }}
                               fullWidth
@@ -1047,7 +1074,6 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
                                   ),
                                 }));
                               }}
-
                               fullWidth
                             />
                           </Grid>
@@ -1057,7 +1083,11 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
                               id="input-birthdate"
                               label="Data de Nascimento"
                               disabled={!canEdit}
-                              value={state?.birthdate?.length > 10 ? formatDate(state.birthdate, 'YYYY-MM-DD') : state.birthdate}
+                              value={
+                                state?.birthdate?.length > 10
+                                  ? formatDate(state.birthdate, "YYYY-MM-DD")
+                                  : state.birthdate
+                              }
                               onChange={(element) => {
                                 setState({
                                   ...state,
@@ -1072,9 +1102,8 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
                               }}
                               InputLabelProps={{
                                 shrink: true,
-                                style: {paddingBottom: 12}
+                                style: { paddingBottom: 12 },
                               }}
-
                               fullWidth
                             />
                           </Grid>
@@ -1119,13 +1148,21 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
                                   variant="outlined"
                                   size="small"
                                   placeholder="000.000.000-00"
-                                  error={!checkIsCpfValid() && state.fiscal_number != ''}
+                                  error={
+                                    !checkIsCpfValid() &&
+                                    state.fiscal_number != ""
+                                  }
                                   fullWidth
                                 />
                               )}
                             </InputMask>
-                            {!checkIsCpfValid() && state.fiscal_number != '' && (
-                              <p style={{color: '#f44336', margin: '1px 5px 20px'}}>
+                            {!checkIsCpfValid() && state.fiscal_number != "" && (
+                              <p
+                                style={{
+                                  color: "#f44336",
+                                  margin: "1px 5px 20px",
+                                }}
+                              >
                                 Por favor insira um cpf válido
                               </p>
                             )}
@@ -1141,10 +1178,12 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
                                   national_id: element.target.value,
                                 });
                               }}
-                              onBlur={(element) => setFieldValidations((prevState: any) => ({
-                                ...prevState,
-                                national_id: false,
-                              }))}
+                              onBlur={(element) =>
+                                setFieldValidations((prevState: any) => ({
+                                  ...prevState,
+                                  national_id: false,
+                                }))
+                              }
                             >
                               {(inputProps: any) => (
                                 <TextField
@@ -1155,7 +1194,10 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
                                   variant="outlined"
                                   size="small"
                                   placeholder="0.000-000"
-                                  error={fieldsValidation.national_id && state.national_id != ''}
+                                  error={
+                                    fieldsValidation.national_id &&
+                                    state.national_id != ""
+                                  }
                                   fullWidth
                                 />
                               )}
@@ -1182,7 +1224,6 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
                                   ),
                                 }));
                               }}
-
                               fullWidth
                             />
                           </Grid>
@@ -1235,7 +1276,9 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
                                   });
                                   setFieldValidations((prevState: any) => ({
                                     ...prevState,
-                                    gender: !validator.isEmpty(value ? value : ""),
+                                    gender: !validator.isEmpty(
+                                      value ? value : ""
+                                    ),
                                   }));
                                 }}
                                 noOptionsText="Nenhum resultado encontrado"
@@ -1245,7 +1288,7 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
                           </Grid>
                         </Grid>
 
-                        <Divider style={{marginBottom: 30}}/>
+                        <Divider style={{ marginBottom: 30 }} />
 
                         {/*  */}
                         <FormGroupSection>
@@ -1284,17 +1327,25 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
                                     placeholder="00000-000"
                                     size="small"
                                     variant="outlined"
-                                    error={userState.error && !fieldsValidation.postal_code}
-
+                                    error={
+                                      userState.error &&
+                                      !fieldsValidation.postal_code
+                                    }
                                     fullWidth
                                   />
                                 )}
                               </InputMask>
-                              {userState.error && !fieldsValidation.address.postal_code && (
-                                <p style={{color: '#f44336', margin: '-2px 5px 10px'}}>
-                                  CEP inválido
-                                </p>
-                              )}
+                              {userState.error &&
+                                !fieldsValidation.address.postal_code && (
+                                  <p
+                                    style={{
+                                      color: "#f44336",
+                                      margin: "-2px 5px 10px",
+                                    }}
+                                  >
+                                    CEP inválido
+                                  </p>
+                                )}
                             </Grid>
 
                             <Grid item md={10} xs={12}>
@@ -1351,7 +1402,6 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
                                     },
                                   }));
                                 }}
-
                                 fullWidth
                                 disabled={!canEdit}
                               />
@@ -1488,10 +1538,15 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
                               size="small"
                               value={state.email}
                               onChange={(element) => {
-                                setState({...state, email: element.target.value});
+                                setState({
+                                  ...state,
+                                  email: element.target.value,
+                                });
                                 setFieldValidations((prevState: any) => ({
                                   ...prevState,
-                                  email: validator.isEmail(element.target.value),
+                                  email: validator.isEmail(
+                                    element.target.value
+                                  ),
                                 }));
                               }}
                               fullWidth
@@ -1503,18 +1558,20 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
                               mask="(99) 9999-9999"
                               disabled={!canEdit}
                               value={state.phones[0]?.number}
-                              onChange={(element) =>{
-                                {setState(prevState => ({
-                                  ...prevState,
-                                  phone: element.target.value,
-                                  phones: [
-                                    {
-                                    ...prevState.phones[0],
-                                    number : element.target.value
-                                    }
-                                ]
-                                }))
-                              }}}
+                              onChange={(element) => {
+                                {
+                                  setState((prevState) => ({
+                                    ...prevState,
+                                    phone: element.target.value,
+                                    phones: [
+                                      {
+                                        ...prevState.phones[0],
+                                        number: element.target.value,
+                                      },
+                                    ],
+                                  }));
+                                }
+                              }}
                               onBlur={validatePhone}
                             >
                               {(inputProps: any) => (
@@ -1526,14 +1583,21 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
                                   variant="outlined"
                                   size="small"
                                   placeholder="0000-0000"
-                                  error={!validatePhone() && state.phones[0]?.number != ''}
-
+                                  error={
+                                    !validatePhone() &&
+                                    state.phones[0]?.number != ""
+                                  }
                                   fullWidth
                                 />
                               )}
                             </InputMask>
                             {!validatePhone() && state.phones[0]?.number && (
-                              <p style={{color: '#f44336', margin: '-10px 5px 10px'}}>
+                              <p
+                                style={{
+                                  color: "#f44336",
+                                  margin: "-10px 5px 10px",
+                                }}
+                              >
                                 Por favor insira um número válido
                               </p>
                             )}
@@ -1543,19 +1607,20 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
                               mask="(99) 99999-9999"
                               disabled={!canEdit}
                               value={state.phones[0]?.cellnumber}
-                              onChange={(element) =>{
-                                {setState(prevState => ({
-                                  ...prevState,
-                                  // cellphone: element.target.value,
-                                  phones: [
-                                    {
-                                    ...prevState.phones[0],
-                                    cellnumber : element.target.value
-                                    }
-
-                                ]
-                                }))
-                              }}}
+                              onChange={(element) => {
+                                {
+                                  setState((prevState) => ({
+                                    ...prevState,
+                                    // cellphone: element.target.value,
+                                    phones: [
+                                      {
+                                        ...prevState.phones[0],
+                                        cellnumber: element.target.value,
+                                      },
+                                    ],
+                                  }));
+                                }
+                              }}
                               onBlur={validateCellPhone}
                             >
                               {(inputProps: any) => (
@@ -1567,16 +1632,25 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
                                   variant="outlined"
                                   size="small"
                                   placeholder="(00) 0 0000-0000"
-                                  error={!validateCellPhone() && state.phones[0]?.cellnumber  != ''}
+                                  error={
+                                    !validateCellPhone() &&
+                                    state.phones[0]?.cellnumber != ""
+                                  }
                                   fullWidth
                                 />
                               )}
                             </InputMask>
-                            {!validateCellPhone() && state.phones[0]?.cellnumber && (
-                              <p style={{color: '#f44336', margin: '-10px 5px 10px'}}>
-                                Por favor insira um número válido
-                              </p>
-                            )}
+                            {!validateCellPhone() &&
+                              state.phones[0]?.cellnumber && (
+                                <p
+                                  style={{
+                                    color: "#f44336",
+                                    margin: "-10px 5px 10px",
+                                  }}
+                                >
+                                  Por favor insira um número válido
+                                </p>
+                              )}
                           </Grid>
                         </Grid>
                         <Grid container>
@@ -1641,14 +1715,21 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
                                 options={userState.data.professions}
                                 getOptionLabel={(option) => {
                                   if (typeof option === "object") {
-                                    return option.name
+                                    return option.name;
                                   } else {
-                                    return option
+                                    return option;
                                   }
                                 }}
-                                renderInput={(params) =>
-                                  <TextField {...params} label="Função" variant="outlined"/>}
-                                getOptionSelected={(option, value) => option._id === getprofessionId()}
+                                renderInput={(params) => (
+                                  <TextField
+                                    {...params}
+                                    label="Função"
+                                    variant="outlined"
+                                  />
+                                )}
+                                getOptionSelected={(option, value) =>
+                                  option._id === getprofessionId()
+                                }
                                 // defaultValue={selectProfession()}
                                 value={selectProfession()}
                                 onChange={(event, value) => {
@@ -1657,13 +1738,12 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
                                   } else {
                                     setState((prevState) => ({
                                       ...prevState,
-                                      profession_id: {_id: '', name: ''}
+                                      profession_id: { _id: "", name: "" },
                                     }));
                                   }
                                 }}
                                 size="small"
                                 fullWidth
-
                               />
                             </FormGroupSection>
                           </Grid>
@@ -1673,9 +1753,17 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
                                 id="combo-box-council"
                                 disabled={!canEdit}
                                 options={councilState.list.data}
-                                getOptionLabel={(option) => `${option.initials} - ${option.name}`}
-                                renderInput={(params) => <TextField {...params} disabled={!canEdit} label="Conselho"
-                                                                    variant="outlined"/>}
+                                getOptionLabel={(option) =>
+                                  `${option.initials} - ${option.name}`
+                                }
+                                renderInput={(params) => (
+                                  <TextField
+                                    {...params}
+                                    disabled={!canEdit}
+                                    label="Conselho"
+                                    variant="outlined"
+                                  />
+                                )}
                                 value={selectCouncil()}
                                 getOptionSelected={(option, value) =>
                                   option._id === state?.council_id?._id
@@ -1701,8 +1789,14 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
                                 options={ufs}
                                 disabled={!canEdit}
                                 getOptionLabel={(option) => option.initials}
-                                renderInput={(params) => <TextField {...params} disabled={!canEdit} label="UF"
-                                                                    variant="outlined"/>}
+                                renderInput={(params) => (
+                                  <TextField
+                                    {...params}
+                                    disabled={!canEdit}
+                                    label="UF"
+                                    variant="outlined"
+                                  />
+                                )}
                                 value={selectCouncilState()}
                                 getOptionSelected={(option, value) =>
                                   option.initials === state.council_state
@@ -1831,7 +1925,9 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
                                 <Chip
                                   key={`especialty_selected_${index}`}
                                   label={item.name}
-                                  onDelete={(event) => handleDeleteEspecialty(item)}
+                                  onDelete={(event) =>
+                                    handleDeleteEspecialty(item)
+                                  }
                                 />
                               ))}
                             </ChipList>
@@ -1867,37 +1963,44 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
                           </Grid>
                       ) } */}
 
+                          {state.companies.length > 0 &&
+                            !(params.mode === "config") && (
+                              <div>
+                                <DivideTitle>
+                                  Empresas onde o prestador trabalha:
+                                </DivideTitle>
 
-                          {state.companies.length > 0 && !(params.mode === 'config') && (
-                            <div>
-                              <DivideTitle>Empresas onde o prestador trabalha:</DivideTitle>
-
-                              <Grid item md={12} xs={12}>
-                                <ChipList>
-                                  {state.companies?.map((item: any, index) => (
-                                    <Chip
-                                      key={`company_selected_${index}`}
-                                      label={item.name}
-                                      // onDelete={(event) => handleDeleteCompany(item)}
-                                    />
-                                  ))}
-                                </ChipList>
-                              </Grid>
-                            </div>
-
-                          )}
+                                <Grid item md={12} xs={12}>
+                                  <ChipList>
+                                    {state.companies?.map(
+                                      (item: any, index) => (
+                                        <Chip
+                                          key={`company_selected_${index}`}
+                                          label={item.name}
+                                          // onDelete={(event) => handleDeleteCompany(item)}
+                                        />
+                                      )
+                                    )}
+                                  </ChipList>
+                                </Grid>
+                              </div>
+                            )}
                         </Grid>
                       </TabBodyItem>
                       <TabBodyItem className={currentTab === 2 ? "show" : ""}>
                         <BoxCustom>
-                          <Grid container justify="flex-start"
-                                alignItems="flex-start" style={{paddingLeft: "10px"}}>
+                          <Grid
+                            container
+                            justify="flex-start"
+                            alignItems="flex-start"
+                            style={{ paddingLeft: "10px" }}
+                          >
                             <Grid item>
                               <UserContent>
-                                <AccountCircle/>
+                                <AccountCircle />
                               </UserContent>
                             </Grid>
-                            <Grid item style={{paddingTop: "40px"}}>
+                            <Grid item style={{ paddingTop: "40px" }}>
                               <h3>{state.name}</h3>
                               {state.fiscal_number}
                             </Grid>
@@ -1906,26 +2009,46 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
                             <Grid item md={12} xs={12}>
                               <Divider></Divider>
                             </Grid>
-                            <Grid item md={2} style={{paddingTop: '20px'}}>
-                              <ButtonComponent style={{maxWidth: '10px'}} onClick={() => setAdd(!add)}>
-                                {add ? (<CheckCircleRoundedIcon fontSize={'large'}
-                                                                style={{color: '#4FC66A'}}></CheckCircleRoundedIcon>) : (
+                            <Grid item md={2} style={{ paddingTop: "20px" }}>
+                              <ButtonComponent
+                                style={{ maxWidth: "10px" }}
+                                onClick={() => setAdd(!add)}
+                              >
+                                {add ? (
+                                  <CheckCircleRoundedIcon
+                                    fontSize={"large"}
+                                    style={{ color: "#4FC66A" }}
+                                  ></CheckCircleRoundedIcon>
+                                ) : (
                                   <>
-                                    {params.mode === 'view' ? (
-                                      <RemoveIcon fontSize={'large'} color={'primary'}></RemoveIcon>) : (
-                                      <AddIcon fontSize={'large'} color={'primary'}></AddIcon>)}
+                                    {params.mode === "view" ? (
+                                      <RemoveIcon
+                                        fontSize={"large"}
+                                        color={"primary"}
+                                      ></RemoveIcon>
+                                    ) : (
+                                      <AddIcon
+                                        fontSize={"large"}
+                                        color={"primary"}
+                                      ></AddIcon>
+                                    )}
                                   </>
-
                                 )}
                               </ButtonComponent>
                             </Grid>
                             <Grid item md={7}>
-                              <Grid container
-                                    style={{flexDirection: 'column', paddingLeft: '10px', paddingTop: '20px'}}>
+                              <Grid
+                                container
+                                style={{
+                                  flexDirection: "column",
+                                  paddingLeft: "10px",
+                                  paddingTop: "20px",
+                                }}
+                              >
                                 <Grid item>
                                   <h3>{viewProfession()}</h3>
                                 </Grid>
-                                <Grid item style={{paddingTop: '10px'}}>
+                                <Grid item style={{ paddingTop: "10px" }}>
                                   Função:{viewProfession()}
                                 </Grid>
                                 <Grid item>
@@ -1937,20 +2060,32 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
                                 <Grid item>
                                   Outras especialidades: {viewSpecialtes()}
                                 </Grid>
-                                <Grid item md={12} xs={12} style={{paddingTop: "10px"}}>
+                                <Grid
+                                  item
+                                  md={12}
+                                  xs={12}
+                                  style={{ paddingTop: "10px" }}
+                                >
                                   <ChipList>
                                     {mycompanys()?.map((item: any, index) => (
                                       <Chip
                                         key={`company_selected_${index}`}
                                         label={item.name}
-                                        onDelete={(event) => handleDeleteCompany(item)}
+                                        onDelete={(event) =>
+                                          handleDeleteCompany(item)
+                                        }
                                       />
                                     ))}
                                   </ChipList>
                                 </Grid>
 
                                 <Collapse in={add}>
-                                  <Grid item style={{paddingTop: "20px"}} md={12} xs={12}>
+                                  <Grid
+                                    item
+                                    style={{ paddingTop: "20px" }}
+                                    md={12}
+                                    xs={12}
+                                  >
                                     <Grid item md={12} xs={12}>
                                       {/* <FormGroupSection fullWidth error>
                                 <Autocomplete
@@ -1988,7 +2123,7 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
                               ))}
                             </ChipList>
                           </Grid> */}
-                                    {(params.mode === 'link' && !checkCompany) && (
+                                    {params.mode === "link" && !checkCompany && (
                                       <>
                                         {/*<Grid item md={12} xs={12} style={{padding: '0 12px 12px 0'}}>*/}
                                         {/*  <Autocomplete*/}
@@ -2021,12 +2156,27 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
                                         {/*  />*/}
                                         {/*</Grid>*/}
 
-                                        <Grid item md={12} xs={12} style={{display: 'flex', padding: '0 12px 12px 0'}}>
+                                        <Grid
+                                          item
+                                          md={12}
+                                          xs={12}
+                                          style={{
+                                            display: "flex",
+                                            padding: "0 12px 12px 0",
+                                          }}
+                                        >
                                           <Grid item md={3} xs={12}>
                                             <FormControlLabel
-                                              control={<Checkbox color="primary" checked={linkChecked} onChange={() => (
-                                                setLinkChecked(!linkChecked)
-                                              )} name="link"/>}
+                                              control={
+                                                <Checkbox
+                                                  color="primary"
+                                                  checked={linkChecked}
+                                                  onChange={() =>
+                                                    setLinkChecked(!linkChecked)
+                                                  }
+                                                  name="link"
+                                                />
+                                              }
                                               label="Temporário"
                                             />
                                           </Grid>
@@ -2041,7 +2191,9 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
                                                 InputLabelProps={{
                                                   shrink: true,
                                                 }}
-                                                onChange={e => setcompanyLink(e.target.value)}
+                                                onChange={(e) =>
+                                                  setcompanyLink(e.target.value)
+                                                }
                                                 value={companyLink}
                                                 fullWidth
                                               />
@@ -2049,97 +2201,154 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
                                           )}
                                         </Grid>
                                         {/*{((state.user_type_id && companyLink != '') || (state.user_type_id && !linkChecked)) && (*/}
-                                        {((linkChecked && companyLink != '') || (!linkChecked)) && (
-                                          <Grid item md={12} xs={12} style={{padding: '0 12px 12px 0'}}>
-                                            <ButtonComponent background="success_rounded" onClick={() => engagedUser()}>
-                                              Vincular este prestador a minha empresa
+                                        {((linkChecked && companyLink != "") ||
+                                          !linkChecked) && (
+                                          <Grid
+                                            item
+                                            md={12}
+                                            xs={12}
+                                            style={{ padding: "0 12px 12px 0" }}
+                                          >
+                                            <ButtonComponent
+                                              background="success_rounded"
+                                              onClick={() => engagedUser()}
+                                            >
+                                              Vincular este prestador a minha
+                                              empresa
                                             </ButtonComponent>
                                           </Grid>
                                         )}
                                       </>
                                     )}
-                                    {(params.mode === 'link' && checkCompany && !engaged) && (
+                                    {params.mode === "link" &&
+                                      checkCompany &&
+                                      !engaged && (
+                                        <Grid item md={12} xs={12}>
+                                          Este prestador já está vinculado a sua
+                                          empresa com este perfil profissional,
+                                          caso queira desvinculá-lo{" "}
+                                          <Link to="/user"> clique aqui</Link>.
+                                        </Grid>
+                                      )}
+                                    {params.mode === "link" &&
+                                      checkCompany &&
+                                      engaged && (
+                                        <Grid item md={12} xs={12}>
+                                          Agora este prestador foi vinculado a
+                                          sua empresa, para confirmar esta
+                                          operação click em salva.
+                                        </Grid>
+                                      )}
 
-                                      <Grid item md={12} xs={12}>
-                                        Este prestador já está vinculado a sua empresa com este perfil profissional,
-                                        caso queira desvinculá-lo <Link to='/user'> clique aqui</Link>.
-                                      </Grid>
-                                    )}
-                                    {(params.mode === 'link' && checkCompany && engaged) && (
-
-                                      <Grid item md={12} xs={12}>
-                                        Agora este prestador foi vinculado a sua empresa, para confirmar esta operação
-                                        click
-                                        em salva.
-                                      </Grid>
-                                    )}
-
-                                    {(params.mode === 'linking' && !checkCompany) && (
-                                      <>
-                                        <Grid item md={12} xs={12} style={{display: 'flex', padding: '0 12px 12px 0'}}>
-                                          <Grid item md={3} xs={12}>
-                                            <FormControlLabel
-                                              control={<Checkbox color="primary" checked={linkChecked} onChange={() => (
-                                                setLinkChecked(!linkChecked)
-                                              )} name="link"/>}
-                                              label="Temporário"
-                                            />
-                                          </Grid>
-                                          {linkChecked && (
-                                            <Grid item md={9} xs={12}>
-                                              <TextField
-                                                id="link-end"
-                                                type="date"
-                                                size="small"
-                                                label="Vínculo até"
-                                                variant="outlined"
-                                                InputLabelProps={{
-                                                  shrink: true,
-                                                }}
-                                                onChange={e => setcompanyLink(e.target.value)}
-                                                value={companyLink}
-                                                fullWidth
+                                    {params.mode === "linking" &&
+                                      !checkCompany && (
+                                        <>
+                                          <Grid
+                                            item
+                                            md={12}
+                                            xs={12}
+                                            style={{
+                                              display: "flex",
+                                              padding: "0 12px 12px 0",
+                                            }}
+                                          >
+                                            <Grid item md={3} xs={12}>
+                                              <FormControlLabel
+                                                control={
+                                                  <Checkbox
+                                                    color="primary"
+                                                    checked={linkChecked}
+                                                    onChange={() =>
+                                                      setLinkChecked(
+                                                        !linkChecked
+                                                      )
+                                                    }
+                                                    name="link"
+                                                  />
+                                                }
+                                                label="Temporário"
                                               />
                                             </Grid>
-                                          )}
+                                            {linkChecked && (
+                                              <Grid item md={9} xs={12}>
+                                                <TextField
+                                                  id="link-end"
+                                                  type="date"
+                                                  size="small"
+                                                  label="Vínculo até"
+                                                  variant="outlined"
+                                                  InputLabelProps={{
+                                                    shrink: true,
+                                                  }}
+                                                  onChange={(e) =>
+                                                    setcompanyLink(
+                                                      e.target.value
+                                                    )
+                                                  }
+                                                  value={companyLink}
+                                                  fullWidth
+                                                />
+                                              </Grid>
+                                            )}
 
-                                          {((linkChecked && companyLink != '') || (!linkChecked)) && (
-                                          <Grid item md={12} xs={12} style={{padding: '0 12px 12px 0'}}>
-                                            <ButtonComponent background="success_rounded" onClick={() => engagedUser()}>
-                                              Vincular este prestador a minha empresa
-                                            </ButtonComponent>
+                                            {((linkChecked &&
+                                              companyLink != "") ||
+                                              !linkChecked) && (
+                                              <Grid
+                                                item
+                                                md={12}
+                                                xs={12}
+                                                style={{
+                                                  padding: "0 12px 12px 0",
+                                                }}
+                                              >
+                                                <ButtonComponent
+                                                  background="success_rounded"
+                                                  onClick={() => engagedUser()}
+                                                >
+                                                  Vincular este prestador a
+                                                  minha empresa
+                                                </ButtonComponent>
+                                              </Grid>
+                                            )}
                                           </Grid>
-                                        )}
+                                        </>
+                                      )}
+                                    {params.mode === "linking" &&
+                                      checkCompany &&
+                                      !engaged && (
+                                        <Grid item md={12} xs={12}>
+                                          Este prestador já está vinculado a sua
+                                          empresa com este perfil profissional,
+                                          caso queira desvinculá-lo{" "}
+                                          <Link to="/user"> clique aqui</Link>.
                                         </Grid>
-                                      </>
-                                    )}
-                                    {(params.mode === 'linking' && checkCompany && !engaged) && (
+                                      )}
+                                    {params.mode === "linking" &&
+                                      checkCompany &&
+                                      engaged && (
+                                        <Grid item md={12} xs={12}>
+                                          Agora este prestador foi vinculado a
+                                          sua empresa, para confirmar esta
+                                          operação click em salva.
+                                        </Grid>
+                                      )}
 
-                                    <Grid item md={12} xs={12}>
-                                      Este prestador já está vinculado a sua empresa com este perfil profissional,
-                                      caso queira desvinculá-lo <Link to='/user'> clique aqui</Link>.
-                                    </Grid>
-                                    )}
-                                    {(params.mode === 'linking' && checkCompany && engaged) && (
-
-                                    <Grid item md={12} xs={12}>
-                                      Agora este prestador foi vinculado a sua empresa, para confirmar esta operação
-                                      click
-                                      em salva.
-                                    </Grid>
-                                    )}
-
-                                    {(params.mode === 'view' && !engaged) && (
+                                    {params.mode === "view" && !engaged && (
                                       <Grid item md={12} xs={12}>
-                                        <ButtonComponent className={classes.cancel}
-                                                         onClick={() => dengagedUser(company)}>
-                                          Desvincular este prestador da minha empresa
+                                        <ButtonComponent
+                                          className={classes.cancel}
+                                          onClick={() => dengagedUser(company)}
+                                        >
+                                          Desvincular este prestador da minha
+                                          empresa
                                         </ButtonComponent>
                                       </Grid>
                                     )}
-                                    {(params.mode === 'view' && engaged) && (
+                                    {params.mode === "view" && engaged && (
                                       <Grid>
-                                        Prestador disvinculado de sua empresa, para confirmar esta operação click em
+                                        Prestador disvinculado de sua empresa,
+                                        para confirmar esta operação click em
                                         salva.
                                       </Grid>
                                     )}
@@ -2147,17 +2356,13 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
                                 </Collapse>
                               </Grid>
                             </Grid>
-
-
                           </Grid>
                         </BoxCustom>
-
                       </TabBodyItem>
                     </TabBody>
                   </TabContent>
                 </FormContent>
                 <ButtonsContent>
-
                   <ButtonComponent
                     background="default"
                     onClick={() => handleBackFormUser()}
@@ -2183,7 +2388,7 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
                     </ButtonComponent>
                   )}
 
-                  {currentTab === 1 && params.mode != 'config' && (
+                  {currentTab === 1 && params.mode != "config" && (
                     <ButtonComponent
                       background="success"
                       onClick={() => selectTab(2)}
@@ -2213,9 +2418,14 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
                   {/*  </ButtonComponent>*/}
                   {/*)}*/}
 
-                  {(canEdit || engaged) && (<ButtonComponent background="success" onClick={handleSaveFormUser}>
-                    Salvar
-                  </ButtonComponent>)}
+                  {(canEdit || engaged) && (
+                    <ButtonComponent
+                      background="success"
+                      onClick={handleSaveFormUser}
+                    >
+                      Salvar
+                    </ButtonComponent>
+                  )}
                 </ButtonsContent>
               </FormSection>
             )}
@@ -2245,7 +2455,7 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
         </Sidebar>
       ) : (
         <Sidebar>
-          {userState.loading && <Loading/>}
+          {/* {userState.loading && <Loading />} */}
           <Container>
             {userState.success ? (
               <FeedbackUserComponent
@@ -2255,30 +2465,39 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
                 buttons
                 successAction={() => {
                   dispatch(cleanAction());
-                  if (currentC != 'SEM') {
+                  if (currentC != "SEM") {
                     history.push("/dashboard_user");
                   } else {
                     history.push("/dashboard_user");
                   }
-
                 }}
                 defaultAction={() => {
                   dispatch(cleanAction());
                   history.push("/dashboard_user");
-
                 }}
               />
             ) : (
-
               <FormSection>
                 <FormContent>
-                  <div style={{display: 'flex', alignItems: 'center', flexDirection: 'row'}}>
+                  <div
+                    style={{
+                      display: "flex",
+                      alignItems: "center",
+                      flexDirection: "row",
+                    }}
+                  >
                     <FormTitle>Dados de usuário</FormTitle>
 
-                    {(params.id && params.mode == 'view' && !canEdit) && (
-                      <Button style={{marginTop: -20, marginLeft: 15, color: '#0899BA'}}
-                              onClick={() => setCanEdit(!canEdit)}>
-                        <Edit style={{marginRight: 5, width: 18}}/>
+                    {params.id && params.mode == "view" && !canEdit && (
+                      <Button
+                        style={{
+                          marginTop: -20,
+                          marginLeft: 15,
+                          color: "#0899BA",
+                        }}
+                        onClick={() => setCanEdit(!canEdit)}
+                      >
+                        <Edit style={{ marginRight: 5, width: 18 }} />
                         Editar {canEdit}
                       </Button>
                     )}
@@ -2298,7 +2517,7 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
                       >
                         Dados Profissionais
                       </TabNavItem>
-                      {state.professions && !(params.mode === 'config') && (
+                      {state.professions && !(params.mode === "config") && (
                         <TabNavItem
                           className={currentTab === 2 ? "active" : ""}
                           onClick={() => selectTab(2)}
@@ -2306,7 +2525,6 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
                           Selecione Empresa
                         </TabNavItem>
                       )}
-
                     </TabNav>
                     <TabBody>
                       <TabBodyItem className={currentTab === 0 ? "show" : ""}>
@@ -2320,10 +2538,15 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
                               size="small"
                               value={state.name}
                               onChange={(element) => {
-                                setState({...state, name: element.target.value});
+                                setState({
+                                  ...state,
+                                  name: element.target.value,
+                                });
                                 setFieldValidations((prevState: any) => ({
                                   ...prevState,
-                                  name: !validator.isEmpty(element.target.value),
+                                  name: !validator.isEmpty(
+                                    element.target.value
+                                  ),
                                 }));
                               }}
                               fullWidth
@@ -2349,7 +2572,6 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
                                   ),
                                 }));
                               }}
-
                               fullWidth
                             />
                           </Grid>
@@ -2359,7 +2581,11 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
                               id="input-birthdate"
                               label="Data de Nascimento"
                               disabled={!canEdit}
-                              value={state?.birthdate?.length > 10 ? formatDate(state.birthdate, 'YYYY-MM-DD') : state.birthdate}
+                              value={
+                                state?.birthdate?.length > 10
+                                  ? formatDate(state.birthdate, "YYYY-MM-DD")
+                                  : state.birthdate
+                              }
                               onChange={(element) => {
                                 setState({
                                   ...state,
@@ -2374,9 +2600,8 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
                               }}
                               InputLabelProps={{
                                 shrink: true,
-                                style: {paddingBottom: 12}
+                                style: { paddingBottom: 12 },
                               }}
-
                               fullWidth
                             />
                           </Grid>
@@ -2421,13 +2646,21 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
                                   variant="outlined"
                                   size="small"
                                   placeholder="000.000.000-00"
-                                  error={!checkIsCpfValid() && state.fiscal_number != ''}
+                                  error={
+                                    !checkIsCpfValid() &&
+                                    state.fiscal_number != ""
+                                  }
                                   fullWidth
                                 />
                               )}
                             </InputMask>
-                            {!checkIsCpfValid() && state.fiscal_number != '' && (
-                              <p style={{color: '#f44336', margin: '1px 5px 20px'}}>
+                            {!checkIsCpfValid() && state.fiscal_number != "" && (
+                              <p
+                                style={{
+                                  color: "#f44336",
+                                  margin: "1px 5px 20px",
+                                }}
+                              >
                                 Por favor insira um cpf válido
                               </p>
                             )}
@@ -2443,10 +2676,12 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
                                   national_id: element.target.value,
                                 });
                               }}
-                              onBlur={(element) => setFieldValidations((prevState: any) => ({
-                                ...prevState,
-                                national_id: false,
-                              }))}
+                              onBlur={(element) =>
+                                setFieldValidations((prevState: any) => ({
+                                  ...prevState,
+                                  national_id: false,
+                                }))
+                              }
                             >
                               {(inputProps: any) => (
                                 <TextField
@@ -2457,7 +2692,10 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
                                   variant="outlined"
                                   size="small"
                                   placeholder="0.000-000"
-                                  error={fieldsValidation.national_id && state.national_id != ''}
+                                  error={
+                                    fieldsValidation.national_id &&
+                                    state.national_id != ""
+                                  }
                                   fullWidth
                                 />
                               )}
@@ -2484,7 +2722,6 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
                                   ),
                                 }));
                               }}
-
                               fullWidth
                             />
                           </Grid>
@@ -2537,7 +2774,9 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
                                   });
                                   setFieldValidations((prevState: any) => ({
                                     ...prevState,
-                                    gender: !validator.isEmpty(value ? value : ""),
+                                    gender: !validator.isEmpty(
+                                      value ? value : ""
+                                    ),
                                   }));
                                 }}
                                 noOptionsText="Nenhum resultado encontrado"
@@ -2547,7 +2786,7 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
                           </Grid>
                         </Grid>
 
-                        <Divider style={{marginBottom: 30}}/>
+                        <Divider style={{ marginBottom: 30 }} />
 
                         {/*  */}
                         <FormGroupSection>
@@ -2586,17 +2825,25 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
                                     placeholder="00000-000"
                                     size="small"
                                     variant="outlined"
-                                    error={userState.error && !fieldsValidation.postal_code}
-
+                                    error={
+                                      userState.error &&
+                                      !fieldsValidation.postal_code
+                                    }
                                     fullWidth
                                   />
                                 )}
                               </InputMask>
-                              {userState.error && !fieldsValidation.address.postal_code && (
-                                <p style={{color: '#f44336', margin: '-2px 5px 10px'}}>
-                                  CEP inválido
-                                </p>
-                              )}
+                              {userState.error &&
+                                !fieldsValidation.address.postal_code && (
+                                  <p
+                                    style={{
+                                      color: "#f44336",
+                                      margin: "-2px 5px 10px",
+                                    }}
+                                  >
+                                    CEP inválido
+                                  </p>
+                                )}
                             </Grid>
 
                             <Grid item md={10} xs={12}>
@@ -2653,7 +2900,6 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
                                     },
                                   }));
                                 }}
-
                                 fullWidth
                                 disabled={!canEdit}
                               />
@@ -2790,10 +3036,15 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
                               size="small"
                               value={state.email}
                               onChange={(element) => {
-                                setState({...state, email: element.target.value});
+                                setState({
+                                  ...state,
+                                  email: element.target.value,
+                                });
                                 setFieldValidations((prevState: any) => ({
                                   ...prevState,
-                                  email: validator.isEmail(element.target.value),
+                                  email: validator.isEmail(
+                                    element.target.value
+                                  ),
                                 }));
                               }}
                               fullWidth
@@ -2806,18 +3057,20 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
                               mask="(99) 9999-9999"
                               disabled={!canEdit}
                               value={state.phones[0]?.number}
-                              onChange={(element) =>{
-                                {setState(prevState => ({
-                                  ...prevState,
-                                  phone: element.target.value,
-                                  phones: [
-                                    {
-                                    ...prevState.phones[0],
-                                    number : element.target.value
-                                    }
-                                ]
-                                }))
-                              }}}
+                              onChange={(element) => {
+                                {
+                                  setState((prevState) => ({
+                                    ...prevState,
+                                    phone: element.target.value,
+                                    phones: [
+                                      {
+                                        ...prevState.phones[0],
+                                        number: element.target.value,
+                                      },
+                                    ],
+                                  }));
+                                }
+                              }}
                               onBlur={validatePhone}
                             >
                               {(inputProps: any) => (
@@ -2829,14 +3082,21 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
                                   variant="outlined"
                                   size="small"
                                   placeholder="0000-0000"
-                                  error={!validatePhone() && state.phones[0]?.number != ''}
-
+                                  error={
+                                    !validatePhone() &&
+                                    state.phones[0]?.number != ""
+                                  }
                                   fullWidth
                                 />
                               )}
                             </InputMask>
                             {!validatePhone() && state.phones[0]?.number && (
-                              <p style={{color: '#f44336', margin: '-10px 5px 10px'}}>
+                              <p
+                                style={{
+                                  color: "#f44336",
+                                  margin: "-10px 5px 10px",
+                                }}
+                              >
                                 Por favor insira um número válido
                               </p>
                             )}
@@ -2848,18 +3108,20 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
                               mask="(99) 99999-9999"
                               disabled={!canEdit}
                               value={state.phones[0]?.cellnumber}
-                              onChange={(element) =>{
-                                {setState(prevState => ({
-                                  ...prevState,
-                                  phone: element.target.value,
-                                  phones: [
-                                    {
-                                    ...prevState.phones[0],
-                                    cellnumber : element.target.value
-                                    }
-                                ]
-                                }))
-                              }}}
+                              onChange={(element) => {
+                                {
+                                  setState((prevState) => ({
+                                    ...prevState,
+                                    phone: element.target.value,
+                                    phones: [
+                                      {
+                                        ...prevState.phones[0],
+                                        cellnumber: element.target.value,
+                                      },
+                                    ],
+                                  }));
+                                }
+                              }}
                               onBlur={validateCellPhone}
                             >
                               {(inputProps: any) => (
@@ -2871,17 +3133,25 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
                                   variant="outlined"
                                   size="small"
                                   placeholder="(00) 0 0000-0000"
-                                  error={!validateCellPhone() && state.phones[0]?.cellnumber != ''}
-
+                                  error={
+                                    !validateCellPhone() &&
+                                    state.phones[0]?.cellnumber != ""
+                                  }
                                   fullWidth
                                 />
                               )}
                             </InputMask>
-                            {!validateCellPhone() && state.phones[0]?.cellnumber && (
-                              <p style={{color: '#f44336', margin: '-10px 5px 10px'}}>
-                                Por favor insira um número válido
-                              </p>
-                            )}
+                            {!validateCellPhone() &&
+                              state.phones[0]?.cellnumber && (
+                                <p
+                                  style={{
+                                    color: "#f44336",
+                                    margin: "-10px 5px 10px",
+                                  }}
+                                >
+                                  Por favor insira um número válido
+                                </p>
+                              )}
                           </Grid>
                         </Grid>
                         <Grid container>
@@ -2946,14 +3216,21 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
                                 options={userState.data.professions}
                                 getOptionLabel={(option) => {
                                   if (typeof option === "object") {
-                                    return option.name
+                                    return option.name;
                                   } else {
-                                    return option
+                                    return option;
                                   }
                                 }}
-                                renderInput={(params) =>
-                                  <TextField {...params} label="Função" variant="outlined"/>}
-                                getOptionSelected={(option, value) => option._id === getprofessionId()}
+                                renderInput={(params) => (
+                                  <TextField
+                                    {...params}
+                                    label="Função"
+                                    variant="outlined"
+                                  />
+                                )}
+                                getOptionSelected={(option, value) =>
+                                  option._id === getprofessionId()
+                                }
                                 // defaultValue={selectProfession()}
                                 value={selectProfession()}
                                 onChange={(event, value) => {
@@ -2962,13 +3239,12 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
                                   } else {
                                     setState((prevState) => ({
                                       ...prevState,
-                                      profession_id: {_id: '', name: ''}
+                                      profession_id: { _id: "", name: "" },
                                     }));
                                   }
                                 }}
                                 size="small"
                                 fullWidth
-
                               />
                             </FormGroupSection>
                           </Grid>
@@ -2978,9 +3254,17 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
                                 id="combo-box-council"
                                 disabled={!canEdit}
                                 options={councilState.list.data}
-                                getOptionLabel={(option) => `${option.initials} - ${option.name}`}
-                                renderInput={(params) => <TextField {...params} disabled={!canEdit} label="Conselho"
-                                                                    variant="outlined"/>}
+                                getOptionLabel={(option) =>
+                                  `${option.initials} - ${option.name}`
+                                }
+                                renderInput={(params) => (
+                                  <TextField
+                                    {...params}
+                                    disabled={!canEdit}
+                                    label="Conselho"
+                                    variant="outlined"
+                                  />
+                                )}
                                 value={selectCouncil()}
                                 getOptionSelected={(option, value) =>
                                   option._id === state?.council_id?._id
@@ -3006,8 +3290,14 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
                                 options={ufs}
                                 disabled={!canEdit}
                                 getOptionLabel={(option) => option.initials}
-                                renderInput={(params) => <TextField {...params} disabled={!canEdit} label="UF"
-                                                                    variant="outlined"/>}
+                                renderInput={(params) => (
+                                  <TextField
+                                    {...params}
+                                    disabled={!canEdit}
+                                    label="UF"
+                                    variant="outlined"
+                                  />
+                                )}
                                 value={selectCouncilState()}
                                 getOptionSelected={(option, value) =>
                                   option.initials === state.council_state
@@ -3119,7 +3409,9 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
                                 <Chip
                                   key={`especialty_selected_${index}`}
                                   label={item.name}
-                                  onDelete={(event) => handleDeleteEspecialty(item)}
+                                  onDelete={(event) =>
+                                    handleDeleteEspecialty(item)
+                                  }
                                 />
                               ))}
                             </ChipList>
@@ -3155,37 +3447,46 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
                           </Grid>
                       ) } */}
 
+                          {state.companies.length > 0 &&
+                            !(params.mode === "config") && (
+                              <div>
+                                <DivideTitle>
+                                  Empresas onde o prestador trabalha:
+                                </DivideTitle>
 
-                          {state.companies.length > 0 && !(params.mode === 'config') && (
-                            <div>
-                              <DivideTitle>Empresas onde o prestador trabalha:</DivideTitle>
-
-                              <Grid item md={12} xs={12}>
-                                <ChipList>
-                                  {state.companies?.map((item: any, index) => (
-                                    <Chip
-                                      key={`company_selected_${index}`}
-                                      label={item.name}
-                                      onDelete={(event) => handleDeleteCompany(item)}
-                                    />
-                                  ))}
-                                </ChipList>
-                              </Grid>
-                            </div>
-
-                          )}
+                                <Grid item md={12} xs={12}>
+                                  <ChipList>
+                                    {state.companies?.map(
+                                      (item: any, index) => (
+                                        <Chip
+                                          key={`company_selected_${index}`}
+                                          label={item.name}
+                                          onDelete={(event) =>
+                                            handleDeleteCompany(item)
+                                          }
+                                        />
+                                      )
+                                    )}
+                                  </ChipList>
+                                </Grid>
+                              </div>
+                            )}
                         </Grid>
                       </TabBodyItem>
                       <TabBodyItem className={currentTab === 2 ? "show" : ""}>
                         <BoxCustom>
-                          <Grid container justify="flex-start"
-                                alignItems="flex-start" style={{paddingLeft: "10px"}}>
+                          <Grid
+                            container
+                            justify="flex-start"
+                            alignItems="flex-start"
+                            style={{ paddingLeft: "10px" }}
+                          >
                             <Grid item>
                               <UserContent>
-                                <AccountCircle/>
+                                <AccountCircle />
                               </UserContent>
                             </Grid>
-                            <Grid item style={{paddingTop: "40px"}}>
+                            <Grid item style={{ paddingTop: "40px" }}>
                               <h3>{state.name}</h3>
                               {state.fiscal_number}
                             </Grid>
@@ -3194,26 +3495,46 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
                             <Grid item md={12} xs={12}>
                               <Divider></Divider>
                             </Grid>
-                            <Grid item style={{paddingTop: '20px'}}>
-                              <ButtonComponent style={{maxWidth: '10px'}} onClick={() => setAdd(!add)}>
-                                {add ? (<CheckCircleRoundedIcon fontSize={'large'}
-                                                                style={{color: '#4FC66A'}}></CheckCircleRoundedIcon>) : (
+                            <Grid item style={{ paddingTop: "20px" }}>
+                              <ButtonComponent
+                                style={{ maxWidth: "10px" }}
+                                onClick={() => setAdd(!add)}
+                              >
+                                {add ? (
+                                  <CheckCircleRoundedIcon
+                                    fontSize={"large"}
+                                    style={{ color: "#4FC66A" }}
+                                  ></CheckCircleRoundedIcon>
+                                ) : (
                                   <>
-                                    {params.mode === 'view' ? (
-                                      <RemoveIcon fontSize={'large'} color={'primary'}></RemoveIcon>) : (
-                                      <AddIcon fontSize={'large'} color={'primary'}></AddIcon>)}
+                                    {params.mode === "view" ? (
+                                      <RemoveIcon
+                                        fontSize={"large"}
+                                        color={"primary"}
+                                      ></RemoveIcon>
+                                    ) : (
+                                      <AddIcon
+                                        fontSize={"large"}
+                                        color={"primary"}
+                                      ></AddIcon>
+                                    )}
                                   </>
-
                                 )}
                               </ButtonComponent>
                             </Grid>
                             <Grid item>
-                              <Grid container
-                                    style={{flexDirection: 'column', paddingLeft: '10px', paddingTop: '20px'}}>
+                              <Grid
+                                container
+                                style={{
+                                  flexDirection: "column",
+                                  paddingLeft: "10px",
+                                  paddingTop: "20px",
+                                }}
+                              >
                                 <Grid item>
                                   <h3>{viewProfession()}</h3>
                                 </Grid>
-                                <Grid item style={{paddingTop: '10px'}}>
+                                <Grid item style={{ paddingTop: "10px" }}>
                                   Função:{viewProfession()}
                                 </Grid>
                                 <Grid item>
@@ -3225,20 +3546,32 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
                                 <Grid item>
                                   Outras especialidades: {viewSpecialtes()}
                                 </Grid>
-                                <Grid item md={12} xs={12} style={{paddingTop: "10px"}}>
+                                <Grid
+                                  item
+                                  md={12}
+                                  xs={12}
+                                  style={{ paddingTop: "10px" }}
+                                >
                                   <ChipList>
                                     {mycompanys()?.map((item: any, index) => (
                                       <Chip
                                         key={`company_selected_${index}`}
                                         label={item.name}
-                                        onDelete={(event) => handleDeleteCompany(item)}
+                                        onDelete={(event) =>
+                                          handleDeleteCompany(item)
+                                        }
                                       />
                                     ))}
                                   </ChipList>
                                 </Grid>
 
                                 <Collapse in={add}>
-                                  <Grid item style={{paddingTop: "20px"}} md={12} xs={12}>
+                                  <Grid
+                                    item
+                                    style={{ paddingTop: "20px" }}
+                                    md={12}
+                                    xs={12}
+                                  >
                                     <Grid item md={12} xs={12}>
                                       {/* <FormGroupSection fullWidth error>
                                 <Autocomplete
@@ -3276,40 +3609,51 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
                               ))}
                             </ChipList>
                           </Grid> */}
-                                    {(params.mode === 'link' && !checkCompany) && (
-
+                                    {params.mode === "link" && !checkCompany && (
                                       <Grid item md={12} xs={12}>
-                                        <ButtonComponent background="success_rounded" onClick={() => engagedUser()}>
-                                          Vincular este prestador a minha empresa
+                                        <ButtonComponent
+                                          background="success_rounded"
+                                          onClick={() => engagedUser()}
+                                        >
+                                          Vincular este prestador a minha
+                                          empresa
                                         </ButtonComponent>
                                       </Grid>
                                     )}
-                                    {(params.mode === 'link' && checkCompany && !engaged) && (
-
+                                    {params.mode === "link" &&
+                                      checkCompany &&
+                                      !engaged && (
+                                        <Grid item md={12} xs={12}>
+                                          Este prestador já está vinculado a sua
+                                          empresa com este perfil profissional,
+                                          caso queira desvinculá-lo{" "}
+                                          <Link to="/user"> clique aqui</Link>.
+                                        </Grid>
+                                      )}
+                                    {params.mode === "link" &&
+                                      checkCompany &&
+                                      engaged && (
+                                        <Grid item md={12} xs={12}>
+                                          Agora este prestador foi vinculado a
+                                          sua empresa, para confirmar esta
+                                          operação click em salva.
+                                        </Grid>
+                                      )}
+                                    {params.mode === "view" && !engaged && (
                                       <Grid item md={12} xs={12}>
-                                        Este prestador já está vinculado a sua empresa com este perfil profissional,
-                                        caso queira desvinculá-lo <Link to='/user'> clique aqui</Link>.
-                                      </Grid>
-                                    )}
-                                    {(params.mode === 'link' && checkCompany && engaged) && (
-
-                                      <Grid item md={12} xs={12}>
-                                        Agora este prestador foi vinculado a sua empresa, para confirmar esta operação
-                                        click
-                                        em salva.
-                                      </Grid>
-                                    )}
-                                    {(params.mode === 'view' && !engaged) && (
-                                      <Grid item md={12} xs={12}>
-                                        <ButtonComponent className={classes.cancel}
-                                                         onClick={() => dengagedUser(company)}>
-                                          Desvincular este prestador da minha empresa
+                                        <ButtonComponent
+                                          className={classes.cancel}
+                                          onClick={() => dengagedUser(company)}
+                                        >
+                                          Desvincular este prestador da minha
+                                          empresa
                                         </ButtonComponent>
                                       </Grid>
                                     )}
-                                    {(params.mode === 'view' && engaged) && (
+                                    {params.mode === "view" && engaged && (
                                       <Grid>
-                                        Prestador disvinculado de sua empresa, para confirmar esta operação click em
+                                        Prestador disvinculado de sua empresa,
+                                        para confirmar esta operação click em
                                         salva.
                                       </Grid>
                                     )}
@@ -3317,17 +3661,13 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
                                 </Collapse>
                               </Grid>
                             </Grid>
-
-
                           </Grid>
                         </BoxCustom>
-
                       </TabBodyItem>
                     </TabBody>
                   </TabContent>
                 </FormContent>
                 <ButtonsContent>
-
                   <ButtonComponent
                     background="default"
                     onClick={() => handleBackFormUser()}
@@ -3353,7 +3693,7 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
                     </ButtonComponent>
                   )}
 
-                  {currentTab === 1 && params.mode != 'config' && (
+                  {currentTab === 1 && params.mode != "config" && (
                     <ButtonComponent
                       background="success"
                       onClick={() => selectTab(2)}
@@ -3390,7 +3730,8 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
                       disabled={!formValid}
                     >
                       Salvar
-                    </ButtonComponent>)}
+                    </ButtonComponent>
+                  )}
                 </ButtonsContent>
               </FormSection>
             )}
@@ -3419,7 +3760,6 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
           </Dialog>
         </Sidebar>
       )}
-
     </>
   );
 }

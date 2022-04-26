@@ -1,5 +1,5 @@
-import React, {useState, useEffect, useCallback} from 'react';
-import {useHistory, RouteComponentProps} from 'react-router-dom';
+import React, { useState, useEffect, useCallback } from "react";
+import { useHistory, RouteComponentProps } from "react-router-dom";
 import {
   Container,
   StepLabel,
@@ -13,12 +13,12 @@ import {
   StepButton,
   Grid,
   Popover,
-  IconButton
-} from '@material-ui/core';
-import {Help as HelpIcon} from '@material-ui/icons';
+  IconButton,
+} from "@material-ui/core";
+import { Help as HelpIcon } from "@material-ui/icons";
 
-import {useDispatch, useSelector} from 'react-redux';
-import {ApplicationState} from '../../../../store';
+import { useDispatch, useSelector } from "react-redux";
+import { ApplicationState } from "../../../../store";
 
 import {
   loadCareById,
@@ -26,29 +26,35 @@ import {
   actionDocumentAbemidRequest,
   actionDocumentAbemidStoreRequest,
   actionDocumentAbemidUpdateRequest,
-  cleanAction
-} from '../../../../store/ducks/cares/actions';
-import {CareInterface, DocumentGroupInterface} from '../../../../store/ducks/cares/types';
+  cleanAction,
+} from "../../../../store/ducks/cares/actions";
+import {
+  CareInterface,
+  DocumentGroupInterface,
+} from "../../../../store/ducks/cares/types";
 
-import PatientCard from '../../../../components/Card/Patient';
-import Loading from '../../../../components/Loading';
-import Sidebar from '../../../../components/Sidebar';
+import PatientCard from "../../../../components/Card/Patient";
+import Loading from "../../../../components/Loading";
+import Sidebar from "../../../../components/Sidebar";
 
-import Button from '../../../../styles/components/Button';
+import Button from "../../../../styles/components/Button";
 import {
   FormTitle,
   QuestionSection,
   QuestionTitle,
   ScoreTotalContent,
   ScoreLabel,
-  ScoreTotal
-} from '../../../../styles/components/Form';
-import {StepperComponent, StepComponent, StepTitle} from '../../../../styles/components/Step';
-import {handleUserSelectedId} from '../../../../helpers/localStorage';
+  ScoreTotal,
+} from "../../../../styles/components/Form";
+import {
+  StepperComponent,
+  StepComponent,
+  StepTitle,
+} from "../../../../styles/components/Step";
+import { handleUserSelectedId } from "../../../../helpers/localStorage";
 
-
-import {ButtonsContent, FormContent} from './styles';
-import {toast} from 'react-toastify';
+import { ButtonsContent, FormContent } from "./styles";
+import { toast } from "react-toastify";
 import _ from "lodash";
 import ButtonComponent from "../../../../styles/components/Button";
 
@@ -64,62 +70,78 @@ interface IScore {
 }
 
 export default function Abemid(props: RouteComponentProps<IPageParams>) {
-  const {params} = props.match;
-  const {state: routeState} = props.location;
+  const { params } = props.match;
+  const { state: routeState } = props.location;
 
   const history = useHistory();
   const dispatch = useDispatch();
 
   const careState = useSelector((state: ApplicationState) => state.cares);
-  const {documentGroupAbemid: documentGroupState, documentAbemid: documentState} = careState;
+  const {
+    documentGroupAbemid: documentGroupState,
+    documentAbemid: documentState,
+  } = careState;
 
   const [care, setCare] = useState<CareInterface>();
   const [documentGroup, setDocumentGroup] = useState<DocumentGroupInterface>({
-    _id: '',
-    name: '',
-    description: '',
+    _id: "",
+    name: "",
+    description: "",
     fields: [],
-    created_at: '',
-    created_by: {_id: ''},
-    updated_at: '',
-    updated_by: {_id: ''},
+    created_at: "",
+    created_by: { _id: "" },
+    updated_at: "",
+    updated_by: { _id: "" },
   });
   const [document, setDocument] = useState<any>();
   const [steps, setSteps] = useState([
-    {title: 'KATZ', finished: (!!routeState.katzIsDone), score: {total: 0, complexity: "", status: ""}},
-    {title: 'Abemid', finished: false, score: {total: 0, complexity: "", status: ""}},
+    {
+      title: "KATZ",
+      finished: !!routeState.katzIsDone,
+      score: { total: 0, complexity: "", status: "" },
+    },
+    {
+      title: "Abemid",
+      finished: false,
+      score: { total: 0, complexity: "", status: "" },
+    },
   ]);
   const [currentStep, setCurrentStep] = useState(0);
 
-  const [anchorHelpPopover, setHelpPopover] = React.useState<HTMLButtonElement | null>(null);
+  const [anchorHelpPopover, setHelpPopover] =
+    React.useState<HTMLButtonElement | null>(null);
   const openHelpPopover = Boolean(anchorHelpPopover);
 
   const handleNextStep = useCallback(() => {
-    let isError = null
+    let isError = null;
 
-    if (isDone() || careState.data.capture?.status != 'Em Andamento') {
-
+    if (isDone() || careState.data.capture?.status != "Em Andamento") {
     } else {
       isError = checkAllCurrentQuestionsAnswered(documentGroup, currentStep);
     }
 
     if (isError) return;
 
-    window.scrollTo(0, 200)
+    window.scrollTo(0, 200);
 
     setCurrentStep((prevState) => prevState + 1);
   }, [currentStep, documentGroup]);
 
   const handleBackStep = useCallback(() => {
     setCurrentStep((prevState) => prevState - 1);
-    window.scrollTo(0, 200)
+    window.scrollTo(0, 200);
   }, [currentStep]);
 
-  const handleNavigateStep = useCallback((step: number) => {
-    setCurrentStep(step);
-  }, [currentStep]);
+  const handleNavigateStep = useCallback(
+    (step: number) => {
+      setCurrentStep(step);
+    },
+    [currentStep]
+  );
 
-  const handleClickHelpPopover = (event: React.MouseEvent<HTMLButtonElement>) => {
+  const handleClickHelpPopover = (
+    event: React.MouseEvent<HTMLButtonElement>
+  ) => {
     setHelpPopover(event.currentTarget);
   };
 
@@ -132,7 +154,12 @@ export default function Abemid(props: RouteComponentProps<IPageParams>) {
     dispatch(loadCareById(params.id));
 
     if (params?.documentId) {
-      dispatch(actionDocumentAbemidRequest({_id: params.documentId, care_id: params.id}));
+      dispatch(
+        actionDocumentAbemidRequest({
+          _id: params.documentId,
+          care_id: params.id,
+        })
+      );
     }
   }, []);
 
@@ -158,7 +185,9 @@ export default function Abemid(props: RouteComponentProps<IPageParams>) {
         !documentState?.error
       ) {
         if (care?._id) {
-          history.push(`/patient/capture/${care._id}/overview/`, {success: true});
+          history.push(`/patient/capture/${care._id}/overview/`, {
+            success: true,
+          });
         }
       }
     }
@@ -174,81 +203,86 @@ export default function Abemid(props: RouteComponentProps<IPageParams>) {
     calculateScore();
   }, [currentStep, document, documentGroup]);
 
+  const checkAllCurrentQuestionsAnswered = useCallback(
+    (localDocumentGroup: DocumentGroupInterface, localCurrentStep: number) => {
+      const currentStepAnswer = localDocumentGroup?.fields?.filter(
+        (field) => field.step === localCurrentStep
+      );
+      if (currentStep === 1) currentStepAnswer?.shift();
+      const isAllQuestionAnswered = currentStepAnswer?.map((field) =>
+        field?.options?.some((option) => option.hasOwnProperty("selected"))
+      );
+      const isError = isAllQuestionAnswered?.some((answered) => !answered);
 
-  const checkAllCurrentQuestionsAnswered = useCallback((localDocumentGroup: DocumentGroupInterface, localCurrentStep: number) => {
+      if (isError) {
+        toast.error("Selecione ao menos uma alternativa por pergunta");
+      }
 
-    const currentStepAnswer = localDocumentGroup?.fields?.filter(field => field.step === localCurrentStep);
-    if (currentStep === 1)
-      currentStepAnswer?.shift()
-    const isAllQuestionAnswered = currentStepAnswer?.map(field =>
-      field?.options?.some(option =>
-        option.hasOwnProperty('selected')
-      )
-    );
-    const isError = isAllQuestionAnswered?.some(answered => !answered);
-
-    if (isError) {
-      toast.error("Selecione ao menos uma alternativa por pergunta");
-    }
-
-    return isError;
-  }, [documentGroup, currentStep, documentGroupState]);
+      return isError;
+    },
+    [documentGroup, currentStep, documentGroupState]
+  );
 
   const isDone = useCallback(() => {
-    let documentObj = _.find(care?.documents_id, {document_group_id: {name: 'ABEMID'}});
-    return documentObj?.finished ? documentObj?.finished : false
+    let documentObj = _.find(care?.documents_id, {
+      document_group_id: { name: "ABEMID" },
+    });
+    return documentObj?.finished ? documentObj?.finished : false;
   }, [care]);
 
   const clearDocument = useCallback(() => {
-    let documentGroupCopy = {...documentGroup};
+    let documentGroupCopy = { ...documentGroup };
 
     documentGroupCopy?.fields?.map((field: any) => {
       field.options.map((option: any) => {
-        option.selected = false
-      })
-    })
+        option.selected = false;
+      });
+    });
 
     setDocumentGroup(documentGroupCopy);
 
     steps?.map((field: any) => {
-      field.score.total = 0
-    })
+      field.score.total = 0;
+    });
   }, [documentGroup, steps]);
 
-  const selectOption = useCallback((field_id: string, option_id: string, multiple: boolean = false) => {
-    let documentGroupCopy = {...documentGroup};
+  const selectOption = useCallback(
+    (field_id: string, option_id: string, multiple: boolean = false) => {
+      let documentGroupCopy = { ...documentGroup };
 
-    documentGroupCopy?.fields?.map((field: any) => {
-      if (field._id === field_id) {
-        field.options.map((option: any) => {
-          if (option._id === option_id) {
-            if (option?.selected) {
-              option.selected = !option.selected;
+      documentGroupCopy?.fields?.map((field: any) => {
+        if (field._id === field_id) {
+          field.options.map((option: any) => {
+            if (option._id === option_id) {
+              if (option?.selected) {
+                option.selected = !option.selected;
+              } else {
+                option.selected = true;
+              }
             } else {
-              option.selected = true;
+              if (!multiple) {
+                option.selected = false;
+              }
             }
-          } else {
-            if (!multiple) {
-              option.selected = false;
-            }
-          }
-        })
-      }
-    });
+          });
+        }
+      });
 
-    setDocumentGroup(documentGroupCopy);
-    calculateScore();
-
-  }, [documentGroup]);
+      setDocumentGroup(documentGroupCopy);
+      calculateScore();
+    },
+    [documentGroup]
+  );
 
   const calculateScore = useCallback(() => {
-    let partialScore = 0, countQuestionFive = 0;
+    let partialScore = 0,
+      countQuestionFive = 0;
 
     documentGroup?.fields?.map((field: any) => {
       if (field.step === currentStep) {
         field.options.map((option: any) => {
           if (option?.selected) {
-            if (option.value === '5') {
+            if (option.value === "5") {
               countQuestionFive++;
             }
 
@@ -262,17 +296,17 @@ export default function Abemid(props: RouteComponentProps<IPageParams>) {
       // Abemid
       if (currentStep === 1) {
         if (countQuestionFive === 1) {
-          return 'Média Complexidade';
+          return "Média Complexidade";
         } else if (countQuestionFive > 1) {
-          return 'Alta Complexidade';
+          return "Alta Complexidade";
         } else if (score >= 8 && score <= 12) {
-          return 'Baixa Complexidade';
+          return "Baixa Complexidade";
         } else if (score >= 13 && score <= 18) {
-          return 'Média Complexidade';
+          return "Média Complexidade";
         } else if (score >= 19) {
-          return 'Alta Complexidade';
+          return "Alta Complexidade";
         } else {
-          return 'Atenção Domiciliar';
+          return "Atenção Domiciliar";
         }
       }
       // KATZ
@@ -295,7 +329,7 @@ export default function Abemid(props: RouteComponentProps<IPageParams>) {
       // } else {
       //   return 'Elegível';
       // }
-      return ''
+      return "";
     };
 
     let stepsCopy = steps;
@@ -306,20 +340,19 @@ export default function Abemid(props: RouteComponentProps<IPageParams>) {
       status: getStatus(partialScore),
     };
 
-    setSteps(prevState => stepsCopy);
-
+    setSteps((prevState) => stepsCopy);
   }, [documentGroup, currentStep, steps[currentStep].score.total]);
 
   const handleFieldAnswer = useCallback(() => {
-    let documentGroupCopy = {...documentGroup};
+    let documentGroupCopy = { ...documentGroup };
 
     documentGroupCopy?.fields?.map((field: any) => {
       field.options.map((option: any) => {
         const optionFounded = document.fields?.find((opt: any) => {
-          return opt.option_id === option._id
+          return opt.option_id === option._id;
         });
 
-        option.selected = (optionFounded) ? true : false;
+        option.selected = optionFounded ? true : false;
 
         return option;
       });
@@ -330,12 +363,13 @@ export default function Abemid(props: RouteComponentProps<IPageParams>) {
   }, [documentGroup, document]);
 
   const getScore = useCallback(() => {
-    let partialScore = 0, countQuestionFive = 0;
+    let partialScore = 0,
+      countQuestionFive = 0;
 
     documentGroup?.fields?.map((field: any) => {
       field.options.map((option: any) => {
         if (option?.selected) {
-          if (option.value === '5') {
+          if (option.value === "5") {
             countQuestionFive++;
           }
           partialScore += parseInt(option.value);
@@ -345,21 +379,25 @@ export default function Abemid(props: RouteComponentProps<IPageParams>) {
 
     const getComplexity = (score: number) => {
       if (countQuestionFive === 1) {
-        return 'Média Complexidade';
+        return "Média Complexidade";
       } else if (countQuestionFive > 1) {
-        return 'Alta Complexidade';
+        return "Alta Complexidade";
       } else if (score >= 8 && score <= 12) {
-        return 'Baixa Complexidade';
+        return "Baixa Complexidade";
       } else if (score >= 13 && score <= 18) {
-        return 'Média Complexidade';
+        return "Média Complexidade";
       } else if (score >= 19) {
-        return 'Alta Complexidade';
+        return "Alta Complexidade";
       } else {
-        return 'Atenção Domiciliar';
+        return "Atenção Domiciliar";
       }
-    }
+    };
 
-    return partialScore ? `${partialScore - steps[0].score.total} - ${getComplexity(partialScore - steps[0].score.total)}` : '0 - Atenção Domiciliar'
+    return partialScore
+      ? `${partialScore - steps[0].score.total} - ${getComplexity(
+          partialScore - steps[0].score.total
+        )}`
+      : "0 - Atenção Domiciliar";
   }, [documentGroup]);
 
   const handleSubmit = useCallback(() => {
@@ -369,7 +407,10 @@ export default function Abemid(props: RouteComponentProps<IPageParams>) {
     let complexity: string = "",
       status: string = "";
 
-    const isError = checkAllCurrentQuestionsAnswered(documentGroup, currentStep);
+    const isError = checkAllCurrentQuestionsAnswered(
+      documentGroup,
+      currentStep
+    );
 
     if (isError) return;
 
@@ -380,10 +421,10 @@ export default function Abemid(props: RouteComponentProps<IPageParams>) {
             _id: field._id,
             description: field.description,
             option_id: option._id,
-            value: option.value
-          })
+            value: option.value,
+          });
         }
-      })
+      });
     });
 
     steps.forEach((step) => {
@@ -423,65 +464,79 @@ export default function Abemid(props: RouteComponentProps<IPageParams>) {
       const createDocumentParams = {
         patient_id: care.patient_id?._id,
         care_id: care?._id,
-        document_group_id: documentGroup?._id || '',
+        document_group_id: documentGroup?._id || "",
         finished: true,
         canceled: false,
         fields: selecteds,
         complexity,
         status,
-        created_by: {_id: handleUserSelectedId() || ''},
+        created_by: { _id: handleUserSelectedId() || "" },
       };
 
       if (document?._id) {
-        dispatch(actionDocumentAbemidUpdateRequest({...createDocumentParams, _id: document._id}));
+        dispatch(
+          actionDocumentAbemidUpdateRequest({
+            ...createDocumentParams,
+            _id: document._id,
+          })
+        );
       } else {
         dispatch(actionDocumentAbemidStoreRequest(createDocumentParams));
       }
     }
-
   }, [documentGroup, care, currentStep]);
 
   return (
     <Sidebar>
-      {careState.loading && <Loading/>}
+      {/* {careState.loading && <Loading/>} */}
       <Container>
-
         {care?.patient_id && (
           <>
             <h2>Paciente</h2>
-            <PatientCard patient={care.patient_id} capture={care.capture}/>
+            <PatientCard patient={care.patient_id} capture={care.capture} />
           </>
         )}
 
-        <div style={{display: 'flex', alignItems: 'center', flexDirection: 'row', marginBottom: 40}}>
-          <FormTitle style={{margin: 0}}>
-            {documentGroup.name}
-          </FormTitle>
-          <IconButton aria-describedby={'popover_help_abemid'} onClick={handleClickHelpPopover}
-                      style={{marginLeft: 10}}>
-            <HelpIcon style={{color: "#ccc"}}/>
+        <div
+          style={{
+            display: "flex",
+            alignItems: "center",
+            flexDirection: "row",
+            marginBottom: 40,
+          }}
+        >
+          <FormTitle style={{ margin: 0 }}>{documentGroup.name}</FormTitle>
+          <IconButton
+            aria-describedby={"popover_help_abemid"}
+            onClick={handleClickHelpPopover}
+            style={{ marginLeft: 10 }}
+          >
+            <HelpIcon style={{ color: "#ccc" }} />
           </IconButton>
-          {!isDone() && careState.data.capture?.status === 'Em Andamento' && (
+          {!isDone() && careState.data.capture?.status === "Em Andamento" && (
             <>
-              <ButtonComponent onClick={() => {
-                clearDocument()
-              }} background="primary">
+              <ButtonComponent
+                onClick={() => {
+                  clearDocument();
+                }}
+                background="primary"
+              >
                 Limpar Campos
               </ButtonComponent>
             </>
           )}
           <Popover
-            id={'popover_help_abemid'}
+            id={"popover_help_abemid"}
             open={openHelpPopover}
             anchorEl={anchorHelpPopover}
             onClose={handleCloseHelpPopover}
             anchorOrigin={{
-              vertical: 'bottom',
-              horizontal: 'center',
+              vertical: "bottom",
+              horizontal: "center",
             }}
             transformOrigin={{
-              vertical: 'top',
-              horizontal: 'left',
+              vertical: "top",
+              horizontal: "left",
             }}
           >
             <div
@@ -491,34 +546,47 @@ export default function Abemid(props: RouteComponentProps<IPageParams>) {
                 paddingBottom: 20,
                 paddingRight: 30,
                 maxWidth: 500,
-                listStylePosition: 'inside',
-                textAlign: 'justify'
-              }}>
+                listStylePosition: "inside",
+                textAlign: "justify",
+              }}
+            >
               <p>Regra:</p>
-              <br/>
+              <br />
               <ul>
-                <li>Ao obter 01 pontuação 5, o paciente migra automaticamente para Média Complexidade;</li>
-
-                <li>Ao obter 02 ou mais pontuações 5, o paciente migra automaticamente para Alta Complexidade,
-                  independente do total de pontos obtidos (com cuidado).<br/>Obs. A migração acima referida, ocorre
-                  independente dos pontos totais obtidos
+                <li>
+                  Ao obter 01 pontuação 5, o paciente migra automaticamente para
+                  Média Complexidade;
                 </li>
 
-                <li>Em TODOS os itens de avaliação, EXCETO os relacionados a coluna SUPORTE TERAPÊUTICO, os pontos NÃO
-                  se somam, SEMPRE prevalecendo o item de MAIOR pontuação em decorrência da maior COMPLEXIDADE
+                <li>
+                  Ao obter 02 ou mais pontuações 5, o paciente migra
+                  automaticamente para Alta Complexidade, independente do total
+                  de pontos obtidos (com cuidado).
+                  <br />
+                  Obs. A migração acima referida, ocorre independente dos pontos
+                  totais obtidos
+                </li>
+
+                <li>
+                  Em TODOS os itens de avaliação, EXCETO os relacionados a
+                  coluna SUPORTE TERAPÊUTICO, os pontos NÃO se somam, SEMPRE
+                  prevalecendo o item de MAIOR pontuação em decorrência da maior
+                  COMPLEXIDADE
                 </li>
               </ul>
-              <br/>
+              <br />
 
               <ul>
-                <li>Inferior a 07 pontos Paciente não elegível para Internação Domiciliar</li>
+                <li>
+                  Inferior a 07 pontos Paciente não elegível para Internação
+                  Domiciliar
+                </li>
                 <li>De 08 a 12 pontos Baixa Complexidade</li>
                 <li>De 13 a 18 pontos Média Complexidade</li>
                 <li>Acima de 19 pontos Alta Complexidade</li>
               </ul>
             </div>
           </Popover>
-
         </div>
 
         <StepperComponent activeStep={currentStep} alternativeLabel>
@@ -532,7 +600,7 @@ export default function Abemid(props: RouteComponentProps<IPageParams>) {
           ))}
         </StepperComponent>
 
-        {careState.data.capture?.status != 'Em Andamento' ? (
+        {careState.data.capture?.status != "Em Andamento" ? (
           <>
             <FormContent>
               {/* Score de KATZ */}
@@ -545,9 +613,7 @@ export default function Abemid(props: RouteComponentProps<IPageParams>) {
                       return (
                         <QuestionSection key={`question_${field._id}_${index}`}>
                           <QuestionTitle>{field.description}</QuestionTitle>
-                          <RadioGroup
-                            style={{width: 'fit-content'}}
-                          >
+                          <RadioGroup style={{ width: "fit-content" }}>
                             {field.options.map((option: any, index: number) => (
                               <FormControlLabel
                                 key={`option_${field._id}_${index}`}
@@ -555,7 +621,9 @@ export default function Abemid(props: RouteComponentProps<IPageParams>) {
                                 control={
                                   <Radio
                                     color="primary"
-                                    checked={isDone() ? option?.selected : false}
+                                    checked={
+                                      isDone() ? option?.selected : false
+                                    }
                                   />
                                 }
                                 label={option.text}
@@ -570,20 +638,15 @@ export default function Abemid(props: RouteComponentProps<IPageParams>) {
                   <ScoreTotalContent>
                     <ScoreLabel>PONTUAÇÃO KATZ:</ScoreLabel>
                     <ScoreTotal>
-                      {
-                        steps[currentStep].score.total ?
-                          `${steps[currentStep].score.total} - ${steps[currentStep].score.complexity}`
-                          :
-                          '0 - Dependente Total'
-                      }
+                      {steps[currentStep].score.total
+                        ? `${steps[currentStep].score.total} - ${steps[currentStep].score.complexity}`
+                        : "0 - Dependente Total"}
                     </ScoreTotal>
                   </ScoreTotalContent>
                 </>
               )}
-
             </FormContent>
             <FormContent>
-
               {/* Grupo 1 */}
               {currentStep === 1 && (
                 <>
@@ -591,45 +654,51 @@ export default function Abemid(props: RouteComponentProps<IPageParams>) {
 
                   {documentGroup?.fields?.map((field: any, index: number) => {
                     if (field.step === 1) {
-
                       const getKatz = (option: any, score: number) => {
-                        option.selected = false
-                        if (option.value === '0') {
+                        option.selected = false;
+                        if (option.value === "0") {
                           if (score > 4) {
-                            option.selected = true
+                            option.selected = true;
                           }
-                        } else if (option.value === '2') {
+                        } else if (option.value === "2") {
                           if (score >= 3 && score <= 4) {
-                            option.selected = true
+                            option.selected = true;
                           }
-                        } else if (option.value === '5') {
+                        } else if (option.value === "5") {
                           if (score <= 2) {
-                            option.selected = true
+                            option.selected = true;
                           }
                         } else {
-                          option.selected = false
+                          option.selected = false;
                         }
-                        return option
+                        return option;
                       };
 
                       return (
                         <QuestionSection key={`question_${field._id}_${index}`}>
-
-                          {(field.description === '5. Grau de atividade da vida diária relacionada a cuidados técnicos') ? (
+                          {field.description ===
+                          "5. Grau de atividade da vida diária relacionada a cuidados técnicos" ? (
                             <>
                               <QuestionTitle>{field.description}</QuestionTitle>
 
-                              {field.type === 'radio' && (
+                              {field.type === "radio" && (
                                 <RadioGroup>
-                                  {field.options.map((option: any, index: number) => (
-                                    <FormControlLabel
-                                      key={`option_${field._id}_${index}`}
-                                      value={getKatz(option, steps[0].score.total)}
-                                      control={<Radio color="primary"/>}
-                                      label={option.text}
-                                      checked={isDone() ? option?.selected : false}
-                                    />
-                                  ))}
+                                  {field.options.map(
+                                    (option: any, index: number) => (
+                                      <FormControlLabel
+                                        key={`option_${field._id}_${index}`}
+                                        value={getKatz(
+                                          option,
+                                          steps[0].score.total
+                                        )}
+                                        control={<Radio color="primary" />}
+                                        label={option.text}
+                                        checked={
+                                          isDone() ? option?.selected : false
+                                        }
+                                      />
+                                    )
+                                  )}
                                 </RadioGroup>
                               )}
                             </>
@@ -637,39 +706,49 @@ export default function Abemid(props: RouteComponentProps<IPageParams>) {
                             <>
                               <QuestionTitle>{field.description}</QuestionTitle>
 
-                              {field.type === 'radio' && (
+                              {field.type === "radio" && (
                                 <RadioGroup>
-                                  {field.options.map((option: any, index: number) => (
-                                    <FormControlLabel
-                                      key={`option_${field._id}_${index}`}
-                                      value={option._id}
-                                      control={<Radio color="primary"/>}
-                                      label={option.text}
-                                      checked={isDone() ? option?.selected : false}
-                                    />
-                                  ))}
+                                  {field.options.map(
+                                    (option: any, index: number) => (
+                                      <FormControlLabel
+                                        key={`option_${field._id}_${index}`}
+                                        value={option._id}
+                                        control={<Radio color="primary" />}
+                                        label={option.text}
+                                        checked={
+                                          isDone() ? option?.selected : false
+                                        }
+                                      />
+                                    )
+                                  )}
                                 </RadioGroup>
                               )}
 
-                              {field.type === 'check' && (
+                              {field.type === "check" && (
                                 <FormGroup>
-                                  {field.options.map((option: any, index: number) => (
-                                    <FormControlLabel
-                                      key={`option_${field._id}_${index}`}
-                                      value={option._id}
-                                      control={(
-                                        <Checkbox color="primary"
-                                                  checked={isDone() ? option?.selected : false}
-                                        />
-                                      )}
-                                      label={option.text}
-                                    />
-                                  ))}
+                                  {field.options.map(
+                                    (option: any, index: number) => (
+                                      <FormControlLabel
+                                        key={`option_${field._id}_${index}`}
+                                        value={option._id}
+                                        control={
+                                          <Checkbox
+                                            color="primary"
+                                            checked={
+                                              isDone()
+                                                ? option?.selected
+                                                : false
+                                            }
+                                          />
+                                        }
+                                        label={option.text}
+                                      />
+                                    )
+                                  )}
                                 </FormGroup>
                               )}
                             </>
                           )}
-
                         </QuestionSection>
                       );
                     }
@@ -677,11 +756,7 @@ export default function Abemid(props: RouteComponentProps<IPageParams>) {
 
                   <ScoreTotalContent>
                     <ScoreLabel>TOTAL DE PONTOS:</ScoreLabel>
-                    <ScoreTotal>
-                      {
-                        getScore()
-                      }
-                    </ScoreTotal>
+                    <ScoreTotal>{getScore()}</ScoreTotal>
                   </ScoreTotalContent>
                 </>
               )}
@@ -742,7 +817,7 @@ export default function Abemid(props: RouteComponentProps<IPageParams>) {
                             onChange={(e) =>
                               selectOption(field._id, e.target.value)
                             }
-                            style={{width: 'fit-content'}}
+                            style={{ width: "fit-content" }}
                           >
                             {field.options.map((option: any, index: number) => (
                               <FormControlLabel
@@ -766,20 +841,15 @@ export default function Abemid(props: RouteComponentProps<IPageParams>) {
                   <ScoreTotalContent>
                     <ScoreLabel>PONTUAÇÃO KATZ:</ScoreLabel>
                     <ScoreTotal>
-                      {
-                        steps[currentStep].score.total ?
-                          `${steps[currentStep].score.total} - ${steps[currentStep].score.complexity}`
-                          :
-                          '0 - Dependente Total'
-                      }
+                      {steps[currentStep].score.total
+                        ? `${steps[currentStep].score.total} - ${steps[currentStep].score.complexity}`
+                        : "0 - Dependente Total"}
                     </ScoreTotal>
                   </ScoreTotalContent>
                 </>
               )}
-
             </FormContent>
             <FormContent>
-
               {/* Grupo 1 */}
               {currentStep === 1 && (
                 <>
@@ -787,45 +857,53 @@ export default function Abemid(props: RouteComponentProps<IPageParams>) {
 
                   {documentGroup?.fields?.map((field: any, index: number) => {
                     if (field.step === 1) {
-
                       const getKatz = (option: any, score: number) => {
-                        option.selected = false
-                        if (option.value === '0') {
+                        option.selected = false;
+                        if (option.value === "0") {
                           if (score > 4) {
-                            option.selected = true
+                            option.selected = true;
                           }
-                        } else if (option.value === '2') {
+                        } else if (option.value === "2") {
                           if (score >= 3 && score <= 4) {
-                            option.selected = true
+                            option.selected = true;
                           }
-                        } else if (option.value === '5') {
+                        } else if (option.value === "5") {
                           if (score <= 2) {
-                            option.selected = true
+                            option.selected = true;
                           }
                         } else {
-                          option.selected = false
+                          option.selected = false;
                         }
-                        return option
+                        return option;
                       };
 
                       return (
                         <QuestionSection key={`question_${field._id}_${index}`}>
-
-                          {(field.description === '5. Grau de atividade da vida diária relacionada a cuidados técnicos') ? (
+                          {field.description ===
+                          "5. Grau de atividade da vida diária relacionada a cuidados técnicos" ? (
                             <>
                               <QuestionTitle>{field.description}</QuestionTitle>
 
-                              {field.type === 'radio' && (
-                                <RadioGroup onChange={e => selectOption(field._id, e.target.value)}>
-                                  {field.options.map((option: any, index: number) => (
-                                    <FormControlLabel
-                                      key={`option_${field._id}_${index}`}
-                                      value={getKatz(option, steps[0].score.total)}
-                                      control={<Radio color="primary"/>}
-                                      label={option.text}
-                                      checked={option?.selected}
-                                    />
-                                  ))}
+                              {field.type === "radio" && (
+                                <RadioGroup
+                                  onChange={(e) =>
+                                    selectOption(field._id, e.target.value)
+                                  }
+                                >
+                                  {field.options.map(
+                                    (option: any, index: number) => (
+                                      <FormControlLabel
+                                        key={`option_${field._id}_${index}`}
+                                        value={getKatz(
+                                          option,
+                                          steps[0].score.total
+                                        )}
+                                        control={<Radio color="primary" />}
+                                        label={option.text}
+                                        checked={option?.selected}
+                                      />
+                                    )
+                                  )}
                                 </RadioGroup>
                               )}
                             </>
@@ -833,40 +911,54 @@ export default function Abemid(props: RouteComponentProps<IPageParams>) {
                             <>
                               <QuestionTitle>{field.description}</QuestionTitle>
 
-                              {field.type === 'radio' && (
-                                <RadioGroup onChange={e => selectOption(field._id, e.target.value)}>
-                                  {field.options.map((option: any, index: number) => (
-                                    <FormControlLabel
-                                      key={`option_${field._id}_${index}`}
-                                      value={option._id}
-                                      control={<Radio color="primary"/>}
-                                      label={option.text}
-                                      checked={option?.selected}
-                                    />
-                                  ))}
+                              {field.type === "radio" && (
+                                <RadioGroup
+                                  onChange={(e) =>
+                                    selectOption(field._id, e.target.value)
+                                  }
+                                >
+                                  {field.options.map(
+                                    (option: any, index: number) => (
+                                      <FormControlLabel
+                                        key={`option_${field._id}_${index}`}
+                                        value={option._id}
+                                        control={<Radio color="primary" />}
+                                        label={option.text}
+                                        checked={option?.selected}
+                                      />
+                                    )
+                                  )}
                                 </RadioGroup>
                               )}
 
-                              {field.type === 'check' && (
+                              {field.type === "check" && (
                                 <FormGroup>
-                                  {field.options.map((option: any, index: number) => (
-                                    <FormControlLabel
-                                      key={`option_${field._id}_${index}`}
-                                      value={option._id}
-                                      onChange={e => selectOption(field._id, option._id, true)}
-                                      control={(
-                                        <Checkbox color="primary"
-                                                  checked={option?.selected ?? false}
-                                        />
-                                      )}
-                                      label={option.text}
-                                    />
-                                  ))}
+                                  {field.options.map(
+                                    (option: any, index: number) => (
+                                      <FormControlLabel
+                                        key={`option_${field._id}_${index}`}
+                                        value={option._id}
+                                        onChange={(e) =>
+                                          selectOption(
+                                            field._id,
+                                            option._id,
+                                            true
+                                          )
+                                        }
+                                        control={
+                                          <Checkbox
+                                            color="primary"
+                                            checked={option?.selected ?? false}
+                                          />
+                                        }
+                                        label={option.text}
+                                      />
+                                    )
+                                  )}
                                 </FormGroup>
                               )}
                             </>
                           )}
-
                         </QuestionSection>
                       );
                     }
@@ -874,11 +966,7 @@ export default function Abemid(props: RouteComponentProps<IPageParams>) {
 
                   <ScoreTotalContent>
                     <ScoreLabel>TOTAL DE PONTOS:</ScoreLabel>
-                    <ScoreTotal>
-                      {
-                        getScore()
-                      }
-                    </ScoreTotal>
+                    <ScoreTotal>{getScore()}</ScoreTotal>
                   </ScoreTotalContent>
                 </>
               )}
