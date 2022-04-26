@@ -174,7 +174,7 @@ export default function UserList() {
       <Sidebar>
         {checkViewPermission("user", JSON.stringify(rightsOfLayoutState)) ? (
           <Container>
-            {userState.loading && <Loading />}
+            {/* {userState.loading && <Loading />} */}
             <FormTitle>Meus Profissionais</FormTitle>
 
             {integration ? (

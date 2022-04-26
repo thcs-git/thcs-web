@@ -109,7 +109,7 @@ export default function FilterReport(props: IPropsFilter) {
       dispatch(loadCustomerById(customer_id));
     }
     dispatch(loadProfessionsRequest());
-  }, [stateFilter]);
+  }, [stateFilter.type, stateFilter.attendance_id, customer_id]);
 
   const handleRadioChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setStateFilter((state: any) => {
@@ -569,6 +569,7 @@ export default function FilterReport(props: IPropsFilter) {
         cleanFilter();
       }}
       aria-labelledby="dialog-filter-report"
+      sx={{ "& svg, path": { cursor: "pointer" } }}
     >
       <DialogTitle sx={{ fontSize: "20px", fontWeight: "bold" }}>
         {reportType}
@@ -663,7 +664,7 @@ export default function FilterReport(props: IPropsFilter) {
             }}
             sx={{
               width: 300,
-
+              // "& svg, path, button": { cursor: "pointer " },
               "& .css-154xyx0-MuiInputBase-root-MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline":
                 { border: "2px solid var(--secondary)" },
             }}

@@ -1,4 +1,4 @@
-import React, {useEffect, useCallback, useState} from 'react';
+import React, { useEffect, useCallback, useState } from "react";
 import {
   Grid,
   Dialog,
@@ -10,21 +10,28 @@ import {
   RadioGroup,
   FormControlLabel,
   TextField,
-  Button
-} from '@material-ui/core';
-import { Autocomplete } from '@material-ui/lab';
+  Button,
+} from "@material-ui/core";
+import { Autocomplete } from "@material-ui/lab";
 
-import { useDispatch, useSelector } from 'react-redux';
-import { ApplicationState } from '../../../../store';
+import { useDispatch, useSelector } from "react-redux";
+import { ApplicationState } from "../../../../store";
 
-import Loading from '../../../Loading';
-import {FieldContent} from "../../../../styles/components/Form";
-import {formatDate} from "../../../../helpers/date";
+import Loading from "../../../Loading";
+import { FieldContent } from "../../../../styles/components/Form";
+import { formatDate } from "../../../../helpers/date";
 import moment from "moment";
-import {releaseReferral} from "../../../../helpers/patient";
-import {IAdmReleaseData, IMedicalReleaseData} from "../../../../store/ducks/cares/types";
+import { releaseReferral } from "../../../../helpers/patient";
+import {
+  IAdmReleaseData,
+  IMedicalReleaseData,
+} from "../../../../store/ducks/cares/types";
 import LOCALSTORAGE from "../../../../helpers/constants/localStorage";
-import {cidAllRequest, releaseReasonRequest, updateCareRequest} from "../../../../store/ducks/cares/actions";
+import {
+  cidAllRequest,
+  releaseReasonRequest,
+  updateCareRequest,
+} from "../../../../store/ducks/cares/actions";
 
 interface IDialogProps {
   modalOpen: any;
@@ -32,20 +39,20 @@ interface IDialogProps {
 }
 
 export default function AdmReleaseDialog(props: IDialogProps) {
-  const {modalOpen, setModalOpen} = props
+  const { modalOpen, setModalOpen } = props;
   const dispatch = useDispatch();
 
   const careState = useSelector((state: ApplicationState) => state.cares);
 
   const [captureData, setCaptureData] = useState<IAdmReleaseData | any>({
-    release_at: formatDate(new Date(), 'YYYY-MM-DDTHH:mm'),
+    release_at: formatDate(new Date(), "YYYY-MM-DDTHH:mm"),
     release_responsible: {
       _id: localStorage.getItem(LOCALSTORAGE.USER_ID),
-      name: localStorage.getItem(LOCALSTORAGE.USERNAME)
-    }
+      name: localStorage.getItem(LOCALSTORAGE.USERNAME),
+    },
   });
 
-  const [releaseType, setReleaseType] = useState<string>('')
+  const [releaseType, setReleaseType] = useState<string>("");
 
   useEffect(() => {
     if (modalOpen) {
@@ -59,7 +66,9 @@ export default function AdmReleaseDialog(props: IDialogProps) {
   }, [modalOpen]);
 
   const selectCid = useCallback(() => {
-    const selected = careState.cid.filter((item) => item._id === captureData.release_cid?._id);
+    const selected = careState.cid.filter(
+      (item) => item._id === captureData.release_cid?._id
+    );
     return selected[0] ? selected[0] : null;
   }, [captureData.release_cid]);
 
@@ -68,18 +77,20 @@ export default function AdmReleaseDialog(props: IDialogProps) {
       ...prevState,
       release_cid: {
         _id: value._id,
-        name: value.name
+        name: value.name,
       },
     }));
   }
 
   const selectReleaseReason = useCallback(() => {
-    const selected = careState.release_reason.filter((item) => item._id === captureData.release_reason?._id);
+    const selected = careState.release_reason.filter(
+      (item) => item._id === captureData.release_reason?._id
+    );
     return selected[0] ? selected[0] : null;
   }, [captureData.release_reason]);
 
   function handleSelectReleaseReason(value: any) {
-    setReleaseType(value.type)
+    setReleaseType(value.type);
     setCaptureData((prevState: any) => ({
       ...prevState,
       release_reason: {
@@ -98,20 +109,20 @@ export default function AdmReleaseDialog(props: IDialogProps) {
       release_referral: captureData.release_referral,
       release_observation: captureData.release_observation,
       release_responsible: captureData.release_responsible?._id,
-    }
-    careState.data.adm_release_status = true
+    };
+    careState.data.adm_release_status = true;
 
-    if (captureData.release_reason.type === 'ÓBITO' ) {
-      careState.data.death = true
+    if (captureData.release_reason.type === "ÓBITO") {
+      careState.data.death = true;
     }
 
-    careState.data.status = 'Alta'
+    careState.data.status = "Alta";
     dispatch(updateCareRequest(careState.data));
   }
 
   return (
     <>
-      {careState.loading && <Loading/>}
+      {/* {careState.loading && <Loading/>} */}
       <Dialog
         open={modalOpen}
         onClose={() => setModalOpen(false)}
@@ -120,18 +131,18 @@ export default function AdmReleaseDialog(props: IDialogProps) {
         maxWidth="md"
         fullWidth
       >
-        <DialogTitle id="scroll-dialog-title">Preencha os dados da alta médica</DialogTitle>
+        <DialogTitle id="scroll-dialog-title">
+          Preencha os dados da alta médica
+        </DialogTitle>
         <DialogContent>
-          <DialogContentText
-            id="scroll-dialog-description"
-            tabIndex={-1}
-          >texto de apoio.</DialogContentText>
+          <DialogContentText id="scroll-dialog-description" tabIndex={-1}>
+            texto de apoio.
+          </DialogContentText>
 
           <div>
             <Grid container>
-
               <Grid item md={6}>
-                <FieldContent style={{paddingRight: 15}}>
+                <FieldContent style={{ paddingRight: 15 }}>
                   <TextField
                     id="datetime-local"
                     label="Data da Alta"
@@ -142,13 +153,19 @@ export default function AdmReleaseDialog(props: IDialogProps) {
                       shrink: true,
                     }}
                     inputProps={{
-                      max: formatDate(new Date(), 'YYYY-MM-DDTHH:mm')
+                      max: formatDate(new Date(), "YYYY-MM-DDTHH:mm"),
                     }}
-                    onChange={e => {
-                      if (moment(e.target.value).isAfter(moment(), 'minute')) {
-                        e.target.value = formatDate(new Date(), 'YYYY-MM-DDTHH:mm')
+                    onChange={(e) => {
+                      if (moment(e.target.value).isAfter(moment(), "minute")) {
+                        e.target.value = formatDate(
+                          new Date(),
+                          "YYYY-MM-DDTHH:mm"
+                        );
                       }
-                      setCaptureData({...captureData, release_at: e.target.value})
+                      setCaptureData({
+                        ...captureData,
+                        release_at: e.target.value,
+                      });
                     }}
                     fullWidth
                   />
@@ -156,7 +173,7 @@ export default function AdmReleaseDialog(props: IDialogProps) {
               </Grid>
 
               <Grid item md={12}>
-                <FieldContent style={{paddingRight: 15}}>
+                <FieldContent style={{ paddingRight: 15 }}>
                   <Autocomplete
                     id="input-release-reason"
                     options={careState.cid}
@@ -186,7 +203,7 @@ export default function AdmReleaseDialog(props: IDialogProps) {
               </Grid>
 
               <Grid item md={12}>
-                <FieldContent style={{paddingRight: 15}}>
+                <FieldContent style={{ paddingRight: 15 }}>
                   <Autocomplete
                     id="input-cid"
                     options={careState.release_reason}
@@ -218,7 +235,7 @@ export default function AdmReleaseDialog(props: IDialogProps) {
 
               {releaseType === "ÓBITO" && (
                 <Grid item md={12}>
-                  <FieldContent style={{paddingRight: 15}}>
+                  <FieldContent style={{ paddingRight: 15 }}>
                     <Autocomplete
                       id="input-release-referral"
                       options={releaseReferral}
@@ -236,12 +253,12 @@ export default function AdmReleaseDialog(props: IDialogProps) {
                         if (value) {
                           setCaptureData((prevState: any) => ({
                             ...prevState,
-                            release_referral: value
+                            release_referral: value,
                           }));
                         } else {
                           setCaptureData((prevState: any) => ({
                             ...prevState,
-                            release_referral: ""
+                            release_referral: "",
                           }));
                         }
                       }}
@@ -267,7 +284,7 @@ export default function AdmReleaseDialog(props: IDialogProps) {
                     onChange={(e) => {
                       setCaptureData((prevState: any) => ({
                         ...prevState,
-                        release_observation: e.target.value
+                        release_observation: e.target.value,
                       }));
                     }}
                     fullWidth
@@ -277,7 +294,7 @@ export default function AdmReleaseDialog(props: IDialogProps) {
               </Grid>
 
               <Grid item md={12}>
-                <FieldContent style={{paddingRight: 15}}>
+                <FieldContent style={{ paddingRight: 15 }}>
                   <TextField
                     id="input-responsible"
                     label="Responsável pela alta"
@@ -289,7 +306,6 @@ export default function AdmReleaseDialog(props: IDialogProps) {
                   />
                 </FieldContent>
               </Grid>
-
             </Grid>
           </div>
         </DialogContent>
@@ -297,10 +313,13 @@ export default function AdmReleaseDialog(props: IDialogProps) {
           <Button onClick={() => setModalOpen(false)} color="primary">
             Fechar
           </Button>
-          <Button onClick={() => {
-            handleSaveCare()
-            setModalOpen(false)
-          }} color="primary">
+          <Button
+            onClick={() => {
+              handleSaveCare();
+              setModalOpen(false);
+            }}
+            color="primary"
+          >
             Salvar
           </Button>
         </DialogActions>

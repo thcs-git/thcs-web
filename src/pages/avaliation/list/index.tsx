@@ -565,7 +565,7 @@ export default function AvaliationList() {
   return (
     <>
       <Sidebar>
-        {careState.loading && <Loading />}
+        {/* {careState.loading && <Loading />} */}
         <Container>
           <FormTitle>Lista de Avaliações</FormTitle>
 

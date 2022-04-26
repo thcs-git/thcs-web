@@ -15,7 +15,7 @@ function SvgComponent(props: IPropsSvg) {
       height={height ? height : 24}
       viewBox="0 0 34 24"
     >
-      <g transform="translate(-5)">
+      <g transform="translate(8)">
         <path
           d="M10.5,24A5.5,5.5,0,0,1,7,14.258V3.5a3.5,3.5,0,0,1,7,0V14.258A5.5,5.5,0,0,1,10.5,24Zm0-23A2.5,2.5,0,0,0,8,3.5v11a.5.5,0,0,1-.2.4,4.5,4.5,0,1,0,5.4,0,.5.5,0,0,1-.2-.4V3.5A2.5,2.5,0,0,0,10.5,1Z"
           fill={fill}

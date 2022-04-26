@@ -407,7 +407,7 @@ export default function CompanyForm(props: RouteComponentProps<IPageParams>) {
     <Sidebar>
       {checkViewPermission("company", JSON.stringify(rightsOfLayoutState)) ? (
         <Container>
-          {companyState.loading && <Loading />}
+          {/* {companyState.loading && <Loading />} */}
           {params.mode === "view" ? (
             <>
               {integration ? (

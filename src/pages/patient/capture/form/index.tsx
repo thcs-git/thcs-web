@@ -1,5 +1,5 @@
-import React, { useState, useCallback, useEffect } from 'react';
-import { useHistory, RouteComponentProps } from 'react-router-dom';
+import React, { useState, useCallback, useEffect } from "react";
+import { useHistory, RouteComponentProps } from "react-router-dom";
 import {
   Container,
   Dialog,
@@ -14,33 +14,56 @@ import {
   TableCell,
   TableBody,
   Checkbox,
-  Tooltip
-} from '@material-ui/core';
-import { Create as CreateIcon, Search as SearchIcon, AccountCircle, Visibility, Check as CheckIcon, Error } from '@material-ui/icons';
-import { Alert, AlertTitle } from '@material-ui/lab';
-import InputMask from 'react-input-mask';
+  Tooltip,
+} from "@material-ui/core";
+import {
+  Create as CreateIcon,
+  Search as SearchIcon,
+  AccountCircle,
+  Visibility,
+  Check as CheckIcon,
+  Error,
+} from "@material-ui/icons";
+import { Alert, AlertTitle } from "@material-ui/lab";
+import InputMask from "react-input-mask";
 
-import { useDispatch, useSelector } from 'react-redux';
-import { ApplicationState } from '../../../../store';
+import { useDispatch, useSelector } from "react-redux";
+import { ApplicationState } from "../../../../store";
 
-import { getPatientCapture,loadRequest, searchRequest as searchPatientAction } from '../../../../store/ducks/patients/actions';
+import {
+  getPatientCapture,
+  loadRequest,
+  searchRequest as searchPatientAction,
+} from "../../../../store/ducks/patients/actions";
 
-import {  createCareRequest as createCareAction, searchCareRequest as getCares } from '../../../../store/ducks/cares/actions';
-import { CareInterface, ICaptureData } from '../../../../store/ducks/cares/types';
+import {
+  createCareRequest as createCareAction,
+  searchCareRequest as getCares,
+} from "../../../../store/ducks/cares/actions";
+import {
+  CareInterface,
+  ICaptureData,
+} from "../../../../store/ducks/cares/types";
 
-import Loading from '../../../../components/Loading';
-import Sidebar from '../../../../components/Sidebar';
+import Loading from "../../../../components/Loading";
+import Sidebar from "../../../../components/Sidebar";
 
-import { age, formatDate } from '../../../../helpers/date';
-import LOCALSTORAGE from '../../../../helpers/constants/localStorage';
+import { age, formatDate } from "../../../../helpers/date";
+import LOCALSTORAGE from "../../../../helpers/constants/localStorage";
 
 import { Table, Th, Td } from "../../../../styles/components/Table";
-import Button from '../../../../styles/components/Button';
-import { FormTitle } from '../../../../styles/components/Form';
-import CaptureDataDialog from '../../../../components/Dialogs/CaptureData';
+import Button from "../../../../styles/components/Button";
+import { FormTitle } from "../../../../styles/components/Form";
+import CaptureDataDialog from "../../../../components/Dialogs/CaptureData";
 
-import {loadPatientById, getAddress as getAddressAction, updatePatientRequest, createPatientRequest, cleanAction}  from '../../../../store/ducks/patients/actions';
-import _ from 'lodash';
+import {
+  loadPatientById,
+  getAddress as getAddressAction,
+  updatePatientRequest,
+  createPatientRequest,
+  cleanAction,
+} from "../../../../store/ducks/patients/actions";
+import _ from "lodash";
 import {
   ButtonsContent,
   InputFiled as TextField,
@@ -50,41 +73,41 @@ import {
   SearchContent,
   NoDataIcon,
   PatientNotFound,
-} from './styles';
-
+} from "./styles";
 
 export default function PatientCaptureForm(props: RouteComponentProps) {
   const dispatch = useDispatch();
   const history = useHistory();
 
-  const { location: { search: searchParams } } = props;
+  const {
+    location: { search: searchParams },
+  } = props;
 
   const query = new URLSearchParams(searchParams);
-  const patientId = query.get('patient_id');
+  const patientId = query.get("patient_id");
 
   const patientState = useSelector((state: ApplicationState) => state.patients);
   const careState = useSelector((state: ApplicationState) => state.cares);
 
-  const [patientSearch, setPatientSearch] = useState<string>('');
+  const [patientSearch, setPatientSearch] = useState<string>("");
   const [patient, setPatient] = useState<any>({});
   const [selectedPatient, setSelectedPatient] = useState<any>({});
 
   const [care, setCare] = useState<CareInterface>({
-    status: 'Pre-Atendimento',
+    status: "Pre-Atendimento",
     capture: {
-      status: 'Em Andamento',
-    }
+      status: "Em Andamento",
+    },
   });
-
 
   const [openModalConfirm, setOpenModalConfirm] = useState<boolean>(false);
   const [openModalCare, setOpenModalCare] = useState<boolean>(false);
-  const [captureOptionsModalOpen, setCaptureModalModalOpen] = useState<boolean>(false);
-  const [captureData, setCaptureData] = useState<ICaptureData | any>({
-  });
+  const [captureOptionsModalOpen, setCaptureModalModalOpen] =
+    useState<boolean>(false);
+  const [captureData, setCaptureData] = useState<ICaptureData | any>({});
 
   useEffect(() => {
-  dispatch(getPatientCapture());
+    dispatch(getPatientCapture());
   }, []);
 
   // useEffect(() => {
@@ -107,7 +130,7 @@ export default function PatientCaptureForm(props: RouteComponentProps) {
     if (careState.success && !careState.error && careState.data._id) {
       history.push(`/patient/capture/${careState.data._id}/overview`);
     }
-  }, [careState])
+  }, [careState]);
 
   // const searchPatient = useCallback((value: string) => {
   //   setPatient({});
@@ -115,13 +138,19 @@ export default function PatientCaptureForm(props: RouteComponentProps) {
   //  // (value.length > 0) ? dispatch(searchPatientAction({ fiscal_number: value })) : dispatch(searchPatientAction({ active: true }));
   // }, []);
 
-  const toggleModalConfirm = useCallback((open?: boolean) => {
-    open ? setOpenModalConfirm(open) : setOpenModalConfirm(!openModalConfirm);
-  }, [openModalConfirm]);
+  const toggleModalConfirm = useCallback(
+    (open?: boolean) => {
+      open ? setOpenModalConfirm(open) : setOpenModalConfirm(!openModalConfirm);
+    },
+    [openModalConfirm]
+  );
 
-  const toggleModalCares = useCallback((open?: boolean) => {
-    open ? setOpenModalCare(open) : setOpenModalCare(!openModalCare);
-  }, [openModalCare]);
+  const toggleModalCares = useCallback(
+    (open?: boolean) => {
+      open ? setOpenModalCare(open) : setOpenModalCare(!openModalCare);
+    },
+    [openModalCare]
+  );
 
   const handleCheckDocument = (documentId: string, documents: Array<any>) => {
     const found = documents.find(
@@ -149,7 +178,8 @@ export default function PatientCaptureForm(props: RouteComponentProps) {
             style={{ color: "#FF6565", cursor: "pointer" }}
             onClick={() =>
               history.push(
-                `/patient/capture/${found.care_id}/${documentRoute()}/${found._id
+                `/patient/capture/${found.care_id}/${documentRoute()}/${
+                  found._id
                 }`
               )
             }
@@ -161,7 +191,8 @@ export default function PatientCaptureForm(props: RouteComponentProps) {
             style={{ color: "#4FC66A", cursor: "pointer" }}
             onClick={() =>
               history.push(
-                `/patient/capture/${found.care_id}/${documentRoute()}/${found._id
+                `/patient/capture/${found.care_id}/${documentRoute()}/${
+                  found._id
                 }`
               )
             }
@@ -178,31 +209,33 @@ export default function PatientCaptureForm(props: RouteComponentProps) {
   };
 
   const validatePatientParam = useCallback(() => {
-    const patientFounded = patientState.list.data.filter(item => patientId === item._id);
+    const patientFounded = patientState.list.data.filter(
+      (item) => patientId === item._id
+    );
 
     if (patientFounded.length > 0) {
       setSelectedPatient(patientFounded[0]);
       setCaptureModalModalOpen(true);
     }
 
-    return (patientFounded);
+    return patientFounded;
   }, [patientState]);
 
   const handleSubmitCaptureData = () => {
     const careParams = {
-      patient_id: selectedPatient?._id || '',
-      status: 'Pre-Atendimento',
+      patient_id: selectedPatient?._id || "",
+      status: "Pre-Atendimento",
       capture: {
         ...captureData,
-        status: 'Em Andamento',
-        created_at: new Date
+        status: "Em Andamento",
+        created_at: new Date(),
       },
-      care_type_id: '5fd66ca189a402ec48110cc1',
+      care_type_id: "5fd66ca189a402ec48110cc1",
       user_id: localStorage.getItem(LOCALSTORAGE.USER_ID) || ``,
       company_id: localStorage.getItem(LOCALSTORAGE.COMPANY_SELECTED) || ``,
     };
 
-   dispatch(createCareAction(careParams));
+    dispatch(createCareAction(careParams));
   };
 
   const handleSubmitPatientCapture = useCallback(() => {
@@ -210,33 +243,32 @@ export default function PatientCaptureForm(props: RouteComponentProps) {
 
     const params = { ...care, patient_id: selectedPatient._id || patient._id };
 
-    dispatch(createCareAction(params))
-
+    dispatch(createCareAction(params));
   }, [dispatch, care, patient, selectedPatient]);
 
   //
   const [openModalCancel, setOpenModalCancel] = useState(false);
-  const [canEdit, setCanEdit] = useState(false)
+  const [canEdit, setCanEdit] = useState(false);
 
-  function isEqual(){
-    return _.isEqual('', patientState.data);
+  function isEqual() {
+    return _.isEqual("", patientState.data);
   }
 
-  function ModifiCondition(){
-    if(!isEqual()){
+  function ModifiCondition() {
+    if (!isEqual()) {
       return true;
-    }else{
+    } else {
       return false;
     }
   }
 
   function handleOpenModalCancel() {
-    if(canEdit){
-     setOpenModalCancel(true);
-     }else{
+    if (canEdit) {
+      setOpenModalCancel(true);
+    } else {
       setOpenModalCancel(false);
-      history.push('/avaliation');
-     }
+      history.push("/avaliation");
+    }
   }
 
   function handleCloseModalCancel() {
@@ -246,18 +278,15 @@ export default function PatientCaptureForm(props: RouteComponentProps) {
   function handleCancelForm() {
     dispatch(cleanAction());
     setOpenModalCancel(false);
-    history.push('/avaliation');
+    history.push("/avaliation");
   }
-
-
-
 
   return (
     <>
       <Sidebar>
-        {(patientState.loading || careState.loading) && (
+        {/* {(patientState.loading || careState.loading) && (
           <Loading />
-        )}
+        )} */}
         <Container>
           <FormTitle>Captação de Pacientes</FormTitle>
           <h4>Primeiro, encontre o paciente que deseja realizar a captação:</h4>
@@ -268,8 +297,8 @@ export default function PatientCaptureForm(props: RouteComponentProps) {
                 <InputMask
                   mask="999.999.999-99"
                   value={patientSearch}
-                  onChange={element => setPatientSearch(element.target.value)}
-                //  onBlur={(element) => searchPatient(element.target.value)}
+                  onChange={(element) => setPatientSearch(element.target.value)}
+                  //  onBlur={(element) => searchPatient(element.target.value)}
                 >
                   {(inputProps: any) => (
                     <TextField
@@ -284,10 +313,7 @@ export default function PatientCaptureForm(props: RouteComponentProps) {
                     />
                   )}
                 </InputMask>
-                <Button
-                  background="success"
-                  size="large"
-                >
+                <Button background="success" size="large">
                   <SearchIcon />
                 </Button>
               </SearchContent>
@@ -297,7 +323,6 @@ export default function PatientCaptureForm(props: RouteComponentProps) {
           {patient?._id ? (
             <Grid container>
               <Grid item md={12} xs={12}>
-
                 <p>Encontramos este paciente:</p>
 
                 <PatientResume>
@@ -309,7 +334,9 @@ export default function PatientCaptureForm(props: RouteComponentProps) {
                       <div>
                         <p className="title">{patient?.name}</p>
                         <div className="subTitle">
-                          <p>{patient?.birthdate ? age(patient?.birthdate) : ''}</p>
+                          <p>
+                            {patient?.birthdate ? age(patient?.birthdate) : ""}
+                          </p>
                           <p>Sexo: {patient?.gender}</p>
                           <p>Nome da Mãe: {patient?.mother_name}</p>
                         </div>
@@ -319,12 +346,13 @@ export default function PatientCaptureForm(props: RouteComponentProps) {
                     <ButtonsContent>
                       <Button
                         background="default"
-                        onClick={() => { history.push(`/patient/${patient?._id}/edit`) }}
+                        onClick={() => {
+                          history.push(`/patient/${patient?._id}/edit`);
+                        }}
                       >
                         <CreateIcon />
                       </Button>
                     </ButtonsContent>
-
                   </PatientResumeContent>
                 </PatientResume>
               </Grid>
@@ -333,8 +361,10 @@ export default function PatientCaptureForm(props: RouteComponentProps) {
                 <Grid item md={12} xs={12}>
                   <Alert severity="error">
                     <AlertTitle>Atenção!</AlertTitle>
-                    Você não pode iniciar a captação desse paciente porque ele já está sendo atendido.
-                    <br /><br />
+                    Você não pode iniciar a captação desse paciente porque ele
+                    já está sendo atendido.
+                    <br />
+                    <br />
                     <div>
                       <Button
                         background="default"
@@ -349,7 +379,6 @@ export default function PatientCaptureForm(props: RouteComponentProps) {
 
               <Grid item md={12} xs={12}>
                 <ButtonsContent>
-
                   <Button
                     background="success"
                     onClick={() => setCaptureModalModalOpen(true)}
@@ -362,7 +391,10 @@ export default function PatientCaptureForm(props: RouteComponentProps) {
             </Grid>
           ) : (
             <>
-              <h3>Pra te ajudar, aqui tem a lista dos últimos pacientes cadastrados</h3>
+              <h3>
+                Pra te ajudar, aqui tem a lista dos últimos pacientes
+                cadastrados
+              </h3>
 
               <br />
 
@@ -382,15 +414,18 @@ export default function PatientCaptureForm(props: RouteComponentProps) {
                         <Checkbox
                           checked={selectedPatient?._id === item?._id}
                           onChange={(element) => {
-                            if (item._id && (item._id === element.target.value || item._id === selectedPatient?._id)) {
+                            if (
+                              item._id &&
+                              (item._id === element.target.value ||
+                                item._id === selectedPatient?._id)
+                            ) {
                               setSelectedPatient({});
-                              console.log('nao');
-                              setCanEdit(false)
-
+                              console.log("nao");
+                              setCanEdit(false);
                             } else {
                               setSelectedPatient(item);
-                              console.log('sim');
-                              setCanEdit(true)
+                              console.log("sim");
+                              setCanEdit(true);
                             }
                           }}
                           inputProps={{ "aria-label": "primary checkbox" }}
@@ -398,7 +433,9 @@ export default function PatientCaptureForm(props: RouteComponentProps) {
                       </Td>
                       <Td>{item?.social_name || item?.name}</Td>
                       <Td>{item?.fiscal_number}</Td>
-                      <Td>{formatDate(item?.created_at, 'DD/MM/YYYY HH:mm:ss')}</Td>
+                      <Td>
+                        {formatDate(item?.created_at, "DD/MM/YYYY HH:mm:ss")}
+                      </Td>
                     </tr>
                   ))}
                 </tbody>
@@ -406,15 +443,18 @@ export default function PatientCaptureForm(props: RouteComponentProps) {
 
               {selectedPatient && (
                 <ButtonsContent>
-                  <Button background="default"  onClick={() => handleOpenModalCancel()}>
+                  <Button
+                    background="default"
+                    onClick={() => handleOpenModalCancel()}
+                  >
                     Voltar
                   </Button>
                   <Button
                     background="success"
                     onClick={() => setCaptureModalModalOpen(true)}
                   >
-                     Selecionar Paciente
-                    </Button>
+                    Selecionar Paciente
+                  </Button>
                 </ButtonsContent>
               )}
             </>
@@ -450,10 +490,14 @@ export default function PatientCaptureForm(props: RouteComponentProps) {
             <DialogActions>
               <Button onClick={() => toggleModalConfirm()} color="primary">
                 Não
-                </Button>
-              <Button onClick={handleSubmitPatientCapture} color="primary" autoFocus>
+              </Button>
+              <Button
+                onClick={handleSubmitPatientCapture}
+                color="primary"
+                autoFocus
+              >
                 Sim
-                </Button>
+              </Button>
             </DialogActions>
           </Dialog>
 
@@ -466,7 +510,9 @@ export default function PatientCaptureForm(props: RouteComponentProps) {
             aria-labelledby="alert-dialog-title"
             aria-describedby="alert-dialog-description"
           >
-            <DialogTitle id="alert-dialog-title">Atendimentos do Paciente</DialogTitle>
+            <DialogTitle id="alert-dialog-title">
+              Atendimentos do Paciente
+            </DialogTitle>
             <DialogContent>
               <TableContainer>
                 <Table>
@@ -481,11 +527,24 @@ export default function PatientCaptureForm(props: RouteComponentProps) {
                   <TableBody>
                     {careState.list.data.map((care, index) => (
                       <TableRow key={`care_table_row_${index}`}>
-                        <TableCell component="th" scope="row">{care?.patient_id?.name} </TableCell>
-                        <TableCell>{care?.created_at ? formatDate(care.created_at, 'DD/MM/YYYY HH:mm:ss') : '-'}</TableCell>
+                        <TableCell component="th" scope="row">
+                          {care?.patient_id?.name}{" "}
+                        </TableCell>
+                        <TableCell>
+                          {care?.created_at
+                            ? formatDate(care.created_at, "DD/MM/YYYY HH:mm:ss")
+                            : "-"}
+                        </TableCell>
                         <TableCell>{care?.status}</TableCell>
                         <TableCell>
-                          <Button onClick={() => { history.push(`/patient/capture/${care._id}/overview`); }} color="primary">
+                          <Button
+                            onClick={() => {
+                              history.push(
+                                `/patient/capture/${care._id}/overview`
+                              );
+                            }}
+                            color="primary"
+                          >
                             <Visibility />
                           </Button>
                         </TableCell>
@@ -504,27 +563,27 @@ export default function PatientCaptureForm(props: RouteComponentProps) {
         </Container>
 
         <Dialog
-        open={openModalCancel}
-        onClose={handleCloseModalCancel}
-        aria-labelledby="alert-dialog-title"
-        aria-namedby="alert-dialog-description"
-      >
-        <DialogTitle id="alert-dialog-title">Atenção</DialogTitle>
-        <DialogContent>
-          <DialogContentText id="alert-dialog-description">
-            Você selecionou um paciente neste cadastro. Deseja realmente descartar as alterações?
-					</DialogContentText>
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={handleCloseModalCancel} color="primary">
-            Não
-					</Button>
-          <Button onClick={handleCancelForm} color="secondary" autoFocus>
-            Sim
-					</Button>
-        </DialogActions>
-      </Dialog>
-
+          open={openModalCancel}
+          onClose={handleCloseModalCancel}
+          aria-labelledby="alert-dialog-title"
+          aria-namedby="alert-dialog-description"
+        >
+          <DialogTitle id="alert-dialog-title">Atenção</DialogTitle>
+          <DialogContent>
+            <DialogContentText id="alert-dialog-description">
+              Você selecionou um paciente neste cadastro. Deseja realmente
+              descartar as alterações?
+            </DialogContentText>
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={handleCloseModalCancel} color="primary">
+              Não
+            </Button>
+            <Button onClick={handleCancelForm} color="secondary" autoFocus>
+              Sim
+            </Button>
+          </DialogActions>
+        </Dialog>
       </Sidebar>
     </>
   );

@@ -629,7 +629,7 @@ export default function RegisterForm() {
 
   return (
     <>
-      {userState.loading && <Loading />}
+      {/* {userState.loading && <Loading />} */}
       <Container className={classes.container} maxWidth="xs">
         {userState.success ? (
           history.push(`/${userState.data.email}/confirmEmail`)

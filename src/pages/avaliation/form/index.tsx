@@ -1,16 +1,26 @@
-import React, { useState, useEffect, useCallback, ChangeEvent, ReactNode } from 'react';
+import React, {
+  useState,
+  useEffect,
+  useCallback,
+  ChangeEvent,
+  ReactNode,
+} from "react";
 
-import { useDispatch, useSelector } from 'react-redux';
-import { ApplicationState } from '../../../store';
-import { CareInterface } from '../../../store/ducks/cares/types';
-import { loadCareById, updateCareRequest, createCareRequest } from '../../../store/ducks/cares/actions';
-import { loadRequest as getAreasAction } from '../../../store/ducks/areas/actions';
-import { loadRequest as getUsersAction } from '../../../store/ducks/users/actions';
+import { useDispatch, useSelector } from "react-redux";
+import { ApplicationState } from "../../../store";
+import { CareInterface } from "../../../store/ducks/cares/types";
+import {
+  loadCareById,
+  updateCareRequest,
+  createCareRequest,
+} from "../../../store/ducks/cares/actions";
+import { loadRequest as getAreasAction } from "../../../store/ducks/areas/actions";
+import { loadRequest as getUsersAction } from "../../../store/ducks/users/actions";
 
-import { PatientInterface } from '../../../store/ducks/patients/types';
-import { searchRequest as searchPatientAction } from '../../../store/ducks/patients/actions';
+import { PatientInterface } from "../../../store/ducks/patients/types";
+import { searchRequest as searchPatientAction } from "../../../store/ducks/patients/actions";
 
-import { useHistory, RouteComponentProps } from 'react-router-dom';
+import { useHistory, RouteComponentProps } from "react-router-dom";
 import {
   Badge,
   Container,
@@ -21,19 +31,19 @@ import {
   DialogTitle,
   Grid,
   StepLabel,
-} from '@material-ui/core';
+} from "@material-ui/core";
 
-import { Autocomplete } from '@material-ui/lab';
+import { Autocomplete } from "@material-ui/lab";
 
-import { Create as CreateIcon, AccountCircle } from '@material-ui/icons';
+import { Create as CreateIcon, AccountCircle } from "@material-ui/icons";
 
-import Loading from '../../../components/Loading';
-import Sidebar from '../../../components/Sidebar';
-import { FormTitle } from '../../../styles/components/Form';
-import Button from '../../../styles/components/Button';
+import Loading from "../../../components/Loading";
+import Sidebar from "../../../components/Sidebar";
+import { FormTitle } from "../../../styles/components/Form";
+import Button from "../../../styles/components/Button";
 
-import { bloodTypes } from '../../../helpers/patient';
-import { age } from '../../../helpers/date';
+import { bloodTypes } from "../../../helpers/patient";
+import { age } from "../../../helpers/date";
 
 import {
   ButtonsContent,
@@ -47,13 +57,13 @@ import {
   StepperComponent,
   StepComponent,
   NoDataIcon,
-  PatientNotFound
-} from './styles';
+  PatientNotFound,
+} from "./styles";
 
 interface IFormFields extends CareInterface {
   form?: {
-    bloodType: string | null,
-  }
+    bloodType: string | null;
+  };
 }
 
 interface IPageParams {
@@ -77,33 +87,33 @@ export default function AreaForm(props: RouteComponentProps<IPageParams>) {
   const { params } = props.match;
 
   const [state, setState] = useState<IFormFields>({
-    tipo: '',
-    health_insurance_id: '',
-    health_plan_id: '',
-    health_sub_plan_id: '',
-    contract: '',
-    health_plan_card_number: '',
-    health_plan_card_validate: '',
-    origin_id: '',
-    accommodation_type_id: '',
-    care_type_id: '',
-    procedure_id: '',
-    cid_id: '',
-    user_id: '',
-    area_id: '',
-    status: '', // Pre-Atendimento, Em atendimento, Cancelado, Finalizad,
-    created_at: '',
-    updated_at: '',
+    tipo: "",
+    health_insurance_id: "",
+    health_plan_id: "",
+    health_sub_plan_id: "",
+    contract: "",
+    health_plan_card_number: "",
+    health_plan_card_validate: "",
+    origin_id: "",
+    accommodation_type_id: "",
+    care_type_id: "",
+    procedure_id: "",
+    cid_id: "",
+    user_id: "",
+    area_id: "",
+    status: "", // Pre-Atendimento, Em atendimento, Cancelado, Finalizad,
+    created_at: "",
+    updated_at: "",
   });
 
-  const [patientSearch, setPatientSearch] = useState<string>('');
+  const [patientSearch, setPatientSearch] = useState<string>("");
   const [patient, setPatient] = useState<any>({});
 
   const [currentTab, setCurrentTab] = useState(0);
   const [currentStep, setCurrentStep] = useState(0);
   const [openModalCancel, setOpenModalCancel] = useState(false);
 
-  const steps = ['Paciente', 'Atendimento', 'Confirmação'];
+  const steps = ["Paciente", "Atendimento", "Confirmação"];
 
   useEffect(() => {
     if (params.id) {
@@ -115,11 +125,10 @@ export default function AreaForm(props: RouteComponentProps<IPageParams>) {
   }, [dispatch]);
 
   useEffect(() => {
-    setState(prevState => ({
+    setState((prevState) => ({
       ...prevState,
-      ...careState.data
+      ...careState.data,
     }));
-
   }, [careState]);
 
   useEffect(() => {
@@ -128,16 +137,19 @@ export default function AreaForm(props: RouteComponentProps<IPageParams>) {
     }
   }, [patientState.list]);
 
-  const selectTab = useCallback((index: number) => {
-    setCurrentTab(index);
-  }, [currentTab]);
+  const selectTab = useCallback(
+    (index: number) => {
+      setCurrentTab(index);
+    },
+    [currentTab]
+  );
 
   const handleNextStep = useCallback(() => {
-    setCurrentStep(prevState => (prevState + 1))
+    setCurrentStep((prevState) => prevState + 1);
   }, [currentStep]);
 
   const handleBackStep = useCallback(() => {
-    setCurrentStep(prevState => (prevState - 1))
+    setCurrentStep((prevState) => prevState - 1);
   }, [currentStep]);
 
   const searchPatient = useCallback((value: string) => {
@@ -147,18 +159,17 @@ export default function AreaForm(props: RouteComponentProps<IPageParams>) {
     }
   }, []);
 
-
   function handleSelectUser(value: any) {
-    setState(prevState => ({
+    setState((prevState) => ({
       ...prevState,
-      user_id: value._id
+      user_id: value._id,
     }));
   }
 
   function handleSelectArea(value: any) {
-    setState(prevState => ({
+    setState((prevState) => ({
       ...prevState,
-      area_id: value._id
+      area_id: value._id,
     }));
   }
 
@@ -169,7 +180,7 @@ export default function AreaForm(props: RouteComponentProps<IPageParams>) {
     //   dispatch(createCareRequest(state));
     // }
 
-    console.log('state', state);
+    console.log("state", state);
   }
 
   function handleOpenModalCancel() {
@@ -186,24 +197,23 @@ export default function AreaForm(props: RouteComponentProps<IPageParams>) {
   }
 
   const handleBloodType = useCallback((event: any, newValue: any) => {
-    setState(prevState => ({
+    setState((prevState) => ({
       ...prevState,
       form: {
         bloodType: newValue,
-      }
+      },
     }));
   }, []);
 
   return (
     <Sidebar>
-      {careState.loading && <Loading />}
+      {/* {careState.loading && <Loading />} */}
 
       <Container>
         <FormTitle>Cadastro de Atendimento</FormTitle>
 
         <FormSection>
           <FormContent>
-
             <StepperComponent activeStep={currentStep} alternativeLabel>
               {steps.map((label) => (
                 <StepComponent key={label}>
@@ -226,8 +236,12 @@ export default function AreaForm(props: RouteComponentProps<IPageParams>) {
                         size="small"
                         value={patientSearch}
                         placeholder="Buscar por CPF"
-                        onChange={element => setPatientSearch(element.target.value)}
-                        onBlur={(element) => searchPatient(element.target.value)}
+                        onChange={(element) =>
+                          setPatientSearch(element.target.value)
+                        }
+                        onBlur={(element) =>
+                          searchPatient(element.target.value)
+                        }
                         fullWidth
                       />
                     </SearchContent>
@@ -246,7 +260,11 @@ export default function AreaForm(props: RouteComponentProps<IPageParams>) {
                             <div>
                               <p className="title">{patient?.name}</p>
                               <div className="subTitle">
-                                <p>{patient?.birthdate ? age(patient?.birthdate) : ''}</p>
+                                <p>
+                                  {patient?.birthdate
+                                    ? age(patient?.birthdate)
+                                    : ""}
+                                </p>
                                 <p>Sexo: {patient?.gender}</p>
                                 <p>Nome da Mãe: {patient?.mother_name}</p>
                               </div>
@@ -254,7 +272,9 @@ export default function AreaForm(props: RouteComponentProps<IPageParams>) {
                           </PatientData>
                           <Button
                             background="default"
-                            onClick={() => { history.push(`/patient/${patient?._id}/edit`) }}
+                            onClick={() => {
+                              history.push(`/patient/${patient?._id}/edit`);
+                            }}
                           >
                             <CreateIcon />
                           </Button>
@@ -317,7 +337,12 @@ export default function AreaForm(props: RouteComponentProps<IPageParams>) {
                     variant="outlined"
                     size="small"
                     value={state.contract}
-                    onChange={(element) => setState(prevState => ({ ...prevState, contract: element.target.value }))}
+                    onChange={(element) =>
+                      setState((prevState) => ({
+                        ...prevState,
+                        contract: element.target.value,
+                      }))
+                    }
                     fullWidth
                   />
                 </Grid>
@@ -329,7 +354,12 @@ export default function AreaForm(props: RouteComponentProps<IPageParams>) {
                     variant="outlined"
                     size="small"
                     value={state.health_plan_card_number}
-                    onChange={(element) => setState(prevState => ({ ...prevState, health_plan_card_number: element.target.value }))}
+                    onChange={(element) =>
+                      setState((prevState) => ({
+                        ...prevState,
+                        health_plan_card_number: element.target.value,
+                      }))
+                    }
                     fullWidth
                   />
                 </Grid>
@@ -341,7 +371,12 @@ export default function AreaForm(props: RouteComponentProps<IPageParams>) {
                     size="small"
                     type="date"
                     value={state.health_plan_card_validate}
-                    onChange={(element) => setState(prevState => ({ ...prevState, health_plan_card_validate: element.target.value }))}
+                    onChange={(element) =>
+                      setState((prevState) => ({
+                        ...prevState,
+                        health_plan_card_validate: element.target.value,
+                      }))
+                    }
                     fullWidth
                   />
                 </Grid>
@@ -352,7 +387,12 @@ export default function AreaForm(props: RouteComponentProps<IPageParams>) {
                     variant="outlined"
                     size="small"
                     value={state.origin_id}
-                    onChange={(element) => setState(prevState => ({ ...prevState, origin_id: element.target.value }))}
+                    onChange={(element) =>
+                      setState((prevState) => ({
+                        ...prevState,
+                        origin_id: element.target.value,
+                      }))
+                    }
                     fullWidth
                   />
                 </Grid>
@@ -363,7 +403,12 @@ export default function AreaForm(props: RouteComponentProps<IPageParams>) {
                     variant="outlined"
                     size="small"
                     value={state.accommodation_type_id}
-                    onChange={(element) => setState(prevState => ({ ...prevState, accommodation_type_id: element.target.value }))}
+                    onChange={(element) =>
+                      setState((prevState) => ({
+                        ...prevState,
+                        accommodation_type_id: element.target.value,
+                      }))
+                    }
                     fullWidth
                   />
                 </Grid>
@@ -374,7 +419,12 @@ export default function AreaForm(props: RouteComponentProps<IPageParams>) {
                     variant="outlined"
                     size="small"
                     value={state.care_type_id}
-                    onChange={(element) => setState(prevState => ({ ...prevState, care_type_id: element.target.value }))}
+                    onChange={(element) =>
+                      setState((prevState) => ({
+                        ...prevState,
+                        care_type_id: element.target.value,
+                      }))
+                    }
                     fullWidth
                   />
                 </Grid>
@@ -419,11 +469,20 @@ export default function AreaForm(props: RouteComponentProps<IPageParams>) {
                     id="combo-box-users"
                     options={userState.list.data}
                     getOptionLabel={(option) => option.name}
-                    renderInput={(params) => <TextField {...params} label="Prestador" variant="outlined" />}
+                    renderInput={(params) => (
+                      <TextField
+                        {...params}
+                        label="Prestador"
+                        variant="outlined"
+                      />
+                    )}
                     size="small"
                     onChange={(event, value) => {
                       if (value) {
-                        handleSelectUser({ _id: value._id || '', name: value.name })
+                        handleSelectUser({
+                          _id: value._id || "",
+                          name: value.name,
+                        });
                       }
                     }}
                     fullWidth
@@ -434,11 +493,16 @@ export default function AreaForm(props: RouteComponentProps<IPageParams>) {
                     id="combo-box-areas"
                     options={areaState.list.data}
                     getOptionLabel={(option) => option.name}
-                    renderInput={(params) => <TextField {...params} label="Área" variant="outlined" />}
+                    renderInput={(params) => (
+                      <TextField {...params} label="Área" variant="outlined" />
+                    )}
                     size="small"
                     onChange={(event, value) => {
                       if (value) {
-                        handleSelectArea({ _id: value._id || '', name: value.name })
+                        handleSelectArea({
+                          _id: value._id || "",
+                          name: value.name,
+                        });
                       }
                     }}
                     fullWidth
@@ -446,7 +510,6 @@ export default function AreaForm(props: RouteComponentProps<IPageParams>) {
                 </Grid>
               </Grid>
             )}
-
 
             {/* Step 3 */}
             {currentStep === 2 && (
@@ -465,25 +528,21 @@ export default function AreaForm(props: RouteComponentProps<IPageParams>) {
               Anterior
             </Button>
 
-            {currentStep === (steps.length - 1) ? (
-              <Button
-                background="primary"
-                onClick={handleSaveFormCare}
-              >
+            {currentStep === steps.length - 1 ? (
+              <Button background="primary" onClick={handleSaveFormCare}>
                 Finalizar
               </Button>
             ) : (
-                <Button
-                  disabled={currentStep === (steps.length - 1)}
-                  background="primary"
-                  onClick={handleNextStep}
-                >
-                  Próximo
-                </Button>
-              )}
+              <Button
+                disabled={currentStep === steps.length - 1}
+                background="primary"
+                onClick={handleNextStep}
+              >
+                Próximo
+              </Button>
+            )}
           </ButtonsContent>
         </FormSection>
-
       </Container>
 
       <Dialog
@@ -496,17 +555,17 @@ export default function AreaForm(props: RouteComponentProps<IPageParams>) {
         <DialogContent>
           <DialogContentText id="alert-dialog-description">
             Tem certeza que deseja cancelar este cadastro?
-					</DialogContentText>
+          </DialogContentText>
         </DialogContent>
         <DialogActions>
           <Button onClick={handleCloseModalCancel} color="primary">
             Não
-					</Button>
+          </Button>
           <Button onClick={handleCancelForm} color="primary" autoFocus>
             Sim
-					</Button>
+          </Button>
         </DialogActions>
       </Dialog>
-    </Sidebar >
+    </Sidebar>
   );
 }

@@ -94,7 +94,14 @@ export default function ScrollCard(props: IScroll) {
     if (active === true && existContent) {
       if (report === "Evolução" || report === "Check-in/out") {
         return (
-          <Button onClick={openFilter} sx={{ padding: "0", minWidth: "30px" }}>
+          <Button
+            onClick={openFilter}
+            sx={{
+              padding: "0",
+              minWidth: "30px",
+              "& svg, path": { cursor: "pointer" },
+            }}
+          >
             <FilterListIcon
               sx={{ color: "var(--secondary)", height: "24px" }}
             />

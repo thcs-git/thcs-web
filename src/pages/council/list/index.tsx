@@ -90,7 +90,7 @@ export default function CouncilList() {
   return (
     <>
       <Sidebar>
-        {councilState.loading && <Loading />}
+        {/* {councilState.loading && <Loading />} */}
         <Container>
           <FormTitle>Lista de Conselhos</FormTitle>
 

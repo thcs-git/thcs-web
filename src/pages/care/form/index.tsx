@@ -1,10 +1,10 @@
-import React, {useState, useEffect, useCallback, ReactNode} from "react";
+import React, { useState, useEffect, useCallback, ReactNode } from "react";
 import Checkbox from "@material-ui/core/Checkbox";
 import Divider from "@material-ui/core/Divider";
 import debounce from "lodash.debounce";
-import {cpf} from 'cpf-cnpj-validator';
-import InputMask, {Props} from 'react-input-mask';
-import {bloodTypes, maritalStatus} from '../../../helpers/patient';
+import { cpf } from "cpf-cnpj-validator";
+import InputMask, { Props } from "react-input-mask";
+import { bloodTypes, maritalStatus } from "../../../helpers/patient";
 import {
   Create as CreateIcon,
   Check as CheckIcon,
@@ -16,10 +16,10 @@ import {
   LocalHospitalSharp as LocalHospitalSharpIcon,
 } from "@material-ui/icons";
 
-import DatePicker from '../../../styles/components/DatePicker';
-import {useDispatch, useSelector} from "react-redux";
-import {ApplicationState} from "../../../store";
-import {CareInterface} from "../../../store/ducks/cares/types";
+import DatePicker from "../../../styles/components/DatePicker";
+import { useDispatch, useSelector } from "react-redux";
+import { ApplicationState } from "../../../store";
+import { CareInterface } from "../../../store/ducks/cares/types";
 import {
   loadCareById,
   updateCareRequest,
@@ -30,16 +30,19 @@ import {
   AccommodationTypeRequest,
   careTypeRequest,
   cidRequest,
-  cleanAction as clear
+  cleanAction as clear,
 } from "../../../store/ducks/cares/actions";
-import {cleanAction, loadPatientById} from "../../../store/ducks/patients/actions";
-import {loadRequest as getAreasAction} from "../../../store/ducks/areas/actions";
-import {loadRequest as getUsersAction} from "../../../store/ducks/users/actions";
+import {
+  cleanAction,
+  loadPatientById,
+} from "../../../store/ducks/patients/actions";
+import { loadRequest as getAreasAction } from "../../../store/ducks/areas/actions";
+import { loadRequest as getUsersAction } from "../../../store/ducks/users/actions";
 
-import {Table, Th, Td,} from "../../../styles/components/Table";
-import {searchRequest as searchPatientAction} from "../../../store/ducks/patients/actions";
+import { Table, Th, Td } from "../../../styles/components/Table";
+import { searchRequest as searchPatientAction } from "../../../store/ducks/patients/actions";
 
-import {useHistory, RouteComponentProps} from "react-router-dom";
+import { useHistory, RouteComponentProps } from "react-router-dom";
 import {
   Box,
   Container,
@@ -56,20 +59,20 @@ import {
   Typography,
   Tooltip,
   Switch,
-  makeStyles
+  makeStyles,
 } from "@material-ui/core";
 
-import {Autocomplete} from "@material-ui/lab";
+import { Autocomplete } from "@material-ui/lab";
 
 import Loading from "../../../components/Loading";
 import Sidebar from "../../../components/Sidebar";
-import {FormTitle} from "../../../styles/components/Form";
+import { FormTitle } from "../../../styles/components/Form";
 import Button from "../../../styles/components/Button";
 
-import {age, formatDate} from "../../../helpers/date";
+import { age, formatDate } from "../../../helpers/date";
 
-import {ReactComponent as IconProfile} from "../../../assets/img/icon-profile.svg";
-import {ReactComponent as IconNoData} from "../../../assets/img/no-data.svg";
+import { ReactComponent as IconProfile } from "../../../assets/img/icon-profile.svg";
+import { ReactComponent as IconNoData } from "../../../assets/img/no-data.svg";
 import {
   ButtonsContent,
   FormSection,
@@ -85,7 +88,7 @@ import {
   Profile,
   BoxCustom,
   FormGroupSection,
-  OutlinedInputFiled
+  OutlinedInputFiled,
 } from "./styles";
 import { push } from "react-router-redux";
 
@@ -114,10 +117,10 @@ export default function CareForm(props: RouteComponentProps<IPageParams>) {
   const patientState = useSelector((state: ApplicationState) => state.patients);
 
   const [startStep, setStartStep] = useState(true);
-  const {params} = props.match;
+  const { params } = props.match;
 
   const [state, setState] = useState<IFormFields>({
-    tipo: '',
+    tipo: "",
     health_insurance_id: "",
     health_plan_id: "",
     health_sub_plan_id: "",
@@ -136,20 +139,19 @@ export default function CareForm(props: RouteComponentProps<IPageParams>) {
     updated_at: "",
   });
 
-  const [selectCheckbox, setSelectCheckbox] = useState<Partial<CareInterface>>
-  ();
+  const [selectCheckbox, setSelectCheckbox] =
+    useState<Partial<CareInterface>>();
 
   const useStyles = makeStyles((theme) => ({
     sucess_round: {
-      backgroundColor: 'var(--white)',
-      color: 'var(--success)',
-      border: '1px solid var(--success)'
+      backgroundColor: "var(--white)",
+      color: "var(--success)",
+      border: "1px solid var(--success)",
     },
 
     tittleChip: {
-      paddingTop: '1rem'
-
-    }
+      paddingTop: "1rem",
+    },
   }));
 
   const [patient, setPatient] = useState<any>();
@@ -162,33 +164,33 @@ export default function CareForm(props: RouteComponentProps<IPageParams>) {
   const classes = useStyles();
 
   const States = [
-    {id: 1, name: "São Paulo", sigla: 'SP'},
-    {id: 2, name: 'Paraná', sigla: 'PR'},
-    {id: 3, name: 'Santa Catarina', sigla: 'SC'},
-    {id: 4, name: 'Rio Garnde do Sul', sigla: 'RS'},
-    {id: 5, name: 'Mato Grosso do Sul', sigla: 'MS'},
-    {id: 6, name: 'Rondônia', sigla: 'RO'},
-    {id: 7, name: 'Acre', sigla: 'AC'},
-    {id: 8, name: 'Amazonas', sigla: 'AM'},
-    {id: 9, name: 'Roraima', sigla: 'RR'},
-    {id: 10, name: 'Pará', sigla: 'PA'},
-    {id: 11, name: 'Amapá', sigla: 'AP'},
-    {id: 12, name: 'Tocantins', sigla: 'TO'},
-    {id: 13, name: 'Maranhão', sigla: 'MA'},
-    {id: 14, name: 'Rio Grande do Norte', sigla: 'RN'},
-    {id: 15, name: 'Paraíba', sigla: 'PB'},
-    {id: 16, name: 'Pernambuco', sigla: 'PE'},
-    {id: 17, name: 'Alagoas', sigla: 'AL'},
-    {id: 18, name: 'Sergipe', sigla: 'SE'},
-    {id: 19, name: 'Bahia', sigla: 'BA'},
-    {id: 20, name: 'Minas Gerais', sigla: 'MG'},
-    {id: 21, name: 'Rio de Janeiro', sigla: 'RJ'},
-    {id: 22, name: 'Mato Grosso', sigla: 'MT'},
-    {id: 23, name: 'Goiás', sigla: 'GO'},
-    {id: 24, name: 'Distrito Federal', sigla: 'DF'},
-    {id: 25, name: 'Piauí', sigla: 'PI'},
-    {id: 26, name: 'Ceará', sigla: 'CE'},
-    {id: 27, name: 'Espírito Santo', sigla: 'ES'}
+    { id: 1, name: "São Paulo", sigla: "SP" },
+    { id: 2, name: "Paraná", sigla: "PR" },
+    { id: 3, name: "Santa Catarina", sigla: "SC" },
+    { id: 4, name: "Rio Garnde do Sul", sigla: "RS" },
+    { id: 5, name: "Mato Grosso do Sul", sigla: "MS" },
+    { id: 6, name: "Rondônia", sigla: "RO" },
+    { id: 7, name: "Acre", sigla: "AC" },
+    { id: 8, name: "Amazonas", sigla: "AM" },
+    { id: 9, name: "Roraima", sigla: "RR" },
+    { id: 10, name: "Pará", sigla: "PA" },
+    { id: 11, name: "Amapá", sigla: "AP" },
+    { id: 12, name: "Tocantins", sigla: "TO" },
+    { id: 13, name: "Maranhão", sigla: "MA" },
+    { id: 14, name: "Rio Grande do Norte", sigla: "RN" },
+    { id: 15, name: "Paraíba", sigla: "PB" },
+    { id: 16, name: "Pernambuco", sigla: "PE" },
+    { id: 17, name: "Alagoas", sigla: "AL" },
+    { id: 18, name: "Sergipe", sigla: "SE" },
+    { id: 19, name: "Bahia", sigla: "BA" },
+    { id: 20, name: "Minas Gerais", sigla: "MG" },
+    { id: 21, name: "Rio de Janeiro", sigla: "RJ" },
+    { id: 22, name: "Mato Grosso", sigla: "MT" },
+    { id: 23, name: "Goiás", sigla: "GO" },
+    { id: 24, name: "Distrito Federal", sigla: "DF" },
+    { id: 25, name: "Piauí", sigla: "PI" },
+    { id: 26, name: "Ceará", sigla: "CE" },
+    { id: 27, name: "Espírito Santo", sigla: "ES" },
   ];
 
   const [canEdit, setCanEdit] = useState(true);
@@ -200,18 +202,24 @@ export default function CareForm(props: RouteComponentProps<IPageParams>) {
   var isValidResponsableCellPhoneNumber: any;
   var formValid: any;
   useEffect(() => {
-    dispatch(clear())
+    dispatch(clear());
     dispatch(cleanAction());
     dispatch(clear());
     if (params.id) {
       dispatch(loadCareById(params.id));
     }
     dispatch(getAreasAction());
-    dispatch(getUsersAction({"profession_id": "5ff6076715685a1414e65fc0"}));
+    dispatch(getUsersAction({ profession_id: "5ff6076715685a1414e65fc0" }));
     dispatch(healthInsuranceRequest());
     dispatch(AccommodationTypeRequest());
     dispatch(careTypeRequest());
-    dispatch(getCares({status: "Pre-Atendimento", "capture.status": "Aprovado", 'patient_id.active': true}));
+    dispatch(
+      getCares({
+        status: "Pre-Atendimento",
+        "capture.status": "Aprovado",
+        "patient_id.active": true,
+      })
+    );
   }, [dispatch]);
 
   useEffect(() => {
@@ -221,7 +229,12 @@ export default function CareForm(props: RouteComponentProps<IPageParams>) {
   }, [patientState.list]);
 
   useEffect(() => {
-    if (!firstCall && careState.success && !careState.error && !careState.loading) {
+    if (
+      !firstCall &&
+      careState.success &&
+      !careState.error &&
+      !careState.loading
+    ) {
       history.push("/care");
     }
   }, [careState.success]);
@@ -232,46 +245,56 @@ export default function CareForm(props: RouteComponentProps<IPageParams>) {
     },
     [currentTab]
   );
-  const selectPatient = useCallback((care: CareInterface) => {
-    careState.list.data.map((care) => {
-      if (care.patient_id._id == care._id) {
-        dispatch(loadPatientById(care.patient_id._id));
+  const selectPatient = useCallback(
+    (care: CareInterface) => {
+      careState.list.data.map((care) => {
+        if (care.patient_id._id == care._id) {
+          dispatch(loadPatientById(care.patient_id._id));
+        }
+      });
+      dispatch(loadPatientById(care.patient_id._id));
+
+      const healthPlan = care?.capture?.health_insurance_id;
+      const sheaSubPlan = care?.capture?.health_plan_id;
+
+      if (firstCall && healthPlan != undefined && sheaSubPlan != undefined) {
+        dispatch(
+          healthPlanRequest(
+            healthPlan ? healthPlan : "6012b8ca863f4dd6560e756b"
+          )
+        );
+        dispatch(
+          healthSubPlanRequest(
+            sheaSubPlan ? sheaSubPlan : "5fd666cd48392d0621196551"
+          )
+        );
+        setFirstcall(false);
       }
-    })
-    dispatch(loadPatientById(care.patient_id._id))
 
-    const healthPlan = care?.capture?.health_insurance_id
-    const sheaSubPlan = care?.capture?.health_plan_id
+      setState((prevState) => ({
+        ...prevState,
+        area_id: care?.patient_id?.area_id,
+        origin_id: care?.capture?.hospital,
+        health_insurance_id: care?.capture?.health_insurance_id,
+        health_plan_id: care?.capture?.health_plan_id,
+        health_sub_plan_id: care?.capture?.health_sub_plan_id,
+      }));
 
-    if (firstCall && healthPlan != undefined && sheaSubPlan != undefined) {
-      dispatch(healthPlanRequest(healthPlan ? healthPlan : "6012b8ca863f4dd6560e756b"))
-      dispatch(healthSubPlanRequest(sheaSubPlan ? sheaSubPlan : "5fd666cd48392d0621196551"))
-      setFirstcall(false)
-    }
-
-    setState((prevState) => ({
-      ...prevState,
-      area_id: care?.patient_id?.area_id,
-      origin_id: care?.capture?.hospital,
-      health_insurance_id: care?.capture?.health_insurance_id,
-      health_plan_id: care?.capture?.health_plan_id,
-      health_sub_plan_id: care?.capture?.health_sub_plan_id,
-    }))
-
-    setStartStep(!startStep);
-  }, [patientState, selectCheckbox])
+      setStartStep(!startStep);
+    },
+    [patientState, selectCheckbox]
+  );
 
   const selectPatientArea = useCallback(() => {
-
-    const selected = areaState.list.data.filter(item => {
-      if (typeof state?.area_id === 'object') {
-        return item._id === state?.area_id._id
+    const selected = areaState.list.data.filter((item) => {
+      if (typeof state?.area_id === "object") {
+        return item._id === state?.area_id._id;
       } else {
-        return item._id === state?.area_id
+        return item._id === state?.area_id;
       }
-    })
+    });
 
-    return (selected[0]) ? selected[0] : patientState?.data?.area_id;
+    return selected[0] ? selected[0] : patientState?.data?.area_id;
 
     // if(canEdit){
 
@@ -284,9 +307,7 @@ export default function CareForm(props: RouteComponentProps<IPageParams>) {
 
     //return (selected[0]) ? selected[0]: areaState.list.data[0];
     //}
-
   }, [state.area_id, areaState]);
-
 
   const nextstep = useCallback(() => {
     setStartStep(!startStep);
@@ -298,8 +319,8 @@ export default function CareForm(props: RouteComponentProps<IPageParams>) {
 
   const handleBackStep = useCallback(() => {
     if (currentStep === 0) {
-      setStartStep(true)
-      setSelectCheckbox(undefined)
+      setStartStep(true);
+      setSelectCheckbox(undefined);
     } else {
       setCurrentStep((prevState) => prevState - 1);
     }
@@ -329,7 +350,6 @@ export default function CareForm(props: RouteComponentProps<IPageParams>) {
   }
 
   function handleSelectArea(value: any) {
-
     setState((prevState) => ({
       ...prevState,
       area_id: value._id,
@@ -341,10 +361,10 @@ export default function CareForm(props: RouteComponentProps<IPageParams>) {
       ...selectCheckbox,
       ...state,
       status: "Atendimento",
-      origin_id: '5fd667d948392d0621196553',
+      origin_id: "5fd667d948392d0621196553",
       created_at: selectCheckbox?.created_at,
       started_at: new Date().toISOString(),
-      care_type_id: selectCareType()?._id
+      care_type_id: selectCareType()?._id,
     };
 
     dispatch(updateCareRequest(assignSelectCheckbox));
@@ -386,10 +406,11 @@ export default function CareForm(props: RouteComponentProps<IPageParams>) {
       return found.status === "Não Elegível" ? (
         <Tooltip title="Não Elegível">
           <Error
-            style={{color: "#FF6565", cursor: "pointer"}}
+            style={{ color: "#FF6565", cursor: "pointer" }}
             onClick={() =>
               history.push(
-                `/patient/capture/${found.care_id}/${documentRoute()}/${found._id
+                `/patient/capture/${found.care_id}/${documentRoute()}/${
+                  found._id
                 }`
               )
             }
@@ -398,10 +419,11 @@ export default function CareForm(props: RouteComponentProps<IPageParams>) {
       ) : (
         <Tooltip title="Elegível">
           <CheckIcon
-            style={{color: "#4FC66A", cursor: "pointer"}}
+            style={{ color: "#4FC66A", cursor: "pointer" }}
             onClick={() =>
               history.push(
-                `/patient/capture/${found.care_id}/${documentRoute()}/${found._id
+                `/patient/capture/${found.care_id}/${documentRoute()}/${
+                  found._id
                 }`
               )
             }
@@ -411,7 +433,7 @@ export default function CareForm(props: RouteComponentProps<IPageParams>) {
     } else {
       return (
         <Tooltip title="Não Realizado">
-          <CheckIcon style={{color: "#EBEBEB"}}/>
+          <CheckIcon style={{ color: "#EBEBEB" }} />
         </Tooltip>
       );
     }
@@ -474,7 +496,7 @@ export default function CareForm(props: RouteComponentProps<IPageParams>) {
 
   return (
     <Sidebar>
-      {careState.loading && <Loading/>}
+      {/* {careState.loading && <Loading/>} */}
 
       <Container>
         <FormTitle>Cadastro de Atendimento</FormTitle>
@@ -483,102 +505,112 @@ export default function CareForm(props: RouteComponentProps<IPageParams>) {
           <FormContent>
             {startStep && (
               <BoxCustom>
-                <Grid container
-                style={{justifyContent: "flex-end"}}
-                >
-
-
+                <Grid container style={{ justifyContent: "flex-end" }}>
                   <Table>
                     <thead>
-                    <tr>
-                      <Th></Th>
-                      <Th>Paciente</Th>
-                      <Th>Pedido</Th>
-                      <Th>Socioambiental</Th>
-                      <Th>NEAD</Th>
-                      <Th>ABEMID</Th>
-                      <Th>Última captação</Th>
-                    </tr>
+                      <tr>
+                        <Th></Th>
+                        <Th>Paciente</Th>
+                        <Th>Pedido</Th>
+                        <Th>Socioambiental</Th>
+                        <Th>NEAD</Th>
+                        <Th>ABEMID</Th>
+                        <Th>Última captação</Th>
+                      </tr>
                     </thead>
                     <tbody>
-                    {careState.list.data.map((care, index) => (
-                      <tr key={index}>
-                        <Td center>
-                          <Checkbox
-                            checked={selectCheckbox?._id === care?._id}
-                            onChange={(element) => {
-                              //  selectPatient();
-                              if(element.target.checked){
-                                setChecked(true);
-                              }else{
-                                setChecked(false);
-                              }
-                              if (care._id && care._id === element.target.value) {
-                                  console.log(setSelectCheckbox)
-                                setSelectCheckbox(care);
-                              } else {
-                                setSelectCheckbox(care);
-                                // selectPatient(care);
-                                console.log('else')
-
-                              }
-                              console.log('care',care)
-                              console.log('element',element)
-                              // setSelectCheckbox(care)
-                            }}
-                            inputProps={{"aria-label": "primary checkbox"}}
-                          />
-                        </Td>
-                        <Td>{care?.patient_id?.social_name || care?.patient_id?.name}</Td>
-                        <Td>{care.patient_id?.fiscal_number}</Td>
-                        <Td>
-                          {handleCheckDocument(
-                            "5ffd79012f5d2b1d8ff6bea3",
-                            care?.documents_id || []
-                          )}
-                        </Td>
-                        <Td>
-                          {handleCheckDocument(
-                            "5ff65469b4d4ac07d186e99f",
-                            care?.documents_id || []
-                          )}
-                        </Td>
-                        <Td>
-                          {handleCheckDocument(
-                            "5ffd7acd2f5d2b1d8ff6bea4",
-                            care?.documents_id || []
-                          )}
-                        </Td>
-                        <Td>
-                          {formatDate(
-                            care?.created_at ?? "",
-                            "DD/MM/YYYY HH:mm:ss"
-                          )}
-                        </Td>
-                      </tr>
-                    ))}
+                      {careState.list.data.map((care, index) => (
+                        <tr key={index}>
+                          <Td center>
+                            <Checkbox
+                              checked={selectCheckbox?._id === care?._id}
+                              onChange={(element) => {
+                                //  selectPatient();
+                                if (element.target.checked) {
+                                  setChecked(true);
+                                } else {
+                                  setChecked(false);
+                                }
+                                if (
+                                  care._id &&
+                                  care._id === element.target.value
+                                ) {
+                                  console.log(setSelectCheckbox);
+                                  setSelectCheckbox(care);
+                                } else {
+                                  setSelectCheckbox(care);
+                                  // selectPatient(care);
+                                  console.log("else");
+                                }
+                                console.log("care", care);
+                                console.log("element", element);
+                                // setSelectCheckbox(care)
+                              }}
+                              inputProps={{ "aria-label": "primary checkbox" }}
+                            />
+                          </Td>
+                          <Td>
+                            {care?.patient_id?.social_name ||
+                              care?.patient_id?.name}
+                          </Td>
+                          <Td>{care.patient_id?.fiscal_number}</Td>
+                          <Td>
+                            {handleCheckDocument(
+                              "5ffd79012f5d2b1d8ff6bea3",
+                              care?.documents_id || []
+                            )}
+                          </Td>
+                          <Td>
+                            {handleCheckDocument(
+                              "5ff65469b4d4ac07d186e99f",
+                              care?.documents_id || []
+                            )}
+                          </Td>
+                          <Td>
+                            {handleCheckDocument(
+                              "5ffd7acd2f5d2b1d8ff6bea4",
+                              care?.documents_id || []
+                            )}
+                          </Td>
+                          <Td>
+                            {formatDate(
+                              care?.created_at ?? "",
+                              "DD/MM/YYYY HH:mm:ss"
+                            )}
+                          </Td>
+                        </tr>
+                      ))}
                     </tbody>
                   </Table>
-                    <div style={{justifyContent: "flex-end"}}>
-                      <Button variant="outlined" className={classes.sucess_round} onClick={() => {
-                        history.push('/care')
-                      }}>Voltar</Button>
-                      <Button
-                        style={{marginLeft: 15}}
-                        background="success"
-                        onClick={(element) => {
-                          if(checked){
-                            selectPatient(selectCheckbox? selectCheckbox : careState.list.data[0] )}
-                          }}
-                          >
-                        Selecionar Paciente
-                      </Button>
-                    </div>
+                  <div style={{ justifyContent: "flex-end" }}>
+                    <Button
+                      variant="outlined"
+                      className={classes.sucess_round}
+                      onClick={() => {
+                        history.push("/care");
+                      }}
+                    >
+                      Voltar
+                    </Button>
+                    <Button
+                      style={{ marginLeft: 15 }}
+                      background="success"
+                      onClick={(element) => {
+                        if (checked) {
+                          selectPatient(
+                            selectCheckbox
+                              ? selectCheckbox
+                              : careState.list.data[0]
+                          );
+                        }
+                      }}
+                    >
+                      Selecionar Paciente
+                    </Button>
+                  </div>
                 </Grid>
               </BoxCustom>
-
             )}
-
 
             {!startStep && (
               <>
@@ -592,12 +624,21 @@ export default function CareForm(props: RouteComponentProps<IPageParams>) {
                 {/* Step 1 */}
                 {currentStep === 0 && (
                   <>
-                    <BoxCustom style={{background: '#fff', marginTop: 3}} mt={5} padding={4}>
+                    <BoxCustom
+                      style={{ background: "#fff", marginTop: 3 }}
+                      mt={5}
+                      padding={4}
+                    >
                       <FormSection>
                         <FormContent>
                           <FormGroupSection>
                             <Grid container>
-                              <Grid item md={12} xs={12} style={{marginTop: "1rem"}}>
+                              <Grid
+                                item
+                                md={12}
+                                xs={12}
+                                style={{ marginTop: "1rem" }}
+                              >
                                 <TextField
                                   id="input-name"
                                   label="Nome do paciente"
@@ -608,7 +649,6 @@ export default function CareForm(props: RouteComponentProps<IPageParams>) {
                                   disabled={!canEdit}
                                 />
                               </Grid>
-
 
                               <Grid item md={9} xs={12}>
                                 <TextField
@@ -625,10 +665,22 @@ export default function CareForm(props: RouteComponentProps<IPageParams>) {
                               <Grid item md={3} xs={12}>
                                 <Autocomplete
                                   id="combo-box-gender"
-                                  options={['Masculino', 'Feminino', 'Indefinido']}
+                                  options={[
+                                    "Masculino",
+                                    "Feminino",
+                                    "Indefinido",
+                                  ]}
                                   getOptionLabel={(option) => option}
-                                  getOptionSelected={(option, value) => value === patientState.data?.gender}
-                                  renderInput={(params) => <TextField {...params} label="Sexo" variant="outlined"/>}
+                                  getOptionSelected={(option, value) =>
+                                    value === patientState.data?.gender
+                                  }
+                                  renderInput={(params) => (
+                                    <TextField
+                                      {...params}
+                                      label="Sexo"
+                                      variant="outlined"
+                                    />
+                                  )}
                                   size="small"
                                   value={patientState?.data?.gender}
                                   noOptionsText="Nenhum resultado encontrado"
@@ -643,7 +695,6 @@ export default function CareForm(props: RouteComponentProps<IPageParams>) {
                                   variant="outlined"
                                   size="small"
                                   value={patientState.data.mother_name}
-
                                   fullWidth
                                   disabled={!canEdit}
                                 />
@@ -659,41 +710,59 @@ export default function CareForm(props: RouteComponentProps<IPageParams>) {
                                   disabled={!canEdit}
                                 />
                               </Grid>
-
                             </Grid>
                             <Grid container>
-
                               <Grid item md={3} xs={12}>
-                                <FormControl variant="outlined" size="small"
-                                             disabled={!canEdit}
-                                             fullWidth>
-                                  <InputLabel htmlFor="search-input">CPF</InputLabel>
+                                <FormControl
+                                  variant="outlined"
+                                  size="small"
+                                  disabled={!canEdit}
+                                  fullWidth
+                                >
+                                  <InputLabel htmlFor="search-input">
+                                    CPF
+                                  </InputLabel>
                                   <InputMask
                                     mask="999.999.999-99"
                                     value={patientState.data.fiscal_number}
-
-
                                   >
                                     {(inputProps: any) => (
                                       <OutlinedInputFiled
                                         id="input-fiscal-number"
                                         placeholder="000.000.000-00"
                                         labelWidth={80}
-                                        style={{marginRight: 12}}
+                                        style={{ marginRight: 12 }}
                                         // error={!!cpf.isValid(state.fiscal_number) == false && state.fiscal_number != "___.___.___-__" && !!state.fiscal_number}
                                       />
                                     )}
                                   </InputMask>
-                                  {!!cpf.isValid(patientState.data.fiscal_number) == false && patientState.data.fiscal_number != "___.___.___-__" && !!patientState.data.fiscal_number && (
-                                    <p style={{color: '#f44336', margin: '1px 5px 20px'}}>
-                                      Por favor insira um cpf válido
-                                    </p>
-                                  )}
+                                  {!!cpf.isValid(
+                                    patientState.data.fiscal_number
+                                  ) == false &&
+                                    patientState.data.fiscal_number !=
+                                      "___.___.___-__" &&
+                                    !!patientState.data.fiscal_number && (
+                                      <p
+                                        style={{
+                                          color: "#f44336",
+                                          margin: "1px 5px 20px",
+                                        }}
+                                      >
+                                        Por favor insira um cpf válido
+                                      </p>
+                                    )}
                                 </FormControl>
                               </Grid>
                               <Grid item md={4} xs={12}>
-                                <FormControl variant="outlined" size="small" disabled={!canEdit} fullWidth>
-                                  <InputLabel htmlFor="search-input">RG</InputLabel>
+                                <FormControl
+                                  variant="outlined"
+                                  size="small"
+                                  disabled={!canEdit}
+                                  fullWidth
+                                >
+                                  <InputLabel htmlFor="search-input">
+                                    RG
+                                  </InputLabel>
                                   <InputMask
                                     mask="9.999-999"
                                     value={patientState.data.national_id}
@@ -703,8 +772,7 @@ export default function CareForm(props: RouteComponentProps<IPageParams>) {
                                         id="input-nation-id"
                                         placeholder="000.000.000-00"
                                         labelWidth={80}
-                                        style={{marginRight: 12}}
-
+                                        style={{ marginRight: 12 }}
                                       />
                                     )}
                                   </InputMask>
@@ -718,7 +786,6 @@ export default function CareForm(props: RouteComponentProps<IPageParams>) {
                                   variant="outlined"
                                   size="small"
                                   value={patientState.data.issuing_organ}
-
                                   fullWidth
                                   disabled={!canEdit}
                                   autoComplete="off"
@@ -730,14 +797,23 @@ export default function CareForm(props: RouteComponentProps<IPageParams>) {
                                     id="combo-box-marital-status"
                                     options={maritalStatus}
                                     getOptionLabel={(option) => option}
-                                    renderInput={(params) => <TextField {...params} label="Estado Civil"
-                                                                        variant="outlined" autoComplete="off"/>}
+                                    renderInput={(params) => (
+                                      <TextField
+                                        {...params}
+                                        label="Estado Civil"
+                                        variant="outlined"
+                                        autoComplete="off"
+                                      />
+                                    )}
                                     value={patientState?.data?.marital_status}
-                                    getOptionSelected={(option, value) => value === patientState.data?.marital_status}
+                                    getOptionSelected={(option, value) =>
+                                      value ===
+                                      patientState.data?.marital_status
+                                    }
                                     onChange={(event: any, newValue) => {
-                                      setState(prevState => ({
+                                      setState((prevState) => ({
                                         ...prevState,
-                                        marital_status: newValue || '',
+                                        marital_status: newValue || "",
                                       }));
                                     }}
                                     size="small"
@@ -756,10 +832,17 @@ export default function CareForm(props: RouteComponentProps<IPageParams>) {
                                     id="combo-box-blood-type"
                                     options={bloodTypes}
                                     getOptionLabel={(option) => option}
-                                    renderInput={(params) => <TextField {...params} label="Tipo sanguíneo"
-                                                                        variant="outlined"/>}
+                                    renderInput={(params) => (
+                                      <TextField
+                                        {...params}
+                                        label="Tipo sanguíneo"
+                                        variant="outlined"
+                                      />
+                                    )}
                                     value={patientState.data?.blood_type}
-                                    getOptionSelected={(option, value) => value === patientState.data?.blood_type}
+                                    getOptionSelected={(option, value) =>
+                                      value === patientState.data?.blood_type
+                                    }
                                     size="small"
                                     noOptionsText="Nenhum resultado encontrado"
                                     fullWidth
@@ -767,7 +850,7 @@ export default function CareForm(props: RouteComponentProps<IPageParams>) {
                                   />
                                 </FormGroupSection>
                               </Grid>
-                              <Grid item md={10}/>
+                              <Grid item md={10} />
                             </Grid>
                           </FormGroupSection>
 
@@ -805,7 +888,9 @@ export default function CareForm(props: RouteComponentProps<IPageParams>) {
                                   label="Complemento"
                                   variant="outlined"
                                   size="small"
-                                  value={patientState.data?.address_id.complement}
+                                  value={
+                                    patientState.data?.address_id.complement
+                                  }
                                   //  onChange={(element) => setState({ ...state, address_id: { ...state.address_id, complement: element.target.value } })}
                                   fullWidth
                                   disabled={!canEdit}
@@ -830,7 +915,6 @@ export default function CareForm(props: RouteComponentProps<IPageParams>) {
                                   id="input-city"
                                   label="Cidade"
                                   variant="outlined"
-
                                   size="small"
                                   value={patientState.data?.address_id.city}
                                   // onChange={(element) => setState({ ...state, address_id: { ...state.address_id, city: element.target.value } })}
@@ -855,9 +939,20 @@ export default function CareForm(props: RouteComponentProps<IPageParams>) {
                                 <Autocomplete
                                   id="combo-box-areas"
                                   options={areaState.list.data}
-                                  getOptionLabel={(option) => option.name ? option.name : ""}
-                                  getOptionSelected={(option, value) => value.name === patientState.data?.area_id.name}
-                                  renderInput={(params) => <TextField {...params} label="Área" variant="outlined"/>}
+                                  getOptionLabel={(option) =>
+                                    option.name ? option.name : ""
+                                  }
+                                  getOptionSelected={(option, value) =>
+                                    value.name ===
+                                    patientState.data?.area_id.name
+                                  }
+                                  renderInput={(params) => (
+                                    <TextField
+                                      {...params}
+                                      label="Área"
+                                      variant="outlined"
+                                    />
+                                  )}
                                   size="small"
                                   defaultValue={selectPatientArea()}
                                   value={selectPatientArea()}
@@ -872,8 +967,7 @@ export default function CareForm(props: RouteComponentProps<IPageParams>) {
                                 />
                               </Grid>
                             </Grid>
-                            <Grid container>
-                            </Grid>
+                            <Grid container></Grid>
                           </FormGroupSection>
                           <FormGroupSection>
                             <Grid container>
@@ -897,7 +991,9 @@ export default function CareForm(props: RouteComponentProps<IPageParams>) {
                                   label="Parentesco"
                                   variant="outlined"
                                   size="small"
-                                  value={patientState.data?.responsable?.relationship}
+                                  value={
+                                    patientState.data?.responsable?.relationship
+                                  }
                                   //  onChange={(element) => setState({ ...state, responsable: { ...state.responsable, relationship: element.target.value } })}
                                   placeholder=""
                                   fullWidth
@@ -917,7 +1013,7 @@ export default function CareForm(props: RouteComponentProps<IPageParams>) {
                             <PatientResumeContent>
                               <PatientData>
                                 <div className="patientIcon">
-                                  <AccountCircle/>
+                                  <AccountCircle />
                                 </div>
                                 <div>
                                   <p className="title">{patient?.name}</p>
@@ -938,7 +1034,7 @@ export default function CareForm(props: RouteComponentProps<IPageParams>) {
                                   history.push(`/patient/${patient?._id}/edit`);
                                 }}
                               >
-                                <CreateIcon/>
+                                <CreateIcon />
                               </Button>
                             </PatientResumeContent>
                           </PatientResume>
@@ -948,7 +1044,7 @@ export default function CareForm(props: RouteComponentProps<IPageParams>) {
 
                     {patientState.error && (
                       <PatientNotFound>
-                        <NoDataIcon/>
+                        <NoDataIcon />
                         <p>Paciente não encontrado</p>
                       </PatientNotFound>
                     )}
@@ -962,8 +1058,7 @@ export default function CareForm(props: RouteComponentProps<IPageParams>) {
                 )}
                 {/* Step 2 */}
                 {currentStep === 1 && (
-
-                  <Grid container style={{marginBottom: "40px"}}>
+                  <Grid container style={{ marginBottom: "40px" }}>
                     <Grid item md={4} xs={12}>
                       <Autocomplete
                         id="combo-box-health-insurance"
@@ -1004,7 +1099,11 @@ export default function CareForm(props: RouteComponentProps<IPageParams>) {
                         //   option._id === state.health_plan_id
                         // }
                         renderInput={(params) => (
-                          <TextField {...params} label="Plano" variant="outlined"/>
+                          <TextField
+                            {...params}
+                            label="Plano"
+                            variant="outlined"
+                          />
                         )}
                         size="small"
                         // onChange={(event, value) => {
@@ -1179,50 +1278,50 @@ export default function CareForm(props: RouteComponentProps<IPageParams>) {
                       />
                     </Grid>
                     <Grid item md={12} xs={12}>
-                  <TextField
-                    id="input-procedure"
-                    label="Procedimento"
-                    variant="outlined"
-                    size="small"
-                    value={state?.procedure_id}
-                    onChange={(element) =>
-                      setState((prevState) => ({
-                        ...prevState,
-                        procedure_id: element.target.value,
-                      }))
-                    }
-                    fullWidth
-                  />
-                </Grid>
-                    <Grid item md={12} xs={12}>
-                  <Autocomplete
-                    id="input-diagnostic"
-                    options={careState.cid}
-                    getOptionLabel={(option) =>
-                      `${option.cid} - ${option.name}`
-                    }
-                    value={selectCid()}
-                    renderInput={(params) => (
                       <TextField
-                        {...params}
-                        label="Diaginóstico (CID)"
+                        id="input-procedure"
+                        label="Procedimento"
                         variant="outlined"
+                        size="small"
+                        value={state?.procedure_id}
+                        onChange={(element) =>
+                          setState((prevState) => ({
+                            ...prevState,
+                            procedure_id: element.target.value,
+                          }))
+                        }
+                        fullWidth
                       />
-                    )}
-                    size="small"
-                    onKeyUp={debounceSearchCidData}
-                    onChange={(event, value) => {
-                      if (value) {
-                        handleSelectCid({
-                          _id: value._id || "",
-                          name: value.name,
-                        });
-                      }
-                    }}
-                    noOptionsText="Nenhum CID foi encontrado"
-                    fullWidth
-                  />
-                </Grid>
+                    </Grid>
+                    <Grid item md={12} xs={12}>
+                      <Autocomplete
+                        id="input-diagnostic"
+                        options={careState.cid}
+                        getOptionLabel={(option) =>
+                          `${option.cid} - ${option.name}`
+                        }
+                        value={selectCid()}
+                        renderInput={(params) => (
+                          <TextField
+                            {...params}
+                            label="Diaginóstico (CID)"
+                            variant="outlined"
+                          />
+                        )}
+                        size="small"
+                        onKeyUp={debounceSearchCidData}
+                        onChange={(event, value) => {
+                          if (value) {
+                            handleSelectCid({
+                              _id: value._id || "",
+                              name: value.name,
+                            });
+                          }
+                        }}
+                        noOptionsText="Nenhum CID foi encontrado"
+                        fullWidth
+                      />
+                    </Grid>
                     <Grid item md={8} xs={12}>
                       <Autocomplete
                         id="combo-box-users"
@@ -1271,9 +1370,7 @@ export default function CareForm(props: RouteComponentProps<IPageParams>) {
                   />
                 </Grid> */}
                   </Grid>
-
                 )}
-
 
                 {/* Step 3 */}
 
@@ -1281,26 +1378,26 @@ export default function CareForm(props: RouteComponentProps<IPageParams>) {
                   <Grid container direction="column">
                     <Box mb={2} paddingLeft={5}>
                       <Profile>
-                        <IconProfile/>
+                        <IconProfile />
                         <div>
                           <h5>
                             {selectCheckbox?.patient_id &&
-                            selectCheckbox.patient_id?.name}
+                              selectCheckbox.patient_id?.name}
                           </h5>
                           <p>
                             {selectCheckbox?.patient_id &&
-                            age(selectCheckbox.patient_id?.birthdate)}
+                              age(selectCheckbox.patient_id?.birthdate)}
                           </p>
                           <p>
                             {selectCheckbox?.patient_id &&
-                            selectCheckbox.patient_id?.fiscal_number}
+                              selectCheckbox.patient_id?.fiscal_number}
                           </p>
                         </div>
                       </Profile>
                     </Box>
 
                     <Box>
-                      <Divider/>
+                      <Divider />
                     </Box>
 
                     <Box
@@ -1315,16 +1412,19 @@ export default function CareForm(props: RouteComponentProps<IPageParams>) {
                         flexDirection="column"
                         className="box-position-icon"
                       >
-                        <EventIcon style={{color: "#0899BA"}}/>
+                        <EventIcon style={{ color: "#0899BA" }} />
                         <Typography
                           variant="subtitle2"
                           component="p"
-                          style={{fontWeight: "bold"}}
+                          style={{ fontWeight: "bold" }}
                         >
                           Dados do atendimento
                         </Typography>
                         <Typography variant="caption" color="textSecondary">
-                          {formatDate(new Date().toISOString(), "DD/MM/YYYY HH:mm:ss")}
+                          {formatDate(
+                            new Date().toISOString(),
+                            "DD/MM/YYYY HH:mm:ss"
+                          )}
                         </Typography>
                         <Typography variant="caption" color="textSecondary">
                           Procedimento: {state?.procedure_id}
@@ -1337,11 +1437,11 @@ export default function CareForm(props: RouteComponentProps<IPageParams>) {
                         mt={4}
                         className="box-position-icon"
                       >
-                        <HomeIcon style={{color: "#0899BA"}}/>
+                        <HomeIcon style={{ color: "#0899BA" }} />
                         <Typography
                           variant="subtitle2"
                           component="p"
-                          style={{fontWeight: "bold"}}
+                          style={{ fontWeight: "bold" }}
                         >
                           Dados do Home Care
                         </Typography>
@@ -1359,11 +1459,11 @@ export default function CareForm(props: RouteComponentProps<IPageParams>) {
                         mt={4}
                         className="box-position-icon"
                       >
-                        <RecentActorsSharpIcon style={{color: "#0899BA"}}/>
+                        <RecentActorsSharpIcon style={{ color: "#0899BA" }} />
                         <Typography
                           variant="subtitle2"
                           component="p"
-                          style={{fontWeight: "bold"}}
+                          style={{ fontWeight: "bold" }}
                         >
                           Dados do plano de saúde
                         </Typography>
@@ -1374,7 +1474,8 @@ export default function CareForm(props: RouteComponentProps<IPageParams>) {
                           Número da carteira: {state?.health_plan_card_number}
                         </Typography>
                         <Typography variant="caption" color="textSecondary">
-                          Validade da carteira: {state?.health_plan_card_validate}
+                          Validade da carteira:{" "}
+                          {state?.health_plan_card_validate}
                         </Typography>
                         <Typography variant="caption" color="textSecondary">
                           Plano: {selectHealhPlan()?.name}
@@ -1397,11 +1498,11 @@ export default function CareForm(props: RouteComponentProps<IPageParams>) {
                         mb={5}
                         className="box-position-icon"
                       >
-                        <LocalHospitalSharpIcon style={{color: "#0899BA"}}/>
+                        <LocalHospitalSharpIcon style={{ color: "#0899BA" }} />
                         <Typography
                           variant="subtitle2"
                           component="p"
-                          style={{fontWeight: "bold"}}
+                          style={{ fontWeight: "bold" }}
                         >
                           Dados do hospital
                         </Typography>
@@ -1409,52 +1510,51 @@ export default function CareForm(props: RouteComponentProps<IPageParams>) {
                           Médico Assistente: {selectUser()?.name}
                         </Typography>
                         <Typography variant="caption" color="textSecondary">
-                          Diagnóstico CID:{`${selectCid()?.cid ?? ""} - ${selectCid()?.name ?? ""}`}
+                          Diagnóstico CID:
+                          {`${selectCid()?.cid ?? ""} - ${
+                            selectCid()?.name ?? ""
+                          }`}
                         </Typography>
                       </Box>
                     </Box>
                   </Grid>
                 )}
               </>
-
             )}
-
           </FormContent>
 
-
-
           <ButtonsContent>
-            {!startStep && (<Button
-              background="default"
-              onClick={() => {
-                history.push('/care')
-                setStartStep(!startStep);
-                setCurrentStep(0)
-              }}
-            >
-              Voltar
-            </Button>)}
             {!startStep && (
               <Button
                 background="default"
-                onClick={handleBackStep}
+                onClick={() => {
+                  history.push("/care");
+                  setStartStep(!startStep);
+                  setCurrentStep(0);
+                }}
               >
+                Voltar
+              </Button>
+            )}
+            {!startStep && (
+              <Button background="default" onClick={handleBackStep}>
                 Anterior
               </Button>
             )}
 
-            {(currentStep === steps.length - 1 && !startStep) && (
+            {currentStep === steps.length - 1 && !startStep && (
               <Button background="primary" onClick={handleSaveFormCare}>
                 Finalizar
               </Button>
             )}
-            {(currentStep !== steps.length - 1 && !startStep) && (
+            {currentStep !== steps.length - 1 && !startStep && (
               <Button
-                style={{marginLeft: '0.6rem'}}
-                disabled={currentStep === (steps.length - 1) || !selectCheckbox?._id}
+                style={{ marginLeft: "0.6rem" }}
+                disabled={
+                  currentStep === steps.length - 1 || !selectCheckbox?._id
+                }
                 background="primary"
                 onClick={handleNextStep}
-
               >
                 Próximo
               </Button>
