@@ -1,15 +1,30 @@
-import React, { useEffect, useCallback } from 'react';
-import { Grid, Dialog, DialogTitle, DialogContent, DialogContentText, DialogActions, Radio, RadioGroup, FormControlLabel, TextField } from '@material-ui/core';
-import { Autocomplete } from '@material-ui/lab';
+import React, { useEffect, useCallback } from "react";
+import {
+  Grid,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogContentText,
+  DialogActions,
+  Radio,
+  RadioGroup,
+  FormControlLabel,
+  TextField,
+} from "@material-ui/core";
+import { Autocomplete } from "@material-ui/lab";
 
-import { useDispatch, useSelector } from 'react-redux';
-import { ApplicationState } from '../../../store';
-import { healthInsuranceRequest, healthPlanRequest, healthSubPlanRequest } from '../../../store/ducks/cares/actions';
+import { useDispatch, useSelector } from "react-redux";
+import { ApplicationState } from "../../../store";
+import {
+  healthInsuranceRequest,
+  healthPlanRequest,
+  healthSubPlanRequest,
+} from "../../../store/ducks/cares/actions";
 
-import Loading from '../../Loading';
+import Loading from "../../Loading";
 
-import { FieldContent } from '../../../styles/components/Form';
-import Button from '../../../styles/components/Button';
+import { FieldContent } from "../../../styles/components/Form";
+import Button from "../../../styles/components/Button";
 
 interface IDialogProps {
   dialogState: boolean;
@@ -17,7 +32,7 @@ interface IDialogProps {
   captureData: any;
   setCaptureData: Function;
   saveCallback: Function;
-  cantEdit?:boolean;
+  cantEdit?: boolean;
 }
 
 export default function CaptureDataDialog(props: IDialogProps) {
@@ -25,30 +40,43 @@ export default function CaptureDataDialog(props: IDialogProps) {
 
   const careState = useSelector((state: ApplicationState) => state.cares);
 
-  const { dialogState, toogleModalState, captureData, setCaptureData, saveCallback, cantEdit } = props;
+  const {
+    dialogState,
+    toogleModalState,
+    captureData,
+    setCaptureData,
+    saveCallback,
+    cantEdit,
+  } = props;
 
   useEffect(() => {
     dispatch(healthInsuranceRequest());
   }, []);
 
   const selectHealhInsurance = useCallback(() => {
-    const selected = careState.healthInsurance.filter(item => item._id === captureData.health_insurance_id);
-    return (selected[0]) ? selected[0] : null;
+    const selected = careState.healthInsurance.filter(
+      (item) => item._id === captureData.health_insurance_id
+    );
+    return selected[0] ? selected[0] : null;
   }, [captureData.health_insurance_id]);
 
   const selectHealhPlan = useCallback(() => {
-    const selected = careState.healthPlan.filter(item => item._id === captureData.health_plan_id);
-    return (selected[0]) ? selected[0] : null;
+    const selected = careState.healthPlan.filter(
+      (item) => item._id === captureData.health_plan_id
+    );
+    return selected[0] ? selected[0] : null;
   }, [captureData.health_plan_id]);
 
   const selectHealhSubPlan = useCallback(() => {
-    const selected = careState.healthSubPlan.filter(item => item._id === captureData.health_sub_plan_id);
-    return (selected[0]) ? selected[0] : null;
+    const selected = careState.healthSubPlan.filter(
+      (item) => item._id === captureData.health_sub_plan_id
+    );
+    return selected[0] ? selected[0] : null;
   }, [captureData.health_sub_plan_id]);
 
   return (
     <>
-      {careState.loading && <Loading />}
+      {/* {careState.loading && <Loading />} */}
       <Dialog
         open={dialogState}
         onClose={() => toogleModalState(false)}
@@ -56,16 +84,26 @@ export default function CaptureDataDialog(props: IDialogProps) {
         aria-describedby="scroll-dialog-description"
         maxWidth="md"
       >
-        <DialogTitle id="scroll-dialog-title">Preencha os dados da captação</DialogTitle>
+        <DialogTitle id="scroll-dialog-title">
+          Preencha os dados da captação
+        </DialogTitle>
         <DialogContent>
-          <DialogContentText
-            id="scroll-dialog-description"
-            tabIndex={-1}
-          >Para iniciar a captação, é obrigatório preencher as informações abaixo.</DialogContentText>
+          <DialogContentText id="scroll-dialog-description" tabIndex={-1}>
+            Para iniciar a captação, é obrigatório preencher as informações
+            abaixo.
+          </DialogContentText>
 
           <div>
             <p>O paciente encontra-se internado?</p>
-            <RadioGroup onChange={e => setCaptureData({ ...captureData, inpatient: e.target.value === 'Sim' })} style={{ marginBottom: 20 }}>
+            <RadioGroup
+              onChange={(e) =>
+                setCaptureData({
+                  ...captureData,
+                  inpatient: e.target.value === "Sim",
+                })
+              }
+              style={{ marginBottom: 20 }}
+            >
               <FormControlLabel
                 value="Não"
                 control={<Radio color="primary" />}
@@ -83,7 +121,6 @@ export default function CaptureDataDialog(props: IDialogProps) {
             </RadioGroup>
 
             <Grid container>
-
               <Grid item md={5}>
                 <FieldContent style={{ paddingRight: 15 }}>
                   <Autocomplete
@@ -92,11 +129,22 @@ export default function CaptureDataDialog(props: IDialogProps) {
                     options={careState.healthInsurance}
                     getOptionLabel={(option) => option.name}
                     value={selectHealhInsurance()}
-                    getOptionSelected={(option, value) => option._id === captureData.health_insurance_id}
-                    renderInput={(params) => <TextField {...params} label="Convênio" variant="outlined" />}
+                    getOptionSelected={(option, value) =>
+                      option._id === captureData.health_insurance_id
+                    }
+                    renderInput={(params) => (
+                      <TextField
+                        {...params}
+                        label="Convênio"
+                        variant="outlined"
+                      />
+                    )}
                     onChange={(event, value) => {
                       if (value) {
-                        setCaptureData({ ...captureData, health_insurance_id: value._id })
+                        setCaptureData({
+                          ...captureData,
+                          health_insurance_id: value._id,
+                        });
                       }
                       dispatch(healthPlanRequest(value && value._id));
                     }}
@@ -117,7 +165,12 @@ export default function CaptureDataDialog(props: IDialogProps) {
                     variant="outlined"
                     size="small"
                     value={captureData.order_number}
-                    onChange={(element) => setCaptureData({ ...captureData, order_number: element.target.value })}
+                    onChange={(element) =>
+                      setCaptureData({
+                        ...captureData,
+                        order_number: element.target.value,
+                      })
+                    }
                     disabled={cantEdit}
                     fullWidth
                   />
@@ -131,12 +184,19 @@ export default function CaptureDataDialog(props: IDialogProps) {
                     options={careState.healthPlan}
                     getOptionLabel={(option) => option.name}
                     value={selectHealhPlan()}
-                    getOptionSelected={(option, value) => option._id === captureData.health_plan_id}
-                    renderInput={(params) => <TextField {...params} label="Plano" variant="outlined" />}
+                    getOptionSelected={(option, value) =>
+                      option._id === captureData.health_plan_id
+                    }
+                    renderInput={(params) => (
+                      <TextField {...params} label="Plano" variant="outlined" />
+                    )}
                     size="small"
                     onChange={(event, value) => {
                       if (value) {
-                        setCaptureData({ ...captureData, health_plan_id: value._id })
+                        setCaptureData({
+                          ...captureData,
+                          health_plan_id: value._id,
+                        });
                       }
                       dispatch(healthSubPlanRequest(value && value._id));
                     }}
@@ -154,12 +214,23 @@ export default function CaptureDataDialog(props: IDialogProps) {
                     options={careState.healthSubPlan}
                     getOptionLabel={(option) => option.name}
                     value={selectHealhSubPlan()}
-                    getOptionSelected={(option, value) => option._id === captureData.health_sub_plan_id}
-                    renderInput={(params) => <TextField {...params} label="Sub-Plano" variant="outlined" />}
+                    getOptionSelected={(option, value) =>
+                      option._id === captureData.health_sub_plan_id
+                    }
+                    renderInput={(params) => (
+                      <TextField
+                        {...params}
+                        label="Sub-Plano"
+                        variant="outlined"
+                      />
+                    )}
                     size="small"
                     onChange={(event, value) => {
                       if (value) {
-                        setCaptureData({ ...captureData, health_sub_plan_id: value._id })
+                        setCaptureData({
+                          ...captureData,
+                          health_sub_plan_id: value._id,
+                        });
                       }
                     }}
                     disabled={cantEdit}
@@ -177,7 +248,12 @@ export default function CaptureDataDialog(props: IDialogProps) {
                     variant="outlined"
                     size="small"
                     value={captureData.hospital}
-                    onChange={(element) => setCaptureData({ ...captureData, hospital: element.target.value })}
+                    onChange={(element) =>
+                      setCaptureData({
+                        ...captureData,
+                        hospital: element.target.value,
+                      })
+                    }
                     disabled={cantEdit}
                     fullWidth
                   />
@@ -192,7 +268,12 @@ export default function CaptureDataDialog(props: IDialogProps) {
                     variant="outlined"
                     size="small"
                     value={captureData.unity}
-                    onChange={(element) => setCaptureData({ ...captureData, unity: element.target.value })}
+                    onChange={(element) =>
+                      setCaptureData({
+                        ...captureData,
+                        unity: element.target.value,
+                      })
+                    }
                     disabled={cantEdit}
                     fullWidth
                   />
@@ -207,7 +288,12 @@ export default function CaptureDataDialog(props: IDialogProps) {
                     variant="outlined"
                     size="small"
                     value={captureData.assistant_doctor}
-                    onChange={(element) => setCaptureData({ ...captureData, assistant_doctor: element.target.value })}
+                    onChange={(element) =>
+                      setCaptureData({
+                        ...captureData,
+                        assistant_doctor: element.target.value,
+                      })
+                    }
                     disabled={cantEdit}
                     fullWidth
                   />
@@ -222,7 +308,12 @@ export default function CaptureDataDialog(props: IDialogProps) {
                     variant="outlined"
                     size="small"
                     value={captureData.sector}
-                    onChange={(element) => setCaptureData({ ...captureData, sector: element.target.value })}
+                    onChange={(element) =>
+                      setCaptureData({
+                        ...captureData,
+                        sector: element.target.value,
+                      })
+                    }
                     disabled={cantEdit}
                     fullWidth
                   />
@@ -237,7 +328,12 @@ export default function CaptureDataDialog(props: IDialogProps) {
                     variant="outlined"
                     size="small"
                     value={captureData.bed}
-                    onChange={(element) => setCaptureData({ ...captureData, bed: element.target.value })}
+                    onChange={(element) =>
+                      setCaptureData({
+                        ...captureData,
+                        bed: element.target.value,
+                      })
+                    }
                     disabled={cantEdit}
                     fullWidth
                   />
@@ -247,21 +343,26 @@ export default function CaptureDataDialog(props: IDialogProps) {
           </div>
         </DialogContent>
         <DialogActions>
-          {
-            (cantEdit != true)?(
-              <>
-              <Button onClick={() => toogleModalState(false)} color="primary">Fechar</Button>
-              <Button onClick={() => {
-                toogleModalState(false);
-                saveCallback();
-              }} color="primary">
+          {cantEdit != true ? (
+            <>
+              <Button onClick={() => toogleModalState(false)} color="primary">
+                Fechar
+              </Button>
+              <Button
+                onClick={() => {
+                  toogleModalState(false);
+                  saveCallback();
+                }}
+                color="primary"
+              >
                 Salvar
               </Button>
-              </>
-            ):(
-              <Button onClick={() => toogleModalState(false)} color="primary">Fechar</Button>
-            )
-          }
+            </>
+          ) : (
+            <Button onClick={() => toogleModalState(false)} color="primary">
+              Fechar
+            </Button>
+          )}
         </DialogActions>
       </Dialog>
     </>

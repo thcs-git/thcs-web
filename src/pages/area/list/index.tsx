@@ -137,7 +137,7 @@ export default function AreaList() {
 
   return (
     <>
-      {areaState.loading && <Loading />}
+      {/* {areaState.loading && <Loading />} */}
       <Sidebar>
         <Container>
           {/* <BoxCustom style={{  marginTop: 0 }} mt={5} paddingLeft={15} paddingRight={15} paddingTop={8}> */}

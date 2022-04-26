@@ -177,7 +177,7 @@ export default function PatientOverview(
       dispatch(loadCareById(params.id));
       dispatch(loadRequestQrCode(params.id));
       dispatch(loadCheckinRequest(params.id));
-      dispatch(loadRequestCompanyLogo());
+      // dispatch(loadRequestCompanyLogo());
       // dispatch(loadScheduleRequest({ attendance_id: params.id }));
     }
   }, [params.id]);
@@ -616,7 +616,7 @@ export default function PatientOverview(
     <Sidebar>
       {checkViewPermission("care", JSON.stringify(rightsOfLayoutState)) ? (
         <Container style={{ padding: "20px", maxWidth: "1100px" }}>
-          {careState.loading && <Loading />}
+          {/* {careState.loading && <Loading />} */}
           <FormTitle>Overview de Paciente</FormTitle>
           <Container style={{ backgroundColor: "#f5f5f5" }}>
             {true ? (

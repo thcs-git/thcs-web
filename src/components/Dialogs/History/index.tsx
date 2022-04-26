@@ -166,7 +166,7 @@ export default function HistoryDialog(props: IDialogProps) {
 
   return (
     <>
-      {careState.loading && <Loading />}
+      {/* {careState.loading && <Loading/>} */}
       <Dialog
         maxWidth="lg"
         open={modalOpen}

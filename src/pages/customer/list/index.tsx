@@ -110,7 +110,7 @@ export default function CustomerList() {
   // const debounceSearchRequest = debounce(handleChangeInput, 900);
   return (
     <>
-      {customerState.loading && <Loading />}
+      {/* {customerState.loading && <Loading />} */}
       <Sidebar>
         <Container>
           <FormTitle>Lista de Clientes</FormTitle>

@@ -1,12 +1,17 @@
-import React, { useState, useEffect, useCallback } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import { ApplicationState } from '../../../store';
-import { loadRequest, loadSpecialtyById, createSpecialtyRequest, updateSpecialtyRequest } from '../../../store/ducks/specialties/actions';
-import { SpecialtyInterface } from '../../../store/ducks/specialties/types';
+import React, { useState, useEffect, useCallback } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { ApplicationState } from "../../../store";
+import {
+  loadRequest,
+  loadSpecialtyById,
+  createSpecialtyRequest,
+  updateSpecialtyRequest,
+} from "../../../store/ducks/specialties/actions";
+import { SpecialtyInterface } from "../../../store/ducks/specialties/types";
 
-import { loadRequest as getCouncilsAction } from '../../../store/ducks/councils/actions';
+import { loadRequest as getCouncilsAction } from "../../../store/ducks/councils/actions";
 
-import { useHistory, RouteComponentProps } from 'react-router-dom';
+import { useHistory, RouteComponentProps } from "react-router-dom";
 import {
   Button,
   Container,
@@ -17,23 +22,23 @@ import {
   DialogTitle,
   FormControlLabel,
   Grid,
-} from '@material-ui/core';
-import Autocomplete from '@material-ui/lab/Autocomplete';
+} from "@material-ui/core";
+import Autocomplete from "@material-ui/lab/Autocomplete";
 
-import { FormTitle } from '../../../styles/components/Form';
-import Sidebar from '../../../components/Sidebar';
-import { SwitchComponent as Switch } from '../../../styles/components/Switch';
-import ButtonComponent from '../../../styles/components/Button';
+import { FormTitle } from "../../../styles/components/Form";
+import Sidebar from "../../../components/Sidebar";
+import { SwitchComponent as Switch } from "../../../styles/components/Switch";
+import ButtonComponent from "../../../styles/components/Button";
 
-import Loading from '../../../components/Loading';
+import Loading from "../../../components/Loading";
 
 import {
   ButtonsContent,
   FormSection,
   FormContent,
   InputFiled as TextField,
-  FormGroupSection
-} from './styles';
+  FormGroupSection,
+} from "./styles";
 
 interface IPageParams {
   id?: string;
@@ -42,46 +47,50 @@ interface IPageParams {
 export default function SpecialtyForm(props: RouteComponentProps<IPageParams>) {
   const history = useHistory();
   const dispatch = useDispatch();
-  const specialtyState = useSelector((state: ApplicationState) => state.specialties);
+  const specialtyState = useSelector(
+    (state: ApplicationState) => state.specialties
+  );
   const councilState = useSelector((state: ApplicationState) => state.councils);
 
   const { params } = props.match;
 
   const [state, setState] = useState<SpecialtyInterface>({
-    _id: props.match.params.id || '',
-    name: '',
-    describe: '',
-    council_id: { _id: '', name: '' },
-    active: true
+    _id: props.match.params.id || "",
+    name: "",
+    describe: "",
+    council_id: { _id: "", name: "" },
+    active: true,
   });
 
   const [openModalCancel, setOpenModalCancel] = useState(false);
 
   useEffect(() => {
     dispatch(loadRequest());
-    dispatch(getCouncilsAction())
+    dispatch(getCouncilsAction());
 
     if (params.id) {
-      dispatch(loadSpecialtyById(params.id))
+      dispatch(loadSpecialtyById(params.id));
     }
   }, [dispatch, params]);
 
   useEffect(() => {
-    setState(prevState => {
+    setState((prevState) => {
       return {
         ...prevState,
-        ...specialtyState.data
-      }
-    })
+        ...specialtyState.data,
+      };
+    });
   }, [specialtyState]);
 
-  const handleCouncil = useCallback((event: any, newValue: any) => {
-    setState(prevState => ({
-      ...prevState,
-      council_id: newValue,
-    }));
-
-  }, [state.council_id]);
+  const handleCouncil = useCallback(
+    (event: any, newValue: any) => {
+      setState((prevState) => ({
+        ...prevState,
+        council_id: newValue,
+      }));
+    },
+    [state.council_id]
+  );
 
   function handleOpenModalCancel() {
     setOpenModalCancel(true);
@@ -95,7 +104,7 @@ export default function SpecialtyForm(props: RouteComponentProps<IPageParams>) {
     if (state?._id) {
       dispatch(updateSpecialtyRequest(state));
     } else {
-      dispatch(createSpecialtyRequest(state))
+      dispatch(createSpecialtyRequest(state));
     }
   }
 
@@ -105,13 +114,15 @@ export default function SpecialtyForm(props: RouteComponentProps<IPageParams>) {
   }
 
   const selectCouncil = useCallback(() => {
-    const selected = councilState.list.data.filter(item => item._id === state.council_id._id);
-    return (selected[0]) ? selected[0] : null;
+    const selected = councilState.list.data.filter(
+      (item) => item._id === state.council_id._id
+    );
+    return selected[0] ? selected[0] : null;
   }, [state.council_id]);
 
   return (
     <Sidebar>
-      {specialtyState.loading && <Loading />}
+      {/* {specialtyState.loading && <Loading />} */}
       {/*{console.log('state', state)}*/}
       <Container>
         <FormSection>
@@ -127,7 +138,9 @@ export default function SpecialtyForm(props: RouteComponentProps<IPageParams>) {
                     variant="outlined"
                     size="small"
                     value={state.name}
-                    onChange={(element) => setState({ ...state, name: element.target.value })}
+                    onChange={(element) =>
+                      setState({ ...state, name: element.target.value })
+                    }
                     fullWidth
                   />
                 </Grid>
@@ -136,9 +149,17 @@ export default function SpecialtyForm(props: RouteComponentProps<IPageParams>) {
                     id="combo-box-council"
                     options={councilState.list.data}
                     getOptionLabel={(option) => option.name}
-                    renderInput={(params) => <TextField {...params} label="Conselho" variant="outlined" />}
+                    renderInput={(params) => (
+                      <TextField
+                        {...params}
+                        label="Conselho"
+                        variant="outlined"
+                      />
+                    )}
                     value={selectCouncil()}
-                    getOptionSelected={(option, value) => option._id === state.council_id._id}
+                    getOptionSelected={(option, value) =>
+                      option._id === state.council_id._id
+                    }
                     onChange={(event: any, newValue) => {
                       handleCouncil(event, newValue);
                     }}
@@ -149,24 +170,43 @@ export default function SpecialtyForm(props: RouteComponentProps<IPageParams>) {
 
                 {state?._id && (
                   <Grid item xs={12} md={12}>
-                    <FormControlLabel control={<Switch checked={state.active} onChange={(event) => {
-                      setState(prevState => ({
-                        ...prevState,
-                        active: event.target.checked
-                      }))
-                    }} />} label="Ativo?" />
+                    <FormControlLabel
+                      control={
+                        <Switch
+                          checked={state.active}
+                          onChange={(event) => {
+                            setState((prevState) => ({
+                              ...prevState,
+                              active: event.target.checked,
+                            }));
+                          }}
+                        />
+                      }
+                      label="Ativo?"
+                    />
                   </Grid>
                 )}
               </Grid>
             </FormGroupSection>
           </FormContent>
           <ButtonsContent>
-            <ButtonComponent background="default" onClick={() => specialtyState.success ? history.push('/specialty') : handleOpenModalCancel()}>
+            <ButtonComponent
+              background="default"
+              onClick={() =>
+                specialtyState.success
+                  ? history.push("/specialty")
+                  : handleOpenModalCancel()
+              }
+            >
               Voltar
             </ButtonComponent>
-            <ButtonComponent variant="contained" background="success" onClick={() => handleSaveFormCustomer()}>
+            <ButtonComponent
+              variant="contained"
+              background="success"
+              onClick={() => handleSaveFormCustomer()}
+            >
               Salvar
-					  </ButtonComponent>
+            </ButtonComponent>
           </ButtonsContent>
         </FormSection>
       </Container>
@@ -180,15 +220,15 @@ export default function SpecialtyForm(props: RouteComponentProps<IPageParams>) {
         <DialogContent>
           <DialogContentText id="alert-dialog-description">
             Tem certeza que deseja cancelar este cadastro?
-					</DialogContentText>
+          </DialogContentText>
         </DialogContent>
         <DialogActions>
           <Button onClick={handleCloseModalCancel} color="primary">
             Não
-					</Button>
+          </Button>
           <Button onClick={handleCancelForm} color="primary" autoFocus>
             Sim
-					</Button>
+          </Button>
         </DialogActions>
       </Dialog>
     </Sidebar>

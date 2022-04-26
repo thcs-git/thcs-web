@@ -1,5 +1,5 @@
-import React, {useState, useEffect, useCallback, useRef} from 'react';
-import {useHistory, RouteComponentProps} from 'react-router-dom';
+import React, { useState, useEffect, useCallback, useRef } from "react";
+import { useHistory, RouteComponentProps } from "react-router-dom";
 import {
   Container,
   StepLabel,
@@ -9,13 +9,13 @@ import {
   IconButton,
   Popover,
   FormHelperText,
-  FormControl
-} from '@material-ui/core';
-import {Help as HelpIcon} from '@material-ui/icons';
-import {toast} from 'react-toastify';
+  FormControl,
+} from "@material-ui/core";
+import { Help as HelpIcon } from "@material-ui/icons";
+import { toast } from "react-toastify";
 
-import {useDispatch, useSelector} from 'react-redux';
-import {ApplicationState} from '../../../../store';
+import { useDispatch, useSelector } from "react-redux";
+import { ApplicationState } from "../../../../store";
 
 import {
   loadCareById,
@@ -48,12 +48,12 @@ import {
   StepComponent,
   StepTitle,
 } from "../../../../styles/components/Step";
-import {handleUserSelectedId} from '../../../../helpers/localStorage';
+import { handleUserSelectedId } from "../../../../helpers/localStorage";
 
-import {ButtonsContent, FormContent} from "./styles";
+import { ButtonsContent, FormContent } from "./styles";
 import _ from "lodash";
 import ButtonComponent from "../../../../styles/components/Button";
-import {HeaderContent} from "../../../care/overview/schedule/styles";
+import { HeaderContent } from "../../../care/overview/schedule/styles";
 
 interface IPageParams {
   id: string;
@@ -61,39 +61,33 @@ interface IPageParams {
 }
 
 export default function Nead(props: RouteComponentProps<IPageParams>) {
-  const {params} = props.match;
+  const { params } = props.match;
 
   const history = useHistory();
   const dispatch = useDispatch();
   const [error, setError] = React.useState(false);
-  const [helperText, setHelperText] = React.useState('Selecione uma opção');
+  const [helperText, setHelperText] = React.useState("Selecione uma opção");
   const formNeadRef = useRef<HTMLFormElement>(null);
   const careState = useSelector((state: ApplicationState) => state.cares);
-  const {
-    documentGroupNead: documentGroupState,
-    documentNead: documentState,
-  } = careState;
+  const { documentGroupNead: documentGroupState, documentNead: documentState } =
+    careState;
 
-  const [
-    anchorHelpPopover,
-    setHelpPopover,
-  ] = React.useState<HTMLButtonElement | null>(null);
+  const [anchorHelpPopover, setHelpPopover] =
+    React.useState<HTMLButtonElement | null>(null);
   const openHelpPopover = Boolean(anchorHelpPopover);
 
-  const [
-    anchorHelpGroup3Popover,
-    setHelpGroup3Popover,
-  ] = React.useState<HTMLButtonElement | null>(null);
+  const [anchorHelpGroup3Popover, setHelpGroup3Popover] =
+    React.useState<HTMLButtonElement | null>(null);
   const openHelpGroup3Popover = Boolean(anchorHelpGroup3Popover);
 
   const [steps, setSteps] = useState([
     {
       title: "Escore de Katz",
-      score: {total: 0, complexity: "", status: ""},
+      score: { total: 0, complexity: "", status: "" },
     },
-    {title: "Grupo 1", score: {total: 0, complexity: "", status: ""}},
-    {title: "Grupo 2", score: {total: 0, complexity: "", status: ""}},
-    {title: "Grupo 3", score: {total: 0, complexity: "", status: ""}},
+    { title: "Grupo 1", score: { total: 0, complexity: "", status: "" } },
+    { title: "Grupo 2", score: { total: 0, complexity: "", status: "" } },
+    { title: "Grupo 3", score: { total: 0, complexity: "", status: "" } },
   ]);
 
   const [currentStep, setCurrentStep] = useState(0);
@@ -105,9 +99,9 @@ export default function Nead(props: RouteComponentProps<IPageParams>) {
     description: "",
     fields: [],
     created_at: "",
-    created_by: {_id: ""},
+    created_by: { _id: "" },
     updated_at: "",
-    updated_by: {_id: ""},
+    updated_by: { _id: "" },
   });
   const [document, setDocument] = useState<any>();
 
@@ -167,7 +161,7 @@ export default function Nead(props: RouteComponentProps<IPageParams>) {
 
   const selectOption = useCallback(
     (field_id: string, option_id: string, multiple: boolean = false) => {
-      let documentGroupCopy = {...documentGroup};
+      let documentGroupCopy = { ...documentGroup };
 
       documentGroupCopy?.fields?.map((field: any) => {
         if (field._id === field_id) {
@@ -270,16 +264,18 @@ export default function Nead(props: RouteComponentProps<IPageParams>) {
       status: getStatus(partialScore),
     };
 
-    setSteps(prevState => stepsCopy);
+    setSteps((prevState) => stepsCopy);
   }, [documentGroup, steps, currentStep]);
 
   const isDone = useCallback(() => {
-    let documentObj = _.find(care?.documents_id, {document_group_id: {name: 'NEAD'}});
-    return documentObj?.finished ? documentObj?.finished : false
+    let documentObj = _.find(care?.documents_id, {
+      document_group_id: { name: "NEAD" },
+    });
+    return documentObj?.finished ? documentObj?.finished : false;
   }, [care]);
 
   const handleFieldAnswer = useCallback(() => {
-    let documentGroupCopy = {...documentGroup};
+    let documentGroupCopy = { ...documentGroup };
 
     documentGroupCopy?.fields?.map((field: any) => {
       field.options.map((option: any) => {
@@ -363,7 +359,7 @@ export default function Nead(props: RouteComponentProps<IPageParams>) {
         fields: selecteds,
         complexity,
         status,
-        created_by: {_id: handleUserSelectedId() || ''},
+        created_by: { _id: handleUserSelectedId() || "" },
       };
 
       if (document?._id) {
@@ -380,11 +376,17 @@ export default function Nead(props: RouteComponentProps<IPageParams>) {
   }, [documentGroup, care]);
 
   const checkAllCurrentQuestionsAnswered = useCallback(() => {
-    const localDocumentGroup = (!!documentGroup?.fields?.length) ? documentGroup : documentGroupState;
+    const localDocumentGroup = !!documentGroup?.fields?.length
+      ? documentGroup
+      : documentGroupState;
 
-    const currentStepAnswer = localDocumentGroup?.fields?.filter(field => field.step === currentStep);
-    const isAllQuestionAnswered = currentStepAnswer?.map(field => field?.options?.some(option => option.hasOwnProperty('selected')));
-    const isError = isAllQuestionAnswered?.some(answered => !answered);
+    const currentStepAnswer = localDocumentGroup?.fields?.filter(
+      (field) => field.step === currentStep
+    );
+    const isAllQuestionAnswered = currentStepAnswer?.map((field) =>
+      field?.options?.some((option) => option.hasOwnProperty("selected"))
+    );
+    const isError = isAllQuestionAnswered?.some((answered) => !answered);
 
     if (isError) {
       toast.error("Selecione ao menos uma alternativa por pergunta");
@@ -393,47 +395,48 @@ export default function Nead(props: RouteComponentProps<IPageParams>) {
     return isError;
   }, [documentGroup, currentStep]);
 
-
   const handleNextStep = useCallback(() => {
-    let isError = null
+    let isError = null;
 
-    if (isDone() || careState.data.capture?.status != 'Em Andamento') {
-
+    if (isDone() || careState.data.capture?.status != "Em Andamento") {
     } else {
       isError = checkAllCurrentQuestionsAnswered();
     }
 
     if (isError) return;
 
-    window.scrollTo(0, 200)
+    window.scrollTo(0, 200);
 
     setCurrentStep((prevState) => prevState + 1);
   }, [currentStep, documentGroup]);
 
   const clearDocument = useCallback(() => {
-    let documentGroupCopy = {...documentGroup};
+    let documentGroupCopy = { ...documentGroup };
 
     documentGroupCopy?.fields?.map((field: any) => {
       field.options.map((option: any) => {
-        option.selected = false
-      })
-    })
+        option.selected = false;
+      });
+    });
 
     setDocumentGroup(documentGroupCopy);
 
     steps?.map((field: any) => {
-      field.score.total = 0
-    })
+      field.score.total = 0;
+    });
   }, [documentGroup, steps]);
 
   const handleBackStep = useCallback(() => {
     setCurrentStep((prevState) => prevState - 1);
-    window.scrollTo(0, 200)
+    window.scrollTo(0, 200);
   }, [currentStep]);
 
-  const handleNavigateStep = useCallback((step: number) => {
-    setCurrentStep(step);
-  }, [currentStep]);
+  const handleNavigateStep = useCallback(
+    (step: number) => {
+      setCurrentStep(step);
+    },
+    [currentStep]
+  );
 
   const handleClickHelpPopover = (
     event: React.MouseEvent<HTMLButtonElement>
@@ -457,12 +460,12 @@ export default function Nead(props: RouteComponentProps<IPageParams>) {
 
   return (
     <Sidebar>
-      {careState.loading && <Loading/>}
+      {/* {careState.loading && <Loading/>} */}
       <Container>
         {care?.patient_id && (
           <>
             <h2>Paciente</h2>
-            <PatientCard patient={care.patient_id}capture={care.capture}/>
+            <PatientCard patient={care.patient_id} capture={care.capture} />
           </>
         )}
         <div
@@ -473,21 +476,24 @@ export default function Nead(props: RouteComponentProps<IPageParams>) {
             marginBottom: 40,
           }}
         >
-          <FormTitle style={{margin: 0}}>
+          <FormTitle style={{ margin: 0 }}>
             Tabela de avaliação para planejamento de atenção domiciliar
           </FormTitle>
           <IconButton
             aria-describedby={"popover_help_abemid"}
             onClick={handleClickHelpPopover}
-            style={{marginLeft: 10}}
+            style={{ marginLeft: 10 }}
           >
-            <HelpIcon style={{color: "#ccc"}}/>
+            <HelpIcon style={{ color: "#ccc" }} />
           </IconButton>
-          {!isDone() && careState.data.capture?.status === 'Em Andamento' && (
+          {!isDone() && careState.data.capture?.status === "Em Andamento" && (
             <>
-              <ButtonComponent onClick={() => {
-                clearDocument()
-              }} background="primary">
+              <ButtonComponent
+                onClick={() => {
+                  clearDocument();
+                }}
+                background="primary"
+              >
                 Limpar Campos
               </ButtonComponent>
             </>
@@ -519,22 +525,25 @@ export default function Nead(props: RouteComponentProps<IPageParams>) {
               }}
             >
               <p>Regra:</p>
-              <br/>
+              <br />
               <ul>
                 <li>KATZ</li>
                 <p>Classificação:</p>
                 <p>
-                  5 ou 6 - Independente<br/>
-                  3 ou 4 - Dependente Parcial<br/>
-                  {`< 2 - Dependente Total`}</p>
-                <br/>
+                  5 ou 6 - Independente
+                  <br />
+                  3 ou 4 - Dependente Parcial
+                  <br />
+                  {`< 2 - Dependente Total`}
+                </p>
+                <br />
 
                 <li>GRUPO 1 – ELEGIBILIDADE</li>
                 <p>
                   Se responder <b>NÃO</b> a qualquer uma das questões,
                   considerar contraindicar Atenção Domiciliar
                 </p>
-                <br/>
+                <br />
 
                 <li>
                   GRUPO 2 – CRITÉRIOS PARA INDICAÇÃO IMEDIATA DE INTERNAÇÃO
@@ -545,7 +554,7 @@ export default function Nead(props: RouteComponentProps<IPageParams>) {
                   considerar a maior complexidade assinalada, ainda que uma
                   única vez.
                 </p>
-                <br/>
+                <br />
 
                 <li>
                   GRUPO 3 – CRITÉRIOS DE APOIO PARA INDICAÇÃO DE PLANEJAMENTO DE
@@ -555,7 +564,7 @@ export default function Nead(props: RouteComponentProps<IPageParams>) {
                   A resposta da pergunta três deve vir preenchida conforme o
                   resultado da classificação do KATZ
                 </p>
-                <br/>
+                <br />
 
                 <li>
                   Até 5 Pontos - Considerar procedimentos pontuais exclusivos ou
@@ -564,24 +573,24 @@ export default function Nead(props: RouteComponentProps<IPageParams>) {
                 <p>
                   ( ) Curativos ( ) Medicações Parenterais ( ) Outros Programas
                 </p>
-                <br/>
+                <br />
 
                 <li>
                   De 6 a 11 Pontos - Considerar Atendimento Domiciliar
                   Multiprofissional (inclui procedimentos pontuais, desde que
                   não exclusivos)
                 </li>
-                <br/>
+                <br />
 
                 <li>
                   De 12 a 17 Pontos - Considerar Internação Domiciliar 12h
                 </li>
-                <br/>
+                <br />
 
                 <li>
                   18 ou mais Pontos - Considerar Internação Domiciliar 24h
                 </li>
-                <br/>
+                <br />
               </ul>
             </div>
           </Popover>
@@ -598,7 +607,7 @@ export default function Nead(props: RouteComponentProps<IPageParams>) {
           ))}
         </StepperComponent>
 
-        {careState.data.capture?.status != 'Em Andamento' ? (
+        {careState.data.capture?.status != "Em Andamento" ? (
           <>
             <FormContent>
               {/* Score de KATZ */}
@@ -609,28 +618,37 @@ export default function Nead(props: RouteComponentProps<IPageParams>) {
                   {documentGroup?.fields?.map((field: any, index: number) => {
                     if (field.step === 0) {
                       return (
-                        <FormControl component="form" ref={formNeadRef} onSubmit={(e: any) => {
-                          e.preventDefault();
-                        }}>
-                          <QuestionSection key={`question_${field._id}_${index}`}>
+                        <FormControl
+                          component="form"
+                          ref={formNeadRef}
+                          onSubmit={(e: any) => {
+                            e.preventDefault();
+                          }}
+                        >
+                          <QuestionSection
+                            key={`question_${field._id}_${index}`}
+                          >
                             <QuestionTitle>{field.description}</QuestionTitle>
-                            <RadioGroup style={{width: 'fit-content'}}>
+                            <RadioGroup style={{ width: "fit-content" }}>
                               {/* {() => handleSelectRadio(field)} */}
                               {/* <FormHelperText>{(field.options.some((option: any) => option.selected)) ? '' : 'error'}</FormHelperText> */}
-                              {field.options.map((option: any, index: number) => (
-                                <FormControlLabel
-                                  key={`option_${field._id}_${index}`}
-                                  value={option._id}
-                                  control={(
-                                    <Radio
-                                      color="primary"
-                                      checked={isDone() ? option?.selected : false}
-
-                                    />
-                                  )}
-                                  label={option.text}
-                                />
-                              ))}
+                              {field.options.map(
+                                (option: any, index: number) => (
+                                  <FormControlLabel
+                                    key={`option_${field._id}_${index}`}
+                                    value={option._id}
+                                    control={
+                                      <Radio
+                                        color="primary"
+                                        checked={
+                                          isDone() ? option?.selected : false
+                                        }
+                                      />
+                                    }
+                                    label={option.text}
+                                  />
+                                )
+                              )}
                             </RadioGroup>
                           </QuestionSection>
                         </FormControl>
@@ -661,13 +679,15 @@ export default function Nead(props: RouteComponentProps<IPageParams>) {
                           <RadioGroup>
                             {field.options.map((option: any, index: number) => (
                               <FormControlLabel
-                                onError={() => alert('erro')}
+                                onError={() => alert("erro")}
                                 key={`option_${field._id}_${index}`}
                                 value={option._id}
                                 control={
                                   <Radio
                                     color="primary"
-                                    checked={isDone() ? option?.selected : false}
+                                    checked={
+                                      isDone() ? option?.selected : false
+                                    }
                                   />
                                 }
                                 label={option.text}
@@ -685,12 +705,14 @@ export default function Nead(props: RouteComponentProps<IPageParams>) {
                       considerar contraindicar Atenção Domiciliar
                     </i>
                   </p>
-                  <br/>
+                  <br />
 
                   <ScoreTotalContent>
                     <ScoreLabel>ELEGIBILIDADE:</ScoreLabel>
                     <ScoreTotal>
-                      {steps[currentStep].score.status ? steps[currentStep].score.status : "Não Elegível"}
+                      {steps[currentStep].score.status
+                        ? steps[currentStep].score.status
+                        : "Não Elegível"}
                     </ScoreTotal>
                   </ScoreTotalContent>
                 </>
@@ -716,7 +738,9 @@ export default function Nead(props: RouteComponentProps<IPageParams>) {
                                 control={
                                   <Radio
                                     color="primary"
-                                    checked={isDone() ? option?.selected : false}
+                                    checked={
+                                      isDone() ? option?.selected : false
+                                    }
                                   />
                                 }
                                 label={option.text}
@@ -731,15 +755,17 @@ export default function Nead(props: RouteComponentProps<IPageParams>) {
                   <p>
                     <i>
                       *Para indicação de Planejamento de Atenção (P.A.D.),
-                      considerar a maior complexidade assinalada, ainda que a única
-                      vez.
+                      considerar a maior complexidade assinalada, ainda que a
+                      única vez.
                     </i>
                   </p>
 
                   <ScoreTotalContent>
                     <ScoreLabel>P.A.D.:</ScoreLabel>
                     <ScoreTotal>
-                      {steps[currentStep].score.complexity ? steps[currentStep].score.complexity : "Não Elegível"}
+                      {steps[currentStep].score.complexity
+                        ? steps[currentStep].score.complexity
+                        : "Não Elegível"}
                     </ScoreTotal>
                   </ScoreTotalContent>
                 </>
@@ -756,17 +782,17 @@ export default function Nead(props: RouteComponentProps<IPageParams>) {
                       marginBottom: 40,
                     }}
                   >
-                    <StepTitle style={{margin: 0}}>
-                      Critérios de apoio para indicação de planejamento de atenção
-                      domiciliar
+                    <StepTitle style={{ margin: 0 }}>
+                      Critérios de apoio para indicação de planejamento de
+                      atenção domiciliar
                     </StepTitle>
 
                     <IconButton
                       aria-describedby={"popover_help_abemid_group_3"}
                       onClick={handleClickHelpGroup3Popover}
-                      style={{marginLeft: 10}}
+                      style={{ marginLeft: 10 }}
                     >
-                      <HelpIcon style={{color: "#ccc"}}/>
+                      <HelpIcon style={{ color: "#ccc" }} />
                     </IconButton>
                     <Popover
                       id={"popover_help_abemid_group_3"}
@@ -794,7 +820,7 @@ export default function Nead(props: RouteComponentProps<IPageParams>) {
                         }}
                       >
                         <p>Regra:</p>
-                        <br/>
+                        <br />
                         <ul>
                           <li>
                             Até 5 Pontos - Considerar procedimentos pontuais
@@ -804,24 +830,26 @@ export default function Nead(props: RouteComponentProps<IPageParams>) {
                             ( ) Curativos ( ) Medicações Parenterais ( ) Outros
                             Programas
                           </p>
-                          <br/>
+                          <br />
 
                           <li>
                             De 6 a 11 Pontos - Considerar Atendimento Domiciliar
-                            Multiprofissional (inclui procedimentos pontuais, desde
-                            que não exclusivos)
+                            Multiprofissional (inclui procedimentos pontuais,
+                            desde que não exclusivos)
                           </li>
-                          <br/>
+                          <br />
 
                           <li>
-                            De 12 a 17 Pontos - Considerar Internação Domiciliar 12h
+                            De 12 a 17 Pontos - Considerar Internação Domiciliar
+                            12h
                           </li>
-                          <br/>
+                          <br />
 
                           <li>
-                            18 ou mais Pontos - Considerar Internação Domiciliar 24h
+                            18 ou mais Pontos - Considerar Internação Domiciliar
+                            24h
                           </li>
-                          <br/>
+                          <br />
                         </ul>
                       </div>
                     </Popover>
@@ -829,73 +857,91 @@ export default function Nead(props: RouteComponentProps<IPageParams>) {
 
                   {documentGroup?.fields?.map((field: any, index: number) => {
                     if (field.step === 3) {
-
                       const getKatz = (option: any, score: number) => {
-                        option.selected = false
-                        if (option.value === '0') {
+                        option.selected = false;
+                        if (option.value === "0") {
                           if (score > 4) {
-                            option.selected = true
+                            option.selected = true;
                           }
-                        } else if (option.value === '1') {
+                        } else if (option.value === "1") {
                           if (score >= 3 && score <= 4) {
-                            option.selected = true
+                            option.selected = true;
                           }
-                        } else if (option.value === '2') {
+                        } else if (option.value === "2") {
                           if (score <= 2) {
-                            option.selected = true
+                            option.selected = true;
                           }
                         } else {
-                          option.selected = false
+                          option.selected = false;
                         }
-                        return option
+                        return option;
                       };
 
                       return (
                         <QuestionSection key={`question_${field._id}_${index}`}>
-
-                          {(field.description === '3. KATZ (se pediatria, considerar dependência total)') ? (
+                          {field.description ===
+                          "3. KATZ (se pediatria, considerar dependência total)" ? (
                             <>
                               <QuestionTitle>{field.description}</QuestionTitle>
                               <RadioGroup>
-                                {field.options.map((option: any, index: number) => (
-                                  <>
-                                    {/*{console.log(option)}*/}
-                                    <FormControlLabel
-                                      key={`option_${field._id}_${index}`}
-                                      value={getKatz(option, steps[0].score.total)}
-                                      control={
-                                        <Radio
-                                          color="primary"
-                                          checked={isDone() ? option?.selected : false}
-                                        />
-                                      }
-                                      label={option.text}
-                                      checked={isDone() ? option?.selected : false}
-                                    />
-                                  </>
-                                ))}
+                                {field.options.map(
+                                  (option: any, index: number) => (
+                                    <>
+                                      {/*{console.log(option)}*/}
+                                      <FormControlLabel
+                                        key={`option_${field._id}_${index}`}
+                                        value={getKatz(
+                                          option,
+                                          steps[0].score.total
+                                        )}
+                                        control={
+                                          <Radio
+                                            color="primary"
+                                            checked={
+                                              isDone()
+                                                ? option?.selected
+                                                : false
+                                            }
+                                          />
+                                        }
+                                        label={option.text}
+                                        checked={
+                                          isDone() ? option?.selected : false
+                                        }
+                                      />
+                                    </>
+                                  )
+                                )}
                               </RadioGroup>
                             </>
                           ) : (
                             <>
                               <QuestionTitle>{field.description}</QuestionTitle>
                               <RadioGroup>
-                                {field.options.map((option: any, index: number) => (
-                                  <>
-                                    <FormControlLabel
-                                      key={`option_${field._id}_${index}`}
-                                      value={option._id}
-                                      control={
-                                        <Radio
-                                          color="primary"
-                                          checked={isDone() ? option?.selected : false}
-                                        />
-                                      }
-                                      label={option.text}
-                                      checked={isDone() ? option?.selected : false}
-                                    />
-                                  </>
-                                ))}
+                                {field.options.map(
+                                  (option: any, index: number) => (
+                                    <>
+                                      <FormControlLabel
+                                        key={`option_${field._id}_${index}`}
+                                        value={option._id}
+                                        control={
+                                          <Radio
+                                            color="primary"
+                                            checked={
+                                              isDone()
+                                                ? option?.selected
+                                                : false
+                                            }
+                                          />
+                                        }
+                                        label={option.text}
+                                        checked={
+                                          isDone() ? option?.selected : false
+                                        }
+                                      />
+                                    </>
+                                  )
+                                )}
                               </RadioGroup>
                             </>
                           )}
@@ -941,7 +987,7 @@ export default function Nead(props: RouteComponentProps<IPageParams>) {
                   </>
                 ) : (
                   <Button
-                    disabled={currentStep === (steps.length - 1)}
+                    disabled={currentStep === steps.length - 1}
                     background="success"
                     type="submit"
                     onClick={handleNextStep}
@@ -963,29 +1009,40 @@ export default function Nead(props: RouteComponentProps<IPageParams>) {
                   {documentGroup?.fields?.map((field: any, index: number) => {
                     if (field.step === 0) {
                       return (
-                        <FormControl component="form" ref={formNeadRef} onSubmit={(e: any) => {
-                          e.preventDefault();
-                        }}>
-                          <QuestionSection key={`question_${field._id}_${index}`}>
+                        <FormControl
+                          component="form"
+                          ref={formNeadRef}
+                          onSubmit={(e: any) => {
+                            e.preventDefault();
+                          }}
+                        >
+                          <QuestionSection
+                            key={`question_${field._id}_${index}`}
+                          >
                             <QuestionTitle>{field.description}</QuestionTitle>
-                            <RadioGroup style={{width: 'fit-content'}}
-                                        onChange={e => selectOption(field._id, e.target.value)}>
+                            <RadioGroup
+                              style={{ width: "fit-content" }}
+                              onChange={(e) =>
+                                selectOption(field._id, e.target.value)
+                              }
+                            >
                               {/* {() => handleSelectRadio(field)} */}
                               {/* <FormHelperText>{(field.options.some((option: any) => option.selected)) ? '' : 'error'}</FormHelperText> */}
-                              {field.options.map((option: any, index: number) => (
-                                <FormControlLabel
-                                  key={`option_${field._id}_${index}`}
-                                  value={option._id}
-                                  control={(
-                                    <Radio
-                                      color="primary"
-                                      checked={option?.selected}
-
-                                    />
-                                  )}
-                                  label={option.text}
-                                />
-                              ))}
+                              {field.options.map(
+                                (option: any, index: number) => (
+                                  <FormControlLabel
+                                    key={`option_${field._id}_${index}`}
+                                    value={option._id}
+                                    control={
+                                      <Radio
+                                        color="primary"
+                                        checked={option?.selected}
+                                      />
+                                    }
+                                    label={option.text}
+                                  />
+                                )
+                              )}
                             </RadioGroup>
                           </QuestionSection>
                         </FormControl>
@@ -1020,7 +1077,7 @@ export default function Nead(props: RouteComponentProps<IPageParams>) {
                           >
                             {field.options.map((option: any, index: number) => (
                               <FormControlLabel
-                                onError={() => alert('erro')}
+                                onError={() => alert("erro")}
                                 key={`option_${field._id}_${index}`}
                                 value={option._id}
                                 control={
@@ -1044,12 +1101,14 @@ export default function Nead(props: RouteComponentProps<IPageParams>) {
                       considerar contraindicar Atenção Domiciliar
                     </i>
                   </p>
-                  <br/>
+                  <br />
 
                   <ScoreTotalContent>
                     <ScoreLabel>ELEGIBILIDADE:</ScoreLabel>
                     <ScoreTotal>
-                      {steps[currentStep].score.status ? steps[currentStep].score.status : "Não Elegível"}
+                      {steps[currentStep].score.status
+                        ? steps[currentStep].score.status
+                        : "Não Elegível"}
                     </ScoreTotal>
                   </ScoreTotalContent>
                 </>
@@ -1094,15 +1153,17 @@ export default function Nead(props: RouteComponentProps<IPageParams>) {
                   <p>
                     <i>
                       *Para indicação de Planejamento de Atenção (P.A.D.),
-                      considerar a maior complexidade assinalada, ainda que a única
-                      vez.
+                      considerar a maior complexidade assinalada, ainda que a
+                      única vez.
                     </i>
                   </p>
 
                   <ScoreTotalContent>
                     <ScoreLabel>P.A.D.:</ScoreLabel>
                     <ScoreTotal>
-                      {steps[currentStep].score.complexity ? steps[currentStep].score.complexity : "Não Elegível"}
+                      {steps[currentStep].score.complexity
+                        ? steps[currentStep].score.complexity
+                        : "Não Elegível"}
                     </ScoreTotal>
                   </ScoreTotalContent>
                 </>
@@ -1119,17 +1180,17 @@ export default function Nead(props: RouteComponentProps<IPageParams>) {
                       marginBottom: 40,
                     }}
                   >
-                    <StepTitle style={{margin: 0}}>
-                      Critérios de apoio para indicação de planejamento de atenção
-                      domiciliar
+                    <StepTitle style={{ margin: 0 }}>
+                      Critérios de apoio para indicação de planejamento de
+                      atenção domiciliar
                     </StepTitle>
 
                     <IconButton
                       aria-describedby={"popover_help_abemid_group_3"}
                       onClick={handleClickHelpGroup3Popover}
-                      style={{marginLeft: 10}}
+                      style={{ marginLeft: 10 }}
                     >
-                      <HelpIcon style={{color: "#ccc"}}/>
+                      <HelpIcon style={{ color: "#ccc" }} />
                     </IconButton>
                     <Popover
                       id={"popover_help_abemid_group_3"}
@@ -1157,7 +1218,7 @@ export default function Nead(props: RouteComponentProps<IPageParams>) {
                         }}
                       >
                         <p>Regra:</p>
-                        <br/>
+                        <br />
                         <ul>
                           <li>
                             Até 5 Pontos - Considerar procedimentos pontuais
@@ -1167,24 +1228,26 @@ export default function Nead(props: RouteComponentProps<IPageParams>) {
                             ( ) Curativos ( ) Medicações Parenterais ( ) Outros
                             Programas
                           </p>
-                          <br/>
+                          <br />
 
                           <li>
                             De 6 a 11 Pontos - Considerar Atendimento Domiciliar
-                            Multiprofissional (inclui procedimentos pontuais, desde
-                            que não exclusivos)
+                            Multiprofissional (inclui procedimentos pontuais,
+                            desde que não exclusivos)
                           </li>
-                          <br/>
+                          <br />
 
                           <li>
-                            De 12 a 17 Pontos - Considerar Internação Domiciliar 12h
+                            De 12 a 17 Pontos - Considerar Internação Domiciliar
+                            12h
                           </li>
-                          <br/>
+                          <br />
 
                           <li>
-                            18 ou mais Pontos - Considerar Internação Domiciliar 24h
+                            18 ou mais Pontos - Considerar Internação Domiciliar
+                            24h
                           </li>
-                          <br/>
+                          <br />
                         </ul>
                       </div>
                     </Popover>
@@ -1192,31 +1255,30 @@ export default function Nead(props: RouteComponentProps<IPageParams>) {
 
                   {documentGroup?.fields?.map((field: any, index: number) => {
                     if (field.step === 3) {
-
                       const getKatz = (option: any, score: number) => {
-                        option.selected = false
-                        if (option.value === '0') {
+                        option.selected = false;
+                        if (option.value === "0") {
                           if (score > 4) {
-                            option.selected = true
+                            option.selected = true;
                           }
-                        } else if (option.value === '1') {
+                        } else if (option.value === "1") {
                           if (score >= 3 && score <= 4) {
-                            option.selected = true
+                            option.selected = true;
                           }
-                        } else if (option.value === '2') {
+                        } else if (option.value === "2") {
                           if (score <= 2) {
-                            option.selected = true
+                            option.selected = true;
                           }
                         } else {
-                          option.selected = false
+                          option.selected = false;
                         }
-                        return option
+                        return option;
                       };
 
                       return (
                         <QuestionSection key={`question_${field._id}_${index}`}>
-
-                          {(field.description === '3. KATZ (se pediatria, considerar dependência total)') ? (
+                          {field.description ===
+                          "3. KATZ (se pediatria, considerar dependência total)" ? (
                             <>
                               <QuestionTitle>{field.description}</QuestionTitle>
                               <RadioGroup
@@ -1224,23 +1286,28 @@ export default function Nead(props: RouteComponentProps<IPageParams>) {
                                   selectOption(field._id, e.target.value);
                                 }}
                               >
-                                {field.options.map((option: any, index: number) => (
-                                  <>
-                                    {/*{console.log(option)}*/}
-                                    <FormControlLabel
-                                      key={`option_${field._id}_${index}`}
-                                      value={getKatz(option, steps[0].score.total)}
-                                      control={
-                                        <Radio
-                                          color="primary"
-                                          checked={option?.selected}
-                                        />
-                                      }
-                                      label={option.text}
-                                      checked={option?.selected}
-                                    />
-                                  </>
-                                ))}
+                                {field.options.map(
+                                  (option: any, index: number) => (
+                                    <>
+                                      {/*{console.log(option)}*/}
+                                      <FormControlLabel
+                                        key={`option_${field._id}_${index}`}
+                                        value={getKatz(
+                                          option,
+                                          steps[0].score.total
+                                        )}
+                                        control={
+                                          <Radio
+                                            color="primary"
+                                            checked={option?.selected}
+                                          />
+                                        }
+                                        label={option.text}
+                                        checked={option?.selected}
+                                      />
+                                    </>
+                                  )
+                                )}
                               </RadioGroup>
                             </>
                           ) : (
@@ -1251,22 +1318,24 @@ export default function Nead(props: RouteComponentProps<IPageParams>) {
                                   selectOption(field._id, e.target.value);
                                 }}
                               >
-                                {field.options.map((option: any, index: number) => (
-                                  <>
-                                    <FormControlLabel
-                                      key={`option_${field._id}_${index}`}
-                                      value={option._id}
-                                      control={
-                                        <Radio
-                                          color="primary"
-                                          checked={option?.selected}
-                                        />
-                                      }
-                                      label={option.text}
-                                      checked={option?.selected}
-                                    />
-                                  </>
-                                ))}
+                                {field.options.map(
+                                  (option: any, index: number) => (
+                                    <>
+                                      <FormControlLabel
+                                        key={`option_${field._id}_${index}`}
+                                        value={option._id}
+                                        control={
+                                          <Radio
+                                            color="primary"
+                                            checked={option?.selected}
+                                          />
+                                        }
+                                        label={option.text}
+                                        checked={option?.selected}
+                                      />
+                                    </>
+                                  )
+                                )}
                               </RadioGroup>
                             </>
                           )}
@@ -1312,7 +1381,7 @@ export default function Nead(props: RouteComponentProps<IPageParams>) {
                   </>
                 ) : (
                   <Button
-                    disabled={currentStep === (steps.length - 1)}
+                    disabled={currentStep === steps.length - 1}
                     background="success"
                     type="submit"
                     onClick={handleNextStep}
@@ -1324,7 +1393,6 @@ export default function Nead(props: RouteComponentProps<IPageParams>) {
             </FormContent>
           </>
         )}
-
       </Container>
     </Sidebar>
   );
