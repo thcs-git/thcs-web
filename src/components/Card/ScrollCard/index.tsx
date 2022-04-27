@@ -151,7 +151,7 @@ export default function ScrollCard(props: IScroll) {
               name === selectCard
                 ? name === "Alergias" && allergic
                   ? "var(--danger)"
-                  : "var(--secondary)"
+                  : "var(--secondary) "
                 : "var(--gray-light);"
             }`,
             color: `${name === selectCard ? "var(--white)" : ""}`,

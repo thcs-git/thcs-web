@@ -5,7 +5,7 @@ import AccordionDetails, {
   AccordionDetailsProps,
 } from "@mui/material/AccordionDetails";
 import AccordionSummary from "@mui/material/AccordionSummary";
-import Box from "@mui/material/Box";
+import Box, { BoxProps } from "@mui/material/Box";
 import Container from "@mui/material/Container";
 import Button, { ButtonProps } from "@mui/material/Button";
 import Paper, { PaperProps } from "@mui/material/Paper";
@@ -52,14 +52,20 @@ export const ContentDetailsAccordion = styled(Box)`
   text-align: center;
   min-height: 48px;
 `;
-
-export const TextCenterDetails = styled(Box)`
-  display: flex;
-  justify-content: center;
-  text-align: center;
-  width: 200px;
-  margin: auto 0;
-`;
+export const TextCenterDetails = styledMui(Box)<BoxProps>(({ theme }) => ({
+  display: "flex",
+  justifyContent: "center",
+  textAlign: "center",
+  width: "200px",
+  margin: "auto 0",
+}));
+// export const TextCenterDetails = styled(Box)`
+//   display: flex;
+//   justify-content: center;
+//   text-align: center;
+//   width: 200px;
+//   margin: auto 0;
+// `;
 
 export const ContainerStyled = styled(Container)`
   padding-bottom: 24px;

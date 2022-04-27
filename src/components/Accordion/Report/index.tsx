@@ -682,6 +682,8 @@ export default function AccordionReport(props: IAccordionReport) {
                           alignItems: "center",
                           gap: "4px",
                           margin: "2px",
+                          cursor: "help",
+                          "& svg, path": { cursor: "help" },
                         }}
                       >
                         <Badge
@@ -698,6 +700,7 @@ export default function AccordionReport(props: IAccordionReport) {
                               height: "16px",
                               padding: "5px",
                               minWidth: "min-content",
+                              cursor: "help",
                             },
                           }}
                         >
@@ -726,6 +729,8 @@ export default function AccordionReport(props: IAccordionReport) {
                           alignItems: "center",
                           gap: "4px",
                           margin: "2px",
+                          cursor: "help",
+                          "& svg, path": { cursor: "help" },
                         }}
                       >
                         <Badge
@@ -742,6 +747,7 @@ export default function AccordionReport(props: IAccordionReport) {
                               height: "14px",
                               padding: "5px",
                               minWidth: "min-content",
+                              cursor: "help",
                             },
                           }}
                         >
@@ -1301,7 +1307,6 @@ export default function AccordionReport(props: IAccordionReport) {
     );
   const antibioticAccordionDetailsRows = (item: any) => (
     <>
-      {console.log(item)}
       <ContentDetailsAccordion sx={{ gap: "8px" }}>
         <TextCenterDetails
           sx={{
