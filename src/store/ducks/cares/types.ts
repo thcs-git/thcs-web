@@ -185,6 +185,7 @@ export interface IEvolution {
   ];
 }
 export interface CareInterface {
+  area?: string;
   transferred_from?: string;
   death?: boolean;
   tipo?: string;
