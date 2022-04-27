@@ -1,26 +1,43 @@
 import styled from "styled-components";
+import { styled as styledMui } from "@mui/material/styles";
 import { Container } from "@material-ui/core";
 import Glider from "react-glider";
-import Box from "@mui/material/Box";
+import Box, { BoxProps } from "@mui/material/Box";
 import "glider-js/glider.min.css";
 
-export const Card = styled(Box)`
-  width: 120px;
-  height: 200px;
-  background-color: var(--white);
-  border: 1px solid #ebebeb;
-  border-radius: 8px;
-  margin: 15px 8px 0 8px;
-  cursor: pointer;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  align-items: center;
-  & svg,
-  path {
-    cursor: pointer;
-  }
-`;
+export const Card = styledMui(Box)<BoxProps>(({ theme }) => ({
+  width: "120px",
+  height: "200px",
+  backgroundColor: "var(--white)",
+  border: "1px solid #ebebeb",
+  borderRadius: "8px",
+  margin: " 15px 8px 0 8px",
+  cursor: "pointer",
+  display: "flex",
+  flexDirection: "column",
+  justifyContent: "space-between",
+  alignItems: "center",
+  "& svg,  path": {
+    cursor: "pointer",
+  },
+}));
+// export const Card = styled(Box)`
+//   width: 120px;
+//   height: 200px;
+//   background-color: var(--white);
+//   border: 1px solid #ebebeb;
+//   border-radius: 8px;
+//   margin: 15px 8px 0 8px;
+//   cursor: pointer;
+//   display: flex;
+//   flex-direction: column;
+//   justify-content: space-between;
+//   align-items: center;
+//   & svg,
+//   path {
+//     cursor: pointer;
+//   }
+// `;
 export const IconCard = styled(Box)`
   height: 100%;
   display: flex;
@@ -33,14 +50,15 @@ export const IconCard = styled(Box)`
     cursor: pointer;
   }
 `;
-export const FooterCard = styled(Box)`
-  background-color: var(--gray-light);
-  width: 100%;
-  border-radius: 0 0 8px 8px;
-  color: #666666;
-  text-align: center;
-  cursor: pointer;
-`;
+
+export const FooterCard = styledMui(Box)<BoxProps>(({ theme }) => ({
+  backgroundColor: "var(--gray-light)",
+  width: "100%",
+  borderRadius: "0 0 8px 8px",
+  color: "#666666",
+  textAlign: "center",
+  cursor: "pointer",
+}));
 
 export const GliderStyle = styled(Glider)`
   height: 130px;
