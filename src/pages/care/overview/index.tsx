@@ -461,8 +461,6 @@ export default function PatientOverview(
     "Antibióticos",
     "Evolução",
     "Aferições",
-    "Exames",
-    "Atestados",
   ];
   const personalCard = {
     card: "Dados Pessoais",
