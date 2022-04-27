@@ -528,7 +528,7 @@ const TableComponent = (props: ITableProps) => {
                       : "-"}
                   </TableCell>
                   <TableCell align="center">
-                    {handleEmpty(care?.tipo)}
+                    {handleEmpty(care?.area)}
                   </TableCell>
                   <TableCell>{handleEmpty(care?.company)}</TableCell>
                   <TableCell align="center">
@@ -602,7 +602,7 @@ const TableComponent = (props: ITableProps) => {
                       : handleEmpty(care.patient_id?.name)}
                   </Link>
                 </TableCell>
-                <TableCell>{handleEmpty(care?.tipo)}</TableCell>
+                <TableCell>{handleEmpty(care?.area)}</TableCell>
                 <TableCell>
                   {handleEmpty(care.patient_id?.fiscal_number)}
                 </TableCell>
