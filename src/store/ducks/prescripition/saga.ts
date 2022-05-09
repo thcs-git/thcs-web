@@ -2,7 +2,7 @@ import { put, call } from "redux-saga/effects";
 import { AxiosResponse } from "axios";
 import { toast } from "react-toastify";
 
-import { apiSollar } from "../../../services/axios";
+import { apiSollar, apiSollarReport } from "../../../services/axios";
 
 import {
   loadSuccess,
@@ -11,9 +11,12 @@ import {
   loadSuccessGetPrescriptionById,
   updatePrescriptionSuccess,
   loadSuccessByCareId,
+  loadSucessReportUnique,
+  loadFailureReportUnique,
 } from "./actions";
 import { PrescriptionInterface } from "./types";
 import SESSIONSTORAGE from "../../../helpers/constants/sessionStorage";
+import LOCALSTORAGE from "../../../helpers/constants/localStorage";
 
 export function* get({ payload }: any) {
   const { params } = payload;
@@ -100,5 +103,27 @@ export function* loadPrescriptionByCareId({ payload }: any) {
   } catch (error) {
     toast.info("Não foi possível prescrição");
     yield put(loadFailure());
+  }
+}
+
+export function* loadReportUnique(data: any) {
+  const integration = sessionStorage.getItem(SESSIONSTORAGE.INTEGRATION);
+  const user_id = localStorage.getItem(LOCALSTORAGE.USER_ID);
+  const { id, careId } = data.payload;
+
+  console.log(data.payload, "data payload em prescription");
+  try {
+    const response: AxiosResponse = yield call(
+      apiSollarReport.get,
+      `prescription/${id}`,
+      {
+        responseType: "blob",
+        headers: { ...Headers, user_id, external_attendance_id: careId },
+      }
+    );
+    yield put(loadSucessReportUnique(response.data));
+  } catch (error) {
+    toast.info("Não foi possível gerar relatório de prescrições.");
+    yield put(loadFailureReportUnique());
   }
 }

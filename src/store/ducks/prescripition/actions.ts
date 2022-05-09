@@ -37,3 +37,10 @@ export const loadSuccessByCareId = (data: any) =>
   action(PrescriptionTypes.LOAD_SUCCESS_PRESCRIPTION_BY_CARE_ID, { data });
 export const loadFailureByCareId = () =>
   action(PrescriptionTypes.LOAD_FAILURE_PRESCRIPTION_BY_CARE_ID);
+
+export const loadRequestReportUnique = (data: any) =>
+  action(PrescriptionTypes.LOAD_REQUEST_REPORT_UNIQUE, data);
+export const loadSucessReportUnique = (data: any) =>
+  action(PrescriptionTypes.LOAD_SUCCESS_REPORT_UNIQUE, data);
+export const loadFailureReportUnique = () =>
+  action(PrescriptionTypes.LOAD_FAILURE_REPORT_UNIQUE);

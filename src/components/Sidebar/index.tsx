@@ -515,8 +515,8 @@ const Sibebar = (props: Props<any>) => {
                 <Grid
                   container
                   spacing={2}
-                  xs={12}
-                  md={12}
+                  // xs={12}
+                  // md={12}
                   style={{ justifyContent: "space-evenly" }}
                 >
                   <Grid item>
