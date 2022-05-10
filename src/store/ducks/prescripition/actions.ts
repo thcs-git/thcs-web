@@ -38,6 +38,13 @@ export const loadSuccessByCareId = (data: any) =>
 export const loadFailureByCareId = () =>
   action(PrescriptionTypes.LOAD_FAILURE_PRESCRIPTION_BY_CARE_ID);
 
+export const loadRequestWithItems = (data: any) =>
+  action(PrescriptionTypes.LOAD_REQUEST_WITH_ITEMS, data);
+export const loadSuccessWithItems = (data: any) =>
+  action(PrescriptionTypes.LOAD_SUCCESS_WITH_ITEMS, data);
+export const loadFailuretWithItems = () =>
+  action(PrescriptionTypes.LOAD_FAILURE_WITH_ITEMS);
+
 export const loadRequestReportUnique = (data: any) =>
   action(PrescriptionTypes.LOAD_REQUEST_REPORT_UNIQUE, data);
 export const loadSucessReportUnique = (data: any) =>
