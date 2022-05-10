@@ -45,13 +45,17 @@ const ButtonTabs = (props: IComponent) => {
   return (
     <ButtonsContent>
       {buttons.map(
-        ({ name, variant, background, onClick, show, component }: IButtons) => (
+        (
+          { name, variant, background, onClick, show, component }: IButtons,
+          index: number
+        ) => (
           <>
             {(show || canEdit) && (
               <ButtonComponent
                 variant={variant}
                 background={background}
                 onClick={onClick}
+                key={index}
               >
                 {name}
                 {component}

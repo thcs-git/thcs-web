@@ -13,6 +13,7 @@ import Divider from "@mui/material/Divider";
 import Tooltip from "@mui/material/Tooltip";
 import Badge from "@mui/material/Badge";
 import Stack from "@mui/material/Stack";
+import { IconButton } from "@mui/material";
 
 // icons
 import IconMeasurement from "../../Icons/measurement";
@@ -56,14 +57,15 @@ import {
 import { formatDate } from "../../../helpers/date";
 import { toast } from "react-toastify";
 import _ from "lodash";
+import dayjs from "dayjs";
+
 // components
 import Loading from "../../Loading";
-// types
+// types REDUX
 import {
   AllergiesInterface,
   AllergiesItem,
 } from "../../../store/ducks/allergies/types";
-import { IconButton } from "@mui/material";
 import {
   loadAdverseEventFilterRequest,
   loadAllergyFilterRequest,
@@ -75,8 +77,9 @@ import {
 import { useDispatch, useSelector } from "react-redux";
 import { CareState } from "../../../store/ducks/cares/types";
 import { ApplicationState } from "../../../store";
-import dayjs from "dayjs";
 import { ExamsItem } from "../../../store/ducks/exams/types";
+import { loadRequestReportUnique as loadRequestReportPrescriptionUnique } from "../../../store/ducks/prescripition/actions";
+import { loadRequestReportUnique as loadRequestReportAntibioticUnique } from "../../../store/ducks/antibiotic/actions";
 
 interface IAccordionReport {
   content: {
@@ -139,7 +142,7 @@ export default function AccordionReport(props: IAccordionReport) {
   const integration = sessionStorage.getItem(SESSIONSTORAGE.INTEGRATION);
 
   const [expanded, setExpanded] = useState<string | false>("panel0");
-
+  const careState = useSelector((state: ApplicationState) => state.cares);
   const NoData = () => (
     <Box
       sx={{
@@ -947,7 +950,6 @@ export default function AccordionReport(props: IAccordionReport) {
       });
     }
   };
-
   // Accordion das Prescrições
   const prescriptionAccordion = (data: any) =>
     data.map((day: any, index: number) => (
@@ -1116,7 +1118,14 @@ export default function AccordionReport(props: IAccordionReport) {
                 height: "36px",
                 width: "36px",
               }}
-              onClick={() => {}}
+              onClick={() => {
+                dispatch(
+                  loadRequestReportPrescriptionUnique({
+                    id: column._id,
+                    careId: careState.data._id,
+                  })
+                );
+              }}
             >
               <PrintIcon
                 sx={{
@@ -1161,7 +1170,9 @@ export default function AccordionReport(props: IAccordionReport) {
                 height: "36px",
                 width: "36px",
               }}
-              onClick={() => {}}
+              onClick={() => {
+                dispatch(loadRequestReportAntibioticUnique(item.id));
+              }}
             >
               <PrintIcon
                 sx={{

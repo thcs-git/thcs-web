@@ -44,3 +44,10 @@ export const loadSuccessWithItems = (data: any) =>
   action(PrescriptionTypes.LOAD_SUCCESS_WITH_ITEMS, data);
 export const loadFailuretWithItems = () =>
   action(PrescriptionTypes.LOAD_FAILURE_WITH_ITEMS);
+
+export const loadRequestReportUnique = (data: any) =>
+  action(PrescriptionTypes.LOAD_REQUEST_REPORT_UNIQUE, data);
+export const loadSucessReportUnique = (data: any) =>
+  action(PrescriptionTypes.LOAD_SUCCESS_REPORT_UNIQUE, data);
+export const loadFailureReportUnique = () =>
+  action(PrescriptionTypes.LOAD_FAILURE_REPORT_UNIQUE);
