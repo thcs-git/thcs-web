@@ -409,6 +409,7 @@ const TabForm = (props: ITabprops) => {
                 }
                 wrapped
                 className={value === index ? "active" : ""}
+                key={index}
                 {...a11yProps({ index })}
               />
             )
@@ -419,7 +420,7 @@ const TabForm = (props: ITabprops) => {
         const last = _.findLastIndex(components);
 
         return (
-          <TabPanel value={value} index={index}>
+          <TabPanel value={value} index={index} key={index}>
             {components.map((component: string, sub_index: number) => (
               <>
                 {handleComponents(component, parseInt(`${index}${sub_index}`))}
@@ -466,6 +467,7 @@ const TabForm = (props: ITabprops) => {
                   </TabNavItemDetails>
                 }
                 wrapped
+                key={index}
                 className={value === index ? "active" : ""}
                 {...a11yProps({ index })}
               />
@@ -476,7 +478,7 @@ const TabForm = (props: ITabprops) => {
       {navItems.map(({ name, components, badge }: INavItems, index: number) => {
         const last = _.findLastIndex(components);
         return (
-          <TabPanel value={value} index={index}>
+          <TabPanel value={value} index={index} key={index}>
             {components.map((component: string, sub_index: number) => (
               <>
                 {handleComponents(component, parseInt(`${index}${sub_index}`))}
@@ -576,6 +578,7 @@ const TabForm = (props: ITabprops) => {
           >
             {navItems.map(({ name, badge }: INavItems, index: number) => (
               <TabNavItemPermission
+                key={index}
                 value={index}
                 label={
                   badge ? (
@@ -626,7 +629,7 @@ const TabForm = (props: ITabprops) => {
       {navItems.map(({ name, components, badge }: INavItems, index: number) => {
         const last = _.findLastIndex(components);
         return (
-          <TabPanel value={value} index={index}>
+          <TabPanel value={value} index={index} key={index}>
             {components.map((component: string, sub_index: number) => (
               <>
                 {handleComponents(component, parseInt(`${index}${sub_index}`))}
@@ -658,6 +661,7 @@ const TabForm = (props: ITabprops) => {
               ""
             ) : (
               <TabNavItem
+                key={index}
                 value={index}
                 label={
                   badge ? (
@@ -685,7 +689,7 @@ const TabForm = (props: ITabprops) => {
       {navItems.map(({ name, components, badge }: INavItems, index: number) => {
         const last = _.findLastIndex(components);
         return (
-          <TabPanel value={value} index={index}>
+          <TabPanel value={value} index={index} key={index}>
             {state.name && (
               <>
                 {components[0] === "PermissionList" ? (

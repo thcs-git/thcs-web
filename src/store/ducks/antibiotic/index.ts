@@ -30,6 +30,28 @@ const reducer: Reducer<AntibioticState> = (state = INITIAL_STATE, action) => {
         error: true,
         success: false,
       };
+
+    case AntibioticTypes.LOAD_REQUEST_REPORT_UNIQUE:
+      return {
+        ...state,
+        loading: true,
+        error: false,
+        success: false,
+      };
+    case AntibioticTypes.LOAD_SUCCESS_REPORT_UNIQUE:
+      return {
+        ...state,
+        loading: false,
+        error: false,
+        success: true,
+      };
+    case AntibioticTypes.LOAD_FAILURE_REPORT_UNIQUE:
+      return {
+        ...state,
+        loading: false,
+        error: true,
+        success: false,
+      };
     default:
       return state;
   }
