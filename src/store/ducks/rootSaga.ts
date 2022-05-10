@@ -93,10 +93,16 @@ import { get as getMessage, getMessageById } from "./message/sagas";
 import { UserTypes } from "./users/types";
 
 import { PrescriptionTypes } from "./prescripition/types";
-import { loadPrescriptionByCareId } from "./prescripition/saga";
+import {
+  loadPrescriptionByCareId,
+  loadReportUnique as loadReportPrescriptionUnique,
+} from "./prescripition/saga";
 
 import { AntibioticTypes } from "./antibiotic/types";
-import { get as getAntibiotic } from "./antibiotic/sagas";
+import {
+  get as getAntibiotic,
+  loadReportUnique as loadReportAntibioticUnique,
+} from "./antibiotic/sagas";
 
 //import { CareTypes } from './cares/types';
 import {
@@ -400,11 +406,19 @@ export default function* rootSaga(): any {
       PrescriptionTypes.LOAD_REQUEST_PRESCRIPTION_BY_CARE_ID,
       loadPrescriptionByCareId
     ),
+    takeLatest(
+      PrescriptionTypes.LOAD_REQUEST_REPORT_UNIQUE,
+      loadReportPrescriptionUnique
+    ),
 
     /**
      * ANTIBIOTIC
      */
     takeLatest(AntibioticTypes.LOAD_REQUEST, getAntibiotic),
+    takeLatest(
+      AntibioticTypes.LOAD_REQUEST_REPORT_UNIQUE,
+      loadReportAntibioticUnique
+    ),
 
     /**
      * EXAMS
