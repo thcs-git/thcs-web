@@ -95,6 +95,7 @@ import { UserTypes } from "./users/types";
 import { PrescriptionTypes } from "./prescripition/types";
 import {
   loadPrescriptionByCareId,
+  loadPrescriptionWithItems,
   loadReportUnique as loadReportPrescriptionUnique,
 } from "./prescripition/saga";
 
@@ -405,6 +406,10 @@ export default function* rootSaga(): any {
     takeLatest(
       PrescriptionTypes.LOAD_REQUEST_PRESCRIPTION_BY_CARE_ID,
       loadPrescriptionByCareId
+    ),
+    takeLatest(
+      PrescriptionTypes.LOAD_REQUEST_WITH_ITEMS,
+      loadPrescriptionWithItems
     ),
     takeLatest(
       PrescriptionTypes.LOAD_REQUEST_REPORT_UNIQUE,

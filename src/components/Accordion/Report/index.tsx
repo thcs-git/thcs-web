@@ -39,6 +39,8 @@ import Prescription from "../../Icons/Prescription";
 import Antibiotic from "../../Icons/Antibiotic";
 import ExamsIcon from "../../Icons/ExamsReport";
 import AttestIcon from "../../Icons/Attest";
+import CheckMedIcon from "../../Icons/CheckMed";
+import DigitalIcon from "../../Icons/Digital";
 // styled components and style
 import {
   AccordionStyled as Accordion,
@@ -1774,6 +1776,225 @@ export default function AccordionReport(props: IAccordionReport) {
 
     return type === "description" ? dataSlit[1] : dataSlit[0];
   }
+
+  const checkAccordion = (data: any) =>
+    data.map((day: any, index: number) =>
+      day[1].map(
+        (prescription: any, index_sub: number) =>
+          prescription.converted_at && (
+            <Box sx={{ position: "relative" }}>
+              {console.log(prescription)}
+              <Box
+                sx={{
+                  position: "absolute",
+                  display: "flex",
+                  justifyContent: "center",
+                  alignItems: "center",
+                  zIndex: 5000,
+                  left: "57rem",
+                  top: "0.4rem",
+                }}
+              >
+                <IconButton
+                  aria-label="print"
+                  sx={{
+                    display: "flex",
+                    justifyContent: "center",
+                    alignItems: "center",
+                    cursor: "pointer",
+                    height: "36px",
+                    width: "36px",
+                  }}
+                  onClick={() => {}}
+                >
+                  <PrintIcon
+                    sx={{
+                      color:
+                        expanded === `panel${prescription._id}`
+                          ? "var(--white)"
+                          : "var(--secondary)",
+                      cursor: "pointer",
+                      "& path": { cursor: "pointer" },
+                    }}
+                  />
+                </IconButton>
+              </Box>
+              <Accordion
+                key={prescription._id}
+                disableGutters={true}
+                expanded={expanded === `panel${prescription._id}`}
+                onChange={handleChange(`panel${prescription._id}`)}
+              >
+                <AccordionSummary
+                  expandIcon={<ExpandMoreIcon />}
+                  aria-controls={`panel${prescription._id}bh-content`}
+                  id={`panel${prescription._id}bh-header`}
+                  sx={{
+                    "& div, svg, path, circle, rect": { cursor: "pointer" },
+                    cursor: "pointer",
+                    fontWeight: "600",
+                  }}
+                >
+                  <Box
+                    sx={{
+                      display: "flex",
+                      gap: "8px",
+                      flexDirection: "row",
+                      justifyContent: "space-between",
+                    }}
+                  >
+                    <CheckMedIcon
+                      fill={
+                        expanded === `panel${prescription._id}`
+                          ? "var(--white)"
+                          : "var(--gray-dark)"
+                      }
+                      width="22px"
+                      height={"22px"}
+                    />
+
+                    <Box
+                      sx={{
+                        display: "flex",
+                        justifyContent: "space-between",
+                      }}
+                    >
+                      Prescrição Médica
+                    </Box>
+                  </Box>
+                  <Box sx={{ padding: "0 0 0 218px" }}>{`Validade: ${formatDate(
+                    prescription.start_at,
+                    "DD/MM/YYYY [às] HH:mm"
+                  )} | ${formatDate(
+                    prescription.end_at,
+                    "DD/MM/YYYY [às] HH:mm"
+                  )}`}</Box>
+                  <Box sx={{ cursor: "pointer", width: "36px" }}></Box>
+                </AccordionSummary>
+                <AccordionDetails sx={{ padding: 0 }}>
+                  {checkAccordionHeader(
+                    prescription._id,
+                    prescription.created_by
+                  )}
+                  {checkAccordionDetails(prescription)}
+                </AccordionDetails>
+              </Accordion>
+            </Box>
+          )
+      )
+    );
+  const checkAccordionHeader = (
+    idPrescription: string,
+    professional: string
+  ) => (
+    <>
+      <HeaderDetailsAccordion
+        sx={{
+          justifyContent: "flex-start",
+          background: "#CAECF4",
+          // borderRadius: "0 0 12px 12px",
+        }}
+      >
+        <TextCenterDetails
+          sx={{
+            gap: "0.5rem",
+            justifyContent: "flex-start",
+            padding: "0 0 0 16px",
+          }}
+        >
+          {/* <DigitalIcon fill={"var(--secondary)"} /> */}
+          {`Código: ${idPrescription}`}
+        </TextCenterDetails>
+        <TextCenterDetails
+          sx={{ width: "auto", paddingLeft: "268px" }}
+        >{`Prestador: ${professional}`}</TextCenterDetails>
+      </HeaderDetailsAccordion>
+      <HeaderDetailsAccordion sx={{ padding: "0 16px", fontWeight: "600" }}>
+        <TextCenterDetails
+          sx={{ width: "405px", justifyContent: "flex-start" }}
+        >
+          Itens de Prescrição
+        </TextCenterDetails>
+        <TextCenterDetails
+          sx={{ width: "100px", justifyContent: "flex-start" }}
+        >
+          Frequência
+        </TextCenterDetails>
+        <TextCenterDetails>Horário</TextCenterDetails>
+        <TextCenterDetails sx={{ width: "100px" }}>Opções</TextCenterDetails>
+      </HeaderDetailsAccordion>
+      <Divider sx={{ width: "100%", margin: "0 auto" }} />
+    </>
+  );
+  const checkAccordionDetails = (data: any) =>
+    data.items.map((item: any, index: number) => (
+      <>
+        <ContentDetailsAccordion key={item._id} sx={{ padding: "0 16px" }}>
+          <TextCenterDetails
+            sx={{
+              textDecoration: `${!item.active ? "line-through" : "none"}`,
+              color: `${!item.active ? "#7D7D7D" : "#333333"}`,
+              justifyContent: "flex-start",
+              width: "406px",
+            }}
+          >
+            {item?.medication?.Nome}
+          </TextCenterDetails>
+          <TextCenterDetails
+            sx={{
+              textDecoration: `${!item.active ? "line-through" : "none"}`,
+              color: `${!item.active ? "#7D7D7D" : "#333333"}`,
+              width: "100px",
+              justifyContent: "flex-start",
+            }}
+          >
+            {`${parseFloat(item?.frequency?.interval) / 3600}h/${
+              parseFloat(item?.frequency?.interval) / 3600
+            }h`}
+          </TextCenterDetails>
+          <TextCenterDetails
+            sx={{
+              textDecoration: `${!item.active ? "line-through" : "none"}`,
+              color: `${!item.active ? "#7D7D7D" : "#333333"}`,
+            }}
+          >
+            {item?.frequency?.doses?.length > 0 &&
+              item?.frequency?.doses?.map((dose: any, index: number) => {
+                return `${formatDate(dose.administer_date, "HH:mm")} ${
+                  item.frequency.doses.length - 1 === index ? "" : " - "
+                }`;
+              })}
+          </TextCenterDetails>
+          <TextCenterDetails sx={{ width: "100px" }}>
+            <IconButton
+              aria-label="print"
+              sx={{
+                display: "flex",
+                justifyContent: "center",
+                alignItems: "center",
+                cursor: "pointer",
+                height: "36px",
+                width: "36px",
+              }}
+              onClick={() => {}}
+            >
+              <PrintIcon
+                sx={{
+                  color: "var(--secondary)",
+                  cursor: "pointer",
+                  "& > path": { cursor: "pointer" },
+                }}
+              />
+            </IconButton>
+          </TextCenterDetails>
+        </ContentDetailsAccordion>
+        {data.length !== index + 1 ? (
+          <Divider sx={{ width: "100%", margin: "0 auto" }} />
+        ) : (
+          ""
+        )}
+      </>
+    ));
   return (
     <>
       {/* {loading && <Loading />} */}
@@ -2081,6 +2302,21 @@ export default function AccordionReport(props: IAccordionReport) {
           <Container>
             {attestAccordion(groupAttestsByDate(content.data))}
           </Container>
+        ) : reportType === "Checagens" ? (
+          content.data.length > 0 ? (
+            <Container>
+              {integration ? (
+                checkAccordion(content.data)
+              ) : (
+                <Box sx={{ textAlign: "center", color: "var(--gray-dark)" }}>
+                  Acordion de Checagens não configurada para ambiente sem
+                  integração
+                </Box>
+              )}
+            </Container>
+          ) : (
+            NoData()
+          )
         ) : (
           ""
         )

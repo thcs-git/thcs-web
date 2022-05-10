@@ -11,6 +11,8 @@ import {
   loadSuccessGetPrescriptionById,
   updatePrescriptionSuccess,
   loadSuccessByCareId,
+  loadSuccessWithItems,
+  loadFailuretWithItems,
   loadSucessReportUnique,
   loadFailureReportUnique,
 } from "./actions";
@@ -101,7 +103,21 @@ export function* loadPrescriptionByCareId({ payload }: any) {
     );
     yield put(loadSuccessByCareId(response.data));
   } catch (error) {
-    toast.info("Não foi possível prescrição");
+    toast.info("Não foi possível buscar as prescriçções");
+    yield put(loadFailure());
+  }
+}
+
+export function* loadPrescriptionWithItems({ payload }: any) {
+  try {
+    const response: AxiosResponse = yield call(
+      apiSollar.get,
+      "care/prescription",
+      { headers: payload }
+    );
+    yield put(loadSuccessWithItems(response.data));
+  } catch (error) {
+    toast.info("Não foi possível buscar as checagens.");
     yield put(loadFailure());
   }
 }
