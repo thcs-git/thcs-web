@@ -51,7 +51,10 @@ import {
 import { loadRequest as loadRequestMeasurements } from "../../../store/ducks/measurements/actions";
 import { loadRequest as loadRequestQrCode } from "../../../store/ducks/qrCode/actions";
 import { ApplicationState } from "../../../store";
-import { loadRequestByCareId as loadRequestPrescriptionByCareId } from "../../../store/ducks/prescripition/actions";
+import {
+  loadRequestByCareId as loadRequestPrescriptionByCareId,
+  loadRequestWithItems as loadRequestPrescriptionWithItems,
+} from "../../../store/ducks/prescripition/actions";
 import { loadRequest as loadRequestAntibiotic } from "../../../store/ducks/antibiotic/actions";
 import { loadRequest as loadRequestExams } from "../../../store/ducks/exams/actions";
 import { loadRequest as loadRequestAttests } from "../../../store/ducks/attest/actions";
@@ -219,6 +222,18 @@ export default function PatientOverview(
       dispatch(loadRequestExams(patientId));
     } else if (patientId && reportType === "Atestados") {
       dispatch(loadRequestAttests(patientId));
+    } else if (attendanceId && reportType === "Checagens") {
+      integration
+        ? dispatch(
+            loadRequestPrescriptionWithItems({
+              external_attendance_id: attendanceId,
+            })
+          )
+        : dispatch(
+            loadRequestPrescriptionWithItems({
+              attendance_id: attendanceId,
+            })
+          );
     }
   }, [careState.data._id, reportType]);
   const handleTeam = useCallback(() => {
@@ -576,6 +591,14 @@ export default function PatientOverview(
         data: attestState.data.data,
         error: attestState.error,
       };
+    } else if (
+      report === "Checagens" &&
+      Object.keys(prescriptionState.data).length > 0
+    ) {
+      return {
+        data: Object.entries(prescriptionState.data.prescriptionData),
+        error: prescriptionState.error,
+      };
     } else {
       return "";
     }
@@ -605,6 +628,8 @@ export default function PatientOverview(
         return examsState.loading;
       case "Atestados":
         return attestState.loading;
+      case "Checagens":
+        return prescriptionState.loading;
       default:
         return false;
     }

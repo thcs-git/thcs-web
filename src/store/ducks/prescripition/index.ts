@@ -105,6 +105,7 @@ const reducer: Reducer<PrescriptionState> = (state = INITIAL_STATE, action) => {
     case PrescriptionTypes.LOAD_SUCCESS_PRESCRIPTION_BY_CARE_ID:
       return {
         ...state,
+        success: true,
         loading: false,
         error: false,
         data: {
@@ -112,6 +113,25 @@ const reducer: Reducer<PrescriptionState> = (state = INITIAL_STATE, action) => {
           prescriptionData: action.payload.data,
         },
       };
+    case PrescriptionTypes.LOAD_REQUEST_WITH_ITEMS:
+      return {
+        ...state,
+        loading: true,
+        success: false,
+        error: false,
+      };
+    case PrescriptionTypes.LOAD_SUCCESS_WITH_ITEMS:
+      return {
+        ...state,
+        success: true,
+        loading: false,
+        error: false,
+        data: {
+          ...state.data,
+          prescriptionData: action.payload,
+        },
+      };
+
     default:
       return state;
   }

@@ -4,7 +4,9 @@ import Accordion, { AccordionProps } from "@mui/material/Accordion";
 import AccordionDetails, {
   AccordionDetailsProps,
 } from "@mui/material/AccordionDetails";
-import AccordionSummary from "@mui/material/AccordionSummary";
+import AccordionSummary, {
+  AccordionSummaryProps,
+} from "@mui/material/AccordionSummary";
 import Box, { BoxProps } from "@mui/material/Box";
 import Container from "@mui/material/Container";
 import Button, { ButtonProps } from "@mui/material/Button";
@@ -35,15 +37,20 @@ export const AccordionDetailsStyled = styledMui(
   padding: "0 16px",
 }));
 
-export const AccordionSummaryStyled = styled(AccordionSummary)``;
+export const AccordionSummaryStyled = styledMui(
+  AccordionSummary
+)<AccordionSummaryProps>(({ theme }) => ({
+  fontWeight: "600",
+}));
 
-export const HeaderDetailsAccordion = styled(Box)`
-  color: var(--gray-dark);
-  display: flex;
-  flex-direction: row;
-  justify-content: space-between;
-  min-height: 48px;
-`;
+export const HeaderDetailsAccordion = styledMui(Box)<BoxProps>(({ theme }) => ({
+  color: "var(--gray-dark)",
+  display: "flex",
+  flexDirection: "row",
+  justifyContent: "space-between",
+  minHeight: " 48px",
+}));
+
 export const ContentDetailsAccordion = styled(Box)`
   color: var(--black);
   display: flex;
@@ -59,13 +66,6 @@ export const TextCenterDetails = styledMui(Box)<BoxProps>(({ theme }) => ({
   width: "200px",
   margin: "auto 0",
 }));
-// export const TextCenterDetails = styled(Box)`
-//   display: flex;
-//   justify-content: center;
-//   text-align: center;
-//   width: 200px;
-//   margin: auto 0;
-// `;
 
 export const ContainerStyled = styled(Container)`
   padding-bottom: 24px;

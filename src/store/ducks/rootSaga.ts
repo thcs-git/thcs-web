@@ -93,7 +93,10 @@ import { get as getMessage, getMessageById } from "./message/sagas";
 import { UserTypes } from "./users/types";
 
 import { PrescriptionTypes } from "./prescripition/types";
-import { loadPrescriptionByCareId } from "./prescripition/saga";
+import {
+  loadPrescriptionByCareId,
+  loadPrescriptionWithItems,
+} from "./prescripition/saga";
 
 import { AntibioticTypes } from "./antibiotic/types";
 import { get as getAntibiotic } from "./antibiotic/sagas";
@@ -399,6 +402,10 @@ export default function* rootSaga(): any {
     takeLatest(
       PrescriptionTypes.LOAD_REQUEST_PRESCRIPTION_BY_CARE_ID,
       loadPrescriptionByCareId
+    ),
+    takeLatest(
+      PrescriptionTypes.LOAD_REQUEST_WITH_ITEMS,
+      loadPrescriptionWithItems
     ),
 
     /**
