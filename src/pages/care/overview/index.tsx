@@ -23,6 +23,7 @@ import Loading from "../../../components/Loading";
 import FilterReport from "../../../components/Dialogs/Filter/Report";
 import NoPermission from "../../../components/Erros/NoPermission";
 
+import UnexpectedError from "../../../components/Erros/UnexpectedError";
 // Styles
 import { ContainerStyle as Container } from "./styles";
 
@@ -638,94 +639,100 @@ export default function PatientOverview(
   return (
     <Sidebar>
       {checkViewPermission("care", JSON.stringify(rightsOfLayoutState)) ? (
-        <Container style={{ padding: "20px", maxWidth: "1100px" }}>
-          {/* {careState.loading && <Loading />} */}
-          <FormTitle>Overview de Paciente</FormTitle>
-          <Container style={{ backgroundColor: "#f5f5f5" }}>
-            {true ? (
-              <>
-                <Header
-                  content={content}
-                  allergic={isAllergic(allergiesState)}
-                  integration={integration}
-                />
-                <ScrollCard
-                  tittle="Relatório de Prontuário"
-                  iconName="ChartIcon"
-                  cards={cards}
-                  onClickCard={handleReport}
-                  allergic={isAllergic(allergiesState)}
-                  loadingCard={allergiesState.loading}
-                  openFilter={handleOpenFilter}
-                  reportType={reportType}
-                  reportActive={reportActive}
-                  existContent={!!handleContentReport(reportType)}
-                  selectCard={selectReportCard}
-                  setSelectCard={setSelectReportCard}
-                />
-                <FilterReport
-                  openFilter={openFilterReport}
-                  closeFilter={handleCloseFilter}
-                  reportType={reportType}
-                  content={rows}
-                  careState={careState}
-                  contentReport={handleContentReport(reportType)}
-                />
-                {reportActive ? (
-                  <AccordionReport
-                    content={handleContentReport(reportType)}
-                    company_id={
-                      careState.data.company_id ? careState.data.company_id : ""
-                    }
-                    reportType={reportType}
-                    state={careState}
-                    loading={handleLoadingReport(reportType)}
+        !careState.loading && !careState.data?._id && careState.error ? (
+          <UnexpectedError />
+        ) : (
+          <Container style={{ padding: "20px", maxWidth: "1100px" }}>
+            {/* {careState.loading && <Loading />} */}
+            <FormTitle>Overview de Paciente</FormTitle>
+            <Container style={{ backgroundColor: "#f5f5f5" }}>
+              {true ? (
+                <>
+                  <Header
+                    content={content}
+                    allergic={isAllergic(allergiesState)}
+                    integration={integration}
                   />
-                ) : (
-                  <Container
-                    style={{
-                      padding: "0 32px 20px ",
-                    }}
-                  >
+                  <ScrollCard
+                    tittle="Relatório de Prontuário"
+                    iconName="ChartIcon"
+                    cards={cards}
+                    onClickCard={handleReport}
+                    allergic={isAllergic(allergiesState)}
+                    loadingCard={allergiesState.loading}
+                    openFilter={handleOpenFilter}
+                    reportType={reportType}
+                    reportActive={reportActive}
+                    existContent={!!handleContentReport(reportType)}
+                    selectCard={selectReportCard}
+                    setSelectCard={setSelectReportCard}
+                  />
+                  <FilterReport
+                    openFilter={openFilterReport}
+                    closeFilter={handleCloseFilter}
+                    reportType={reportType}
+                    content={rows}
+                    careState={careState}
+                    contentReport={handleContentReport(reportType)}
+                  />
+                  {reportActive ? (
+                    <AccordionReport
+                      content={handleContentReport(reportType)}
+                      company_id={
+                        careState.data.company_id
+                          ? careState.data.company_id
+                          : ""
+                      }
+                      reportType={reportType}
+                      state={careState}
+                      loading={handleLoadingReport(reportType)}
+                    />
+                  ) : (
                     <Container
                       style={{
-                        display: "flex",
-                        flexWrap: "wrap",
-                        justifyContent: "space-between",
+                        padding: "0 32px 20px ",
                       }}
                     >
-                      <CardInfo
-                        content={content}
-                        tittle={personalCard}
-                        alergicIs={true}
-                        gridProps={gridPropsPlan}
-                        integration={integration}
-                      />
+                      <Container
+                        style={{
+                          display: "flex",
+                          flexWrap: "wrap",
+                          justifyContent: "space-between",
+                        }}
+                      >
+                        <CardInfo
+                          content={content}
+                          tittle={personalCard}
+                          alergicIs={true}
+                          gridProps={gridPropsPlan}
+                          integration={integration}
+                        />
 
-                      <CardInfo
-                        content={content}
-                        tittle={planCard}
-                        alergicIs={false}
-                        gridProps={gridPropsPlan}
-                        integration={integration}
-                      />
-                      <CardInfo
-                        content={content}
-                        tittle={teamCard}
-                        alergicIs={false}
-                        gridProps={gridPropsPlan}
-                        integration={integration}
-                      />
+                        <CardInfo
+                          content={content}
+                          tittle={planCard}
+                          alergicIs={false}
+                          gridProps={gridPropsPlan}
+                          integration={integration}
+                        />
+                        <CardInfo
+                          content={content}
+                          tittle={teamCard}
+                          alergicIs={false}
+                          gridProps={gridPropsPlan}
+                          integration={integration}
+                        />
+                      </Container>
                     </Container>
-                  </Container>
-                )}
-              </>
-            ) : (
-              <></>
-            )}
+                  )}
+                </>
+              ) : (
+                <></>
+              )}
+            </Container>
+            <ButtonTabs buttons={buttons} canEdit={false} />
           </Container>
-          <ButtonTabs buttons={buttons} canEdit={false} />
-        </Container>
+        )
       ) : (
         <NoPermission />
       )}
