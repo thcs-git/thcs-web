@@ -16,8 +16,11 @@ import Routes from "./routes";
 
 const theme = createMuiTheme({
   palette: {
+    primary: {
+      main: "#000083",
+    },
     secondary: {
-      main: "#0899BA",
+      main: "#4949fe",
     },
   },
 });

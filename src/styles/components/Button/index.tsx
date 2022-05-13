@@ -103,6 +103,9 @@ const ButtonComponent = styled(Button)`
       color: var(--primary);
     }
   }
+  & span {
+    cursor: pointer;
+  }
 `;
 
 export default ButtonComponent;
