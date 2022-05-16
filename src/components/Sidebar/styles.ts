@@ -1,18 +1,18 @@
-import styled from 'styled-components';
-import { Accordion } from '@material-ui/core';
+import styled from "styled-components";
+import { Accordion } from "@material-ui/core";
 
-import { ReactComponent as SollarLogo } from '../../assets/img/marca-sollar-branca.svg';
+import { ReactComponent as SollarLogo } from "../../assets/img/marca-sollar-branca.svg";
 
 export const AccordionMenu = styled(Accordion)`
   box-shadow: none;
-  font-family: 'Open Sans', sans-serif;
+  font-family: "Open Sans", sans-serif;
 
   p {
     display: flex;
   }
 
   svg {
-    margin-right: 10px
+    margin-right: 10px;
   }
 `;
 
@@ -22,7 +22,7 @@ export const Logo = styled(SollarLogo)`
 
 export const UserContent = styled.div`
   //padding: 14px;
-  margin: 20px auto;
+  margin: 20px auto 0;
 
   display: flex;
   flex-direction: column;
@@ -47,7 +47,7 @@ export const UserContent = styled.div`
   }
 
   &.hide > svg {
-    transform: scale(.7);
+    transform: scale(0.7);
   }
 
   & > svg {
@@ -62,4 +62,3 @@ export const UserContent = styled.div`
     color: #fff !important;
   }
 `;
-
