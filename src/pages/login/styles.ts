@@ -36,12 +36,15 @@ export const LogoText = styled(Typography)`
 
 export const TextGray = styled.p`
   font-size: 12px;
-  color: #666;
+  color: #222;
 `;
 export const TextBlue = styled.a`
   font-size: 14px;
-  color: #0899ba;
+  color: #000083;
   cursor: pointer;
+  & :hover {
+    color: #4949fe;
+  }
 `;
 export const ButtonGreen = styledMui(Button)<IButton>(({ theme }) => ({
   backgroundColor: "var(--success)",

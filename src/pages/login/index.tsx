@@ -11,7 +11,7 @@ import Checkbox from "@mui/material/Checkbox";
 import TextField from "@mui/material/TextField";
 // import Typography from "@material-ui/core/Typography";
 import InputLabel from "@material-ui/core/InputLabel";
-import IconButton from "@material-ui/core/IconButton";
+import IconButton from "@mui/material/IconButton";
 import CssBaseline from "@material-ui/core/CssBaseline";
 import FormControl from "@material-ui/core/FormControl";
 import OutlinedInput from "@material-ui/core/OutlinedInput";
@@ -35,6 +35,7 @@ import {
 } from "./styles";
 
 import Button from "../../styles/components/Button";
+import ButtomMui from "@mui/material/Button";
 import Alert from "../../components/Alert";
 import Loading from "../../components/Loading";
 
@@ -57,13 +58,13 @@ import Typography from "@mui/material/Typography";
 import { updateUserPasswordRequest } from "../../store/ducks/users/actions";
 import { useFormik } from "formik";
 import * as yup from "yup";
-
+import THCStype1 from "../../components/Icons/THCS_Type1";
 function Copyright() {
   return (
-    <Typography variant="body2" color="textSecondary" align="center">
+    <Typography variant="body2" align="center" sx={{ color: "#222" }}>
       {"Copyright © "}
       <Link color="inherit" href="/">
-        Sollar
+        T+HCS
       </Link>{" "}
       {new Date().getFullYear()}
     </Typography>
@@ -1158,12 +1159,13 @@ export default function SignIn() {
         <div className={classes.paper}>
           <Box
             display="flex"
-            width={150}
+            width={390}
             height={165}
             justifyContent="center"
             alignItems="center"
           >
-            <HomeIconLogo />
+            <THCStype1 fill={"#000083"} width={"1000px"} />
+            {/* <HomeIconLogo /> */}
           </Box>
 
           <WelcomeTextWrapper>
@@ -1173,6 +1175,7 @@ export default function SignIn() {
             <FormControl fullWidth margin="normal" variant="outlined">
               <InputLabel htmlFor="outlined-adornment-email">E-mail</InputLabel>
               <OutlinedInput
+                color="secondary"
                 onKeyDown={handleKeyEnter}
                 error={inputEmail.error}
                 required
@@ -1192,19 +1195,27 @@ export default function SignIn() {
                 value={inputEmail.value}
                 endAdornment={
                   <InputAdornment position="end">
-                    <div className={classes.wrapper}>
-                      <Fab
-                        className={classes.fab}
-                        aria-label="save"
-                        // color="secondary"
-                        // className={buttonClassname}
-                        onClick={handleVerifyEmail}
-                        style={{ color: "primary" }}
-                      >
-                        <ArrowForwardIcon />
-                      </Fab>
-                      {/*<CircularProgress size={68} className={classes.fabProgress}/>*/}
-                    </div>
+                    {/* <div className={classes.wrapper}> */}
+                    {/* <Fab
+                      className={classes.fab}
+                      aria-label="save"
+                      // color="secondary"
+                      // className={buttonClassname}
+                      onClick={handleVerifyEmail}
+                      style={{ color: "primary" }}
+                    > */}
+                    <IconButton
+                      onClick={handleVerifyEmail}
+                      sx={{
+                        cursor: "pointer",
+                        "& svg, path": { cursor: "pointer" },
+                      }}
+                    >
+                      <ArrowForwardIcon color="secondary" />
+                    </IconButton>
+                    {/* </Fab> */}
+                    {/*<CircularProgress size={68} className={classes.fabProgress}/>*/}
+                    {/* </div> */}
                   </InputAdornment>
                 }
                 labelWidth={70}
@@ -1219,6 +1230,7 @@ export default function SignIn() {
                         Senha
                       </InputLabel>
                       <OutlinedInput
+                        color="secondary"
                         onKeyDown={handleKeyEnter}
                         id="outlined-adornment-password"
                         type={showPassword ? "text" : "password"}
@@ -1256,8 +1268,8 @@ export default function SignIn() {
                       type="submit"
                       fullWidth
                       variant="contained"
-                      color="primary"
-                      className={classes.submit}
+                      color="secondary"
+                      // className={classes.submit}
                       onClick={handleLogin}
                     >
                       Entrar
@@ -1370,21 +1382,22 @@ export default function SignIn() {
                             : ""}
                         </FormHelperText>
                       </FormGroup>
-                      <ButtonGreen
+                      <Button
                         variant="contained"
                         fullWidth
                         onClick={() => formik.handleSubmit()}
-                        sx={{
-                          textTransform: "capitalize",
-                          marginTop: 1,
-                          background: "var(--success)",
-                          "&:hover": {
-                            background: "var(--success-hover)",
-                          },
-                        }}
+                        color="secondary"
+                        // sx={{
+                        //   textTransform: "capitalize",
+                        //   marginTop: 1,
+                        //   // background: "var(--success)",
+                        //   // "&:hover": {
+                        //   //   background: "var(--success-hover)",
+                        //   // },
+                        // }}
                       >
                         Salvar senha
-                      </ButtonGreen>
+                      </Button>
                     </form>
                   </>
                 )}

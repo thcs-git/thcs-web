@@ -66,6 +66,8 @@ import LocalHospital from "@material-ui/icons/LocalHospital";
 import StarRateIcon from "@material-ui/icons/StarRate";
 import FavoriteIcon from "@material-ui/icons/Favorite";
 import NotificationsIcon from "@material-ui/icons/Notifications";
+import THCStype2Icon from "../Icons/THCS_type2";
+import UserIcon from "../Icons/User";
 
 import { Logo, UserContent } from "./styles";
 import LOCALSTORAGE from "../../helpers/constants/localStorage";
@@ -79,7 +81,8 @@ import { loadRequest } from "../../store/ducks/layout/actions";
 import Message from "../Message";
 import DialogChangeCompany from "../Dialogs/ChangeCompany";
 import Loading from "../Loading";
-const drawerWidth = 270;
+
+const drawerWidth = 250;
 
 // const itemsMenu = [
 //   menu.map((item: any) => {
@@ -138,6 +141,8 @@ const useStyles = makeStyles((theme: Theme) =>
       alignItems: "center",
       justifyContent: "flex-end",
       padding: theme.spacing(0, 1),
+      // paddingTop: "32px",
+
       // necessary for content to be below app bar
       ...theme.mixins.toolbar,
     },
@@ -477,36 +482,71 @@ const Sibebar = (props: Props<any>) => {
           }),
         }}
       >
-        <div className={classes.toolbar}>
-          <Box sx={{ marginTop: "32px" }}>
-            <Logo />
-          </Box>
-          <IconButton
+        <Box
+          sx={{
+            display: "flex",
+            flexDirection: "column",
+            justifyContent: "center",
+            alignItems: "center",
+            paddingTop: "16px",
+            gap: "10px",
+          }}
+        >
+          <Box
             sx={{
-              marginRight: "4px",
+              marginLeft: `${open ? "32px" : "0"}`,
               display: "flex",
+              flexDirection: "row",
               justifyContent: "center",
               alignItems: "center",
-              width: "48px",
-              height: "48px",
-              cursor: "pointer",
-              "& svg, path": { cursor: "pointer" },
-              "& svg": { margin: "0px" },
+              gap: "8px",
             }}
-            onClick={handleDrawerClose}
           >
-            {open ? (
-              <ChevronLeftIcon style={{ color: "#fff" }} />
-            ) : (
-              <MenuIcon style={{ color: "#fff" }} />
-            )}
-          </IconButton>
-        </div>
+            <Box
+              sx={{
+                display: `${open ? "initial" : "none"}`,
+              }}
+            >
+              {/* <Logo /> */}
+              <THCStype2Icon fill={"#f4f7ff"} width={"140px"} />
+            </Box>
+            <IconButton
+              sx={{
+                marginBottom: `${open ? "22px" : "0"}`,
+                display: "flex",
+                justifyContent: "center",
+                alignItems: "center",
+                width: `${open ? "48px" : "48px"}`,
+                height: `${open ? "48px" : "48px"}`,
+                cursor: "pointer",
+                "& svg, path": { cursor: "pointer" },
+                "& svg": { margin: "0px" },
+              }}
+              onClick={handleDrawerClose}
+            >
+              {open ? (
+                <ChevronLeftIcon style={{ color: "#f4f7ff" }} />
+              ) : (
+                <MenuIcon style={{ color: "#f4f7ff" }} />
+              )}
+            </IconButton>
+          </Box>
+        </Box>
         {/* <Divider /> */}
-
-        <UserContent style={{ marginBottom: "0px" }}>
-          <AccountCircle />
-        </UserContent>
+        <Box
+          sx={{
+            paddingTop: "10px",
+            width: "auto",
+            transition: "0.2s linear",
+            display: "flex",
+            flexDirection: "column",
+            justifyContent: "center",
+            alignItems: "center",
+            "& svg": { width: "100px" },
+          }}
+        >
+          <UserIcon fill={"#FFF"} width={"48px"} height={"48px"} />
+        </Box>
 
         <UserContent>
           {open ? (
@@ -514,7 +554,7 @@ const Sibebar = (props: Props<any>) => {
               <div>
                 <Grid
                   container
-                  spacing={2}
+                  // spacing={2}
                   // xs={12}
                   // md={12}
                   style={{ justifyContent: "space-evenly" }}
@@ -535,15 +575,17 @@ const Sibebar = (props: Props<any>) => {
                       item
                       sx={{
                         "& svg, path": { cursor: "pointer" },
+                        paddingTop: "10px",
                       }}
                     >
                       <Badge
                         classes={{ badge: classes.customBadge }}
-                        className={classes.padding}
+                        // className={classes.padding}
                         color="primary"
                         badgeContent={1}
                         max={99}
                         sx={{
+                          marginLeft: "6px",
                           "& span": {
                             backgroundColor: "var(--primary-foccus)",
                           },
@@ -735,7 +777,7 @@ const Sibebar = (props: Props<any>) => {
         <DialogTitle id="alert-dialog-title">Já vai?</DialogTitle>
         <DialogContent>
           <DialogContentText id="alert-dialog-description">
-            Tem certeza que deseja sair do Sollar?
+            Tem certeza que deseja sair do T+HCS?
           </DialogContentText>
         </DialogContent>
         <DialogActions>
