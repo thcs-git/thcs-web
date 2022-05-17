@@ -289,7 +289,7 @@ export default function CouncilList() {
                     { name: "Atendimento", align: "left" },
                     { name: "Paciente", align: "left" },
                     { name: "Tipo", align: "left" },
-                    { name: "CPF", align: "left" },
+                    { name: "CPF", align: "center" },
                     { name: "Último Atendimento", align: "left" },
                     { name: "Complexidade", align: "left" },
                     { name: " ", align: "left" },
