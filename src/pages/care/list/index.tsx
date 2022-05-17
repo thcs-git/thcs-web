@@ -228,7 +228,7 @@ export default function CouncilList() {
                     { name: "Atendimento", align: "left" },
                     { name: "Paciente", align: "left" },
                     { name: "Área", align: "left" },
-                    { name: "CPF", align: "left" },
+                    { name: "CPF", align: "center" },
                     { name: "Data de Atendimento", align: "center" },
                     { name: " ", align: "left" },
                   ]}
