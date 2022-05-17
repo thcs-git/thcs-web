@@ -223,9 +223,9 @@ const TableComponent = (props: ITableProps) => {
                   </Link>
                 </TableCell>
                 {handleCpf && (
-                  <TableCell>
-                    {handleEmpty(handleCpf(user?.fiscal_number))}
-                  </TableCell>
+                    <TableCell align="center">
+                      {handleEmpty(handleCpf(user?.fiscal_number))}
+                    </TableCell>
                 )}
                 {/* {console.log(user)} */}
                 {
@@ -603,7 +603,7 @@ const TableComponent = (props: ITableProps) => {
                   </Link>
                 </TableCell>
                 <TableCell>{handleEmpty(care?.area)}</TableCell>
-                <TableCell>
+                <TableCell align="center">
                   {handleEmpty(care.patient_id?.fiscal_number)}
                 </TableCell>
 
