@@ -15,6 +15,8 @@ import {
   loadFailuretWithItems,
   loadSucessReportUnique,
   loadFailureReportUnique,
+  loadFailureReportCheck,
+  loadSuccesstReportCheck,
 } from "./actions";
 import { PrescriptionInterface } from "./types";
 import SESSIONSTORAGE from "../../../helpers/constants/sessionStorage";
@@ -141,5 +143,20 @@ export function* loadReportUnique(data: any) {
   } catch (error) {
     toast.info("Não foi possível gerar relatório de prescrições.");
     yield put(loadFailureReportUnique());
+  }
+}
+
+export function* loadReportCheck(data: any) {
+  try {
+    const { id, careId } = data.payload;
+    const response: AxiosResponse = yield call(
+      apiSollarReport.get,
+      `checks/${id}`,
+      { responseType: "blob", headers: { external_attendance_id: careId } }
+    );
+
+    yield put(loadSuccesstReportCheck(response.data));
+  } catch (error) {
+    yield put(loadFailureReportCheck());
   }
 }

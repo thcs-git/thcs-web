@@ -78,7 +78,10 @@ import { useDispatch, useSelector } from "react-redux";
 import { CareState } from "../../../store/ducks/cares/types";
 import { ApplicationState } from "../../../store";
 import { ExamsItem } from "../../../store/ducks/exams/types";
-import { loadRequestReportUnique as loadRequestReportPrescriptionUnique } from "../../../store/ducks/prescripition/actions";
+import {
+  loadRequestReportUnique as loadRequestReportPrescriptionUnique,
+  loadRequestReportCheck,
+} from "../../../store/ducks/prescripition/actions";
 import { loadRequestReportUnique as loadRequestReportAntibioticUnique } from "../../../store/ducks/antibiotic/actions";
 
 interface IAccordionReport {
@@ -1781,9 +1784,9 @@ export default function AccordionReport(props: IAccordionReport) {
     data.map((day: any, index: number) =>
       day[1].map(
         (prescription: any, index_sub: number) =>
-          prescription.converted_at && (
+          (prescription.tp_obj !== "TRATMT" || prescription.converted_at) && (
             <Box sx={{ position: "relative" }}>
-              {console.log(prescription)}
+              {/* {console.log(prescription)} */}
               <Box
                 sx={{
                   position: "absolute",
@@ -1805,7 +1808,14 @@ export default function AccordionReport(props: IAccordionReport) {
                     height: "36px",
                     width: "36px",
                   }}
-                  onClick={() => {}}
+                  onClick={() => {
+                    dispatch(
+                      loadRequestReportCheck({
+                        id: prescription._id,
+                        careId: careState.data._id,
+                      })
+                    );
+                  }}
                 >
                   <PrintIcon
                     sx={{
@@ -1995,6 +2005,7 @@ export default function AccordionReport(props: IAccordionReport) {
         )}
       </>
     ));
+
   return (
     <>
       {/* {loading && <Loading />} */}
