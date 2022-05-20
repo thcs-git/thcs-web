@@ -312,6 +312,7 @@ export default function PatientOverview(
           });
         }
       });
+    careState?.data?.patient_id?.email &&
     rows.push({
       name: "Email",
       value: careState.data.patient_id.email,
