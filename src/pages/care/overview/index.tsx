@@ -296,6 +296,7 @@ export default function PatientOverview(
         name: "CPF",
         value: careState?.data?.patient_id?.fiscal_number,
       });
+    careState?.data?.patient_id?.email &&
     patientState?.data?.phones &&
       patientState.data.phones.forEach((phone) => {
         if (phone.cellnumber) {
@@ -311,6 +312,10 @@ export default function PatientOverview(
           });
         }
       });
+    rows.push({
+      name: "Email",
+      value: careState.data.patient_id.email,
+    });
     careState?.data?.patient_id?.organ_donor &&
       rows.push({
         name: "Doador de órgãos",
