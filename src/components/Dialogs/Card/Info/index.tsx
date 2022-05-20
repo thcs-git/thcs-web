@@ -161,6 +161,8 @@ export default function DialogInfo(props: IDialogProps) {
           return boxData(name, value);
         case "Telefone":
           return boxData(name, value);
+        case "Email":
+          return boxData(name, value);
         case "Doador de órgãos":
           return boxData(name, value == true ? "Sim" : "Não");
         case "Nacionalidade":
