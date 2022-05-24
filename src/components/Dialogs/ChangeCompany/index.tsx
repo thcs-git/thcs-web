@@ -50,9 +50,11 @@ export default function DialogChangeCompany(props: IChangeCompany) {
   const [companySelected, setCompanySelected] = useState<any>("");
   const [tochedAutocomplete, setTouchedAutocomplete] = useState(false);
   const currentCompany = localStorage.getItem(LOCALSTORAGE.COMPANY_SELECTED);
+
   useEffect(() => {
     dispatch(loadUserById(user.id, "sidebar"));
   }, [user.id]);
+
   useEffect(() => {
     const { companies_links: userCompanies } = userState.data;
     userCompanies.forEach(function (item: CompanyUserLinkInterface) {
@@ -65,6 +67,7 @@ export default function DialogChangeCompany(props: IChangeCompany) {
         });
       }
     });
+
     const filter = _.filter(userCompanies, { active: true });
     setCompanies(_.filter(filter, { companie_id: { active: true } }));
   }, [userState]);
@@ -89,6 +92,7 @@ export default function DialogChangeCompany(props: IChangeCompany) {
   const changeCompanySelected = useCallback((company: any) => {
     setCompanySelected(company);
   }, []);
+
   const changeCompany = useCallback(
     (company: any) => {
       if (company) {

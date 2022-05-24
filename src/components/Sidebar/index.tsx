@@ -176,6 +176,11 @@ const Transition = React.forwardRef(function Transition(
 ) {
   return <Slide direction="up" ref={ref} {...props} />;
 });
+const getFirstAndLastName = (fullName: string) => {
+  return `${fullName.split(" ")[0]} ${
+    fullName.split(" ")[fullName.split(" ").length - 1]
+  }`;
+};
 
 interface PropsSidebar {
   permission?: boolean;
@@ -560,7 +565,7 @@ const Sibebar = (props: Props<any>) => {
                   style={{ justifyContent: "space-evenly" }}
                 >
                   <Grid item>
-                    <h3>{username}</h3>
+                    <h3>{getFirstAndLastName(username)}</h3>
                   </Grid>
                   <ListItem
                     sx={{

@@ -23,9 +23,7 @@ export function* doLogin({ payload }: any) {
       `/user/login`,
       payload?.credentials
     );
-
     const { data } = response;
-
     // localStorage.removeItem(LOCALSTORAGE.TOKEN);
     // localStorage.removeItem(LOCALSTORAGE.USERNAME);
     // localStorage.removeItem(LOCALSTORAGE.USER_ID);
@@ -109,8 +107,19 @@ export function* doLogin({ payload }: any) {
           SESSIONSTORAGE.INTEGRATION_NAME,
           data.companies_links[0]?.companie_id?.customer_id?.integration_name
         );
-    }
 
+      data.companies_links[0]?.company_external_id &&
+        localStorage.setItem(
+          LOCALSTORAGE.INTEGRATION_COMPANY_SELECTED,
+          data.companies_links[0]?.company_external_id
+        );
+
+      data.companies_links[0]?.user_external_id &&
+        localStorage.setItem(
+          LOCALSTORAGE.SOLLAR_INTEGRATION_USER_ID,
+          data.companies_links[0]?.user_external_id
+        );
+    }
     // yield put(loadSuccess(data));
 
     if (localStorage.getItem(LOCALSTORAGE.CUSTOMER_NAME) != "SEM") {
