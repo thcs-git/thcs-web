@@ -75,6 +75,18 @@ export function* doLogin({ payload }: any) {
           SESSIONSTORAGE.INTEGRATION_NAME,
           lastLastLogin?.companie_id?.customer_id?.integration_name
         );
+
+      lastLastLogin?.company_external_id &&
+        localStorage.setItem(
+          LOCALSTORAGE.INTEGRATION_COMPANY_SELECTED,
+          lastLastLogin?.company_external_id
+        );
+
+      lastLastLogin?.user_external_id &&
+        localStorage.setItem(
+          LOCALSTORAGE.SOLLAR_INTEGRATION_USER_ID,
+          lastLastLogin?.user_external_id
+        );
     } else {
       localStorage.setItem(
         LOCALSTORAGE.CUSTOMER,
