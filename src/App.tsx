@@ -14,6 +14,8 @@ import QRCode from "react-qr-code";
 
 import Routes from "./routes";
 
+import "./fonts/css/general-sans.css";
+
 const theme = createMuiTheme({
   palette: {
     primary: {

@@ -6,7 +6,7 @@ export default createGlobalStyle`
     padding: 0;
     box-sizing: border-box;
 
-    font-family: 'Open Sans', sans-serif !important;
+    /* font-family: 'Open Sans', sans-serif !important; */
 
     cursor: auto;
 
@@ -57,7 +57,7 @@ export default createGlobalStyle`
   }
 
   p, button, span {
-    font-size: 14px !important;
+    /* font-size: 14px !important; */
   }
 
   /* .MuiTypography-colorError {

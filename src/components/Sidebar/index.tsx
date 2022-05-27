@@ -12,18 +12,36 @@ import {
   makeStyles,
   useTheme,
   Theme,
+  // ThemeProvider,
 } from "@material-ui/core/styles";
+
+import {
+  createTheme,
+  ThemeProvider,
+  styled,
+  // Theme,
+} from "@mui/material/styles";
+
+import theme from "../../theme/theme";
+import {
+  // Drawer,
+  List,
+  IconButton,
+  ListItem,
+  ListItemIcon,
+  ListItemText,
+} from "@mui/material";
 import Drawer from "@material-ui/core/Drawer";
-import List from "@material-ui/core/List";
+// import List from "@material-ui/core/List";
 import CssBaseline from "@material-ui/core/CssBaseline";
 import Divider from "@material-ui/core/Divider";
-import IconButton from "@mui/material/IconButton";
+// import IconButton from "@mui/material/IconButton";
 import EditIcon from "@material-ui/icons/Edit";
 import MenuIcon from "@material-ui/icons/Menu";
 import ChevronLeftIcon from "@material-ui/icons/ChevronLeft";
-import ListItem from "@mui/material/ListItem";
-import ListItemIcon from "@mui/material/ListItemIcon";
-import ListItemText from "@material-ui/core/ListItemText";
+// import ListItem from "@mui/material/ListItem";
+// import ListItemIcon from "@mui/material/ListItemIcon";
+// import ListItemText from "@material-ui/core/ListItemText";
 import ExitToApp from "@material-ui/icons/ExitToApp";
 import AccountCircle from "@material-ui/icons/AccountCircle";
 import SettingsIcon from "@material-ui/icons/Settings";
@@ -49,6 +67,7 @@ import {
   Grid,
   MenuItem,
   Typography,
+  Container,
 } from "@mui/material";
 
 import { useHistory } from "react-router-dom";
@@ -112,7 +131,7 @@ const useStyles = makeStyles((theme: Theme) =>
       width: drawerWidth,
       flexShrink: 0,
       whiteSpace: "nowrap",
-      background: "#0899BA",
+      background: theme.palette.primary.main,
     },
     drawerOpen: {
       width: drawerWidth,
@@ -120,7 +139,7 @@ const useStyles = makeStyles((theme: Theme) =>
         easing: theme.transitions.easing.sharp,
         duration: theme.transitions.duration.enteringScreen,
       }),
-      background: "#0899BA",
+      background: theme.palette.primary.main,
       color: "#fff",
     },
     drawerClose: {
@@ -133,7 +152,7 @@ const useStyles = makeStyles((theme: Theme) =>
       [theme.breakpoints.up("sm")]: {
         width: theme.spacing(9) + 1,
       },
-      background: "#0899BA",
+      background: theme.palette.primary.main,
       color: "#fff",
     },
     toolbar: {
@@ -468,327 +487,413 @@ const Sibebar = (props: Props<any>) => {
   return (
     <div className={classes.root}>
       {checkLoading() && <Loading />}
-      <CssBaseline />
-      <Drawer
-        variant="permanent"
-        className={clsx(classes.drawer, {
-          [classes.drawerOpen]: open,
-          [classes.drawerClose]: !open,
-        })}
-        classes={{
-          paper: clsx({
+      {/* <CssBaseline /> */}
+      <ThemeProvider theme={theme}>
+        <Drawer
+          variant="permanent"
+          className={clsx(classes.drawer, {
             [classes.drawerOpen]: open,
             [classes.drawerClose]: !open,
-          }),
-        }}
-      >
-        <Box
-          sx={{
-            display: "flex",
-            flexDirection: "column",
-            justifyContent: "center",
-            alignItems: "center",
-            paddingTop: "16px",
-            gap: "10px",
+          })}
+          classes={{
+            paper: clsx({
+              [classes.drawerOpen]: open,
+              [classes.drawerClose]: !open,
+            }),
           }}
         >
           <Box
             sx={{
-              marginLeft: `${open ? "32px" : "0"}`,
               display: "flex",
-              flexDirection: "row",
+              flexDirection: "column",
               justifyContent: "center",
               alignItems: "center",
-              gap: "8px",
+              paddingTop: "16px",
+              gap: "10px",
             }}
           >
             <Box
               sx={{
-                display: `${open ? "initial" : "none"}`,
-              }}
-            >
-              {/* <Logo /> */}
-              <THCStype2Icon fill={"#f4f7ff"} width={"140px"} />
-            </Box>
-            <IconButton
-              sx={{
-                marginBottom: `${open ? "22px" : "0"}`,
+                marginLeft: `${open ? "32px" : "0"}`,
                 display: "flex",
+                flexDirection: "row",
                 justifyContent: "center",
                 alignItems: "center",
-                width: `${open ? "48px" : "48px"}`,
-                height: `${open ? "48px" : "48px"}`,
-                cursor: "pointer",
-                "& svg, path": { cursor: "pointer" },
-                "& svg": { margin: "0px" },
+                gap: "8px",
               }}
-              onClick={handleDrawerClose}
             >
-              {open ? (
-                <ChevronLeftIcon style={{ color: "#f4f7ff" }} />
-              ) : (
-                <MenuIcon style={{ color: "#f4f7ff" }} />
-              )}
-            </IconButton>
+              <Box
+                sx={{
+                  display: `${open ? "initial" : "none"}`,
+                }}
+              >
+                {/* <Logo /> */}
+                <THCStype2Icon fill={"#f4f7ff"} width={"140px"} />
+              </Box>
+              <IconButton
+                sx={{
+                  marginBottom: `${open ? "22px" : "0"}`,
+                  display: "flex",
+                  justifyContent: "center",
+                  alignItems: "center",
+                  width: `${open ? "48px" : "48px"}`,
+                  height: `${open ? "48px" : "48px"}`,
+                  cursor: "pointer",
+                  "& svg, path": { cursor: "pointer" },
+                  "& svg": { margin: "0px" },
+                }}
+                onClick={handleDrawerClose}
+              >
+                {open ? (
+                  <ChevronLeftIcon style={{ color: "#f4f7ff" }} />
+                ) : (
+                  <MenuIcon style={{ color: "#f4f7ff" }} />
+                )}
+              </IconButton>
+            </Box>
           </Box>
-        </Box>
-        {/* <Divider /> */}
-        <Box
-          sx={{
-            paddingTop: "10px",
-            width: "auto",
-            transition: "0.2s linear",
-            display: "flex",
-            flexDirection: "column",
-            justifyContent: "center",
-            alignItems: "center",
-            "& svg": { width: "100px" },
-          }}
-        >
-          <UserIcon fill={"#FFF"} width={"48px"} height={"48px"} />
-        </Box>
+          {/* <Divider /> */}
+          <Box
+            sx={{
+              paddingTop: "10px",
+              width: "auto",
+              transition: "0.2s linear",
+              display: "flex",
+              flexDirection: "column",
+              justifyContent: "center",
+              alignItems: "center",
+              "& svg": { width: "100px" },
+            }}
+          >
+            <UserIcon fill={"#FFF"} width={"48px"} height={"48px"} />
+          </Box>
 
-        <UserContent>
-          {open ? (
-            <>
-              <div>
-                <Grid
-                  container
-                  // spacing={2}
-                  // xs={12}
-                  // md={12}
-                  style={{ justifyContent: "space-evenly" }}
-                >
-                  <Grid item>
-                    <h3>{username}</h3>
-                  </Grid>
-                  <ListItem
-                    sx={{
-                      display: "flex",
-                      justifyContent: "center",
-                      cursor: "auto",
-                    }}
-                    className={classes.logOutButton}
-                    onClick={() => setOpenModalMessage(true)}
+          <UserContent>
+            {open ? (
+              <>
+                <div>
+                  <Grid
+                    container
+                    // spacing={2}
+                    // xs={12}
+                    // md={12}
+                    style={{ justifyContent: "space-evenly" }}
                   >
-                    <Grid
-                      item
-                      sx={{
-                        "& svg, path": { cursor: "pointer" },
-                        paddingTop: "10px",
-                      }}
-                    >
-                      <Badge
-                        classes={{ badge: classes.customBadge }}
-                        // className={classes.padding}
-                        color="primary"
-                        badgeContent={1}
-                        max={99}
+                    <Grid item>
+                      <Typography
+                        variant="h5"
+                        color={"white"}
+                        fontWeight="500"
                         sx={{
-                          marginLeft: "6px",
-                          "& span": {
-                            backgroundColor: "var(--primary-foccus)",
-                          },
+                          maxWidth: "230px",
                         }}
                       >
-                        <NotificationsIcon />
-                      </Badge>
+                        {username}
+                      </Typography>
                     </Grid>
-                  </ListItem>
-                </Grid>
-                <br />
-                <div
-                  style={{
-                    display: "flex",
-                    flexDirection: "column",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    cursor: "pointer",
-                  }}
-                >
-                  <ListItem
-                    sx={{
-                      cursor: "pointer",
-                      "& svg, path, span, div, h4": { cursor: "pointer" },
-                    }}
-                    style={{ padding: 0 }}
-                    className={classes.logOutButton}
-                    onClick={() => {
-                      handleClickOpenDialogCompany();
-                      setOpenModalConfig(true);
-                    }}
-                  >
-                    <BusinessIcon />
-                    <ListItemText style={{ color: "#ffff", cursor: "pointer" }}>
-                      <div
-                        style={{
-                          display: "flex",
-                          flexDirection: "column",
-                          alignItems: "center",
-                          justifyContent: "center",
-                        }}
-                      >
-                        <h4 style={{ color: "#ffffff", marginLeft: 10 }}>
-                          {handleCustomerName(currentCustomerName)}
-                        </h4>
-                        <h4 style={{ color: "#ffffff", marginLeft: 10 }}>
-                          {handleCompanyName(currentCompanyName)}
-                        </h4>
-                      </div>
-                    </ListItemText>
-                    <EditIcon
-                      style={{
-                        color: "#fff",
-                        fontSize: "14px",
-                        marginLeft: "10px",
+                    <ListItem
+                      sx={{
+                        display: "flex",
+                        justifyContent: "center",
+                        cursor: "auto",
                       }}
-                    />
-                  </ListItem>
-                </div>
-              </div>
-            </>
-          ) : (
-            <>
-              <div>
-                <Grid
-                  container
-                  spacing={2}
-                  xs={12}
-                  md={12}
-                  style={{ justifyContent: "space-evenly" }}
-                >
-                  <ListItem
-                    style={{ padding: 0 }}
-                    className={classes.logOutButton}
-                    onClick={() => setOpenModalMessage(true)}
-                  >
-                    <Grid item sx={{ margin: "20px 0 0 26px" }}>
-                      <Badge
-                        // classes={{ badge: classes.customBadge }}
-                        // className={classes.padding}
+                      className={classes.logOutButton}
+                      onClick={() => setOpenModalMessage(true)}
+                    >
+                      <Grid
+                        item
                         sx={{
                           "& svg, path": { cursor: "pointer" },
-                          "& span": {
-                            backgroundColor: "var(--primary-foccus)",
-                            margin: "-2px",
-                          },
+                          paddingTop: "10px",
                         }}
-                        badgeContent={1}
-                        max={99}
                       >
-                        <NotificationsIcon />
-                      </Badge>
-                    </Grid>
+                        <Badge
+                          classes={{ badge: classes.customBadge }}
+                          // className={classes.padding}
+                          color="primary"
+                          badgeContent={1}
+                          max={99}
+                          sx={{
+                            marginLeft: "6px",
+                            "& span": {
+                              backgroundColor: theme.palette.primary.light,
+                            },
+                          }}
+                        >
+                          <NotificationsIcon />
+                        </Badge>
+                      </Grid>
+                    </ListItem>
+                  </Grid>
+                  <br />
+                  <div
+                    style={{
+                      display: "flex",
+                      flexDirection: "column",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      cursor: "pointer",
+                    }}
+                  >
+                    <ListItem
+                      sx={{
+                        cursor: "pointer",
+                        "& svg, path, span, div, h4": { cursor: "pointer" },
+                      }}
+                      style={{ padding: 0 }}
+                      className={classes.logOutButton}
+                      onClick={() => {
+                        handleClickOpenDialogCompany();
+                        setOpenModalConfig(true);
+                      }}
+                    >
+                      <BusinessIcon />
+                      <ListItemText
+                        style={{ color: "#ffff", cursor: "pointer" }}
+                      >
+                        <div
+                          style={{
+                            display: "flex",
+                            flexDirection: "column",
+                            alignItems: "center",
+                            justifyContent: "center",
+                          }}
+                        >
+                          <Typography
+                            variant="body2"
+                            sx={{ marginLeft: "10px", cursor: "pointer" }}
+                            fontWeight="600"
+                          >
+                            {handleCustomerName(currentCustomerName)}
+                          </Typography>
+
+                          <Typography
+                            variant="body2"
+                            sx={{ marginLeft: "10px", cursor: "pointer" }}
+                            fontWeight="600"
+                          >
+                            {handleCompanyName(currentCompanyName)}
+                          </Typography>
+                        </div>
+                      </ListItemText>
+                      <EditIcon
+                        style={{
+                          color: "#fff",
+                          fontSize: "14px",
+                          marginLeft: "10px",
+                        }}
+                      />
+                    </ListItem>
+                  </div>
+                </div>
+              </>
+            ) : (
+              <>
+                <div>
+                  <Grid
+                    container
+                    spacing={2}
+                    xs={12}
+                    md={12}
+                    style={{ justifyContent: "space-evenly" }}
+                  >
+                    <ListItem
+                      style={{ padding: 0 }}
+                      className={classes.logOutButton}
+                      onClick={() => setOpenModalMessage(true)}
+                    >
+                      <Grid item sx={{ margin: "20px 0 10px 27px" }}>
+                        <Badge
+                          // classes={{ badge: classes.customBadge }}
+                          // className={classes.padding}
+                          sx={{
+                            "& svg, path": { cursor: "pointer" },
+                            "& span": {
+                              backgroundColor: theme.palette.primary.light,
+                              margin: "-2px",
+                            },
+                          }}
+                          badgeContent={1}
+                          max={99}
+                        >
+                          <NotificationsIcon />
+                        </Badge>
+                      </Grid>
+                    </ListItem>
+                  </Grid>
+                  <br />
+                </div>
+              </>
+            )}
+          </UserContent>
+          <List>
+            {itemsMenu.map((item: any, index: any) => (
+              <>
+                {item.modal ? (
+                  <ListItem
+                    className={classes.logOutButton}
+                    key={index}
+                    onClick={item.modal}
+                    sx={{
+                      backgroundColor: `${
+                        layoutState.data.menuSelected === item.title
+                          ? `${theme.palette.primary.dark}`
+                          : ""
+                      }`,
+                      "&:hover": {
+                        transition: "ease-in-out 200ms",
+                        backgroundColor: `${theme.palette.secondary.dark}`,
+                        cursor: "pointer",
+                        "& svg, path, span, div, h4": { cursor: "pointer" },
+                      },
+                    }}
+                  >
+                    <ListItemIcon sx={{ marginLeft: "6px" }}>
+                      {item.icon}
+                    </ListItemIcon>
+                    <ListItemText
+                      primary={
+                        <Typography variant="body1" sx={{ cursor: "pointer" }}>
+                          {item.title}
+                        </Typography>
+                      }
+                      style={{ color: "#ffff", cursor: "pointer" }}
+                    />
                   </ListItem>
-                </Grid>
-                <br />
-              </div>
-            </>
-          )}
-        </UserContent>
-        <List>
-          {itemsMenu.map((item: any, index: any) => (
-            <>
-              {item.modal ? (
-                <ListItem
-                  className={classes.logOutButton}
-                  key={index}
-                  onClick={item.modal}
-                  sx={{
-                    backgroundColor: `${
-                      layoutState.data.menuSelected === item.title
-                        ? "#64BCD0"
-                        : ""
-                    }`,
-                    "&:hover": {
-                      transition: "ease-in-out 200ms",
-                      backgroundColor: "#64BCD0",
-                      cursor: "pointer",
-                      "& svg, path, span, div, h4": { cursor: "pointer" },
-                    },
-                  }}
-                >
-                  <ListItemIcon sx={{ marginLeft: "6px" }}>
-                    {item.icon}
-                  </ListItemIcon>
-                  <ListItemText
-                    primary={item.title}
-                    style={{ color: "#ffff", cursor: "pointer" }}
-                  />
-                </ListItem>
-              ) : (
-                <ListItem
-                  className={classes.logOutButton}
-                  key={index}
-                  onClick={() => {
-                    history.push(item.route);
-                    dispatch(changeMenuSelected(item.title));
-                  }}
-                  sx={{
-                    backgroundColor: `${
-                      layoutState.data.menuSelected === item.title
-                        ? "#64BCD0"
-                        : ""
-                    }`,
-                    "&:hover": {
-                      transition: "ease-in-out 200ms",
-                      backgroundColor: "#64BCD0",
-                      cursor: "pointer",
-                      "& svg, path, span, div, h4": { cursor: "pointer" },
-                    },
-                  }}
-                >
-                  <ListItemIcon sx={{ marginLeft: "6px" }}>
-                    {item.icon}
-                  </ListItemIcon>
-                  <ListItemText
-                    primary={item.title}
-                    style={{ color: "#ffff", cursor: "pointer" }}
-                  />
-                </ListItem>
-              )}
-            </>
-          ))}
-        </List>
-        {/*<Divider/>*/}
-        {/*<List disablePadding={true}>*/}
-        {/*  <ListItem className={classes.logOutButton} onClick={() => history.push("/userconfiguration")}>*/}
-        {/*    <ListItemIcon>*/}
-        {/*      <SettingsIcon style={{color: '#fff'}}/>*/}
-        {/*    </ListItemIcon>*/}
-        {/*    <ListItemText primary="Configurações"/>*/}
-        {/*  </ListItem>*/}
-        {/*  <ListItem className={classes.logOutButton} onClick={handleOpenModalLogout}>*/}
-        {/*    <ListItemIcon>*/}
-        {/*      <ExitToApp style={{color: '#fff'}}/>*/}
-        {/*    </ListItemIcon>*/}
-        {/*    <ListItemText primary="Sair"/>*/}
-        {/*  </ListItem>*/}
-        {/*</List>*/}
-      </Drawer>
+                ) : (
+                  <ListItem
+                    className={classes.logOutButton}
+                    key={index}
+                    onClick={() => {
+                      history.push(item.route);
+                      dispatch(changeMenuSelected(item.title));
+                    }}
+                    sx={{
+                      backgroundColor: `${
+                        layoutState.data.menuSelected === item.title
+                          ? `${theme.palette.primary.dark}`
+                          : ""
+                      }`,
+                      "&:hover": {
+                        transition: "ease-in-out 200ms",
+                        backgroundColor: `${theme.palette.secondary.dark}`,
+                        cursor: "pointer",
+                        "& svg, path, span, div, h4": { cursor: "pointer" },
+                      },
+                    }}
+                  >
+                    <ListItemIcon sx={{ marginLeft: "6px" }}>
+                      {item.icon}
+                    </ListItemIcon>
+                    <ListItemText
+                      primary={
+                        <Typography variant="body1" sx={{ cursor: "pointer" }}>
+                          {item.title}
+                        </Typography>
+                      }
+                    />
+                  </ListItem>
+                )}
+              </>
+            ))}
+          </List>
+          {/*<Divider/>*/}
+          {/*<List disablePadding={true}>*/}
+          {/*  <ListItem className={classes.logOutButton} onClick={() => history.push("/userconfiguration")}>*/}
+          {/*    <ListItemIcon>*/}
+          {/*      <SettingsIcon style={{color: '#fff'}}/>*/}
+          {/*    </ListItemIcon>*/}
+          {/*    <ListItemText primary="Configurações"/>*/}
+          {/*  </ListItem>*/}
+          {/*  <ListItem className={classes.logOutButton} onClick={handleOpenModalLogout}>*/}
+          {/*    <ListItemIcon>*/}
+          {/*      <ExitToApp style={{color: '#fff'}}/>*/}
+          {/*    </ListItemIcon>*/}
+          {/*    <ListItemText primary="Sair"/>*/}
+          {/*  </ListItem>*/}
+          {/*</List>*/}
+        </Drawer>
+        {/* dialog sair */}
+        <Dialog
+          open={openModalLogout}
+          onClose={handleCloseModalLogout}
+          aria-labelledby="alert-dialog-title"
+          aria-describedby="alert-dialog-description"
+        >
+          <DialogTitle id="alert-dialog-title">
+            <Typography
+              variant="h5"
+              color={theme.palette.primary.main}
+              fontWeight="600"
+            >
+              Já vai?
+            </Typography>
+          </DialogTitle>
+          <DialogContent>
+            <DialogContentText id="alert-dialog-description">
+              <Typography variant="body1">
+                Tem certeza que deseja sair do T+HCS?
+              </Typography>
+            </DialogContentText>
+          </DialogContent>
+          <DialogActions>
+            <Button
+              onClick={handleCloseModalLogout}
+              variant="outlined"
+              color="secondary"
+              autoFocus
+            >
+              Não
+            </Button>
+            <Button onClick={handleLogout} variant="outlined" color="secondary">
+              Sim
+            </Button>
+          </DialogActions>
+        </Dialog>
+        {/* dialog mensagens */}
+        <Dialog
+          open={openModalMessage}
+          onClose={() => setOpenModalMessage(false)}
+          aria-labelledby="alert-dialog-title"
+          aria-describedby="alert-dialog-description"
+          TransitionComponent={Transition}
+        >
+          <DialogTitle
+            id="alert-dialog-title"
+            // color={theme.palette.primary.main}
+          >
+            <Typography
+              variant="h5"
+              color={theme.palette.primary.main}
+              fontWeight="600"
+            >
+              Mensagens
+            </Typography>
+          </DialogTitle>
+          <DialogContent>
+            <Message />
+          </DialogContent>
+          <DialogActions>
+            <Button
+              onClick={() => {
+                setOpenModalMessage(false);
+                // history.push(`/dashboard`);
+                //location.reload()
+              }}
+              color="secondary"
+              variant="outlined"
+            >
+              Fechar
+            </Button>
+          </DialogActions>
+        </Dialog>
+        <DialogChangeCompany
+          open={openDialogCompany}
+          setOpen={setOpenDialogCompany}
+        />
+      </ThemeProvider>
       <main className={classes.content}>{props.children}</main>
 
-      <Dialog
-        open={openModalLogout}
-        onClose={handleCloseModalLogout}
-        aria-labelledby="alert-dialog-title"
-        aria-describedby="alert-dialog-description"
-      >
-        <DialogTitle id="alert-dialog-title">Já vai?</DialogTitle>
-        <DialogContent>
-          <DialogContentText id="alert-dialog-description">
-            Tem certeza que deseja sair do T+HCS?
-          </DialogContentText>
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={handleCloseModalLogout} color="primary">
-            Não
-          </Button>
-          <Button onClick={handleLogout} color="primary" autoFocus>
-            Sim
-          </Button>
-        </DialogActions>
-      </Dialog>
       {/* {console.log(openDialogCompany)} */}
 
       {/* <Dialog
@@ -815,35 +920,6 @@ const Sibebar = (props: Props<any>) => {
           </Button>
         </DialogActions>
       </Dialog> */}
-
-      <Dialog
-        open={openModalMessage}
-        onClose={() => setOpenModalMessage(false)}
-        aria-labelledby="alert-dialog-title"
-        aria-describedby="alert-dialog-description"
-        TransitionComponent={Transition}
-      >
-        <DialogTitle id="alert-dialog-title">Mensagens</DialogTitle>
-        <DialogContent>
-          <Message />
-        </DialogContent>
-        <DialogActions>
-          <Button
-            onClick={() => {
-              setOpenModalMessage(false);
-              // history.push(`/dashboard`);
-              //location.reload()
-            }}
-            color="primary"
-          >
-            Fechar
-          </Button>
-        </DialogActions>
-      </Dialog>
-      <DialogChangeCompany
-        open={openDialogCompany}
-        setOpen={setOpenDialogCompany}
-      />
     </div>
   );
 };

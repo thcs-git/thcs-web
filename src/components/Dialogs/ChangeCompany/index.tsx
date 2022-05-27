@@ -23,9 +23,18 @@ import DialogActions from "@mui/material/DialogActions";
 import DialogContent from "@mui/material/DialogContent";
 import DialogContentText from "@mui/material/DialogContentText";
 import DialogTitle from "@mui/material/DialogTitle";
+import Typography from "@mui/material/Typography";
+import Autocomplete, { AutocompleteProps } from "@mui/material/Autocomplete";
 
+import {
+  createTheme,
+  ThemeProvider,
+  styled,
+  // Theme,
+} from "@mui/material/styles";
+import theme from "../../../theme/theme";
 // styles
-import { ButtonGreen, AutocompleteStyled as Autocomplete } from "./styles";
+import { ButtonGreen, AutocompleteStyled } from "./styles";
 import { ApplicationState } from "../../../store";
 
 interface IChangeCompany {
@@ -138,79 +147,95 @@ export default function DialogChangeCompany(props: IChangeCompany) {
   );
 
   return (
-    <Dialog open={open} onClose={handleClose}>
-      <DialogTitle>Configurações</DialogTitle>
-      <DialogContent>
-        <DialogContentText>
-          <h2>Olá, {user.name}</h2>
-          <p style={{ margin: "12px 0" }}>
-            Você está trabalhando nesta empresa, mas você pode mudar quando
-            quiser
-          </p>
-        </DialogContentText>
-        <Autocomplete
-          sx={{
-            width: 500,
-            "&		.MuiOutlinedInput-notchedOutline .Mui-focused": {
-              border: "2px solid black",
-            },
-          }}
-          value={selectCompany()}
-          onChange={(event, value: any) => {
-            changeCompanySelected(value);
-            setUser((state) => {
-              return {
-                ...state,
-                companySelected: value?.companie_id?._id,
-              };
-            });
-          }}
-          loading={loading}
-          id="controllable-states-demo"
-          options={companies}
-          getOptionLabel={(option: any) => option.customer}
-          noOptionsText={"Nenhuma empresa encontrada"}
-          renderInput={(params) => <TextField {...params} label="Empresas" />}
-        />
-      </DialogContent>
-      <DialogActions sx={{ margin: "0 24px 16px" }}>
-        <ButtonGreen
-          onClick={() => {
-            if (user.companySelected) {
-              setOpen(false);
-              changeCompany(companySelected);
-              dispatch(loadRequestLayout());
-              dispatch(loadRequestLogo());
-              history.push(`/`);
-            } else {
-              toast.warning("Você deve escolher a empresa.");
+    <ThemeProvider theme={theme}>
+      <Dialog open={open} onClose={handleClose}>
+        <DialogTitle>
+          <Typography
+            variant="h5"
+            color={theme.palette.primary.main}
+            fontWeight="600"
+          >
+            Mudar empresa
+          </Typography>
+        </DialogTitle>
+        <DialogContent>
+          <DialogContentText>
+            <Typography variant="h4" color={theme.palette.secondary.main}>
+              Olá, {user.name}
+            </Typography>
+            <Typography variant="body1" sx={{ margin: "12px 0" }}>
+              Você está trabalhando nesta empresa, mas você pode mudar quando
+              quiser
+            </Typography>
+          </DialogContentText>
+          <Autocomplete
+            sx={
+              {
+                // maxWidth: 510,
+                // "& .MuiOutlinedInput-notchedOutline .Mui-focused": {
+                //   border: "2px solid black",
+                // },
+              }
             }
-            // setUser((state) => {
-            //   return {
-            //     ...state,
-            //     companySelected: companySelected.companie_id._id,
-            //   };
-            // });
-          }}
-          variant="contained"
-        >
-          Mudar Empresa
-        </ButtonGreen>
-        <Button
-          onClick={() => {
-            // setUser((state) => {
-            //   return {
-            //     ...state,
-            //     companySelected: handleCompanySelected(),
-            //   };
-            // });
-            handleClose();
-          }}
-          variant="outlined"
-        >
-          Fechar
-        </Button>
-      </DialogActions>
-    </Dialog>
+            value={selectCompany()}
+            onChange={(event, value: any) => {
+              changeCompanySelected(value);
+              setUser((state) => {
+                return {
+                  ...state,
+                  companySelected: value?.companie_id?._id,
+                };
+              });
+            }}
+            loading={loading}
+            id="controllable-states-demo"
+            options={companies}
+            getOptionLabel={(option: any) => option.customer}
+            noOptionsText={"Nenhuma empresa encontrada"}
+            renderInput={(params) => <TextField {...params} label="Empresas" />}
+          />
+        </DialogContent>
+        <DialogActions>
+          <Button
+            onClick={() => {
+              if (user.companySelected) {
+                setOpen(false);
+                changeCompany(companySelected);
+                dispatch(loadRequestLayout());
+                dispatch(loadRequestLogo());
+                history.push(`/`);
+              } else {
+                toast.warning("Você deve escolher a empresa.");
+              }
+              // setUser((state) => {
+              //   return {
+              //     ...state,
+              //     companySelected: companySelected.companie_id._id,
+              //   };
+              // });
+            }}
+            color="primary"
+            variant="contained"
+          >
+            <Typography color="white">Mudar Empresa</Typography>
+          </Button>
+          <Button
+            onClick={() => {
+              // setUser((state) => {
+              //   return {
+              //     ...state,
+              //     companySelected: handleCompanySelected(),
+              //   };
+              // });
+              handleClose();
+            }}
+            variant="outlined"
+            color="secondary"
+          >
+            <Typography color={theme.palette.secondary.main}>Fechar</Typography>
+          </Button>
+        </DialogActions>
+      </Dialog>
+    </ThemeProvider>
   );
 }
