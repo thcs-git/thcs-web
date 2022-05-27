@@ -65,7 +65,6 @@ export default function HeaderOverview(props: IProps) {
     });
     return cid.length > 0 ? cid[0].value : "Não informado";
   }
-
   return (
     <Container>
       <Box
@@ -98,13 +97,15 @@ export default function HeaderOverview(props: IProps) {
           </CardText>
         </Box>
       </Box>
+      {content.careState.data.tipo === "H" && (
+        <Box style={{ display: "flex", gap: "8px" }}>
+          <BoxIcon onClick={handleClickOpen}>
+            <QRCodeIcon fill={"var(--gray-dark)"} />
+            <Box sx={{ color: "var(--secondary)" }}>QR Code</Box>
+          </BoxIcon>
+        </Box>
+      )}
 
-      <Box style={{ display: "flex", gap: "8px" }}>
-        <BoxIcon onClick={handleClickOpen}>
-          <QRCodeIcon fill={"var(--gray-dark)"} />
-          <Box sx={{ color: "var(--secondary)" }}>QR Code</Box>
-        </BoxIcon>
-      </Box>
       <DialogQrCode
         tittle={{ card: "Qr Code", info: ["Qr code"] }}
         content={content}
