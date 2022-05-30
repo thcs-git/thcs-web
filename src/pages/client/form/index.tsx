@@ -68,6 +68,14 @@ import {
 } from "./styles";
 import { Theme } from "@material-ui/core/styles";
 
+import {
+  createTheme,
+  ThemeProvider,
+  styled,
+  // Theme,
+} from "@mui/material/styles";
+import theme from "../../../theme/theme";
+
 // utils
 import mask from "../../../utils/mask";
 import { validateCNPJ as validateCNPJHelper } from "../../../helpers/validateCNPJ";
@@ -720,111 +728,113 @@ export default function ClientForm(props: RouteComponentProps<IPageParams>) {
 
   return (
     <Sidebar>
-      {checkViewPermission("client", JSON.stringify(rightsOfLayoutState)) ? (
-        <Container>
-          {/* {customerState.loading && <Loading />} */}
-          {params.mode === "permission//retirarTextoAposBarras" ? (
-            <>
-              <TabTittle
-                tittle={"Permissões Do Cliente"}
-                icon={
-                  !canEditPermission && (
-                    <ButtonEdit
-                      setCanEdit={() =>
-                        setCanEditPermission(!canEditPermission)
-                      }
-                      canEdit={canEditPermission}
-                    >
-                      Editar
-                    </ButtonEdit>
-                  )
-                }
-              />
-              <PermissionForm
-                state={permissionState}
-                setState={setPermissionState}
-                customerState={customerState}
-                userState={userState}
-                params={params}
-              />
-              <ButtonTabs
-                canEdit={canEditPermission}
-                buttons={buttonsPermission}
-              />
-            </>
-          ) : (
-            <>
-              <TabTittle tittle={"Detalhamento do Cliente"} />
-              <TabForm
-                navItems={NavItems}
-                state={state}
-                setState={setState}
-                setValidations={setFieldValidations}
-                fieldsValidation={fieldsValidation}
-                canEdit={canEdit}
-                cepStatus={customerState.errorCep}
-                getAddress={getAddress}
-                user={User}
-                customerState={customerState}
-                tableCells={tableCells}
-                mode={params.mode ? params?.mode : ""}
-                initialTab={initialTab}
-                setInitialTab={setInitialTab}
-                params={params}
-                propsPermissionForm={propsPermissionForm}
-              />
-              {modePermission === "start" && (
-                <ButtonTabs canEdit={canEdit} buttons={buttons} />
-              )}
-            </>
-          )}
-
-          <Modal
-            aria-labelledby="transition-modal-title"
-            aria-describedby="transition-modal-description"
-            open={open}
-            onClose={handleClose}
-            closeAfterTransition
-            BackdropComponent={Backdrop}
-            BackdropProps={{
-              timeout: 500,
-            }}
-          >
-            <Fade in={open}>
-              <Box
-                sx={{
-                  position: "absolute",
-                  top: "50%",
-                  left: "50%",
-                  transform: "translate(-50%, -50%)",
-                  width: 500,
-                  bgcolor: "background.paper",
-                  // border: "2px solid #000",
-                  borderRadius: "12px",
-                  boxShadow: 24,
-                  p: 4,
-                }}
-              >
-                <FeedbackComponent
-                  title="Função adicionada e/ou editada com sucesso!"
-                  description="Os dados foram salvos no sistema."
-                  type="success"
+      <ThemeProvider theme={theme}>
+        {checkViewPermission("client", JSON.stringify(rightsOfLayoutState)) ? (
+          <Container>
+            {/* {customerState.loading && <Loading />} */}
+            {params.mode === "permission//retirarTextoAposBarras" ? (
+              <>
+                <TabTittle
+                  tittle={"Permissões Do Cliente"}
+                  icon={
+                    !canEditPermission && (
+                      <ButtonEdit
+                        setCanEdit={() =>
+                          setCanEditPermission(!canEditPermission)
+                        }
+                        canEdit={canEditPermission}
+                      >
+                        Editar
+                      </ButtonEdit>
+                    )
+                  }
                 />
-              </Box>
-            </Fade>
-          </Modal>
+                <PermissionForm
+                  state={permissionState}
+                  setState={setPermissionState}
+                  customerState={customerState}
+                  userState={userState}
+                  params={params}
+                />
+                <ButtonTabs
+                  canEdit={canEditPermission}
+                  buttons={buttonsPermission}
+                />
+              </>
+            ) : (
+              <>
+                <TabTittle tittle={"Detalhamento do Cliente"} />
+                <TabForm
+                  navItems={NavItems}
+                  state={state}
+                  setState={setState}
+                  setValidations={setFieldValidations}
+                  fieldsValidation={fieldsValidation}
+                  canEdit={canEdit}
+                  cepStatus={customerState.errorCep}
+                  getAddress={getAddress}
+                  user={User}
+                  customerState={customerState}
+                  tableCells={tableCells}
+                  mode={params.mode ? params?.mode : ""}
+                  initialTab={initialTab}
+                  setInitialTab={setInitialTab}
+                  params={params}
+                  propsPermissionForm={propsPermissionForm}
+                />
+                {modePermission === "start" && (
+                  <ButtonTabs canEdit={canEdit} buttons={buttons} />
+                )}
+              </>
+            )}
 
-          {/* <Modal open={openModal}>
+            <Modal
+              aria-labelledby="transition-modal-title"
+              aria-describedby="transition-modal-description"
+              open={open}
+              onClose={handleClose}
+              closeAfterTransition
+              BackdropComponent={Backdrop}
+              BackdropProps={{
+                timeout: 500,
+              }}
+            >
+              <Fade in={open}>
+                <Box
+                  sx={{
+                    position: "absolute",
+                    top: "50%",
+                    left: "50%",
+                    transform: "translate(-50%, -50%)",
+                    width: 500,
+                    bgcolor: "background.paper",
+                    // border: "2px solid #000",
+                    borderRadius: "12px",
+                    boxShadow: 24,
+                    p: 4,
+                  }}
+                >
+                  <FeedbackComponent
+                    title="Função adicionada e/ou editada com sucesso!"
+                    description="Os dados foram salvos no sistema."
+                    type="success"
+                  />
+                </Box>
+              </Fade>
+            </Modal>
+
+            {/* <Modal open={openModal}>
           <FeedbackComponent
             title="Função adicionada com sucesso!"
             description="Os dados foram salvos no sistema. Em segundos o modal desaparecerá."
             type="success"
           />
         </Modal> */}
-        </Container>
-      ) : (
-        <NoPermission />
-      )}
+          </Container>
+        ) : (
+          <NoPermission />
+        )}
+      </ThemeProvider>
     </Sidebar>
   );
 }

@@ -2,11 +2,18 @@ import styled from "styled-components";
 import { styled as styledMui } from "@mui/system";
 
 import AppBar from "@material-ui/core/AppBar";
-import Tabs from "@material-ui/core/Tabs";
-import Tab from "@material-ui/core/Tab";
+import Tabs from "@mui/material/Tabs";
+import Tab, { TabProps } from "@mui/material/Tab";
 import { FormControl } from "@material-ui/core";
 import Box from "@mui/material/Box";
 import Button, { ButtonProps } from "@mui/material/Button";
+import theme from "../../theme/theme";
+import {
+  createTheme,
+  ThemeProvider,
+  Theme,
+  ThemeOptions,
+} from "@mui/material/styles";
 
 export const TabContent = styled(AppBar)`
   //margin-bottom: 10px;
@@ -145,51 +152,37 @@ export const WrapperName = styled.div`
   margin-left: 16px;
 `;
 
-export const TabNavItemPermission = styled(Tab)`
-  color: var(--gray-dark);
-  text-transform: capitalize;
+export const TabNavItemPermission = styledMui(Tab)<TabProps>(({ theme }) => ({
+  textTransform: "capitalize",
+  cursor: "pointer",
+  boxShadow: "none",
+  borderRadius: "30px",
+  color: "var(--white)",
+  marginRight: "4px",
+  fontSize: "11px",
+  height: "32px",
+  fontWeight: "normal",
 
-  /* display: flex; */
+  "&.active": {
+    backgroundColor: theme.palette.secondary.main,
+    border: "1px solid #0786a3",
+    color: "var(--white)",
+  },
+  "&.desactive": {
+    border: `1px solid ${theme.palette.text.secondary}`,
+    color: theme.palette.text.secondary,
+  },
 
-  cursor: pointer;
-
-  /* max-width: 100%; */
-  box-shadow: none;
-
-  border-radius: 30px;
-  color: var(--white);
-  margin-right: 8px;
-  font-size: 11px;
-  height: 32px;
-  font-weight: normal;
-
-  &.active {
-    background-color: var(--secondary);
-    border: 1px solid #0786a3;
-    color: var(--white);
-    svg {
-      fill: #f9f9f9;
-    }
-  }
-  &.desactive {
-    background-color: none;
-    border: 1px solid #e0e0e0;
-    color: #9e9e9e;
-    svg {
-      fill: #9e9e9e;
-    }
-  }
-
-  &:focus {
-    outline: 0 !important;
-  }
-  .MuiTab-root {
-    min-height: 32px;
-  }
-`;
+  "&:focus": {
+    outline: "0",
+  },
+  ".MuiTab-root": {
+    minHeight: "32px",
+  },
+}));
 
 export const TabNavPermission = styled(Tabs)`
-  background: var(--gray-light);
+  /* background: var(--gray-light); */
   cursor: pointer;
 
   display: flex;

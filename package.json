@@ -28,7 +28,7 @@
     "cypress": "3.6.0",
     "date-fns": "^2.16.1",
     "dayjs": "^1.9.6",
-    "eslint": "^7.27.0",
+    "eslint": "^7.11.0",
     "firebase": "^8.2.6",
     "firebase-tools": "^9.3.0",
     "formik": "^2.2.9",

@@ -25,6 +25,9 @@ import { ReactComponent as MaleIcon } from "../../../assets/img/icon-male.svg";
 import { ReactComponent as UserIcon } from "../../../assets/img/icon-user2.svg";
 import { ReactComponent as SpecialtyIcon } from "../../../assets/img/icon-specialty.svg";
 
+import { ThemeProvider } from "@mui/material/styles";
+
+import theme from "../../../theme/theme";
 // import eee from "../../../assets/img/icon-company2.svg"
 
 interface IProps {
@@ -172,283 +175,287 @@ export default function ViewCard(props: IProps) {
 
   content.detailsCompanyIs && dataCompany.push(addressFull[0]);
 
-  return content.detailsCompanyIs ? (
-    <Grid item md={md_value}>
-      <Grid
-        container
-        style={{
-          flexDirection: "column",
-          paddingLeft: "24px",
-          // paddingTop: "10px",
-        }}
-      >
-        {/* <Grid item style={{ paddingBottom: "10px" }}>
-          <h3>{content.tittle}</h3>
-        </Grid> */}
-        <WrapperTitleData>
-          {/* <img src="../../../assets/img/icon-company2.svg" alt="icon company" /> */}
-          <Company2Icon />
-          <p>Dados da empresa</p>
-        </WrapperTitleData>
-        <WrapperContentData>
-          {dataCompany.map(({ name, value }: Irows, index: number) => (
-            <Grid item>{`${name}: ${value}`}</Grid>
-          ))}
-        </WrapperContentData>
+  return (
+    <ThemeProvider theme={theme}>
+      {content.detailsCompanyIs ? (
+        <Grid item md={md_value}>
+          <Grid
+            container
+            style={{
+              flexDirection: "column",
+              paddingLeft: "24px",
+              // paddingTop: "10px",
+            }}
+          >
+            {/* <Grid item style={{ paddingBottom: "10px" }}>
+              <h3>{content.tittle}</h3>
+            </Grid> */}
+            <WrapperTitleData>
+              {/* <img src="../../../assets/img/icon-company2.svg" alt="icon company" /> */}
+              <Company2Icon />
+              <p>Dados da empresa</p>
+            </WrapperTitleData>
+            <WrapperContentData>
+              {dataCompany.map(({ name, value }: Irows, index: number) => (
+                <Grid item>{`${name}: ${value}`}</Grid>
+              ))}
+            </WrapperContentData>
 
-        <WrapperTitleData>
-          <ProfessionalIcon />
-          <p>Dados do Responsável</p>
-        </WrapperTitleData>
-        <WrapperContentData>
-          {dataResponsible.map(({ name, value }: Irows, index: number) => (
-            <Grid item>{`${name}: ${value}`}</Grid>
-          ))}
-        </WrapperContentData>
-      </Grid>
-    </Grid>
-  ) : content.detailsPatientIs ? (
-    <Grid item md={md_value}>
-      <Grid
-        container
-        style={{
-          flexDirection: "column",
-          paddingLeft: "24px",
-          // paddingTop: "10px",
-        }}
-      >
-        {/* <Grid item style={{ paddingBottom: "10px" }}>
-          <h3>{content.tittle}</h3>
-        </Grid> */}
-        <WrapperTitleData>
-          {/* <img src="../../../assets/img/icon-company2.svg" alt="icon company" /> */}
-          <PacientDetailsIcon />
-          <p>Dados do Paciente</p>
-        </WrapperTitleData>
-        <WrapperContentData>
-          {patientData.map(({ name, value }: Irows, index: number) => (
-            <Grid item>{`${name}: ${value}`}</Grid>
-          ))}
-        </WrapperContentData>
-        <WrapperTitleData>
-          <LocationIcon />
-          <p>Endereço</p>
-        </WrapperTitleData>
-        <WrapperContentData>
-          {patientAdress.map(({ name, value }: Irows, index: number) => (
-            <Grid item>{`${name}: ${value}`}</Grid>
-          ))}
-        </WrapperContentData>
-
-        <WrapperTitleData>
-          <PhoneIcon />
-          <p>Contato</p>
-        </WrapperTitleData>
-        <WrapperContentData>
-          {patientContact.map(({ name, value }: Irows, index: number) => (
-            <Grid item>{`${name}: ${value}`}</Grid>
-          ))}
-        </WrapperContentData>
-      </Grid>
-    </Grid>
-  ) : content.details === "UserForm" ? (
-    <Grid item md={md_value}>
-      <Grid
-        container
-        style={{
-          flexDirection: "column",
-          paddingLeft: "10px",
-          paddingTop: "10px",
-        }}
-      >
-        <Grid item style={{ paddingBottom: "0" }}>
-          <WrapperTitleData>
-            <UserIcon />
-            {content.tittle}
-          </WrapperTitleData>
-          <WrapperContentData>
-            {content.rows.map(({ name, value }: Irows, index: number) => (
-              <Grid item>{`${name}: ${value}`}</Grid>
-            ))}
-          </WrapperContentData>
-        </Grid>
-      </Grid>
-    </Grid>
-  ) : content.details === "CepForm" ? (
-    <Grid item md={md_value}>
-      <Grid
-        container
-        style={{
-          flexDirection: "column",
-          paddingLeft: "10px",
-          paddingTop: "10px",
-        }}
-      >
-        <Grid item style={{ paddingBottom: "0" }}>
-          <WrapperTitleData>
-            <LocationIcon />
-            {content.tittle}
-          </WrapperTitleData>
-          <WrapperContentData>
-            {addressFull.map(({ name, value }: Irows, index: number) => (
-              <Grid item>{value}</Grid>
-            ))}
-
-            {content.rows.map(
-              ({ name, value }: Irows, index: number) =>
-                name === "CEP" && <Grid item>{`${name}: ${value}`}</Grid>
-            )}
-          </WrapperContentData>
-        </Grid>
-      </Grid>
-    </Grid>
-  ) : content.details === "UserContactForm" ? (
-    <Grid item md={md_value}>
-      <Grid
-        container
-        style={{
-          flexDirection: "column",
-          paddingLeft: "10px",
-          paddingTop: "10px",
-        }}
-      >
-        <Grid item style={{ paddingBottom: "0" }}>
-          <WrapperTitleData>
-            <PhoneIcon />
-            {content.tittle}
-          </WrapperTitleData>
-          <WrapperContentData>
-            {content.rows.map(({ name, value }: Irows, index: number) => (
-              <Grid item>{`${name}: ${value}`}</Grid>
-            ))}
-          </WrapperContentData>
-        </Grid>
-      </Grid>
-    </Grid>
-  ) : content.details === "UserProfessionForm" ? (
-    <Grid item md={md_value}>
-      <Grid
-        container
-        style={{
-          flexDirection: "column",
-          paddingLeft: "10px",
-          paddingTop: "10px",
-        }}
-      >
-        <Grid item style={{ paddingBottom: "0" }}>
-          <WrapperTitleData>
-            {content.tittle === "Função" ? (
+            <WrapperTitleData>
               <ProfessionalIcon />
-            ) : content.tittle === "Especialidade" ? (
-              <SpecialtyIcon />
-            ) : (
+              <p>Dados do Responsável</p>
+            </WrapperTitleData>
+            <WrapperContentData>
+              {dataResponsible.map(({ name, value }: Irows, index: number) => (
+                <Grid item>{`${name}: ${value}`}</Grid>
+              ))}
+            </WrapperContentData>
+          </Grid>
+        </Grid>
+      ) : content.detailsPatientIs ? (
+        <Grid item md={md_value}>
+          <Grid
+            container
+            style={{
+              flexDirection: "column",
+              paddingLeft: "24px",
+              // paddingTop: "10px",
+            }}
+          >
+            {/* <Grid item style={{ paddingBottom: "10px" }}>
+              <h3>{content.tittle}</h3>
+            </Grid> */}
+            <WrapperTitleData>
+              {/* <img src="../../../assets/img/icon-company2.svg" alt="icon company" /> */}
+              <PacientDetailsIcon />
+              <p>Dados do Paciente</p>
+            </WrapperTitleData>
+            <WrapperContentData>
+              {patientData.map(({ name, value }: Irows, index: number) => (
+                <Grid item>{`${name}: ${value}`}</Grid>
+              ))}
+            </WrapperContentData>
+            <WrapperTitleData>
+              <LocationIcon />
+              <p>Endereço</p>
+            </WrapperTitleData>
+            <WrapperContentData>
+              {patientAdress.map(({ name, value }: Irows, index: number) => (
+                <Grid item>{`${name}: ${value}`}</Grid>
+              ))}
+            </WrapperContentData>
+
+            <WrapperTitleData>
               <PhoneIcon />
-            )}
-            {content.tittle}
-          </WrapperTitleData>
-          <WrapperContentData>
+              <p>Contato</p>
+            </WrapperTitleData>
+            <WrapperContentData>
+              {patientContact.map(({ name, value }: Irows, index: number) => (
+                <Grid item>{`${name}: ${value}`}</Grid>
+              ))}
+            </WrapperContentData>
+          </Grid>
+        </Grid>
+      ) : content.details === "UserForm" ? (
+        <Grid item md={md_value}>
+          <Grid
+            container
+            style={{
+              flexDirection: "column",
+              paddingLeft: "10px",
+              paddingTop: "10px",
+            }}
+          >
+            <Grid item style={{ paddingBottom: "0" }}>
+              <WrapperTitleData>
+                <UserIcon />
+                {content.tittle}
+              </WrapperTitleData>
+              <WrapperContentData>
+                {content.rows.map(({ name, value }: Irows, index: number) => (
+                  <Grid item>{`${name}: ${value}`}</Grid>
+                ))}
+              </WrapperContentData>
+            </Grid>
+          </Grid>
+        </Grid>
+      ) : content.details === "CepForm" ? (
+        <Grid item md={md_value}>
+          <Grid
+            container
+            style={{
+              flexDirection: "column",
+              paddingLeft: "10px",
+              paddingTop: "10px",
+            }}
+          >
+            <Grid item style={{ paddingBottom: "0" }}>
+              <WrapperTitleData>
+                <LocationIcon />
+                {content.tittle}
+              </WrapperTitleData>
+              <WrapperContentData>
+                {addressFull.map(({ name, value }: Irows, index: number) => (
+                  <Grid item>{value}</Grid>
+                ))}
+
+                {content.rows.map(
+                  ({ name, value }: Irows, index: number) =>
+                    name === "CEP" && <Grid item>{`${name}: ${value}`}</Grid>
+                )}
+              </WrapperContentData>
+            </Grid>
+          </Grid>
+        </Grid>
+      ) : content.details === "UserContactForm" ? (
+        <Grid item md={md_value}>
+          <Grid
+            container
+            style={{
+              flexDirection: "column",
+              paddingLeft: "10px",
+              paddingTop: "10px",
+            }}
+          >
+            <Grid item style={{ paddingBottom: "0" }}>
+              <WrapperTitleData>
+                <PhoneIcon />
+                {content.tittle}
+              </WrapperTitleData>
+              <WrapperContentData>
+                {content.rows.map(({ name, value }: Irows, index: number) => (
+                  <Grid item>{`${name}: ${value}`}</Grid>
+                ))}
+              </WrapperContentData>
+            </Grid>
+          </Grid>
+        </Grid>
+      ) : content.details === "UserProfessionForm" ? (
+        <Grid item md={md_value}>
+          <Grid
+            container
+            style={{
+              flexDirection: "column",
+              paddingLeft: "10px",
+              paddingTop: "10px",
+            }}
+          >
+            <Grid item style={{ paddingBottom: "0" }}>
+              <WrapperTitleData>
+                {content.tittle === "Função" ? (
+                  <ProfessionalIcon />
+                ) : content.tittle === "Especialidade" ? (
+                  <SpecialtyIcon />
+                ) : (
+                  <PhoneIcon />
+                )}
+                {content.tittle}
+              </WrapperTitleData>
+              <WrapperContentData>
+                {content.rows.map(({ name, value }: Irows, index: number) => (
+                  <Grid item>{`${name}: ${value}`}</Grid>
+                ))}
+              </WrapperContentData>
+            </Grid>
+          </Grid>
+        </Grid>
+      ) : content.details === "UserCompanyForm" ? (
+        <Grid item md={md_value}>
+          <Grid
+            container
+            style={{
+              flexDirection: "column",
+              paddingLeft: "10px",
+              paddingTop: "10px",
+            }}
+          >
+            <Grid item style={{ paddingBottom: "0" }}>
+              <WrapperTitleData>
+                <Company2Icon />
+                {content.tittle}
+              </WrapperTitleData>
+              <WrapperContentData>
+                {content.rows.map(({ name, value }: Irows, index: number) => (
+                  <Grid item>{value}</Grid>
+                ))}
+              </WrapperContentData>
+            </Grid>
+          </Grid>
+        </Grid>
+      ) : content.details === "ClientFormHeader" ? (
+        <Grid item md={md_value}>
+          <Grid
+            container
+            style={{
+              flexDirection: "column",
+              paddingLeft: "10px",
+              paddingTop: "10px",
+            }}
+          >
+            <Grid item style={{ paddingBottom: "0" }}>
+              <WrapperTitleData>
+                <Company2Icon />
+                {content.tittle}
+              </WrapperTitleData>
+              <WrapperContentData>
+                {content.rows.map(({ name, value }: Irows, index: number) => (
+                  <>
+                    <Grid item>{`${
+                      name === "CPF" ? "CNPJ" : name
+                    }: ${value}`}</Grid>
+                  </>
+                ))}
+              </WrapperContentData>
+            </Grid>
+          </Grid>
+        </Grid>
+      ) : content.details === "ResponsibleForm" ? (
+        <Grid item md={md_value}>
+          <Grid
+            container
+            style={{
+              flexDirection: "column",
+              paddingLeft: "10px",
+              paddingTop: "10px",
+            }}
+          >
+            <Grid item style={{ paddingBottom: "0" }}>
+              <WrapperTitleData>
+                <ProfessionalIcon />
+
+                {content.tittle}
+              </WrapperTitleData>
+              <WrapperContentData>
+                {content.rows.map(({ name, value }: Irows, index: number) => (
+                  <>
+                    <Grid item>{`${
+                      name === "CPF" ? "CNPJ" : name
+                    }: ${value}`}</Grid>
+                  </>
+                ))}
+              </WrapperContentData>
+            </Grid>
+          </Grid>
+        </Grid>
+      ) : (
+        <Grid item md={md_value}>
+          <Grid
+            container
+            style={{
+              flexDirection: "column",
+              paddingLeft: "10px",
+              paddingTop: "10px",
+            }}
+          >
+            <Grid item style={{ paddingBottom: "0" }}>
+              <h3>{content.tittle}</h3>
+            </Grid>
             {content.rows.map(({ name, value }: Irows, index: number) => (
               <Grid item>{`${name}: ${value}`}</Grid>
             ))}
-          </WrapperContentData>
+          </Grid>
         </Grid>
-      </Grid>
-    </Grid>
-  ) : content.details === "UserCompanyForm" ? (
-    <Grid item md={md_value}>
-      <Grid
-        container
-        style={{
-          flexDirection: "column",
-          paddingLeft: "10px",
-          paddingTop: "10px",
-        }}
-      >
-        <Grid item style={{ paddingBottom: "0" }}>
-          <WrapperTitleData>
-            <Company2Icon />
-            {content.tittle}
-          </WrapperTitleData>
-          <WrapperContentData>
-            {content.rows.map(({ name, value }: Irows, index: number) => (
-              <Grid item>{value}</Grid>
-            ))}
-          </WrapperContentData>
-        </Grid>
-      </Grid>
-    </Grid>
-  ) : content.details === "ClientFormHeader" ? (
-    <Grid item md={md_value}>
-      <Grid
-        container
-        style={{
-          flexDirection: "column",
-          paddingLeft: "10px",
-          paddingTop: "10px",
-        }}
-      >
-        <Grid item style={{ paddingBottom: "0" }}>
-          <WrapperTitleData>
-            <Company2Icon />
-            {content.tittle}
-          </WrapperTitleData>
-          <WrapperContentData>
-            {content.rows.map(({ name, value }: Irows, index: number) => (
-              <>
-                <Grid item>{`${
-                  name === "CPF" ? "CNPJ" : name
-                }: ${value}`}</Grid>
-              </>
-            ))}
-          </WrapperContentData>
-        </Grid>
-      </Grid>
-    </Grid>
-  ) : content.details === "ResponsibleForm" ? (
-    <Grid item md={md_value}>
-      <Grid
-        container
-        style={{
-          flexDirection: "column",
-          paddingLeft: "10px",
-          paddingTop: "10px",
-        }}
-      >
-        <Grid item style={{ paddingBottom: "0" }}>
-          <WrapperTitleData>
-            <ProfessionalIcon />
-
-            {content.tittle}
-          </WrapperTitleData>
-          <WrapperContentData>
-            {content.rows.map(({ name, value }: Irows, index: number) => (
-              <>
-                <Grid item>{`${
-                  name === "CPF" ? "CNPJ" : name
-                }: ${value}`}</Grid>
-              </>
-            ))}
-          </WrapperContentData>
-        </Grid>
-      </Grid>
-    </Grid>
-  ) : (
-    <Grid item md={md_value}>
-      <Grid
-        container
-        style={{
-          flexDirection: "column",
-          paddingLeft: "10px",
-          paddingTop: "10px",
-        }}
-      >
-        <Grid item style={{ paddingBottom: "0" }}>
-          <h3>{content.tittle}</h3>
-        </Grid>
-        {content.rows.map(({ name, value }: Irows, index: number) => (
-          <Grid item>{`${name}: ${value}`}</Grid>
-        ))}
-      </Grid>
-    </Grid>
+      )}
+    </ThemeProvider>
   );
 }

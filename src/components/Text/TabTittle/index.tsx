@@ -1,9 +1,12 @@
-import React, {useState, ReactNode, useCallback} from 'react';
-import {Grid} from "@material-ui/core";
+import React, { useState, ReactNode, useCallback } from "react";
+import Grid from "@mui/material/Grid";
+import Typography from "@mui/material/Typography";
 
-import {FormTitle} from "./styles";
+import { FormTitle } from "./styles";
 import ButtonEdit from "../../Button/ButtonEdit";
+import { ThemeProvider } from "@mui/material/styles";
 
+import theme from "../../../theme/theme";
 
 interface IComponent {
   tittle: string;
@@ -11,14 +14,27 @@ interface IComponent {
 }
 
 const TabTittle = (props: IComponent) => {
-  const {tittle, icon} = props;
+  const { tittle, icon } = props;
 
   return (
-    <Grid item md={12} xs={12} style={{display: 'flex', alignItems: 'center', margin: '0 0 25px 5px'}}>
-      <FormTitle>{tittle}</FormTitle>
-      {icon}
-    </Grid>
+    <ThemeProvider theme={theme}>
+      <Grid
+        item
+        md={12}
+        xs={12}
+        sx={{ display: "flex", alignItems: "center", margin: "0 0 25px 5px" }}
+      >
+        <Typography
+          variant="h5"
+          fontWeight={600}
+          color={theme.palette.primary.main}
+        >
+          {tittle}
+        </Typography>
+        {icon}
+      </Grid>
+    </ThemeProvider>
   );
-}
+};
 
 export default React.memo(TabTittle);

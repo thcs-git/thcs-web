@@ -1,6 +1,6 @@
 import React, { useState, ReactNode } from "react";
 import { makeStyles, Theme } from "@material-ui/core/styles";
-import { Badge, Divider, Grid, withWidth } from "@material-ui/core";
+import { Badge, Divider, Grid, Typography } from "@mui/material";
 
 import {
   TabBody,
@@ -35,20 +35,18 @@ import CompanyForm from "../Inputs/Forms/CompanyForm";
 import PatientForm from "../Inputs/Forms/patientForm";
 import ChangePasswordConfiguration from "../Inputs/Forms/ChangePasswordTab";
 
-import { ReactComponent as CompanyIcon } from "../../assets/img/icon-company.svg";
+import CompanyIcon from "../Icons/Company";
 import { ReactComponent as EmailIcon } from "../../assets/img/Icon-email.svg";
 import { ReactComponent as PrintIcon } from "../../assets/img/Icon-imprimir.svg";
-import { ReactComponent as PatientIcon } from "../../assets/img/icon-pacient.svg";
+import PatientIcon from "../Icons/Patient";
 import { ReactComponent as MaleIcon } from "../../assets/img/icon-male-1.svg";
 import { ReactComponent as FemaleIcon } from "../../assets/img/ionic-md-female.svg";
 import { ReactComponent as ProfileIcon } from "../../assets/img/icon-user-1.svg";
 
 import { ReactComponent as PortalActiveIcon } from "../../assets/img/icon-portal-active.svg";
 import { ReactComponent as PortalDesactiveIcon } from "../../assets/img/icon-portal-desactive.svg";
-
-import { ReactComponent as AppActiveIcon } from "../../assets/img/icon-app-active.svg";
-import { ReactComponent as AppDesactiveIcon } from "../../assets/img/icon-app-desactive.svg";
-
+import ComputerIcon from "../Icons/Computer";
+import CellphoneIcon from "../Icons/Cellphone";
 import Box from "@mui/material/Box";
 import TextField from "@mui/material/TextField";
 import Autocomplete from "@mui/material/Autocomplete";
@@ -59,6 +57,10 @@ import { checkEditPermission } from "../../utils/permissions";
 import { toast } from "react-toastify";
 import { useSelector } from "react-redux";
 import { ApplicationState } from "../../store";
+
+import { ThemeProvider } from "@mui/material/styles";
+
+import theme from "../../theme/theme";
 
 interface IPropsPermissionFrom {
   state: {
@@ -167,20 +169,20 @@ const useStyles = makeStyles((theme: Theme) => ({
     backgroundColor: theme.palette.background.paper,
   },
   indicator: {
-    borderBottom: "2px solid var(--secondary)",
+    borderBottom: `2px solid ${theme.palette.primary.light}`,
   },
   indicatorCompany: {
-    borderBottom: "2px solid var(--black)",
+    borderBottom: `2px solid ${theme.palette.common.black}`,
   },
   padding: {
     padding: theme.spacing(0, 2),
   },
   customBadge: {
-    backgroundColor: "var(--secondary)",
-    color: "white",
+    backgroundColor: `${theme.palette.secondary.main}`,
+    color: theme.palette.common.white,
   },
   colorSecondary: {
-    color: "var(--secondary)",
+    color: `${theme.palette.secondary.main}`,
   },
 }));
 
@@ -378,400 +380,469 @@ const TabForm = (props: ITabprops) => {
         return <TabBodyItem>Not found!</TabBodyItem>;
     }
   }
-  return navItems[0].components[0] === "CompanyForm" ? (
-    <div className={classes.root}>
-      <TabContent position="static">
-        <TabNav
-          value={value}
-          onChange={handleChange}
-          variant="scrollable"
-          scrollButtons="auto"
-          aria-label="scrollable auto tabs example"
-          TabIndicatorProps={{ style: { display: "none" } }}
-        >
+  return (
+    <ThemeProvider theme={theme}>
+      {navItems[0].components[0] === "CompanyForm" ? (
+        <div className={classes.root}>
+          <TabContent position="static">
+            <TabNav
+              value={value}
+              onChange={handleChange}
+              variant="scrollable"
+              scrollButtons="auto"
+              aria-label="scrollable auto tabs example"
+              TabIndicatorProps={{ style: { display: "none" } }}
+            >
+              {navItems.map(
+                ({ name, badge, components }: INavItems, index: number) => (
+                  <TabNavItem_1
+                    // tabNavCompany={true}
+                    value={index}
+                    label={
+                      <TabNavItemDetails>
+                        <TabNavItemAlingLeft>
+                          <CompanyIcon fill={theme.palette.primary.main} />
+                          <Typography variant="body2" fontWeight={600}>
+                            {name}
+                          </Typography>
+                        </TabNavItemAlingLeft>
+
+                        {/* <TabNavItemAlingRigth>
+                          <EmailIcon style={{ cursor: "pointer" }} />
+                          <PrintIcon style={{ cursor: "pointer" }} />
+                        </TabNavItemAlingRigth> */}
+                      </TabNavItemDetails>
+                    }
+                    wrapped
+                    className={value === index ? "active" : ""}
+                    key={index}
+                    {...a11yProps({ index })}
+                  />
+                )
+              )}
+            </TabNav>
+          </TabContent>
           {navItems.map(
-            ({ name, badge, components }: INavItems, index: number) => (
-              <TabNavItem_1
-                // tabNavCompany={true}
-                value={index}
-                label={
-                  <TabNavItemDetails>
-                    <TabNavItemAlingLeft>
-                      <CompanyIcon />
-                      {name}
-                    </TabNavItemAlingLeft>
+            ({ name, components, badge }: INavItems, index: number) => {
+              const last = _.findLastIndex(components);
 
-                    {/* <TabNavItemAlingRigth>
-                      <EmailIcon style={{ cursor: "pointer" }} />
-                      <PrintIcon style={{ cursor: "pointer" }} />
-                    </TabNavItemAlingRigth> */}
-                  </TabNavItemDetails>
-                }
-                wrapped
-                className={value === index ? "active" : ""}
-                key={index}
-                {...a11yProps({ index })}
-              />
-            )
+              return (
+                <TabPanel value={value} index={index} key={index}>
+                  {components.map((component: string, sub_index: number) => (
+                    <>
+                      {handleComponents(
+                        component,
+                        parseInt(`${index}${sub_index}`)
+                      )}
+                      {sub_index != last && (
+                        <Grid item md={12} xs={12}>
+                          <Divider sx={{ marginBottom: 28, marginTop: 20 }} />
+                        </Grid>
+                      )}
+                    </>
+                  ))}
+                </TabPanel>
+              );
+            }
           )}
-        </TabNav>
-      </TabContent>
-      {navItems.map(({ name, components, badge }: INavItems, index: number) => {
-        const last = _.findLastIndex(components);
-
-        return (
-          <TabPanel value={value} index={index} key={index}>
-            {components.map((component: string, sub_index: number) => (
-              <>
-                {handleComponents(component, parseInt(`${index}${sub_index}`))}
-                {sub_index != last && (
-                  <Grid item md={12} xs={12}>
-                    <Divider style={{ marginBottom: 28, marginTop: 20 }} />
-                  </Grid>
-                )}
-              </>
-            ))}
-          </TabPanel>
-        );
-      })}
-    </div>
-  ) : navItems[0].components[0] === "PatientForm" ? (
-    <div className={classes.root}>
-      <TabContent position="static">
-        <TabNav
-          value={value}
-          onChange={handleChange}
-          variant="scrollable"
-          scrollButtons="auto"
-          aria-label="scrollable auto tabs example"
-          // TabIndicatorProps={{ className: classes.indicator} }
-          TabIndicatorProps={{ style: { display: "none" } }}
-        >
+        </div>
+      ) : navItems[0].components[0] === "PatientForm" ? (
+        <div className={classes.root}>
+          <TabContent position="static">
+            <TabNav
+              value={value}
+              onChange={handleChange}
+              variant="scrollable"
+              scrollButtons="auto"
+              aria-label="scrollable auto tabs example"
+              // TabIndicatorProps={{ className: classes.indicator} }
+              TabIndicatorProps={{ style: { display: "none" } }}
+            >
+              {navItems.map(
+                ({ name, badge, components }: INavItems, index: number) => (
+                  <TabNavItem_1
+                    // tabNavCompany={true}
+                    value={index}
+                    label={
+                      <TabNavItemDetails>
+                        <TabNavItemAlingLeft>
+                          <PatientIcon
+                            fill={theme.palette.common.white}
+                            circleColor={theme.palette.primary.main}
+                            width={"32px"}
+                            height={"32px"}
+                          />
+                          <Typography variant="body2" fontWeight={600}>
+                            {name}
+                          </Typography>
+                          {state.gender.toLowerCase() === "masculino" && (
+                            <MaleIcon />
+                          )}
+                          {state.gender.toLowerCase() === "feminino" && (
+                            <FemaleIcon />
+                          )}
+                        </TabNavItemAlingLeft>
+                      </TabNavItemDetails>
+                    }
+                    wrapped
+                    key={index}
+                    className={value === index ? "active" : ""}
+                    {...a11yProps({ index })}
+                  />
+                )
+              )}
+            </TabNav>
+          </TabContent>
           {navItems.map(
-            ({ name, badge, components }: INavItems, index: number) => (
-              <TabNavItem_1
-                // tabNavCompany={true}
-                value={index}
-                label={
-                  <TabNavItemDetails>
-                    <TabNavItemAlingLeft>
-                      <PatientIcon />
-                      {name}
-                      {state.gender.toLowerCase() === "masculino" && (
-                        <MaleIcon />
+            ({ name, components, badge }: INavItems, index: number) => {
+              const last = _.findLastIndex(components);
+              return (
+                <TabPanel value={value} index={index} key={index}>
+                  {components.map((component: string, sub_index: number) => (
+                    <>
+                      {handleComponents(
+                        component,
+                        parseInt(`${index}${sub_index}`)
                       )}
-                      {state.gender.toLowerCase() === "feminino" && (
-                        <FemaleIcon />
+                      {sub_index != last && (
+                        <Grid item md={12} xs={12}>
+                          <Divider
+                            style={{ marginBottom: 28, marginTop: 20 }}
+                          />
+                        </Grid>
                       )}
-                    </TabNavItemAlingLeft>
-                  </TabNavItemDetails>
-                }
-                wrapped
-                key={index}
-                className={value === index ? "active" : ""}
-                {...a11yProps({ index })}
-              />
-            )
+                    </>
+                  ))}
+                </TabPanel>
+              );
+            }
           )}
-        </TabNav>
-      </TabContent>
-      {navItems.map(({ name, components, badge }: INavItems, index: number) => {
-        const last = _.findLastIndex(components);
-        return (
-          <TabPanel value={value} index={index} key={index}>
-            {components.map((component: string, sub_index: number) => (
-              <>
-                {handleComponents(component, parseInt(`${index}${sub_index}`))}
-                {sub_index != last && (
-                  <Grid item md={12} xs={12}>
-                    <Divider style={{ marginBottom: 28, marginTop: 20 }} />
-                  </Grid>
-                )}
-              </>
-            ))}
-          </TabPanel>
-        );
-      })}
-    </div>
-  ) : navItems[0].components[0] === "CheckListFormPortal" ||
-    navItems[0].components[0] === "CheckListFormApp" ? (
-    <div className={classes.root}>
-      <Box
-        style={{
-          display: "flex",
-          flexDirection: "row",
-          alignItems: "center",
-          gap: "10px ",
-          marginLeft: "15px",
-          width: "600px",
-        }}
-      >
-        {mode === "create" ? (
-          <Autocomplete
-            sx={{
-              display: "inline-block",
-              "& input": {},
-            }}
-            // sx={{ "& input": { height: 32 } }}
-            id="combo-box-profession"
-            // disabled={mode === "view"}
-            options={autoCompleteSetting.handleProfessionList()}
-            getOptionLabel={(option) => option.name}
-            renderInput={(params) => (
-              <TextField
-                {...params}
-                label="Selecione a função"
-                variant="outlined"
-                style={{ fontSize: "12px", height: "32px" }}
-              />
-            )}
-            // getOptionSelected={(option, value) =>
-            //   option._id == userState.data.professions[0]._id
-            // }
-            // defaultValue={selectProfession()}
-            value={autoCompleteSetting.selectProfession()}
-            onChange={(event, value) => {
-              if (value) {
-                autoCompleteSetting.handleSelectProfession(value);
-              }
-            }}
-            size="small"
-            fullWidth
-          />
-        ) : (
-          <Grid
-            item
+        </div>
+      ) : navItems[0].components[0] === "CheckListFormPortal" ||
+        navItems[0].components[0] === "CheckListFormApp" ? (
+        <div className={classes.root}>
+          <Box
             style={{
-              fontSize: "16px",
-              color: "var(--black)",
-              fontWeight: "bold",
-            }}
-          >
-            {state.name}
-          </Grid>
-        )}
-
-        <TabContent
-          position="static"
-          style={{
-            background: "none",
-            flexDirection: "row",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "flex-start",
-            width: "256px",
-          }}
-        >
-          <TabNavPermission
-            value={value}
-            onChange={handleChange}
-            variant="scrollable"
-            scrollButtons="auto"
-            aria-label="scrollable auto tabs example"
-            style={{
-              fontSize: "13px",
-              background: "none",
               display: "flex",
+              flexDirection: "row",
               alignItems: "center",
+              gap: "10px ",
+              marginLeft: "15px",
+              width: "600px",
             }}
-            TabIndicatorProps={{ style: { display: "none" } }}
           >
-            {navItems.map(({ name, badge }: INavItems, index: number) => (
-              <TabNavItemPermission
-                key={index}
-                value={index}
-                label={
-                  badge ? (
-                    <Badge
-                      classes={{ badge: classes.customBadge }}
-                      className={classes.padding}
-                      badgeContent={badge}
-                      max={99}
-                    >
-                      {name}
-                    </Badge>
-                  ) : (
-                    <Box
-                      style={{
-                        display: "flex",
-                        flexDirection: "row",
-                        alignItems: "Center",
-                        gap: "5px",
-                        minHeight: "32px",
-                      }}
-                    >
-                      {name.toLowerCase() === "no portal" &&
-                        (value === index ? (
-                          <PortalActiveIcon />
-                        ) : (
-                          <PortalDesactiveIcon />
-                        ))}
-                      {name.toLowerCase() === "no aplicativo" &&
-                        (value === index ? (
-                          <AppActiveIcon />
-                        ) : (
-                          <AppDesactiveIcon />
-                        ))}
-
-                      {name}
-                    </Box>
-                  )
-                }
-                wrapped
-                className={value === index ? "active" : "desactive"}
-                {...a11yProps({ index })}
-              ></TabNavItemPermission>
-            ))}
-          </TabNavPermission>
-        </TabContent>
-      </Box>
-
-      {navItems.map(({ name, components, badge }: INavItems, index: number) => {
-        const last = _.findLastIndex(components);
-        return (
-          <TabPanel value={value} index={index} key={index}>
-            {components.map((component: string, sub_index: number) => (
-              <>
-                {handleComponents(component, parseInt(`${index}${sub_index}`))}
-                {/* {sub_index != last && (
-                  <Grid item md={12} xs={12}>
-                    <Divider style={{ marginBottom: 28, marginTop: 20 }} />
-                  </Grid>
-                )} */}
-              </>
-            ))}
-          </TabPanel>
-        );
-      })}
-    </div>
-  ) : (
-    <div className={classes.root}>
-      <TabContent position="static">
-        <TabNav
-          value={value}
-          onChange={handleChange}
-          variant="scrollable"
-          scrollButtons="auto"
-          aria-label="scrollable auto tabs example"
-          TabIndicatorProps={{ className: classes.indicator }}
-          style={{ fontSize: "13px", fontWeight: "normal" }}
-        >
-          {navItems.map(({ name, badge }: INavItems, index: number) =>
-            name === "INTEGRAÇÃO" && !integration ? (
-              ""
+            {mode === "create" ? (
+              <Autocomplete
+                sx={{
+                  display: "inline-block",
+                  "& input": {},
+                }}
+                // sx={{ "& input": { height: 32 } }}
+                id="combo-box-profession"
+                // disabled={mode === "view"}
+                options={autoCompleteSetting.handleProfessionList()}
+                getOptionLabel={(option) => option.name}
+                renderInput={(params) => (
+                  <TextField
+                    {...params}
+                    label="Selecione a função"
+                    variant="outlined"
+                    style={{ fontSize: "12px", height: "32px" }}
+                  />
+                )}
+                // getOptionSelected={(option, value) =>
+                //   option._id == userState.data.professions[0]._id
+                // }
+                // defaultValue={selectProfession()}
+                value={autoCompleteSetting.selectProfession()}
+                onChange={(event, value) => {
+                  if (value) {
+                    autoCompleteSetting.handleSelectProfession(value);
+                  }
+                }}
+                size="small"
+                fullWidth
+              />
             ) : (
-              <TabNavItem
-                key={index}
-                value={index}
-                label={
-                  badge ? (
-                    <Badge
-                      classes={{ badge: classes.customBadge }}
-                      className={classes.padding}
-                      badgeContent={badge}
-                      max={99}
-                    >
-                      {name}
-                    </Badge>
-                  ) : (
-                    name
-                  )
-                }
-                wrapped
-                className={value === index ? "active" : ""}
-                {...a11yProps({ index })}
-              ></TabNavItem>
-            )
-          )}
-        </TabNav>
-      </TabContent>
+              <Grid
+                item
+                style={{
+                  fontSize: "16px",
+                  color: "var(--black)",
+                  fontWeight: "bold",
+                }}
+              >
+                <Typography fontWeight={500}>{state.name}</Typography>
+              </Grid>
+            )}
 
-      {navItems.map(({ name, components, badge }: INavItems, index: number) => {
-        const last = _.findLastIndex(components);
-        return (
-          <TabPanel value={value} index={index} key={index}>
-            {state.name && (
-              <>
-                {components[0] === "PermissionList" ? (
-                  propsPermissionForm?.modePermission === "start" ? (
-                    <Box
-                      sx={{ display: "flex", justifyContent: "space-between" }}
-                    >
-                      <WrapperName>
-                        <CompanyIcon />
-                        Permissões - {state.name}
-                      </WrapperName>
-                      <ButtonStyle
-                        variant="outlined"
-                        onClick={() => {
-                          !checkEditPermission(
-                            "permission",
-                            JSON.stringify(rightsOfLayoutState)
-                          )
-                            ? toast.error(
-                                "Você não tem permissão para criar nova função."
-                              )
-                            : propsPermissionForm.setModePermission("create");
-                          propsPermissionForm.cleanSelectProfession();
+            <TabContent
+              position="static"
+              style={{
+                background: "none",
+                flexDirection: "row",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "flex-start",
+                width: "256px",
+              }}
+            >
+              <TabNavPermission
+                value={value}
+                onChange={handleChange}
+                variant="scrollable"
+                scrollButtons="auto"
+                aria-label="scrollable auto tabs example"
+                sx={{
+                  fontSize: "13px",
+                  background: "none",
+                  display: "flex",
+                  alignItems: "center",
+                }}
+                TabIndicatorProps={{ style: { display: "none" } }}
+              >
+                {navItems.map(({ name, badge }: INavItems, index: number) => (
+                  <TabNavItemPermission
+                    sx={{ display: "flex" }}
+                    key={index}
+                    value={index}
+                    label={
+                      <Box
+                        sx={{
+                          display: "flex",
+                          flexDirection: "row",
+                          alignItems: "center",
+                          gap: "5px",
+                          minHeight: "32px",
+                          cursor: "pointer",
+                          "& svg, path, rect": { cursor: "pointer" },
                         }}
                       >
-                        <Box
-                          sx={{
-                            border: " 1px solid var(--success)",
-                            borderRadius: "30px",
-                            width: "18px",
-                            height: "18px",
-                            display: "flex",
-                            alignItems: "center",
-                            justifyContent: "center",
-                          }}
-                        >
-                          +
-                        </Box>
-                        <Box>Adicionar função</Box>
-                      </ButtonStyle>
-                    </Box>
-                  ) : (
-                    ""
-                  )
-                ) : (
-                  <>
-                    <WrapperName>
-                      {name === "DADOS DO CLIENTE" || name === "INTEGRAÇÃO" ? (
-                        <CompanyIcon />
-                      ) : (
-                        <ProfileIcon />
-                      )}
+                        {name.toLowerCase() === "no portal" &&
+                          (value === index ? (
+                            <ComputerIcon fill={theme.palette.common.white} />
+                          ) : (
+                            <ComputerIcon fill={theme.palette.text.secondary} />
+                          ))}
+                        {name.toLowerCase() === "no aplicativo" &&
+                          (value === index ? (
+                            <CellphoneIcon
+                              fill={theme.palette.common.white}
+                              displayColor={theme.palette.secondary.main}
+                            />
+                          ) : (
+                            <CellphoneIcon
+                              fill={theme.palette.text.secondary}
+                              displayColor={theme.palette.common.white}
+                            />
+                          ))}
 
-                      {state.name}
-                      {state.gender?.toLowerCase() === "masculino" && (
-                        <MaleIcon />
+                        <Typography variant="body2" sx={{ cursor: "pointer" }}>
+                          {name}
+                        </Typography>
+                      </Box>
+                    }
+                    wrapped
+                    className={value === index ? "active" : "desactive"}
+                    {...a11yProps({ index })}
+                  ></TabNavItemPermission>
+                ))}
+              </TabNavPermission>
+            </TabContent>
+          </Box>
+
+          {navItems.map(
+            ({ name, components, badge }: INavItems, index: number) => {
+              const last = _.findLastIndex(components);
+              return (
+                <TabPanel value={value} index={index} key={index}>
+                  {components.map((component: string, sub_index: number) => (
+                    <>
+                      {handleComponents(
+                        component,
+                        parseInt(`${index}${sub_index}`)
                       )}
-                      {state.gender?.toLowerCase() === "feminino" && (
-                        <FemaleIcon />
+                      {/* {sub_index != last && (
+                      <Grid item md={12} xs={12}>
+                        <Divider style={{ marginBottom: 28, marginTop: 20 }} />
+                      </Grid>
+                    )} */}
+                    </>
+                  ))}
+                </TabPanel>
+              );
+            }
+          )}
+        </div>
+      ) : (
+        <div className={classes.root}>
+          <TabContent position="static">
+            <TabNav
+              value={value}
+              onChange={handleChange}
+              variant="scrollable"
+              scrollButtons="auto"
+              aria-label="scrollable auto tabs example"
+              TabIndicatorProps={{ className: classes.indicator }}
+              style={{ fontSize: "13px", fontWeight: "normal" }}
+            >
+              {navItems.map(({ name, badge }: INavItems, index: number) =>
+                name === "INTEGRAÇÃO" && !integration ? (
+                  ""
+                ) : (
+                  <TabNavItem
+                    sx={{ cursor: "pointer" }}
+                    key={index}
+                    value={index}
+                    label={
+                      <Typography
+                        variant="body2"
+                        color={theme.palette.primary.light}
+                        fontWeight={500}
+                        sx={{ cursor: "pointer" }}
+                      >
+                        {name}
+                      </Typography>
+                    }
+                    wrapped
+                    className={value === index ? "active" : ""}
+                    {...a11yProps({ index })}
+                  ></TabNavItem>
+                )
+              )}
+            </TabNav>
+          </TabContent>
+
+          {navItems.map(
+            ({ name, components, badge }: INavItems, index: number) => {
+              const last = _.findLastIndex(components);
+              return (
+                <TabPanel value={value} index={index} key={index}>
+                  {state.name && (
+                    <>
+                      {components[0] === "PermissionList" ? (
+                        propsPermissionForm?.modePermission === "start" ? (
+                          <Box
+                            sx={{
+                              display: "flex",
+                              justifyContent: "space-between",
+                            }}
+                          >
+                            <WrapperName>
+                              <CompanyIcon
+                                fill={theme.palette.secondary.main}
+                              />
+                              <Typography variant="body1" fontWeight={600}>
+                                Permissões - {state.name}
+                              </Typography>
+                            </WrapperName>
+                            <ButtonStyle
+                              variant="outlined"
+                              onClick={() => {
+                                !checkEditPermission(
+                                  "permission",
+                                  JSON.stringify(rightsOfLayoutState)
+                                )
+                                  ? toast.error(
+                                      "Você não tem permissão para criar nova função."
+                                    )
+                                  : propsPermissionForm.setModePermission(
+                                      "create"
+                                    );
+                                propsPermissionForm.cleanSelectProfession();
+                              }}
+                            >
+                              <Box
+                                sx={{
+                                  position: "relative",
+                                  border: " 1px solid var(--success)",
+                                  borderRadius: "30px",
+                                  width: "18px",
+                                  height: "18px",
+                                  display: "flex",
+                                  alignItems: "center",
+                                  justifyContent: "center",
+                                  cursor: "pointer",
+                                }}
+                              >
+                                <Typography
+                                  fontWeight={500}
+                                  sx={{
+                                    position: "absolute",
+                                    bottom: "-3px",
+                                    left: "3px",
+                                    cursor: "pointer",
+                                  }}
+                                >
+                                  +
+                                </Typography>
+                              </Box>
+                              <Typography
+                                fontWeight={500}
+                                sx={{
+                                  cursor: "pointer",
+                                }}
+                              >
+                                Adicionar função
+                              </Typography>
+                            </ButtonStyle>
+                          </Box>
+                        ) : (
+                          ""
+                        )
+                      ) : (
+                        <>
+                          <WrapperName>
+                            {name === "DADOS DO CLIENTE" ||
+                            name === "INTEGRAÇÃO" ? (
+                              <CompanyIcon
+                                fill={theme.palette.secondary.main}
+                              />
+                            ) : (
+                              <ProfileIcon />
+                            )}
+                            <Typography fontWeight={600}>
+                              {state.name}
+                            </Typography>
+
+                            {state.gender?.toLowerCase() === "masculino" && (
+                              <MaleIcon />
+                            )}
+                            {state.gender?.toLowerCase() === "feminino" && (
+                              <FemaleIcon />
+                            )}
+                          </WrapperName>
+                          <Divider
+                            style={{
+                              marginBottom: 0,
+                              marginTop: 16,
+                              width: 458,
+                            }}
+                          />
+                        </>
                       )}
-                    </WrapperName>
-                    <Divider
-                      style={{ marginBottom: 0, marginTop: 16, width: 458 }}
-                    />
-                  </>
-                )}
-              </>
-            )}
-            {components.map((component: string, sub_index: number) => (
-              <>
-                {handleComponents(component, parseInt(`${index}${sub_index}`))}
-                {/* {sub_index != last && (
-                  <Grid item md={12} xs={12}>
-                    <Divider style={{ marginBottom: 28, marginTop: 20 }} />
-                  </Grid>
-                )} */}
-              </>
-            ))}
-          </TabPanel>
-        );
-      })}
-    </div>
+                    </>
+                  )}
+                  {components.map((component: string, sub_index: number) => (
+                    <>
+                      {handleComponents(
+                        component,
+                        parseInt(`${index}${sub_index}`)
+                      )}
+                      {/* {sub_index != last && (
+                      <Grid item md={12} xs={12}>
+                        <Divider style={{ marginBottom: 28, marginTop: 20 }} />
+                      </Grid>
+                    )} */}
+                    </>
+                  ))}
+                </TabPanel>
+              );
+            }
+          )}
+        </div>
+      )}
+    </ThemeProvider>
   );
 };
 export default React.memo(TabForm);

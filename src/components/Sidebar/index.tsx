@@ -1,12 +1,12 @@
 import React, { useState, useEffect, Props, useCallback } from "react";
+// REDUX e REDUX-SAGA
 import { useDispatch, useSelector } from "react-redux";
-
 import { ApplicationState } from "../../store";
-
 import { loadCompanyById } from "../../store/ducks/companies/actions";
 import { changeMenuSelected } from "../../store/ducks/layout/actions";
+import { useHistory } from "react-router-dom";
 
-import clsx from "clsx";
+// MUI
 import {
   createStyles,
   makeStyles,
@@ -14,14 +14,7 @@ import {
   Theme,
   // ThemeProvider,
 } from "@material-ui/core/styles";
-
-import {
-  createTheme,
-  ThemeProvider,
-  styled,
-  // Theme,
-} from "@mui/material/styles";
-
+import { ThemeProvider } from "@mui/material/styles";
 import theme from "../../theme/theme";
 import {
   // Drawer,
@@ -31,27 +24,11 @@ import {
   ListItemIcon,
   ListItemText,
 } from "@mui/material";
-import Drawer from "@material-ui/core/Drawer";
-// import List from "@material-ui/core/List";
+
+// import Drawer from "@material-ui/core/Drawer";
 import CssBaseline from "@material-ui/core/CssBaseline";
-import Divider from "@material-ui/core/Divider";
-// import IconButton from "@mui/material/IconButton";
-import EditIcon from "@material-ui/icons/Edit";
-import MenuIcon from "@material-ui/icons/Menu";
-import ChevronLeftIcon from "@material-ui/icons/ChevronLeft";
-// import ListItem from "@mui/material/ListItem";
-// import ListItemIcon from "@mui/material/ListItemIcon";
-// import ListItemText from "@material-ui/core/ListItemText";
-import ExitToApp from "@material-ui/icons/ExitToApp";
-import AccountCircle from "@material-ui/icons/AccountCircle";
-import SettingsIcon from "@material-ui/icons/Settings";
-import Slide from "@mui/material/Slide";
+// import Divider from "@material-ui/core/Divider";
 import { TransitionProps } from "@mui/material/transitions";
-
-import ExpansionPanel from "@material-ui/core/ExpansionPanel";
-import ExpansionPanelSummary from "@material-ui/core/ExpansionPanelSummary";
-import ExpansionPanelDetails from "@material-ui/core/ExpansionPanelDetails";
-
 import {
   Accordion,
   AccordionDetails,
@@ -68,13 +45,22 @@ import {
   MenuItem,
   Typography,
   Container,
+  Drawer,
+  Divider,
+  Slide,
 } from "@mui/material";
 
-import { useHistory } from "react-router-dom";
-
+//UTILS
+import clsx from "clsx";
 /**
  * Icons
  */
+import EditIcon from "@material-ui/icons/Edit";
+import MenuIcon from "@mui/icons-material/Menu";
+import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
+import ExitToApp from "@material-ui/icons/ExitToApp";
+import AccountCircle from "@material-ui/icons/AccountCircle";
+import SettingsIcon from "@material-ui/icons/Settings";
 import DashboardIcon from "@material-ui/icons/Dashboard";
 import AssignmentIndIcon from "@material-ui/icons/AssignmentInd";
 import BusinessIcon from "@material-ui/icons/Business";
@@ -84,17 +70,14 @@ import GroupAddIcon from "@material-ui/icons/GroupAdd";
 import LocalHospital from "@material-ui/icons/LocalHospital";
 import StarRateIcon from "@material-ui/icons/StarRate";
 import FavoriteIcon from "@material-ui/icons/Favorite";
-import NotificationsIcon from "@material-ui/icons/Notifications";
-import THCStype2Icon from "../Icons/THCS_type2";
+import NotificationsIcon from "@mui/icons-material/Notifications";
+import THCStype2Icon from "../Icons/THCS_Type2";
+import THCStype3Icon from "../Icons/THCS_Type3";
 import UserIcon from "../Icons/User";
-
 import { Logo, UserContent } from "./styles";
 import LOCALSTORAGE from "../../helpers/constants/localStorage";
-
 // Components
-import ConfigComponent from "../Configuration";
 import SESSIONSTORAGE from "../../helpers/constants/sessionStorage";
-import { toast } from "react-toastify";
 import _ from "lodash";
 import { loadRequest } from "../../store/ducks/layout/actions";
 import Message from "../Message";
@@ -501,6 +484,13 @@ const Sibebar = (props: Props<any>) => {
               [classes.drawerClose]: !open,
             }),
           }}
+          sx={{
+            height: "100%",
+            "& .MuiPaper-root": {
+              backgroundColor: theme.palette.primary.main,
+              transition: theme.transitions.create("all"),
+            },
+          }}
         >
           <Box
             sx={{
@@ -527,7 +517,6 @@ const Sibebar = (props: Props<any>) => {
                   display: `${open ? "initial" : "none"}`,
                 }}
               >
-                {/* <Logo /> */}
                 <THCStype2Icon fill={"#f4f7ff"} width={"140px"} />
               </Box>
               <IconButton
@@ -541,13 +530,16 @@ const Sibebar = (props: Props<any>) => {
                   cursor: "pointer",
                   "& svg, path": { cursor: "pointer" },
                   "& svg": { margin: "0px" },
+                  "&:hover": {
+                    backgroundColor: theme.palette.secondary.dark,
+                  },
                 }}
                 onClick={handleDrawerClose}
               >
                 {open ? (
-                  <ChevronLeftIcon style={{ color: "#f4f7ff" }} />
+                  <ChevronLeftIcon sx={{ color: theme.palette.common.white }} />
                 ) : (
-                  <MenuIcon style={{ color: "#f4f7ff" }} />
+                  <MenuIcon sx={{ color: theme.palette.common.white }} />
                 )}
               </IconButton>
             </Box>
@@ -555,17 +547,30 @@ const Sibebar = (props: Props<any>) => {
           {/* <Divider /> */}
           <Box
             sx={{
-              paddingTop: "10px",
+              paddingTop: "8px",
               width: "auto",
               transition: "0.2s linear",
               display: "flex",
               flexDirection: "column",
               justifyContent: "center",
               alignItems: "center",
-              "& svg": { width: "100px" },
+              // "& svg": { width: `${open ? "100px" : "auto"}` },
             }}
           >
-            <UserIcon fill={"#FFF"} width={"48px"} height={"48px"} />
+            {open ? (
+              <UserIcon
+                fill={theme.palette.common.white}
+                width={"48px"}
+                height={"48px"}
+              />
+            ) : (
+              <THCStype3Icon
+                fill={theme.palette.common.white}
+                width={"24px"}
+                height={"24px"}
+              />
+            )}
+            <Divider />
           </Box>
 
           <UserContent>
@@ -608,7 +613,7 @@ const Sibebar = (props: Props<any>) => {
                         }}
                       >
                         <Badge
-                          classes={{ badge: classes.customBadge }}
+                          // classes={{ badge: classes.customBadge }}
                           // className={classes.padding}
                           color="primary"
                           badgeContent={1}
@@ -620,7 +625,9 @@ const Sibebar = (props: Props<any>) => {
                             },
                           }}
                         >
-                          <NotificationsIcon />
+                          <NotificationsIcon
+                            sx={{ color: theme.palette.common.white }}
+                          />
                         </Badge>
                       </Grid>
                     </ListItem>
@@ -638,7 +645,10 @@ const Sibebar = (props: Props<any>) => {
                     <ListItem
                       sx={{
                         cursor: "pointer",
-                        "& svg, path, span, div, h4": { cursor: "pointer" },
+                        "& svg, path, span, div, h4": {
+                          cursor: "pointer",
+                          color: theme.palette.common.white,
+                        },
                       }}
                       style={{ padding: 0 }}
                       className={classes.logOutButton}
@@ -689,40 +699,32 @@ const Sibebar = (props: Props<any>) => {
               </>
             ) : (
               <>
-                <div>
-                  <Grid
-                    container
-                    spacing={2}
-                    xs={12}
-                    md={12}
-                    style={{ justifyContent: "space-evenly" }}
+                <ListItem
+                  sx={{ width: "auto" }}
+                  // className={classes.logOutButton}
+                  onClick={() => setOpenModalMessage(true)}
+                >
+                  <Badge
+                    // classes={{ badge: classes.customBadge }}
+                    // className={classes.padding}
+                    sx={{
+                      "& svg, path": { cursor: "pointer" },
+                      "& span": {
+                        backgroundColor: theme.palette.primary.light,
+                        margin: "-2px",
+                        color: theme.palette.common.white,
+                      },
+                    }}
+                    badgeContent={1}
+                    max={99}
                   >
-                    <ListItem
-                      style={{ padding: 0 }}
-                      className={classes.logOutButton}
-                      onClick={() => setOpenModalMessage(true)}
-                    >
-                      <Grid item sx={{ margin: "20px 0 10px 27px" }}>
-                        <Badge
-                          // classes={{ badge: classes.customBadge }}
-                          // className={classes.padding}
-                          sx={{
-                            "& svg, path": { cursor: "pointer" },
-                            "& span": {
-                              backgroundColor: theme.palette.primary.light,
-                              margin: "-2px",
-                            },
-                          }}
-                          badgeContent={1}
-                          max={99}
-                        >
-                          <NotificationsIcon />
-                        </Badge>
-                      </Grid>
-                    </ListItem>
-                  </Grid>
-                  <br />
-                </div>
+                    <NotificationsIcon
+                      sx={{ color: theme.palette.common.white }}
+                    />
+                  </Badge>
+                </ListItem>
+
+                <br />
               </>
             )}
           </UserContent>
@@ -742,7 +744,7 @@ const Sibebar = (props: Props<any>) => {
                       }`,
                       "&:hover": {
                         transition: "ease-in-out 200ms",
-                        backgroundColor: `${theme.palette.secondary.dark}`,
+                        backgroundColor: `${theme.palette.primary.light}`,
                         cursor: "pointer",
                         "& svg, path, span, div, h4": { cursor: "pointer" },
                       },
@@ -753,7 +755,11 @@ const Sibebar = (props: Props<any>) => {
                     </ListItemIcon>
                     <ListItemText
                       primary={
-                        <Typography variant="body1" sx={{ cursor: "pointer" }}>
+                        <Typography
+                          variant="body1"
+                          sx={{ cursor: "pointer" }}
+                          color={theme.palette.common.white}
+                        >
                           {item.title}
                         </Typography>
                       }
@@ -776,7 +782,7 @@ const Sibebar = (props: Props<any>) => {
                       }`,
                       "&:hover": {
                         transition: "ease-in-out 200ms",
-                        backgroundColor: `${theme.palette.secondary.dark}`,
+                        backgroundColor: `${theme.palette.primary.light}`,
                         cursor: "pointer",
                         "& svg, path, span, div, h4": { cursor: "pointer" },
                       },
@@ -787,7 +793,11 @@ const Sibebar = (props: Props<any>) => {
                     </ListItemIcon>
                     <ListItemText
                       primary={
-                        <Typography variant="body1" sx={{ cursor: "pointer" }}>
+                        <Typography
+                          variant="body1"
+                          sx={{ cursor: "pointer" }}
+                          color={theme.palette.common.white}
+                        >
                           {item.title}
                         </Typography>
                       }
