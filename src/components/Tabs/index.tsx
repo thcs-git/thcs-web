@@ -36,13 +36,13 @@ import PatientForm from "../Inputs/Forms/patientForm";
 import ChangePasswordConfiguration from "../Inputs/Forms/ChangePasswordTab";
 
 import CompanyIcon from "../Icons/Company";
+import UserIcon from "../Icons/User";
 import { ReactComponent as EmailIcon } from "../../assets/img/Icon-email.svg";
 import { ReactComponent as PrintIcon } from "../../assets/img/Icon-imprimir.svg";
 import PatientIcon from "../Icons/Patient";
 import { ReactComponent as MaleIcon } from "../../assets/img/icon-male-1.svg";
 import { ReactComponent as FemaleIcon } from "../../assets/img/ionic-md-female.svg";
 import { ReactComponent as ProfileIcon } from "../../assets/img/icon-user-1.svg";
-
 import { ReactComponent as PortalActiveIcon } from "../../assets/img/icon-portal-active.svg";
 import { ReactComponent as PortalDesactiveIcon } from "../../assets/img/icon-portal-desactive.svg";
 import ComputerIcon from "../Icons/Computer";
@@ -57,7 +57,7 @@ import { checkEditPermission } from "../../utils/permissions";
 import { toast } from "react-toastify";
 import { useSelector } from "react-redux";
 import { ApplicationState } from "../../store";
-
+import { IButtons } from "../Button/ButtonTabs";
 import { ThemeProvider } from "@mui/material/styles";
 
 import theme from "../../theme/theme";
@@ -85,13 +85,7 @@ interface IPropsPermissionFrom {
   userState: UserState;
   params: IPageParams;
   canEditPermission: boolean;
-  buttonsPermission: {
-    name: string;
-    onClick: () => void;
-    variant: string;
-    background: string;
-    show: boolean;
-  }[];
+  buttonsPermission: IButtons[];
   modePermission: string;
   setModePermission: React.Dispatch<React.SetStateAction<string>>;
   cleanSelectProfession: () => void;
@@ -168,9 +162,9 @@ const useStyles = makeStyles((theme: Theme) => ({
     width: "100%",
     backgroundColor: theme.palette.background.paper,
   },
-  indicator: {
-    borderBottom: `2px solid ${theme.palette.primary.light}`,
-  },
+  // indicator: {
+  //   borderBottom: `2px solid ${theme.palette.secondary.main}`,
+  // },
   indicatorCompany: {
     borderBottom: `2px solid ${theme.palette.common.black}`,
   },
@@ -209,7 +203,6 @@ const TabForm = (props: ITabprops) => {
     modePermission,
   } = props;
   const classes = useStyles();
-  const indicatorCompany = classes.indicator;
   const handleChange = (event: React.ChangeEvent<{}>, newValue: number) => {
     setValue(newValue);
     setInitialTab && setInitialTab(newValue);
@@ -406,11 +399,6 @@ const TabForm = (props: ITabprops) => {
                             {name}
                           </Typography>
                         </TabNavItemAlingLeft>
-
-                        {/* <TabNavItemAlingRigth>
-                          <EmailIcon style={{ cursor: "pointer" }} />
-                          <PrintIcon style={{ cursor: "pointer" }} />
-                        </TabNavItemAlingRigth> */}
                       </TabNavItemDetails>
                     }
                     wrapped
@@ -675,7 +663,7 @@ const TabForm = (props: ITabprops) => {
           )}
         </div>
       ) : (
-        <div className={classes.root}>
+        <div>
           <TabContent position="static">
             <TabNav
               value={value}
@@ -683,8 +671,10 @@ const TabForm = (props: ITabprops) => {
               variant="scrollable"
               scrollButtons="auto"
               aria-label="scrollable auto tabs example"
-              TabIndicatorProps={{ className: classes.indicator }}
-              style={{ fontSize: "13px", fontWeight: "normal" }}
+              // color="secondary"
+              indicatorColor="primary"
+              // TabIndicatorProps={{ className: classes.indicator }}
+              // style={{ fontSize: "13px", fontWeight: "normal" }}
             >
               {navItems.map(({ name, badge }: INavItems, index: number) =>
                 name === "INTEGRAÇÃO" && !integration ? (
@@ -697,7 +687,7 @@ const TabForm = (props: ITabprops) => {
                     label={
                       <Typography
                         variant="body2"
-                        color={theme.palette.primary.light}
+                        // color={theme.palette.secondary.main}
                         fontWeight={500}
                         sx={{ cursor: "pointer" }}
                       >
@@ -705,7 +695,7 @@ const TabForm = (props: ITabprops) => {
                       </Typography>
                     }
                     wrapped
-                    className={value === index ? "active" : ""}
+                    // className={value === index ? "active" : ""}
                     {...a11yProps({ index })}
                   ></TabNavItem>
                 )
@@ -729,9 +719,7 @@ const TabForm = (props: ITabprops) => {
                             }}
                           >
                             <WrapperName>
-                              <CompanyIcon
-                                fill={theme.palette.secondary.main}
-                              />
+                              <CompanyIcon fill={theme.palette.primary.main} />
                               <Typography variant="body1" fontWeight={600}>
                                 Permissões - {state.name}
                               </Typography>
@@ -795,11 +783,9 @@ const TabForm = (props: ITabprops) => {
                           <WrapperName>
                             {name === "DADOS DO CLIENTE" ||
                             name === "INTEGRAÇÃO" ? (
-                              <CompanyIcon
-                                fill={theme.palette.secondary.main}
-                              />
+                              <CompanyIcon fill={theme.palette.primary.main} />
                             ) : (
-                              <ProfileIcon />
+                              <UserIcon fill={theme.palette.primary.main} />
                             )}
                             <Typography fontWeight={600}>
                               {state.name}

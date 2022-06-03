@@ -1,40 +1,31 @@
 import React, { useCallback, useEffect, useState } from "react";
-import { makeStyles, Theme, withStyles } from "@material-ui/core/styles";
-import { TabBody, TabBodyItem } from "../../../Tabs/styles";
-import ButtonEdit from "../../../Button/ButtonEdit";
-import TabTittle from "../../../Text/TabTittle";
-import _ from "lodash";
-
-import { SwitchComponent as Switch } from "../../../Button/ToggleActive/styles";
-import { InputFiled as TextField } from "../IntegrationForm/styles";
-import {
-  cleanPermission,
-  loadCustomerById,
-  loadPermissionRequest,
-} from "../../../../store/ducks/customers/actions";
+// Redux e Sagas
+import { ProfessionUserInterface } from "../../../../store/ducks/users/types";
+import { loadCustomerById } from "../../../../store/ducks/customers/actions";
 import { loadProfessionsRequest as getProfessionsAction } from "../../../../store/ducks/users/actions";
 import { useDispatch, useSelector } from "react-redux";
-import { ApplicationState } from "../../../../store";
-import { ProfessionUserInterface } from "../../../../store/ducks/users/types";
-import TabForm from "../../../Tabs";
-import { RouteComponentProps } from "react-router-dom";
 //MUI
-import Autocomplete from "@material-ui/lab/Autocomplete";
 import {
-  CheckboxProps,
-  FormControl,
   FormControlLabel,
-  FormGroup,
-  FormLabel,
   Grid,
   Checkbox,
+  Box,
+  Tooltip,
+  Typography,
+  Switch,
 } from "@mui/material";
-import Box from "@mui/material/Box";
-import Tooltip from "@mui/material/Tooltip";
+import { makeStyles, Theme, withStyles } from "@material-ui/core/styles";
+import { ThemeProvider } from "@mui/material/styles";
 // icon
 import CheckCircleOutlineOutlinedIcon from "@mui/icons-material/CheckCircleOutlineOutlined";
 import { ReactComponent as InactiveIcon } from "../../../../assets/img/icon-inative.svg";
 // styles
+import { TabBody, TabBodyItem } from "../../../Tabs/styles";
+import theme from "../../../../theme/theme";
+// componentes
+import TabForm from "../../../Tabs";
+// utils
+import _ from "lodash";
 
 interface IComponent {
   state: any;
@@ -77,16 +68,16 @@ const useStyles = makeStyles((theme: Theme) => ({
     backgroundColor: theme.palette.background.paper,
   },
 
-  formLabel: {
-    color: "var(--primary)",
-    "&.Mui-disabled": {
-      color: "var(--gray-dark)",
-    },
-    "&.Mui-focused": {
-      color: "var(--primary)",
-    },
-    // '&.Mui-disabled:hover': { background:theme.palette.secondary.main },
-  },
+  // formLabel: {
+  //   color: "var(--primary)",
+  //   "&.Mui-disabled": {
+  //     color: "var(--gray-dark)",
+  //   },
+  //   "&.Mui-focused": {
+  //     color: "var(--primary)",
+  //   },
+  //   // '&.Mui-disabled:hover': { background:theme.palette.secondary.main },
+  // },
 }));
 
 const PermissionForm = (props: IComponent) => {
@@ -390,8 +381,8 @@ const PermissionForm = (props: IComponent) => {
             height: "35px",
             backgroundColor: "none",
             borderRadius: "0",
-            color: "var(--gray)",
-            "&.Mui-checked": { color: "var(--action)" },
+            color: theme.palette.text.disabled,
+            "&.Mui-checked": { color: theme.palette.success.main },
           }}
           disabled
           checked={state.active}
@@ -402,6 +393,7 @@ const PermissionForm = (props: IComponent) => {
     } else {
       return (
         <Switch
+          color="secondary"
           disabled={mode === "view"}
           checked={state.active}
           onChange={(event) => {
@@ -418,15 +410,23 @@ const PermissionForm = (props: IComponent) => {
   const handleLabelForm = (mode: string) => {
     if (mode === "view" && state.active) {
       return (
-        <Box style={{ fontWeight: "bold", color: "var(--success" }}>
+        <Typography
+          fontWeight={600}
+          variant="body1"
+          color={theme.palette.success.main}
+        >
           Função ativa
-        </Box>
+        </Typography>
       );
     } else if (mode === "view" && !state.active) {
       return (
-        <Box style={{ fontWeight: "bold", color: "var(--gray)" }}>
+        <Typography
+          fontWeight={600}
+          variant="body1"
+          color={theme.palette.text.disabled}
+        >
           Função inativa
-        </Box>
+        </Typography>
       );
     } else {
       return (
@@ -440,25 +440,29 @@ const PermissionForm = (props: IComponent) => {
         >
           <Tooltip title="Se ligado, função estará ativa no Portal e também no Aplicativo.">
             <Box
-              style={{
+              sx={{
                 display: "flex",
                 flexDirection: "row",
                 justifyContent: "center",
                 alignItems: "center",
                 width: "16px",
                 height: "16px",
-                backgroundColor: "var(--gray)",
+                backgroundColor: theme.palette.grey[400],
                 borderRadius: "10px",
                 textAlign: "center",
                 marginRight: "5.3px",
-                color: "var(--white)",
-                fontWeight: "bold",
               }}
             >
-              ?
+              <Typography
+                variant="body1"
+                fontWeight={600}
+                color={theme.palette.common.white}
+              >
+                ?
+              </Typography>
             </Box>
-          </Tooltip>{" "}
-          <Box>Ativo?</Box>
+          </Tooltip>
+          <Typography variant="body1">Ativo?</Typography>
         </Box>
       );
     }
@@ -480,158 +484,46 @@ const PermissionForm = (props: IComponent) => {
   };
 
   return (
-    <div
-      className={classes.root}
-      style={{
-        display: "flex",
-        justifyContent: "center",
-        alignItems: "flex-start",
-        flexDirection: "column",
-      }}
-    >
-      {/* <TabPanel value={0} index={0}>
-        <Grid container style={{ justifyContent: "flex-start" }}>
-          <Grid item> */}
-      {/*<TextField*/}
-      {/*  // disabled={mode === 'create' || mode === 'view'}*/}
-      {/*  disabled={true}*/}
-      {/*  label="Nome"*/}
-      {/*  variant="outlined"*/}
-      {/*  size="small"*/}
-      {/*  value={state.name}*/}
-      {/*  onChange={(event) => {*/}
-      {/*    setState((prevState: any) => ({*/}
-      {/*      ...prevState,*/}
-      {/*      name: event.target.value*/}
-      {/*    }))*/}
-      {/*  }}*/}
-      {/*  fullWidth*/}
-      {/*/>*/}
-      {/* {modePermission === "create" && (
-        <Autocomplete
-          id="combo-box-profession"
-          disabled={mode === "view"}
-          options={handleProfessionList()}
-          getOptionLabel={(option) => option.name}
-          renderInput={(params) => (
-            <TextField {...params} label="Função" variant="outlined" />
-          )}
-          getOptionSelected={(option, value) =>
-            option._id == userState.data.professions[0]._id
-          }
-          // defaultValue={selectProfession()}
-          value={selectProfession()}
-          onChange={(event, value) => {
-            if (value) {
-              handleSelectProfession(value);
-            }
-          }}
-          size="small"
-          fullWidth
-        />
-      )} */}
-      {/* <Autocomplete
-              id="combo-box-profession"
-              disabled={mode === "view"}
-              options={handleProfessionList()}
-              getOptionLabel={(option) => option.name}
-              renderInput={(params) => (
-                <TextField {...params} label="Função" variant="outlined" />
-              )}
-              getOptionSelected={(option, value) =>
-                option._id == userState.data.professions[0]._id
-              }
-              // defaultValue={selectProfession()}
-              value={selectProfession()}
-              onChange={(event, value) => {
-                if (value) {
-                  handleSelectProfession(value);
-                }
-              }}
-              size="small"
-              fullWidth
-            /> */}
-      {/* </Grid>
-        </Grid> */}
-
-      {/*{rows.map(({legend, name, rights}: rowsInterface, index) => (*/}
-      {/*  <FormControl component="fieldset" style={{marginBottom: '15px'}}>*/}
-      {/*    <FormLabel className={classes.formLabel}>{legend}</FormLabel>*/}
-      {/*    <FormGroup aria-label="position" row>*/}
-      {/*      {rights.map(({crud, label}: rightsInterface, index: number) => (*/}
-      {/*        <FormControlLabel*/}
-      {/*          value={crud}*/}
-      {/*          control={<CustomCheckbox checked={handleChecked(name, crud)}/>}*/}
-      {/*          label={label}*/}
-      {/*          labelPlacement="end"*/}
-      {/*          disabled={mode === 'view'}*/}
-      {/*          onChange={(event, value) => {*/}
-      {/*            const rights = [...state.rights];*/}
-      {/*            const right = `${name}.${crud}`*/}
-
-      {/*            if (value) {*/}
-      {/*              setState((prevState: any) => ({*/}
-      {/*                ...prevState,*/}
-      {/*                rights: [...prevState.rights, right]*/}
-      {/*              }))*/}
-      {/*            } else {*/}
-      {/*              _.pull(rights, right);*/}
-      {/*              setState((prevState: any) => ({*/}
-      {/*                ...prevState,*/}
-      {/*                rights: rights*/}
-      {/*              }))*/}
-      {/*            }*/}
-      {/*          }}*/}
-      {/*        />*/}
-      {/*      ))}*/}
-      {/*    </FormGroup>*/}
-      {/*  </FormControl>*/}
-      {/*))}*/}
-
-      {/* </TabPanel> */}
-      {/* <Grid
-        item
-        style={{
-          width: "150px",
-          fontSize: "16px",
-          color: "var(--black)",
-          fontWeight: "bold",
-          position: "absolute",
-          top: "0px",
-          left: "15px",
-        }}
-      >
-        {state.name}
-      </Grid> */}
-      <Box
+    <ThemeProvider theme={theme}>
+      <div
+        className={classes.root}
         style={{
           display: "flex",
           justifyContent: "center",
-          flexDirection: "row",
-          marginTop: "25px",
-          maxWidth: "550px",
+          alignItems: "flex-start",
+          flexDirection: "column",
         }}
       >
-        <TabForm
-          navItems={NavItems}
-          state={state}
-          setState={setState}
-          initialTab={0}
-          params={params}
-          rowsPortal={rowsPortal}
-          rowsApp={rowsApp}
-          mode={mode}
-          autoCompleteSetting={autoCompleteProfession}
-        />
-      </Box>
-      <Grid item md={3} xs={12}>
-        <FormControlLabel
-          control={handleControlForm(mode)}
-          label={handleLabelForm(mode)}
-          labelPlacement={handleLabelPlacement(mode)}
-        />
-      </Grid>
-    </div>
+        <Box
+          style={{
+            display: "flex",
+            justifyContent: "center",
+            flexDirection: "row",
+            marginTop: "25px",
+            maxWidth: "550px",
+          }}
+        >
+          <TabForm
+            navItems={NavItems}
+            state={state}
+            setState={setState}
+            initialTab={0}
+            params={params}
+            rowsPortal={rowsPortal}
+            rowsApp={rowsApp}
+            mode={mode}
+            autoCompleteSetting={autoCompleteProfession}
+          />
+        </Box>
+        <Grid item md={3} xs={12}>
+          <FormControlLabel
+            control={handleControlForm(mode)}
+            label={handleLabelForm(mode)}
+            labelPlacement={handleLabelPlacement(mode)}
+          />
+        </Grid>
+      </div>
+    </ThemeProvider>
   );
 };
 

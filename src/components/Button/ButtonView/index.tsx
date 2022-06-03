@@ -1,7 +1,6 @@
 import React, { ReactNode } from "react";
-import { Button, Grid } from "@mui/material";
-import { Visibility } from "@material-ui/icons";
-
+import { Button, Grid, IconButton } from "@mui/material";
+import { Visibility } from "@mui/icons-material/";
 interface IComponent {
   setCanEdit: any;
   canEdit: boolean;
@@ -12,16 +11,20 @@ const ButtonView = (props: IComponent) => {
   const { setCanEdit, canEdit, children } = props;
 
   return (
-    <Grid item md={2} xs={12} style={{ paddingTop: "5px" }}>
-      <Button
-        style={{ color: "#0899BA", textAlign: "center" }}
-        sx={{ cursor: "pointer", "& svg, path": { cursor: "pointer" } }}
-        onClick={setCanEdit}
-      >
-        <Visibility style={{ width: 18 }} />
-        {children}
-      </Button>
-    </Grid>
+    <IconButton
+      color="secondary"
+      sx={{
+        width: "32px",
+        height: "32px",
+        textAlign: "center",
+        cursor: "pointer",
+        "& svg, path": { cursor: "pointer" },
+      }}
+      onClick={setCanEdit}
+    >
+      <Visibility sx={{ width: 18 }} />
+      {children}
+    </IconButton>
   );
 };
 

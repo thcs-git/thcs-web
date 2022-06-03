@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import TablePagination from "@material-ui/core/TablePagination";
+import TablePagination from "@mui/material/TablePagination";
 
 export const Pagination = styled(TablePagination)`
   border-bottom: none;

@@ -34,7 +34,7 @@ export const TabNav = styled(Tabs)`
 
 export const TabNavItem = styled(Tab)`
   /* font-weight: bold; */
-  color: #cccccc;
+  /* color: #cccccc; */
   /* display: flex; */
 
   cursor: pointer;
@@ -44,9 +44,9 @@ export const TabNavItem = styled(Tab)`
   span {
     cursor: pointer;
   }
-  &.active {
+  /* &.active {
     color: var(--secondary);
-  }
+  } */
 
   &:focus {
     outline: 0 !important;

@@ -1,15 +1,20 @@
-import React from 'react';
-import { IconButton } from '@material-ui/core';
-import { useTheme } from '@material-ui/core/styles';
-
-import FirstPageIcon from '@material-ui/icons/FirstPage';
-import LastPageIcon from '@material-ui/icons/LastPage';
-
-import KeyboardArrowLeft from '@material-ui/icons/KeyboardArrowLeft';
-import KeyboardArrowRight from '@material-ui/icons/KeyboardArrowRight';
-
-import { PaginationProps } from './intefaces';
-import { ContainerPaginationActions } from './styles';
+import React from "react";
+// Router
+// Redux e sagas
+// MUI
+import { Box, IconButton } from "@mui/material";
+import { useTheme } from "@material-ui/core/styles";
+import FirstPageIcon from "@mui/icons-material/FirstPage";
+import LastPageIcon from "@mui/icons-material/LastPage";
+import KeyboardArrowLeft from "@mui/icons-material/KeyboardArrowLeft";
+import KeyboardArrowRight from "@mui/icons-material/KeyboardArrowRight";
+import { ThemeProvider } from "@mui/styles";
+//Styles
+import theme from "../../theme/theme";
+import { ContainerPaginationActions } from "./styles";
+//Uitls
+// types
+import { PaginationProps } from "./intefaces";
 
 const INITIAL_PAGE = 1;
 
@@ -23,36 +28,58 @@ function TablePaginationActions(props: PaginationProps) {
     handleFirstPage,
     handleLastPage,
     handleNextPage,
-    handlePreviosPage
+    handlePreviosPage,
   } = props;
 
   return (
-    <ContainerPaginationActions>
-      <IconButton
-        onClick={handleFirstPage}
-        disabled={parseInt(page) == INITIAL_PAGE}
-        aria-label="first page"
-      >
-        {theme.direction === 'rtl' ? <LastPageIcon /> : <FirstPageIcon />}
-      </IconButton>
-      <IconButton onClick={handlePreviosPage} disabled={parseInt(page) === INITIAL_PAGE} aria-label="previous page">
-        {theme.direction === 'rtl' ? <KeyboardArrowRight /> : <KeyboardArrowLeft />}
-      </IconButton>
-      <IconButton
-        onClick={handleNextPage}
-        disabled={parseInt(page) >= Math.ceil(totalRows / parseInt(rowsPerPage))}
-        aria-label="next page"
-      >
-        {theme.direction === 'rtl' ? <KeyboardArrowLeft /> : <KeyboardArrowRight />}
-      </IconButton>
-      <IconButton
-        onClick={handleLastPage}
-        disabled={parseInt(page) >= Math.ceil(totalRows / parseInt(rowsPerPage))}
-        aria-label="last page"
-      >
-        {theme.direction === 'rtl' ? <FirstPageIcon /> : <LastPageIcon />}
-      </IconButton>
-    </ContainerPaginationActions>
+    <ThemeProvider theme={theme}>
+      <Box sx={{ display: "flex", marginLeft: "0.5rem" }}>
+        <IconButton
+          onClick={handleFirstPage}
+          disabled={parseInt(page) == INITIAL_PAGE}
+          aria-label="first page"
+          sx={{ "& svg, path": { cursor: "pointer" } }}
+        >
+          {theme.direction === "rtl" ? <LastPageIcon /> : <FirstPageIcon />}
+        </IconButton>
+        <IconButton
+          onClick={handlePreviosPage}
+          disabled={parseInt(page) === INITIAL_PAGE}
+          aria-label="previous page"
+          sx={{ "& svg, path": { cursor: "pointer" } }}
+        >
+          {theme.direction === "rtl" ? (
+            <KeyboardArrowRight />
+          ) : (
+            <KeyboardArrowLeft />
+          )}
+        </IconButton>
+        <IconButton
+          onClick={handleNextPage}
+          disabled={
+            parseInt(page) >= Math.ceil(totalRows / parseInt(rowsPerPage))
+          }
+          aria-label="next page"
+          sx={{ "& svg, path": { cursor: "pointer" } }}
+        >
+          {theme.direction === "rtl" ? (
+            <KeyboardArrowLeft />
+          ) : (
+            <KeyboardArrowRight />
+          )}
+        </IconButton>
+        <IconButton
+          onClick={handleLastPage}
+          disabled={
+            parseInt(page) >= Math.ceil(totalRows / parseInt(rowsPerPage))
+          }
+          aria-label="last page"
+          sx={{ "& svg, path": { cursor: "pointer" } }}
+        >
+          {theme.direction === "rtl" ? <FirstPageIcon /> : <LastPageIcon />}
+        </IconButton>
+      </Box>
+    </ThemeProvider>
   );
 }
 

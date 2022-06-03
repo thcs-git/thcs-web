@@ -26,7 +26,7 @@ import NoPermission from "../../../components/Erros/NoPermission";
 import UnexpectedError from "../../../components/Erros/UnexpectedError";
 // Styles
 import { ContainerStyle as Container } from "./styles";
-
+import { IButtons } from "../../../components/Button/ButtonTabs";
 // Helper
 import LOCALSTORAGE from "../../../helpers/constants/localStorage";
 import SESSIONSTORAGE from "../../../helpers/constants/sessionStorage";
@@ -297,7 +297,7 @@ export default function PatientOverview(
         value: careState?.data?.patient_id?.fiscal_number,
       });
     careState?.data?.patient_id?.email &&
-    patientState?.data?.phones &&
+      patientState?.data?.phones &&
       patientState.data.phones.forEach((phone) => {
         if (phone.cellnumber) {
           rows.push({
@@ -313,10 +313,10 @@ export default function PatientOverview(
         }
       });
     careState?.data?.patient_id?.email &&
-    rows.push({
-      name: "Email",
-      value: careState.data.patient_id.email,
-    });
+      rows.push({
+        name: "Email",
+        value: careState.data.patient_id.email,
+      });
     careState?.data?.patient_id?.organ_donor &&
       rows.push({
         name: "Doador de órgãos",
@@ -527,7 +527,7 @@ export default function PatientOverview(
     return allergicExist;
   };
 
-  const buttons = [
+  const buttons: IButtons[] = [
     {
       name: "Voltar",
       onClick: () => {

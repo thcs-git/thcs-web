@@ -1,9 +1,14 @@
 import React from "react";
-
-import { Pagination as TablePagination, Table, Caption } from "./styles";
+// MUI
+import Typography from "@mui/material/Typography";
+import { ThemeProvider } from "@mui/styles";
+import TablePagination from "@mui/material/TablePagination";
+import Box from "@mui/material/Box";
+//Styles
+import { Table, Caption } from "./styles";
 import PaginationActions from "./paginationActions";
-
 import { PaginationProps } from "./intefaces";
+import theme from "../../theme/theme";
 
 const Pagination = (props: PaginationProps) => {
   const {
@@ -14,43 +19,84 @@ const Pagination = (props: PaginationProps) => {
     rowsPerPageOptions,
   } = props;
 
-  const handleChangePage = (
-    event: React.MouseEvent<HTMLButtonElement> | null,
-    newPage: number
-  ) => {
-    // console.log('change page');
-  };
-
   return (
-    <Table>
-      <tbody>
-        <tr>
-          <TablePagination
-            rowsPerPageOptions={
-              rowsPerPageOptions
-                ? rowsPerPageOptions
-                : [5, 10, 25, { label: "Todos", value: totalRows }]
-            }
-            count={totalRows}
-            rowsPerPage={parseInt(rowsPerPage)}
-            page={parseInt(page)}
-            labelRowsPerPage="Resultados por página:"
-            labelDisplayedRows={({ from, to, count, page }) =>
-              `${count} itens    ${page} de ${Math.ceil(
-                count / parseInt(rowsPerPage)
-              )}`
-            }
-            SelectProps={{
-              inputProps: { "aria-label": "rows per page" },
-              native: true,
+    <ThemeProvider theme={theme}>
+      <TablePagination
+        color="pink"
+        sx={{
+          marginTop: "1rem",
+          borderBottom: 0,
+          display: "flex",
+          justifyContent: "flex-end",
+          "& .MuiTablePagination-displayedRows": {
+            fontFamily: theme.typography.fontFamily,
+            fontSize: theme.typography.body1,
+          },
+        }}
+        rowsPerPageOptions={
+          rowsPerPageOptions
+            ? rowsPerPageOptions
+            : [5, 10, 25, { label: "Todos", value: totalRows }]
+        }
+        count={totalRows}
+        rowsPerPage={parseInt(rowsPerPage)}
+        page={parseInt(page) - 1}
+        onPageChange={(e, page) => {
+          // console.log(page);
+        }}
+        labelRowsPerPage={
+          <Typography variant="body1" fontFamily={theme.typography.fontFamily}>
+            Resultados por página:
+          </Typography>
+        }
+        onRowsPerPageChange={handleChangeRowsPerPage}
+        ActionsComponent={() => <PaginationActions {...props} />}
+        labelDisplayedRows={({ from, to, count, page }) => (
+          <Box
+            sx={{
+              display: "flex",
+              justifyContent: "space-between",
+              padding: "0 1rem",
             }}
-            onChangePage={handleChangePage}
-            onChangeRowsPerPage={handleChangeRowsPerPage}
-            ActionsComponent={() => <PaginationActions {...props} />}
-          />
-        </tr>
-      </tbody>
-    </Table>
+          >
+            <Typography
+              variant="body1"
+              fontFamily={theme.typography.fontFamily}
+            >
+              {`${from}-${to} de ${count}`}
+            </Typography>
+          </Box>
+        )}
+        SelectProps={{
+          MenuProps: {
+            sx: {
+              "& .MuiMenu-list": {
+                padding: "0",
+                display: "flex",
+                flexDirection: "column",
+                "& .MuiMenuItem-root": {
+                  transition: "all 150ms ease-in-out",
+                  padding: "0.2rem",
+                  fontFamily: theme.typography.fontFamily,
+                },
+              },
+            },
+          },
+          // inputProps: {
+          //   "aria-label": "rows per page",
+          // },
+          // SelectDisplayProps: {
+          //   style: {
+          //     display: "flex",
+          //     flexDirection: "column",
+          //     background: "pink",
+          //   },
+          // },
+          // variant: "standard",
+          // native: true,
+        }}
+      />
+    </ThemeProvider>
   );
 };
 

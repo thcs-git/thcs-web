@@ -64,7 +64,7 @@ import {
   checkEditPermission,
 } from "../../../utils/permissions";
 import NoPermission from "../../../components/Erros/NoPermission";
-
+import { IButtons } from "../../../components/Button/ButtonTabs";
 interface IPageParams {
   id?: string;
   mode?: string;
@@ -384,7 +384,7 @@ export default function CompanyForm(props: RouteComponentProps<IPageParams>) {
     }));
   }, []);
 
-  const buttons = [
+  const buttons: IButtons[] = [
     {
       name: "Voltar",
       onClick: handleCancelForm,

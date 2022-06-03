@@ -77,7 +77,7 @@ import { createPrescriptionRequest } from "../../../store/ducks/prescripition/ac
 import { AreaInterface } from "../../../store/ducks/areas/types";
 import TabTittle from "../../../components/Text/TabTittle";
 import TabForm from "../../../components/Tabs";
-import ButtonTabs from "../../../components/Button/ButtonTabs";
+import ButtonTabs, { IButtons } from "../../../components/Button/ButtonTabs";
 import ButtonEdit from "../../../components/Button/ButtonEdit";
 import SESSIONSTORAGE from "../../../helpers/constants/sessionStorage";
 import {
@@ -666,7 +666,7 @@ export default function PatientForm(props: RouteComponentProps<IPageParams>) {
     }
   }, [state]);
 
-  const buttons = [
+  const buttons: IButtons[] = [
     {
       name: "Voltar",
       onClick: handleCancelForm,

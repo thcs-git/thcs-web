@@ -5,8 +5,8 @@ import {
   InputAdornment,
   InputLabel,
   OutlinedInput,
-} from "@material-ui/core";
-import { SearchOutlined } from "@material-ui/icons";
+} from "@mui/material";
+import { SearchOutlined } from "@mui/icons-material";
 
 import { FormSearch, ButtonStyle } from "./styles";
 import ButtonSwitches from "../../Button/ButtonSwitches";
@@ -44,6 +44,7 @@ const Search = ({
             {(inputPlaceholder = inputPlaceholder)}
           </InputLabel>
           <OutlinedInput
+            color="secondary"
             id="search-input"
             value={value}
             type="search"
@@ -56,12 +57,17 @@ const Search = ({
                   edge="end"
                   color="secondary"
                   onClick={onClickSearch}
+                  sx={{
+                    cursor: "pointer",
+                    "& svg, path": { cursor: "pointer" },
+                  }}
                 >
                   <SearchOutlined />
                 </IconButton>
               </InputAdornment>
             }
-            labelWidth={390}
+            label={inputPlaceholder}
+            // labelWidth={390}
           />
         </FormControl>
         {buttonTitle && (

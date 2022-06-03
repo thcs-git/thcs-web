@@ -102,7 +102,8 @@ const IntegrationForm = (props: IComponent) => {
                   {formatDate(state.created_at, "DD/MM/YYYY HH:mm")}
                 </Typography>
                 <Typography>
-                  Origem do atendimento: 194 - INTEGRACAO Setor: 763 - INTEGRAÇÃO{" "}
+                  Origem do atendimento: 194 - INTEGRACAO Setor: 763 -
+                  INTEGRAÇÃO{" "}
                 </Typography>
               </Grid>
 
@@ -122,9 +123,7 @@ const IntegrationForm = (props: IComponent) => {
                   InputProps={{
                     endAdornment: (
                       <InputAdornment position="end">
-                        <CheckCircleOutlineOutlinedIcon
-                          sx={{ color: "var(--action)" }}
-                        />
+                        <CheckCircleOutlineOutlinedIcon color="success" />
                       </InputAdornment>
                     ),
                   }}

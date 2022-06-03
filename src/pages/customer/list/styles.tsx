@@ -1,6 +1,6 @@
-import styled from 'styled-components';
-import { Card, CardContent } from '@material-ui/core';
-import { Link } from 'react-router-dom';
+import styled from "styled-components";
+import { Card, CardContent } from "@mui/material";
+import { Link } from "react-router-dom";
 
 interface IListItemStatus {
   active: boolean;
@@ -39,11 +39,12 @@ export const ListItemContent = styled(CardContent)`
   padding: 4px !important;
 `;
 export const ItemTable = styled.div`
-    padding:4px;
-    `;
+  padding: 4px;
+`;
 
 export const ListItemStatus = styled.div<IListItemStatus>`
-  color: ${(props) => (props.active ? `var(--success)` : `var(--danger-hover)`)};
+  color: ${(props) =>
+    props.active ? `var(--success)` : `var(--danger-hover)`};
   font-weight: bold;
   padding: 0px;
   width: 80px;

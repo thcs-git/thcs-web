@@ -24,6 +24,7 @@ import { toast } from "react-toastify";
 import SESSIONSTORAGE from "../../../helpers/constants/sessionStorage";
 import { checkViewPermission } from "../../../utils/permissions";
 import NoPermission from "../../../components/Erros/NoPermission";
+import { IButtons } from "../../../components/Button/ButtonTabs";
 interface IPageParams {
   id?: string;
   mode?: string;
@@ -171,12 +172,12 @@ export default function UserClientForm(
 
   const integration = sessionStorage.getItem(SESSIONSTORAGE.INTEGRATION);
 
-  const buttons = [
+  const buttons: IButtons[] = [
     {
       name: "Voltar",
       onClick: handleCancelFormUser,
       variant: "contained",
-      background: "secondary",
+      background: "primary",
       show: true,
     },
   ];

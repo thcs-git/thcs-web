@@ -11,6 +11,7 @@ import Loading from "../../../components/Loading";
 import TabForm from "../../../components/Tabs";
 import TabTittle from "../../../components/Text/TabTittle";
 import NotFound from "../../../components/Erros/NotFound";
+import ButtonTabs, { IButtons } from "../../../components/Button/ButtonTabs";
 
 // redux e Sagas
 import { useDispatch, useSelector } from "react-redux";
@@ -21,7 +22,6 @@ import { getAddress as getAddressAction } from "../../../store/ducks/customers/a
 
 // MUI
 import Container from "@material-ui/core/Container";
-import ButtonTabs from "../../../components/Button/ButtonTabs";
 
 export default function UserCongiguration(props: RouteComponentProps<any>) {
   const params = { mode: "view" };
@@ -108,14 +108,14 @@ export default function UserCongiguration(props: RouteComponentProps<any>) {
     council_number: false,
     active: true,
   });
-  const buttons = [
+  const buttons: IButtons[] = [
     {
       name: "Voltar",
       onClick: () => {
         history.push("/");
       },
       variant: "contained",
-      background: "secondary",
+      background: "primary",
       show: true,
     },
   ];

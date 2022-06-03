@@ -6,6 +6,7 @@ import {
   styled,
   Theme,
   ThemeOptions,
+  experimental_sx as sx,
 } from "@mui/material/styles";
 
 declare module "@mui/material/styles" {
@@ -42,6 +43,7 @@ declare module "@mui/material/styles" {
     terciaryLight: PaletteOptions["primary"];
   }
 }
+const defaultTheme = createTheme();
 
 let theme: Theme = createTheme({
   palette: {
@@ -66,12 +68,14 @@ let theme: Theme = createTheme({
     error: { main: "#E73A3A" },
     warning: { main: "#F9CA24" },
     success: { main: "#4FC66A" },
-    background: { default: "#F9F9F9", paper: "#F7F7F7" },
+    background: { default: "#fafafa", paper: "#FFF" },
   },
   typography: {
     fontFamily: "GeneralSans-Variable",
   },
-  components: {},
+  components: {
+    // se precisar usar o intelisense do VScode, usar a variável defaultTheme
+  },
 });
 
 theme = createTheme(theme, {
@@ -90,7 +94,6 @@ theme = createTheme(theme, {
         root: {
           padding: "0",
           margin: "0 24px 20px",
-          // cursor: "pointer",
           "& span, p": {
             cursor: "pointer",
           },
@@ -111,6 +114,30 @@ theme = createTheme(theme, {
           },
         },
       },
+    },
+    //BUTON
+    MuiButton: {
+      variants: [
+        {
+          props: { variant: "contained", color: "primary" },
+          style: {
+            "&:hover": { backgroundColor: theme.palette.primaryLighter.main },
+          },
+        },
+        {
+          props: { variant: "contained", color: "secondary" },
+          style: {
+            "&:hover": { backgroundColor: theme.palette.secondary.light },
+          },
+        },
+        {
+          props: { variant: "contained", color: "success" },
+          style: {
+            color: theme.palette.common.white,
+            "&:hover": { backgroundColor: theme.palette.success.light },
+          },
+        },
+      ],
     },
   },
 });

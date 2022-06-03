@@ -5,9 +5,10 @@ import React, {
   useCallback,
   ChangeEvent,
 } from "react";
+// router
 import { useHistory, Link } from "react-router-dom";
 
-import debounce from "lodash.debounce";
+//redux e sagas
 import { useDispatch, useSelector } from "react-redux";
 import { ApplicationState } from "../../../store/";
 import {
@@ -16,29 +17,38 @@ import {
   cleanAction,
 } from "../../../store/ducks/companies/actions";
 import { CompanyInterface } from "../../../store/ducks/companies/types";
-
-import { Container, Menu, MenuItem, TableRow, TableCell } from "@mui/material";
+// MUI
+import {
+  Container,
+  Menu,
+  MenuItem,
+  TableRow,
+  TableCell,
+  Typography,
+} from "@mui/material";
 import { SearchOutlined, MoreVert } from "@material-ui/icons";
-
+// styles
+import { FormTitle } from "../../../styles/components/Form";
+import { ListItemStatus } from "./styles";
+import theme from "../../../theme/theme";
+// Components
 import PaginationComponent from "../../../components/Pagination";
 import Loading from "../../../components/Loading";
 import Sidebar from "../../../components/Sidebar";
 import SearchComponent from "../../../components/List/Search";
 import Table from "../../../components/Table";
-
-import { FormTitle } from "../../../styles/components/Form";
 import Button from "../../../styles/components/Button";
+import NoPermission from "../../../components/Erros/NoPermission";
 
+// utils
+import debounce from "lodash.debounce";
 import { formatDate } from "../../../helpers/date";
-
-import { ListItemStatus } from "./styles";
 import SESSIONSTORAGE from "../../../helpers/constants/sessionStorage";
 import { toast } from "react-toastify";
 import {
   checkViewPermission,
   checkEditPermission,
 } from "../../../utils/permissions";
-import NoPermission from "../../../components/Erros/NoPermission";
 
 export default function CompanyList() {
   const history = useHistory();
@@ -112,7 +122,14 @@ export default function CompanyList() {
         {checkViewPermission("company", JSON.stringify(rightsOfLayoutState)) ? (
           <Container>
             {/* {companyState.loading && <Loading />} */}
-            <FormTitle>Lista de Empresas</FormTitle>
+            <Typography
+              marginBottom={"2.5rem"}
+              variant="h5"
+              color={theme.palette.primary.main}
+              fontWeight={600}
+            >
+              Lista de Empresas
+            </Typography>
 
             {integration ? (
               <>
@@ -129,7 +146,7 @@ export default function CompanyList() {
                   tableCells={[
                     { name: "Empresa", align: "left" },
                     { name: "CNPJ", align: "left" },
-                    { name: "Tipo", align: "left" },
+                    { name: "Tipo", align: "center" },
                   ]}
                 >
                   {!companyState.list.data &&

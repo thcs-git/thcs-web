@@ -1,50 +1,34 @@
 import React, { useState, useEffect, useCallback, ChangeEvent } from "react";
+
+// router
+import { useHistory, Link } from "react-router-dom";
+
+// Redux e Saga
 import { useDispatch, useSelector } from "react-redux";
-import { useHistory } from "react-router-dom";
-import {
-  Container,
-  FormControl,
-  InputLabel,
-  OutlinedInput,
-  InputAdornment,
-  IconButton,
-  TableCell,
-  TableRow,
-  Menu,
-  MenuItem,
-} from "@material-ui/core";
-import { MoreVert, SearchOutlined } from "@material-ui/icons";
-import debounce from "lodash.debounce";
-import Table from "../../../components/Table";
 import { ApplicationState } from "../../../store";
 import {
   loadRequest,
   searchRequest,
   cleanAction,
 } from "../../../store/ducks/customers/actions";
-import Sidebar from "../../../components/Sidebar";
-
-import PaginationComponent from "../../../components/Pagination";
-import Loading from "../../../components/Loading";
-import SearchComponent from "../../../components/List/Search";
-import { FormTitle } from "../../../styles/components/Form";
-import Button from "../../../styles/components/Button";
-import {
-  List,
-  ListLink,
-  ListItem,
-  ListItemContent,
-  ListItemStatus,
-  ListItemTitle,
-  ListItemSubTitle,
-  FormSearch,
-  ButtonsContent,
-  ItemTable,
-} from "./styles";
-
-import { formatDate } from "../../../helpers/date";
-import { BoxCustom } from "../form/styles";
 import { CustomerInterface } from "../../../store/ducks/customers/types";
+
+// Mui
+import { Container, TableCell, TableRow, Typography } from "@mui/material";
+import { ThemeProvider } from "@mui/styles";
+
+//Style
+import { ListLink, ListItemStatus, ItemTable } from "./styles";
+import theme from "../../../theme/theme";
+
+//Utils
+import { formatDate } from "../../../helpers/date";
+
+//Components
+import Table from "../../../components/Table";
+import Sidebar from "../../../components/Sidebar";
+import PaginationComponent from "../../../components/Pagination";
+import SearchComponent from "../../../components/List/Search";
 
 export default function CustomerList() {
   const history = useHistory();
@@ -109,128 +93,147 @@ export default function CustomerList() {
 
   // const debounceSearchRequest = debounce(handleChangeInput, 900);
   return (
-    <>
+    <Sidebar>
       {/* {customerState.loading && <Loading />} */}
-      <Sidebar>
-        <Container>
-          <FormTitle>Lista de Clientes</FormTitle>
+      <Container>
+        <Typography
+          marginBottom={"2.5rem"}
+          variant="h5"
+          color={theme.palette.primary.main}
+          fontWeight={600}
+        >
+          Lista de Clientes
+        </Typography>
 
-          <SearchComponent
-            handleButton={() => history.push("/customer/create/")}
-            buttonTitle=""
-            inputPlaceholder="Pesquise por nome fantasia, CNPJ, status, etc..."
-            onChangeInput={handleChangeInput}
-            value={search}
-            onKeyEnter={handleKeyEnter}
-            onClickSearch={handleClickSearch}
-          />
-          <Table
-            tableCells={[
-              { name: "Nome Fantasia", align: "left" },
-              { name: "CNPJ", align: "left" },
-              { name: "Status", align: "left" },
-              { name: "Adicionado em", align: "left" },
-              // { name: "", align: "center" },
-            ]}
-          >
-            {customerState.list.data.map((customer, index) => (
-              <TableRow key={`patient_${index}`}>
-                <TableCell align="left">
-                  <ItemTable>
-                    <ListLink
-                      key={customer._id}
-                      to={`/customer/${customer._id}/view/edit`}
-                    >
-                      {customer.name}
-                    </ListLink>
-                  </ItemTable>
-                </TableCell>
-                <TableCell align="left">{customer.fiscal_number}</TableCell>
-                <TableCell align="left">
-                  <ListItemStatus active={customer.active}>
-                    {customer.active ? "Ativo" : "Inativo"}
-                  </ListItemStatus>
-                </TableCell>
-                <TableCell align="left">
+        <SearchComponent
+          handleButton={() => history.push("/customer/create/")}
+          buttonTitle=""
+          inputPlaceholder="Pesquise por nome fantasia, CNPJ, status, etc..."
+          onChangeInput={handleChangeInput}
+          value={search}
+          onKeyEnter={handleKeyEnter}
+          onClickSearch={handleClickSearch}
+        />
+        <Table
+          tableCells={[
+            { name: "Nome Fantasia", align: "left" },
+            { name: "CNPJ", align: "center" },
+            { name: "Status", align: "center" },
+            { name: "Adicionado em", align: "center" },
+            // { name: "", align: "center" },
+          ]}
+        >
+          {customerState.list.data.map((customer, index) => (
+            <TableRow
+              key={`patient_${index}`}
+              hover
+              sx={{
+                transition: "all 150ms ease-in-out",
+                // "&.MuiTableRow-root.MuiTableRow-hover:hover": {
+                //   backgroundColor: theme.palette.secondaryLighter3.main,
+                // },
+              }}
+            >
+              <TableCell
+                align="left"
+                sx={{ cursor: "pointer", padding: "20px" }}
+              >
+                <Link
+                  key={customer._id}
+                  to={`/customer/${customer._id}/view/edit`}
+                  style={{ cursor: "pointer" }}
+                >
+                  <Typography variant="body1" sx={{ cursor: "pointer" }}>
+                    {customer.name}
+                  </Typography>
+                </Link>
+              </TableCell>
+              <TableCell align="center">
+                <Typography variant="body1">
+                  {customer.fiscal_number}
+                </Typography>
+              </TableCell>
+              <TableCell align="center">
+                <Typography
+                  variant="body1"
+                  color={
+                    customer.active
+                      ? theme.palette.success.main
+                      : theme.palette.error.main
+                  }
+                  fontWeight={600}
+                >
+                  {customer.active ? "Ativo" : "Inativo"}
+                </Typography>
+              </TableCell>
+              <TableCell align="center">
+                <Typography variant="body1">
                   {formatDate(customer.created_at, "DD/MM/YYYY HH:mm")}
-                </TableCell>
-                {/* <TableCell align='center' style={{width:'10px'}}>
-                  <Button   aria-controls={`patient-menu${index}`} id={`btn_patient-menu${index}`} aria-haspopup="true" onClick={handleOpenRowMenu}>
-                    <MoreVert  style={{ color: '#0899ba' }}/>
-                  </Button>
-                  <Menu
-                    id={`patient-menu${index}`}
-                    anchorEl={anchorEl}
-                    keepMounted
-                    open={anchorEl?.id === `btn_patient-menu${index}`}
-                    onClose={handleCloseRowMenu}
-                  >
-                    <MenuItem onClick={() => history.push(`/customer/${customer._id}/edit/edit`)}>Editar</MenuItem>
-                    <MenuItem onClick={() => history.push(`/customer/${customer._id}/view/edit`)}>Visualizar</MenuItem>
-                  </Menu>
-                  </TableCell> */}
-              </TableRow>
-            ))}
-          </Table>
-
-          <PaginationComponent
-            page={customerState.list.page}
-            rowsPerPage={customerState.list.limit}
-            totalRows={customerState.list.total}
-            handleFirstPage={() =>
-              dispatch(
-                loadRequest({
-                  page: "1",
-                  limit: customerState.list.limit,
-                  total: customerState.list.total,
-                  search,
-                })
-              )
-            }
-            handleLastPage={() =>
-              dispatch(
-                loadRequest({
-                  page: Math.ceil(
-                    +customerState.list.total / +customerState.list.limit
-                  ).toString(),
-                  limit: customerState.list.limit,
-                  total: customerState.list.total,
-                  search,
-                })
-              )
-            }
-            handleNextPage={() =>
-              dispatch(
-                loadRequest({
-                  page: (+customerState.list.page + 1).toString(),
-                  limit: customerState.list.limit,
-                  total: customerState.list.total,
-                  search,
-                })
-              )
-            }
-            handlePreviosPage={() =>
-              dispatch(
-                loadRequest({
-                  page: (+customerState.list.page - 1).toString(),
-                  limit: customerState.list.limit,
-                  total: customerState.list.total,
-                  search,
-                })
-              )
-            }
-            handleChangeRowsPerPage={(event) =>
-              dispatch(
-                loadRequest({
-                  limit: event.target.value,
-                  page: "1",
-                  search,
-                })
-              )
-            }
-          />
-        </Container>
-      </Sidebar>
-    </>
+                </Typography>
+              </TableCell>
+            </TableRow>
+          ))}
+        </Table>
+        {console.log(customerState.list.page, "customerState.list.page")}
+        <PaginationComponent
+          page={customerState.list.page}
+          rowsPerPage={customerState.list.limit}
+          totalRows={customerState.list.total}
+          handleFirstPage={() =>
+            dispatch(
+              loadRequest({
+                page: "1",
+                limit: customerState.list.limit,
+                total: customerState.list.total,
+                search,
+              })
+            )
+          }
+          handleLastPage={() =>
+            dispatch(
+              loadRequest({
+                page: Math.ceil(
+                  +customerState.list.total / +customerState.list.limit
+                ).toString(),
+                limit: customerState.list.limit,
+                total: customerState.list.total,
+                search,
+              })
+            )
+          }
+          handleNextPage={() =>
+            dispatch(
+              loadRequest({
+                page: (+customerState.list.page + 1).toString(),
+                limit: customerState.list.limit,
+                total: customerState.list.total,
+                search,
+              })
+            )
+          }
+          handlePreviosPage={() =>
+            dispatch(
+              loadRequest({
+                page: (+customerState.list.page - 1).toString(),
+                limit: customerState.list.limit,
+                total: customerState.list.total,
+                search,
+              })
+            )
+          }
+          handleChangeRowsPerPage={(
+            event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+          ) =>
+            dispatch(
+              loadRequest({
+                limit: event.target.value,
+                page: "1",
+                search,
+              })
+            )
+          }
+        />
+      </Container>
+    </Sidebar>
   );
 }

@@ -1,9 +1,8 @@
 import React, { ReactNode } from "react";
-import { Button, Grid } from "@mui/material";
-import { Edit } from "@material-ui/icons";
-import Box from "@material-ui/core/Box";
+import { Button, Grid, Typography, Box } from "@mui/material";
 import { ReactComponent as IconEdit } from "../../../assets/img/icon editar.svg";
-
+import EditIcon from "../../Icons/Edit";
+import theme from "../../../theme/theme";
 interface IComponent {
   setCanEdit: any;
   canEdit: boolean;
@@ -16,10 +15,11 @@ const ButtonEdit = (props: IComponent) => {
   return (
     <Grid item md={2} xs={12} style={{ paddingTop: "5px" }}>
       <Button
+        color="secondary"
         onClick={setCanEdit}
         sx={{
           cursor: "pointer",
-          border: "2px solid var(--secondary)",
+          border: `2px solid ${theme.palette.secondary.main}`,
           borderRadius: "4px",
           display: "flex",
           justifyContent: "space-evenly",
@@ -30,16 +30,23 @@ const ButtonEdit = (props: IComponent) => {
           "& svg, path": { cursor: "pointer" },
         }}
       >
-        <IconEdit style={{ cursor: "pointer" }} />
+        <EditIcon fill={theme.palette.secondary.main} />
         <Box
-          style={{
+          sx={{
             cursor: "pointer",
             fontSize: "10px",
-            color: "var(--secondary)",
+            color: theme.palette.secondary.main,
             fontWeight: "bold",
           }}
         >
-          Editar
+          <Typography
+            variant="body2"
+            fontWeight={600}
+            fontSize="0.625rem"
+            sx={{ cursor: "pointer" }}
+          >
+            Editar
+          </Typography>
         </Box>
       </Button>
 

@@ -1,7 +1,7 @@
 import styled from "styled-components";
 import { styled as styledMui } from "@mui/material/styles";
 import Box, { BoxProps } from "@mui/material/Box";
-import { FormControl } from "@material-ui/core";
+import FormControl from "@mui/material/FormControl";
 
 export const FormGroupSection = styled(FormControl)`
   display: block;

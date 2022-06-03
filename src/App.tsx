@@ -7,25 +7,12 @@ import {
 } from "@material-ui/core/styles";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-
 import store from "./store";
 import GlobalStyles from "./styles/globalStyles";
-import QRCode from "react-qr-code";
-
 import Routes from "./routes";
 
 import "./fonts/css/general-sans.css";
-
-const theme = createMuiTheme({
-  palette: {
-    primary: {
-      main: "#000083",
-    },
-    secondary: {
-      main: "#4949fe",
-    },
-  },
-});
+import theme from "./theme/theme";
 
 const useStyles = makeStyles((theme) => {
   root: {
@@ -35,13 +22,15 @@ const useStyles = makeStyles((theme) => {
 
 const App = () => {
   return (
-    <ThemeProvider theme={theme}>
-      <Provider store={store}>
+    <>
+      <ThemeProvider theme={theme}>
         <GlobalStyles />
-        <Routes />
-        <ToastContainer />
-      </Provider>
-    </ThemeProvider>
+        <Provider store={store}>
+          <Routes />
+          <ToastContainer />
+        </Provider>
+      </ThemeProvider>
+    </>
   );
 };
 

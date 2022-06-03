@@ -10,16 +10,14 @@ import TableCell from "@mui/material/TableCell";
 import TableContainer from "@mui/material/TableContainer";
 import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
-
-import { ItemTable, ListItemStatus } from "../../../pages/customer/list/styles";
-import { ListLink } from "./styles";
+import Typography from "@mui/material/Typography";
+import { ThemeProvider } from "@mui/styles";
 import { formatDate } from "../../../helpers/date";
 // import Table from "../../Table";
 import ButtonEdit from "../../Button/ButtonEdit";
 import ButtonView from "../../Button/ButtonView";
 import { useHistory } from "react-router-dom";
-import { ButtonStyle } from "./styles";
-import { ButtonsContent } from "../../Button/ButtonTabs/styles";
+
 import {
   loadPermissionRequest,
   cleanAction,
@@ -28,6 +26,11 @@ import {
 //Componentes
 import PermissionForm from "../../Inputs/Forms/PermisionForm";
 import ButtonTabs from "../../Button/ButtonTabs";
+// styles
+import { ItemTable, ListItemStatus } from "../../../pages/customer/list/styles";
+import { ListLink, ButtonStyle } from "./styles";
+import { ButtonsContent } from "../../Button/ButtonTabs/styles";
+import theme from "../../../theme/theme";
 // utils
 import {
   checkViewPermission,
@@ -59,7 +62,17 @@ const PermissionList = (props: IComponent) => {
   const rightsOfLayoutState = useSelector(
     (state: ApplicationState) => state.layout.data.rights
   );
-  const headData: string[] = ["Função", "Status", "Adicionado em", "", ""];
+  interface ICellProps {
+    cellName: string;
+    align: "left" | "center" | "inherit" | "right" | "justify" | undefined;
+  }
+  const headData: ICellProps[] = [
+    { cellName: "Função", align: "left" },
+    { cellName: "Status", align: "center" },
+    { cellName: "Adicionado em", align: "center" },
+    { cellName: "", align: "center" },
+    { cellName: "", align: "center" },
+  ];
 
   useEffect(() => {
     if (modePermission === "view" || modePermission === "edit") {
@@ -69,58 +82,34 @@ const PermissionList = (props: IComponent) => {
 
   return (
     <>
-      {modePermission === "start" ? (
-        <Table>
-          <TableHead>
-            <TableRow>
-              {headData.map((item: string) => {
-                return (
-                  <TableCell
-                    style={{ color: "var(--gray-dark)", fontSize: "12px" }}
-                  >
-                    {item}
-                  </TableCell>
-                );
-              })}
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {customerState.data.usertypes?.map(
-              (
-                { _id, active, created_at, name, permissions }: any,
-                index: number
-              ) => {
-                return (
-                  <TableRow key={`${name}_${index}`}>
-                    <TableCell
-                      sx={{ color: "var(--black)", cursor: "pointer" }}
-                      align="left"
-                      onClick={() => {
-                        !checkViewPermission(
-                          "permission",
-                          JSON.stringify(rightsOfLayoutState)
-                        )
-                          ? toast.error(
-                              "Você não tem permissão para visualizar permissões."
-                            )
-                          : setModePermission("view");
-                        setIdPermission(permissions);
-                      }}
-                    >
-                      {name}
+      <ThemeProvider theme={theme}>
+        {modePermission === "start" ? (
+          <Table>
+            <TableHead>
+              <TableRow>
+                {headData.map((item: ICellProps) => {
+                  return (
+                    <TableCell align={item.align}>
+                      <Typography variant="body1" color="GrayText">
+                        {item.cellName}
+                      </Typography>
                     </TableCell>
-                    <TableCell align="left">
-                      <ListItemStatus active={active}>
-                        {active ? "Ativo" : "Inativo"}
-                      </ListItemStatus>
-                    </TableCell>
-                    <TableCell align="left" style={{ color: "var(--black)" }}>
-                      {formatDate(created_at, "DD/MM/YYYY HH:mm")}
-                    </TableCell>
-                    <TableCell align="left">
-                      <ButtonView
-                        canEdit={true}
-                        setCanEdit={() => {
+                  );
+                })}
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              {customerState.data.usertypes?.map(
+                (
+                  { _id, active, created_at, name, permissions }: any,
+                  index: number
+                ) => {
+                  return (
+                    <TableRow key={`${name}_${index}`}>
+                      <TableCell
+                        sx={{ cursor: "pointer" }}
+                        align="left"
+                        onClick={() => {
                           !checkViewPermission(
                             "permission",
                             JSON.stringify(rightsOfLayoutState)
@@ -131,81 +120,120 @@ const PermissionList = (props: IComponent) => {
                             : setModePermission("view");
                           setIdPermission(permissions);
                         }}
-                      ></ButtonView>
-                    </TableCell>
-                    <TableCell align="left">
-                      <ButtonEdit
-                        canEdit={true}
-                        setCanEdit={() => {
-                          !checkEditPermission(
-                            "permission",
-                            JSON.stringify(rightsOfLayoutState)
-                          )
-                            ? toast.error(
-                                "Você não tem permissão para editar permissões."
-                              )
-                            : setModePermission("edit");
-                          setIdPermission(permissions);
+                      >
+                        <Typography variant="body2" sx={{ cursor: "pointer" }}>
+                          {name}
+                        </Typography>
+                      </TableCell>
+                      <TableCell align="left">
+                        <Typography
+                          variant="body2"
+                          align="center"
+                          fontWeight={600}
+                          color={
+                            active
+                              ? theme.palette.success.main
+                              : theme.palette.error.main
+                          }
+                        >
+                          {active ? "Ativo" : "Inativo"}
+                        </Typography>
+                      </TableCell>
+                      <TableCell align="left">
+                        <Typography variant="body2">
+                          {formatDate(created_at, "DD/MM/YYYY HH:mm")}
+                        </Typography>
+                      </TableCell>
+                      <TableCell align="left">
+                        <ButtonView
+                          canEdit={true}
+                          setCanEdit={() => {
+                            !checkViewPermission(
+                              "permission",
+                              JSON.stringify(rightsOfLayoutState)
+                            )
+                              ? toast.error(
+                                  "Você não tem permissão para visualizar permissões."
+                                )
+                              : setModePermission("view");
+                            setIdPermission(permissions);
+                          }}
+                        ></ButtonView>
+                      </TableCell>
+                      <TableCell align="left">
+                        <ButtonEdit
+                          canEdit={true}
+                          setCanEdit={() => {
+                            !checkEditPermission(
+                              "permission",
+                              JSON.stringify(rightsOfLayoutState)
+                            )
+                              ? toast.error(
+                                  "Você não tem permissão para editar permissões."
+                                )
+                              : setModePermission("edit");
+                            setIdPermission(permissions);
 
-                          // history.push(
-                          //   `/client/${customerState.data._id}/permission/${permissions}/edit/`
-                          // );
-                        }}
-                      ></ButtonEdit>
-                    </TableCell>
-                  </TableRow>
-                );
-              }
+                            // history.push(
+                            //   `/client/${customerState.data._id}/permission/${permissions}/edit/`
+                            // );
+                          }}
+                        ></ButtonEdit>
+                      </TableCell>
+                    </TableRow>
+                  );
+                }
+              )}
+            </TableBody>
+          </Table>
+        ) : modePermission === "view" ? (
+          <>
+            {checkViewPermission(
+              "permission",
+              JSON.stringify(rightsOfLayoutState)
+            ) ? (
+              <>
+                <PermissionForm
+                  state={state}
+                  setState={setState}
+                  customerState={customerState}
+                  userState={userState}
+                  params={params}
+                  modePermission={modePermission}
+                  idPermission={idPermission}
+                />
+                <ButtonTabs canEdit={false} buttons={buttonsPermission} />
+              </>
+            ) : (
+              <NoPermission />
             )}
-          </TableBody>
-        </Table>
-      ) : modePermission === "view" ? (
-        <>
-          {checkViewPermission(
-            "permission",
-            JSON.stringify(rightsOfLayoutState)
-          ) ? (
-            <>
-              <PermissionForm
-                state={state}
-                setState={setState}
-                customerState={customerState}
-                userState={userState}
-                params={params}
-                modePermission={modePermission}
-                idPermission={idPermission}
-              />
-              <ButtonTabs canEdit={false} buttons={buttonsPermission} />
-            </>
-          ) : (
-            <NoPermission />
-          )}
-        </>
-      ) : modePermission === "edit" || modePermission === "create" ? (
-        <>
-          {checkEditPermission(
-            "permission",
-            JSON.stringify(rightsOfLayoutState)
-          ) ? (
-            <>
-              <PermissionForm
-                state={state}
-                setState={setState}
-                customerState={customerState}
-                userState={userState}
-                params={params}
-                modePermission={modePermission}
-                idPermission={idPermission}
-              />
-              <ButtonTabs canEdit={true} buttons={buttonsPermission} />
-            </>
-          ) : (
-            <NoPermission />
-          )}
-        </>
-      ) : (
-        ""
-      )}
+          </>
+        ) : modePermission === "edit" || modePermission === "create" ? (
+          <>
+            {checkEditPermission(
+              "permission",
+              JSON.stringify(rightsOfLayoutState)
+            ) ? (
+              <>
+                <PermissionForm
+                  state={state}
+                  setState={setState}
+                  customerState={customerState}
+                  userState={userState}
+                  params={params}
+                  modePermission={modePermission}
+                  idPermission={idPermission}
+                />
+                <ButtonTabs canEdit={true} buttons={buttonsPermission} />
+              </>
+            ) : (
+              <NoPermission />
+            )}
+          </>
+        ) : (
+          ""
+        )}
+      </ThemeProvider>
     </>
   );
 };

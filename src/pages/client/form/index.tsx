@@ -52,6 +52,7 @@ import Modal from "@mui/material/Modal";
 import Fade from "@mui/material/Fade";
 import Button from "@mui/material/Button";
 import Typography from "@mui/material/Typography";
+import { IButtons } from "../../../components/Button/ButtonTabs";
 
 import {
   ButtonsContent,
@@ -137,13 +138,7 @@ interface IPropsPermissionFrom {
   userState: UserState;
   params: IPageParams;
   canEditPermission: boolean;
-  buttonsPermission: {
-    name: string;
-    onClick: () => void;
-    variant: string;
-    background: string;
-    show: boolean;
-  }[];
+  buttonsPermission: IButtons[];
   modePermission: string;
   setModePermission: React.Dispatch<React.SetStateAction<string>>;
   cleanSelectProfession: () => void;
@@ -647,12 +642,12 @@ export default function ClientForm(props: RouteComponentProps<IPageParams>) {
     },
   ];
 
-  const buttons = [
+  const buttons: IButtons[] = [
     {
       name: "Voltar",
       onClick: handleCancelForm,
       variant: "contained",
-      background: "secondary",
+      background: "primary",
       show: true,
     },
     {
@@ -664,12 +659,12 @@ export default function ClientForm(props: RouteComponentProps<IPageParams>) {
     },
   ];
 
-  const buttonsPermission = [
+  const buttonsPermission: IButtons[] = [
     {
       name: modePermission === "view" ? "Voltar" : "Cancelar",
       onClick: handlePermissionReturn,
       variant: "outlined",
-      background: "success_rounded",
+      background: "success",
       show: true,
     },
     {

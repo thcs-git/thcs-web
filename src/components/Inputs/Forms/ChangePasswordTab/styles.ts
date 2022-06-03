@@ -1,9 +1,9 @@
 import styled from "styled-components";
-import Box from "@material-ui/core/Box";
+import Box from "@mui/material/Box";
 
 export const BoxCustom = styled(Box)`
-  min-height: calc(100vh - 250px);
-  margin: 20px 40px;
+  /* min-height: calc(100vh - 250px); */
+  margin: 10px 40px;
 
   .MuiOutlinedInput-input {
     height: 10px;

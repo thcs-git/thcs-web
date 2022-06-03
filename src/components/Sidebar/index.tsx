@@ -9,11 +9,11 @@ import { useHistory } from "react-router-dom";
 // MUI
 import {
   createStyles,
-  makeStyles,
+  // makeStyles,
   useTheme,
   Theme,
   // ThemeProvider,
-} from "@material-ui/core/styles";
+} from "@mui/material/styles";
 import { ThemeProvider } from "@mui/material/styles";
 import theme from "../../theme/theme";
 import {
@@ -101,74 +101,74 @@ const drawerWidth = 250;
 //   { title: 'Atendimento', route: '/care', icon: <LocalHospital style={{ color: '#fff' }} />},
 // ]
 
-const useStyles = makeStyles((theme: Theme) =>
-  createStyles({
-    root: {
-      display: "flex",
-      flex: 1,
-    },
-    hide: {
-      display: "none",
-    },
-    drawer: {
-      width: drawerWidth,
-      flexShrink: 0,
-      whiteSpace: "nowrap",
-      background: theme.palette.primary.main,
-    },
-    drawerOpen: {
-      width: drawerWidth,
-      transition: theme.transitions.create("width", {
-        easing: theme.transitions.easing.sharp,
-        duration: theme.transitions.duration.enteringScreen,
-      }),
-      background: theme.palette.primary.main,
-      color: "#fff",
-    },
-    drawerClose: {
-      transition: theme.transitions.create("width", {
-        easing: theme.transitions.easing.sharp,
-        duration: theme.transitions.duration.leavingScreen,
-      }),
-      overflowX: "hidden",
-      width: theme.spacing(7) + 1,
-      [theme.breakpoints.up("sm")]: {
-        width: theme.spacing(9) + 1,
-      },
-      background: theme.palette.primary.main,
-      color: "#fff",
-    },
-    toolbar: {
-      display: "flex",
-      alignItems: "center",
-      justifyContent: "flex-end",
-      padding: theme.spacing(0, 1),
-      // paddingTop: "32px",
+// const useStyles = makeStyles((theme: Theme) =>
+//   createStyles({
+//     root: {
+//       display: "flex",
+//       flex: 1,
+//     },
+//     hide: {
+//       display: "none",
+//     },
+//     drawer: {
+//       width: drawerWidth,
+//       flexShrink: 0,
+//       whiteSpace: "nowrap",
+//       background: theme.palette.primary.main,
+//     },
+//     drawerOpen: {
+//       width: drawerWidth,
+//       transition: theme.transitions.create("width", {
+//         easing: theme.transitions.easing.sharp,
+//         duration: theme.transitions.duration.enteringScreen,
+//       }),
+//       background: theme.palette.primary.main,
+//       color: "#fff",
+//     },
+//     drawerClose: {
+//       transition: theme.transitions.create("width", {
+//         easing: theme.transitions.easing.sharp,
+//         duration: theme.transitions.duration.leavingScreen,
+//       }),
+//       overflowX: "hidden",
+//       width: theme.spacing(7) + 1,
+//       [theme.breakpoints.up("sm")]: {
+//         width: theme.spacing(9) + 1,
+//       },
+//       background: theme.palette.primary.main,
+//       color: "#fff",
+//     },
+//     toolbar: {
+//       display: "flex",
+//       alignItems: "center",
+//       justifyContent: "flex-end",
+//       padding: theme.spacing(0, 1),
+//       // paddingTop: "32px",
 
-      // necessary for content to be below app bar
-      ...theme.mixins.toolbar,
-    },
-    content: {
-      flex: 1,
-      padding: theme.spacing(3),
-      paddingBottom: 20,
-    },
-    logOutButton: {
-      cursor: "pointer",
-      // marginLeft: 5,
-    },
-    indicator: {
-      borderBottom: "2px solid var(--secondary)",
-    },
-    padding: {
-      padding: theme.spacing(0, 1),
-    },
-    customBadge: {
-      backgroundColor: "var(--secondary)",
-      color: "white",
-    },
-  })
-);
+//       // necessary for content to be below app bar
+//       ...theme.mixins.toolbar,
+//     },
+//     content: {
+//       flex: 1,
+//       padding: theme.spacing(3),
+//       paddingBottom: 20,
+//     },
+//     logOutButton: {
+//       cursor: "pointer",
+//       // marginLeft: 5,
+//     },
+//     indicator: {
+//       borderBottom: "2px solid var(--secondary)",
+//     },
+//     padding: {
+//       padding: theme.spacing(0, 1),
+//     },
+//     customBadge: {
+//       backgroundColor: "var(--secondary)",
+//       color: "white",
+//     },
+//   })
+// );
 
 const Transition = React.forwardRef(function Transition(
   props: TransitionProps & {
@@ -185,7 +185,7 @@ interface PropsSidebar {
 
 const Sibebar = (props: Props<any>) => {
   const history = useHistory();
-  const classes = useStyles();
+  // const classes = useStyles();
   const dispatch = useDispatch();
   const applicationState = useSelector((state: any) => state);
   const layoutState = useSelector((state: ApplicationState) => state.layout);
@@ -466,30 +466,40 @@ const Sibebar = (props: Props<any>) => {
     }
     return loading;
   }, [applicationState]);
-
   return (
-    <div className={classes.root}>
-      {checkLoading() && <Loading />}
-      {/* <CssBaseline /> */}
-      <ThemeProvider theme={theme}>
+    <ThemeProvider theme={theme}>
+      <Box sx={{ display: "flex", flex: 1 }}>
+        {checkLoading() && <Loading />}
+        {/* <CssBaseline /> */}
         <Drawer
           variant="permanent"
-          className={clsx(classes.drawer, {
-            [classes.drawerOpen]: open,
-            [classes.drawerClose]: !open,
-          })}
-          classes={{
-            paper: clsx({
-              [classes.drawerOpen]: open,
-              [classes.drawerClose]: !open,
-            }),
-          }}
+          // className={clsx(classes.drawer, {
+          //   [classes.drawerOpen]: open,
+          //   [classes.drawerClose]: !open,
+          // })}
+          // classes={{
+          //   paper: clsx({
+          //     [classes.drawerOpen]: open,
+          //     [classes.drawerClose]: !open,
+          //   }),
+          // }}
           sx={{
+            overflowX: open ? "visible" : "hidden",
             height: "100%",
             "& .MuiPaper-root": {
+              overflowX: open ? "visible" : "hidden",
               backgroundColor: theme.palette.primary.main,
               transition: theme.transitions.create("all"),
+              width: open ? drawerWidth : theme.spacing(9),
             },
+            width: open ? drawerWidth : theme.spacing(9),
+            flexShrink: 0,
+            whiteSpace: "nowrap",
+            background: theme.palette.primary.main,
+            transition: theme.transitions.create("width", {
+              easing: theme.transitions.easing.sharp,
+              duration: theme.transitions.duration.enteringScreen,
+            }),
           }}
         >
           <Box
@@ -596,7 +606,7 @@ const Sibebar = (props: Props<any>) => {
                         {username}
                       </Typography>
                     </Grid>
-                    <ListItem
+                    {/* <ListItem
                       sx={{
                         display: "flex",
                         justifyContent: "center",
@@ -630,7 +640,7 @@ const Sibebar = (props: Props<any>) => {
                           />
                         </Badge>
                       </Grid>
-                    </ListItem>
+                    </ListItem> */}
                   </Grid>
                   <br />
                   <div
@@ -651,7 +661,6 @@ const Sibebar = (props: Props<any>) => {
                         },
                       }}
                       style={{ padding: 0 }}
-                      className={classes.logOutButton}
                       onClick={() => {
                         handleClickOpenDialogCompany();
                         setOpenModalConfig(true);
@@ -699,7 +708,7 @@ const Sibebar = (props: Props<any>) => {
               </>
             ) : (
               <>
-                <ListItem
+                {/* <ListItem
                   sx={{ width: "auto" }}
                   // className={classes.logOutButton}
                   onClick={() => setOpenModalMessage(true)}
@@ -722,7 +731,7 @@ const Sibebar = (props: Props<any>) => {
                       sx={{ color: theme.palette.common.white }}
                     />
                   </Badge>
-                </ListItem>
+                </ListItem> */}
 
                 <br />
               </>
@@ -733,7 +742,6 @@ const Sibebar = (props: Props<any>) => {
               <>
                 {item.modal ? (
                   <ListItem
-                    className={classes.logOutButton}
                     key={index}
                     onClick={item.modal}
                     sx={{
@@ -768,7 +776,6 @@ const Sibebar = (props: Props<any>) => {
                   </ListItem>
                 ) : (
                   <ListItem
-                    className={classes.logOutButton}
                     key={index}
                     onClick={() => {
                       history.push(item.route);
@@ -901,12 +908,16 @@ const Sibebar = (props: Props<any>) => {
           open={openDialogCompany}
           setOpen={setOpenDialogCompany}
         />
-      </ThemeProvider>
-      <main className={classes.content}>{props.children}</main>
 
-      {/* {console.log(openDialogCompany)} */}
+        <Container
+          sx={{ flex: 1, padding: theme.spacing(3), paddingBottom: 20 }}
+        >
+          {props.children}
+        </Container>
 
-      {/* <Dialog
+        {/* {console.log(openDialogCompany)} */}
+
+        {/* <Dialog
         open={openModalConfig}
         // onClose={handleToggleModalConfig}
         aria-labelledby="alert-dialog-title"
@@ -930,7 +941,8 @@ const Sibebar = (props: Props<any>) => {
           </Button>
         </DialogActions>
       </Dialog> */}
-    </div>
+      </Box>
+    </ThemeProvider>
   );
 };
 

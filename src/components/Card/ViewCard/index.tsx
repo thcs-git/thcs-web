@@ -1,34 +1,22 @@
 import React from "react";
-
-import { Grid } from "@material-ui/core";
-import InfoRoundedIcon from "@material-ui/icons/InfoRounded";
-import {
-  CardIcon,
-  BoxCustomFoot,
-  CardTitle,
-  FeedbackTitle,
-  WrapperTitleData,
-  WrapperContentData,
-} from "./styles";
-import { any } from "cypress/types/bluebird";
-import { RowingSharp } from "@material-ui/icons";
-import BusinessIcon from "@mui/icons-material/Business";
-import AssignmentIndIcon from "@mui/icons-material/AssignmentInd";
-import { data } from "cypress/types/jquery";
-
-import { ReactComponent as Company2Icon } from "../../../assets/img/icon-company2.svg";
-import { ReactComponent as ProfessionalIcon } from "../../../assets/img/icon-professional.svg";
-import { ReactComponent as LocationIcon } from "../../../assets/img/icon-location.svg";
-import { ReactComponent as PhoneIcon } from "../../../assets/img/icon-phone-details.svg";
-import { ReactComponent as PacientDetailsIcon } from "../../../assets/img/icon-pacient-details.svg";
-import { ReactComponent as MaleIcon } from "../../../assets/img/icon-male.svg";
-import { ReactComponent as UserIcon } from "../../../assets/img/icon-user2.svg";
-import { ReactComponent as SpecialtyIcon } from "../../../assets/img/icon-specialty.svg";
-
+// icons
+import CompanyIcon from "../../Icons/Company";
+import ProfessionalIcon from "../../Icons/Professional";
+import PatientIcon from "../../Icons/Patient";
+import LocationIcon from "../../Icons/Location";
+import PhoneIcon from "../../Icons/Phone";
+import UserIcon from "../../Icons/User";
+import SpecialtyIcon from "../../Icons/Specialty";
+//Mui
+import { Grid, Typography } from "@mui/material";
 import { ThemeProvider } from "@mui/material/styles";
-
 import theme from "../../../theme/theme";
-// import eee from "../../../assets/img/icon-company2.svg"
+//componentes
+// styles
+import { WrapperTitleData, WrapperContentData } from "./styles";
+//utils
+import { any } from "cypress/types/bluebird";
+import { data } from "cypress/types/jquery";
 
 interface IProps {
   content: Icontent;
@@ -184,30 +172,33 @@ export default function ViewCard(props: IProps) {
             style={{
               flexDirection: "column",
               paddingLeft: "24px",
-              // paddingTop: "10px",
             }}
           >
-            {/* <Grid item style={{ paddingBottom: "10px" }}>
-              <h3>{content.tittle}</h3>
-            </Grid> */}
             <WrapperTitleData>
-              {/* <img src="../../../assets/img/icon-company2.svg" alt="icon company" /> */}
-              <Company2Icon />
-              <p>Dados da empresa</p>
+              <CompanyIcon fill={theme.palette.primary.main} noCircle />
+              <Typography variant="body1" fontWeight={600}>
+                Dados da empresa
+              </Typography>
             </WrapperTitleData>
             <WrapperContentData>
               {dataCompany.map(({ name, value }: Irows, index: number) => (
-                <Grid item>{`${name}: ${value}`}</Grid>
+                <Grid item>
+                  <Typography variant="body1">{`${name}: ${value}`}</Typography>
+                </Grid>
               ))}
             </WrapperContentData>
 
             <WrapperTitleData>
-              <ProfessionalIcon />
-              <p>Dados do Responsável</p>
+              <ProfessionalIcon fill={theme.palette.primary.main} />
+              <Typography variant="body1" fontWeight={600}>
+                Dados do Responsável
+              </Typography>
             </WrapperTitleData>
             <WrapperContentData>
               {dataResponsible.map(({ name, value }: Irows, index: number) => (
-                <Grid item>{`${name}: ${value}`}</Grid>
+                <Grid item>
+                  <Typography variant="body1">{`${name}: ${value}`}</Typography>
+                </Grid>
               ))}
             </WrapperContentData>
           </Grid>
@@ -219,39 +210,46 @@ export default function ViewCard(props: IProps) {
             style={{
               flexDirection: "column",
               paddingLeft: "24px",
-              // paddingTop: "10px",
             }}
           >
-            {/* <Grid item style={{ paddingBottom: "10px" }}>
-              <h3>{content.tittle}</h3>
-            </Grid> */}
             <WrapperTitleData>
-              {/* <img src="../../../assets/img/icon-company2.svg" alt="icon company" /> */}
-              <PacientDetailsIcon />
-              <p>Dados do Paciente</p>
+              <PatientIcon noCircle fill={theme.palette.primary.main} />
+              <Typography variant="body1" fontWeight={600}>
+                Dados do Paciente
+              </Typography>
             </WrapperTitleData>
             <WrapperContentData>
               {patientData.map(({ name, value }: Irows, index: number) => (
-                <Grid item>{`${name}: ${value}`}</Grid>
+                <Grid item>
+                  <Typography variant="body1">{`${name}: ${value}`}</Typography>
+                </Grid>
               ))}
             </WrapperContentData>
             <WrapperTitleData>
-              <LocationIcon />
-              <p>Endereço</p>
+              <LocationIcon fill={theme.palette.primary.main} />
+              <Typography variant="body1" fontWeight={600}>
+                Endereço
+              </Typography>
             </WrapperTitleData>
             <WrapperContentData>
               {patientAdress.map(({ name, value }: Irows, index: number) => (
-                <Grid item>{`${name}: ${value}`}</Grid>
+                <Grid item>
+                  <Typography variant="body1">{`${name}: ${value}`}</Typography>
+                </Grid>
               ))}
             </WrapperContentData>
 
             <WrapperTitleData>
-              <PhoneIcon />
-              <p>Contato</p>
+              <PhoneIcon fill={theme.palette.primary.main} />
+              <Typography variant="body1" fontWeight={600}>
+                Contato
+              </Typography>
             </WrapperTitleData>
             <WrapperContentData>
               {patientContact.map(({ name, value }: Irows, index: number) => (
-                <Grid item>{`${name}: ${value}`}</Grid>
+                <Grid item>
+                  <Typography variant="body1">{`${name}: ${value}`}</Typography>
+                </Grid>
               ))}
             </WrapperContentData>
           </Grid>
@@ -268,12 +266,14 @@ export default function ViewCard(props: IProps) {
           >
             <Grid item style={{ paddingBottom: "0" }}>
               <WrapperTitleData>
-                <UserIcon />
-                {content.tittle}
+                <UserIcon fill={theme.palette.primary.main} noCircle />
+                <Typography variant="body1" fontWeight={600}>
+                  {content.tittle}
+                </Typography>
               </WrapperTitleData>
               <WrapperContentData>
                 {content.rows.map(({ name, value }: Irows, index: number) => (
-                  <Grid item>{`${name}: ${value}`}</Grid>
+                  <Typography variant="body1">{`${name}: ${value}`}</Typography>
                 ))}
               </WrapperContentData>
             </Grid>
@@ -291,17 +291,26 @@ export default function ViewCard(props: IProps) {
           >
             <Grid item style={{ paddingBottom: "0" }}>
               <WrapperTitleData>
-                <LocationIcon />
-                {content.tittle}
+                <LocationIcon fill={theme.palette.primary.main} />
+
+                <Typography variant="body1" fontWeight={600}>
+                  {content.tittle}
+                </Typography>
               </WrapperTitleData>
               <WrapperContentData>
                 {addressFull.map(({ name, value }: Irows, index: number) => (
-                  <Grid item>{value}</Grid>
+                  <Grid item>
+                    <Typography variant="body1">{value}</Typography>
+                  </Grid>
                 ))}
 
                 {content.rows.map(
                   ({ name, value }: Irows, index: number) =>
-                    name === "CEP" && <Grid item>{`${name}: ${value}`}</Grid>
+                    name === "CEP" && (
+                      <Grid item>
+                        <Typography variant="body1">{`${name}: ${value}`}</Typography>
+                      </Grid>
+                    )
                 )}
               </WrapperContentData>
             </Grid>
@@ -319,12 +328,16 @@ export default function ViewCard(props: IProps) {
           >
             <Grid item style={{ paddingBottom: "0" }}>
               <WrapperTitleData>
-                <PhoneIcon />
-                {content.tittle}
+                <PhoneIcon fill={theme.palette.primary.main} />
+                <Typography variant="body1" fontWeight={600}>
+                  {content.tittle}
+                </Typography>
               </WrapperTitleData>
               <WrapperContentData>
                 {content.rows.map(({ name, value }: Irows, index: number) => (
-                  <Grid item>{`${name}: ${value}`}</Grid>
+                  <Grid item>
+                    <Typography variant="body1">{`${name}: ${value}`}</Typography>
+                  </Grid>
                 ))}
               </WrapperContentData>
             </Grid>
@@ -343,17 +356,21 @@ export default function ViewCard(props: IProps) {
             <Grid item style={{ paddingBottom: "0" }}>
               <WrapperTitleData>
                 {content.tittle === "Função" ? (
-                  <ProfessionalIcon />
-                ) : content.tittle === "Especialidade" ? (
-                  <SpecialtyIcon />
+                  <ProfessionalIcon fill={theme.palette.primary.main} />
+                ) : content.tittle === "Especialidades" ? (
+                  <SpecialtyIcon fill={theme.palette.primary.main} />
                 ) : (
-                  <PhoneIcon />
+                  <PhoneIcon fill={theme.palette.primary.main} />
                 )}
-                {content.tittle}
+                <Typography variant="body1" fontWeight={600}>
+                  {content.tittle}
+                </Typography>
               </WrapperTitleData>
               <WrapperContentData>
                 {content.rows.map(({ name, value }: Irows, index: number) => (
-                  <Grid item>{`${name}: ${value}`}</Grid>
+                  <Grid item>
+                    <Typography variant="body1">{`${name}: ${value}`}</Typography>
+                  </Grid>
                 ))}
               </WrapperContentData>
             </Grid>
@@ -363,20 +380,24 @@ export default function ViewCard(props: IProps) {
         <Grid item md={md_value}>
           <Grid
             container
-            style={{
+            sx={{
               flexDirection: "column",
               paddingLeft: "10px",
               paddingTop: "10px",
             }}
           >
-            <Grid item style={{ paddingBottom: "0" }}>
+            <Grid item sx={{ paddingBottom: "0" }}>
               <WrapperTitleData>
-                <Company2Icon />
-                {content.tittle}
+                <CompanyIcon fill={theme.palette.primary.main} noCircle />
+                <Typography variant="body1" fontWeight={600}>
+                  {content.tittle}
+                </Typography>
               </WrapperTitleData>
               <WrapperContentData>
                 {content.rows.map(({ name, value }: Irows, index: number) => (
-                  <Grid item>{value}</Grid>
+                  <Grid item>
+                    <Typography variant="body1">{value}</Typography>
+                  </Grid>
                 ))}
               </WrapperContentData>
             </Grid>
@@ -386,23 +407,27 @@ export default function ViewCard(props: IProps) {
         <Grid item md={md_value}>
           <Grid
             container
-            style={{
+            sx={{
               flexDirection: "column",
               paddingLeft: "10px",
               paddingTop: "10px",
             }}
           >
-            <Grid item style={{ paddingBottom: "0" }}>
+            <Grid item sx={{ paddingBottom: "0" }}>
               <WrapperTitleData>
-                <Company2Icon />
-                {content.tittle}
+                <CompanyIcon fill={theme.palette.primary.main} noCircle />
+                <Typography variant="body1" fontWeight={600}>
+                  {content.tittle}
+                </Typography>
               </WrapperTitleData>
               <WrapperContentData>
                 {content.rows.map(({ name, value }: Irows, index: number) => (
                   <>
-                    <Grid item>{`${
-                      name === "CPF" ? "CNPJ" : name
-                    }: ${value}`}</Grid>
+                    <Grid item>
+                      <Typography variant="body1">{`${
+                        name === "CPF" ? "CNPJ" : name
+                      }: ${value}`}</Typography>
+                    </Grid>
                   </>
                 ))}
               </WrapperContentData>
@@ -413,24 +438,28 @@ export default function ViewCard(props: IProps) {
         <Grid item md={md_value}>
           <Grid
             container
-            style={{
+            sx={{
               flexDirection: "column",
               paddingLeft: "10px",
               paddingTop: "10px",
             }}
           >
-            <Grid item style={{ paddingBottom: "0" }}>
+            <Grid item sx={{ paddingBottom: "0" }}>
               <WrapperTitleData>
-                <ProfessionalIcon />
+                <ProfessionalIcon fill={theme.palette.primary.main} />
 
-                {content.tittle}
+                <Typography variant="body1" fontWeight={600}>
+                  {content.tittle}
+                </Typography>
               </WrapperTitleData>
               <WrapperContentData>
                 {content.rows.map(({ name, value }: Irows, index: number) => (
                   <>
-                    <Grid item>{`${
-                      name === "CPF" ? "CNPJ" : name
-                    }: ${value}`}</Grid>
+                    <Grid item>
+                      <Typography variant="body1">
+                        {`${name === "CPF" ? "CNPJ" : name}: ${value}`}
+                      </Typography>
+                    </Grid>
                   </>
                 ))}
               </WrapperContentData>
@@ -441,17 +470,21 @@ export default function ViewCard(props: IProps) {
         <Grid item md={md_value}>
           <Grid
             container
-            style={{
+            sx={{
               flexDirection: "column",
               paddingLeft: "10px",
               paddingTop: "10px",
             }}
           >
-            <Grid item style={{ paddingBottom: "0" }}>
-              <h3>{content.tittle}</h3>
+            <Grid item sx={{ paddingBottom: "0" }}>
+              <Typography variant="body1" fontWeight={600}>
+                {content.tittle}
+              </Typography>
             </Grid>
             {content.rows.map(({ name, value }: Irows, index: number) => (
-              <Grid item>{`${name}: ${value}`}</Grid>
+              <Grid item>
+                <Typography variant="body1">{`${name}: ${value}`}</Typography>
+              </Grid>
             ))}
           </Grid>
         </Grid>

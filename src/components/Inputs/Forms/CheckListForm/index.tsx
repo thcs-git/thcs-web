@@ -1,5 +1,8 @@
 import React from "react";
-import _ from "lodash";
+// redux e sagas
+//MUI
+import { makeStyles, Theme, withStyles } from "@material-ui/core/styles";
+
 import {
   Checkbox,
   CheckboxProps,
@@ -7,13 +10,18 @@ import {
   FormControlLabel,
   FormGroup,
   FormLabel,
-  Grid,
+  Typography,
 } from "@mui/material";
 import Box from "@mui/material/Box";
-import { makeStyles, Theme, withStyles } from "@material-ui/core/styles";
-import { FormGroupSection, WrapperHeaderForm, CheckBoxInvalid } from "./styles";
+import { ThemeProvider } from "@mui/material/styles";
+
+//Icons
 import CheckCircleOutlineOutlinedIcon from "@mui/icons-material/CheckCircleOutlineOutlined";
-import DashCircleIcon from "../../../Icons/DashCircle";
+//Style
+import { FormGroupSection, WrapperHeaderForm } from "./styles";
+import theme from "../../../../theme/theme";
+//Utils
+import _ from "lodash";
 
 interface Iprops {
   state: any;
@@ -100,20 +108,21 @@ const CheckListForm = (props: Iprops) => {
     if (validPermissions.includes(`${name}.${crud}`) || checkList === "app") {
       return (
         <FormControlLabel
-          style={{
+          sx={{
             display: "flex",
             margin: "0 2px",
           }}
           value={crud}
           control={
             <Checkbox
+              // color="success"
               sx={{
-                width: "70px",
+                width: "71px",
                 height: "35px",
                 backgroundColor: handleBackgroundColorCheckBox(index),
                 borderRadius: "0",
-                color: "var(--gray)",
-                "&.Mui-checked": { color: "var(--action)" },
+                color: theme.palette.text.disabled,
+                "&.Mui-checked": { color: theme.palette.success.main },
               }}
               checked={handleChecked(name, crud)}
               icon={<CheckCircleOutlineOutlinedIcon />}
@@ -157,8 +166,8 @@ const CheckListForm = (props: Iprops) => {
                 height: "35px",
                 backgroundColor: handleBackgroundColorCheckBox(index),
                 borderRadius: "0",
-                color: "var(--gray)",
-                "&.Mui-checked": { color: "var(--action)" },
+                color: theme.palette.text.secondary,
+                "&.Mui-checked": { color: theme.palette.success.main },
               }}
               checked={handleChecked(name, crud)}
               icon={
@@ -170,16 +179,14 @@ const CheckListForm = (props: Iprops) => {
                     position: "relative",
                   }}
                 >
-                  <Box
-                    sx={{
-                      fontSize: "2rem",
-                      position: "absolute",
-                      bottom: "-20px  ",
-                      color: "var(--gray)",
-                    }}
+                  <Typography
+                    variant="body1"
+                    color={theme.palette.text.disabled}
+                    fontSize={"2rem"}
+                    sx={{ position: "absolute", bottom: "-20px  " }}
                   >
                     -
-                  </Box>
+                  </Typography>
                 </Box>
               }
               checkedIcon={
@@ -191,16 +198,14 @@ const CheckListForm = (props: Iprops) => {
                     position: "relative",
                   }}
                 >
-                  <Box
-                    sx={{
-                      fontSize: "2rem",
-                      position: "absolute",
-                      bottom: "-20px  ",
-                      color: "var(--gray)",
-                    }}
+                  <Typography
+                    variant="body1"
+                    color={theme.palette.text.disabled}
+                    fontSize={"2rem"}
+                    sx={{ position: "absolute", bottom: "-20px  " }}
                   >
                     -
-                  </Box>
+                  </Typography>
                 </Box>
               }
             />
@@ -231,60 +236,124 @@ const CheckListForm = (props: Iprops) => {
   };
   return (
     <>
-      <FormGroupSection>
-        {checkList == "portal" ? (
-          <Box style={{ display: "flex", justifyContent: "space-between" }}>
-            <Box style={{ width: "190px" }}></Box>
-            <WrapperHeaderForm>
-              <Box>Visualizar</Box>
-              <Box>Criar/Editar</Box>
-              <Box>Gerar</Box>
-            </WrapperHeaderForm>
-          </Box>
-        ) : (
-          <Box style={{ display: "flex", justifyContent: "space-between" }}>
-            <Box style={{ width: "190px" }}></Box>
-            <WrapperHeaderForm style={{ padding: "12.3px" }}>
-              <Box>Checagens</Box>
-              <Box>Aferições</Box>
-              <Box>Evoluções</Box>
-              <Box>Receituários</Box>
-              <Box>Atestados</Box>
-              <Box>Exames</Box>
-            </WrapperHeaderForm>
-          </Box>
-        )}
+      <ThemeProvider theme={theme}>
+        <FormGroupSection>
+          {checkList == "portal" ? (
+            <Box style={{ display: "flex", justifyContent: "space-between" }}>
+              <Box style={{ width: "190px" }}></Box>
+              <WrapperHeaderForm>
+                <Typography
+                  variant="body1"
+                  fontSize={"0.79rem"}
+                  color={theme.palette.text.secondary}
+                >
+                  Visualizar
+                </Typography>
+                <Typography
+                  variant="body1"
+                  fontSize={"0.79rem"}
+                  color={theme.palette.text.secondary}
+                >
+                  Criar/Editar
+                </Typography>
+                <Typography
+                  variant="body1"
+                  fontSize={"0.79rem"}
+                  color={theme.palette.text.secondary}
+                >
+                  Gerar
+                </Typography>
+              </WrapperHeaderForm>
+            </Box>
+          ) : (
+            <Box style={{ display: "flex", justifyContent: "space-between" }}>
+              <Box style={{ width: "190px" }}></Box>
+              <WrapperHeaderForm style={{ padding: "12.3px" }}>
+                <Typography
+                  variant="body1"
+                  fontSize={"0.74rem"}
+                  width={"3.5rem"}
+                  align="center"
+                >
+                  Checagens
+                </Typography>
+                <Typography
+                  variant="body1"
+                  fontSize={"0.74rem"}
+                  width={"3.5rem"}
+                  align="center"
+                >
+                  Aferições
+                </Typography>
+                <Typography
+                  variant="body1"
+                  fontSize={"0.74rem"}
+                  width={"3.5rem"}
+                  align="center"
+                >
+                  Evoluções
+                </Typography>
+                <Typography
+                  variant="body1"
+                  fontSize={"0.74rem"}
+                  width={"3.5rem"}
+                  align="center"
+                >
+                  Receituários
+                </Typography>
+                <Typography
+                  variant="body1"
+                  fontSize={"0.74rem"}
+                  width={"3.5rem"}
+                  align="center"
+                >
+                  Atestados
+                </Typography>
+                <Typography
+                  variant="body1"
+                  fontSize={"0.74rem"}
+                  width={"3.5rem"}
+                  align="center"
+                >
+                  Exames
+                </Typography>
+              </WrapperHeaderForm>
+            </Box>
+          )}
 
-        {rows.map(({ legend, name, rights }: any, index: number) => (
-          <FormControl
-            component="fieldset"
-            style={{
-              marginBottom: "4px",
-              display: "flex",
-              flexDirection: "row",
-              alignItems: "center",
-              justifyContent: "space-between",
-            }}
-          >
-            <FormLabel className={classes.formLabel} style={{ width: "200px" }}>
-              {legend}
-            </FormLabel>
-
-            <FormGroup
-              aria-label="position"
-              row
+          {rows.map(({ legend, name, rights }: any, index: number) => (
+            <FormControl
+              component="fieldset"
               style={{
+                marginBottom: "4px",
                 display: "flex",
-                flexWrap: "nowrap",
+                flexDirection: "row",
+                alignItems: "center",
+                justifyContent: "space-between",
               }}
             >
-              {rights.map(({ crud, label }: any, index: number) =>
-                handleIconPermission(name, crud, index)
-              )}
-            </FormGroup>
-          </FormControl>
-        ))}
-      </FormGroupSection>
+              <FormLabel sx={{ width: "200px" }}>
+                <Typography variant="body1" color={theme.palette.text.primary}>
+                  {legend}
+                </Typography>
+              </FormLabel>
+
+              <FormGroup
+                aria-label="position"
+                row
+                style={{
+                  display: "flex",
+                  flexWrap: "nowrap",
+                }}
+              >
+                {rights.map(({ crud, label }: any, index: number) =>
+                  handleIconPermission(name, crud, index)
+                )}
+              </FormGroup>
+            </FormControl>
+          ))}
+        </FormGroupSection>
+      </ThemeProvider>
     </>
   );
 };

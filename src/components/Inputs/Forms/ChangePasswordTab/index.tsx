@@ -22,7 +22,8 @@ import Grid from "@mui/material/Grid";
 
 // Styles
 import { BoxCustom, FeedbackTitle, FeedbackDescription } from "./styles";
-
+import { Typography } from "@mui/material";
+import theme from "../../../../theme/theme";
 //components
 interface IPageParams {
   id?: string;
@@ -106,124 +107,131 @@ export default function ChangePasswordConfiguration(props: IPageParams) {
     event.preventDefault();
   };
   return (
-    <BoxCustom>
-      <Grid container direction="column">
-        <Grid item>
-          <FeedbackTitle>Alteração de senha</FeedbackTitle>
-          <FeedbackDescription>
-            Para criar uma nova senha, preencha os campos abaixo:
-          </FeedbackDescription>
-        </Grid>
-        <Grid item sx={{ width: 400 }}>
-          <form onSubmit={formik.handleSubmit}>
-            <TextField
-              fullWidth
-              sx={{ margin: "8px 0" }}
-              id="oldPassword"
-              name="oldPassword"
-              label="Senha antiga"
-              type={showPassword ? "text" : "password"}
-              value={formik.values.oldPassword}
-              onChange={formik.handleChange}
-              error={
-                formik.touched.oldPassword && Boolean(formik.errors.oldPassword)
-              }
-              helperText={
-                formik.touched.oldPassword && formik.errors.oldPassword
-              }
-              InputProps={{
-                endAdornment: (
-                  <InputAdornment position="end">
-                    <IconButton
-                      aria-label="toggle password visibility"
-                      onClick={handleClickShowPassword}
-                      onMouseDown={handleMouseDownPassword}
-                      edge="end"
-                    >
-                      {showPassword ? <VisibilityOff /> : <Visibility />}
-                    </IconButton>
-                  </InputAdornment>
-                ),
-              }}
-            />
-            <TextField
-              fullWidth
-              sx={{ margin: "8px 0" }}
-              id="password"
-              name="password"
-              label="Nova senha"
-              type={showPassword ? "text" : "password"}
-              value={formik.values.password}
-              onChange={formik.handleChange}
-              error={formik.touched.password && Boolean(formik.errors.password)}
-              helperText={formik.touched.password && formik.errors.password}
-              InputProps={{
-                endAdornment: (
-                  <InputAdornment position="end">
-                    <IconButton
-                      aria-label="toggle password visibility"
-                      onClick={handleClickShowPassword}
-                      onMouseDown={handleMouseDownPassword}
-                      edge="end"
-                    >
-                      {showPassword ? <VisibilityOff /> : <Visibility />}
-                    </IconButton>
-                  </InputAdornment>
-                ),
-              }}
-            />
-            <TextField
-              fullWidth
-              sx={{ margin: "8px 0" }}
-              id="confirmPassword"
-              name="confirmPassword"
-              label="Confirmar senha"
-              type={showPassword ? "text" : "password"}
-              value={formik.values.confirmPassword}
-              onChange={formik.handleChange}
-              error={
-                formik.touched.confirmPassword &&
-                Boolean(formik.errors.confirmPassword)
-              }
-              helperText={
-                formik.touched.confirmPassword && formik.errors.confirmPassword
-              }
-              InputProps={{
-                endAdornment: (
-                  <InputAdornment position="end">
-                    <IconButton
-                      aria-label="toggle password visibility"
-                      onClick={handleClickShowPassword}
-                      onMouseDown={handleMouseDownPassword}
-                      edge="end"
-                    >
-                      {showPassword ? <VisibilityOff /> : <Visibility />}
-                    </IconButton>
-                  </InputAdornment>
-                ),
-              }}
-            />
-
-            <Button
-              variant="contained"
-              fullWidth
-              type="submit"
-              sx={{
-                textTransform: "capitalize",
-                width: 130,
-                height: 36,
-                marginTop: 1,
-                background: "var(--success)",
-                "&:hover": {
-                  background: "var(--success-hover)",
-                },
-              }}
-            >
-              Salvar senha
-            </Button>
-          </form>
-        </Grid>
+    <Grid container direction="column" margin={"1rem 0rem 0 3.5rem"}>
+      <Grid item>
+        <Typography
+          variant="h5"
+          fontWeight={500}
+          color={theme.palette.primary.main}
+        >
+          Alteração de senha
+        </Typography>
+        <Typography variant="body1" marginY={"0.625rem"}>
+          Para criar uma nova senha, preencha os campos abaixo:
+        </Typography>
       </Grid>
-    </BoxCustom>
+      <Grid item sx={{ width: 400 }}>
+        <form onSubmit={formik.handleSubmit}>
+          <TextField
+            color="secondary"
+            fullWidth
+            sx={{ margin: "8px 0" }}
+            id="oldPassword"
+            name="oldPassword"
+            label="Senha antiga"
+            type={showPassword ? "text" : "password"}
+            value={formik.values.oldPassword}
+            onChange={formik.handleChange}
+            error={
+              formik.touched.oldPassword && Boolean(formik.errors.oldPassword)
+            }
+            helperText={formik.touched.oldPassword && formik.errors.oldPassword}
+            InputProps={{
+              endAdornment: (
+                <InputAdornment position="end">
+                  <IconButton
+                    aria-label="toggle password visibility"
+                    onClick={handleClickShowPassword}
+                    onMouseDown={handleMouseDownPassword}
+                    edge="end"
+                    sx={{ "& svg, path": { cursor: "pointer" } }}
+                  >
+                    {showPassword ? <VisibilityOff /> : <Visibility />}
+                  </IconButton>
+                </InputAdornment>
+              ),
+            }}
+          />
+          <TextField
+            color="secondary"
+            fullWidth
+            sx={{ margin: "8px 0" }}
+            id="password"
+            name="password"
+            label="Nova senha"
+            type={showPassword ? "text" : "password"}
+            value={formik.values.password}
+            onChange={formik.handleChange}
+            error={formik.touched.password && Boolean(formik.errors.password)}
+            helperText={formik.touched.password && formik.errors.password}
+            InputProps={{
+              endAdornment: (
+                <InputAdornment position="end">
+                  <IconButton
+                    aria-label="toggle password visibility"
+                    onClick={handleClickShowPassword}
+                    onMouseDown={handleMouseDownPassword}
+                    edge="end"
+                    sx={{ "& svg, path": { cursor: "pointer" } }}
+                  >
+                    {showPassword ? <VisibilityOff /> : <Visibility />}
+                  </IconButton>
+                </InputAdornment>
+              ),
+            }}
+          />
+          <TextField
+            color="secondary"
+            fullWidth
+            sx={{ margin: "8px 0" }}
+            id="confirmPassword"
+            name="confirmPassword"
+            label="Confirmar senha"
+            type={showPassword ? "text" : "password"}
+            value={formik.values.confirmPassword}
+            onChange={formik.handleChange}
+            error={
+              formik.touched.confirmPassword &&
+              Boolean(formik.errors.confirmPassword)
+            }
+            helperText={
+              formik.touched.confirmPassword && formik.errors.confirmPassword
+            }
+            InputProps={{
+              endAdornment: (
+                <InputAdornment position="end">
+                  <IconButton
+                    aria-label="toggle password visibility"
+                    onClick={handleClickShowPassword}
+                    onMouseDown={handleMouseDownPassword}
+                    edge="end"
+                    sx={{ "& svg, path": { cursor: "pointer" } }}
+                  >
+                    {showPassword ? <VisibilityOff /> : <Visibility />}
+                  </IconButton>
+                </InputAdornment>
+              ),
+            }}
+          />
+
+          <Button
+            variant="contained"
+            color="success"
+            // fullWidth
+            type="submit"
+            sx={{
+              alignSelf: "center",
+              // width: 130,
+              height: 36,
+              marginTop: 1,
+            }}
+          >
+            <Typography variant="body1" sx={{ cursor: "pointer" }}>
+              Salvar senha
+            </Typography>
+          </Button>
+        </form>
+      </Grid>
+    </Grid>
   );
 }

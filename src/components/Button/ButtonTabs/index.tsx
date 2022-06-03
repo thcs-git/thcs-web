@@ -1,16 +1,28 @@
-import React, { useState, ReactNode, useCallback } from "react";
-import { FormControlLabel, Grid, makeStyles } from "@material-ui/core";
+import React from "react";
 import { ButtonsContent, ButtonComponent } from "./styles";
-
+import {
+  Button,
+  ButtonProps,
+  ButtonPropsColorOverrides,
+  Typography,
+} from "@mui/material";
+import { ThemeProvider } from "@mui/material/styles";
+import theme from "../../../theme/theme";
 interface IComponent {
   canEdit: boolean;
   buttons: IButtons[];
 }
 
-interface IButtons {
+export interface IButtons extends ButtonProps {
   name: string;
-  variant: any;
-  background: string;
+  background:
+    | "inherit"
+    | "primary"
+    | "secondary"
+    | "success"
+    | "error"
+    | "info"
+    | "warning";
   onClick?: any;
   show?: boolean;
   component?: JSX.Element;
@@ -21,50 +33,40 @@ function a11yProps(name: string, index: number) {
     id: `${name}-${index}`,
   };
 }
-
-const useStyles = makeStyles((theme) => ({
-  cancel: {
-    textTransform: "capitalize",
-    fontSize: "18px",
-    "&:hover": {
-      backgroundColor: "var(--danger-hover)",
-      color: "var(--danger)",
-      borderColor: "var(--danger-hover)",
-    },
-    maxHeight: "38px",
-    borderColor: "var(--danger-hover)",
-    color: "var(--danger-hover)",
-    contrastText: "#fff",
-  },
-}));
-
 const ButtonTabs = (props: IComponent) => {
-  const classes = useStyles();
-
   const { canEdit, buttons } = props;
   return (
-    <ButtonsContent>
-      {buttons.map(
-        (
-          { name, variant, background, onClick, show, component }: IButtons,
-          index: number
-        ) => (
-          <>
-            {(show || canEdit) && (
-              <ButtonComponent
-                variant={variant}
-                background={background}
-                onClick={onClick}
-                key={index}
-              >
-                {name}
-                {component}
-              </ButtonComponent>
-            )}
-          </>
-        )
-      )}
-    </ButtonsContent>
+    <ThemeProvider theme={theme}>
+      <ButtonsContent>
+        {buttons.map(
+          (
+            { name, variant, background, onClick, show, component }: IButtons,
+            index: number
+          ) => (
+            <>
+              {(show || canEdit) && (
+                <Button
+                  variant={variant}
+                  color={background}
+                  onClick={onClick}
+                  key={index}
+                  // {...IButtons}
+                >
+                  <Typography
+                    variant="body2"
+                    fontWeight={500}
+                    sx={{ cursor: "pointer" }}
+                  >
+                    {name}
+                  </Typography>
+                  {component}
+                </Button>
+              )}
+            </>
+          )
+        )}
+      </ButtonsContent>
+    </ThemeProvider>
   );
 };
 
