@@ -1,8 +1,17 @@
 import styled from "styled-components";
+import { styled as styledMui } from "@mui/system";
+import Container from "@mui/material/Container";
+import Grid, { GridProps } from "@mui/material/Grid";
+import Box, { BoxProps } from "@mui/material/Box";
 
-import Container from "@material-ui/core/Container";
-import Grid from "@material-ui/core/Grid";
-import Box from "@material-ui/core/Box";
+export const GridWrapper = styledMui(Grid)<GridProps>(({ theme }) => ({
+  flex: "1",
+  padding: "26.5px",
+  backgroundColor: theme.palette.background.paper,
+  boxShadow: `0px 1px 4px ${theme.palette.shadowColor.main} `,
+  borderRadius: "8px",
+  margin: "8px",
+}));
 
 export const GridStyle = styled(Grid)`
   background-color: var(--white);
@@ -26,12 +35,12 @@ export const WrapperHeader = styled(Box)`
   position: relative;
 `;
 
-export const WrapperTittle = styled(Box)`
-  font-weight: bold;
-  color: var(--secondary);
-  min-width: 300px;
-  display: flex;
-  justify-content: start;
-  align-items: center;
-  gap: 8px;
-`;
+export const WrapperTittle = styledMui(Box)<BoxProps>(({ theme }) => ({
+  fontWeight: "bold",
+  color: theme.palette.primary.main,
+  minWidth: "300px",
+  display: "flex",
+  justifyContent: "start",
+  alignItems: "center",
+  gap: "8px",
+}));

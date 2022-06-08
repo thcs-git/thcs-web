@@ -21,7 +21,7 @@ import { UserInterface } from "../../../store/ducks/users/types";
 import { getAddress as getAddressAction } from "../../../store/ducks/customers/actions";
 
 // MUI
-import Container from "@material-ui/core/Container";
+import Container from "@mui/material/Container";
 
 export default function UserCongiguration(props: RouteComponentProps<any>) {
   const params = { mode: "view" };

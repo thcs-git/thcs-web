@@ -1,5 +1,5 @@
-import styled from 'styled-components';
-import { Chip } from '@material-ui/core';
+import styled from "styled-components";
+import { Chip } from "@mui/material";
 
 export const ChipComponent = styled(Chip)`
   background: var(--secondary);

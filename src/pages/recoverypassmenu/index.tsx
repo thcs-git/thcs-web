@@ -7,7 +7,7 @@ import {
   InputLabel,
   OutlinedInput,
   TextField,
-} from "@material-ui/core";
+} from "@mui/material";
 import Sidebar from "../../components/Sidebar";
 import { FeedbackDescription } from "../recoverypassword/form/style";
 import { BoxCustom, FeedbackTitle } from "../userconfiguration/form/style";
@@ -16,7 +16,7 @@ import { UserRecoveryPassword } from "../../store/ducks/users/types";
 import { RouteComponentProps, useHistory } from "react-router-dom";
 import FeedbackComponent from "../../components/Feedback";
 import { ButtonDefault, ButtonsContent } from "./style";
-import { Visibility, VisibilityOff } from "@material-ui/icons";
+import { Visibility, VisibilityOff } from "@mui/icons-material";
 import { useDispatch, useSelector } from "react-redux";
 import {
   loadCheckEmail,
@@ -112,7 +112,7 @@ export default function RecoveryPassMenu() {
                       </IconButton>
                     </InputAdornment>
                   }
-                  labelWidth={70}
+                  // labelWidth={70}
                 />
               </FormControl>
             </Grid>
@@ -144,7 +144,7 @@ export default function RecoveryPassMenu() {
                     </InputAdornment>
                   }
                   onBlur={handleValidatePassword}
-                  labelWidth={70}
+                  // labelWidth={70}
                 />
               </FormControl>
             </Grid>
@@ -154,7 +154,7 @@ export default function RecoveryPassMenu() {
                   Confirmar Nova Senha
                 </InputLabel>
                 <OutlinedInput
-                  labelWidth={200}
+                  // labelWidth={200}
                   id="outlined-adornment-password"
                   type={showPassword ? "text" : "password"}
                   error={newPassword.error}

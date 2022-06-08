@@ -1,6 +1,6 @@
 import React from "react";
 
-import { Container, Grid } from "@material-ui/core";
+import { Container, Grid } from "@mui/material";
 import { Link } from "react-router-dom";
 
 import Sidebar from "../../components/Sidebar";

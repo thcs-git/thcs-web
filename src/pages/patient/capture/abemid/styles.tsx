@@ -1,5 +1,5 @@
-import styled from 'styled-components';
-import { TextField, OutlinedInput, Button, Stepper, Step } from '@material-ui/core';
+import styled from "styled-components";
+import { TextField, OutlinedInput, Button, Stepper, Step } from "@mui/material";
 
 export const ButtonsContent = styled.div`
   display: flex;

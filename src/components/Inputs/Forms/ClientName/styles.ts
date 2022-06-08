@@ -1,20 +1,18 @@
-import styled from 'styled-components';
+import styled from "styled-components";
 
-import {FormControl, TextField} from "@material-ui/core";
-
+import { FormControl, TextField } from "@mui/material";
 
 export const FormGroupSection = styled(FormControl)`
   display: block;
-
 `;
 
 export const InputFiled = styled(TextField)`
   padding: 0 12px 12px 0;
   &:focus {
-        background: #fff;
+    background: #fff;
 
-        border: 1px solid var(--primary-hover);
-      };
+    border: 1px solid var(--primary-hover);
+  }
   input {
     background: var(--white);
   }

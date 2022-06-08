@@ -6,17 +6,17 @@ import {
   Grid,
   InputAdornment,
   InputLabel,
-} from "@material-ui/core";
+} from "@mui/material";
 
 import { FormGroupSection, InputFiled as TextField } from "./styles";
 import InputMask, { Props } from "react-input-mask";
 import validator from "validator";
 import { validateCNPJ as validateCNPJHelper } from "../../../../helpers/validateCNPJ";
 import { OutlinedInputFiled } from "../../../../pages/customer/form/styles";
-import { SearchOutlined } from "@material-ui/icons";
+import { SearchOutlined } from "@mui/icons-material";
 import { SwitchComponent as Switch } from "../../../../styles/components/Switch";
 import ViewCard from "../../../Card/ViewCard";
-import InfoRoundedIcon from "@material-ui/icons/InfoRounded";
+import InfoRoundedIcon from "@mui/icons-material/InfoRounded";
 import _ from "lodash";
 import { formatDate } from "../../../../helpers/date";
 

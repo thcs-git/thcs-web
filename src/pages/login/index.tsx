@@ -1,48 +1,32 @@
 import React, { useCallback, useState, useEffect, useRef } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { loadRequest, emailRequest } from "../../store/ducks/login/actions";
-import { ApplicationState } from "../../store";
+// Router
+import { useHistory } from "react-router-dom";
 
-import Container from "@material-ui/core/Container";
+// Redux e saga
+import { loadRequest, emailRequest } from "../../store/ducks/login/actions";
+import { useDispatch, useSelector } from "react-redux";
+import { ApplicationState } from "../../store";
+import { updateUserPasswordRequest } from "../../store/ducks/users/actions";
+
+//MUI
+import Container from "@mui/material/Container";
 import Box from "@mui/material/Box";
 import Grid from "@mui/material/Grid";
-import Link from "@material-ui/core/Link";
+import Link from "@mui/material/Link";
 import Checkbox from "@mui/material/Checkbox";
 import TextField from "@mui/material/TextField";
-// import Typography from "@material-ui/core/Typography";
-import InputLabel from "@material-ui/core/InputLabel";
+import InputLabel from "@mui/material/InputLabel";
 import IconButton from "@mui/material/IconButton";
-import CssBaseline from "@material-ui/core/CssBaseline";
-import FormControl from "@material-ui/core/FormControl";
-import OutlinedInput from "@material-ui/core/OutlinedInput";
-import InputAdornment from "@material-ui/core/InputAdornment";
-import FormControlLabel from "@material-ui/core/FormControlLabel";
-
-import Visibility from "@material-ui/icons/Visibility";
-import VisibilityOff from "@material-ui/icons/VisibilityOff";
-import ArrowForwardIcon from "@material-ui/icons/ArrowForward";
-
-import { makeStyles } from "@material-ui/core/styles";
-
-import {
-  ContainerLogin,
-  WelcomeTextWrapper,
-  HomeIconLogo,
-  LogoText,
-  TextGray,
-  TextBlue,
-  ButtonGreen,
-} from "./styles";
-
-import Button from "../../styles/components/Button";
+import CssBaseline from "@mui/material/CssBaseline";
+import FormControl from "@mui/material/FormControl";
+import OutlinedInput from "@mui/material/OutlinedInput";
+import InputAdornment from "@mui/material/InputAdornment";
+import FormControlLabel from "@mui/material/FormControlLabel";
+import Button from "@mui/material/Button";
+import Visibility from "@mui/icons-material/Visibility";
+import VisibilityOff from "@mui/icons-material/VisibilityOff";
+import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
 import ButtomMui from "@mui/material/Button";
-import Alert from "../../components/Alert";
-import Loading from "../../components/Loading";
-
-import validateEmail from "../../utils/validateEmail";
-import LOCALSTORAGE from "../../helpers/constants/localStorage";
-import { toast } from "react-toastify";
-import { useHistory } from "react-router-dom";
 import {
   CircularProgress,
   Dialog,
@@ -52,114 +36,142 @@ import {
   DialogTitle,
   Fab,
   FormGroup,
-} from "@material-ui/core";
+} from "@mui/material";
+import { makeStyles } from "@mui/material/styles";
 import FormHelperText from "@mui/material/FormHelperText";
 import Typography from "@mui/material/Typography";
-import { updateUserPasswordRequest } from "../../store/ducks/users/actions";
+// styles
+import {
+  ContainerLogin,
+  WelcomeTextWrapper,
+  HomeIconLogo,
+  LogoText,
+  TextGray,
+  TextBlue,
+  ButtonGreen,
+} from "./styles";
+import theme from "../../theme/theme";
+// icons
+import THCStype1 from "../../components/Icons/THCS_Type1";
+
+//Utils
+import validateEmail from "../../utils/validateEmail";
+import LOCALSTORAGE from "../../helpers/constants/localStorage";
+import { toast } from "react-toastify";
 import { useFormik } from "formik";
 import * as yup from "yup";
-import THCStype1 from "../../components/Icons/THCS_Type1";
+// componentes
+import Alert from "../../components/Alert";
+import Loading from "../../components/Loading";
+
 function Copyright() {
   return (
-    <Typography variant="body2" align="center" sx={{ color: "#222" }}>
-      {"Copyright © "}
-      <Link color="inherit" href="/">
-        T+HCS
-      </Link>{" "}
+    <Typography variant="body2" align="center">
+      <Link
+        href="https://www.tascominformatica.com.br/"
+        sx={{
+          textDecoration: "none",
+          "&:hover": { textDecoration: "underline" },
+        }}
+        target={"_blank"}
+      >
+        TASCOM
+      </Link>
+      {" © "}
       {new Date().getFullYear()}
     </Typography>
   );
 }
 
-const useStyles = makeStyles((theme) => ({
-  container: {
-    display: "flex",
-    flexDirection: "column",
-    justifyContent: "center",
-    height: "100%",
-  },
-  paper: {
-    marginTop: theme.spacing(2),
-    display: "flex",
-    flexDirection: "column",
-    alignItems: "center",
-  },
-  avatar: {
-    margin: theme.spacing(1),
-    backgroundColor: theme.palette.secondary.main,
-  },
-  form: {
-    width: "100%", // Fix IE 11 issue.
-    marginTop: theme.spacing(1),
-    // "& .MuiOutlinedInput-root": {
-    //   "&.Mui-focused fieldset": {
-    //     borderColor: "var(--secondary)",
-    //   },
-    // },
-  },
-  create_account: {
-    marginBottom: "14px",
-    "&:hover": {
-      background: "#f7f7f7",
-      fontWeight: "bold",
-      transition: "300ms",
-    },
-  },
-  submit: {
-    margin: theme.spacing(3, 0, 2),
-    padding: "10px",
-    textTransform: "capitalize",
-    fontSize: "18px",
-    backgroundColor: "var(--success)",
-    "&:hover": {
-      backgroundColor: "#4fc66ae3",
-      fontWeight: "bold",
-      transition: "300ms",
-    },
-  },
-  register: {
-    margin: theme.spacing(1, 0, 2),
-    padding: "10px",
-    textTransform: "capitalize",
-    fontSize: "18px",
-    "&:hover": {
-      backgroundColor: "var(--success-hover)",
-      borderColor: "var(--success-hover)",
-      color: "white",
-    },
-    borderColor: "var(--success-hover)",
-    contrastText: "#fff",
-  },
-  wrapper: {
-    margin: theme.spacing(1),
-    position: "relative",
-  },
-  buttonSuccess: {
-    backgroundColor: "green[500]",
-    "&:hover": {
-      backgroundColor: "green[700]",
-    },
-  },
-  fab: {
-    width: "35px",
-    height: "25px",
-  },
-  fabProgress: {
-    color: "green[500]",
-    position: "absolute",
-    top: -6,
-    left: -6,
-    zIndex: 1,
-  },
-  buttonProgress: {
-    color: "green[500]",
-    position: "absolute",
-    top: "50%",
-    left: "50%",
-    marginTop: -12,
-    marginLeft: -12,
-  },
-}));
+// const useStyles = makeStyles((theme) => ({
+//   container: {
+//     display: "flex",
+//     flexDirection: "column",
+//     justifyContent: "center",
+//     height: "100%",
+//   },
+//   paper: {
+//     marginTop: theme.spacing(2),
+//     display: "flex",
+//     flexDirection: "column",
+//     alignItems: "center",
+//   },
+//   avatar: {
+//     margin: theme.spacing(1),
+//     backgroundColor: theme.palette.secondary.main,
+//   },
+//   form: {
+//     width: "100%", // Fix IE 11 issue.
+//     marginTop: theme.spacing(1),
+//     // "& .MuiOutlinedInput-root": {
+//     //   "&.Mui-focused fieldset": {
+//     //     borderColor: "var(--secondary)",
+//     //   },
+//     // },
+//   },
+//   create_account: {
+//     marginBottom: "14px",
+//     "&:hover": {
+//       background: "#f7f7f7",
+//       fontWeight: "bold",
+//       transition: "300ms",
+//     },
+//   },
+//   submit: {
+//     margin: theme.spacing(3, 0, 2),
+//     padding: "10px",
+//     textTransform: "capitalize",
+//     fontSize: "18px",
+//     backgroundColor: "var(--success)",
+//     "&:hover": {
+//       backgroundColor: "#4fc66ae3",
+//       fontWeight: "bold",
+//       transition: "300ms",
+//     },
+//   },
+//   register: {
+//     margin: theme.spacing(1, 0, 2),
+//     padding: "10px",
+//     textTransform: "capitalize",
+//     fontSize: "18px",
+//     "&:hover": {
+//       backgroundColor: "var(--success-hover)",
+//       borderColor: "var(--success-hover)",
+//       color: "white",
+//     },
+//     borderColor: "var(--success-hover)",
+//     contrastText: "#fff",
+//   },
+//   wrapper: {
+//     margin: theme.spacing(1),
+//     position: "relative",
+//   },
+//   buttonSuccess: {
+//     backgroundColor: "green[500]",
+//     "&:hover": {
+//       backgroundColor: "green[700]",
+//     },
+//   },
+//   fab: {
+//     width: "35px",
+//     height: "25px",
+//   },
+//   fabProgress: {
+//     color: "green[500]",
+//     position: "absolute",
+//     top: -6,
+//     left: -6,
+//     zIndex: 1,
+//   },
+//   buttonProgress: {
+//     color: "green[500]",
+//     position: "absolute",
+//     top: "50%",
+//     left: "50%",
+//     marginTop: -12,
+//     marginLeft: -12,
+//   },
+// }));
 
 const SIZE_INPUT_PASSWORD = 6;
 
@@ -192,10 +204,19 @@ const policity = () => {
   return (
     <>
       <Box sx={{ display: "flex", flexDirection: "column", gap: "8px" }}>
-        <Typography variant="h6" component="div" sx={{ fontWeight: "bold" }}>
+        <Typography
+          variant="h6"
+          color={theme.palette.text.primary}
+          component="div"
+          sx={{ fontWeight: "bold" }}
+        >
           Sollar Soluções no Lar
         </Typography>
-        <Typography variant="body1" component="div">
+        <Typography
+          variant="body1"
+          component="div"
+          color={theme.palette.text.primary}
+        >
           {" "}
           A proteção da privacidade e do uso legal de dados pessoais é um dos
           pilares do Sollar, que tem como compromisso a garantia da segurança
@@ -206,10 +227,19 @@ const policity = () => {
           a quaisquer alterações em nossas operações ou nas leis e regulamentos
           aplicáveis.
         </Typography>
-        <Typography variant="h6" component="div" sx={{ fontWeight: "bold" }}>
+        <Typography
+          variant="h6"
+          color={theme.palette.text.primary}
+          component="div"
+          sx={{ fontWeight: "bold" }}
+        >
           QUEM SOMOS
         </Typography>
-        <Typography variant="body1" component="div">
+        <Typography
+          variant="body1"
+          component="div"
+          color={theme.palette.text.primary}
+        >
           <b>TASCOM INFORMÁTICA LTDA</b>, empresa de tecnologia, inscrita no
           CNPJ/MF sob o n.º 06.312.868/0001-03, com sede na Rua José Maria, nº
           76 - Letra A - CXPST 001, Arthur Lundgren I, Paulista/PE, CEP:
@@ -220,7 +250,7 @@ const policity = () => {
         <Typography
           variant="body1"
           component="div"
-          sx={{ color: "var(--danger)" }}
+          sx={{ color: theme.palette.error.main }}
         >
           O SOLLAR SOLUÇÕES NO LAR é um sistema voltado a atenção domiciliar
           dividido em duas plataformas principais, uma voltada para desktop e
@@ -228,62 +258,113 @@ const policity = () => {
           plataformas de distribuição do respespectivo provedor de os mibile
           (Google e Apple) ...
         </Typography>
-        <Typography variant="body1" component="div">
+        <Typography
+          variant="body1"
+          component="div"
+          color={theme.palette.text.primary}
+        >
           Para efeitos da Lei nº 13.709/2018 (Lei Geral de Proteção de Dados), o
           Sollar realiza o tratamento de seus dados pessoais, como Operador de
           Dados, em acordo com esta política.
         </Typography>
-        <Typography variant="body1" component="div">
+        <Typography
+          variant="body1"
+          component="div"
+          color={theme.palette.text.primary}
+        >
           Você pode entrar em contato com nosso Oficial de Proteção de Dados
           ("DPO") enviando um e-mail para dpo@tascominformatica.com.br ou por
           correio tradicional, enviando-nos uma consulta para nosso endereço de
           escritório registrado.
         </Typography>
-        <Typography variant="body1" component="div">
+        <Typography
+          variant="body1"
+          component="div"
+          color={theme.palette.text.primary}
+        >
           Algumas considerações antes de você ler nossa Política:
         </Typography>
-        <Typography variant="body1" component="div">
+        <Typography
+          variant="body1"
+          component="div"
+          color={theme.palette.text.primary}
+        >
           Para uma melhor compreensão desta Política de Privacidade e Proteção
           de Dados, considera-se dados pessoais as informações relativas às
           pessoas naturais identificadas ou identificáveis, que são obtidas a
           partir da coleta direta do titular ou através do compartilhamento de
           terceiros.
         </Typography>
-        <Typography variant="body1" component="div">
+        <Typography
+          variant="body1"
+          component="div"
+          color={theme.palette.text.primary}
+        >
           Os dados que não se referem à pessoa natural, serão considerados como
           dados corporativos, para facilitar o seu entendimento ao ler esta
           Política.
         </Typography>
-        <Typography variant="h6" component="div" sx={{ fontWeight: "bold" }}>
+        <Typography
+          variant="h6"
+          color={theme.palette.text.primary}
+          component="div"
+          sx={{ fontWeight: "bold" }}
+        >
           DADOS TRATADOS PELO SOLLAR
         </Typography>
-        <Typography variant="body1" component="div">
+        <Typography
+          variant="body1"
+          component="div"
+          color={theme.palette.text.primary}
+        >
           Nos esforçamos para proteger os dados pessoais que mantemos em nossos
           registros, utilizando o mínimo de informações necessárias para as
           finalidades voltadas à execução dos nossos serviços.
         </Typography>
-        <Typography variant="body1" component="div">
+        <Typography
+          variant="body1"
+          component="div"
+          color={theme.palette.text.primary}
+        >
           Para tornar acessível esta informação, exemplificamos abaixo quais
           dados são tratados:
         </Typography>
-        <Typography variant="body1" component="div" sx={{ marginLeft: "14px" }}>
+        <Typography
+          variant="body1"
+          component="div"
+          color={theme.palette.text.primary}
+          sx={{ marginLeft: "14px" }}
+        >
           <li>
             Dados de identificação, como nome, data de nascimento,
             nacionalidade, sexo, endereço, telefone, e-mail, números de CPF e
             RG;
           </li>
         </Typography>
-        <Typography variant="body1" component="div">
+        <Typography
+          variant="body1"
+          component="div"
+          color={theme.palette.text.primary}
+        >
           Em algumas ocasiões podemos também tratar Dados Pessoais Sensíveis,
           envolvendo, mas não limitado a:
         </Typography>
-        <Typography variant="body1" component="div" sx={{ marginLeft: "14px" }}>
+        <Typography
+          variant="body1"
+          component="div"
+          color={theme.palette.text.primary}
+          sx={{ marginLeft: "14px" }}
+        >
           <li>Dados relacionados à saúde;</li>
           <li>
             Dados genéticos ou biométricos vinculados a uma pessoa física.
           </li>
         </Typography>
-        <Typography variant="body1" component="div">
+        <Typography
+          variant="body1"
+          component="div"
+          color={theme.palette.text.primary}
+        >
           No entanto, não é possível descartar o eventual tratamento pontual de
           algum dado pessoal não descrito nesta política. Assim, para maior
           especificidade e assertividade, caso o titular pretenda conhecer mais
@@ -291,11 +372,20 @@ const policity = () => {
           contato com nosso Oficial de Proteção de Dados ("DPO"), através dos
           meios de contato especificados nesta política.
         </Typography>
-        <Typography variant="h6" component="div" sx={{ fontWeight: "bold" }}>
+        <Typography
+          variant="h6"
+          color={theme.palette.text.primary}
+          component="div"
+          sx={{ fontWeight: "bold" }}
+        >
           SOBRE OS DADOS TRATADOS ATRAVÉS DA NOSSA SOLUÇÃO EM TECNOLOGIA
           HOSPITALAR
         </Typography>
-        <Typography variant="body1" component="div">
+        <Typography
+          variant="body1"
+          component="div"
+          color={theme.palette.text.primary}
+        >
           Através das soluções desenvolvidas por nós, nossos clientes assumem a
           condição de Proprietário/Controlador, possuindo autonomia e liberdade
           no que diz respeito ao tratamento dos dados pessoais, podendo optar
@@ -307,13 +397,21 @@ const policity = () => {
           Portanto, não exercemos a atividade de Controlador sobre os dados
           pessoais tratados através dos nossos sistemas.{" "}
         </Typography>
-        <Typography variant="body1" component="div">
+        <Typography
+          variant="body1"
+          component="div"
+          color={theme.palette.text.primary}
+        >
           As informações coletadas e processadas pelos nossos softwares são
           controladas por nossos clientes, que as utilizam, divulgam e protegem,
           de acordo com suas respectivas políticas de privacidade e proteção de
           dados.{" "}
         </Typography>
-        <Typography variant="body1" component="div">
+        <Typography
+          variant="body1"
+          component="div"
+          color={theme.palette.text.primary}
+        >
           Na condição de Operador, não controlamos os dados que são coletados
           diretamente por nossos clientes. Contudo, no intuito de minimizar
           incidentes envolvendo dados pessoais tratados por ocasião destas
@@ -321,20 +419,38 @@ const policity = () => {
           existentes no mercado, garantido segurança ao tratamento das
           informações alocados em nossas plataformas.
         </Typography>
-        <Typography variant="h6" component="div" sx={{ fontWeight: "bold" }}>
+        <Typography
+          variant="h6"
+          color={theme.palette.text.primary}
+          component="div"
+          sx={{ fontWeight: "bold" }}
+        >
           AS FINALIDADES E OS FUNDAMENTOS LEGAIS PARA O TRATAMENTO DOS DADOS
           PESSOAIS
         </Typography>
-        <Typography variant="body1" component="div">
+        <Typography
+          variant="body1"
+          component="div"
+          color={theme.palette.text.primary}
+        >
           Tratamos os dados pessoais apenas quando a sua finalidade cumpre as
           hipóteses previstas de tratamento constante na Lei nº 13.709/2018 (Lei
           Geral de Proteção de Dados Pessoais – LGPD).
         </Typography>
-        <Typography variant="body1" component="div">
+        <Typography
+          variant="body1"
+          component="div"
+          color={theme.palette.text.primary}
+        >
           Destacamos abaixo as finalidades e as respectivas bases legais pelas
           quais processamos os dados pessoais:
         </Typography>
-        <Typography variant="body1" component="div" sx={{ marginLeft: "14px" }}>
+        <Typography
+          variant="body1"
+          component="div"
+          color={theme.palette.text.primary}
+          sx={{ marginLeft: "14px" }}
+        >
           <li>
             Prestação de Serviços e fornecimento de software: Efetuamos o
             tratamento dos dados pessoais tendo como fundamento jurídico o
@@ -359,14 +475,22 @@ const policity = () => {
             expresso.
           </li>
         </Typography>
-        <Typography variant="body1" component="div">
+        <Typography
+          variant="body1"
+          component="div"
+          color={theme.palette.text.primary}
+        >
           Eventualmente, com a finalidade de analisar de que forma os usuários
           interagem com as ferramentas com o propósito de corrigir potenciais
           erros, na busca pela melhoria contínua dos softwares, acionamos
           determinados atributos na plataforma controlada pelos clientes, os
           quais coletam e armazenam informações de uso no sistema.
         </Typography>
-        <Typography variant="body1" component="div">
+        <Typography
+          variant="body1"
+          component="div"
+          color={theme.palette.text.primary}
+        >
           As finalidades e hipóteses legalmente previstas para o tratamento dos
           dados pessoais poderão sofrer alterações conforme a evolução das
           atividades desempenhadas por nós, das normas aplicáveis e dos
@@ -374,30 +498,56 @@ const policity = () => {
           manter atualizada nossa Política de Privacidade e Proteção Dados,
           oportunizando aos titulares a adequada ciência sobre nossa conduta.
         </Typography>
-        <Typography variant="body1" component="div">
+        <Typography
+          variant="body1"
+          component="div"
+          color={theme.palette.text.primary}
+        >
           Sob nenhuma circunstância iremos processar dados para qualquer
           propósito discriminatório, ilegal ou abusivo.
         </Typography>
-        <Typography variant="h6" component="div" sx={{ fontWeight: "bold" }}>
+        <Typography
+          variant="h6"
+          color={theme.palette.text.primary}
+          component="div"
+          sx={{ fontWeight: "bold" }}
+        >
           TRATAMENTO DE DADOS PESSOAIS DE CRIANÇAS E ADOLESCENTES
         </Typography>
-        <Typography variant="body1" component="div">
+        <Typography
+          variant="body1"
+          component="div"
+          color={theme.palette.text.primary}
+        >
           No que se refere as plataformas desenvolvidas ou utilizadas por nós
           para interação com titulares de dados que controlamos, na hipótese de
           tratamento de dados pessoais de crianças, comprometemo-nos a obter o
           consentimento dos pais ou responsável legal para realizar esse
           tratamento.
         </Typography>
-        <Typography variant="body1" component="div">
+        <Typography
+          variant="body1"
+          component="div"
+          color={theme.palette.text.primary}
+        >
           Quanto aos dados pessoais operados por nós a partir da utilização do
           Sollar pelos clientes, cabe a estes, na condição de controladores, a
           interação direta com os pais ou responsáveis legais das crianças, para
           o devido consentimento.{" "}
         </Typography>
-        <Typography variant="h6" component="div" sx={{ fontWeight: "bold" }}>
+        <Typography
+          variant="h6"
+          color={theme.palette.text.primary}
+          component="div"
+          sx={{ fontWeight: "bold" }}
+        >
           TIPOS DE DADOS COLETADOS
         </Typography>
-        <Typography variant="body1" component="div">
+        <Typography
+          variant="body1"
+          component="div"
+          color={theme.palette.text.primary}
+        >
           Entre os tipos de Dados Pessoais que o Sollar coleta, por si mesmo ou
           através de terceiros, existem: permissão de câmera, permissão de
           localização precisa (interrupta), permissão de localização aproximada
@@ -406,12 +556,20 @@ const policity = () => {
           permissão de contatos, permissão de microfone, permissão de SMS e
           posição geográfica.
         </Typography>
-        <Typography variant="body1" component="div">
+        <Typography
+          variant="body1"
+          component="div"
+          color={theme.palette.text.primary}
+        >
           Detalhes completos sobre cada tipo de Dados Pessoais coletados são
           fornecidos nas seções dedicadas desta política de privacidade ou por
           textos explicativos específicos exibidos antes da coleta de Dados.{" "}
         </Typography>
-        <Typography variant="body1" component="div">
+        <Typography
+          variant="body1"
+          component="div"
+          color={theme.palette.text.primary}
+        >
           Os Dados Pessoais poderão ser fornecidos livremente pelo Usuário, ou,
           no caso dos Dados de Utilização, coletados automaticamente ao se
           utilizar este aplicativo. A menos que especificado diferentemente
@@ -419,7 +577,11 @@ const policity = () => {
           fornecimento destes Dados poderá impossibilitar este aplicativo de
           fornecer os seus serviços.{" "}
         </Typography>
-        <Typography variant="body1" component="div">
+        <Typography
+          variant="body1"
+          component="div"
+          color={theme.palette.text.primary}
+        >
           Nos casos em que este aplicativo afirmar especificamente que alguns
           Dados não forem obrigatórios, os Usuários ficam livres para deixarem
           de comunicar estes Dados sem nenhuma consequência para a
@@ -427,7 +589,11 @@ const policity = () => {
           dúvidas a respeito de quais Dados Pessoais são obrigatórios estão
           convidados a entrar em contato com o Proprietário.
         </Typography>
-        <Typography variant="body1" component="div">
+        <Typography
+          variant="body1"
+          component="div"
+          color={theme.palette.text.primary}
+        >
           Quaisquer usos de cookies – ou de outras ferramentas de rastreamento –
           por este aplicativo ou pelos proprietários de serviços terceiros
           utilizados por este aplicativo serão para a finalidade de fornecer os
@@ -435,16 +601,29 @@ const policity = () => {
           descritas no presente documento e na Política de Cookies, se estiver
           disponível.
         </Typography>
-        <Typography variant="body1" component="div">
+        <Typography
+          variant="body1"
+          component="div"
+          color={theme.palette.text.primary}
+        >
           Os Usuários ficam responsáveis por quaisquer Dados Pessoais de
           terceiros que forem obtidos, publicados ou compartilhados através
           deste aplicativo e confirmam que possuem a autorização dos terceiros
           para fornecerem os Dados para o Proprietário.
         </Typography>
-        <Typography variant="h6" component="div" sx={{ fontWeight: "bold" }}>
+        <Typography
+          variant="h6"
+          color={theme.palette.text.primary}
+          component="div"
+          sx={{ fontWeight: "bold" }}
+        >
           MÉTODO DE PROCESSAMENTO
         </Typography>
-        <Typography variant="body1" component="div">
+        <Typography
+          variant="body1"
+          component="div"
+          color={theme.palette.text.primary}
+        >
           O processamento dos Dados é realizado utilizando computadores e/ou
           ferramentas de TI habilitadas, seguindo procedimentos organizacionais
           e meios estritamente relacionados com os fins indicados. Além do
@@ -454,14 +633,28 @@ const policity = () => {
           Dados por parte do Proprietário. A lista atualizada destas partes pode
           ser solicitada ao Proprietário a qualquer momento.
         </Typography>
-        <Typography variant="h6" component="div" sx={{ fontWeight: "bold" }}>
+        <Typography
+          variant="h6"
+          color={theme.palette.text.primary}
+          component="div"
+          sx={{ fontWeight: "bold" }}
+        >
           BASE JURÍDICA PARA O PROCESSAMENTO
         </Typography>
-        <Typography variant="body1" component="div">
+        <Typography
+          variant="body1"
+          component="div"
+          color={theme.palette.text.primary}
+        >
           O Proprietário poderá processar os Dados Pessoais relacionados ao
           Usuário se uma das hipóteses a seguir se aplicar:
         </Typography>
-        <Typography variant="body1" component="div" sx={{ marginLeft: "14px" }}>
+        <Typography
+          variant="body1"
+          component="div"
+          color={theme.palette.text.primary}
+          sx={{ marginLeft: "14px" }}
+        >
           <li>
             o fornecimento dos Dados for necessário para o cumprimento de um
             contrato com o Usuário e/ou quaisquer obrigações pré-contratuais do
@@ -481,28 +674,55 @@ const policity = () => {
             legítimos perseguidos pelo Proprietário ou por um terceiro;
           </li>
         </Typography>
-        <Typography variant="body1" component="div">
+        <Typography
+          variant="body1"
+          component="div"
+          color={theme.palette.text.primary}
+        >
           Em qualquer caso, o Proprietário colaborará de bom grado para
           esclarecer qual a base jurídica que se aplica ao processamento, e em
           especial se o fornecimento de Dados for um requisito obrigatório por
           força de lei ou contratual, ou uma exigência necessária para celebrar
           um contrato.
         </Typography>
-        <Typography variant="h6" component="div" sx={{ fontWeight: "bold" }}>
+        <Typography
+          variant="h6"
+          color={theme.palette.text.primary}
+          component="div"
+          sx={{ fontWeight: "bold" }}
+        >
           LUGAR
         </Typography>
-        <Typography variant="body1" component="div">
+        <Typography
+          variant="body1"
+          component="div"
+          color={theme.palette.text.primary}
+        >
           Os dados são processados nas sedes de operação dos Proprietários, e em
           quaisquer outros lugares onde as partes envolvidas com o processamento
           estiverem localizadas.
         </Typography>
-        <Typography variant="h6" component="div" sx={{ fontWeight: "bold" }}>
+        <Typography
+          variant="h6"
+          color={theme.palette.text.primary}
+          component="div"
+          sx={{ fontWeight: "bold" }}
+        >
           PERÍODO DE CONSERVAÇÃO
         </Typography>
-        <Typography variant="body1" component="div">
+        <Typography
+          variant="body1"
+          component="div"
+          color={theme.palette.text.primary}
+        >
           Portanto:
         </Typography>
-        <Typography variant="body1" component="div" sx={{ marginLeft: "14px" }}>
+        <Typography
+          variant="body1"
+          component="div"
+          color={theme.palette.text.primary}
+          sx={{ marginLeft: "14px" }}
+        >
           <li>
             Os Dados Pessoais coletados para as finalidades relacionadas com a
             execução de um contrato entre o Proprietário e o Usuário serão
@@ -517,7 +737,11 @@ const policity = () => {
             documento ou entrando em contato com o Proprietário.
           </li>
         </Typography>
-        <Typography variant="body1" component="div">
+        <Typography
+          variant="body1"
+          component="div"
+          color={theme.palette.text.primary}
+        >
           O Proprietário poderá ter a permissão de conservar os Dados Pessoais
           por um prazo maior sempre que o Usuário tiver dado a sua autorização
           para tal processamento, enquanto tal autorização não tiver sido
@@ -526,37 +750,67 @@ const policity = () => {
           estiver obrigado a fazê-lo para o cumprimento de uma obrigação
           jurídica ou em cumprimento de um mandado de uma autoridade.
         </Typography>
-        <Typography variant="body1" component="div">
+        <Typography
+          variant="body1"
+          component="div"
+          color={theme.palette.text.primary}
+        >
           Assim que o prazo de conservação vencer, os Dados Pessoais serão
           apagados. Desta forma o direito de acessar, o direito de apagar, o
           direito de corrigir e o direito à portabilidade dos dados não poderão
           ter o seu cumprimento exigido após o vencimento do prazo de
           conservação.
         </Typography>
-        <Typography variant="h6" component="div" sx={{ fontWeight: "bold" }}>
+        <Typography
+          variant="h6"
+          color={theme.palette.text.primary}
+          component="div"
+          sx={{ fontWeight: "bold" }}
+        >
           AS FINALIDADES DO PROCESSAMENTO
         </Typography>
-        <Typography variant="body1" component="div">
+        <Typography
+          variant="body1"
+          component="div"
+          color={theme.palette.text.primary}
+        >
           Os Dados relativos ao Usuário são coletados para permitir que o
           Proprietário forneça os seus Serviços, bem como para os seguintes
           propósitos: permissões de dispositivos para acesso a Dados Pessoais e
           interações baseadas na localização.
         </Typography>
-        <Typography variant="body1" component="div">
+        <Typography
+          variant="body1"
+          component="div"
+          color={theme.palette.text.primary}
+        >
           Os Usuários poderão obter informações adicionais detalhadas sobre tais
           finalidades do processamento e sobre os Dados Pessoais específicos
           utilizados para cada finalidade nas seções respectivas deste
           documento.
         </Typography>
-        <Typography variant="h6" component="div" sx={{ fontWeight: "bold" }}>
+        <Typography
+          variant="h6"
+          color={theme.palette.text.primary}
+          component="div"
+          sx={{ fontWeight: "bold" }}
+        >
           PERMISSÕES DE DISPOSITIVOS PARA ACESSO A DADOS PESSOAIS
         </Typography>
-        <Typography variant="body1" component="div">
+        <Typography
+          variant="body1"
+          component="div"
+          color={theme.palette.text.primary}
+        >
           Dependendo do dispositivo específico do Usuário, o Sollar pode
           solicitar certas permissões que permitem-no acessar os Dados do
           dispositivo do Usuário conforme descrito abaixo.
         </Typography>
-        <Typography variant="body1" component="div">
+        <Typography
+          variant="body1"
+          component="div"
+          color={theme.palette.text.primary}
+        >
           Por padrão estas permissões devem ser concedidas pelo Usuário antes
           que as respectivas informações possam ser acessadas. Uma vez que a
           permissão tenha sido dada, esta pode ser revogada pelo Usuário a
@@ -567,95 +821,201 @@ const policity = () => {
           as permissões de aplicativos poderá depender do dispositivo e software
           do Usuário.
         </Typography>
-        <Typography variant="body1" component="div">
+        <Typography
+          variant="body1"
+          component="div"
+          color={theme.palette.text.primary}
+        >
           Por favor observar que a revogação de tais permissões poderá afetar o
           funcionamento apropriado deste aplicativo
         </Typography>
-        <Typography variant="body1" component="div">
+        <Typography
+          variant="body1"
+          component="div"
+          color={theme.palette.text.primary}
+        >
           Se o Usuário conceder quaisquer das permissões relacionadas abaixo,
           estes Dados Pessoais respectivos poderão ser processados (isto é,
           acessados, modificados ou removidos) por este aplicativo.
         </Typography>
-        <Typography variant="body1" component="div" sx={{ fontWeight: "bold" }}>
+        <Typography
+          variant="body1"
+          component="div"
+          color={theme.palette.text.primary}
+          sx={{ fontWeight: "bold" }}
+        >
           Permissão de armazenamento
         </Typography>
-        <Typography variant="body1" component="div">
+        <Typography
+          variant="body1"
+          component="div"
+          color={theme.palette.text.primary}
+        >
           Usada para acessar o armazenamento externo compartilhado, inclusive a
           leitura e o acréscimo de quaisquer itens.
         </Typography>
-        <Typography variant="body1" component="div" sx={{ fontWeight: "bold" }}>
+        <Typography
+          variant="body1"
+          component="div"
+          color={theme.palette.text.primary}
+          sx={{ fontWeight: "bold" }}
+        >
           Permissão de calendário
         </Typography>
-        <Typography variant="body1" component="div">
+        <Typography
+          variant="body1"
+          component="div"
+          color={theme.palette.text.primary}
+        >
           Usada para acessar o calendário no dispositivo do Usuário, inclusive a
           leitura, acréscimo e remoção de registros.
         </Typography>
-        <Typography variant="body1" component="div" sx={{ fontWeight: "bold" }}>
+        <Typography
+          variant="body1"
+          component="div"
+          color={theme.palette.text.primary}
+          sx={{ fontWeight: "bold" }}
+        >
           Permissão de compartilhamento de bluetooth
         </Typography>
-        <Typography variant="body1" component="div">
+        <Typography
+          variant="body1"
+          component="div"
+          color={theme.palette.text.primary}
+        >
           Usada para acessar as funções relacionadas com o bluetooth, tais como
           o escaneamento para encontrar dispositivos, a conexão com dispositivos
           e permitir a transferência de dados entre dispositivos.
         </Typography>
-        <Typography variant="body1" component="div" sx={{ fontWeight: "bold" }}>
+        <Typography
+          variant="body1"
+          component="div"
+          color={theme.palette.text.primary}
+          sx={{ fontWeight: "bold" }}
+        >
           Permissão de contatos
         </Typography>
-        <Typography variant="body1" component="div">
+        <Typography
+          variant="body1"
+          component="div"
+          color={theme.palette.text.primary}
+        >
           Usada para acessar os contatos e perfis no dispositivo do Usuário,
           inclusive para fazer mudanças nos registros.
         </Typography>
-        <Typography variant="body1" component="div" sx={{ fontWeight: "bold" }}>
+        <Typography
+          variant="body1"
+          component="div"
+          color={theme.palette.text.primary}
+          sx={{ fontWeight: "bold" }}
+        >
           Permissão de câmera
         </Typography>
-        <Typography variant="body1" component="div">
+        <Typography
+          variant="body1"
+          component="div"
+          color={theme.palette.text.primary}
+        >
           Usada para acessar a câmera ou capturar imagens e vídeo do
           dispositivo.
         </Typography>
-        <Typography variant="body1" component="div" sx={{ fontWeight: "bold" }}>
+        <Typography
+          variant="body1"
+          component="div"
+          color={theme.palette.text.primary}
+          sx={{ fontWeight: "bold" }}
+        >
           Permissão de localização aproximada
         </Typography>
-        <Typography variant="body1" component="div">
+        <Typography
+          variant="body1"
+          component="div"
+          color={theme.palette.text.primary}
+        >
           Usada para acessar a localização aproximada do dispositivo do Usuário.
           O Sollar poderá coletar, usar e compartilhar os Dados de localização
           do Usuário para poder fornecer serviços com base na localização.{" "}
         </Typography>
-        <Typography variant="body1" component="div">
+        <Typography
+          variant="body1"
+          component="div"
+          color={theme.palette.text.primary}
+        >
           A localização geográfica do Usuário é determinada de maneira que não é
           ininterrupta. Isto significa que é impossível para este aplicativo
           obter a posição aproximada do Usuário de forma ininterrupta.
         </Typography>
-        <Typography variant="body1" component="div" sx={{ fontWeight: "bold" }}>
+        <Typography
+          variant="body1"
+          component="div"
+          color={theme.palette.text.primary}
+          sx={{ fontWeight: "bold" }}
+        >
           Permissão de localização precisa
         </Typography>
-        <Typography variant="body1" component="div">
+        <Typography
+          variant="body1"
+          component="div"
+          color={theme.palette.text.primary}
+        >
           Usada para acessar a localização precisa do dispositivo do Usuário. O
           Sollar poderá coletar, usar e compartilhar os Dados de localização do
           Usuário para poder fornecer serviços com base na localização.
         </Typography>
-        <Typography variant="body1" component="div">
+        <Typography
+          variant="body1"
+          component="div"
+          color={theme.palette.text.primary}
+        >
           A localização geográfica do Usuário é determinada de maneira que não é
           ininterrupta. Isto significa que é impossível para este aplicativo
           obter a posição exata do Usuário de forma ininterrupta.
         </Typography>
-        <Typography variant="body1" component="div" sx={{ fontWeight: "bold" }}>
+        <Typography
+          variant="body1"
+          component="div"
+          color={theme.palette.text.primary}
+          sx={{ fontWeight: "bold" }}
+        >
           Permissão de microfone
         </Typography>
-        <Typography variant="body1" component="div">
+        <Typography
+          variant="body1"
+          component="div"
+          color={theme.palette.text.primary}
+        >
           Usada para acessar e gravar o áudio do microfone do dispositivo do
           Usuário.
         </Typography>
-        <Typography variant="body1" component="div" sx={{ fontWeight: "bold" }}>
+        <Typography
+          variant="body1"
+          component="div"
+          color={theme.palette.text.primary}
+          sx={{ fontWeight: "bold" }}
+        >
           Permissão de SMS
         </Typography>
-        <Typography variant="body1" component="div">
+        <Typography
+          variant="body1"
+          component="div"
+          color={theme.palette.text.primary}
+        >
           Usada para acessar recursos relacionados com as mensagens do Usuário,
           inclusive o envio, recebimento e leitura de SMS.
         </Typography>
-        <Typography variant="body1" component="div" sx={{ fontWeight: "bold" }}>
+        <Typography
+          variant="body1"
+          component="div"
+          color={theme.palette.text.primary}
+          sx={{ fontWeight: "bold" }}
+        >
           Permissão de telefone
         </Typography>
-        <Typography variant="body1" component="div">
+        <Typography
+          variant="body1"
+          component="div"
+          color={theme.palette.text.primary}
+        >
           Usada para acessar um conjunto de recursos típicos associados com a
           telefonia. Isto possibilita, por exemplo, acesso de leitura somente ao
           “status do telefone”, o que significa que possibilita o acesso ao
@@ -663,69 +1023,144 @@ const policity = () => {
           móvel atual ou do status de quaisquer chamadas que estiverem sendo
           realizadas no momento.
         </Typography>
-        <Typography variant="h6" component="div" sx={{ fontWeight: "bold" }}>
+        <Typography
+          variant="h6"
+          color={theme.palette.text.primary}
+          component="div"
+          sx={{ fontWeight: "bold" }}
+        >
           INFORMAÇÕES DETALHADAS SOBRE O PROCESSAMENTO DE DADOS PESSOAIS
         </Typography>
-        <Typography variant="body1" component="div">
+        <Typography
+          variant="body1"
+          component="div"
+          color={theme.palette.text.primary}
+        >
           Os Dados Pessoais são recolhidos para os seguintes fins e utilizando
           os seguintes serviços:
         </Typography>
-        <Typography variant="body1" component="div" sx={{ fontWeight: "bold" }}>
+        <Typography
+          variant="body1"
+          component="div"
+          color={theme.palette.text.primary}
+          sx={{ fontWeight: "bold" }}
+        >
           Geolocation (este aplicativo)
         </Typography>
-        <Typography variant="body1" component="div">
+        <Typography
+          variant="body1"
+          component="div"
+          color={theme.palette.text.primary}
+        >
           O Sollar pode coletar, usar e compartilhar a localização de dados do
           Usuário a fim de fornecer serviços baseados em localização.{" "}
         </Typography>
-        <Typography variant="body1" component="div">
+        <Typography
+          variant="body1"
+          component="div"
+          color={theme.palette.text.primary}
+        >
           A maioria dos navegadores e dispositivos fornecem ferramentas para
           optar o não uso este recurso de padrão. Se a autorização explícita foi
           fornecida, os dados de localização do Usuário podem ser rastreados por
           este aplicativo.
         </Typography>
-        <Typography variant="body1" component="div">
+        <Typography
+          variant="body1"
+          component="div"
+          color={theme.palette.text.primary}
+        >
           Dados Pessoais coletados: posição geográfica.
         </Typography>
-        <Typography variant="body1" component="div" sx={{ fontWeight: "bold" }}>
+        <Typography
+          variant="body1"
+          component="div"
+          color={theme.palette.text.primary}
+          sx={{ fontWeight: "bold" }}
+        >
           Permissões de dispositivos para acesso a Dados Pessoais (este
           aplicativo)
         </Typography>
-        <Typography variant="body1" component="div">
+        <Typography
+          variant="body1"
+          component="div"
+          color={theme.palette.text.primary}
+        >
           O Sollar solicita determinadas permissões do Usuário que lhe permitem
           acessar os Dados do dispositivo do Usuário conforme descritos abaixo.
         </Typography>
-        <Typography variant="body1" component="div">
+        <Typography
+          variant="body1"
+          component="div"
+          color={theme.palette.text.primary}
+        >
           Dados Pessoais coletados: permissão de armazenamento, permissão de
           calendário, permissão de compartilhamento de bluetooth, permissão de
           contatos, permissão de câmera, permissão de localização aproximada
           (interrupta), permissão de localização precisa (interrupta), permissão
           de microfone, permissão de SMS e permissão de telefone.
         </Typography>
-        <Typography variant="body1" component="div" sx={{ fontWeight: "bold" }}>
+        <Typography
+          variant="body1"
+          component="div"
+          color={theme.palette.text.primary}
+          sx={{ fontWeight: "bold" }}
+        >
           Notificações push
         </Typography>
-        <Typography variant="body1" component="div">
+        <Typography
+          variant="body1"
+          component="div"
+          color={theme.palette.text.primary}
+        >
           O Sollar pode enviar notificações push para o Usuário.
         </Typography>
-        <Typography variant="body1" component="div" sx={{ fontWeight: "bold" }}>
+        <Typography
+          variant="body1"
+          component="div"
+          color={theme.palette.text.primary}
+          sx={{ fontWeight: "bold" }}
+        >
           Identificação exclusiva do dispositivo
         </Typography>
-        <Typography variant="body1" component="div">
+        <Typography
+          variant="body1"
+          component="div"
+          color={theme.palette.text.primary}
+        >
           O Sollar pode rastrear Usuários ao armazenar um identificador
           exclusivo do seu dispositivo, para fins de análise ou para o
           armazenamento das preferências dos Usuários.
         </Typography>
-        <Typography variant="h6" component="div" sx={{ fontWeight: "bold" }}>
+        <Typography
+          variant="h6"
+          color={theme.palette.text.primary}
+          component="div"
+          sx={{ fontWeight: "bold" }}
+        >
           OS DIREITOS DOS USUÁRIOS
         </Typography>
-        <Typography variant="body1" component="div">
+        <Typography
+          variant="body1"
+          component="div"
+          color={theme.palette.text.primary}
+        >
           Os Usuários poderão exercer determinados direitos a respeito dos seus
           Dados processados pelo Proprietário.
         </Typography>
-        <Typography variant="body1" component="div">
+        <Typography
+          variant="body1"
+          component="div"
+          color={theme.palette.text.primary}
+        >
           Em especial, os Usuários possuem os direitos a fazer o seguinte:
         </Typography>
-        <Typography variant="body1" component="div" sx={{ marginLeft: "14px" }}>
+        <Typography
+          variant="body1"
+          component="div"
+          color={theme.palette.text.primary}
+          sx={{ marginLeft: "14px" }}
+        >
           <li>
             <b>Retirar a sua anuência a qualquer momento.</b> Os Usuários
             possuem o direito de retirar a sua anuência nos casos em que tenham
@@ -782,10 +1217,19 @@ const policity = () => {
             competente.
           </li>
         </Typography>
-        <Typography variant="body1" component="div" sx={{ fontWeight: "bold" }}>
+        <Typography
+          variant="body1"
+          component="div"
+          color={theme.palette.text.primary}
+          sx={{ fontWeight: "bold" }}
+        >
           Detalhes sobre o direito de objetar ao processamento
         </Typography>
-        <Typography variant="body1" component="div">
+        <Typography
+          variant="body1"
+          component="div"
+          color={theme.palette.text.primary}
+        >
           Nos casos em que os Dados Pessoais forem processados por um interesse
           público, no exercício de uma autorização oficial na qual o
           Proprietário estiver investido ou para finalidades dos interesses
@@ -793,22 +1237,45 @@ const policity = () => {
           tal processamento através do fornecimento de um motivo relacionado com
           a sua situação em especial para justificar a objeção.
         </Typography>
-        <Typography variant="body1" component="div" sx={{ fontWeight: "bold" }}>
+        <Typography
+          variant="body1"
+          component="div"
+          color={theme.palette.text.primary}
+          sx={{ fontWeight: "bold" }}
+        >
           Como exercer estes direitos
         </Typography>
-        <Typography variant="body1" component="div">
+        <Typography
+          variant="body1"
+          component="div"
+          color={theme.palette.text.primary}
+        >
           Quaisquer pedidos para exercer os direitos dos Usuários podem ser
           direcionados ao Proprietário ou ao Operador, através dos dados para
           contato fornecidos neste documento. Estes pedidos podem ser exercidos
           sem nenhum custo e serão atendidos com a maior brevidade possível.
         </Typography>
-        <Typography variant="h6" component="div" sx={{ fontWeight: "bold" }}>
+        <Typography
+          variant="h6"
+          color={theme.palette.text.primary}
+          component="div"
+          sx={{ fontWeight: "bold" }}
+        >
           INFORMAÇÕES ADICIONAIS SOBRE A COLETA E PROCESSAMENTO DE DADOS
         </Typography>
-        <Typography variant="body1" component="div" sx={{ fontWeight: "bold" }}>
+        <Typography
+          variant="body1"
+          component="div"
+          color={theme.palette.text.primary}
+          sx={{ fontWeight: "bold" }}
+        >
           Ação jurídica
         </Typography>
-        <Typography variant="body1" component="div">
+        <Typography
+          variant="body1"
+          component="div"
+          color={theme.palette.text.primary}
+        >
           Os Dados Pessoais dos Usuários podem ser utilizados para fins
           jurídicos pelo Proprietário em juízo ou nas etapas conducentes à
           possível ação jurídica decorrente de uso indevido deste serviço (este
@@ -816,45 +1283,90 @@ const policity = () => {
           ciente de que o Proprietário poderá ser obrigado a revelar os Dados
           Pessoais mediante solicitação das autoridades governamentais.
         </Typography>
-        <Typography variant="body1" component="div" sx={{ fontWeight: "bold" }}>
+        <Typography
+          variant="body1"
+          component="div"
+          color={theme.palette.text.primary}
+          sx={{ fontWeight: "bold" }}
+        >
           Informações adicionais sobre os dados pessoais do usuário
         </Typography>
-        <Typography variant="body1" component="div">
+        <Typography
+          variant="body1"
+          component="div"
+          color={theme.palette.text.primary}
+        >
           Além das informações contidas nesta Política de Privacidade, este
           aplicativo poderá fornecer ao Usuário informações adicionais e
           contextuais sobre os serviços específicos ou a coleta e processamento
           de Dados Pessoais mediante solicitação.
         </Typography>
-        <Typography variant="body1" component="div" sx={{ fontWeight: "bold" }}>
+        <Typography
+          variant="body1"
+          component="div"
+          color={theme.palette.text.primary}
+          sx={{ fontWeight: "bold" }}
+        >
           Logs do sistema e manutenção
         </Typography>
-        <Typography variant="body1" component="div">
+        <Typography
+          variant="body1"
+          component="div"
+          color={theme.palette.text.primary}
+        >
           Para fins de operação e manutenção, este aplicativo e quaisquer
           serviços de terceiros poderão coletar arquivos que gravam a interação
           com este aplicativo (logs do sistema) ou usar outros Dados Pessoais
           (tais como endereço IP) para esta finalidade.
         </Typography>
-        <Typography variant="h6" component="div" sx={{ fontWeight: "bold" }}>
+        <Typography
+          variant="h6"
+          color={theme.palette.text.primary}
+          component="div"
+          sx={{ fontWeight: "bold" }}
+        >
           As informações não contidas nesta política
         </Typography>
-        <Typography variant="body1" component="div">
+        <Typography
+          variant="body1"
+          component="div"
+          color={theme.palette.text.primary}
+        >
           Mais detalhes sobre a coleta ou processamento de Dados Pessoais podem
           ser solicitados ao Proprietário ou ao Operador de Dados, a qualquer
           momento. Favor ver as informações de contato no início deste
           documento.
         </Typography>
-        <Typography variant="body1" component="div" sx={{ fontWeight: "bold" }}>
+        <Typography
+          variant="body1"
+          component="div"
+          color={theme.palette.text.primary}
+          sx={{ fontWeight: "bold" }}
+        >
           Como são tratados os pedidos de “não me rastreie”
         </Typography>
-        <Typography variant="body1" component="div">
+        <Typography
+          variant="body1"
+          component="div"
+          color={theme.palette.text.primary}
+        >
           O Sollar não suporta pedidos de “Não Me Rastreie”. Para determinar se
           qualquer um dos serviços de terceiros que utiliza honram solicitações
           de “Não Me Rastreie”, por favor leia as políticas de privacidade.
         </Typography>
-        <Typography variant="h6" component="div" sx={{ fontWeight: "bold" }}>
+        <Typography
+          variant="h6"
+          color={theme.palette.text.primary}
+          component="div"
+          sx={{ fontWeight: "bold" }}
+        >
           MUDANÇAS NESTA POLÍTICA DE PRIVACIDADE
         </Typography>
-        <Typography variant="body1" component="div">
+        <Typography
+          variant="body1"
+          component="div"
+          color={theme.palette.text.primary}
+        >
           O Sollar se reserva o direito de fazer alterações nesta Política de
           Privacidade a qualquer momento, mediante comunicação aos seus Usuários
           nesta página e possivelmente dentro deste aplicativo e/ou – na medida
@@ -864,29 +1376,52 @@ const policity = () => {
           página seja consultada várias vezes em relação à última modificação
           descrita na parte inferior.
         </Typography>
-        <Typography variant="body1" component="div">
+        <Typography
+          variant="body1"
+          component="div"
+          color={theme.palette.text.primary}
+        >
           Caso as mudanças afetem as atividades de processamento realizadas com
           base na anuência do Usuário, será coletada nova anuência do Usuário,
           onde for exigida.
         </Typography>
-        <Typography variant="h6" component="div" sx={{ fontWeight: "bold" }}>
+        <Typography
+          variant="h6"
+          color={theme.palette.text.primary}
+          component="div"
+          sx={{ fontWeight: "bold" }}
+        >
           DEFINIÇÕES E REFERÊNCIAS JURÍDICAS
         </Typography>
-        <Typography variant="body1" component="div" sx={{ fontWeight: "bold" }}>
+        <Typography
+          variant="body1"
+          component="div"
+          color={theme.palette.text.primary}
+          sx={{ fontWeight: "bold" }}
+        >
           Dados Pessoais (ou Dados)
         </Typography>
-        <Typography variant="body1" component="div">
+        <Typography
+          variant="body1"
+          component="div"
+          color={theme.palette.text.primary}
+        >
           Quaisquer informações que diretamente, indiretamente ou em relação com
           outras informações – incluindo um número de identificação pessoal –
           permitam a identificação ou identificabilidade de uma pessoa física.
         </Typography>
-        <Typography variant="h6" component="div" sx={{ fontWeight: "bold" }}>
+        <Typography
+          variant="h6"
+          color={theme.palette.text.primary}
+          component="div"
+          sx={{ fontWeight: "bold" }}
+        >
           Dados de Uso
         </Typography>
         <Typography
           variant="body1"
           component="div"
-          sx={{ color: "var(--danger)" }}
+          sx={{ color: theme.palette.error.main }}
         >
           As informações coletadas automaticamente através deste aplicativo (ou
           serviços de terceiros contratados neste serviço (este aplicativo)),
@@ -908,31 +1443,67 @@ const policity = () => {
           geográfico do dispositivo, acesso a câmera, situação de acesso a rede
           de dados.
         </Typography>
-        <Typography variant="body1" component="div" sx={{ fontWeight: "bold" }}>
+        <Typography
+          variant="body1"
+          component="div"
+          color={theme.palette.text.primary}
+          sx={{ fontWeight: "bold" }}
+        >
           Usuário
         </Typography>
-        <Typography variant="body1" component="div">
+        <Typography
+          variant="body1"
+          component="div"
+          color={theme.palette.text.primary}
+        >
           A pessoa que usa este aplicativo que, a menos que especificado
           diferentemente, coincida com o Titular dos Dados.
         </Typography>
-        <Typography variant="body1" component="div" sx={{ fontWeight: "bold" }}>
+        <Typography
+          variant="body1"
+          component="div"
+          color={theme.palette.text.primary}
+          sx={{ fontWeight: "bold" }}
+        >
           Titular dos Dados
         </Typography>
-        <Typography variant="body1" component="div">
+        <Typography
+          variant="body1"
+          component="div"
+          color={theme.palette.text.primary}
+        >
           A pessoa física a quem os Dados Pessoais se referem.
         </Typography>
-        <Typography variant="body1" component="div" sx={{ fontWeight: "bold" }}>
+        <Typography
+          variant="body1"
+          component="div"
+          color={theme.palette.text.primary}
+          sx={{ fontWeight: "bold" }}
+        >
           Processador de Dados (ou Supervisor de Dados)
         </Typography>
-        <Typography variant="body1" component="div">
+        <Typography
+          variant="body1"
+          component="div"
+          color={theme.palette.text.primary}
+        >
           A pessoa física ou jurídica, administração pública, agência ou outro
           órgão que processe os Dados Pessoais em nome do Controlador, conforme
           descrito nesta Política de Privacidade.
         </Typography>
-        <Typography variant="body1" component="div" sx={{ fontWeight: "bold" }}>
+        <Typography
+          variant="body1"
+          component="div"
+          color={theme.palette.text.primary}
+          sx={{ fontWeight: "bold" }}
+        >
           Controlador de Dados (ou Proprietário)
         </Typography>
-        <Typography variant="body1" component="div">
+        <Typography
+          variant="body1"
+          component="div"
+          color={theme.palette.text.primary}
+        >
           A pessoa física ou jurídica, administração pública, agência ou outro
           órgão que, isoladamente ou em conjunto com outros determinar as
           finalidades e os meios de processamento dos Dados Pessoais, incluindo
@@ -941,25 +1512,52 @@ const policity = () => {
           especificado de outra forma, é o Proprietário deste serviço (este
           aplicativo).
         </Typography>
-        <Typography variant="body1" component="div" sx={{ fontWeight: "bold" }}>
+        <Typography
+          variant="body1"
+          component="div"
+          color={theme.palette.text.primary}
+          sx={{ fontWeight: "bold" }}
+        >
           Este Aplicativo
         </Typography>
-        <Typography variant="body1" component="div">
+        <Typography
+          variant="body1"
+          component="div"
+          color={theme.palette.text.primary}
+        >
           O meio pelo qual os Dados Pessoais do Usuário são coletados e
           processados.
         </Typography>
-        <Typography variant="body1" component="div" sx={{ fontWeight: "bold" }}>
+        <Typography
+          variant="body1"
+          component="div"
+          color={theme.palette.text.primary}
+          sx={{ fontWeight: "bold" }}
+        >
           Serviço
         </Typography>
-        <Typography variant="body1" component="div">
+        <Typography
+          variant="body1"
+          component="div"
+          color={theme.palette.text.primary}
+        >
           O serviço fornecido por este aplicativo, conforme descrito nos termos
           relativos (se disponíveis) e neste aplicativo.
         </Typography>
-        <Typography variant="body1" component="div">
+        <Typography
+          variant="body1"
+          component="div"
+          color={theme.palette.text.primary}
+        >
           Esta Política de Privacidade se refere somente a este aplicativo, se
           não afirmado diferentemente neste documento.
         </Typography>
-        <Typography variant="body1" component="div" sx={{ fontWeight: "bold" }}>
+        <Typography
+          variant="body1"
+          component="div"
+          color={theme.palette.text.primary}
+          sx={{ fontWeight: "bold" }}
+        >
           Última atualização: 12 de janeiro de 2022.
         </Typography>
       </Box>
@@ -985,7 +1583,7 @@ export default function SignIn() {
   const [rememberMe, setRememberMe] = useState(false);
   const [valid, setValid] = useState(false);
   const [openPolicyModal, setOpenPolicyModal] = useState(false);
-  const classes = useStyles();
+  // const classes = useStyles();
   // useEffect(() => {
   //   const expired = localStorage.getItem(LOCALSTORAGE.EXPIRED_SESSION);
   //   const token = localStorage.getItem(LOCALSTORAGE.TOKEN);
@@ -1154,9 +1752,24 @@ export default function SignIn() {
   return (
     <>
       {loginState.loading && <Loading />}
-      <Container className={classes.container} maxWidth="xs">
-        <CssBaseline />
-        <div className={classes.paper}>
+      <Container
+        // maxWidth={"xs"}
+        sx={{
+          display: "flex",
+          flexDirection: "column",
+          justifyContent: "center",
+          height: "100%",
+          maxWidth: "450px !important",
+        }}
+      >
+        <div
+          style={{
+            marginTop: theme.spacing(2),
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+          }}
+        >
           <Box
             display="flex"
             width={390}
@@ -1164,16 +1777,26 @@ export default function SignIn() {
             justifyContent="center"
             alignItems="center"
           >
-            <THCStype1 fill={"#000083"} width={"1000px"} />
+            <THCStype1 fill={theme.palette.primary.main} width={"1000px"} />
             {/* <HomeIconLogo /> */}
           </Box>
 
           <WelcomeTextWrapper>
-            <TextGray>Bem-vindo(a)! Realize seu login para continuar:</TextGray>
+            <Typography variant="body1">
+              Bem-vindo(a)! Realize seu login para continuar:
+            </Typography>
           </WelcomeTextWrapper>
-          <form className={classes.form} noValidate>
+          <form
+            style={{
+              width: "100%", // Fix IE 11 issue.
+              marginTop: theme.spacing(1),
+            }}
+            noValidate
+          >
             <FormControl fullWidth margin="normal" variant="outlined">
-              <InputLabel htmlFor="outlined-adornment-email">E-mail</InputLabel>
+              <InputLabel htmlFor="outlined-adornment-email" color="secondary">
+                E-mail
+              </InputLabel>
               <OutlinedInput
                 color="secondary"
                 onKeyDown={handleKeyEnter}
@@ -1218,7 +1841,7 @@ export default function SignIn() {
                     {/* </div> */}
                   </InputAdornment>
                 }
-                labelWidth={70}
+                // labelWidth={70}
               />
             </FormControl>
             {loginState.email.user ? (
@@ -1226,10 +1849,14 @@ export default function SignIn() {
                 {loginState.email.password ? (
                   <>
                     <FormControl fullWidth margin="normal" variant="outlined">
-                      <InputLabel htmlFor="outlined-adornment-password">
+                      <InputLabel
+                        htmlFor="outlined-adornment-password"
+                        color="secondary"
+                      >
                         Senha
                       </InputLabel>
                       <OutlinedInput
+                        label="senha"
                         color="secondary"
                         onKeyDown={handleKeyEnter}
                         id="outlined-adornment-password"
@@ -1257,7 +1884,7 @@ export default function SignIn() {
                             </IconButton>
                           </InputAdornment>
                         }
-                        labelWidth={70}
+                        // labelWidth={70}
                       />
                     </FormControl>
                     <FormControlLabel
@@ -1280,6 +1907,7 @@ export default function SignIn() {
                     <form onSubmit={formik.handleSubmit}>
                       <TextField
                         fullWidth
+                        color="secondary"
                         sx={{ margin: "8px 0" }}
                         id="password"
                         name="password"
@@ -1315,6 +1943,7 @@ export default function SignIn() {
                       />
                       <TextField
                         fullWidth
+                        color="secondary"
                         sx={{ margin: "8px 0" }}
                         id="confirmPassword"
                         name="confirmPassword"
@@ -1353,9 +1982,10 @@ export default function SignIn() {
                       <FormGroup
                         row
                         style={{
-                          margin: "8px 0",
+                          margin: "0px 0px 8px 0px",
                           alignItems: "center",
                           display: "flex",
+                          flexWrap: "nowrap",
                         }}
                       >
                         <Checkbox
@@ -1364,18 +1994,24 @@ export default function SignIn() {
                           checked={formik.values.policyAccepted}
                           onChange={formik.handleChange}
                           color="primary"
-                          sx={{
-                            width: "24px",
-                            height: "24px",
-                          }}
                         />
-                        <TextGray>
+
+                        <Typography variant="body2" sx={{ display: "inline" }}>
                           Li e concordo com os{" "}
-                          <TextBlue onClick={() => setOpenPolicyModal(true)}>
+                          <Typography
+                            variant="body2"
+                            onClick={() => setOpenPolicyModal(true)}
+                            sx={{
+                              display: "inline",
+                              cursor: "pointer",
+                              color: theme.palette.primary.main,
+                            }}
+                          >
                             termos e politicas{" "}
-                          </TextBlue>
+                          </Typography>
                           de privacidade
-                        </TextGray>
+                        </Typography>
+
                         <FormHelperText error sx={{ marginLeft: "14px" }}>
                           {formik.submitCount && !formik.values.policyAccepted
                             ? formik.errors.policyAccepted
@@ -1426,16 +2062,22 @@ export default function SignIn() {
             {/*>*/}
             {/*  Criar conta*/}
             {/*</Button>*/}
-            <Grid container sx={{ marginTop: "22px" }}>
-              <Box textAlign="center" width="100%">
-                <TextGray>
-                  Esqueceu a senha?{" "}
-                  <Link href="/forgotpassword">
-                    <TextBlue>Clique aqui </TextBlue>
-                  </Link>
-                  parar recuperar
-                </TextGray>
-              </Box>
+            <Grid container sx={{ marginTop: "22px" }} justifyContent="center">
+              <Grid item>
+                <Link href="/forgotpassword" rel="noopener">
+                  <Typography
+                    variant="body2"
+                    sx={{
+                      width: "auto",
+                      cursor: "pointer",
+                      color: theme.palette.secondary.main,
+                      "&:hover": { color: theme.palette.secondary.dark },
+                    }}
+                  >
+                    Esqueceu a senha?
+                  </Typography>
+                </Link>
+              </Grid>
             </Grid>
           </form>
         </div>
@@ -1461,15 +2103,16 @@ export default function SignIn() {
             {policity()}
           </DialogContentText>
         </DialogContent>
-        <DialogActions>
+        <DialogActions sx={{ marginTop: "1.25rem" }}>
           <Button
+            variant="contained"
             onClick={() => {
               setOpenPolicyModal(false);
 
               formik.values.policyAccepted = false;
               // setCheckPolicy(false);
             }}
-            color="primary"
+            color="error"
           >
             Não Aceitar
           </Button>
@@ -1479,7 +2122,8 @@ export default function SignIn() {
               formik.values.policyAccepted = true;
               // setCheckPolicy(true);
             }}
-            color="primary"
+            variant="contained"
+            color="secondary"
           >
             Aceitar
           </Button>

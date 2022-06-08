@@ -1,5 +1,5 @@
 import React, { ChangeEvent, useState } from "react";
-import { Button } from "@material-ui/core";
+import { Button, Grid, Typography } from "@mui/material";
 import { ButtonComponent, ButtonGroupComponent } from "./styles";
 import moment from "moment";
 import { formatDate } from "../../../helpers/date";
@@ -32,37 +32,50 @@ export default function ButtonSwitches(props: switchesProps) {
 
   return (
     <>
-      {/* <ButtonGroupComponent
-        color="primary"
-        aria-label="outlined primary button group"
-        variant="contained"
-        onClick={handleChange}
-      > */}
-      <ButtonComponent
-        value={handleValue(0)}
-        onClick={handleChange}
-        tabIndex={0}
-        variant="contained"
-      >
-        Em Atendimento
-      </ButtonComponent>
-      <ButtonComponent
-        value={handleValue(1)}
-        onClick={handleChange}
-        tabIndex={1}
-        variant="contained"
-      >
-        Alta
-      </ButtonComponent>
-      <ButtonComponent
-        value={handleValue(2)}
-        onClick={handleChange}
-        tabIndex={2}
-        variant="contained"
-      >
-        Todos
-      </ButtonComponent>
-      {/* </ButtonGroupComponent> */}
+      <Grid container mb={"20px"} gap={"12px"}>
+        <ButtonComponent
+          value={handleValue(0)}
+          onClick={handleChange}
+          tabIndex={0}
+          variant="contained"
+        >
+          <Typography
+            variant="body1"
+            fontWeight={400}
+            sx={{ cursor: "pointer" }}
+          >
+            Em Atendimento
+          </Typography>
+        </ButtonComponent>
+        <ButtonComponent
+          value={handleValue(1)}
+          onClick={handleChange}
+          tabIndex={1}
+          variant="contained"
+        >
+          <Typography
+            variant="body1"
+            fontWeight={400}
+            sx={{ cursor: "pointer" }}
+          >
+            Alta
+          </Typography>
+        </ButtonComponent>
+        <ButtonComponent
+          value={handleValue(2)}
+          onClick={handleChange}
+          tabIndex={2}
+          variant="contained"
+        >
+          <Typography
+            variant="body1"
+            fontWeight={400}
+            sx={{ cursor: "pointer" }}
+          >
+            Todos
+          </Typography>
+        </ButtonComponent>
+      </Grid>
     </>
   );
 }

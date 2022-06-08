@@ -7,8 +7,8 @@ import {
   Menu,
   MenuItem,
   makeStyles,
-} from "@material-ui/core";
-import { MoreVert } from "@material-ui/icons";
+} from "@mui/material";
+import { MoreVert } from "@mui/icons-material";
 import debounce from "lodash.debounce";
 import Table from "../../../components/Table";
 import { formatDate } from "../../../helpers/date";
@@ -24,18 +24,6 @@ import Button from "../../../styles/components/Button";
 import { ListLink, ListItemStatus, ItemTable } from "./styles";
 
 export default function AreaList() {
-  const useStyles = makeStyles((theme) => ({
-    tablecelldot: {
-      width: "9px",
-      padding: "5px",
-    },
-    buttondots: {
-      minWidth: "9px",
-      width: "9px",
-      padding: "1px",
-    },
-  }));
-  const classe = useStyles();
   const history = useHistory();
   const dispatch = useDispatch();
   const [errorSearch, setErrorSearch] = useState({ value: false });

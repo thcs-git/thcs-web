@@ -25,6 +25,8 @@ declare module "@mui/material/styles" {
     terciaryDark: Palette["primary"];
     terciary: Palette["primary"];
     terciaryLight: Palette["primary"];
+    //Shadow
+    shadowColor: Palette["primary"];
   }
   interface PaletteOptions {
     //primary
@@ -41,8 +43,11 @@ declare module "@mui/material/styles" {
     terciaryDark: PaletteOptions["primary"];
     terciary: PaletteOptions["primary"];
     terciaryLight: PaletteOptions["primary"];
+    //Shadow
+    shadowColor: PaletteOptions["primary"];
   }
 }
+
 const defaultTheme = createTheme();
 
 let theme: Theme = createTheme({
@@ -65,6 +70,9 @@ let theme: Theme = createTheme({
     terciaryDark: { main: "#70D49F" },
     terciary: { main: "#7EEDB1" },
     terciaryLight: { main: "#84FABB" },
+    // shadow
+    shadowColor: { main: "#00000012" },
+    // gerals
     error: { main: "#E73A3A" },
     warning: { main: "#F9CA24" },
     success: { main: "#4FC66A" },
@@ -75,6 +83,17 @@ let theme: Theme = createTheme({
   },
   components: {
     // se precisar usar o intelisense do VScode, usar a variável defaultTheme
+    MuiAutocomplete: {
+      styleOverrides: {
+        root: {
+          "& .MuiInputLabel-root": {
+            fontWeight: 400,
+            fontStyle: "italic",
+            width: "100%",
+          },
+        },
+      },
+    },
   },
 });
 
@@ -85,7 +104,8 @@ theme = createTheme(theme, {
       styleOverrides: {
         root: {
           color: theme.palette.primary.main,
-          fontWeight: "600",
+          fontWeight: "700",
+          fontSize: "1.5rem",
         },
       },
     },
@@ -137,7 +157,49 @@ theme = createTheme(theme, {
             "&:hover": { backgroundColor: theme.palette.success.light },
           },
         },
+        {
+          props: { variant: "contained", color: "error" },
+          style: {
+            "&:hover": { backgroundColor: theme.palette.error.light },
+          },
+        },
       ],
+    },
+    //TABLE
+    MuiTableRow: {
+      styleOverrides: {
+        root: {
+          transition: "all 150ms ease-in-out",
+          "&.MuiTableRow-hover:hover": {},
+        },
+      },
+    },
+    //TABS
+    MuiTabs: {
+      styleOverrides: {
+        flexContainer: {
+          height: "100%",
+        },
+      },
+    },
+    //FORM
+    MuiFormControlLabel: {
+      styleOverrides: {
+        label: {
+          cursor: "pointer",
+        },
+      },
+    },
+    MuiFormLabel: {
+      styleOverrides: {
+        root: {
+          fontWeight: 600,
+          color: theme.palette.text.primary,
+          "&.Mui-focused": {
+            color: theme.palette.secondary.main,
+          },
+        },
+      },
     },
   },
 });

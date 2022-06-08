@@ -11,8 +11,8 @@ import {
   FormControlLabel,
   TextField,
   Button,
-} from "@material-ui/core";
-import { Autocomplete } from "@material-ui/lab";
+} from "@mui/material";
+import { Autocomplete } from "@mui/material";
 
 import { useDispatch, useSelector } from "react-redux";
 import { ApplicationState } from "../../../../store";
@@ -277,7 +277,7 @@ export default function AdmReleaseDialog(props: IDialogProps) {
                     variant="outlined"
                     size="small"
                     rows={6}
-                    rowsMax={6}
+                    // rowsMax={6}
                     label="Observação da Alta"
                     placeholder="Digite aqui alguma observação para a alta"
                     value={captureData.release_observation}

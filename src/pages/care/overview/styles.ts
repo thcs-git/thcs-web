@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import { Container } from "@material-ui/core";
+import { Container } from "@mui/material";
 
 export const ContainerStyle = styled(Container)`
   padding: 0;

@@ -22,45 +22,45 @@ import {
   loadUserTypesRequest,
 } from "../../../store/ducks/users/actions";
 import { UserInterface } from "../../../store/ducks/users/types";
-import { TextField, Grid, Typography, Divider } from "@material-ui/core";
+import { TextField, Grid, Typography, Divider } from "@mui/material";
 import { ApplicationState } from "../../../store";
-import Box from "@material-ui/core/Box";
-import { makeStyles } from "@material-ui/core/styles";
-
-const useStyles = makeStyles((theme) => ({
-  submit: {
-    margin: theme.spacing(3, 0, 2),
-    padding: "10px",
-    textTransform: "capitalize",
-    fontSize: "18px",
-    backgroundColor: "var(--success)",
-    boxShadow: "0 0 1em #dadada",
-    "&:hover": {
-      backgroundColor: "#4fc66ae3",
-      fontWeight: "bold",
-      transition: "300ms",
-    },
-  },
-  form: {
-    width: "100%", // Fix IE 11 issue.
-    padding: theme.spacing(1, 1, 0, 1),
-  },
-  footerStyle: {
-    backgroundColor: "#dadada",
-    alignContent: "center",
-    fontSize: "20px",
-    color: "#0899BA",
-    textDecoration: "bold",
-    borderTop: "1px solid #E7E7E7",
-    textAlign: "center",
-    padding: "10px",
-    position: "fixed",
-    left: "0",
-    bottom: "0",
-    height: "40px",
-    width: "100%",
-  },
-}));
+import Box from "@mui/material/Box";
+import { makeStyles } from "@mui/material/styles";
+import theme from "../../../theme/theme";
+// const useStyles = makeStyles((theme) => ({
+//   submit: {
+//     margin: theme.spacing(3, 0, 2),
+//     padding: "10px",
+//     textTransform: "capitalize",
+//     fontSize: "18px",
+//     backgroundColor: "var(--success)",
+//     boxShadow: "0 0 1em #dadada",
+//     "&:hover": {
+//       backgroundColor: "#4fc66ae3",
+//       fontWeight: "bold",
+//       transition: "300ms",
+//     },
+//   },
+//   form: {
+//     width: "100%", // Fix IE 11 issue.
+//     padding: theme.spacing(1, 1, 0, 1),
+//   },
+//   footerStyle: {
+//     backgroundColor: "#dadada",
+//     alignContent: "center",
+//     fontSize: "20px",
+//     color: "#0899BA",
+//     textDecoration: "bold",
+//     borderTop: "1px solid #E7E7E7",
+//     textAlign: "center",
+//     padding: "10px",
+//     position: "fixed",
+//     left: "0",
+//     bottom: "0",
+//     height: "40px",
+//     width: "100%",
+//   },
+// }));
 interface IPageParams {
   id?: string;
   email?: string;
@@ -123,7 +123,7 @@ export default function ForgotPasswordPage(
     dispatch(loadUserByEmail(inputEmail.value));
     setSendEmail(true);
   }, [inputEmail]);
-  const classes = useStyles();
+  // const classes = useStyles();
 
   return (
     <>
@@ -180,7 +180,19 @@ export default function ForgotPasswordPage(
                   type="submit"
                   variant="contained"
                   color="primary"
-                  className={classes.submit}
+                  sx={{
+                    margin: theme.spacing(3, 0, 2),
+                    padding: "10px",
+                    textTransform: "capitalize",
+                    fontSize: "18px",
+                    backgroundColor: "var(--success)",
+                    boxShadow: "0 0 1em #dadada",
+                    "&:hover": {
+                      backgroundColor: "#4fc66ae3",
+                      fontWeight: "bold",
+                      transition: "300ms",
+                    },
+                  }}
                   onClick={handleUserbyEmail}
                 >
                   Reenviar Email
@@ -188,7 +200,14 @@ export default function ForgotPasswordPage(
               </Grid>
               <Grid item style={{ paddingTop: "2rem" }}>
                 <Divider></Divider>
-                <Box textAlign="center" width="100%" className={classes.form}>
+                <Box
+                  textAlign="center"
+                  width="100%"
+                  sx={{
+                    width: "100%", // Fix IE 11 issue.
+                    padding: theme.spacing(1, 1, 0, 1),
+                  }}
+                >
                   <TextGray>
                     Já tem um cadastro?{" "}
                     <Link to={"/login"}>
@@ -239,7 +258,19 @@ export default function ForgotPasswordPage(
                       fullWidth
                       variant="contained"
                       color="primary"
-                      className={classes.submit}
+                      sx={{
+                        margin: theme.spacing(3, 0, 2),
+                        padding: "10px",
+                        textTransform: "capitalize",
+                        fontSize: "18px",
+                        backgroundColor: "var(--success)",
+                        boxShadow: "0 0 1em #dadada",
+                        "&:hover": {
+                          backgroundColor: "#4fc66ae3",
+                          fontWeight: "bold",
+                          transition: "300ms",
+                        },
+                      }}
                       onClick={handleUserbyEmail}
                     >
                       Enviar
@@ -247,7 +278,10 @@ export default function ForgotPasswordPage(
                     <Box
                       textAlign="center"
                       width="100%"
-                      className={classes.form}
+                      sx={{
+                        width: "100%", // Fix IE 11 issue.
+                        padding: theme.spacing(1, 1, 0, 1),
+                      }}
                     >
                       <TextGray>
                         Já tem um cadastro?{" "}
@@ -262,7 +296,24 @@ export default function ForgotPasswordPage(
             </Grid>
           )}
         </FormGroupSection>
-        <Typography color="inherit" className={classes.footerStyle}>
+        <Typography
+          color="inherit"
+          sx={{
+            backgroundColor: "#dadada",
+            alignContent: "center",
+            fontSize: "20px",
+            color: "#0899BA",
+            textDecoration: "bold",
+            borderTop: "1px solid #E7E7E7",
+            textAlign: "center",
+            padding: "10px",
+            position: "fixed",
+            left: "0",
+            bottom: "0",
+            height: "40px",
+            width: "100%",
+          }}
+        >
           <strong>Portal Sollar © 2021</strong>
         </Typography>
       </FeedbackContent>

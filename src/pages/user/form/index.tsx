@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useCallback } from "react";
 import { useHistory, RouteComponentProps, Link } from "react-router-dom";
-import { cpf } from "cpf-cnpj-validator";
+// import { cpf } from "cpf-cnpj-validator";
 import {
   Button,
   Container,
@@ -18,9 +18,9 @@ import {
   FormLabel,
   FormGroup,
   Checkbox,
-} from "@material-ui/core";
-import { AccountCircle, Edit } from "@material-ui/icons";
-import Autocomplete from "@material-ui/lab/Autocomplete";
+} from "@mui/material";
+import { AccountCircle, Edit } from "@mui/icons-material";
+import Autocomplete from "@mui/material/Autocomplete";
 import InputMask from "react-input-mask";
 import validator from "validator";
 import { toast } from "react-toastify";
@@ -90,10 +90,10 @@ import {
   DivideTitle,
 } from "./styles";
 import { UserContent } from "../../../components/Sidebar/styles";
-import AddIcon from "@material-ui/icons/Add";
-import RemoveIcon from "@material-ui/icons/Remove";
-import LocationOnIcon from "@material-ui/icons/LocationOn";
-import CheckCircleRoundedIcon from "@material-ui/icons/CheckCircleRounded";
+import AddIcon from "@mui/icons-material/Add";
+import RemoveIcon from "@mui/icons-material/Remove";
+import LocationOnIcon from "@mui/icons-material/LocationOn";
+import CheckCircleRoundedIcon from "@mui/icons-material/CheckCircleRounded";
 import { BoxCustom } from "../../customer/form/styles";
 import _ from "lodash";
 // @ts-ignore
@@ -298,7 +298,8 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
     }
   };
   const checkIsCpfValid = useCallback(() => {
-    return !!cpf.isValid(state.fiscal_number);
+    return false;
+    // return !!cpf.isValid(state.fiscal_number);
   }, [state.fiscal_number]);
 
   // const validateCellPhone = () => {
@@ -315,23 +316,23 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
     formValid = true;
   }
 
-  const useStyles = makeStyles((theme) => ({
-    cancel: {
-      textTransform: "capitalize",
-      fontSize: "18px",
-      "&:hover": {
-        backgroundColor: "#f1d4d4",
-        color: "var(--danger)",
-        borderColor: "var(--danger-hover)",
-      },
-      maxHeight: "38px",
+  // const useStyles = makeStyles((theme) => ({
+  //   cancel: {
+  //     textTransform: "capitalize",
+  //     fontSize: "18px",
+  //     "&:hover": {
+  //       backgroundColor: "#f1d4d4",
+  //       color: "var(--danger)",
+  //       borderColor: "var(--danger-hover)",
+  //     },
+  //     maxHeight: "38px",
 
-      borderColor: "var(--danger-hover)",
-      color: "var(--danger-hover)",
-      contrastText: "#fff",
-    },
-  }));
-  const classes = useStyles();
+  //     borderColor: "var(--danger-hover)",
+  //     color: "var(--danger-hover)",
+  //     contrastText: "#fff",
+  //   },
+  // }));
+  // const classes = useStyles();
   useEffect(() => {
     dispatch(cleanAction());
     dispatch(getSpecialtiesAction());
@@ -1727,9 +1728,9 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
                                     variant="outlined"
                                   />
                                 )}
-                                getOptionSelected={(option, value) =>
-                                  option._id === getprofessionId()
-                                }
+                                // getOptionSelected={(option, value) =>
+                                //   option._id === getprofessionId()
+                                // }
                                 // defaultValue={selectProfession()}
                                 value={selectProfession()}
                                 onChange={(event, value) => {
@@ -1765,9 +1766,9 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
                                   />
                                 )}
                                 value={selectCouncil()}
-                                getOptionSelected={(option, value) =>
-                                  option._id === state?.council_id?._id
-                                }
+                                // getOptionSelected={(option, value) =>
+                                //   option._id === state?.council_id?._id
+                                // }
                                 onChange={(event: any, newValue) => {
                                   handleCouncil(event, newValue);
                                   setFieldValidations((prevState: any) => ({
@@ -1798,9 +1799,9 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
                                   />
                                 )}
                                 value={selectCouncilState()}
-                                getOptionSelected={(option, value) =>
-                                  option.initials === state.council_state
-                                }
+                                // getOptionSelected={(option, value) =>
+                                //   option.initials === state.council_state
+                                // }
                                 onChange={(event: any, newValue) => {
                                   handleCouncilState(event, newValue);
                                   setFieldValidations((prevState: any) => ({
@@ -1865,9 +1866,9 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
                                     variant="outlined"
                                   />
                                 )}
-                                getOptionSelected={(option, value) =>
-                                  option._id === state?.main_specialty_id.name
-                                }
+                                // getOptionSelected={(option, value) =>
+                                //   option._id === state?.main_specialty_id.name
+                                // }
                                 value={selectMainSpecialty()}
                                 onChange={(event, value) => {
                                   if (value) {
@@ -1991,9 +1992,11 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
                         <BoxCustom>
                           <Grid
                             container
-                            justify="flex-start"
-                            alignItems="flex-start"
-                            style={{ paddingLeft: "10px" }}
+                            sx={{
+                              paddingLeft: "10px",
+                              justifyContent: "flex-start",
+                              alignItems: "flex-start",
+                            }}
                           >
                             <Grid item>
                               <UserContent>
@@ -2210,7 +2213,7 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
                                             style={{ padding: "0 12px 12px 0" }}
                                           >
                                             <ButtonComponent
-                                              background="success_rounded"
+                                              // background="success_rounded"
                                               onClick={() => engagedUser()}
                                             >
                                               Vincular este prestador a minha
@@ -2303,7 +2306,7 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
                                                 }}
                                               >
                                                 <ButtonComponent
-                                                  background="success_rounded"
+                                                  // background="success_rounded"
                                                   onClick={() => engagedUser()}
                                                 >
                                                   Vincular este prestador a
@@ -2337,7 +2340,21 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
                                     {params.mode === "view" && !engaged && (
                                       <Grid item md={12} xs={12}>
                                         <ButtonComponent
-                                          className={classes.cancel}
+                                          sx={{
+                                            textTransform: "capitalize",
+                                            fontSize: "18px",
+                                            "&:hover": {
+                                              backgroundColor: "#f1d4d4",
+                                              color: "var(--danger)",
+                                              borderColor:
+                                                "var(--danger-hover)",
+                                            },
+                                            maxHeight: "38px",
+
+                                            borderColor: "var(--danger-hover)",
+                                            color: "var(--danger-hover)",
+                                            contrastText: "#fff",
+                                          }}
                                           onClick={() => dengagedUser(company)}
                                         >
                                           Desvincular este prestador da minha
@@ -2364,7 +2381,7 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
                 </FormContent>
                 <ButtonsContent>
                   <ButtonComponent
-                    background="default"
+                    // background="default"
                     onClick={() => handleBackFormUser()}
                   >
                     Voltar
@@ -2372,7 +2389,7 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
 
                   <ButtonComponent
                     disabled={currentTab === 0}
-                    background="default"
+                    // background="default"
                     onClick={() => handleBackStep()}
                   >
                     Anterior
@@ -2380,7 +2397,7 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
 
                   {currentTab === 0 && (
                     <ButtonComponent
-                      background="success"
+                      // background="success"
                       onClick={() => selectTab(1)}
                       // disabled={!formValid}
                     >
@@ -2390,7 +2407,7 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
 
                   {currentTab === 1 && params.mode != "config" && (
                     <ButtonComponent
-                      background="success"
+                      // background="success"
                       onClick={() => selectTab(2)}
                       // disabled={!formValid}
                     >
@@ -2420,7 +2437,7 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
 
                   {(canEdit || engaged) && (
                     <ButtonComponent
-                      background="success"
+                      // background="success"
                       onClick={handleSaveFormUser}
                     >
                       Salvar
@@ -3228,9 +3245,9 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
                                     variant="outlined"
                                   />
                                 )}
-                                getOptionSelected={(option, value) =>
-                                  option._id === getprofessionId()
-                                }
+                                // getOptionSelected={(option, value) =>
+                                //   option._id === getprofessionId()
+                                // }
                                 // defaultValue={selectProfession()}
                                 value={selectProfession()}
                                 onChange={(event, value) => {
@@ -3266,9 +3283,9 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
                                   />
                                 )}
                                 value={selectCouncil()}
-                                getOptionSelected={(option, value) =>
-                                  option._id === state?.council_id?._id
-                                }
+                                // getOptionSelected={(option, value) =>
+                                //   option._id === state?.council_id?._id
+                                // }
                                 onChange={(event: any, newValue) => {
                                   handleCouncil(event, newValue);
                                   setFieldValidations((prevState: any) => ({
@@ -3299,9 +3316,9 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
                                   />
                                 )}
                                 value={selectCouncilState()}
-                                getOptionSelected={(option, value) =>
-                                  option.initials === state.council_state
-                                }
+                                // getOptionSelected={(option, value) =>
+                                //   option.initials === state.council_state
+                                // }
                                 onChange={(event: any, newValue) => {
                                   handleCouncilState(event, newValue);
                                   setFieldValidations((prevState: any) => ({
@@ -3357,9 +3374,9 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
                                     variant="outlined"
                                   />
                                 )}
-                                getOptionSelected={(option, value) =>
-                                  option._id === state?.main_specialty_id
-                                }
+                                // getOptionSelected={(option, value) =>
+                                //   option._id === state?.main_specialty_id
+                                // }
                                 value={selectMainSpecialty()}
                                 onChange={(event, value) => {
                                   if (value) {
@@ -3476,10 +3493,11 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
                       <TabBodyItem className={currentTab === 2 ? "show" : ""}>
                         <BoxCustom>
                           <Grid
-                            container
-                            justify="flex-start"
-                            alignItems="flex-start"
-                            style={{ paddingLeft: "10px" }}
+                            sx={{
+                              paddingLeft: "10px",
+                              justifyContent: "flex-start",
+                              alignItems: "flex-start",
+                            }}
                           >
                             <Grid item>
                               <UserContent>
@@ -3612,7 +3630,7 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
                                     {params.mode === "link" && !checkCompany && (
                                       <Grid item md={12} xs={12}>
                                         <ButtonComponent
-                                          background="success_rounded"
+                                          // background="success_rounded"
                                           onClick={() => engagedUser()}
                                         >
                                           Vincular este prestador a minha
@@ -3642,7 +3660,21 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
                                     {params.mode === "view" && !engaged && (
                                       <Grid item md={12} xs={12}>
                                         <ButtonComponent
-                                          className={classes.cancel}
+                                          sx={{
+                                            textTransform: "capitalize",
+                                            fontSize: "18px",
+                                            "&:hover": {
+                                              backgroundColor: "#f1d4d4",
+                                              color: "var(--danger)",
+                                              borderColor:
+                                                "var(--danger-hover)",
+                                            },
+                                            maxHeight: "38px",
+
+                                            borderColor: "var(--danger-hover)",
+                                            color: "var(--danger-hover)",
+                                            contrastText: "#fff",
+                                          }}
                                           onClick={() => dengagedUser(company)}
                                         >
                                           Desvincular este prestador da minha
@@ -3669,7 +3701,7 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
                 </FormContent>
                 <ButtonsContent>
                   <ButtonComponent
-                    background="default"
+                    // background="default"
                     onClick={() => handleBackFormUser()}
                   >
                     Voltar
@@ -3677,7 +3709,7 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
 
                   <ButtonComponent
                     disabled={currentTab === 0}
-                    background="default"
+                    // background="default"
                     onClick={() => handleBackStep()}
                   >
                     Anterior
@@ -3685,7 +3717,7 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
 
                   {currentTab === 0 && (
                     <ButtonComponent
-                      background="success"
+                      // background="success"
                       onClick={() => selectTab(1)}
                       // disabled={!formValid}
                     >
@@ -3695,7 +3727,7 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
 
                   {currentTab === 1 && params.mode != "config" && (
                     <ButtonComponent
-                      background="success"
+                      // background="success"
                       onClick={() => selectTab(2)}
                       // disabled={!formValid}
                     >
@@ -3725,7 +3757,7 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
 
                   {(canEdit || engaged) && (
                     <ButtonComponent
-                      background="success"
+                      // background="success"
                       onClick={handleSaveFormUser}
                       disabled={!formValid}
                     >

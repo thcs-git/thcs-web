@@ -20,7 +20,8 @@ import {
   TextField,
   Grid,
   Box,
-} from "@material-ui/core";
+  Typography,
+} from "@mui/material";
 import {
   FiberManualRecord,
   Visibility as VisibilityIcon,
@@ -28,7 +29,7 @@ import {
   MoreVert,
   Check as CheckIcon,
   AccountCircle as AccountCircleIcon,
-} from "@material-ui/icons";
+} from "@mui/icons-material";
 import debounce from "lodash.debounce";
 import _ from "lodash";
 
@@ -73,7 +74,8 @@ import {
 } from "../../../utils/permissions";
 import NoPermission from "../../../components/Erros/NoPermission";
 import { toast } from "react-toastify";
-
+import TabTittle from "../../../components/Text/TabTittle";
+import theme from "../../../theme/theme";
 export default function PatientList() {
   const history = useHistory();
   const dispatch = useDispatch();
@@ -307,7 +309,8 @@ export default function PatientList() {
         {checkViewPermission("patient", JSON.stringify(rightsOfLayoutState)) ? (
           <Container>
             {/* {patientState.loading && <Loading />} */}
-            <FormTitle>Lista de Pacientes</FormTitle>
+
+            <TabTittle tittle="Lista de Pacientes" />
             {integration ? (
               <>
                 <SearchComponent

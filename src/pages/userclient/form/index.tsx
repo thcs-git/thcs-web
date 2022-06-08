@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useState } from "react";
-import { Container } from "@material-ui/core";
+import { Container } from "@mui/material";
 
 import Loading from "../../../components/Loading";
 import Sidebar from "../../../components/Sidebar";

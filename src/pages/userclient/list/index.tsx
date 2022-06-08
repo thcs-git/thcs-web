@@ -1,6 +1,18 @@
 import React, { useState, useEffect, useCallback, ChangeEvent } from "react";
-import { useDispatch, useSelector } from "react-redux";
+//router
 import { useHistory, Link } from "react-router-dom";
+
+// Redux e saga
+import { useDispatch, useSelector } from "react-redux";
+import { UserInterface } from "../../../store/ducks/users/types";
+import { ApplicationState } from "../../../store";
+import {
+  loadRequest,
+  searchRequest,
+  cleanAction,
+  loadRequestByClient,
+} from "../../../store/ducks/users/actions";
+//Mui
 import {
   Container,
   Button,
@@ -14,34 +26,16 @@ import {
   DialogContentText,
   DialogTitle,
   Tooltip,
-} from "@material-ui/core";
-import { MoreVert } from "@material-ui/icons";
-import debounce from "lodash.debounce";
+  Typography,
+} from "@mui/material";
+import AddIcon from "@mui/icons-material/Add";
+import ListItem from "@mui/material/ListItem";
+import ListItemIcon from "@mui/material/ListItemIcon";
+import ListItemText from "@mui/material/ListItemText";
+import { MoreVert } from "@mui/icons-material";
+import MoreHorizTwoToneIcon from "@mui/icons-material/MoreHorizTwoTone";
 
-import { UserInterface } from "../../../store/ducks/users/types";
-
-import Loading from "../../../components/Loading";
-
-import { ApplicationState } from "../../../store";
-import {
-  loadRequest,
-  searchRequest,
-  cleanAction,
-  loadRequestByClient,
-} from "../../../store/ducks/users/actions";
-
-import PaginationComponent from "../../../components/Pagination";
-import Sidebar from "../../../components/Sidebar";
-import SearchComponent from "../../../components/List/Search";
-import Table from "../../../components/Table";
-
-import AddIcon from "@material-ui/icons/Add";
-
-import { FormTitle } from "../../../styles/components/Form";
-
-import ListItem from "@material-ui/core/ListItem";
-import ListItemIcon from "@material-ui/core/ListItemIcon";
-import ListItemText from "@material-ui/core/ListItemText";
+//styles
 import {
   List,
   ListLink,
@@ -50,14 +44,24 @@ import {
   ListItemTitle,
   SpecialtyCell,
 } from "./styles";
+import theme from "../../../theme/theme";
+//utils
+import debounce from "lodash.debounce";
 import { formatDate } from "../../../helpers/date";
-
 import LOCALSTORAGE from "../../../helpers/constants/localStorage";
 import _ from "lodash";
-import MoreHorizTwoToneIcon from "@material-ui/icons/MoreHorizTwoTone";
 import SESSIONSTORAGE from "../../../helpers/constants/sessionStorage";
 import { checkViewPermission } from "../../../utils/permissions";
+
+//components
+import Loading from "../../../components/Loading";
+import PaginationComponent from "../../../components/Pagination";
+import Sidebar from "../../../components/Sidebar";
+import SearchComponent from "../../../components/List/Search";
+import Table from "../../../components/Table";
+import { FormTitle } from "../../../styles/components/Form";
 import NoPermission from "../../../components/Erros/NoPermission";
+import TabTittle from "../../../components/Text/TabTittle";
 const token = window.localStorage.getItem("token");
 const currentCompany =
   localStorage.getItem(LOCALSTORAGE.COMPANY_SELECTED) || "";
@@ -167,9 +171,8 @@ export default function UserClientList() {
         ) ? (
           <Container>
             {/* {userState.loading && <Loading />} */}
-            <FormTitle style={{ fontSize: "20px" }}>
-              Todos Profissionais
-            </FormTitle>
+
+            <TabTittle tittle="Todos Profissionais" />
 
             {integration ? (
               <>

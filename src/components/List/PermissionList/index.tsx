@@ -11,7 +11,7 @@ import TableContainer from "@mui/material/TableContainer";
 import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import Typography from "@mui/material/Typography";
-import { ThemeProvider } from "@mui/styles";
+import { ThemeProvider } from "@mui/material/styles";
 import { formatDate } from "../../../helpers/date";
 // import Table from "../../Table";
 import ButtonEdit from "../../Button/ButtonEdit";
@@ -105,7 +105,7 @@ const PermissionList = (props: IComponent) => {
                   index: number
                 ) => {
                   return (
-                    <TableRow key={`${name}_${index}`}>
+                    <TableRow key={`${name}_${index}`} hover>
                       <TableCell
                         sx={{ cursor: "pointer" }}
                         align="left"

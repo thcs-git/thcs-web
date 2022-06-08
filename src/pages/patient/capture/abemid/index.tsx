@@ -14,8 +14,8 @@ import {
   Grid,
   Popover,
   IconButton,
-} from "@material-ui/core";
-import { Help as HelpIcon } from "@material-ui/icons";
+} from "@mui/material";
+import { Help as HelpIcon } from "@mui/icons-material";
 
 import { useDispatch, useSelector } from "react-redux";
 import { ApplicationState } from "../../../../store";
@@ -519,7 +519,7 @@ export default function Abemid(props: RouteComponentProps<IPageParams>) {
                 onClick={() => {
                   clearDocument();
                 }}
-                background="primary"
+                // background="primary"
               >
                 Limpar Campos
               </ButtonComponent>
@@ -765,7 +765,7 @@ export default function Abemid(props: RouteComponentProps<IPageParams>) {
             <FormContent>
               <ButtonsContent>
                 <Button
-                  background="default"
+                  // background="default"
                   onClick={() =>
                     history.push(`/patient/capture/${care?._id}/overview`)
                   }
@@ -774,7 +774,7 @@ export default function Abemid(props: RouteComponentProps<IPageParams>) {
                 </Button>
                 <Button
                   disabled={currentStep === 0}
-                  background="default"
+                  // background="default"
                   onClick={handleBackStep}
                 >
                   Anterior
@@ -783,7 +783,10 @@ export default function Abemid(props: RouteComponentProps<IPageParams>) {
                 {currentStep === steps.length - 1 ? (
                   <>
                     {careState.data.capture?.status === "Em Andamento" && (
-                      <Button background="primary" onClick={handleSubmit}>
+                      <Button
+                        //  background="primary"
+                        onClick={handleSubmit}
+                      >
                         Finalizar
                       </Button>
                     )}
@@ -791,7 +794,7 @@ export default function Abemid(props: RouteComponentProps<IPageParams>) {
                 ) : (
                   <Button
                     disabled={currentStep === steps.length - 1}
-                    background="success"
+                    // background="success"
                     onClick={handleNextStep}
                   >
                     Próximo
@@ -975,7 +978,7 @@ export default function Abemid(props: RouteComponentProps<IPageParams>) {
             <FormContent>
               <ButtonsContent>
                 <Button
-                  background="default"
+                  // background="default"
                   onClick={() =>
                     history.push(`/patient/capture/${care?._id}/overview`)
                   }
@@ -984,7 +987,7 @@ export default function Abemid(props: RouteComponentProps<IPageParams>) {
                 </Button>
                 <Button
                   disabled={currentStep === 0}
-                  background="default"
+                  // background="default"
                   onClick={handleBackStep}
                 >
                   Anterior
@@ -993,7 +996,10 @@ export default function Abemid(props: RouteComponentProps<IPageParams>) {
                 {currentStep === steps.length - 1 ? (
                   <>
                     {careState.data.capture?.status === "Em Andamento" && (
-                      <Button background="primary" onClick={handleSubmit}>
+                      <Button
+                        //  background="primary"
+                        onClick={handleSubmit}
+                      >
                         Finalizar
                       </Button>
                     )}
@@ -1001,7 +1007,7 @@ export default function Abemid(props: RouteComponentProps<IPageParams>) {
                 ) : (
                   <Button
                     disabled={currentStep === steps.length - 1}
-                    background="success"
+                    // background="success"
                     onClick={handleNextStep}
                   >
                     Próximo

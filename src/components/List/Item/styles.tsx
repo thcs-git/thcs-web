@@ -1,6 +1,6 @@
-import styled from 'styled-components';
-import { Card, CardContent } from '@material-ui/core';
-import { Link } from 'react-router-dom';
+import styled from "styled-components";
+import { Card, CardContent } from "@mui/material";
+import { Link } from "react-router-dom";
 
 export const ListLink = styled(Link)`
   text-decoration: none;
@@ -40,10 +40,10 @@ export const ListItemContent = styled(CardContent)`
   }
 
   div.listStatus.active {
-    color: var(--success)
+    color: var(--success);
   }
 
   div.listStatus.inactive {
-    color: var(--danger)
+    color: var(--danger);
   }
 `;

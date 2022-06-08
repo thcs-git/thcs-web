@@ -25,9 +25,9 @@ import {
   ListItemText,
 } from "@mui/material";
 
-// import Drawer from "@material-ui/core/Drawer";
-import CssBaseline from "@material-ui/core/CssBaseline";
-// import Divider from "@material-ui/core/Divider";
+// import Drawer from "@mui/material/Drawer";
+import CssBaseline from "@mui/material/CssBaseline";
+// import Divider from "@mui/material/Divider";
 import { TransitionProps } from "@mui/material/transitions";
 import {
   Accordion,
@@ -51,25 +51,25 @@ import {
 } from "@mui/material";
 
 //UTILS
-import clsx from "clsx";
+// import clsx from "clsx";
 /**
  * Icons
  */
-import EditIcon from "@material-ui/icons/Edit";
+import EditIcon from "@mui/icons-material/Edit";
 import MenuIcon from "@mui/icons-material/Menu";
 import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
-import ExitToApp from "@material-ui/icons/ExitToApp";
-import AccountCircle from "@material-ui/icons/AccountCircle";
-import SettingsIcon from "@material-ui/icons/Settings";
-import DashboardIcon from "@material-ui/icons/Dashboard";
-import AssignmentIndIcon from "@material-ui/icons/AssignmentInd";
-import BusinessIcon from "@material-ui/icons/Business";
-import LocationOncon from "@material-ui/icons/LocationOn";
-import PersonIcon from "@material-ui/icons/Person";
-import GroupAddIcon from "@material-ui/icons/GroupAdd";
-import LocalHospital from "@material-ui/icons/LocalHospital";
-import StarRateIcon from "@material-ui/icons/StarRate";
-import FavoriteIcon from "@material-ui/icons/Favorite";
+import ExitToApp from "@mui/icons-material/ExitToApp";
+import AccountCircle from "@mui/icons-material/AccountCircle";
+import SettingsIcon from "@mui/icons-material/Settings";
+import DashboardIcon from "@mui/icons-material/Dashboard";
+import AssignmentIndIcon from "@mui/icons-material/AssignmentInd";
+import BusinessIcon from "@mui/icons-material/Business";
+import LocationOncon from "@mui/icons-material/LocationOn";
+import PersonIcon from "@mui/icons-material/Person";
+import GroupAddIcon from "@mui/icons-material/GroupAdd";
+import LocalHospital from "@mui/icons-material/LocalHospital";
+import StarRateIcon from "@mui/icons-material/StarRate";
+import FavoriteIcon from "@mui/icons-material/Favorite";
 import NotificationsIcon from "@mui/icons-material/Notifications";
 import THCStype2Icon from "../Icons/THCS_Type2";
 import THCStype3Icon from "../Icons/THCS_Type3";
@@ -86,89 +86,22 @@ import Loading from "../Loading";
 
 const drawerWidth = 250;
 
-// const itemsMenu = [
-//   menu.map((item: any) => {
-//     test.push({ title: item.name, route: item.slug, icon: <AssignmentIndIcon style={{ color: '#fff' }} /> })
-//   }),
-//   { title: 'Dashboard', route: '/', icon: <DashboardIcon style={{ color: '#fff' }} /> },
-//   { title: 'Clientes', route: '/customer', icon: <AssignmentIndIcon style={{ color: '#fff' }} /> },
-//   { title: 'Empresas', route: '/company', icon: <BusinessIcon style={{ color: '#fff' }} /> },
-//   { title: 'Meus Profissionais', route: "/user", icon: <PersonIcon style={{ color: '#fff' }} /> },
-//   { title: 'Banco de Talentos', route: "/userdesengaged", icon: <StarRateIcon style={{ color: '#fff' }} /> },
-//   { title: 'Área', route: '/area', icon: <LocationOncon style={{ color: '#fff' }} /> },
-//   { title: 'Pacientes', route: '/patient', icon: <GroupAddIcon style={{ color: '#fff' }} /> },
-//   { title: 'Avaliação', route: '/avaliation', icon: <FavoriteIcon style={{ color: '#fff' }} /> },
-//   { title: 'Atendimento', route: '/care', icon: <LocalHospital style={{ color: '#fff' }} />},
-// ]
-
-// const useStyles = makeStyles((theme: Theme) =>
-//   createStyles({
-//     root: {
-//       display: "flex",
-//       flex: 1,
-//     },
-//     hide: {
-//       display: "none",
-//     },
-//     drawer: {
-//       width: drawerWidth,
-//       flexShrink: 0,
-//       whiteSpace: "nowrap",
-//       background: theme.palette.primary.main,
-//     },
-//     drawerOpen: {
-//       width: drawerWidth,
-//       transition: theme.transitions.create("width", {
-//         easing: theme.transitions.easing.sharp,
-//         duration: theme.transitions.duration.enteringScreen,
-//       }),
-//       background: theme.palette.primary.main,
-//       color: "#fff",
-//     },
-//     drawerClose: {
-//       transition: theme.transitions.create("width", {
-//         easing: theme.transitions.easing.sharp,
-//         duration: theme.transitions.duration.leavingScreen,
-//       }),
-//       overflowX: "hidden",
-//       width: theme.spacing(7) + 1,
-//       [theme.breakpoints.up("sm")]: {
-//         width: theme.spacing(9) + 1,
-//       },
-//       background: theme.palette.primary.main,
-//       color: "#fff",
-//     },
-//     toolbar: {
-//       display: "flex",
-//       alignItems: "center",
-//       justifyContent: "flex-end",
-//       padding: theme.spacing(0, 1),
-//       // paddingTop: "32px",
-
-//       // necessary for content to be below app bar
-//       ...theme.mixins.toolbar,
-//     },
-//     content: {
-//       flex: 1,
-//       padding: theme.spacing(3),
-//       paddingBottom: 20,
-//     },
-//     logOutButton: {
-//       cursor: "pointer",
-//       // marginLeft: 5,
-//     },
-//     indicator: {
-//       borderBottom: "2px solid var(--secondary)",
-//     },
-//     padding: {
-//       padding: theme.spacing(0, 1),
-//     },
-//     customBadge: {
-//       backgroundColor: "var(--secondary)",
-//       color: "white",
-//     },
-//   })
-// );
+const capitalizeText = (words: string) => {
+  if (words) {
+    return words
+      .toLowerCase()
+      .split(" ")
+      .map((text: string) => {
+        return (text = text.charAt(0).toUpperCase() + text.substring(1));
+      })
+      .join(" ");
+  } else return "";
+};
+const getFirstAndLastName = (fullName: string) => {
+  return `${fullName.split(" ")[0]} ${
+    fullName.split(" ")[fullName.split(" ").length - 1]
+  }`;
+};
 
 const Transition = React.forwardRef(function Transition(
   props: TransitionProps & {
@@ -467,146 +400,135 @@ const Sibebar = (props: Props<any>) => {
     return loading;
   }, [applicationState]);
   return (
-    <ThemeProvider theme={theme}>
-      <Box sx={{ display: "flex", flex: 1 }}>
-        {checkLoading() && <Loading />}
-        {/* <CssBaseline /> */}
-        <Drawer
-          variant="permanent"
-          // className={clsx(classes.drawer, {
-          //   [classes.drawerOpen]: open,
-          //   [classes.drawerClose]: !open,
-          // })}
-          // classes={{
-          //   paper: clsx({
-          //     [classes.drawerOpen]: open,
-          //     [classes.drawerClose]: !open,
-          //   }),
-          // }}
-          sx={{
+    <Box sx={{ display: "flex", flex: 1 }}>
+      {checkLoading() && <Loading />}
+      {/* <CssBaseline /> */}
+      <Drawer
+        variant="permanent"
+        sx={{
+          overflowX: open ? "visible" : "hidden",
+          height: "100%",
+          "& .MuiPaper-root": {
             overflowX: open ? "visible" : "hidden",
-            height: "100%",
-            "& .MuiPaper-root": {
-              overflowX: open ? "visible" : "hidden",
-              backgroundColor: theme.palette.primary.main,
-              transition: theme.transitions.create("all"),
-              width: open ? drawerWidth : theme.spacing(9),
-            },
+            backgroundColor: theme.palette.primary.main,
+            transition: theme.transitions.create("all"),
             width: open ? drawerWidth : theme.spacing(9),
-            flexShrink: 0,
-            whiteSpace: "nowrap",
-            background: theme.palette.primary.main,
-            transition: theme.transitions.create("width", {
-              easing: theme.transitions.easing.sharp,
-              duration: theme.transitions.duration.enteringScreen,
-            }),
+          },
+          width: open ? drawerWidth : theme.spacing(9),
+          flexShrink: 0,
+          whiteSpace: "nowrap",
+          background: theme.palette.primary.main,
+          transition: theme.transitions.create("width", {
+            easing: theme.transitions.easing.sharp,
+            duration: theme.transitions.duration.enteringScreen,
+          }),
+        }}
+      >
+        <Box
+          sx={{
+            display: "flex",
+            flexDirection: "column",
+            justifyContent: "center",
+            alignItems: "center",
+            paddingTop: "16px",
+            gap: "10px",
           }}
         >
           <Box
             sx={{
+              marginLeft: `${open ? "32px" : "0"}`,
               display: "flex",
-              flexDirection: "column",
+              flexDirection: "row",
               justifyContent: "center",
               alignItems: "center",
-              paddingTop: "16px",
-              gap: "10px",
+              gap: "8px",
             }}
           >
             <Box
               sx={{
-                marginLeft: `${open ? "32px" : "0"}`,
-                display: "flex",
-                flexDirection: "row",
-                justifyContent: "center",
-                alignItems: "center",
-                gap: "8px",
+                display: `${open ? "initial" : "none"}`,
               }}
             >
-              <Box
-                sx={{
-                  display: `${open ? "initial" : "none"}`,
-                }}
-              >
-                <THCStype2Icon fill={"#f4f7ff"} width={"140px"} />
-              </Box>
-              <IconButton
-                sx={{
-                  marginBottom: `${open ? "22px" : "0"}`,
-                  display: "flex",
-                  justifyContent: "center",
-                  alignItems: "center",
-                  width: `${open ? "48px" : "48px"}`,
-                  height: `${open ? "48px" : "48px"}`,
-                  cursor: "pointer",
-                  "& svg, path": { cursor: "pointer" },
-                  "& svg": { margin: "0px" },
-                  "&:hover": {
-                    backgroundColor: theme.palette.secondary.dark,
-                  },
-                }}
-                onClick={handleDrawerClose}
-              >
-                {open ? (
-                  <ChevronLeftIcon sx={{ color: theme.palette.common.white }} />
-                ) : (
-                  <MenuIcon sx={{ color: theme.palette.common.white }} />
-                )}
-              </IconButton>
+              <THCStype2Icon fill={"#f4f7ff"} width={"140px"} />
             </Box>
+            <IconButton
+              sx={{
+                marginBottom: `${open ? "22px" : "0"}`,
+                display: "flex",
+                justifyContent: "center",
+                alignItems: "center",
+                width: `${open ? "48px" : "48px"}`,
+                height: `${open ? "48px" : "48px"}`,
+                cursor: "pointer",
+                "& svg, path": { cursor: "pointer" },
+                "& svg": { margin: "0px" },
+                "&:hover": {
+                  backgroundColor: theme.palette.secondary.dark,
+                },
+              }}
+              onClick={handleDrawerClose}
+            >
+              {open ? (
+                <ChevronLeftIcon sx={{ color: theme.palette.common.white }} />
+              ) : (
+                <MenuIcon sx={{ color: theme.palette.common.white }} />
+              )}
+            </IconButton>
           </Box>
-          {/* <Divider /> */}
-          <Box
-            sx={{
-              paddingTop: "8px",
-              width: "auto",
-              transition: "0.2s linear",
-              display: "flex",
-              flexDirection: "column",
-              justifyContent: "center",
-              alignItems: "center",
-              // "& svg": { width: `${open ? "100px" : "auto"}` },
-            }}
-          >
-            {open ? (
-              <UserIcon
-                fill={theme.palette.common.white}
-                width={"48px"}
-                height={"48px"}
-              />
-            ) : (
-              <THCStype3Icon
-                fill={theme.palette.common.white}
-                width={"24px"}
-                height={"24px"}
-              />
-            )}
-            <Divider />
-          </Box>
+        </Box>
+        {/* <Divider /> */}
+        <Box
+          sx={{
+            paddingTop: "8px",
+            width: "auto",
+            transition: "0.2s linear",
+            display: "flex",
+            flexDirection: "column",
+            justifyContent: "center",
+            alignItems: "center",
+            // "& svg": { width: `${open ? "100px" : "auto"}` },
+          }}
+        >
+          {open ? (
+            <UserIcon
+              fill={theme.palette.common.white}
+              width={"48px"}
+              height={"48px"}
+            />
+          ) : (
+            <THCStype3Icon
+              fill={theme.palette.common.white}
+              width={"24px"}
+              height={"24px"}
+            />
+          )}
+          <Divider />
+        </Box>
 
-          <UserContent>
-            {open ? (
-              <>
-                <div>
-                  <Grid
-                    container
-                    // spacing={2}
-                    // xs={12}
-                    // md={12}
-                    style={{ justifyContent: "space-evenly" }}
-                  >
-                    <Grid item>
-                      <Typography
-                        variant="h5"
-                        color={"white"}
-                        fontWeight="500"
-                        sx={{
-                          maxWidth: "230px",
-                        }}
-                      >
-                        {username}
-                      </Typography>
-                    </Grid>
-                    {/* <ListItem
+        <UserContent>
+          {open ? (
+            <>
+              <div>
+                <Grid
+                  container
+                  // spacing={2}
+                  // xs={12}
+                  // md={12}
+                  style={{ justifyContent: "space-evenly" }}
+                >
+                  <Grid item>
+                    <Typography
+                      variant="h5"
+                      color={"white"}
+                      fontWeight="700"
+                      sx={{
+                        maxWidth: "230px",
+                      }}
+                    >
+                      {getFirstAndLastName(capitalizeText(username))}
+                    </Typography>
+                  </Grid>
+                  {/* <ListItem
                       sx={{
                         display: "flex",
                         justifyContent: "center",
@@ -641,74 +563,72 @@ const Sibebar = (props: Props<any>) => {
                         </Badge>
                       </Grid>
                     </ListItem> */}
-                  </Grid>
-                  <br />
-                  <div
-                    style={{
-                      display: "flex",
-                      flexDirection: "column",
-                      alignItems: "center",
-                      justifyContent: "center",
+                </Grid>
+                <br />
+                <div
+                  style={{
+                    display: "flex",
+                    flexDirection: "column",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    cursor: "pointer",
+                  }}
+                >
+                  <ListItem
+                    sx={{
                       cursor: "pointer",
+                      "& svg, path, span, div, h4": {
+                        cursor: "pointer",
+                        color: theme.palette.common.white,
+                      },
+                    }}
+                    style={{ padding: 0 }}
+                    onClick={() => {
+                      handleClickOpenDialogCompany();
+                      setOpenModalConfig(true);
                     }}
                   >
-                    <ListItem
-                      sx={{
-                        cursor: "pointer",
-                        "& svg, path, span, div, h4": {
-                          cursor: "pointer",
-                          color: theme.palette.common.white,
-                        },
-                      }}
-                      style={{ padding: 0 }}
-                      onClick={() => {
-                        handleClickOpenDialogCompany();
-                        setOpenModalConfig(true);
-                      }}
-                    >
-                      <BusinessIcon />
-                      <ListItemText
-                        style={{ color: "#ffff", cursor: "pointer" }}
-                      >
-                        <div
-                          style={{
-                            display: "flex",
-                            flexDirection: "column",
-                            alignItems: "center",
-                            justifyContent: "center",
-                          }}
-                        >
-                          <Typography
-                            variant="body2"
-                            sx={{ marginLeft: "10px", cursor: "pointer" }}
-                            fontWeight="600"
-                          >
-                            {handleCustomerName(currentCustomerName)}
-                          </Typography>
-
-                          <Typography
-                            variant="body2"
-                            sx={{ marginLeft: "10px", cursor: "pointer" }}
-                            fontWeight="600"
-                          >
-                            {handleCompanyName(currentCompanyName)}
-                          </Typography>
-                        </div>
-                      </ListItemText>
-                      <EditIcon
+                    <BusinessIcon />
+                    <ListItemText style={{ color: "#ffff", cursor: "pointer" }}>
+                      <div
                         style={{
-                          color: "#fff",
-                          fontSize: "14px",
-                          marginLeft: "10px",
+                          display: "flex",
+                          flexDirection: "column",
+                          alignItems: "center",
+                          justifyContent: "center",
                         }}
-                      />
-                    </ListItem>
-                  </div>
+                      >
+                        <Typography
+                          variant="body2"
+                          sx={{ marginLeft: "10px", cursor: "pointer" }}
+                          fontWeight="600"
+                        >
+                          {handleCustomerName(currentCustomerName)}
+                        </Typography>
+
+                        <Typography
+                          variant="body2"
+                          sx={{ marginLeft: "10px", cursor: "pointer" }}
+                          fontWeight="600"
+                        >
+                          {handleCompanyName(currentCompanyName)}
+                        </Typography>
+                      </div>
+                    </ListItemText>
+                    <EditIcon
+                      style={{
+                        color: "#fff",
+                        fontSize: "14px",
+                        marginLeft: "10px",
+                      }}
+                    />
+                  </ListItem>
                 </div>
-              </>
-            ) : (
-              <>
-                {/* <ListItem
+              </div>
+            </>
+          ) : (
+            <>
+              {/* <ListItem
                   sx={{ width: "auto" }}
                   // className={classes.logOutButton}
                   onClick={() => setOpenModalMessage(true)}
@@ -733,191 +653,189 @@ const Sibebar = (props: Props<any>) => {
                   </Badge>
                 </ListItem> */}
 
-                <br />
-              </>
-            )}
-          </UserContent>
-          <List>
-            {itemsMenu.map((item: any, index: any) => (
-              <>
-                {item.modal ? (
-                  <ListItem
-                    key={index}
-                    onClick={item.modal}
-                    sx={{
-                      backgroundColor: `${
-                        layoutState.data.menuSelected === item.title
-                          ? `${theme.palette.primary.dark}`
-                          : ""
-                      }`,
-                      "&:hover": {
-                        transition: "ease-in-out 200ms",
-                        backgroundColor: `${theme.palette.primary.light}`,
-                        cursor: "pointer",
-                        "& svg, path, span, div, h4": { cursor: "pointer" },
-                      },
-                    }}
-                  >
-                    <ListItemIcon sx={{ marginLeft: "6px" }}>
-                      {item.icon}
-                    </ListItemIcon>
-                    <ListItemText
-                      primary={
-                        <Typography
-                          variant="body1"
-                          sx={{ cursor: "pointer" }}
-                          color={theme.palette.common.white}
-                        >
-                          {item.title}
-                        </Typography>
-                      }
-                      style={{ color: "#ffff", cursor: "pointer" }}
-                    />
-                  </ListItem>
-                ) : (
-                  <ListItem
-                    key={index}
-                    onClick={() => {
-                      history.push(item.route);
-                      dispatch(changeMenuSelected(item.title));
-                    }}
-                    sx={{
-                      backgroundColor: `${
-                        layoutState.data.menuSelected === item.title
-                          ? `${theme.palette.primary.dark}`
-                          : ""
-                      }`,
-                      "&:hover": {
-                        transition: "ease-in-out 200ms",
-                        backgroundColor: `${theme.palette.primary.light}`,
-                        cursor: "pointer",
-                        "& svg, path, span, div, h4": { cursor: "pointer" },
-                      },
-                    }}
-                  >
-                    <ListItemIcon sx={{ marginLeft: "6px" }}>
-                      {item.icon}
-                    </ListItemIcon>
-                    <ListItemText
-                      primary={
-                        <Typography
-                          variant="body1"
-                          sx={{ cursor: "pointer" }}
-                          color={theme.palette.common.white}
-                        >
-                          {item.title}
-                        </Typography>
-                      }
-                    />
-                  </ListItem>
-                )}
-              </>
-            ))}
-          </List>
-          {/*<Divider/>*/}
-          {/*<List disablePadding={true}>*/}
-          {/*  <ListItem className={classes.logOutButton} onClick={() => history.push("/userconfiguration")}>*/}
-          {/*    <ListItemIcon>*/}
-          {/*      <SettingsIcon style={{color: '#fff'}}/>*/}
-          {/*    </ListItemIcon>*/}
-          {/*    <ListItemText primary="Configurações"/>*/}
-          {/*  </ListItem>*/}
-          {/*  <ListItem className={classes.logOutButton} onClick={handleOpenModalLogout}>*/}
-          {/*    <ListItemIcon>*/}
-          {/*      <ExitToApp style={{color: '#fff'}}/>*/}
-          {/*    </ListItemIcon>*/}
-          {/*    <ListItemText primary="Sair"/>*/}
-          {/*  </ListItem>*/}
-          {/*</List>*/}
-        </Drawer>
-        {/* dialog sair */}
-        <Dialog
-          open={openModalLogout}
-          onClose={handleCloseModalLogout}
-          aria-labelledby="alert-dialog-title"
-          aria-describedby="alert-dialog-description"
-        >
-          <DialogTitle id="alert-dialog-title">
-            <Typography
-              variant="h5"
-              color={theme.palette.primary.main}
-              fontWeight="600"
-            >
-              Já vai?
-            </Typography>
-          </DialogTitle>
-          <DialogContent>
-            <DialogContentText id="alert-dialog-description">
-              <Typography variant="body1">
-                Tem certeza que deseja sair do T+HCS?
-              </Typography>
-            </DialogContentText>
-          </DialogContent>
-          <DialogActions>
-            <Button
-              onClick={handleCloseModalLogout}
-              variant="outlined"
-              color="secondary"
-              autoFocus
-            >
-              Não
-            </Button>
-            <Button onClick={handleLogout} variant="outlined" color="secondary">
-              Sim
-            </Button>
-          </DialogActions>
-        </Dialog>
-        {/* dialog mensagens */}
-        <Dialog
-          open={openModalMessage}
-          onClose={() => setOpenModalMessage(false)}
-          aria-labelledby="alert-dialog-title"
-          aria-describedby="alert-dialog-description"
-          TransitionComponent={Transition}
-        >
-          <DialogTitle
-            id="alert-dialog-title"
-            // color={theme.palette.primary.main}
+              <br />
+            </>
+          )}
+        </UserContent>
+        <List>
+          {itemsMenu.map((item: any, index: any) => (
+            <>
+              {item.modal ? (
+                <ListItem
+                  key={index}
+                  onClick={item.modal}
+                  sx={{
+                    backgroundColor: `${
+                      layoutState.data.menuSelected === item.title
+                        ? `${theme.palette.primary.dark}`
+                        : ""
+                    }`,
+                    "&:hover": {
+                      transition: "ease-in-out 200ms",
+                      backgroundColor: `${theme.palette.primary.light}`,
+                      cursor: "pointer",
+                      "& svg, path, span, div, h4": { cursor: "pointer" },
+                    },
+                  }}
+                >
+                  <ListItemIcon sx={{ marginLeft: "6px" }}>
+                    {item.icon}
+                  </ListItemIcon>
+                  <ListItemText
+                    primary={
+                      <Typography
+                        variant="body1"
+                        sx={{ cursor: "pointer" }}
+                        color={theme.palette.common.white}
+                      >
+                        {item.title}
+                      </Typography>
+                    }
+                    style={{ color: "#ffff", cursor: "pointer" }}
+                  />
+                </ListItem>
+              ) : (
+                <ListItem
+                  key={index}
+                  onClick={() => {
+                    history.push(item.route);
+                    dispatch(changeMenuSelected(item.title));
+                  }}
+                  sx={{
+                    backgroundColor: `${
+                      layoutState.data.menuSelected === item.title
+                        ? `${theme.palette.primary.dark}`
+                        : ""
+                    }`,
+                    "&:hover": {
+                      transition: "ease-in-out 200ms",
+                      backgroundColor: `${theme.palette.primary.light}`,
+                      cursor: "pointer",
+                      "& svg, path, span, div, h4": { cursor: "pointer" },
+                    },
+                  }}
+                >
+                  <ListItemIcon sx={{ marginLeft: "6px" }}>
+                    {item.icon}
+                  </ListItemIcon>
+                  <ListItemText
+                    primary={
+                      <Typography
+                        variant="body1"
+                        sx={{ cursor: "pointer" }}
+                        color={theme.palette.common.white}
+                      >
+                        {item.title}
+                      </Typography>
+                    }
+                  />
+                </ListItem>
+              )}
+            </>
+          ))}
+        </List>
+        {/*<Divider/>*/}
+        {/*<List disablePadding={true}>*/}
+        {/*  <ListItem className={classes.logOutButton} onClick={() => history.push("/userconfiguration")}>*/}
+        {/*    <ListItemIcon>*/}
+        {/*      <SettingsIcon style={{color: '#fff'}}/>*/}
+        {/*    </ListItemIcon>*/}
+        {/*    <ListItemText primary="Configurações"/>*/}
+        {/*  </ListItem>*/}
+        {/*  <ListItem className={classes.logOutButton} onClick={handleOpenModalLogout}>*/}
+        {/*    <ListItemIcon>*/}
+        {/*      <ExitToApp style={{color: '#fff'}}/>*/}
+        {/*    </ListItemIcon>*/}
+        {/*    <ListItemText primary="Sair"/>*/}
+        {/*  </ListItem>*/}
+        {/*</List>*/}
+      </Drawer>
+      {/* dialog sair */}
+      <Dialog
+        open={openModalLogout}
+        onClose={handleCloseModalLogout}
+        aria-labelledby="alert-dialog-title"
+        aria-describedby="alert-dialog-description"
+      >
+        <DialogTitle id="alert-dialog-title">
+          <Typography
+            variant="h5"
+            color={theme.palette.primary.main}
+            fontWeight="600"
           >
-            <Typography
-              variant="h5"
-              color={theme.palette.primary.main}
-              fontWeight="600"
-            >
-              Mensagens
+            Já vai?
+          </Typography>
+        </DialogTitle>
+        <DialogContent>
+          <DialogContentText id="alert-dialog-description">
+            <Typography variant="body1">
+              Tem certeza que deseja sair do T+HCS?
             </Typography>
-          </DialogTitle>
-          <DialogContent>
-            <Message />
-          </DialogContent>
-          <DialogActions>
-            <Button
-              onClick={() => {
-                setOpenModalMessage(false);
-                // history.push(`/dashboard`);
-                //location.reload()
-              }}
-              color="secondary"
-              variant="outlined"
-            >
-              Fechar
-            </Button>
-          </DialogActions>
-        </Dialog>
-        <DialogChangeCompany
-          open={openDialogCompany}
-          setOpen={setOpenDialogCompany}
-        />
-
-        <Container
-          sx={{ flex: 1, padding: theme.spacing(3), paddingBottom: 20 }}
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button
+            onClick={handleCloseModalLogout}
+            variant="outlined"
+            color="secondary"
+            autoFocus
+          >
+            Não
+          </Button>
+          <Button onClick={handleLogout} variant="outlined" color="secondary">
+            Sim
+          </Button>
+        </DialogActions>
+      </Dialog>
+      {/* dialog mensagens */}
+      <Dialog
+        open={openModalMessage}
+        onClose={() => setOpenModalMessage(false)}
+        aria-labelledby="alert-dialog-title"
+        aria-describedby="alert-dialog-description"
+        TransitionComponent={Transition}
+      >
+        <DialogTitle
+          id="alert-dialog-title"
+          // color={theme.palette.primary.main}
         >
-          {props.children}
-        </Container>
+          <Typography
+            variant="h5"
+            color={theme.palette.primary.main}
+            fontWeight="600"
+          >
+            Mensagens
+          </Typography>
+        </DialogTitle>
+        <DialogContent>
+          <Message />
+        </DialogContent>
+        <DialogActions>
+          <Button
+            onClick={() => {
+              setOpenModalMessage(false);
+              // history.push(`/dashboard`);
+              //location.reload()
+            }}
+            color="secondary"
+            variant="outlined"
+          >
+            Fechar
+          </Button>
+        </DialogActions>
+      </Dialog>
+      <DialogChangeCompany
+        open={openDialogCompany}
+        setOpen={setOpenDialogCompany}
+      />
 
-        {/* {console.log(openDialogCompany)} */}
+      <Container sx={{ flex: 1, padding: theme.spacing(3), paddingBottom: 20 }}>
+        {props.children}
+      </Container>
 
-        {/* <Dialog
+      {/* {console.log(openDialogCompany)} */}
+
+      {/* <Dialog
         open={openModalConfig}
         // onClose={handleToggleModalConfig}
         aria-labelledby="alert-dialog-title"
@@ -941,8 +859,7 @@ const Sibebar = (props: Props<any>) => {
           </Button>
         </DialogActions>
       </Dialog> */}
-      </Box>
-    </ThemeProvider>
+    </Box>
   );
 };
 

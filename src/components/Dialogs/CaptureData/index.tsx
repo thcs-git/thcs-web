@@ -10,8 +10,8 @@ import {
   RadioGroup,
   FormControlLabel,
   TextField,
-} from "@material-ui/core";
-import { Autocomplete } from "@material-ui/lab";
+  Autocomplete,
+} from "@mui/material";
 
 import { useDispatch, useSelector } from "react-redux";
 import { ApplicationState } from "../../../store";
@@ -129,9 +129,9 @@ export default function CaptureDataDialog(props: IDialogProps) {
                     options={careState.healthInsurance}
                     getOptionLabel={(option) => option.name}
                     value={selectHealhInsurance()}
-                    getOptionSelected={(option, value) =>
-                      option._id === captureData.health_insurance_id
-                    }
+                    // getOptionSelected={(option, value) =>
+                    //   option._id === captureData.health_insurance_id
+                    // }
                     renderInput={(params) => (
                       <TextField
                         {...params}
@@ -184,9 +184,9 @@ export default function CaptureDataDialog(props: IDialogProps) {
                     options={careState.healthPlan}
                     getOptionLabel={(option) => option.name}
                     value={selectHealhPlan()}
-                    getOptionSelected={(option, value) =>
-                      option._id === captureData.health_plan_id
-                    }
+                    // getOptionSelected={(option, value) =>
+                    //   option._id === captureData.health_plan_id
+                    // }
                     renderInput={(params) => (
                       <TextField {...params} label="Plano" variant="outlined" />
                     )}
@@ -214,9 +214,9 @@ export default function CaptureDataDialog(props: IDialogProps) {
                     options={careState.healthSubPlan}
                     getOptionLabel={(option) => option.name}
                     value={selectHealhSubPlan()}
-                    getOptionSelected={(option, value) =>
-                      option._id === captureData.health_sub_plan_id
-                    }
+                    // getOptionSelected={(option, value) =>
+                    //   option._id === captureData.health_sub_plan_id
+                    // }
                     renderInput={(params) => (
                       <TextField
                         {...params}

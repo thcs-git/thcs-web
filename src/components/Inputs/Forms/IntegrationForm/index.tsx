@@ -1,6 +1,6 @@
 import React, { useState, ReactNode, useCallback, useEffect } from "react";
 // MUI
-import { Checkbox, FormControlLabel } from "@material-ui/core";
+import { Checkbox, FormControlLabel } from "@mui/material";
 import Grid from "@mui/material/Grid";
 import Switch from "@mui/material/Switch";
 import Typography from "@mui/material/Typography";

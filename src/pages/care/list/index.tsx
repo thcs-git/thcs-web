@@ -19,12 +19,13 @@ import {
   TableCell,
   TextField,
   Grid,
-} from "@material-ui/core";
+  Typography,
+} from "@mui/material";
 import {
   MoreVert,
   AccountCircle as AccountCircleIcon,
   Visibility as VisibilityIcon,
-} from "@material-ui/icons";
+} from "@mui/icons-material";
 import debounce from "lodash.debounce";
 import _ from "lodash";
 
@@ -56,7 +57,8 @@ import LOCALSTORAGE from "../../../helpers/constants/localStorage";
 import HistoryDialog from "../../../components/Dialogs/History";
 import { checkViewPermission } from "../../../utils/permissions";
 import NoPermission from "../../../components/Erros/NoPermission";
-
+import theme from "../../../theme/theme";
+import TabTittle from "../../../components/Text/TabTittle";
 export default function CouncilList() {
   const history = useHistory();
   const dispatch = useDispatch();
@@ -208,7 +210,7 @@ export default function CouncilList() {
         {checkViewPermission("care", JSON.stringify(rightsOfLayoutState)) ? (
           <Container>
             {/* {careState.loading && <Loading />} */}
-            <FormTitle>Lista de Atendimentos</FormTitle>
+            <TabTittle tittle="Lista de Atendimentos" />
 
             {integration ? (
               <>

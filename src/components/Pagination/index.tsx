@@ -1,7 +1,7 @@
 import React from "react";
 // MUI
 import Typography from "@mui/material/Typography";
-import { ThemeProvider } from "@mui/styles";
+import { ThemeProvider } from "@mui/material/styles";
 import TablePagination from "@mui/material/TablePagination";
 import Box from "@mui/material/Box";
 //Styles

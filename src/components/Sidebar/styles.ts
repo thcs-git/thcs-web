@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import { Accordion } from "@material-ui/core";
+import { Accordion } from "@mui/material";
 
 import { ReactComponent as SollarLogo } from "../../assets/img/marca-sollar-branca.svg";
 

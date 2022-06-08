@@ -1,5 +1,5 @@
 import React, { ComponentProps } from "react";
-import { AccountCircle } from "@material-ui/icons";
+import { AccountCircle } from "@mui/icons-material";
 
 import { PatientInterface } from "../../../store/ducks/patients/types";
 

@@ -30,7 +30,7 @@ import {
   Edit,
   CodeOutlined,
   TrackChangesTwoTone,
-} from "@material-ui/icons";
+} from "@mui/icons-material";
 import {
   Dialog,
   DialogActions,
@@ -45,7 +45,7 @@ import {
   Divider,
   FormControlLabel,
   makeStyles,
-} from "@material-ui/core";
+} from "@mui/material";
 import Backdrop from "@mui/material/Backdrop";
 import Box from "@mui/material/Box";
 import Modal from "@mui/material/Modal";
@@ -67,7 +67,7 @@ import {
   WrapperTitle,
   ButtonStyle,
 } from "./styles";
-import { Theme } from "@material-ui/core/styles";
+import { Theme } from "@mui/material/styles";
 
 import {
   createTheme,
@@ -145,29 +145,8 @@ interface IPropsPermissionFrom {
 }
 
 export default function ClientForm(props: RouteComponentProps<IPageParams>) {
-  // console.log(rights?.split('"'), "rights");
   const history = useHistory();
   const dispatch = useDispatch();
-  const useStyles = makeStyles((theme) => ({
-    cancel: {
-      textTransform: "capitalize",
-      fontSize: "18px",
-      "&:hover": {
-        backgroundColor: "var(--danger-hover)",
-        color: "var(--danger)",
-        borderColor: "var(--danger-hover)",
-      },
-      maxHeight: "38px",
-      borderColor: "var(--danger-hover)",
-      color: "var(--danger-hover)",
-      contrastText: "#fff",
-    },
-    root: {
-      maxWidth: "1280px",
-    },
-  }));
-
-  const classes = useStyles();
 
   const customerState = useSelector(
     (state: ApplicationState) => state.customers

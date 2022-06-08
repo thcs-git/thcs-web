@@ -1,10 +1,10 @@
-import styled from 'styled-components';
-import Card from "@material-ui/core/Card";
-import CardContent from "@material-ui/core/CardContent";
-import Box from "@material-ui/core/Box";
+import styled from "styled-components";
+import Card from "@mui/material/Card";
+import CardContent from "@mui/material/CardContent";
+import Box from "@mui/material/Box";
 
 export const CardIcon = styled(Card)`
-  background-color: #0899BA;
+  background-color: #0899ba;
   border-radius: 20px;
   padding: 0.5rem;
   display: flex;
@@ -28,5 +28,5 @@ export const BoxCustomFoot = styled(Box)`
 export const FeedbackTitle = styled.h2`
   padding-left: 1.25rem;
   padding-top: 0.5rem;
-  margin-bottom: 1.0rem;
+  margin-bottom: 1rem;
 `;

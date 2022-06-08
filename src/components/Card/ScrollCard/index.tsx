@@ -1,12 +1,14 @@
 import React, { useEffect, useState } from "react";
 // import Glider from "react-glider";
 // Icons
-import { ReactComponent as ChartIcon } from "../../../assets/img/icon-prontuario-1.svg";
-import { ReactComponent as PrescriptionIcon } from "../../../assets/img/icon-prescription.svg";
-import { ReactComponent as MeasurementIcon } from "../../../assets/img/icon-measurement.svg";
-import { ReactComponent as AntibioticsIcon } from "../../../assets/img/icon-antibiotics.svg";
-import { ReactComponent as DiagnosisIcon } from "../../../assets/img/icon-diagnosis.svg";
-import { ReactComponent as ExamIcon } from "../../../assets/img/icon-exam.svg";
+import ChartIcon from "../../Icons/Chart";
+import PrescriptionIcon from "../../Icons/Prescription";
+import MeasurementIcon from "../../Icons/measurement";
+import ExamIcon from "../../Icons/ExamsReport";
+import AntibioticsIcon from "../../Icons/Antibiotic";
+import EvolutionIcon from "../../Icons/Evolution";
+
+// import { ReactComponent as DiagnosisIcon } from "../../../assets/img/icon-diagnosis.svg";
 import CheckMedIcon from "../../Icons/CheckMed";
 import { ReactComponent as HistoryIcon } from "../../../assets/img/icon-history.svg";
 import AlergicIcon from "../../Icons/allergic";
@@ -19,10 +21,12 @@ import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
 import ArrowBackIosNewIcon from "@mui/icons-material/ArrowBackIosNew";
 import Backdrop from "@mui/material/Backdrop";
 import CircularProgress from "@mui/material/CircularProgress";
+import Button from "@mui/material/Button";
+import Typography from "@mui/material/Typography";
+import { IconButton } from "@mui/material";
 
 //Styles
 import "./styles";
-
 import {
   ContainerStyle as Container,
   GliderStyle as Glider,
@@ -30,10 +34,7 @@ import {
   FooterCard,
   IconCard,
 } from "./styles";
-import {} from "./styles";
-import Button from "@mui/material/Button";
-import { width } from "@mui/system";
-
+import theme from "../../../theme/theme";
 interface IScroll {
   tittle?: string;
   cards: string[];
@@ -94,22 +95,22 @@ export default function ScrollCard(props: IScroll) {
     if (active === true && existContent) {
       if (report === "Evolução" || report === "Check-in/out") {
         return (
-          <Button
+          <IconButton
             onClick={openFilter}
             sx={{
               padding: "0",
-              minWidth: "30px",
+              width: "2rem",
+              height: "2rem",
               "& svg, path": { cursor: "pointer" },
             }}
           >
-            <FilterListIcon
-              sx={{ color: "var(--secondary)", height: "24px" }}
-            />
-          </Button>
+            <FilterListIcon color="secondary" sx={{ height: "24px" }} />
+          </IconButton>
         );
       }
     }
   }
+  const colorIconsCard = theme.palette.primary.main;
   const cardsItens = cards.map((name: string, index: number) => {
     return (
       <Card
@@ -119,30 +120,34 @@ export default function ScrollCard(props: IScroll) {
           border: `${
             name === selectCard
               ? name === "Alergias" && allergic
-                ? "1px solid var(--danger)"
-                : "1px solid var(--secondary)"
-              : "1px solid #ebebeb"
+                ? `1px solid ${theme.palette.error.main}`
+                : `1px solid ${colorIconsCard}`
+              : `1px solid ${theme.palette.grey[300]}`
           }`,
         }}
       >
         <IconCard>
-          {name === "Check-in/out" && <CheckIcon fill={"#0899BA"} />}
-          {name === "Prescrições" && <PrescriptionIcon />}
-          {name === "Aferições" && <MeasurementIcon />}
-          {name === "Checagens" && <CheckMedIcon fill={"#0899BA"} />}
+          {name === "Check-in/out" && <CheckIcon fill={colorIconsCard} />}
+          {name === "Prescrições" && (
+            <PrescriptionIcon fill={colorIconsCard} height={"50px"} />
+          )}
+          {name === "Aferições" && <MeasurementIcon fill={colorIconsCard} />}
+          {name === "Checagens" && <CheckMedIcon fill={colorIconsCard} />}
           {name === "Alergias" && (
             <>
               {loadingCard ? (
-                <CircularProgress sx={{ color: "var(--secondary)" }} />
+                <CircularProgress color="secondary" />
               ) : (
-                <AlergicIcon fill={allergic ? "#FF6565" : "#0899BA"} />
+                <AlergicIcon
+                  fill={allergic ? theme.palette.error.main : colorIconsCard}
+                />
               )}
             </>
           )}
-          {name === "Antibióticos" && <AntibioticsIcon />}
-          {name === "Evolução" && <DiagnosisIcon />}
-          {name === "Exames" && <ExamIcon />}
-          {name === "Atestados" && <AttestIcon fill={"#0899BA"} />}
+          {name === "Antibióticos" && <AntibioticsIcon fill={colorIconsCard} />}
+          {name === "Evolução" && <EvolutionIcon fill={colorIconsCard} />}
+          {name === "Exames" && <ExamIcon fill={colorIconsCard} />}
+          {name === "Atestados" && <AttestIcon fill={colorIconsCard} />}
         </IconCard>
         <FooterCard
           className="FoorterCard"
@@ -150,72 +155,78 @@ export default function ScrollCard(props: IScroll) {
             backgroundColor: `${
               name === selectCard
                 ? name === "Alergias" && allergic
-                  ? "var(--danger)"
-                  : "var(--secondary) "
-                : "var(--gray-light);"
+                  ? theme.palette.error.main
+                  : colorIconsCard
+                : theme.palette.grey[300]
             }`,
-            color: `${name === selectCard ? "var(--white)" : ""}`,
           }}
         >
-          {name}
+          <Typography
+            sx={{ cursor: "pointer" }}
+            fontSize={"0.9rem"}
+            color={`${
+              name === selectCard
+                ? theme.palette.common.white
+                : theme.palette.grey[700]
+            }`}
+          >
+            {name}
+          </Typography>
         </FooterCard>
       </Card>
     );
   });
   return (
-    <>
-      <Box sx={{ padding: "0px 40px 0 40px" }}>
-        <Container>
-          <Box
-            sx={{
-              display: "flex",
-              justifyContent: "space-between",
-              alignItems: "center",
-              paddingTop: "14px",
-              gap: "8px",
-              fontWeight: "bold",
-              color: "var(--secondary)",
-            }}
+    <Container>
+      <Box
+        sx={{
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "center",
+          paddingTop: "14px",
+          gap: "8px",
+          // fontWeight: "bold",
+        }}
+      >
+        <Box sx={{ display: "flex", gap: "8px" }}>
+          <Box sx={{ height: "24px" }}>
+            {iconName === "ChartIcon" && (
+              <ChartIcon fill={theme.palette.primary.main} height="24px" />
+            )}
+          </Box>
+          <Typography
+            variant="body1"
+            fontWeight={600}
+            color={theme.palette.primary.main}
           >
-            <Box sx={{ display: "flex", gap: "8px" }}>
-              <Box sx={{ height: "24px" }}>
-                {iconName === "ChartIcon" && (
-                  <ChartIcon style={{ height: "24px" }} />
-                )}
-              </Box>
-              <Box>{tittle && tittle}</Box>
-            </Box>
+            {tittle && tittle}
+          </Typography>
+        </Box>
 
-            {handlerShowFilter(reportType, reportActive)}
-          </Box>
-          <Box className="wrapperScroll" sx={{ maxWidth: "1000px" }}>
-            <Box
-              id="glider-prev-1"
-              className="glider-prev"
-              sx={{ width: "125px" }}
-            >
-              <ArrowBackIosNewIcon sx={{ width: "30px", height: "auto" }} />
-            </Box>
-            <Glider
-              draggable
-              hasArrows={true}
-              scrollToSlide={1}
-              slidesToShow={5}
-              duration={2}
-              slidesToScroll={1}
-              arrows={{
-                next: ".glider-next",
-                prev: ".glider-prev",
-              }}
-            >
-              {cardsItens}
-            </Glider>
-            <Box id="glider-next-1" className="glider-next">
-              <ArrowForwardIosIcon sx={{ width: "30px", height: "auto" }} />
-            </Box>
-          </Box>
-        </Container>
+        {handlerShowFilter(reportType, reportActive)}
       </Box>
-    </>
+      <Box className="wrapperScroll">
+        <Box id="glider-prev-1" className="glider-prev" sx={{ width: "125px" }}>
+          <ArrowBackIosNewIcon sx={{ width: "30px", height: "auto" }} />
+        </Box>
+        <Glider
+          draggable
+          hasArrows={true}
+          scrollToSlide={0}
+          slidesToShow={5} // cinco é um numero mágico cara
+          duration={2}
+          slidesToScroll={"auto"}
+          arrows={{
+            next: ".glider-next",
+            prev: ".glider-prev",
+          }}
+        >
+          {cardsItens}
+        </Glider>
+        <Box id="glider-next-1" className="glider-next">
+          <ArrowForwardIosIcon sx={{ width: "30px", height: "auto" }} />
+        </Box>
+      </Box>
+    </Container>
   );
 }

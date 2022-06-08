@@ -1,10 +1,10 @@
 import styled from "styled-components";
 import { styled as styledMui } from "@mui/system";
 
-import AppBar from "@material-ui/core/AppBar";
+import AppBar from "@mui/material/AppBar";
 import Tabs from "@mui/material/Tabs";
 import Tab, { TabProps } from "@mui/material/Tab";
-import { FormControl } from "@material-ui/core";
+import { FormControl } from "@mui/material";
 import Box from "@mui/material/Box";
 import Button, { ButtonProps } from "@mui/material/Button";
 import theme from "../../theme/theme";
@@ -157,7 +157,7 @@ export const TabNavItemPermission = styledMui(Tab)<TabProps>(({ theme }) => ({
   cursor: "pointer",
   boxShadow: "none",
   borderRadius: "30px",
-  color: "var(--white)",
+  color: theme.palette.common.white,
   marginRight: "4px",
   fontSize: "11px",
   height: "32px",
@@ -165,8 +165,8 @@ export const TabNavItemPermission = styledMui(Tab)<TabProps>(({ theme }) => ({
 
   "&.active": {
     backgroundColor: theme.palette.secondary.main,
-    border: "1px solid #0786a3",
-    color: "var(--white)",
+    border: `1px solid ${theme.palette.primaryLighter.main}`,
+    color: theme.palette.common.white,
   },
   "&.desactive": {
     border: `1px solid ${theme.palette.text.secondary}`,

@@ -1,7 +1,7 @@
 import React from "react";
 // redux e sagas
 //MUI
-import { makeStyles, Theme, withStyles } from "@material-ui/core/styles";
+import { makeStyles, Theme, withStyles } from "@mui/material/styles";
 
 import {
   Checkbox,
@@ -32,38 +32,27 @@ interface Iprops {
   autoCompleteSetting?: any;
 }
 
-const useStyles = makeStyles((theme: Theme) => ({
-  root: {
-    flexGrow: 1,
-    width: "100%",
-    backgroundColor: theme.palette.background.paper,
-  },
+// const useStyles = makeStyles((theme: Theme) => ({
+//   root: {
+//     flexGrow: 1,
+//     width: "100%",
+//     backgroundColor: theme.palette.background.paper,
+//   },
 
-  formLabel: {
-    color: "var(--black)",
-    "&.Mui-disabled": {
-      color: "var(--gray-dark)",
-    },
-    "&.Mui-focused": {
-      color: "var(--primary)",
-    },
-    // '&.Mui-disabled:hover': { background:theme.palette.secondary.main },
-  },
-}));
-
-const CustomCheckbox = withStyles({
-  root: {
-    color: "var(--gray)",
-    "&$checked": {
-      color: "var(--action)",
-    },
-  },
-  checked: {},
-})((props: CheckboxProps) => <Checkbox color="default" {...props} />);
+//   formLabel: {
+//     color: "var(--black)",
+//     "&.Mui-disabled": {
+//       color: "var(--gray-dark)",
+//     },
+//     "&.Mui-focused": {
+//       color: "var(--primary)",
+//     },
+//     // '&.Mui-disabled:hover': { background:theme.palette.secondary.main },
+//   },
+// }));
 
 const CheckListForm = (props: Iprops) => {
   const { state, setState, rows, mode, checkList } = props;
-  const classes = useStyles();
   function handleChecked(name: string, crud: string) {
     return _.indexOf(state.rights, `${name}.${crud}`) > -1;
   }

@@ -6,6 +6,7 @@ import DialogActions from "@mui/material/DialogActions";
 import Button from "@mui/material/Button";
 import Box from "@mui/material/Box";
 import Backdrop from "@mui/material/Backdrop";
+import { DialogTitle, DialogContent, Typography, Grid } from "@mui/material";
 
 // IMG
 import { ReactComponent as IconPatient } from "../../../../assets/img/icon-pacient.svg";
@@ -14,10 +15,12 @@ import { ReactComponent as IconChart } from "../../../../assets/img/icon-prontua
 import { ReactComponent as IconHospitalization } from "../../../../assets/img/icon-plano-internacoes.svg";
 import { ReactComponent as IconTeam } from "../../../../assets/img/icon-equipe-medica.svg";
 import HomeIcon from "@mui/icons-material/Home";
-
+import PatientIcon from "../../../Icons/Patient";
+import HospitalizationIcon from "../../../Icons/Hospitalization";
+import TeamIcon from "../../../Icons/Team";
 //Styles
 import { WrapperDialog } from "./styles";
-
+import theme from "../../../../theme/theme";
 // helps
 import QRCode from "react-qr-code";
 import _ from "lodash";
@@ -26,7 +29,6 @@ import { formatDate } from "../../../../helpers/date";
 // types
 import { QrCodeState } from "../../../../store/ducks/qrCode/types";
 import { CareState } from "../../../../store/ducks/cares/types";
-import { Grid } from "@mui/material";
 
 interface IDialogProps {
   tittle: { card: string; info?: string[] };
@@ -52,7 +54,6 @@ interface ITeam {
   function: string;
   user_id: string;
 }
-
 export default function DialogInfo(props: IDialogProps) {
   const { tittle, content, openDialog, setOpenDialog, integration } = props;
 
@@ -63,13 +64,15 @@ export default function DialogInfo(props: IDialogProps) {
     setOpenDialog(false);
   };
   const capitalizeText = (words: string) => {
-    return words
-      .toLowerCase()
-      .split(" ")
-      .map((text: string) => {
-        return (text = text.charAt(0).toUpperCase() + text.substring(1));
-      })
-      .join(" ");
+    if (words) {
+      return words
+        .toLowerCase()
+        .split(" ")
+        .map((text: string) => {
+          return (text = text.charAt(0).toUpperCase() + text.substring(1));
+        })
+        .join(" ");
+    } else return "";
   };
 
   const getFirstAndLastName = (fullName: string) => {
@@ -87,55 +90,42 @@ export default function DialogInfo(props: IDialogProps) {
   const namePatient = (data: IContent) => {
     const name = data.rows.map(({ name, value }: IRows) => {
       if (name === "Nome" && tittle.card !== "Plano e Internação")
-        return (
-          <Box
-            style={{
-              fontSize: "20px",
-              color: "var(--primary)",
-              fontWeight: "bold",
-            }}
-          >
-            {value}
-          </Box>
-        );
+        return capitalizeText(value);
       if (
         name === "Número do Atendimento" &&
         tittle.card === "Plano e Internação"
       ) {
-        return (
-          <Box
-            style={{
-              fontSize: "20px",
-              color: "var(--primary)",
-              fontWeight: "bold",
-            }}
-          >
-            {`Atendimento ${value}`}
-          </Box>
-        );
+        return `Atendimento ${value}`;
       }
     });
     return name;
   };
   function iconHeader(title: string) {
+    const colorIcons = theme.palette.primary.main;
     if (title === "Dados Pessoais")
-      return <IconPatient style={{ width: "16px" }} />;
+      return (
+        <PatientIcon
+          fill={theme.palette.common.white}
+          circleColor={colorIcons}
+          width="16px"
+        />
+      );
 
     if (title === "Dados do Plano")
-      return <IconHospitalization style={{ width: "16px" }} />;
+      return <HospitalizationIcon fill={colorIcons} width="16px" />;
 
     if (title === "Dados de atendimento")
-      return <HomeIcon style={{ width: "16px", color: "var(--secondary)" }} />;
+      return <HomeIcon color="primary" sx={{ width: "16px" }} />;
 
     if (title === "Equipe Multidisciplinar")
-      return <IconTeam style={{ width: "16px" }} />;
+      return <TeamIcon fill={colorIcons} width="16px" />;
   }
 
   const boxData = (name: string, value: any) => {
     return (
-      <Box style={{ color: "var(--black)", marginLeft: "24px" }}>
+      <Typography color="grey[300]" sx={{ marginLeft: "24px" }}>
         {name}: {value}
-      </Box>
+      </Typography>
     );
   };
   const personalData = (data: IContent) => {
@@ -235,10 +225,12 @@ export default function DialogInfo(props: IDialogProps) {
     let team = arr.map((professional: ITeam, index: number) => {
       if (professional.name)
         return (
-          <Box key={index}>
-            {" "}
-            - {professional.name} {"(" + professional.function + ")"}
-          </Box>
+          <Typography key={index}>
+            {/* {`- ${professional.name} ( ${professional.function} )`} */}
+            {`- ${capitalizeText(professional.function)} ${capitalizeText(
+              professional.name
+            )}`}
+          </Typography>
         );
     });
 
@@ -285,55 +277,41 @@ export default function DialogInfo(props: IDialogProps) {
   return (
     <WrapperDialog>
       <Dialog open={openDialog} onClose={handleClose}>
-        <Box
-          style={{
-            padding: "21px 21px 8px 21px",
-            fontSize: "14px",
-            minWidth: "526px",
-            lineHeight: "24px",
-          }}
-        >
-          <Box
-            style={{
-              display: "flex",
-              justifyContent: "space-between",
-              alignItems: "center",
-            }}
-          >
+        <DialogTitle>
+          <Typography color="primary.main" variant="h5" fontWeight={600}>
             {namePatient(content)}
-          </Box>
-
-          {tittle.info?.map((tittleInfo: string) => {
+          </Typography>
+        </DialogTitle>
+        <DialogContent>
+          {tittle.info?.map((tittleInfo: string, index: number) => {
             return (
               <>
                 <Box
-                  style={{
+                  sx={{
                     display: "flex",
                     alignItems: "center",
-                    gap: "9px",
-                    margin: "24px auto 8px",
+                    gap: "8px",
+                    marginTop: index === 0 ? "0" : "16px",
+                    marginBottom: "8px",
                   }}
                 >
                   {iconHeader(tittleInfo)}
 
-                  <Box sx={{ fontWeight: "bold" }}>{tittleInfo} </Box>
+                  <Typography fontWeight={600}>{tittleInfo} </Typography>
                 </Box>
                 {dataList(tittleInfo)}
               </>
             );
           })}
-        </Box>
+        </DialogContent>
 
         <DialogActions style={{ textAlign: "right" }}>
           <Button
             onClick={handleClose}
-            style={{
-              fontWeight: "bold",
-              color: "var(--secondary)",
-              padding: "8px 16px",
-            }}
+            sx={{ fontWeight: "700" }}
+            color="primary"
           >
-            FECHAR
+            Fechar
           </Button>
         </DialogActions>
       </Dialog>

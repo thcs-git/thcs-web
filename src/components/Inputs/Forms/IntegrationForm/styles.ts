@@ -1,6 +1,6 @@
 import styled from "styled-components";
 
-import { FormControl } from "@material-ui/core";
+import { FormControl } from "@mui/material";
 import TextField from "@mui/material/TextField";
 
 export const FormGroupSection = styled(FormControl)`

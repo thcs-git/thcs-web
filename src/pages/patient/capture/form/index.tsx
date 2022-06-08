@@ -15,7 +15,9 @@ import {
   TableBody,
   Checkbox,
   Tooltip,
-} from "@material-ui/core";
+  Alert,
+  AlertTitle,
+} from "@mui/material";
 import {
   Create as CreateIcon,
   Search as SearchIcon,
@@ -23,8 +25,7 @@ import {
   Visibility,
   Check as CheckIcon,
   Error,
-} from "@material-ui/icons";
-import { Alert, AlertTitle } from "@material-ui/lab";
+} from "@mui/icons-material";
 import InputMask from "react-input-mask";
 
 import { useDispatch, useSelector } from "react-redux";
@@ -313,7 +314,10 @@ export default function PatientCaptureForm(props: RouteComponentProps) {
                     />
                   )}
                 </InputMask>
-                <Button background="success" size="large">
+                <Button
+                  // background="success"
+                  size="large"
+                >
                   <SearchIcon />
                 </Button>
               </SearchContent>
@@ -345,7 +349,7 @@ export default function PatientCaptureForm(props: RouteComponentProps) {
 
                     <ButtonsContent>
                       <Button
-                        background="default"
+                        // background="default"
                         onClick={() => {
                           history.push(`/patient/${patient?._id}/edit`);
                         }}
@@ -367,7 +371,7 @@ export default function PatientCaptureForm(props: RouteComponentProps) {
                     <br />
                     <div>
                       <Button
-                        background="default"
+                        // background="default"
                         onClick={() => toggleModalCares()}
                       >
                         Visualizar
@@ -380,7 +384,7 @@ export default function PatientCaptureForm(props: RouteComponentProps) {
               <Grid item md={12} xs={12}>
                 <ButtonsContent>
                   <Button
-                    background="success"
+                    // background="success"
                     onClick={() => setCaptureModalModalOpen(true)}
                     disabled={careState.list.data.length > 0}
                   >
@@ -444,13 +448,13 @@ export default function PatientCaptureForm(props: RouteComponentProps) {
               {selectedPatient && (
                 <ButtonsContent>
                   <Button
-                    background="default"
+                    // background="default"
                     onClick={() => handleOpenModalCancel()}
                   >
                     Voltar
                   </Button>
                   <Button
-                    background="success"
+                    // background="success"
                     onClick={() => setCaptureModalModalOpen(true)}
                   >
                     Selecionar Paciente

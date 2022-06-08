@@ -15,8 +15,9 @@ import {
   DialogContentText,
   DialogTitle,
   Tooltip,
-} from "@material-ui/core";
-import { MoreVert } from "@material-ui/icons";
+  Typography,
+} from "@mui/material";
+import { MoreVert } from "@mui/icons-material";
 import debounce from "lodash.debounce";
 
 import { UserInterface } from "../../../store/ducks/users/types";
@@ -35,15 +36,15 @@ import Sidebar from "../../../components/Sidebar";
 import SearchComponent from "../../../components/List/Search";
 import Table from "../../../components/Table";
 
-import AddIcon from "@material-ui/icons/Add";
+import AddIcon from "@mui/icons-material/Add";
 
-import MoreHorizTwoToneIcon from "@material-ui/icons/MoreHorizTwoTone";
+import MoreHorizTwoToneIcon from "@mui/icons-material/MoreHorizTwoTone";
 
 import { FormTitle } from "../../../styles/components/Form";
 
-import ListItem from "@material-ui/core/ListItem";
-import ListItemIcon from "@material-ui/core/ListItemIcon";
-import ListItemText from "@material-ui/core/ListItemText";
+import ListItem from "@mui/material/ListItem";
+import ListItemIcon from "@mui/material/ListItemIcon";
+import ListItemText from "@mui/material/ListItemText";
 import {
   List,
   ListLink,
@@ -66,6 +67,8 @@ import _ from "lodash";
 import SESSIONSTORAGE from "../../../helpers/constants/sessionStorage";
 import { checkViewPermission } from "../../../utils/permissions";
 import NoPermission from "../../../components/Erros/NoPermission";
+import theme from "../../../theme/theme";
+import TabTittle from "../../../components/Text/TabTittle";
 const token = window.localStorage.getItem("token");
 const currentCompany =
   localStorage.getItem(LOCALSTORAGE.COMPANY_SELECTED) || "";
@@ -175,7 +178,7 @@ export default function UserList() {
         {checkViewPermission("user", JSON.stringify(rightsOfLayoutState)) ? (
           <Container>
             {/* {userState.loading && <Loading />} */}
-            <FormTitle>Meus Profissionais</FormTitle>
+            <TabTittle tittle="Meus Profissionais" />
 
             {integration ? (
               <>

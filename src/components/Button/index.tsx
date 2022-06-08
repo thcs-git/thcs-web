@@ -1,7 +1,6 @@
-
 // import { HTMLProps } from 'react';
-import styled, { StyledComponent } from 'styled-components';
-import Button, { ButtonProps } from '@material-ui/core/Button';
+import styled, { StyledComponent } from "styled-components";
+import Button, { ButtonProps } from "@mui/material/Button";
 
 // interface ButtonInterface extends ButtonProps {
 //   size?: string
@@ -13,8 +12,8 @@ const ButtonComponent = styled(Button)`
   margin-bottom: 8px;
   max-width: 19rem;
   display: block; */
-  color: ${(props) => props.color || 'rgb(118, 118, 118)'};
-  width: ${(props) => props.size || '100%'};
+  color: ${(props) => props.color || "rgb(118, 118, 118)"};
+  width: ${(props) => props.size || "100%"};
 `;
 
 export default ButtonComponent;

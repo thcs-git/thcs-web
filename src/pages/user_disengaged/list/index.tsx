@@ -22,8 +22,8 @@ import {
   DialogTitle,
   Grid,
   Tooltip,
-} from "@material-ui/core";
-import { MoreVert } from "@material-ui/icons";
+} from "@mui/material";
+import { MoreVert } from "@mui/icons-material";
 import { UserInterface, UserListItems } from "../../../store/ducks/users/types";
 import { ApplicationState } from "../../../store";
 import PaginationComponent from "../../../components/Pagination";
@@ -39,13 +39,13 @@ import {
 import debounce from "lodash.debounce";
 import { formatDate } from "../../../helpers/date";
 import { searchUserDisengaged } from "../../../store/ducks/users/sagas";
-import ListItem from "@material-ui/core/ListItem";
-import ListItemIcon from "@material-ui/core/ListItemIcon";
-import ListItemText from "@material-ui/core/ListItemText";
-import AddIcon from "@material-ui/icons/Add";
-import { TransitionProps } from "@material-ui/core/transitions";
-import Slide from "@material-ui/core/Slide";
-import MoreHorizTwoToneIcon from "@material-ui/icons/MoreHorizTwoTone";
+import ListItem from "@mui/material/ListItem";
+import ListItemIcon from "@mui/material/ListItemIcon";
+import ListItemText from "@mui/material/ListItemText";
+import AddIcon from "@mui/icons-material/Add";
+import { TransitionProps } from "@mui/material/transitions";
+import Slide from "@mui/material/Slide";
+import MoreHorizTwoToneIcon from "@mui/icons-material/MoreHorizTwoTone";
 
 export default function UserDisengaged() {
   const history = useHistory();

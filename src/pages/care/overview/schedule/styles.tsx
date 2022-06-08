@@ -1,8 +1,8 @@
-import styled, { css } from 'styled-components';
-import { List } from '@material-ui/core';
+import styled, { css } from "styled-components";
+import { List } from "@mui/material";
 
 interface IEventStatus {
-  color: 'complete' | 'late' | 'future' | 'visiting';
+  color: "complete" | "late" | "future" | "visiting";
 }
 
 const statusColor: any = {
@@ -16,7 +16,7 @@ const statusColor: any = {
     background: var(--gray);
   `,
   visiting: css`
-   background: var(--warning);
+    background: var(--warning);
   `,
 };
 
@@ -26,14 +26,14 @@ export const CardPlantonistas = styled.div`
 
   .diurno-icon {
     path.a {
-      stroke: #EBB500;
+      stroke: #ebb500;
       fill: none;
     }
   }
 
   .noturno-icon {
     path.a {
-      stroke: #6B4FC9;
+      stroke: #6b4fc9;
       fill: none;
     }
   }
@@ -48,22 +48,25 @@ export const ContainerSearch = styled.div`
     width: 100%;
   }
 
-  ::-webkit-input-placeholder { /* Chrome/Opera/Safari */
+  ::-webkit-input-placeholder {
+    /* Chrome/Opera/Safari */
     font-size: 8px;
   }
-  ::-moz-placeholder { /* Firefox 19+ */
+  ::-moz-placeholder {
+    /* Firefox 19+ */
     font-size: 8px;
   }
-  :-ms-input-placeholder { /* IE 10+ */
+  :-ms-input-placeholder {
+    /* IE 10+ */
     font-size: 8px;
   }
-  :-moz-placeholder { /* Firefox 18- */
+  :-moz-placeholder {
+    /* Firefox 18- */
     font-size: 8px;
   }
 `;
 
 export const ScheduleItem = styled.div`
-
   display: flex;
   flex-direction: row;
   align-items: center;
@@ -81,7 +84,7 @@ export const ScheduleItem = styled.div`
 
     path.a {
       stroke: none;
-      fill: #FF6565;
+      fill: #ff6565;
     }
   }
 
@@ -98,7 +101,7 @@ export const ScheduleItem = styled.div`
 
     path.a {
       stroke: none;
-      fill: #F9CA24;
+      fill: #f9ca24;
     }
   }
 
@@ -111,7 +114,7 @@ export const ScheduleItem = styled.div`
 
     path.a {
       stroke: none;
-      fill: #4FC66A;
+      fill: #4fc66a;
     }
   }
 
@@ -124,7 +127,7 @@ export const ScheduleItem = styled.div`
 
     path.a {
       stroke: none;
-      fill: #CCCCCC;
+      fill: #cccccc;
     }
   }
 
@@ -139,7 +142,7 @@ export const ScheduleItem = styled.div`
 
     /* font-size: 10px; */
 
-    background: var(--primary)
+    background: var(--primary);
   }
 
   & > .scheduleText {
@@ -148,7 +151,7 @@ export const ScheduleItem = styled.div`
 `;
 
 export const ScheduleEventStatus = styled.div<IEventStatus>`
-  ${(props: IEventStatus) => statusColor[props.color || 'var(--gray)']};
+  ${(props: IEventStatus) => statusColor[props.color || "var(--gray)"]};
 
   width: 10px;
   height: 10px;
@@ -180,7 +183,6 @@ export const ScheduleEventStatus = styled.div<IEventStatus>`
       box-shadow: 0 0 0 0 rgba(0, 0, 0, 0);
     }
   }
-
 `;
 
 export const CardTitle = styled.div`
@@ -236,7 +238,7 @@ export const CardTitle = styled.div`
 
   & > svg {
     margin-right: 10px;
-    color: var(--secondary)
+    color: var(--secondary);
   }
 
   & > h4 {
@@ -246,7 +248,7 @@ export const CardTitle = styled.div`
 
 export const CalendarContent = styled.div`
   & td.fc-day-today {
-    background-color: #EBF3F5 !important;
+    background-color: #ebf3f5 !important;
 
     a.fc-daygrid-day-number {
       color: var(--primary);
@@ -254,12 +256,14 @@ export const CalendarContent = styled.div`
     }
   }
 
-  & .fc .fc-button-primary:not(:disabled):active, .fc .fc-button-primary:not(:disabled).fc-button-active {
+  & .fc .fc-button-primary:not(:disabled):active,
+  .fc .fc-button-primary:not(:disabled).fc-button-active {
     background-color: var(--primary);
     border-color: var(--primary);
   }
 
-  & .fc .fc-button-primary:not(:disabled), .fc .fc-button-primary:not(:disabled) {
+  & .fc .fc-button-primary:not(:disabled),
+  .fc .fc-button-primary:not(:disabled) {
     background-color: var(--secondary);
     border-color: var(--secondary);
   }
@@ -268,9 +272,10 @@ export const CalendarContent = styled.div`
     background-color: var(--secondary);
   }
 
-  & .fc-prev-button.fc-button, & .fc-next-button.fc-button {
-    background-color: #EFF1F2 !important;
-    border-color: #EFF1F2 !important;
+  & .fc-prev-button.fc-button,
+  & .fc-next-button.fc-button {
+    background-color: #eff1f2 !important;
+    border-color: #eff1f2 !important;
     color: var(--secondary) !important;
   }
 `;

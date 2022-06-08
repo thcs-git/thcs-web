@@ -1,5 +1,5 @@
-import styled from 'styled-components';
-import { Stepper, Step } from '@material-ui/core';
+import styled from "styled-components";
+import { Stepper, Step } from "@mui/material";
 
 export const StepTitle = styled.h3`
   margin-bottom: 30px;
@@ -26,5 +26,4 @@ export const StepComponent = styled(Step)`
     color: var(--success);
     cursor: pointer;
   }
-
 `;

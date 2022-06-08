@@ -2,16 +2,23 @@ import React, { useState } from "react";
 // components
 import DialogInfo from "../../Dialogs/Card/Info";
 // MUI
-import Box from "@mui/material/Box";
+import { Box, Grid, IconButton, Paper, Typography } from "@mui/material";
+// icons
+import VisibilityIcon from "@mui/icons-material/Visibility";
 //style
 import {
-  GridStyle as Grid,
+  GridStyle,
+  GridWrapper,
   TextRed,
   WrapperHeader,
   WrapperTittle,
   BoxContainer,
 } from "./styles";
+import theme from "../../../theme/theme";
 // IMG
+import PersonDataIcon from "../../Icons/PersonDada";
+import HospitalizationIcon from "../../Icons/Hospitalization";
+import TeamIcon from "../../Icons/Team";
 import { ReactComponent as IconChart } from "../../../assets/img/icon-data.svg";
 import { ReactComponent as IconEye } from "../../../assets/img/Icon ionic-md-eye.svg";
 import { ReactComponent as IconHospitalization } from "../../../assets/img/icon-plano-internacoes.svg";
@@ -51,7 +58,7 @@ interface ITeam {
   function: string;
   user_id: string;
 }
-
+const colorText = theme.palette.grey[800];
 export default function CardInfo(props: ICardInfo) {
   const { content, gridProps, tittle, alergicIs, integration } = props;
   const { careState } = content;
@@ -70,7 +77,11 @@ export default function CardInfo(props: ICardInfo) {
         case "Tipo sanguíneo":
           return boxData(name, value);
         case "Doador de órgãos":
-          return <Box key={index}>{`${name}: ${value ? "Sim" : "Não"}`}</Box>;
+          return (
+            <Typography color={colorText} key={index}>{`${name}: ${
+              value ? "Sim" : "Não"
+            }`}</Typography>
+          );
         case "Gênero":
           return boxData(name, value);
       }
@@ -80,19 +91,21 @@ export default function CardInfo(props: ICardInfo) {
 
   const boxData = (name: string, value: any) => {
     return (
-      <Box>
+      <Typography color={colorText}>
         {name}: {value}
-      </Box>
+      </Typography>
     );
   };
   const capitalizeText = (words: string) => {
-    return words
-      .toLowerCase()
-      .split(" ")
-      .map((text: string) => {
-        return (text = text.charAt(0).toUpperCase() + text.substring(1));
-      })
-      .join(" ");
+    if (words) {
+      return words
+        .toLowerCase()
+        .split(" ")
+        .map((text: string) => {
+          return (text = text.charAt(0).toUpperCase() + text.substring(1));
+        })
+        .join(" ");
+    } else return "";
   };
 
   const getFirstAndLastName = (fullName: string) => {
@@ -114,11 +127,17 @@ export default function CardInfo(props: ICardInfo) {
       switch (name) {
         case "Número do Atendimento":
           return (
-            <Box style={{ fontWeight: "bold" }}>{`${name}: ${value}`}</Box>
+            <Typography
+              color={colorText}
+              fontWeight={500}
+            >{`${name}: ${value}`}</Typography>
           );
         case "Médico Assistente":
           return (
-            <Box style={{ fontWeight: "bold" }}>{`${name}: ${value}`}</Box>
+            <Typography
+              color={colorText}
+              fontWeight={500}
+            >{`${name}: ${value}`}</Typography>
           );
         case "Tipo de internação":
           return boxData(name, value);
@@ -172,9 +191,11 @@ export default function CardInfo(props: ICardInfo) {
       if (index % 2 !== 0) {
         if (item.name) {
           return (
-            <Box key={index}>
-              - {item.name} {"(" + item.function + ")"}
-            </Box>
+            <Typography color={colorText} key={index}>
+              {`- ${capitalizeText(item.function)} ${capitalizeText(
+                item.name
+              )}`}
+            </Typography>
           );
         }
       }
@@ -183,40 +204,45 @@ export default function CardInfo(props: ICardInfo) {
       if (index % 2 === 0) {
         if (item.name) {
           return (
-            <Box key={index}>
-              - {item.name} {"(" + item.function + ")"}
-            </Box>
+            <Typography color={colorText} key={index}>
+              {`- ${capitalizeText(item.function)} ${capitalizeText(
+                item.name
+              )}`}
+            </Typography>
           );
         }
       }
     });
 
     const arrEmpty = (
-      <Box>Não foram realizados nenhum check-in/out neste atendimento.</Box>
+      <Typography color={colorText}>
+        Não foram realizados nenhum check-in/out neste atendimento.
+      </Typography>
     );
 
     let itensGrid = (
-      <Grid container style={{ boxShadow: "none" }}>
-        <Grid item xs={6} style={{ boxShadow: "none" }}>
+      <GridStyle container style={{ boxShadow: "none" }}>
+        <GridStyle item xs={6} style={{ boxShadow: "none" }}>
           {itensSideLeft}
-        </Grid>
-        <Grid item xs={6} style={{ boxShadow: "none" }}>
+        </GridStyle>
+        <GridStyle item xs={6} style={{ boxShadow: "none" }}>
           {itensSideRigth}
-        </Grid>
-      </Grid>
+        </GridStyle>
+      </GridStyle>
     );
     return arr.length > 0 ? itensGrid : arrEmpty;
   }
 
   function iconHeader(title: string) {
+    const colorIcons = theme.palette.primary.main;
     if (title === "Dados Pessoais")
-      return <IconChart style={{ width: "24px", height: "24px" }} />;
+      return <PersonDataIcon fill={colorIcons} width="24px" height="24px" />;
 
     if (title === "Plano e Internação")
-      return <IconHospitalization style={{ width: "24px", height: "24px" }} />;
+      return <HospitalizationIcon fill={colorIcons} />;
 
     if (title === "Equipe Multidisciplinar")
-      return <IconTeam style={{ width: "24px", height: "24px" }} />;
+      return <TeamIcon fill={colorIcons} />;
   }
   const handleClickOpen = () => {
     setOpenDialog(true);
@@ -231,29 +257,29 @@ export default function CardInfo(props: ICardInfo) {
 
   return (
     <>
-      <BoxContainer style={{ padding: "26.5px", flex: "1", margin: "8px" }}>
+      <GridWrapper item>
         <WrapperHeader>
           <WrapperTittle>
             {iconHeader(tittle.card)}
-            <Box>{tittle.card}</Box>
+            <Typography fontWeight={600} color="primary.main">
+              {tittle.card}
+            </Typography>
           </WrapperTittle>
-          <Box
-            style={{
+          <IconButton
+            sx={{
               position: "absolute",
               right: "-10px",
               top: "-10px",
               cursor: "pointer",
+              "& svg, path": { cursor: "pointer" },
             }}
             onClick={handleClickOpen}
-            sx={{ "& svg, path": { cursor: "pointer" } }}
           >
-            <IconEye style={{ cursor: "pointer" }} />
-          </Box>
+            <VisibilityIcon color="secondary" />
+          </IconButton>
         </WrapperHeader>
-        <Box style={{ color: "var(--gray-dark)" }}>
-          {switchData(tittle.card)}
-        </Box>
-      </BoxContainer>
+        <Box>{switchData(tittle.card)}</Box>
+      </GridWrapper>
       <DialogInfo
         tittle={tittle}
         content={content}

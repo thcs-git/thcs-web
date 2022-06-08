@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import Menu from "@material-ui/core/Menu";
+import Menu from "@mui/material/Menu";
 
 export const Th = styled.th`
   position: relative;

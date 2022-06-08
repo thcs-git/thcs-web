@@ -26,7 +26,7 @@ import {
   TableCell,
   Typography,
 } from "@mui/material";
-import { SearchOutlined, MoreVert } from "@material-ui/icons";
+import { SearchOutlined, MoreVert } from "@mui/icons-material";
 // styles
 import { FormTitle } from "../../../styles/components/Form";
 import { ListItemStatus } from "./styles";
@@ -39,7 +39,7 @@ import SearchComponent from "../../../components/List/Search";
 import Table from "../../../components/Table";
 import Button from "../../../styles/components/Button";
 import NoPermission from "../../../components/Erros/NoPermission";
-
+import TabTittle from "../../../components/Text/TabTittle";
 // utils
 import debounce from "lodash.debounce";
 import { formatDate } from "../../../helpers/date";
@@ -122,14 +122,7 @@ export default function CompanyList() {
         {checkViewPermission("company", JSON.stringify(rightsOfLayoutState)) ? (
           <Container>
             {/* {companyState.loading && <Loading />} */}
-            <Typography
-              marginBottom={"2.5rem"}
-              variant="h5"
-              color={theme.palette.primary.main}
-              fontWeight={600}
-            >
-              Lista de Empresas
-            </Typography>
+            <TabTittle tittle="Lista de Empresas" />
 
             {integration ? (
               <>
@@ -155,7 +148,7 @@ export default function CompanyList() {
                     companyState.list.data.map(
                       (company: any, index: number) =>
                         company && (
-                          <TableRow key={`patient_${index}`}>
+                          <TableRow key={`patient_${index}`} hover>
                             {company.tipo === "MATRIZ" ? (
                               <TableCell
                                 align="left"

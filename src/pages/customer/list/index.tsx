@@ -15,7 +15,7 @@ import { CustomerInterface } from "../../../store/ducks/customers/types";
 
 // Mui
 import { Container, TableCell, TableRow, Typography } from "@mui/material";
-import { ThemeProvider } from "@mui/styles";
+import { ThemeProvider } from "@mui/material/styles";
 
 //Style
 import { ListLink, ListItemStatus, ItemTable } from "./styles";
@@ -100,7 +100,7 @@ export default function CustomerList() {
           marginBottom={"2.5rem"}
           variant="h5"
           color={theme.palette.primary.main}
-          fontWeight={600}
+          fontWeight={700}
         >
           Lista de Clientes
         </Typography>
@@ -124,16 +124,7 @@ export default function CustomerList() {
           ]}
         >
           {customerState.list.data.map((customer, index) => (
-            <TableRow
-              key={`patient_${index}`}
-              hover
-              sx={{
-                transition: "all 150ms ease-in-out",
-                // "&.MuiTableRow-root.MuiTableRow-hover:hover": {
-                //   backgroundColor: theme.palette.secondaryLighter3.main,
-                // },
-              }}
-            >
+            <TableRow key={`patient_${index}`} hover>
               <TableCell
                 align="left"
                 sx={{ cursor: "pointer", padding: "20px" }}
@@ -174,7 +165,7 @@ export default function CustomerList() {
             </TableRow>
           ))}
         </Table>
-        {console.log(customerState.list.page, "customerState.list.page")}
+
         <PaginationComponent
           page={customerState.list.page}
           rowsPerPage={customerState.list.limit}

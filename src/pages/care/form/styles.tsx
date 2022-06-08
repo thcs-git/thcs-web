@@ -1,7 +1,7 @@
-import styled from 'styled-components';
-import { TextField, OutlinedInput, Button, Stepper, Step } from '@material-ui/core';
-import { ReactComponent as NoData } from '../../../assets/img/no-data.svg';
-import Box from '@material-ui/core/Box';
+import styled from "styled-components";
+import { TextField, OutlinedInput, Button, Stepper, Step } from "@mui/material";
+import { ReactComponent as NoData } from "../../../assets/img/no-data.svg";
+import Box from "@mui/material/Box";
 
 export const ButtonsContent = styled.div`
   display: flex;
@@ -40,7 +40,6 @@ export const FormSection = styled.div`
       margin-bottom: 8px;
     }
   }
-
 `;
 
 export const Profile = styled.div`
@@ -147,7 +146,6 @@ export const StepComponent = styled(Step)`
   .MuiStepIcon-root.MuiStepIcon-completed {
     color: var(--success);
   }
-
 `;
 
 export const PatientNotFound = styled.div`
@@ -157,13 +155,11 @@ export const PatientNotFound = styled.div`
   flex-direction: column;
 
   margin: 20px auto;
-`
+`;
 
 export const NoDataIcon = styled(NoData)`
   width: 100px;
   height: 100px;
 
   margin-bottom: 15px;
-`
-
-
+`;

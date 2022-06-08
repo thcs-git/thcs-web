@@ -1,10 +1,9 @@
-import styled from 'styled-components';
-import { TextField, OutlinedInput, Button, Stepper, Step } from '@material-ui/core';
-import { ReactComponent as NoData } from '../../../../assets/img/no-data.svg';
-import { ReactComponent as SuccessImage } from '../../../../assets/img/ilustracao-avaliaca-concluida.svg';
-import {ReactComponent as  femaleIcon} from "../../../../assets/img/ionic-md-female.svg";
-import {ReactComponent  as maleIcon} from "../../../../assets/img/icon-male.svg";
-
+import styled from "styled-components";
+import { TextField, OutlinedInput, Button, Stepper, Step } from "@mui/material";
+import { ReactComponent as NoData } from "../../../../assets/img/no-data.svg";
+import { ReactComponent as SuccessImage } from "../../../../assets/img/ilustracao-avaliaca-concluida.svg";
+import { ReactComponent as femaleIcon } from "../../../../assets/img/ionic-md-female.svg";
+import { ReactComponent as maleIcon } from "../../../../assets/img/icon-male.svg";
 
 export const PatientResume = styled.div`
   display: flex;
@@ -77,7 +76,6 @@ export const BackButtonContent = styled.div`
     margin-right: 10px;
   }
 `;
-
 
 export const FemaleIconLogo = styled(femaleIcon)`
   height: 15px;

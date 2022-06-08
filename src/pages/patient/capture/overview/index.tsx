@@ -19,7 +19,7 @@ import {
   RadioGroup,
   Radio,
   InputLabel,
-} from "@material-ui/core";
+} from "@mui/material";
 import {
   AccountCircle as AccountCircleIcon,
   CheckCircle,
@@ -30,7 +30,7 @@ import {
   Visibility,
   Add,
   Description,
-} from "@material-ui/icons";
+} from "@mui/icons-material";
 
 import { ReactComponent as IconAlertRed } from "../../../../assets/img/Icon-alert-red.svg";
 import { useDispatch, useSelector } from "react-redux";
@@ -628,7 +628,7 @@ export default function PatientCaptureForm(
                         <div>
                           {care.capture?.status === "Aguardando" && (
                             <Button
-                              background={"primary"}
+                              // background={"primary"}
                               onClick={() => setCaptureNewModalOpen(true)}
                             >
                               <Add />
@@ -637,7 +637,7 @@ export default function PatientCaptureForm(
                           )}
                           {care.capture?.status === "Em Andamento" && (
                             <Button
-                              background={finishEnable ? "success" : "disable"}
+                              // background={finishEnable ? "success" : "disable"}
                               disabled={!finishEnable}
                               onClick={() => setCaptureFinishModalOpen(true)}
                             >
@@ -645,7 +645,7 @@ export default function PatientCaptureForm(
                               Concluir Captação
                             </Button>
                           )}
-                          <Button center onClick={() => setModalPrint(true)}>
+                          <Button onClick={() => setModalPrint(true)}>
                             <Print
                               className="primary"
                               style={{ width: 30, height: 30 }}
@@ -653,7 +653,7 @@ export default function PatientCaptureForm(
                           </Button>
                         </div>
                       ) : (
-                        <Button center onClick={() => setModalPrint(true)}>
+                        <Button onClick={() => setModalPrint(true)}>
                           <Print
                             className="primary"
                             style={{ width: 30, height: 30 }}
@@ -859,7 +859,7 @@ export default function PatientCaptureForm(
                           onClick={() => {
                             setModalAnexo(true);
                           }}
-                          background="default"
+                          // background="default"
                           style={{ color: "#0899BA" }}
                         >
                           <Description />
@@ -891,13 +891,16 @@ export default function PatientCaptureForm(
 
           <BackButtonContent>
             <Button
-              background="primary"
+              // background="primary"
               onClick={() => history.push("/avaliation")}
             >
               Voltar
             </Button>
             {care?.capture?.status === "Em Andamento" && (
-              <Button background="success" onClick={handleSubmitCaptureData}>
+              <Button
+                //  background="success"
+                onClick={handleSubmitCaptureData}
+              >
                 Salvar
               </Button>
             )}

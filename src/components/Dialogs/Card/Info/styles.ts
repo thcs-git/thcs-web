@@ -1,4 +1,4 @@
-import Box from "@material-ui/core/Box";
+import Box from "@mui/material/Box";
 import styled from "styled-components";
 
 export const WrapperDialog = styled(Box)`

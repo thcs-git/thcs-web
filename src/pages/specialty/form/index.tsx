@@ -22,8 +22,8 @@ import {
   DialogTitle,
   FormControlLabel,
   Grid,
-} from "@material-ui/core";
-import Autocomplete from "@material-ui/lab/Autocomplete";
+} from "@mui/material";
+import Autocomplete from "@mui/material/Autocomplete";
 
 import { FormTitle } from "../../../styles/components/Form";
 import Sidebar from "../../../components/Sidebar";
@@ -157,9 +157,9 @@ export default function SpecialtyForm(props: RouteComponentProps<IPageParams>) {
                       />
                     )}
                     value={selectCouncil()}
-                    getOptionSelected={(option, value) =>
-                      option._id === state.council_id._id
-                    }
+                    // getOptionSelected={(option, value) =>
+                    //   option._id === state.council_id._id
+                    // }
                     onChange={(event: any, newValue) => {
                       handleCouncil(event, newValue);
                     }}
@@ -191,7 +191,7 @@ export default function SpecialtyForm(props: RouteComponentProps<IPageParams>) {
           </FormContent>
           <ButtonsContent>
             <ButtonComponent
-              background="default"
+              // background="default"
               onClick={() =>
                 specialtyState.success
                   ? history.push("/specialty")
@@ -202,7 +202,7 @@ export default function SpecialtyForm(props: RouteComponentProps<IPageParams>) {
             </ButtonComponent>
             <ButtonComponent
               variant="contained"
-              background="success"
+              // background="success"
               onClick={() => handleSaveFormCustomer()}
             >
               Salvar

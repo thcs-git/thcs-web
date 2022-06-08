@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import { FormControl } from "@material-ui/core";
+import { FormControl } from "@mui/material";
 
 export const FormGroupSection = styled(FormControl)`
   display: block;

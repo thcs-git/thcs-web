@@ -15,7 +15,6 @@ import Dashboard from "../pages/dashboard";
 import Dashboard_user from "../pages/dashboard_user";
 
 import CareList from "../pages/care/list";
-import CareForm from "../pages/care/form";
 import CareOverview from "../pages/care/overview";
 import CareSchedule from "../pages/care/overview/schedule";
 
@@ -56,7 +55,7 @@ import ConfirmEmail from "../pages/confirmEmail/form/index";
 import VerifyEmail from "../pages/confirmEmail/verifyEmail/index";
 import RecoveryPassword from "../pages/recoverypassword/form/index";
 import ForgotPassword from "../pages/forgotpassword/form/index";
-import RegisterForm from "../pages/register/form";
+
 import AvaliationList from "../pages/avaliation/list";
 import RecoveryPassMenu from "../pages/recoverypassmenu";
 import QrCode from "../pages/qrcode/";
@@ -79,7 +78,6 @@ export default function Routes() {
         {/* <GuestRoute path="/register" component={Register} /> */}
         {/* <Route path="/" component={Login} exact /> */}
         <Route path="/login" component={Login} />
-        <Route path="/register" component={RegisterForm} />
         <Route path="/:email/confirmemail" component={ConfirmEmail} />
         <Route path="/confirmemail/:token" component={VerifyEmail} />
         <Route path="/recoverypass/:token" component={RecoveryPassword} />
@@ -197,8 +195,7 @@ export default function Routes() {
 
         {/* Care */}
         <PrivateRoute path="/care" component={CareList} exact />
-        <PrivateRoute path="/care/:id/edit" component={CareForm} />
-        <PrivateRoute path="/care/create" component={CareForm} />
+
         <PrivateRoute
           path="/care/:id/overview"
           exact
@@ -214,7 +211,6 @@ export default function Routes() {
         />
 
         {/* Register */}
-        <GuestRoute path="/register" component={RegisterForm} />
         {/* avaliation */}
         <PrivateRoute path="/avaliation" component={AvaliationList} exact />
         {/* qrcode */}

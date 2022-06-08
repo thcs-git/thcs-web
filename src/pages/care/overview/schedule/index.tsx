@@ -7,8 +7,8 @@ import React, {
 } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { RouteComponentProps, useHistory } from "react-router-dom";
-import { Help as HelpIcon } from "@material-ui/icons";
-import Checkbox from "@material-ui/core/Checkbox";
+import { Help as HelpIcon } from "@mui/icons-material";
+import Checkbox from "@mui/material/Checkbox";
 import {
   Dialog,
   DialogContent,
@@ -37,8 +37,8 @@ import {
   FormControl,
   FormLabel,
   Popover,
-} from "@material-ui/core";
-import { Autocomplete } from "@material-ui/lab";
+  Autocomplete,
+} from "@mui/material";
 import {
   AccountCircle,
   SupervisorAccountRounded,
@@ -52,7 +52,7 @@ import {
   Edit as EditIcon,
   Delete as DeleteIcon,
   WarningRounded as WarningRoundedIcon,
-} from "@material-ui/icons";
+} from "@mui/icons-material";
 import dayjs from "dayjs";
 import debounce from "lodash.debounce";
 
@@ -1120,7 +1120,7 @@ export default function SchedulePage(props: RouteComponentProps<IPageParams>) {
                 setDayOptionsModalOpen(true);
                 setCanEdit(true);
               }}
-              background="success"
+              // background="success"
             >
               Novo compromisso
             </ButtonComponent>
@@ -1418,7 +1418,7 @@ export default function SchedulePage(props: RouteComponentProps<IPageParams>) {
           <div>
             <ButtonComponent
               onClick={() => history.push(`/care/${params.id}/overview`)}
-              background="primary"
+              // background="primary"
             >
               Voltar
             </ButtonComponent>
@@ -1720,7 +1720,7 @@ export default function SchedulePage(props: RouteComponentProps<IPageParams>) {
                     variant="outlined"
                     size="small"
                     rows={6}
-                    rowsMax={6}
+                    // rowsMax={6}
                     label="Observações"
                     placeholder="Digite aqui alguma observação para o agendamento"
                     value={schedule.description}
@@ -2040,7 +2040,7 @@ export default function SchedulePage(props: RouteComponentProps<IPageParams>) {
               Evento Agendado &nbsp;
               <ButtonComponent
                 variant="outlined"
-                background="secondary"
+                // background="secondary"
                 startIcon={<EditIcon />}
                 onClick={() => setCanEdit(!canEdit)}
               >
@@ -2049,7 +2049,7 @@ export default function SchedulePage(props: RouteComponentProps<IPageParams>) {
               &nbsp;
               <ButtonComponent
                 startIcon={<DeleteIcon />}
-                background="danger"
+                // background="danger"
                 onClick={() => setRemoveEventsModalOpen(true)}
               >
                 Excluir
@@ -2395,7 +2395,7 @@ export default function SchedulePage(props: RouteComponentProps<IPageParams>) {
                           variant="outlined"
                           size="small"
                           rows={6}
-                          rowsMax={6}
+                          // rowsMax={6}
                           label="Justificativa"
                           placeholder="Faça uma breve explanação do motivo da permuta"
                           value={schedule?.exchange?.description || ""}
@@ -2425,7 +2425,10 @@ export default function SchedulePage(props: RouteComponentProps<IPageParams>) {
               >
                 Voltar
               </Button>
-              <ButtonComponent background="success" onClick={handleAddEvent}>
+              <ButtonComponent
+                //  background="success"
+                onClick={handleAddEvent}
+              >
                 OK
               </ButtonComponent>
             </DialogActions>

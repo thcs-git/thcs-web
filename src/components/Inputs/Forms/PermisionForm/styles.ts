@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import { FormLabel, Checkbox } from "@material-ui/core";
+import { FormLabel, Checkbox } from "@mui/material";
 
 export const FormLabelComponent = styled(FormLabel)`
   /* color: var(--secondary); */

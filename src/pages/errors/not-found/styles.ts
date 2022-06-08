@@ -1,5 +1,5 @@
-import styled from 'styled-components';
-import { Container } from '@material-ui/core'
+import styled from "styled-components";
+import { Container } from "@mui/material";
 
 export const ContainerComponent = styled(Container)`
   display: flex !important;

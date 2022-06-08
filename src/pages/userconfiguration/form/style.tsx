@@ -1,5 +1,5 @@
-import styled from 'styled-components';
-import Box from '@material-ui/core/Box';
+import styled from "styled-components";
+import Box from "@mui/material/Box";
 
 export const BoxCustom = styled(Box)`
   min-height: calc(100vh - 250px);
@@ -7,7 +7,7 @@ export const BoxCustom = styled(Box)`
 `;
 
 export const BoxCustomFoot = styled(Box)`
-min-height: calc(100vh - 250px);
+  min-height: calc(100vh - 250px);
   margin: 20px;
 `;
 export const FeedbackTitle = styled.h2`

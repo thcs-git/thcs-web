@@ -1,7 +1,7 @@
 import React, { useEffect, useRef } from "react";
 import { createPortal } from "react-dom";
-import { makeStyles, createStyles, Theme } from "@material-ui/core/styles";
-import { CircularProgressProps } from "@material-ui/core/CircularProgress";
+import { makeStyles, createStyles, Theme } from "@mui/material/styles";
+import { CircularProgressProps } from "@mui/material/CircularProgress";
 
 import { ReactComponent as LoadingSollar } from "../../assets/img/loading-sollar.svg";
 

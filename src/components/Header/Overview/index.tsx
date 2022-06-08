@@ -6,7 +6,7 @@ import { ApplicationState } from "../../../store";
 //types
 import { CareState } from "../../../store/ducks/cares/types";
 //MUI
-import Box from "@mui/material/Box";
+import { Box, Typography } from "@mui/material";
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 //IMG or SVG
 import IconProfile from "../../../assets/img/icon-profile.svg";
@@ -28,7 +28,7 @@ import { QrCodeState } from "../../../store/ducks/qrCode/types";
 import { checkViewPermission } from "../../../utils/permissions";
 import NoPermission from "../../Erros/NoPermission";
 import { toast } from "react-toastify";
-
+import theme from "../../../theme/theme";
 interface IRows {
   name: string;
   value: any;
@@ -78,31 +78,42 @@ export default function HeaderOverview(props: IProps) {
       >
         <Box>
           <PatientIcon
-            fill={"var(--secondary)"}
+            fill={theme.palette.primary.main}
             width={"48px"}
             height={"48px"}
           />
         </Box>
 
         <Box>
-          <CardText>
-            <Box className="name">
-              {content.rows.map(
-                ({ name, value }: IRows, index: number) =>
-                  name === "Nome" && value
-              )}
-            </Box>
-            <Box>
-              <Box>CID {handlerCID(content.rows)}</Box>
-            </Box>
-          </CardText>
+          <Typography
+            className="name"
+            fontSize={18}
+            color={theme.palette.common.white}
+            fontWeight={700}
+          >
+            {content.rows.map(
+              ({ name, value }: IRows, index: number) =>
+                name === "Nome" && value
+            )}
+          </Typography>
+
+          <Typography fontSize={12} color={theme.palette.common.white}>
+            CID {handlerCID(content.rows)}
+          </Typography>
         </Box>
       </Box>
 
-      <Box style={{ display: "flex", gap: "8px" }}>
-        <BoxIcon onClick={handleClickOpen}>
-          <QRCodeIcon fill={"var(--gray-dark)"} />
-          <Box sx={{ color: "var(--secondary)" }}>QR Code</Box>
+      <Box sx={{ display: "flex" }}>
+        <BoxIcon onClick={handleClickOpen} sx={{ paddingTop: "4px" }}>
+          <QRCodeIcon fill={theme.palette.common.black} />
+          <Typography
+            sx={{ cursor: "pointer" }}
+            fontWeight={700}
+            fontSize="0.75rem"
+            color={theme.palette.secondary.main}
+          >
+            QR CODE
+          </Typography>
         </BoxIcon>
       </Box>
       <DialogQrCode

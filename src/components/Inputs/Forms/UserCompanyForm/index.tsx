@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { FormGroupSection } from "./styles";
-import { Checkbox, FormControlLabel, Grid } from "@material-ui/core";
+import { Checkbox, FormControlLabel, Grid } from "@mui/material";
 import {
   ChipList,
   DivideTitle,
@@ -8,9 +8,9 @@ import {
 } from "../../../../pages/user/form/styles";
 import { ChipComponent as Chip } from "../../../../styles/components/Chip";
 import LOCALSTORAGE from "../../../../helpers/constants/localStorage";
-import CheckCircleRoundedIcon from "@material-ui/icons/CheckCircleRounded";
-import RemoveIcon from "@material-ui/icons/Remove";
-import AddIcon from "@material-ui/icons/Add";
+import CheckCircleRoundedIcon from "@mui/icons-material/CheckCircleRounded";
+import RemoveIcon from "@mui/icons-material/Remove";
+import AddIcon from "@mui/icons-material/Add";
 import ButtonComponent from "../../../../styles/components/Button";
 import ViewCard from "../../../Card/ViewCard";
 interface IComponent {

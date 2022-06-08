@@ -1,6 +1,6 @@
-import styled from 'styled-components';
-import { Card, CardContent } from '@material-ui/core';
-import { Link } from 'react-router-dom';
+import styled from "styled-components";
+import { Card, CardContent } from "@mui/material";
+import { Link } from "react-router-dom";
 
 interface IListItemStatus {
   active: boolean;

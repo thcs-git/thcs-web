@@ -48,8 +48,8 @@ import {
   makeStyles,
   Tabs,
   Typography,
-} from "@material-ui/core";
-import Autocomplete from "@material-ui/lab/Autocomplete";
+  Autocomplete,
+} from "@mui/material";
 
 import Loading from "../../../components/Loading";
 import Sidebar from "../../../components/Sidebar";
@@ -83,7 +83,7 @@ import {
 import validateName from "../../../utils/validateName";
 import _ from "lodash";
 import { BoxCustom } from "../../customer/form/styles";
-import { Edit } from "@material-ui/icons";
+import { Edit } from "@mui/icons-material";
 
 interface IFormFields extends AreaInterface {
   form?: {
@@ -122,61 +122,59 @@ export default function AreaForm(props: RouteComponentProps<IPageParams>) {
   const [canEdit, setCanEdit] = useState(true);
 
   const { params } = props.match;
-  const useStyles = makeStyles((theme) => ({
-    register: {
-      textTransform: "capitalize",
-      fontSize: "18px",
-      "&:hover": {
-        backgroundColor: "var(--sucess-button-hover)",
-        color: "var(--success)",
-        borderColor: "var(--success-hover)",
-      },
-      borderColor: "var(--success)",
-      color: "var(--success)",
-      contrastText: "#fff",
-    },
-    proxim: {
-      textTransform: "capitalize",
-      fontSize: "18px",
-      backgroundColor: "var(--success)",
-      "&:hover": {
-        backgroundColor: "var(--success-hover)",
-        color: "#ffff",
-        borderColor: "var(--success-hover)",
-      },
-      color: "#fff",
-      contrastText: "#fff",
-      borderColor: "var(--success)",
-    },
+  // const useStyles = makeStyles((theme) => ({
+  //   register: {
+  //     textTransform: "capitalize",
+  //     fontSize: "18px",
+  //     "&:hover": {
+  //       backgroundColor: "var(--sucess-button-hover)",
+  //       color: "var(--success)",
+  //       borderColor: "var(--success-hover)",
+  //     },
+  //     borderColor: "var(--success)",
+  //     color: "var(--success)",
+  //     contrastText: "#fff",
+  //   },
+  //   proxim: {
+  //     textTransform: "capitalize",
+  //     fontSize: "18px",
+  //     backgroundColor: "var(--success)",
+  //     "&:hover": {
+  //       backgroundColor: "var(--success-hover)",
+  //       color: "#ffff",
+  //       borderColor: "var(--success-hover)",
+  //     },
+  //     color: "#fff",
+  //     contrastText: "#fff",
+  //     borderColor: "var(--success)",
+  //   },
 
-    sucess_round: {
-      backgroundColor: "var(--white)",
-      color: "var(--success)",
-      border: "1px solid var(--success)",
-    },
+  //   sucess_round: {
+  //     backgroundColor: "var(--white)",
+  //     color: "var(--success)",
+  //     border: "1px solid var(--success)",
+  //   },
 
-    tittleChip: {
-      paddingTop: "1rem",
-    },
-    chip: {
-      paddingBottom: "1rem",
-    },
-    cancel: {
-      textTransform: "capitalize",
-      fontSize: "18px",
-      "&:hover": {
-        backgroundColor: "var(--danger-hover)",
-        color: "var(--danger)",
-        borderColor: "var(--danger-hover)",
-      },
-      maxHeight: "38px",
-      borderColor: "var(--danger-hover)",
-      color: "var(--danger-hover)",
-      contrastText: "#fff",
-    },
-  }));
-
-  const classes = useStyles();
+  //   tittleChip: {
+  //     paddingTop: "1rem",
+  //   },
+  //   chip: {
+  //     paddingBottom: "1rem",
+  //   },
+  //   cancel: {
+  //     textTransform: "capitalize",
+  //     fontSize: "18px",
+  //     "&:hover": {
+  //       backgroundColor: "var(--danger-hover)",
+  //       color: "var(--danger)",
+  //       borderColor: "var(--danger-hover)",
+  //     },
+  //     maxHeight: "38px",
+  //     borderColor: "var(--danger-hover)",
+  //     color: "var(--danger-hover)",
+  //     contrastText: "#fff",
+  //   },
+  // }));
 
   //////////////////////////////  INITIAL STATE ///////////////////////////////
   const States = [
@@ -814,9 +812,9 @@ export default function AreaForm(props: RouteComponentProps<IPageParams>) {
                                 />
                               )}
                               value={state.form?.dayOfTheWeek ?? null}
-                              getOptionSelected={(option, value) =>
-                                option.id === state.week_day
-                              }
+                              // getOptionSelected={(option, value) =>
+                              //   option.id === state.week_day
+                              // }
                               onChange={(event: any, newValue) => {
                                 handleDayOfTheWeek(event, newValue);
                               }}
@@ -1070,7 +1068,7 @@ export default function AreaForm(props: RouteComponentProps<IPageParams>) {
                     <Grid item md={12} xs={12}>
                       <ChipList>
                         {state.profession_users.map((item: any, index) => (
-                          <Grid md={12} xs={12} className={classes.tittleChip}>
+                          <Grid md={12} xs={12} sx={{ paddingTop: "1rem" }}>
                             <div key={`profession_selected_${index}`}>
                               <DivideTitle>
                                 {item.profession
@@ -1081,7 +1079,7 @@ export default function AreaForm(props: RouteComponentProps<IPageParams>) {
                                 {item.users.map((user: any) => (
                                   <div
                                     key={`user_selected_${index}`}
-                                    className={classes.chip}
+                                    style={{ paddingBottom: "1rem" }}
                                   >
                                     <Chip
                                       label={user.name}
@@ -1127,7 +1125,19 @@ export default function AreaForm(props: RouteComponentProps<IPageParams>) {
               {canEdit && (
                 <Button
                   variant="outlined"
-                  className={classes.cancel}
+                  sx={{
+                    textTransform: "capitalize",
+                    fontSize: "18px",
+                    "&:hover": {
+                      backgroundColor: "var(--danger-hover)",
+                      color: "var(--danger)",
+                      borderColor: "var(--danger-hover)",
+                    },
+                    maxHeight: "38px",
+                    borderColor: "var(--danger-hover)",
+                    color: "var(--danger-hover)",
+                    contrastText: "#fff",
+                  }}
                   onClick={() => handleOpenModalCancel()}
                 >
                   Cancelar
@@ -1136,7 +1146,11 @@ export default function AreaForm(props: RouteComponentProps<IPageParams>) {
               {!canEdit && state._id && (
                 <Button
                   variant="outlined"
-                  className={classes.sucess_round}
+                  sx={{
+                    backgroundColor: "var(--white)",
+                    color: "var(--success)",
+                    border: "1px solid var(--success)",
+                  }}
                   onClick={() => handleCancelForm()}
                 >
                   Voltar
@@ -1149,7 +1163,18 @@ export default function AreaForm(props: RouteComponentProps<IPageParams>) {
                 <Button
                   variant="outlined"
                   color="primary"
-                  className={classes.register}
+                  sx={{
+                    textTransform: "capitalize",
+                    fontSize: "18px",
+                    "&:hover": {
+                      backgroundColor: "var(--sucess-button-hover)",
+                      color: "var(--success)",
+                      borderColor: "var(--success-hover)",
+                    },
+                    borderColor: "var(--success)",
+                    color: "var(--success)",
+                    contrastText: "#fff",
+                  }}
                   onClick={() =>
                     currentTab === 1 ? selectTab(0) : selectTab(1)
                   }
@@ -1161,7 +1186,19 @@ export default function AreaForm(props: RouteComponentProps<IPageParams>) {
                 <Button
                   variant="outlined"
                   color="primary"
-                  className={classes.proxim}
+                  sx={{
+                    textTransform: "capitalize",
+                    fontSize: "18px",
+                    backgroundColor: "var(--success)",
+                    "&:hover": {
+                      backgroundColor: "var(--success-hover)",
+                      color: "#ffff",
+                      borderColor: "var(--success-hover)",
+                    },
+                    color: "#fff",
+                    contrastText: "#fff",
+                    borderColor: "var(--success)",
+                  }}
                   onClick={() => goToNextTab(currentTab)}
                 >
                   Próximo
@@ -1172,7 +1209,7 @@ export default function AreaForm(props: RouteComponentProps<IPageParams>) {
               {((currentTab === 2 && canEdit) || (state._id && canEdit)) && (
                 <Button
                   variant="contained"
-                  background="success"
+                  // background="success"
                   onClick={() => handleSaveFormArea()}
                 >
                   Salvar

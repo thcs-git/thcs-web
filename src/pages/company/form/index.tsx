@@ -32,8 +32,8 @@ import {
   InputAdornment,
   Container,
   FormControlLabel,
-} from "@material-ui/core";
-import { Edit, SearchOutlined } from "@material-ui/icons";
+} from "@mui/material";
+import { Edit, SearchOutlined } from "@mui/icons-material";
 import { validateCNPJ as validateCNPJHelper } from "../../../helpers/validateCNPJ";
 
 import LOCALSTORAGE from "../../../helpers/constants/localStorage";
@@ -624,7 +624,7 @@ export default function CompanyForm(props: RouteComponentProps<IPageParams>) {
                                 id="input-postal-code"
                                 label="CEP"
                                 placeholder="00000-000"
-                                labelWidth={155}
+                                // labelWidth={155}
                                 style={{ marginRight: 12 }}
                                 endAdornment={
                                   <InputAdornment position="end">
@@ -953,14 +953,14 @@ export default function CompanyForm(props: RouteComponentProps<IPageParams>) {
                 </FormContent>
                 <ButtonsContent>
                   <ButtonComponent
-                    background="default"
+                    // background="default"
                     onClick={handleOpenModalCancel}
                   >
                     Voltar
                   </ButtonComponent>
                   <ButtonComponent
                     disabled={formValid}
-                    background="success"
+                    // background="success"
                     onClick={handleSaveFormCustomer}
                   >
                     Salvar

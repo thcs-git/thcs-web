@@ -1,15 +1,21 @@
-import React, { useState, Props } from 'react';
-import { FormControl, InputLabel, OutlinedInput, InputAdornment, IconButton } from '@material-ui/core';
-import { SearchOutlined } from '@material-ui/icons';
+import React, { useState, Props } from "react";
+import {
+  FormControl,
+  InputLabel,
+  OutlinedInput,
+  InputAdornment,
+  IconButton,
+} from "@mui/material";
+import { SearchOutlined } from "@mui/icons-material";
 
-import { FormSearch } from './styles';
+import { FormSearch } from "./styles";
 
 interface ISearchInput extends Props<any> {
   label: string;
-};
+}
 
 const SearchInput = (props: ISearchInput) => {
-  const [search, setSearch] = useState('');
+  const [search, setSearch] = useState("");
 
   const { label } = props;
 
@@ -28,11 +34,11 @@ const SearchInput = (props: ISearchInput) => {
               </IconButton>
             </InputAdornment>
           }
-          labelWidth={label.length * 7.8}
+          // labelWidth={label.length * 7.8}
         />
       </FormControl>
     </FormSearch>
   );
-}
+};
 
 export default React.memo(SearchInput);

@@ -23,8 +23,8 @@ import {
   OutlinedInput,
   InputAdornment,
   IconButton,
-} from "@material-ui/core";
-import { SearchOutlined } from "@material-ui/icons";
+} from "@mui/material";
+import { SearchOutlined } from "@mui/icons-material";
 import PaginationComponent from "../../../components/Pagination";
 import Loading from "../../../components/Loading";
 import Sidebar from "../../../components/Sidebar";

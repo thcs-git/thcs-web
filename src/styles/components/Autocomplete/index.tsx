@@ -1,6 +1,10 @@
-import { HTMLProps } from 'react';
-import styled, { css, StyledComponent, StyledComponentProps } from 'styled-components';
-import Autocomplete from '@material-ui/lab/Autocomplete';
+import { HTMLProps } from "react";
+import styled, {
+  css,
+  StyledComponent,
+  StyledComponentProps,
+} from "styled-components";
+import Autocomplete from "@mui/material/Autocomplete";
 
 const AutoCompleteInput = styled(Autocomplete)`
   background: var(--white);

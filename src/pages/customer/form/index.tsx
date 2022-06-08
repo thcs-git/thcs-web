@@ -17,7 +17,7 @@ import {
   Edit,
   CodeOutlined,
   TrackChangesTwoTone,
-} from "@material-ui/icons";
+} from "@mui/icons-material";
 import { useHistory, RouteComponentProps } from "react-router-dom";
 import {
   Button,
@@ -34,7 +34,7 @@ import {
   Divider,
   FormControlLabel,
   makeStyles,
-} from "@material-ui/core";
+} from "@mui/material";
 import { SwitchComponent as Switch } from "../../../styles/components/Switch";
 import Sidebar from "../../../components/Sidebar";
 import { FormTitle } from "../../../styles/components/Form";
@@ -57,7 +57,7 @@ import { validateCNPJ as validateCNPJHelper } from "../../../helpers/validateCNP
 import _ from "lodash";
 import FeedbackComponent from "../../../components/Feedback";
 import validator from "validator";
-import { Autocomplete } from "@material-ui/lab";
+import { Autocomplete } from "@mui/material";
 import { toast } from "react-toastify";
 
 interface IFormFields extends CustomerInterface {
@@ -74,23 +74,23 @@ interface IPageParams {
 export default function CustomerForm(props: RouteComponentProps<IPageParams>) {
   const history = useHistory();
   const dispatch = useDispatch();
-  const useStyles = makeStyles((theme) => ({
-    cancel: {
-      textTransform: "capitalize",
-      fontSize: "18px",
-      "&:hover": {
-        backgroundColor: "var(--danger-hover)",
-        color: "var(--danger)",
-        borderColor: "var(--danger-hover)",
-      },
-      maxHeight: "38px",
-      borderColor: "var(--danger-hover)",
-      color: "var(--danger-hover)",
-      contrastText: "#fff",
-    },
-  }));
+  // const useStyles = makeStyles((theme) => ({
+  //   cancel: {
+  //     textTransform: "capitalize",
+  //     fontSize: "18px",
+  //     "&:hover": {
+  //       backgroundColor: "var(--danger-hover)",
+  //       color: "var(--danger)",
+  //       borderColor: "var(--danger-hover)",
+  //     },
+  //     maxHeight: "38px",
+  //     borderColor: "var(--danger-hover)",
+  //     color: "var(--danger-hover)",
+  //     contrastText: "#fff",
+  //   },
+  // }));
 
-  const classes = useStyles();
+  // const classes = useStyles();
   const customerState = useSelector(
     (state: ApplicationState) => state.customers
   );
@@ -575,17 +575,16 @@ export default function CustomerForm(props: RouteComponentProps<IPageParams>) {
                           />
                         )}
                       </InputMask>
-                      {!fieldsValidation.fiscal_number &&
-                        state.fiscal_number && (
-                          <p
-                            style={{
-                              color: "#f44336",
-                              margin: "-2px 5px 10px",
-                            }}
-                          >
-                            CNPJ Inválido ou inexistente
-                          </p>
-                        )}
+                      {!fieldsValidation.fiscal_number && state.fiscal_number && (
+                        <p
+                          style={{
+                            color: "#f44336",
+                            margin: "-2px 5px 10px",
+                          }}
+                        >
+                          CNPJ Inválido ou inexistente
+                        </p>
+                      )}
                     </Grid>
                   </Grid>
                 </FormGroupSection>
@@ -984,7 +983,7 @@ export default function CustomerForm(props: RouteComponentProps<IPageParams>) {
                   {!canEdit && (
                     <ButtonComponent
                       variant="outlined"
-                      background="success_rounded"
+                      // background="success_rounded"
                       onClick={() => handleCancelForm()}
                     >
                       Voltar
@@ -993,7 +992,19 @@ export default function CustomerForm(props: RouteComponentProps<IPageParams>) {
                   {canEdit && (
                     <ButtonComponent
                       variant="outlined"
-                      className={classes.cancel}
+                      sx={{
+                        textTransform: "capitalize",
+                        fontSize: "18px",
+                        "&:hover": {
+                          backgroundColor: "var(--danger-hover)",
+                          color: "var(--danger)",
+                          borderColor: "var(--danger-hover)",
+                        },
+                        maxHeight: "38px",
+                        borderColor: "var(--danger-hover)",
+                        color: "var(--danger-hover)",
+                        contrastText: "#fff",
+                      }}
                       onClick={() => handleOpenModalCancel()}
                     >
                       Cancelar
@@ -1002,7 +1013,7 @@ export default function CustomerForm(props: RouteComponentProps<IPageParams>) {
                   {canEdit && (
                     <ButtonComponent
                       variant="contained"
-                      background="success"
+                      // background="success"
                       onClick={() => handleSaveFormCustomer()}
                     >
                       Salvar

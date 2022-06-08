@@ -3,25 +3,25 @@ import { useDispatch, useSelector } from "react-redux";
 import { loadRequest } from "../../../store/ducks/login/actions";
 import { ApplicationState } from "../../../store";
 
-import Container from "@material-ui/core/Container";
-import Box from "@material-ui/core/Box";
-import Grid from "@material-ui/core/Grid";
-import Link from "@material-ui/core/Link";
-import Checkbox from "@material-ui/core/Checkbox";
-import TextField from "@material-ui/core/TextField";
-import Typography from "@material-ui/core/Typography";
-import InputLabel from "@material-ui/core/InputLabel";
-import IconButton from "@material-ui/core/IconButton";
-import CssBaseline from "@material-ui/core/CssBaseline";
-import FormControl from "@material-ui/core/FormControl";
-import OutlinedInput from "@material-ui/core/OutlinedInput";
-import InputAdornment from "@material-ui/core/InputAdornment";
-import FormControlLabel from "@material-ui/core/FormControlLabel";
+import Container from "@mui/material/Container";
+import Box from "@mui/material/Box";
+import Grid from "@mui/material/Grid";
+import Link from "@mui/material/Link";
+import Checkbox from "@mui/material/Checkbox";
+import TextField from "@mui/material/TextField";
+import Typography from "@mui/material/Typography";
+import InputLabel from "@mui/material/InputLabel";
+import IconButton from "@mui/material/IconButton";
+import CssBaseline from "@mui/material/CssBaseline";
+import FormControl from "@mui/material/FormControl";
+import OutlinedInput from "@mui/material/OutlinedInput";
+import InputAdornment from "@mui/material/InputAdornment";
+import FormControlLabel from "@mui/material/FormControlLabel";
 
-import Visibility from "@material-ui/icons/Visibility";
-import VisibilityOff from "@material-ui/icons/VisibilityOff";
+import Visibility from "@mui/icons-material/Visibility";
+import VisibilityOff from "@mui/icons-material/VisibilityOff";
 
-import { makeStyles } from "@material-ui/core/styles";
+import { makeStyles } from "@mui/material/styles";
 
 import {
   ContainerLogin,
@@ -38,7 +38,7 @@ import Loading from "../../../components/Loading";
 import validateEmail from "../../../utils/validateEmail";
 import LOCALSTORAGE from "../../../helpers/constants/localStorage";
 import { toast } from "react-toastify";
-
+import theme from "../../../theme/theme";
 function Copyright() {
   return (
     <Typography variant="body2" color="textSecondary" align="center">
@@ -51,45 +51,45 @@ function Copyright() {
   );
 }
 
-const useStyles = makeStyles((theme) => ({
-  container: {
-    display: "flex",
-    flexDirection: "column",
-    justifyContent: "center",
-    height: "100%",
-  },
-  paper: {
-    marginTop: theme.spacing(2),
-    display: "flex",
-    flexDirection: "column",
-    alignItems: "center",
-  },
-  avatar: {
-    margin: theme.spacing(1),
-    backgroundColor: theme.palette.secondary.main,
-  },
-  form: {
-    width: "100%", // Fix IE 11 issue.
-    marginTop: theme.spacing(1),
-  },
-  submit: {
-    margin: theme.spacing(3, 0, 2),
-    padding: "10px",
-    textTransform: "capitalize",
-    fontSize: "18px",
-    backgroundColor: "var(--success)",
-    "&:hover": {
-      backgroundColor: "var(--success-hover)",
-    },
-  },
-  cadatrar: {
-    margin: theme.spacing(1, 0, 2),
-    padding: "10px",
-    textTransform: "capitalize",
-    fontSize: "18px",
-    borderColor: "var(--success)",
-  },
-}));
+// const useStyles = makeStyles((theme) => ({
+//   container: {
+//     display: "flex",
+//     flexDirection: "column",
+//     justifyContent: "center",
+//     height: "100%",
+//   },
+//   paper: {
+//     marginTop: theme.spacing(2),
+//     display: "flex",
+//     flexDirection: "column",
+//     alignItems: "center",
+//   },
+//   avatar: {
+//     margin: theme.spacing(1),
+//     backgroundColor: theme.palette.secondary.main,
+//   },
+//   form: {
+//     width: "100%", // Fix IE 11 issue.
+//     marginTop: theme.spacing(1),
+//   },
+//   submit: {
+//     margin: theme.spacing(3, 0, 2),
+//     padding: "10px",
+//     textTransform: "capitalize",
+//     fontSize: "18px",
+//     backgroundColor: "var(--success)",
+//     "&:hover": {
+//       backgroundColor: "var(--success-hover)",
+//     },
+//   },
+//   cadatrar: {
+//     margin: theme.spacing(1, 0, 2),
+//     padding: "10px",
+//     textTransform: "capitalize",
+//     fontSize: "18px",
+//     borderColor: "var(--success)",
+//   },
+// }));
 
 const SIZE_INPUT_PASSWORD = 6;
 
@@ -104,7 +104,7 @@ export default function ProfessionForm() {
   });
   const [showPassword, setShowPassword] = useState(false);
   const [rememberMe, setRememberMe] = useState(false);
-  const classes = useStyles();
+  // const classes = useStyles();
 
   useEffect(() => {
     const expired = localStorage.getItem(LOCALSTORAGE.EXPIRED_SESSION);
@@ -156,9 +156,24 @@ export default function ProfessionForm() {
   return (
     <>
       {loginState.loading && <Loading />}
-      <Container className={classes.container} maxWidth="xs">
+      <Container
+        sx={{
+          display: "flex",
+          flexDirection: "column",
+          justifyContent: "center",
+          height: "100%",
+        }}
+        maxWidth="xs"
+      >
         <CssBaseline />
-        <div className={classes.paper}>
+        <div
+          style={{
+            marginTop: theme.spacing(2),
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+          }}
+        >
           <Box
             display="flex"
             width={150}
@@ -172,7 +187,13 @@ export default function ProfessionForm() {
           <WelcomeTextWrapper>
             <TextGray>Bem-vindo(a)! Realize seu login para continuar:</TextGray>
           </WelcomeTextWrapper>
-          <form className={classes.form} noValidate>
+          <form
+            style={{
+              width: "100%", // Fix IE 11 issue.
+              marginTop: theme.spacing(1),
+            }}
+            noValidate
+          >
             <TextField
               error={inputEmail.error}
               variant="outlined"
@@ -219,7 +240,7 @@ export default function ProfessionForm() {
                     </IconButton>
                   </InputAdornment>
                 }
-                labelWidth={70}
+                // labelWidth={70}
               />
             </FormControl>
             <FormControlLabel
@@ -231,7 +252,16 @@ export default function ProfessionForm() {
               fullWidth
               variant="contained"
               color="primary"
-              className={classes.submit}
+              sx={{
+                margin: theme.spacing(3, 0, 2),
+                padding: "10px",
+                textTransform: "capitalize",
+                fontSize: "18px",
+                backgroundColor: "var(--success)",
+                "&:hover": {
+                  backgroundColor: "var(--success-hover)",
+                },
+              }}
               onClick={handleLogin}
             >
               Entrar
@@ -241,7 +271,13 @@ export default function ProfessionForm() {
               fullWidth
               variant="outlined"
               color="primary"
-              className={classes.cadatrar}
+              sx={{
+                margin: theme.spacing(1, 0, 2),
+                padding: "10px",
+                textTransform: "capitalize",
+                fontSize: "18px",
+                borderColor: "var(--success)",
+              }}
               onClick={handleLogin}
             >
               Cadastre-se

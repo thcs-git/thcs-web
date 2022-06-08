@@ -22,11 +22,11 @@ const TabTittle = (props: IComponent) => {
         item
         md={12}
         xs={12}
-        sx={{ display: "flex", alignItems: "center", margin: "0 0 25px 5px" }}
+        sx={{ display: "flex", alignItems: "center", margin: "0 0 25px" }}
       >
         <Typography
           variant="h5"
-          fontWeight={600}
+          fontWeight={700}
           color={theme.palette.primary.main}
         >
           {tittle}

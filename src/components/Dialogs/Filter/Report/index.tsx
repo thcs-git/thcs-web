@@ -35,7 +35,7 @@ import AdapterDayJs from "@mui/lab/AdapterDayjs";
 import DatePicker from "@mui/lab/DatePicker";
 import Box from "@mui/material/Box";
 import Tooltip from "@mui/material/Tooltip";
-
+import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
 // styled
 import { BoxCalendar, BoxTooltip, FormLabelRadio } from "./styles";
 import { TooltipProps, tooltipClasses } from "@mui/material/Tooltip";
@@ -571,75 +571,55 @@ export default function FilterReport(props: IPropsFilter) {
       aria-labelledby="dialog-filter-report"
       sx={{ "& svg, path": { cursor: "pointer" } }}
     >
-      <DialogTitle sx={{ fontSize: "20px", fontWeight: "bold" }}>
-        {reportType}
-      </DialogTitle>
+      <DialogTitle>{reportType}</DialogTitle>
       <DialogContent
         sx={{
           display: "flex",
           flexDirection: "column",
-          width: "600px",
           gap: "8px",
         }}
       >
         <FormControl>
-          <FormLabelRadio id="radio-buttons-group-label">
+          <FormLabel id="radio-buttons-group-label">
             Filtrar por prestador ou função
-          </FormLabelRadio>
+          </FormLabel>
           <RadioGroup
             row
             aria-labelledby="radio-buttons-prestador-or-funcao"
             name="radio-buttons-group"
             value={stateFilter.type}
             onChange={handleRadioChange}
-            sx={{
-              "& .css-vqmohf-MuiButtonBase-root-MuiRadio-root.Mui-checked": {
-                color: "var(--secondary)",
-              },
-              marginTop: "16px",
-            }}
           >
             <FormControlLabel
+              sx={{ cursor: "pointer" }}
               defaultValue={"Prestador"}
               value="Prestador"
-              control={<Radio />}
+              control={<Radio color="secondary" />}
               label="Prestador"
             />
             <FormControlLabel
+              sx={{ cursor: "pointer" }}
               value="Função"
-              control={<Radio />}
+              control={<Radio color="secondary" />}
               label="Função"
             />
           </RadioGroup>
         </FormControl>
-        <FormControl>
-          <FormLabel
-            id="demo-radio-buttons-group-label"
-            sx={{
-              color: "var(--black)",
-              fontWeight: "bold",
-              marginBottom: "16px",
-            }}
-          >
-            Agora ditgite o nome{" "}
-            {stateFilter.type === "Função"
-              ? `da ${stateFilter.type}`
-              : `do ${stateFilter.type}`}
-          </FormLabel>
+        <FormControl
+          sx={{ display: "flex", flexDirection: "column", gap: "12px" }}
+        >
           <Autocomplete
-            id="combo-box-profession"
+            id="combo-box-profession-or-professional"
             options={handleAutocompleteData(stateFilter.type)}
             getOptionLabel={(option) => option.name}
             renderInput={(params) => (
               <TextField
                 {...params}
-                label={stateFilter.type}
-                variant="outlined"
-                sx={{
-                  fontSize: "12px",
-                  height: "32px",
-                  "& label": { fontStyle: "italic" },
-                }}
+                label={`Selecione ${
+                  stateFilter.type === "Função"
+                    ? `a ${stateFilter.type.toLocaleLowerCase()}`
+                    : `o ${stateFilter.type.toLocaleLowerCase()}`
+                }`}
               />
             )}
             value={stateFilter}
@@ -662,12 +642,6 @@ export default function FilterReport(props: IPropsFilter) {
                 });
               }
             }}
-            sx={{
-              width: 300,
-              // "& svg, path, button": { cursor: "pointer " },
-              "& .css-154xyx0-MuiInputBase-root-MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline":
-                { border: "2px solid var(--secondary)" },
-            }}
             size="small"
             fullWidth
           />
@@ -676,23 +650,30 @@ export default function FilterReport(props: IPropsFilter) {
           <FormLabel
             id="demo-radio-buttons-group-label"
             sx={{
-              color: "var(--black)",
-              fontWeight: "bold",
               margin: "16px 0",
               display: "flex",
               alignItems: "center",
               gap: "8px",
             }}
           >
-            <Box> Por fim, selecione o período</Box>
+            <Box> Selecione o período</Box>
             <CustomWidthTooltip
-              title={`Caso não seja selecionado Data de fim, será considerado a última data registrada ${
+              sx={{ cursor: "help", "& svg, path": { cursor: "help" } }}
+              title={`Intervalo das datas registradas: ${textHelperRangeDate()}. Caso não seja selecionado Data de fim, será considerado a última data registrada ${
                 stateFilter.reportType === "Evolução"
                   ? "das Evoluções"
                   : "dos Check-ins/outs"
-              }. Intervalo das datas registradas: ${textHelperRangeDate()}`}
+              }.`}
             >
-              <BoxTooltip>?</BoxTooltip>
+              <InfoOutlinedIcon
+                sx={{
+                  cursor: "help",
+                  "& svg, path": { cursor: "help" },
+                  "&.MuiSvgIcon-root": { cursor: "help" },
+                }}
+                color="secondary"
+                fontSize="small"
+              ></InfoOutlinedIcon>
             </CustomWidthTooltip>
           </FormLabel>
           <BoxCalendar>

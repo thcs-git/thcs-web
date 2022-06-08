@@ -5,12 +5,12 @@ import { Link, useHistory } from "react-router-dom";
 import { RouteComponentProps } from "react-router-dom";
 
 // MUI
-import { makeStyles } from "@material-ui/core";
+import { Typography, Container, Grid } from "@mui/material";
 import {
   MoreVert,
   Check as CheckIcon,
   Close as CloseIcon,
-} from "@material-ui/icons";
+} from "@mui/icons-material";
 // Components
 import { FieldContent, FormTitle } from "../../../styles/components/Form";
 import Sidebar from "../../../components/Sidebar";
@@ -25,8 +25,9 @@ import NoPermission from "../../../components/Erros/NoPermission";
 
 import UnexpectedError from "../../../components/Erros/UnexpectedError";
 // Styles
-import { ContainerStyle as Container } from "./styles";
+// import { ContainerStyle as Container } from "./styles";
 import { IButtons } from "../../../components/Button/ButtonTabs";
+import theme from "../../../theme/theme";
 // Helper
 import LOCALSTORAGE from "../../../helpers/constants/localStorage";
 import SESSIONSTORAGE from "../../../helpers/constants/sessionStorage";
@@ -85,61 +86,6 @@ interface IAllergiIntegration {
     success: boolean;
   };
 }
-
-const useStyles = makeStyles((theme) => ({
-  root: {
-    display: "flex",
-    // flexWrap: 'wrap',
-    justifyContent: "space-evenly",
-    paddingTop: "25px",
-    "& > *": {
-      margin: theme.spacing(1),
-      width: theme.spacing(16),
-      height: theme.spacing(16),
-    },
-  },
-  itens: {
-    display: "flex",
-    flexWrap: "wrap",
-    justifyContent: "space-evenly",
-    paddingTop: "25px",
-    "& > *": {
-      margin: theme.spacing(1),
-      width: theme.spacing(16),
-      height: theme.spacing(16),
-    },
-  },
-  item_button: {
-    height: "100px !important",
-    width: "150px !important",
-    maxHeight: "100px !important",
-    display: "block",
-  },
-  item_box: {
-    display: "flex",
-    width: "115px",
-    height: "105px",
-  },
-  item_svg: {
-    height: "25px",
-    width: "25px",
-  },
-  box: {
-    display: "flex",
-    width: "125px",
-    height: "175px",
-  },
-  button: {
-    height: "175px !important",
-    width: "250px !important",
-    maxHeight: "175px !important",
-    display: "block",
-  },
-  svg: {
-    height: "85px",
-    width: "100px",
-  },
-}));
 
 export default function PatientOverview(
   props: RouteComponentProps<IPageParams>
@@ -648,10 +594,12 @@ export default function PatientOverview(
         !careState.loading && !careState.data?._id && careState.error ? (
           <UnexpectedError />
         ) : (
-          <Container style={{ padding: "20px", maxWidth: "1100px" }}>
+          <Container sx={{ padding: "20px" }}>
             {/* {careState.loading && <Loading />} */}
-            <FormTitle>Overview de Paciente</FormTitle>
-            <Container style={{ backgroundColor: "#f5f5f5" }}>
+            <Typography variant="h5" fontWeight={700} mb={5} color="primary">
+              Overview de Paciente
+            </Typography>
+            <Grid container sx={{ background: "rgb(245, 245, 245)" }}>
               {true ? (
                 <>
                   <Header
@@ -694,48 +642,47 @@ export default function PatientOverview(
                       loading={handleLoadingReport(reportType)}
                     />
                   ) : (
-                    <Container
-                      style={{
-                        padding: "0 32px 20px ",
+                    <Grid
+                      container
+                      // gap={"8px"}
+                      sx={{
+                        display: "flex",
+                        flexWrap: "wrap",
+                        justifyContent: "space-between",
+                        padding: "0 0 32px 0",
+                        width: "calc(100% - 68px)",
+                        margin: "0 auto",
                       }}
                     >
-                      <Container
-                        style={{
-                          display: "flex",
-                          flexWrap: "wrap",
-                          justifyContent: "space-between",
-                        }}
-                      >
-                        <CardInfo
-                          content={content}
-                          tittle={personalCard}
-                          alergicIs={true}
-                          gridProps={gridPropsPlan}
-                          integration={integration}
-                        />
+                      <CardInfo
+                        content={content}
+                        tittle={personalCard}
+                        alergicIs={true}
+                        gridProps={gridPropsPlan}
+                        integration={integration}
+                      />
 
-                        <CardInfo
-                          content={content}
-                          tittle={planCard}
-                          alergicIs={false}
-                          gridProps={gridPropsPlan}
-                          integration={integration}
-                        />
-                        <CardInfo
-                          content={content}
-                          tittle={teamCard}
-                          alergicIs={false}
-                          gridProps={gridPropsPlan}
-                          integration={integration}
-                        />
-                      </Container>
-                    </Container>
+                      <CardInfo
+                        content={content}
+                        tittle={planCard}
+                        alergicIs={false}
+                        gridProps={gridPropsPlan}
+                        integration={integration}
+                      />
+                      <CardInfo
+                        content={content}
+                        tittle={teamCard}
+                        alergicIs={false}
+                        gridProps={gridPropsPlan}
+                        integration={integration}
+                      />
+                    </Grid>
                   )}
                 </>
               ) : (
                 <></>
               )}
-            </Container>
+            </Grid>
             <ButtonTabs buttons={buttons} canEdit={false} />
           </Container>
         )

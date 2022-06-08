@@ -1,7 +1,7 @@
 import styled from "styled-components";
 import { styled as styledMui } from "@mui/material/styles";
-import Container from "@material-ui/core/Container";
-import Typography from "@material-ui/core/Typography";
+import Container from "@mui/material/Container";
+import Typography from "@mui/material/Typography";
 import { ReactComponent as HomeIcon } from "../../assets/img/marca-sollar-azul.svg";
 import Button, { ButtonProps } from "@mui/material/Button";
 

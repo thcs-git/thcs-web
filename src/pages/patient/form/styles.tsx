@@ -1,11 +1,9 @@
-import styled from 'styled-components';
-import Tabs from '@material-ui/core/Tabs';
-import Box from '@material-ui/core/Box';
-import {
-  FormControl
-} from '@material-ui/core';
+import styled from "styled-components";
+import Tabs from "@mui/material/Tabs";
+import Box from "@mui/material/Box";
+import { FormControl } from "@mui/material";
 
-import { TextField, OutlinedInput, Button } from '@material-ui/core';
+import { TextField, OutlinedInput, Button } from "@mui/material";
 
 export const ButtonsContent = styled.div`
   display: flex;
@@ -27,13 +25,10 @@ export const BoxCustom = styled(Box)`
   margin-bottom: 40px;
 `;
 
-
 export const FormSection = styled.div`
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-
-
 `;
 
 export const FormGroupSection = styled.div`
@@ -88,11 +83,10 @@ export const FormControlCustom = styled(FormControl)`
   flex-direction: row;
   align-items: center;
   justify-content: space-around;
-
 `;
 
 export const TabCustom = styled(Tabs)`
-  background: #F2F2F2 !important;
+  background: #f2f2f2 !important;
   box-shadow: 1px 1px 3px #00000029;
 
   button.Mui-selected {

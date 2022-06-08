@@ -20,7 +20,7 @@ import {
   TextField,
   Grid,
   Box,
-} from "@material-ui/core";
+} from "@mui/material";
 import {
   FiberManualRecord,
   Visibility as VisibilityIcon,
@@ -28,7 +28,7 @@ import {
   MoreVert,
   Check as CheckIcon,
   AccountCircle as AccountCircleIcon,
-} from "@material-ui/icons";
+} from "@mui/icons-material";
 import debounce from "lodash.debounce";
 import { useDispatch, useSelector } from "react-redux";
 import { ApplicationState } from "../../../store/";

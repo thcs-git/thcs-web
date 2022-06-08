@@ -1,6 +1,6 @@
-import styled from 'styled-components';
-import { Card, CardContent } from '@material-ui/core';
-import { Link } from 'react-router-dom';
+import styled from "styled-components";
+import { Card, CardContent } from "@mui/material";
+import { Link } from "react-router-dom";
 
 interface IListItemStatus {
   active: boolean;
@@ -55,15 +55,15 @@ export const ListItemStatus = styled.div<IListItemStatus>`
 export const ListItemCaptureStatus = styled.div<IListItemCaptureStatus>`
   color: ${(props) => {
     switch (props.status) {
-      case 'Aprovado':
+      case "Aprovado":
         return `var(--success)`;
-      case 'Recusado':
+      case "Recusado":
         return `var(--danger)`;
-      case 'Aguardando':
+      case "Aguardando":
         return `var(--yellow)`;
-      case 'Em Andamento':
+      case "Em Andamento":
         return `var(--purple)`;
-      case 'Cancelado':
+      case "Cancelado":
         return `var(--orange)`;
       default:
         return `var(--black)`;
@@ -123,23 +123,28 @@ export const CaptionList = styled.div`
     margin-right: 5px;
   }
 
-  & > div.captionItem.recusado > span, & > div.captionItem.recusado > svg {
+  & > div.captionItem.recusado > span,
+  & > div.captionItem.recusado > svg {
     color: var(--danger);
   }
 
-  & > div.captionItem.aprovado > span, & > div.captionItem.aprovado > svg {
+  & > div.captionItem.aprovado > span,
+  & > div.captionItem.aprovado > svg {
     color: var(--success);
   }
 
-  & > div.captionItem.aguardando > span, & > div.captionItem.aguardando > svg {
+  & > div.captionItem.aguardando > span,
+  & > div.captionItem.aguardando > svg {
     color: var(--yellow);
   }
 
-  & > div.captionItem.andamento > span, & > div.captionItem.andamento > svg {
+  & > div.captionItem.andamento > span,
+  & > div.captionItem.andamento > svg {
     color: var(--purple);
   }
 
-  & > div.captionItem.cancelado > span, & > div.captionItem.cancelado > svg {
+  & > div.captionItem.cancelado > span,
+  & > div.captionItem.cancelado > svg {
     color: var(--orange);
   }
 `;

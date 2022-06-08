@@ -2,8 +2,8 @@ import React from "react";
 
 interface IPropsSvg {
   fill: any;
-  width: any;
-  height: any;
+  width?: any;
+  height?: any;
 }
 
 export default function IconMeasurement(props: IPropsSvg) {

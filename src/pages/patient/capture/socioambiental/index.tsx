@@ -8,7 +8,7 @@ import {
   FormControlLabel,
   FormGroup,
   Checkbox,
-} from "@material-ui/core";
+} from "@mui/material";
 
 import { useDispatch, useSelector } from "react-redux";
 import { ApplicationState } from "../../../../store";
@@ -396,7 +396,7 @@ export default function SocioAmbiental(
                   onClick={() => {
                     clearDocument();
                   }}
-                  background="primary"
+                  // background="primary"
                 >
                   Limpar Campos
                 </ButtonComponent>
@@ -472,7 +472,7 @@ export default function SocioAmbiental(
 
               <ButtonsContent>
                 <Button
-                  background="default"
+                  // background="default"
                   onClick={() =>
                     history.push(`/patient/capture/${care?._id}/overview`)
                   }
@@ -481,7 +481,10 @@ export default function SocioAmbiental(
                 </Button>
 
                 {careState.data.capture?.status === "Em Andamento" && (
-                  <Button background="primary" onClick={handleSubmit}>
+                  <Button
+                    //  background="primary"
+                    onClick={handleSubmit}
+                  >
                     Finalizar
                   </Button>
                 )}
@@ -563,7 +566,7 @@ export default function SocioAmbiental(
 
               <ButtonsContent>
                 <Button
-                  background="default"
+                  // background="default"
                   onClick={() =>
                     history.push(`/patient/capture/${care?._id}/overview`)
                   }
@@ -572,7 +575,10 @@ export default function SocioAmbiental(
                 </Button>
 
                 {careState.data.capture?.status === "Em Andamento" && (
-                  <Button background="primary" onClick={handleSubmit}>
+                  <Button
+                    // background="primary"
+                    onClick={handleSubmit}
+                  >
                     Finalizar
                   </Button>
                 )}

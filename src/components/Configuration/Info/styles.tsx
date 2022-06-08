@@ -1,10 +1,10 @@
-import styled from 'styled-components';
-import Card from "@material-ui/core/Card";
-import CardContent from "@material-ui/core/CardContent";
-import Box from "@material-ui/core/Box";
+import styled from "styled-components";
+import Card from "@mui/material/Card";
+import CardContent from "@mui/material/CardContent";
+import Box from "@mui/material/Box";
 
 export const CardIcon = styled(Card)`
-  background-color: #0899BA;
+  background-color: #0899ba;
   border-radius: 20px;
   padding: 0.5rem;
   display: flex;

@@ -5,7 +5,7 @@ import {
   Button,
   Box,
   FormControl,
-} from "@material-ui/core";
+} from "@mui/material";
 
 export const ButtonsContent = styled.div`
   display: flex;

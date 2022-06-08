@@ -31,11 +31,11 @@ import {
   DialogTitle,
   Grid,
   StepLabel,
-} from "@material-ui/core";
+} from "@mui/material";
 
-import { Autocomplete } from "@material-ui/lab";
+import { Autocomplete } from "@mui/material";
 
-import { Create as CreateIcon, AccountCircle } from "@material-ui/icons";
+import { Create as CreateIcon, AccountCircle } from "@mui/icons-material";
 
 import Loading from "../../../components/Loading";
 import Sidebar from "../../../components/Sidebar";
@@ -271,7 +271,7 @@ export default function AreaForm(props: RouteComponentProps<IPageParams>) {
                             </div>
                           </PatientData>
                           <Button
-                            background="default"
+                            // background="default"
                             onClick={() => {
                               history.push(`/patient/${patient?._id}/edit`);
                             }}
@@ -522,20 +522,23 @@ export default function AreaForm(props: RouteComponentProps<IPageParams>) {
           <ButtonsContent>
             <Button
               disabled={currentStep === 0}
-              background="default"
+              // background="default"
               onClick={handleBackStep}
             >
               Anterior
             </Button>
 
             {currentStep === steps.length - 1 ? (
-              <Button background="primary" onClick={handleSaveFormCare}>
+              <Button
+                // background="primary"
+                onClick={handleSaveFormCare}
+              >
                 Finalizar
               </Button>
             ) : (
               <Button
                 disabled={currentStep === steps.length - 1}
-                background="primary"
+                // background="primary"
                 onClick={handleNextStep}
               >
                 Próximo

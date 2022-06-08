@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useCallback } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { Grid, TextField } from "@material-ui/core";
-import { Autocomplete } from "@material-ui/lab";
+import { Grid, TextField } from "@mui/material";
+import { Autocomplete } from "@mui/material";
 
 import { ApplicationState } from "../../store";
 import { loadUserById } from "../../store/ducks/users/actions";
@@ -123,9 +123,9 @@ export default function Configuration() {
               id="combo-box-change-company"
               options={companies}
               getOptionLabel={(option: any) => option.customer}
-              getOptionSelected={(option, value) => {
-                return option.companie_id._id === user.companySelected;
-              }}
+              // getOptionSelected={(option, value) => {
+              //   return option.companie_id._id === user.companySelected;
+              // }}
               value={selectCompany()}
               renderInput={(params) => (
                 <TextField

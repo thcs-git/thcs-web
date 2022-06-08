@@ -1,14 +1,14 @@
 import { useDispatch, useSelector } from "react-redux";
 import { ApplicationState } from "../../store";
 import React, { useCallback, useEffect, useState } from "react";
-import { createStyles, Theme, makeStyles } from "@material-ui/core/styles";
-import List from "@material-ui/core/List";
-import ListItem from "@material-ui/core/ListItem";
-import Divider from "@material-ui/core/Divider";
-import ListItemText from "@material-ui/core/ListItemText";
-import ListItemAvatar from "@material-ui/core/ListItemAvatar";
-import Avatar from "@material-ui/core/Avatar";
-import Typography from "@material-ui/core/Typography";
+import { createStyles, Theme, makeStyles } from "@mui/material/styles";
+import List from "@mui/material/List";
+import ListItem from "@mui/material/ListItem";
+import Divider from "@mui/material/Divider";
+import ListItemText from "@mui/material/ListItemText";
+import ListItemAvatar from "@mui/material/ListItemAvatar";
+import Avatar from "@mui/material/Avatar";
+import Typography from "@mui/material/Typography";
 
 import _ from "lodash";
 import LOCALSTORAGE from "../../helpers/constants/localStorage";
@@ -19,7 +19,7 @@ import {
   loadUserById,
 } from "../../store/ducks/users/actions";
 import { CompanyUserLinkInterface } from "../../store/ducks/users/types";
-
+import theme from "../../theme/theme";
 import {
   loadRequest,
   loadMessageById,
@@ -30,27 +30,13 @@ import {
   DialogActions,
   DialogContent,
   DialogTitle,
-} from "@material-ui/core";
+} from "@mui/material";
 import { MessageInterface } from "../../store/ducks/message/types";
 import PaginationComponent from "../Pagination";
 import Loading from "../Loading";
 
-const useStyles = makeStyles((theme: Theme) =>
-  createStyles({
-    root: {
-      width: "100%",
-      // maxWidth: '36px',
-      backgroundColor: theme.palette.background.paper,
-    },
-    inline: {
-      display: "inline",
-    },
-  })
-);
-
 export default function Message() {
   const dispatch = useDispatch();
-  const classes = useStyles();
 
   const messageState = useSelector((state: ApplicationState) => state.message);
   const [openModalMessageId, setOpenModalMessageId] = useState(false);
@@ -92,7 +78,13 @@ export default function Message() {
 
   return (
     <>
-      <List className={classes.root}>
+      <List
+        style={{
+          width: "100%",
+          // maxWidth: '36px',
+          backgroundColor: theme.palette.background.paper,
+        }}
+      >
         {/* {messageState.loading && <Loading/>} */}
         {messageState?.list?.data?.length > 0 ? (
           <>
@@ -130,7 +122,7 @@ export default function Message() {
                           <Typography
                             component="span"
                             variant="body2"
-                            className={classes.inline}
+                            sx={{ display: "inline" }}
                             color="textPrimary"
                           >
                             {item.from.name}

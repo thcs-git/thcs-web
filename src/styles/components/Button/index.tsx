@@ -4,7 +4,7 @@ import styled, {
   StyledComponent,
   StyledComponentProps,
 } from "styled-components";
-import Button, { ButtonProps } from "@material-ui/core/Button";
+import Button, { ButtonProps } from "@mui/material/Button";
 import { ButtonTypes } from "./types";
 
 interface IButtonProps extends ButtonProps {

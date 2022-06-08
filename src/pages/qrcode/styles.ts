@@ -1,7 +1,7 @@
-import styled from 'styled-components';
-import Container from '@material-ui/core/Container';
-import { TextField, OutlinedInput, Button, Stepper, Step } from '@material-ui/core';
-import { ReactComponent as NoData } from '../../assets/img/no-data.svg';
+import styled from "styled-components";
+import Container from "@mui/material/Container";
+import { TextField, OutlinedInput, Button, Stepper, Step } from "@mui/material";
+import { ReactComponent as NoData } from "../../assets/img/no-data.svg";
 
 export const ContainerQrCode = styled(Container)``;
 

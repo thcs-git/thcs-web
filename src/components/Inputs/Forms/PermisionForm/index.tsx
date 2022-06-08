@@ -14,7 +14,7 @@ import {
   Typography,
   Switch,
 } from "@mui/material";
-import { makeStyles, Theme, withStyles } from "@material-ui/core/styles";
+import { Theme, withStyles } from "@mui/material/styles";
 import { ThemeProvider } from "@mui/material/styles";
 // icon
 import CheckCircleOutlineOutlinedIcon from "@mui/icons-material/CheckCircleOutlineOutlined";
@@ -61,25 +61,6 @@ function TabPanel(props: TabPanelProps) {
   );
 }
 
-const useStyles = makeStyles((theme: Theme) => ({
-  root: {
-    flexGrow: 1,
-    width: "100%",
-    backgroundColor: theme.palette.background.paper,
-  },
-
-  // formLabel: {
-  //   color: "var(--primary)",
-  //   "&.Mui-disabled": {
-  //     color: "var(--gray-dark)",
-  //   },
-  //   "&.Mui-focused": {
-  //     color: "var(--primary)",
-  //   },
-  //   // '&.Mui-disabled:hover': { background:theme.palette.secondary.main },
-  // },
-}));
-
 const PermissionForm = (props: IComponent) => {
   const {
     state,
@@ -91,7 +72,6 @@ const PermissionForm = (props: IComponent) => {
     idPermission,
   } = props;
   // const userState = useSelector((state: ApplicationState) => state.users);
-  const classes = useStyles();
   const dispatch = useDispatch();
   interface rightsInterface {
     crud: string;
@@ -486,12 +466,14 @@ const PermissionForm = (props: IComponent) => {
   return (
     <ThemeProvider theme={theme}>
       <div
-        className={classes.root}
         style={{
           display: "flex",
           justifyContent: "center",
           alignItems: "flex-start",
           flexDirection: "column",
+          flexGrow: 1,
+          width: "100%",
+          backgroundColor: theme.palette.background.paper,
         }}
       >
         <Box

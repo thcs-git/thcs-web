@@ -1,4 +1,17 @@
 import React, { useEffect, useCallback } from "react";
+//router
+import { useHistory } from "react-router-dom";
+
+//redux e saga
+import { useDispatch, useSelector } from "react-redux";
+import { ApplicationState } from "../../../store";
+import {
+  healthInsuranceRequest,
+  healthPlanRequest,
+  healthSubPlanRequest,
+  loadHistoryRequest,
+} from "../../../store/ducks/cares/actions";
+//mui
 import {
   Grid,
   Dialog,
@@ -12,37 +25,30 @@ import {
   TextField,
   TableRow,
   TableCell,
-} from "@material-ui/core";
-import { Autocomplete } from "@material-ui/lab";
-
-import { useDispatch, useSelector } from "react-redux";
-import { ApplicationState } from "../../../store";
-import {
-  healthInsuranceRequest,
-  healthPlanRequest,
-  healthSubPlanRequest,
-  loadHistoryRequest,
-} from "../../../store/ducks/cares/actions";
-
-import Loading from "../../Loading";
-
-import { FieldContent } from "../../../styles/components/Form";
-import Button from "@mui/material/Button";
+  Autocomplete,
+  Button,
+  Typography,
+} from "@mui/material";
 import {
   AccountCircle as AccountCircleIcon,
   FiberManualRecord,
   Visibility as VisibilityIcon,
-} from "@material-ui/icons";
-import Table from "../../Table";
-import { formatDate } from "../../../helpers/date";
-import { useHistory } from "react-router-dom";
+} from "@mui/icons-material";
+//styles
+import { FieldContent } from "../../../styles/components/Form";
 import { ListItemCaptureStatus } from "../../../pages/avaliation/list/styles";
 import {
   HighComplexityLabel,
   LowerComplexityLabel,
   MediumComplexityLabel,
 } from "../../../styles/components/Text";
+import theme from "../../../theme/theme";
+//utils
+import { formatDate } from "../../../helpers/date";
 import SESSIONSTORAGE from "../../../helpers/constants/sessionStorage";
+//components
+import Loading from "../../Loading";
+import Table from "../../Table";
 
 interface IDialogProps {
   modalOpen: any;
@@ -52,6 +58,18 @@ interface IDialogProps {
   historyType?: any;
   tableCells?: any;
 }
+
+const capitalizeText = (words: string) => {
+  if (words) {
+    return words
+      .toLowerCase()
+      .split(" ")
+      .map((text: string) => {
+        return (text = text.charAt(0).toUpperCase() + text.substring(1));
+      })
+      .join(" ");
+  } else return "";
+};
 
 export default function HistoryDialog(props: IDialogProps) {
   const {
@@ -176,30 +194,38 @@ export default function HistoryDialog(props: IDialogProps) {
       >
         {historyType === "care" ? (
           <DialogTitle id="scroll-dialog-title">
-            <h3>Histórico de Atendimento</h3>
+            Histórico de Atendimento
           </DialogTitle>
         ) : (
           <DialogTitle id="scroll-dialog-title">
-            <h3>Histórico de Captações</h3>
+            Histórico de Captações
           </DialogTitle>
         )}
         <DialogContent>
           <DialogContentText id="scroll-dialog-description" tabIndex={-1}>
-            <Grid
-              container
-              style={{
-                display: "flex",
-                flexDirection: "row",
-                justifyContent: "space-between",
-              }}
-            >
-              <Grid item md={1} style={{ padding: "0" }}>
+            <Grid container sx={{ marginBottom: 2 }}>
+              <Grid
+                item
+                md={12}
+                sx={{
+                  display: "flex",
+                  flexWrap: "nowrap",
+                  alignItems: "center",
+                  gap: 1,
+                }}
+              >
                 <AccountCircleIcon
-                  style={{ color: "#0899BA", fontSize: "30pt" }}
+                  color="primary"
+                  fontSize="large"
+                  // style={{ fontSize: "30pt" }}
                 />
-              </Grid>
-              <Grid item md={11} style={{ padding: "0", paddingTop: "0.4rem" }}>
-                <h3 style={{ color: "#333333" }}>{historyPatientName}</h3>
+                <Typography
+                  variant="body1"
+                  color={theme.palette.text.primary}
+                  fontWeight="600"
+                >
+                  {historyPatientName}
+                </Typography>
               </Grid>
             </Grid>
             <Table
@@ -308,13 +334,9 @@ export default function HistoryDialog(props: IDialogProps) {
           <Button
             onClick={() => setModalOpen(false)}
             color="primary"
-            sx={{ cursor: "pointer", "& span": { cursor: "pointer" } }}
+            variant="contained"
           >
-            <h3
-              style={{ color: "#0899BA", fontSize: "11pt", cursor: "pointer" }}
-            >
-              Fechar
-            </h3>
+            Fechar
           </Button>
         </DialogActions>
       </Dialog>

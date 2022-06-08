@@ -1,5 +1,6 @@
 import React, { useState, ReactNode } from "react";
-import { makeStyles, Theme } from "@material-ui/core/styles";
+import { Theme } from "@mui/material/styles";
+
 import { Badge, Divider, Grid, Typography } from "@mui/material";
 
 import {
@@ -156,30 +157,6 @@ function a11yProps(index: any) {
   };
 }
 
-const useStyles = makeStyles((theme: Theme) => ({
-  root: {
-    flexGrow: 1,
-    width: "100%",
-    backgroundColor: theme.palette.background.paper,
-  },
-  // indicator: {
-  //   borderBottom: `2px solid ${theme.palette.secondary.main}`,
-  // },
-  indicatorCompany: {
-    borderBottom: `2px solid ${theme.palette.common.black}`,
-  },
-  padding: {
-    padding: theme.spacing(0, 2),
-  },
-  customBadge: {
-    backgroundColor: `${theme.palette.secondary.main}`,
-    color: theme.palette.common.white,
-  },
-  colorSecondary: {
-    color: `${theme.palette.secondary.main}`,
-  },
-}));
-
 const TabForm = (props: ITabprops) => {
   const {
     navItems,
@@ -202,7 +179,6 @@ const TabForm = (props: ITabprops) => {
     autoCompleteSetting,
     modePermission,
   } = props;
-  const classes = useStyles();
   const handleChange = (event: React.ChangeEvent<{}>, newValue: number) => {
     setValue(newValue);
     setInitialTab && setInitialTab(newValue);
@@ -376,7 +352,13 @@ const TabForm = (props: ITabprops) => {
   return (
     <ThemeProvider theme={theme}>
       {navItems[0].components[0] === "CompanyForm" ? (
-        <div className={classes.root}>
+        <div
+          style={{
+            flexGrow: 1,
+            width: "100%",
+            backgroundColor: theme.palette.background.paper,
+          }}
+        >
           <TabContent position="static">
             <TabNav
               value={value}
@@ -435,7 +417,13 @@ const TabForm = (props: ITabprops) => {
           )}
         </div>
       ) : navItems[0].components[0] === "PatientForm" ? (
-        <div className={classes.root}>
+        <div
+          style={{
+            flexGrow: 1,
+            width: "100%",
+            backgroundColor: theme.palette.background.paper,
+          }}
+        >
           <TabContent position="static">
             <TabNav
               value={value}
@@ -508,7 +496,13 @@ const TabForm = (props: ITabprops) => {
         </div>
       ) : navItems[0].components[0] === "CheckListFormPortal" ||
         navItems[0].components[0] === "CheckListFormApp" ? (
-        <div className={classes.root}>
+        <div
+          style={{
+            flexGrow: 1,
+            width: "100%",
+            backgroundColor: theme.palette.background.paper,
+          }}
+        >
           <Box
             style={{
               display: "flex",

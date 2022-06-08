@@ -1,5 +1,5 @@
-import styled from 'styled-components';
-import { Select, Radio } from '@material-ui/core';
+import styled from "styled-components";
+import { Select, Radio } from "@mui/material";
 
 export const FormTitle = styled.h2`
   color: var(--primary);
@@ -54,7 +54,8 @@ export const RadioComponent = styled(Radio)`
     color: var(--secondary);
   }
 
-  &:hover, &.Mui-checked:hover {
-    background-color: #0899BA11;
+  &:hover,
+  &.Mui-checked:hover {
+    background-color: #0899ba11;
   }
 `;

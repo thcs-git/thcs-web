@@ -34,8 +34,8 @@ import {
   InputLabel,
   OutlinedInput,
   TextField,
-} from "@material-ui/core";
-import { VisibilityOff, Visibility } from "@material-ui/icons";
+} from "@mui/material";
+import { VisibilityOff, Visibility } from "@mui/icons-material";
 import ButtonComponent from "../../../styles/components/Button";
 
 const SIZE_INPUT_PASSWORD = 6;
@@ -238,7 +238,7 @@ export default function RecoveryPasswordPage(
                     </InputAdornment>
                   }
                   onBlur={handleValidatePassword}
-                  labelWidth={100}
+                  // labelWidth={100}
                 />
               </FormControl>
 
@@ -270,7 +270,7 @@ export default function RecoveryPasswordPage(
                     </InputAdornment>
                   }
                   onBlur={handleValidatePassword}
-                  labelWidth={100}
+                  // labelWidth={100}
                 />
               </FormControl>
               <FeedbackButtonsContent>

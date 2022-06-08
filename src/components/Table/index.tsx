@@ -15,13 +15,13 @@ import TableContainer from "@mui/material/TableContainer";
 import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import Paper from "@mui/material/Paper";
-import { MenuItem, Tooltip } from "@mui/material";
+import { IconButton, MenuItem, Tooltip } from "@mui/material";
 import { Visibility as VisibilityIcon } from "@mui/icons-material/";
 import FilterListIcon from "@mui/icons-material/FilterList";
 import Button from "@mui/material/Button";
 import { MoreVert } from "@mui/icons-material";
 import MoreHorizTwoToneIcon from "@mui/icons-material/MoreHorizTwoTone";
-import { ThemeProvider } from "@mui/styles";
+import { ThemeProvider } from "@mui/material/styles";
 import Typography from "@mui/material/Typography";
 //Styles
 import { ComplexityStatus } from "../../styles/components/Table";
@@ -217,7 +217,7 @@ const TableComponent = (props: ITableProps) => {
             {userState &&
               integration &&
               userState?.list.data.map((user, index) => (
-                <TableRow key={`user_${index}`}>
+                <TableRow key={`user_${index}`} hover>
                   <TableCell
                     align="left"
                     sx={{ cursor: "pointer", "& a": { cursor: "pointer" } }}
@@ -302,8 +302,7 @@ const TableComponent = (props: ITableProps) => {
             {userState &&
               !integration &&
               userState?.list.data.map((user, index) => (
-                <TableRow key={`user_${index}`}>
-                  {" "}
+                <TableRow key={`user_${index}`} hover>
                   <TableCell
                     align="left"
                     sx={{ cursor: "pointer", "& a": { cursor: "pointer" } }}
@@ -408,7 +407,7 @@ const TableComponent = (props: ITableProps) => {
             {patientState &&
               integration &&
               patientState.list.data.map((patient, index) => (
-                <TableRow key={`patient_${index}`}>
+                <TableRow key={`patient_${index}`} hover>
                   <TableCell
                     align="left"
                     sx={{ cursor: "pointer", "& a": { cursor: "pointer" } }}
@@ -441,7 +440,7 @@ const TableComponent = (props: ITableProps) => {
             {patientState &&
               !integration &&
               patientState.list.data.map((patient, index) => (
-                <TableRow key={`patient_${index}`}>
+                <TableRow key={`patient_${index}`} hover>
                   <TableCell
                     align="left"
                     sx={{ cursor: "pointer", "& a": { cursor: "pointer" } }}
@@ -526,7 +525,7 @@ const TableComponent = (props: ITableProps) => {
             integration &&
             careState?.history?.data?.length > 0
               ? careState?.history?.data.map((care: any, index: number) => (
-                  <TableRow key={`patient_${index}`}>
+                  <TableRow key={`patient_${index}`} hover>
                     <TableCell>
                       {handleEmpty(formatDate(care?.created_at, "DD/MM/YYYY"))}
                     </TableCell>
@@ -546,7 +545,7 @@ const TableComponent = (props: ITableProps) => {
                     </TableCell>
                     <TableCell>{handleEmpty(care?.company)}</TableCell>
                     <TableCell align="center">
-                      <Button
+                      <IconButton
                         sx={{
                           cursor: "pointer",
                           "& svg, path": { cursor: "pointer" },
@@ -555,8 +554,8 @@ const TableComponent = (props: ITableProps) => {
                           history.push(`/care/${care?._id}/overview`)
                         }
                       >
-                        <VisibilityIcon style={{ color: "#0899BA" }} />
-                      </Button>
+                        <VisibilityIcon color="secondary" />
+                      </IconButton>
                     </TableCell>
                   </TableRow>
                 ))
@@ -566,7 +565,7 @@ const TableComponent = (props: ITableProps) => {
             !integration &&
             careState?.history?.length > 0
               ? careState?.history?.map((care: any, index: number) => (
-                  <TableRow key={`patient_${index}`}>
+                  <TableRow key={`patient_${index}`} hover>
                     <TableCell>
                       <p>
                         {care?.created_at
@@ -605,7 +604,7 @@ const TableComponent = (props: ITableProps) => {
             {careFilter &&
               // !integration &&
               careFilter.map((care: CareInterface, index: number) => (
-                <TableRow key={`care_${index}`}>
+                <TableRow key={`care_${index}`} hover>
                   <TableCell>{care?._id}</TableCell>
                   <TableCell
                     sx={{ cursor: "pointer", "& a": { cursor: "pointer" } }}
@@ -645,7 +644,7 @@ const TableComponent = (props: ITableProps) => {
                   )}
 
                   <TableCell>
-                    <Button
+                    <IconButton
                       aria-controls={`simple-menu${index}`}
                       id={`btn_simple-menu${index}`}
                       aria-haspopup="true"
@@ -655,8 +654,8 @@ const TableComponent = (props: ITableProps) => {
                         "& svg, path": { cursor: "pointer" },
                       }}
                     >
-                      <MoreVert style={{ color: "#0899BA" }} />
-                    </Button>
+                      <MoreVert color="secondary" />
+                    </IconButton>
                     <Menu
                       id={`simple-menu${index}`}
                       anchorEl={anchorEl}

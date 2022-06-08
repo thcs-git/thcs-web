@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useCallback } from "react";
-import Tab from "@material-ui/core/Tab";
+import Tab from "@mui/material/Tab";
 import InputMask, { Props } from "react-input-mask";
-import { cpf } from "cpf-cnpj-validator";
+// import { cpf } from "cpf-cnpj-validator";
 import validator from "validator";
 import { useHistory, RouteComponentProps } from "react-router-dom";
 import _ from "lodash";
@@ -22,9 +22,9 @@ import {
   MenuItem,
   Radio,
   RadioGroup,
-} from "@material-ui/core";
-import { SearchOutlined, Edit, AddAlertSharp } from "@material-ui/icons";
-import Autocomplete from "@material-ui/lab/Autocomplete";
+} from "@mui/material";
+import { SearchOutlined, Edit, AddAlertSharp } from "@mui/icons-material";
+import Autocomplete from "@mui/material/Autocomplete";
 
 import { useDispatch, useSelector } from "react-redux";
 import {
@@ -69,8 +69,8 @@ import {
   FormControlCustom,
   BoxCustom,
 } from "./styles";
-import Box from "@material-ui/core/Box";
-import Typography from "@material-ui/core/Typography";
+import Box from "@mui/material/Box";
+import Typography from "@mui/material/Typography";
 import { loadSuccess } from "../../../store/ducks/areas/actions";
 import { objectValues } from "react-toastify/dist/utils";
 import { createPrescriptionRequest } from "../../../store/ducks/prescripition/actions";
@@ -321,7 +321,8 @@ export default function PatientForm(props: RouteComponentProps<IPageParams>) {
   };
   var cpfIsValid: any;
   const checkIsCpfValid = useCallback(() => {
-    return !!cpf.isValid(state.fiscal_number);
+    return;
+    //  !!cpf.isValid(state.fiscal_number);
   }, [state.fiscal_number]);
 
   const validateCellPhone = () => {
@@ -962,20 +963,19 @@ export default function PatientForm(props: RouteComponentProps<IPageParams>) {
                                       <OutlinedInputFiled
                                         id="input-fiscal-number"
                                         placeholder="000.000.000-00"
-                                        labelWidth={80}
+                                        // labelWidth={80}
                                         style={{ marginRight: 12 }}
-                                        error={
-                                          !!cpf.isValid(state.fiscal_number) ==
-                                            false &&
-                                          state.fiscal_number !=
-                                            "___.___.___-__" &&
-                                          !!state.fiscal_number
-                                        }
+                                        // error={
+                                        //   !!cpf.isValid(state.fiscal_number) ==
+                                        //     false &&
+                                        //   state.fiscal_number !=
+                                        //     "___.___.___-__" &&
+                                        //   !!state.fiscal_number
+                                        // }
                                       />
                                     )}
                                   </InputMask>
-                                  {!!cpf.isValid(state.fiscal_number) ==
-                                    false &&
+                                  {"!!cpf.isValid(state.fiscal_number) == false" &&
                                     state.fiscal_number != "___.___.___-__" &&
                                     !!state.fiscal_number && (
                                       <p
@@ -1025,7 +1025,7 @@ export default function PatientForm(props: RouteComponentProps<IPageParams>) {
                                       <OutlinedInputFiled
                                         id="input-nation-id"
                                         placeholder="000.000.000-00"
-                                        labelWidth={80}
+                                        // labelWidth={80}
                                         style={{ marginRight: 12 }}
                                       />
                                     )}
@@ -1222,7 +1222,7 @@ export default function PatientForm(props: RouteComponentProps<IPageParams>) {
                                             />
                                           </InputAdornment>
                                         }
-                                        labelWidth={155}
+                                        // labelWidth={155}
                                         style={{
                                           marginRight: 12,
                                           marginBottom: 5,
@@ -1489,7 +1489,7 @@ export default function PatientForm(props: RouteComponentProps<IPageParams>) {
                                           !validatePhone() &&
                                           state.phones[0]?.number != ""
                                         }
-                                        labelWidth={80}
+                                        // labelWidth={80}
                                         style={{ marginRight: 12 }}
                                       />
                                     )}
@@ -1543,7 +1543,7 @@ export default function PatientForm(props: RouteComponentProps<IPageParams>) {
                                       <OutlinedInputFiled
                                         id="input-cellphone"
                                         placeholder="(00) 0 0000-0000"
-                                        labelWidth={80}
+                                        // labelWidth={80}
                                         style={{ marginRight: 12 }}
                                         error={
                                           !validateCellPhone() &&
@@ -1626,7 +1626,7 @@ export default function PatientForm(props: RouteComponentProps<IPageParams>) {
                                       <OutlinedInputFiled
                                         id="input-reponsable-phone"
                                         placeholder="(00) 0 0000-0000"
-                                        labelWidth={80}
+                                        // labelWidth={80}
                                         error={
                                           !validateResponsableCellPhone() &&
                                           state.responsable?.phone != ""
@@ -1701,7 +1701,7 @@ export default function PatientForm(props: RouteComponentProps<IPageParams>) {
                     </BoxCustom>
                     <ButtonsContent>
                       <ButtonComponent
-                        background="secondary"
+                        // background="secondary"
                         variant="outlined"
                         onClick={() => handleOpenModalCancel()}
                       >
@@ -1710,7 +1710,7 @@ export default function PatientForm(props: RouteComponentProps<IPageParams>) {
                       {canEdit && (
                         <ButtonComponent
                           disabled={!formValid}
-                          background="success"
+                          // background="success"
                           onClick={handleSaveFormPatient}
                         >
                           Salvar
@@ -1738,7 +1738,10 @@ export default function PatientForm(props: RouteComponentProps<IPageParams>) {
               </DialogContentText>
             </DialogContent>
             <DialogActions>
-              <Button onClick={handleCloseModalCancel} color="default">
+              <Button
+                onClick={handleCloseModalCancel}
+                // color="default"
+              >
                 Não
               </Button>
               <Button onClick={handleCancelForm} color="secondary" autoFocus>

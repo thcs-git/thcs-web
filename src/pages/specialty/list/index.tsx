@@ -7,8 +7,8 @@ import {
   OutlinedInput,
   InputAdornment,
   IconButton,
-} from "@material-ui/core";
-import { SearchOutlined } from "@material-ui/icons";
+} from "@mui/material";
+import { SearchOutlined } from "@mui/icons-material";
 import { useDispatch, useSelector } from "react-redux";
 import debounce from "lodash.debounce";
 

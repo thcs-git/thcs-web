@@ -1,5 +1,5 @@
 import React, { useState, ReactNode, useCallback } from "react";
-import { Grid } from "@material-ui/core";
+import { Grid } from "@mui/material";
 
 import { FormGroupSection, InputFiled as TextField } from "./styles";
 import InputMask from "react-input-mask";

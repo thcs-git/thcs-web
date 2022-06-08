@@ -149,34 +149,18 @@ export default function DialogChangeCompany(props: IChangeCompany) {
   return (
     <ThemeProvider theme={theme}>
       <Dialog open={open} onClose={handleClose}>
-        <DialogTitle>
-          <Typography
-            variant="h5"
-            color={theme.palette.primary.main}
-            fontWeight="600"
-          >
-            Mudar empresa
-          </Typography>
-        </DialogTitle>
+        <DialogTitle>Mudar empresa</DialogTitle>
         <DialogContent>
           <DialogContentText>
-            <Typography variant="h4" color={theme.palette.secondary.main}>
+            <Typography variant="h4" color="secondary.main" fontWeight={700}>
               Olá, {user.name}
             </Typography>
-            <Typography variant="body1" sx={{ margin: "12px 0" }}>
+            <Typography variant="subtitle1" sx={{ margin: "12px 0" }}>
               Você está trabalhando nesta empresa, mas você pode mudar quando
               quiser
             </Typography>
           </DialogContentText>
           <Autocomplete
-            sx={
-              {
-                // maxWidth: 510,
-                // "& .MuiOutlinedInput-notchedOutline .Mui-focused": {
-                //   border: "2px solid black",
-                // },
-              }
-            }
             value={selectCompany()}
             onChange={(event, value: any) => {
               changeCompanySelected(value);

@@ -20,7 +20,7 @@ import {
   DialogTitle,
   FormControlLabel,
   Grid,
-} from "@material-ui/core";
+} from "@mui/material";
 
 import Loading from "../../../components/Loading";
 import Sidebar from "../../../components/Sidebar";
@@ -173,7 +173,7 @@ const EspecialtyForm = (props: RouteComponentProps<IPageParams>) => {
           </FormContent>
           <ButtonsContent>
             <ButtonComponent
-              background="default"
+              // background="default"
               onClick={() =>
                 councilState.success
                   ? history.push("/council")
@@ -184,7 +184,7 @@ const EspecialtyForm = (props: RouteComponentProps<IPageParams>) => {
             </ButtonComponent>
             <ButtonComponent
               variant="contained"
-              background="success"
+              // background="success"
               onClick={() => handleSaveFormCouncil()}
             >
               Salvar

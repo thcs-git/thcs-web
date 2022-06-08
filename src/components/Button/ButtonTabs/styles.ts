@@ -1,5 +1,5 @@
 import styled, { css } from "styled-components";
-import Button, { ButtonProps } from "@material-ui/core/Button";
+import Button, { ButtonProps } from "@mui/material/Button";
 
 export const ButtonsContent = styled.div`
   display: flex;

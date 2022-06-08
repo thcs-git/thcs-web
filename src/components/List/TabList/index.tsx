@@ -1,11 +1,14 @@
-import React from 'react';
-import {TableCell, TableRow} from "@material-ui/core";
-import {ItemTable, ListItemStatus, ListLink} from "../../../pages/customer/list/styles";
-import {formatDate} from "../../../helpers/date";
+import React from "react";
+import { TableCell, TableRow } from "@mui/material";
+import {
+  ItemTable,
+  ListItemStatus,
+  ListLink,
+} from "../../../pages/customer/list/styles";
+import { formatDate } from "../../../helpers/date";
 import Table from "../../Table";
 import ButtonEdit from "../../Button/ButtonEdit";
 import ButtonView from "../../Button/ButtonView";
-
 
 interface IComponent {
   cells: ICells[];
@@ -16,7 +19,7 @@ interface IComponent {
 
 interface ICells {
   name: string;
-  align: 'right' | 'left' | 'center';
+  align: "right" | "left" | "center";
   width?: string;
 }
 
@@ -31,12 +34,11 @@ interface Irows {
 }
 
 const TabList = (props: IComponent) => {
-  const {cells, customerState, rows, rowsItems} = props;
-  console.log(rowsItems)
+  const { cells, customerState, rows, rowsItems } = props;
+  console.log(rowsItems);
 
   return (
-    <Table
-      tableCells={cells}>
+    <Table tableCells={cells}>
       {/*{rows?.map((row: any, index: number) => (*/}
       {/*  <>*/}
       {/*    {rowsItems.map((item:string, index:number) => (*/}
@@ -74,6 +76,6 @@ const TabList = (props: IComponent) => {
       {/*))}*/}
     </Table>
   );
-}
+};
 
 export default React.memo(TabList);

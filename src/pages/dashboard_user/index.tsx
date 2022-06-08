@@ -1,26 +1,35 @@
-import {Box, Container, Divider, Grid, List, ListItem, Menu, MenuItem, Typography} from '@material-ui/core';
-import React, {useCallback, useEffect, useState} from 'react';
+import {
+  Box,
+  Container,
+  Divider,
+  Grid,
+  List,
+  ListItem,
+  Menu,
+  MenuItem,
+  Typography,
+} from "@mui/material";
+import React, { useCallback, useEffect, useState } from "react";
 import Sidebar from "../../components/Sidebar";
-import Sidebar_menu from '../../components/Sidebar_menu';
-import {Title} from '../../styles/components/Text';
-import {UserInterface} from "../../store/ducks/users/types";
+// import Sidebar_menu from "../../components/Sidebar_menu";
+import { Title } from "../../styles/components/Text";
+import { UserInterface } from "../../store/ducks/users/types";
 import LOCALSTORAGE from "../../helpers/constants/localStorage";
-import {Link, useHistory} from "react-router-dom";
-import {useDispatch, useSelector} from "react-redux";
-import {ApplicationState} from "../../store";
-import {cleanAction, loadUserById} from "../../store/ducks/users/actions";
-import _ from 'lodash';
-import SettingsIcon from '@material-ui/icons/Settings';
+import { Link, useHistory } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import { ApplicationState } from "../../store";
+import { cleanAction, loadUserById } from "../../store/ducks/users/actions";
+import _ from "lodash";
+import SettingsIcon from "@mui/icons-material/Settings";
 
 import {
   ActionCard,
   InfoSection,
   MeasurementIconImage,
   PatientPlusIconImage,
-  UserCheckIconImage
+  UserCheckIconImage,
 } from "../dashboard/styles";
 import SearchInput from "../../components/Inputs/Search";
-
 
 export default function Dashboard_user() {
   const history = useHistory();
@@ -47,12 +56,14 @@ export default function Dashboard_user() {
       state: "",
       complement: "",
     },
-    phones: [{
-      cellnumber: "",
-      number: "",
-      telegram: false,
-      whatsapp: false,
-    }],
+    phones: [
+      {
+        cellnumber: "",
+        number: "",
+        telegram: false,
+        whatsapp: false,
+      },
+    ],
     email: "",
     phone: "",
     cellphone: "",
@@ -62,7 +73,7 @@ export default function Dashboard_user() {
     council_number: "",
     verified: "",
     active: true,
-    professions:[],
+    professions: [],
   });
 
   const [user, setUser] = useState({
@@ -71,24 +82,29 @@ export default function Dashboard_user() {
   });
 
   const accountValid = useCallback(() => {
-    const addressValid = !_.isEmpty(state.address.postal_code)
-    const companiesValid = !_.isEmpty(state.companies)
-    const professionValid = !_.isEmpty(state.profession_id)
-    const mainSpecialtyValid = !_.isEmpty(state.main_specialty_id)
-    const specialtiesValid = !_.isEmpty(state.specialties)
+    const addressValid = !_.isEmpty(state.address.postal_code);
+    const companiesValid = !_.isEmpty(state.companies);
+    const professionValid = !_.isEmpty(state.profession_id);
+    const mainSpecialtyValid = !_.isEmpty(state.main_specialty_id);
+    const specialtiesValid = !_.isEmpty(state.specialties);
 
-    if (addressValid && companiesValid && professionValid && mainSpecialtyValid && specialtiesValid) {
-      return true
+    if (
+      addressValid &&
+      companiesValid &&
+      professionValid &&
+      mainSpecialtyValid &&
+      specialtiesValid
+    ) {
+      return true;
     } else {
-      return false
+      return false;
     }
-
   }, [state]);
 
   useEffect(() => {
     dispatch(cleanAction());
     if (user?.id) {
-      dispatch(loadUserById(user.id, ''));
+      dispatch(loadUserById(user.id, ""));
     }
   }, [user]);
 
@@ -113,10 +129,9 @@ export default function Dashboard_user() {
               </InfoSection>
 
               <InfoSection>
-
                 <Grid container>
                   <Grid item xs={4} md={3}>
-                    <Link to='/patient'>
+                    <Link to="/patient">
                       <ActionCard elevation={0}>
                         <UserCheckIconImage />
                         <p>Cadastro de Paciente</p>
@@ -125,7 +140,7 @@ export default function Dashboard_user() {
                   </Grid>
 
                   <Grid item xs={4} md={3}>
-                    <Link to='/patient'>
+                    <Link to="/patient">
                       <ActionCard elevation={0}>
                         <MeasurementIconImage />
                         <p>Aferição do Paciente</p>
@@ -134,7 +149,7 @@ export default function Dashboard_user() {
                   </Grid>
 
                   <Grid item xs={4} md={3}>
-                    <Link to='/user'>
+                    <Link to="/user">
                       <ActionCard elevation={0}>
                         <MeasurementIconImage />
                         <p>Cadastro de Prestador</p>
@@ -143,16 +158,14 @@ export default function Dashboard_user() {
                   </Grid>
 
                   <Grid item xs={4} md={3}>
-                    <Link to='/care'>
+                    <Link to="/care">
                       <ActionCard elevation={0}>
                         <PatientPlusIconImage />
                         <p>Cadastrar Atendimento</p>
                       </ActionCard>
                     </Link>
                   </Grid>
-
                 </Grid>
-
               </InfoSection>
             </Container>
           </Sidebar>
@@ -163,25 +176,21 @@ export default function Dashboard_user() {
             <Container>
               <Title>Dashboard User (Desvinculado)</Title>
               <InfoSection>
-
                 <Grid container>
-
                   <Grid item xs={4} md={3}>
-                    <Link to='/userconfiguration'>
+                    <Link to="/userconfiguration">
                       <ActionCard elevation={0}>
-                        <SettingsIcon style={{ color: '#16679a' }} />
+                        <SettingsIcon style={{ color: "#16679a" }} />
                         <p>Configurações</p>
                       </ActionCard>
                     </Link>
                   </Grid>
-
                 </Grid>
-
               </InfoSection>
             </Container>
           </Sidebar>
         </>
       )}
     </>
-  )
+  );
 }

@@ -1,5 +1,5 @@
-import styled from 'styled-components';
-import { TextField, OutlinedInput, Button, FormControl } from '@material-ui/core';
+import styled from "styled-components";
+import { TextField, OutlinedInput, Button, FormControl } from "@mui/material";
 
 export const ButtonDefault = styled(Button)`
   background: var(--success-hover);
@@ -10,9 +10,7 @@ export const ButtonDefault = styled(Button)`
   text-transform: capitalize;
   font-weight: 600;
   font-size: 14px;
-  color: #fff
-
-
+  color: #fff;
 `;
 export const ButtonsContent = styled.div`
   display: flex;
@@ -24,5 +22,3 @@ export const ButtonsContent = styled.div`
     margin-right: 10px;
   }
 `;
-
-

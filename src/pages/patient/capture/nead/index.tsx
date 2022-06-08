@@ -10,8 +10,8 @@ import {
   Popover,
   FormHelperText,
   FormControl,
-} from "@material-ui/core";
-import { Help as HelpIcon } from "@material-ui/icons";
+} from "@mui/material";
+import { Help as HelpIcon } from "@mui/icons-material";
 import { toast } from "react-toastify";
 
 import { useDispatch, useSelector } from "react-redux";
@@ -492,7 +492,7 @@ export default function Nead(props: RouteComponentProps<IPageParams>) {
                 onClick={() => {
                   clearDocument();
                 }}
-                background="primary"
+                // background="primary"
               >
                 Limpar Campos
               </ButtonComponent>
@@ -962,7 +962,7 @@ export default function Nead(props: RouteComponentProps<IPageParams>) {
 
               <ButtonsContent>
                 <Button
-                  background="default"
+                  // background="default"
                   onClick={() =>
                     history.push(`/patient/capture/${care?._id}/overview`)
                   }
@@ -971,7 +971,7 @@ export default function Nead(props: RouteComponentProps<IPageParams>) {
                 </Button>
                 <Button
                   disabled={currentStep === 0}
-                  background="default"
+                  // background="default"
                   onClick={handleBackStep}
                 >
                   Anterior
@@ -980,7 +980,10 @@ export default function Nead(props: RouteComponentProps<IPageParams>) {
                 {currentStep === steps.length - 1 ? (
                   <>
                     {careState.data.capture?.status === "Em Andamento" && (
-                      <Button background="primary" onClick={handleSubmit}>
+                      <Button
+                        // background="primary"
+                        onClick={handleSubmit}
+                      >
                         Finalizar
                       </Button>
                     )}
@@ -988,7 +991,7 @@ export default function Nead(props: RouteComponentProps<IPageParams>) {
                 ) : (
                   <Button
                     disabled={currentStep === steps.length - 1}
-                    background="success"
+                    // background="success"
                     type="submit"
                     onClick={handleNextStep}
                   >
@@ -1356,7 +1359,7 @@ export default function Nead(props: RouteComponentProps<IPageParams>) {
 
               <ButtonsContent>
                 <Button
-                  background="default"
+                  // background="default"
                   onClick={() =>
                     history.push(`/patient/capture/${care?._id}/overview`)
                   }
@@ -1365,7 +1368,7 @@ export default function Nead(props: RouteComponentProps<IPageParams>) {
                 </Button>
                 <Button
                   disabled={currentStep === 0}
-                  background="default"
+                  // background="default"
                   onClick={handleBackStep}
                 >
                   Anterior
@@ -1374,7 +1377,10 @@ export default function Nead(props: RouteComponentProps<IPageParams>) {
                 {currentStep === steps.length - 1 ? (
                   <>
                     {careState.data.capture?.status === "Em Andamento" && (
-                      <Button background="primary" onClick={handleSubmit}>
+                      <Button
+                        // background="primary"
+                        onClick={handleSubmit}
+                      >
                         Finalizar
                       </Button>
                     )}
@@ -1382,7 +1388,7 @@ export default function Nead(props: RouteComponentProps<IPageParams>) {
                 ) : (
                   <Button
                     disabled={currentStep === steps.length - 1}
-                    background="success"
+                    // background="success"
                     type="submit"
                     onClick={handleNextStep}
                   >

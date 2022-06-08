@@ -1,6 +1,6 @@
 import React from "react";
 import { FormGroupSection } from "./styles";
-import { Grid } from "@material-ui/core";
+import { Grid } from "@mui/material";
 import ViewCard from "../../../Card/ViewCard";
 
 interface IComponent {
