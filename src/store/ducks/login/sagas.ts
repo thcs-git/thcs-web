@@ -77,6 +77,17 @@ export function* doLogin({ payload }: any) {
           SESSIONSTORAGE.INTEGRATION_NAME,
           lastLastLogin?.companie_id?.customer_id?.integration_name
         );
+      lastLastLogin?.company_external_id &&
+        localStorage.setItem(
+          LOCALSTORAGE.INTEGRATION_COMPANY_SELECTED,
+          lastLastLogin?.company_external_id
+        );
+
+      lastLastLogin?.user_external_id &&
+        localStorage.setItem(
+          LOCALSTORAGE.SOLLAR_INTEGRATION_USER_ID,
+          lastLastLogin?.user_external_id
+        );
     } else {
       localStorage.setItem(
         LOCALSTORAGE.CUSTOMER,
@@ -108,6 +119,18 @@ export function* doLogin({ payload }: any) {
         sessionStorage.setItem(
           SESSIONSTORAGE.INTEGRATION_NAME,
           data.companies_links[0]?.companie_id?.customer_id?.integration_name
+        );
+
+      data.companies_links[0]?.company_external_id &&
+        localStorage.setItem(
+          LOCALSTORAGE.INTEGRATION_COMPANY_SELECTED,
+          data.companies_links[0]?.company_external_id
+        );
+
+      data.companies_links[0]?.user_external_id &&
+        localStorage.setItem(
+          LOCALSTORAGE.SOLLAR_INTEGRATION_USER_ID,
+          data.companies_links[0]?.user_external_id
         );
     }
 
