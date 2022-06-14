@@ -481,7 +481,7 @@ export default function PatientOverview(
         setSelectReportCard("");
       },
       variant: "contained",
-      background: "secondary",
+      background: "primary",
       show: true,
     },
   ];

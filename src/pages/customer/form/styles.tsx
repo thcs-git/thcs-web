@@ -41,12 +41,12 @@ export const FormContent = styled.div``;
 export const InputFiled = styled(TextField)`
   padding: 0 12px 12px 0;
   &:focus {
-    background: #fff;
+    /* background: #fff; */
 
-    border: 1px solid var(--primary-hover);
+    /* border: 1px solid var(--primary-hover); */
   }
   input {
-    background: var(--white);
+    /* background: var(--white); */
   }
 `;
 

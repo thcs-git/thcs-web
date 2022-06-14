@@ -3,21 +3,14 @@ import Box, { BoxProps } from "@mui/material/Box";
 import styled from "styled-components";
 import { styled as styledMui } from "@mui/material/styles";
 
-export const BoxCalendar = styled(Box)`
-  display: flex;
-  gap: 16px;
-  label {
-    font-style: italic;
-  }
-  .css-o9k5xi-MuiInputBase-root-MuiOutlinedInput-root.Mui-focused
-    .MuiOutlinedInput-notchedOutline {
-    border: 2px solid var(--secondary);
-  }
-  .css-o9k5xi-MuiInputBase-root-MuiOutlinedInput-root.Mui-error
-    .MuiOutlinedInput-notchedOutline {
-    border: 2px solid var(--danger);
-  }
-`;
+export const BoxCalendar = styledMui(Box)<BoxProps>(({ theme }) => ({
+  display: "flex",
+  gap: "16px",
+  label: {
+    fontStyle: "italic",
+    width: "100%",
+  },
+}));
 export const BoxTooltip = styledMui(Box)<BoxProps>(({ theme }) => ({
   display: "flex",
   flexDirection: "row",

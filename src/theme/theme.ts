@@ -27,6 +27,8 @@ declare module "@mui/material/styles" {
     terciaryLight: Palette["primary"];
     //Shadow
     shadowColor: Palette["primary"];
+    // black
+    black60: Palette["primary"];
   }
   interface PaletteOptions {
     //primary
@@ -45,6 +47,8 @@ declare module "@mui/material/styles" {
     terciaryLight: PaletteOptions["primary"];
     //Shadow
     shadowColor: PaletteOptions["primary"];
+    // black
+    black60: PaletteOptions["primary"];
   }
 }
 
@@ -72,6 +76,8 @@ let theme: Theme = createTheme({
     terciaryLight: { main: "#84FABB" },
     // shadow
     shadowColor: { main: "#00000012" },
+    //black]
+    black60: { main: "rgba(0, 0, 0, 0.7)" },
     // gerals
     error: { main: "#E73A3A" },
     warning: { main: "#F9CA24" },
@@ -83,22 +89,81 @@ let theme: Theme = createTheme({
   },
   components: {
     // se precisar usar o intelisense do VScode, usar a variável defaultTheme
-    MuiAutocomplete: {
-      styleOverrides: {
-        root: {
-          "& .MuiInputLabel-root": {
-            fontWeight: 400,
-            fontStyle: "italic",
-            width: "100%",
-          },
-        },
-      },
-    },
   },
 });
 
 theme = createTheme(theme, {
   components: {
+    // ACCORDION
+    MuiAccordion: {
+      styleOverrides: {
+        root: {
+          transition: "200ms",
+          margin: "0 16px 8px",
+          "&::before": { display: "none" },
+          ".Mui-expanded": {
+            transition: "200ms",
+            backgroundColor: theme.palette.primary.main,
+            color: theme.palette.common.white,
+          },
+          "&.MuiAccordion-rounded": {
+            borderRadius: "12px",
+            "&.Mui-expanded": {
+              margin: "16px",
+            },
+          },
+        },
+      },
+    },
+    MuiAccordionSummary: {
+      styleOverrides: {
+        root: {
+          transition: "200ms",
+          borderRadius: "12px 12px 12px 12px",
+          "& svg": {
+            transition: "200ms",
+            color: theme.palette.primary.main,
+          },
+
+          "& .MuiTypography-root": {
+            fontWeight: 500,
+            color: theme.palette.black60.main,
+            cursor: "pointer",
+          },
+
+          "&.Mui-expanded": {
+            transition: "200ms",
+            borderRadius: "12px 12px 0 0",
+            "& svg": {
+              transition: "200ms",
+              color: theme.palette.common.white,
+            },
+
+            ".MuiTypography-root": {
+              color: theme.palette.common.white,
+            },
+          },
+
+          "& .MuiAccordionSummary-content": {
+            transition: "200ms",
+            display: "flex",
+            justifyContent: "space-between",
+            background: theme.palette.background.paper,
+            "&.Mui-expanded": {
+              transition: "200ms",
+              background: theme.palette.primary.main,
+            },
+          },
+        },
+      },
+    },
+    MuiAccordionDetails: {
+      styleOverrides: {
+        root: {
+          padding: "0 16px",
+        },
+      },
+    },
     // DIALOG
     MuiDialogTitle: {
       styleOverrides: {
@@ -131,6 +196,11 @@ theme = createTheme(theme, {
           },
           "& .MuiInputLabel-outlined.MuiInputLabel-shrink": {
             color: theme.palette.secondary.main,
+          },
+          "& .MuiInputLabel-root": {
+            fontWeight: 400,
+            fontStyle: "italic",
+            width: "100%",
           },
         },
       },
@@ -182,21 +252,25 @@ theme = createTheme(theme, {
         },
       },
     },
-    //FORM
+    // FORM
     MuiFormControlLabel: {
       styleOverrides: {
         label: {
-          cursor: "pointer",
+          color: theme.palette.black60.main,
         },
       },
     },
-    MuiFormLabel: {
+    // PAPER
+    MuiPaper: {
       styleOverrides: {
         root: {
-          fontWeight: 600,
-          color: theme.palette.text.primary,
-          "&.Mui-focused": {
-            color: theme.palette.secondary.main,
+          "& .MuiPickersDay-root": {
+            "&.Mui-selected": {
+              background: theme.palette.secondary.main,
+              color: theme.palette.common.white,
+              fontWeight: 600,
+              "&:hover": { background: theme.palette.secondary.light },
+            },
           },
         },
       },

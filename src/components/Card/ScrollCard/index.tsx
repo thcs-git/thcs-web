@@ -99,8 +99,8 @@ export default function ScrollCard(props: IScroll) {
             onClick={openFilter}
             sx={{
               padding: "0",
-              width: "2rem",
-              height: "2rem",
+              width: "1.5rem",
+              height: "1.5rem",
               "& svg, path": { cursor: "pointer" },
             }}
           >

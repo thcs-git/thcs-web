@@ -45,7 +45,7 @@ apiSollar.interceptors.request.use(
     const customer_id = localStorage.getItem(LOCALSTORAGE.CUSTOMER) || "";
     const integration_url =
       sessionStorage.getItem(SESSIONSTORAGE.INTEGRATION) || "";
-    // "http://71cd-177-221-37-197.ngrok.io/api";
+    // "https://88e9-177-221-37-197.ngrok.io/api";
     const external_company_id =
       localStorage.getItem(LOCALSTORAGE.INTEGRATION_COMPANY_SELECTED) || "";
     const external_user_id =
@@ -103,7 +103,7 @@ apiSollarMobi.interceptors.request.use(
     const customer_id = localStorage.getItem(LOCALSTORAGE.CUSTOMER) || "";
     const integration_url =
       sessionStorage.getItem(SESSIONSTORAGE.INTEGRATION) || "";
-    // "http://71cd-177-221-37-197.ngrok.io/api";
+    // "https://88e9-177-221-37-197.ngrok.io/api";
     const external_company_id =
       localStorage.getItem(LOCALSTORAGE.INTEGRATION_COMPANY_SELECTED) || "";
     const external_user_id =
@@ -160,7 +160,7 @@ apiSollarReport.interceptors.request.use(
     const customer_id = localStorage.getItem(LOCALSTORAGE.CUSTOMER) || "";
     const integration_url =
       sessionStorage.getItem(SESSIONSTORAGE.INTEGRATION) || "";
-    // "http://71cd-177-221-37-197.ngrok.io/api";
+    // "https://88e9-177-221-37-197.ngrok.io/api";
     const external_company_id =
       localStorage.getItem(LOCALSTORAGE.INTEGRATION_COMPANY_SELECTED) || "";
     const external_user_id =
@@ -219,7 +219,7 @@ apiSollarNexoData.interceptors.request.use(
     const customer_id = localStorage.getItem(LOCALSTORAGE.CUSTOMER) || "";
     const integration_url =
       sessionStorage.getItem(SESSIONSTORAGE.INTEGRATION) || "";
-    // "http://71cd-177-221-37-197.ngrok.io/api";
+    // "https://88e9-177-221-37-197.ngrok.io/api";
     const external_company_id =
       localStorage.getItem(LOCALSTORAGE.INTEGRATION_COMPANY_SELECTED) || "";
     const external_user_id =

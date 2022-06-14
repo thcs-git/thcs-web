@@ -30,9 +30,11 @@ import FormControl from "@mui/material/FormControl";
 import FormLabel from "@mui/material/FormLabel";
 import TextField from "@mui/material/TextField";
 import Autocomplete from "@mui/material/Autocomplete";
-import LocalizationProvider from "@mui/lab/LocalizationProvider";
-import AdapterDayJs from "@mui/lab/AdapterDayjs";
-import DatePicker from "@mui/lab/DatePicker";
+
+import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
+import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
+import { DatePicker } from "@mui/x-date-pickers/DatePicker";
+
 import Box from "@mui/material/Box";
 import Tooltip from "@mui/material/Tooltip";
 import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
@@ -41,7 +43,7 @@ import { BoxCalendar, BoxTooltip, FormLabelRadio } from "./styles";
 import { TooltipProps, tooltipClasses } from "@mui/material/Tooltip";
 import { formatDate } from "../../../../helpers/date";
 import { styled } from "@mui/material";
-
+import theme from "../../../../theme/theme";
 interface IPropsFilter {
   openFilter: boolean;
   closeFilter: () => void;
@@ -157,11 +159,11 @@ export default function FilterReport(props: IPropsFilter) {
     } else if (!type) {
       toast.error("Selecione filtro para Prestador ou Função");
     } else if (!name) {
-      toast.error(
+      toast.warn(
         type === "Prestador" ? `Selecione o ${type}` : `Selecione a ${type}`
       );
     } else if (!dataStart) {
-      toast.error("Selecione a Data de início");
+      toast.info("Selecione a Data de início");
     } else if (dataStart && !moment(dataStart["$d"]).isValid()) {
       toast.error("Formato de data inválido");
     } else if (dataEnd && !moment(dataEnd["$d"]).isValid()) {
@@ -580,7 +582,14 @@ export default function FilterReport(props: IPropsFilter) {
         }}
       >
         <FormControl>
-          <FormLabel id="radio-buttons-group-label">
+          <FormLabel
+            id="radio-buttons-group-label"
+            sx={{
+              color: theme.palette.text.primary,
+              fontWeight: 500,
+              "&.Mui-focused": { color: theme.palette.secondary.main },
+            }}
+          >
             Filtrar por prestador ou função
           </FormLabel>
           <RadioGroup
@@ -654,9 +663,11 @@ export default function FilterReport(props: IPropsFilter) {
               display: "flex",
               alignItems: "center",
               gap: "8px",
+              color: theme.palette.text.primary,
+              fontWeight: 500,
             }}
           >
-            <Box> Selecione o período</Box>
+            Selecione o período
             <CustomWidthTooltip
               sx={{ cursor: "help", "& svg, path": { cursor: "help" } }}
               title={`Intervalo das datas registradas: ${textHelperRangeDate()}. Caso não seja selecionado Data de fim, será considerado a última data registrada ${
@@ -677,7 +688,7 @@ export default function FilterReport(props: IPropsFilter) {
             </CustomWidthTooltip>
           </FormLabel>
           <BoxCalendar>
-            <LocalizationProvider dateAdapter={AdapterDayJs}>
+            <LocalizationProvider dateAdapter={AdapterDayjs}>
               <DatePicker
                 maxDate={handleMaxDateReport()}
                 minDate={handleMinDateReport()}
@@ -700,10 +711,12 @@ export default function FilterReport(props: IPropsFilter) {
                     });
                   }
                 }}
-                renderInput={(params) => <TextField {...params} />}
+                renderInput={(params) => (
+                  <TextField color="secondary" {...params} />
+                )}
               />
             </LocalizationProvider>
-            <LocalizationProvider dateAdapter={AdapterDayJs}>
+            <LocalizationProvider dateAdapter={AdapterDayjs}>
               <DatePicker
                 maxDate={handleMaxDateReport()}
                 minDate={handleMinDateReport()}
@@ -726,7 +739,9 @@ export default function FilterReport(props: IPropsFilter) {
                     });
                   }
                 }}
-                renderInput={(params) => <TextField {...params} />}
+                renderInput={(params) => (
+                  <TextField color="secondary" {...params} />
+                )}
               />
             </LocalizationProvider>
           </BoxCalendar>
@@ -734,22 +749,23 @@ export default function FilterReport(props: IPropsFilter) {
       </DialogContent>
       <DialogActions>
         <Button
+          onClick={() => {
+            handleGenerateReportValidation();
+          }}
+          variant="contained"
+        >
+          Gerar Relatório
+        </Button>
+        <Button
           autoFocus
           onClick={() => {
             cleanFilter();
             closeFilter();
           }}
-          sx={{ textTransform: "uppercase", fontWeight: "bold" }}
+          variant="outlined"
+          color="secondary"
         >
-          Cancelar
-        </Button>
-        <Button
-          onClick={() => {
-            handleGenerateReportValidation();
-          }}
-          sx={{ textTransform: "uppercase", fontWeight: "bold" }}
-        >
-          Gerar Relatório
+          fechar
         </Button>
       </DialogActions>
     </Dialog>

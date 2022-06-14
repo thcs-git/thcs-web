@@ -5,15 +5,12 @@ import { useHistory } from "react-router-dom";
 import Button from "@mui/material/Button";
 import Container from "@mui/material/Container";
 import Box from "@mui/material/Box";
-
-import Dialog from "@mui/material/Dialog";
-import DialogActions from "@mui/material/DialogActions";
-import DialogContent from "@mui/material/DialogContent";
-import DialogContentText from "@mui/material/DialogContentText";
-import DialogTitle from "@mui/material/DialogTitle";
+import Typography from "@mui/material/Typography";
 //icons
-
 import AlertIcon from "../../Icons/Alert";
+
+// style
+import theme from "../../../theme/theme";
 
 export default function UnexpectedError() {
   const history = useHistory();
@@ -27,12 +24,11 @@ export default function UnexpectedError() {
           alignItems: "center",
           flexDirection: "column",
           height: "100vh",
-          color: "var(--black)",
+          color: theme.palette.text.primary,
         }}
       >
         <Box
           sx={{
-            color: "var(--danger)",
             textAlign: "center",
             display: "flex",
             alignItems: "center",
@@ -42,28 +38,36 @@ export default function UnexpectedError() {
             fontSize: "1.5rem",
           }}
         >
-          <Box>Sentimos muito, algo inesperado ocorreu</Box>
+          <Typography variant="h4" fontWeight={500} color="error.main">
+            Sentimos muito, algo inesperado ocorreu
+          </Typography>
 
-          <AlertIcon fill={"var(--danger)"} width={"3rem"} height={"3rem"} />
+          <AlertIcon
+            fill={theme.palette.error.main}
+            width={"3rem"}
+            height={"3rem"}
+          />
         </Box>
 
-        <Box sx={{ marginBottom: "1rem", marginTop: "1rem" }}>
+        <Typography sx={{ marginBottom: "1rem", marginTop: "1rem" }}>
           Qual pode ser o problema:
-        </Box>
+        </Typography>
         <Box sx={{ marginLeft: "1rem" }}>
-          <Box>
+          <Typography>
             &bull; Verifique se você você tem <b>permissão</b> para acessar essa
             página.
-          </Box>
-          <Box>
+          </Typography>
+          <Typography>
             &bull; O conteúdo pode estar indisponível ou pode ter sido removido.
-          </Box>
-          <Box>&bull; O servidor pode estar fora do ar no momento.</Box>
+          </Typography>
+          <Typography>
+            &bull; O servidor pode estar fora do ar no momento.
+          </Typography>
         </Box>
-        <Box sx={{ paddingTop: "1rem" }}>
+        <Typography sx={{ paddingTop: "1rem" }}>
           Tente novamente em alguns minutos, caso o erro persista entre em
           contato com a empresa responsável.
-        </Box>
+        </Typography>
 
         <Box
           sx={{

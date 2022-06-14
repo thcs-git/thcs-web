@@ -1,6 +1,9 @@
 import React, { useState, useEffect, useCallback } from "react";
+// Router
+import { useHistory, RouteComponentProps } from "react-router-dom";
+
+// Redux e sagas
 import { useDispatch, useSelector } from "react-redux";
-import InputMask, { Props } from "react-input-mask";
 import { ApplicationState } from "../../../store";
 import {
   loadCustomerById,
@@ -12,13 +15,13 @@ import {
 import { CustomerInterface } from "../../../store/ducks/customers/types";
 import { createUserRequest as createUserAction } from "../../../store/ducks/users/actions";
 import { UserInterface } from "../../../store/ducks/users/types";
+// MUI
 import {
   SearchOutlined,
   Edit,
   CodeOutlined,
   TrackChangesTwoTone,
 } from "@mui/icons-material";
-import { useHistory, RouteComponentProps } from "react-router-dom";
 import {
   Button,
   Dialog,
@@ -34,12 +37,16 @@ import {
   Divider,
   FormControlLabel,
   makeStyles,
+  Autocomplete,
+  Typography,
+  Box,
+  Switch,
+  OutlinedInput,
+  FormHelperText,
 } from "@mui/material";
-import { SwitchComponent as Switch } from "../../../styles/components/Switch";
-import Sidebar from "../../../components/Sidebar";
-import { FormTitle } from "../../../styles/components/Form";
-import ButtonComponent from "../../../styles/components/Button";
 
+// Icons
+// Styles
 import {
   ButtonsContent,
   ButtonDefeault,
@@ -51,15 +58,22 @@ import {
   FormGroupSection,
   BoxCustom,
 } from "./styles";
-import mask from "../../../utils/mask";
+import theme from "../../../theme/theme";
+// Components
+// import { SwitchComponent as Switch } from "../../../styles/components/Switch";
+import Sidebar from "../../../components/Sidebar";
+import { FormTitle } from "../../../styles/components/Form";
+import ButtonComponent from "../../../styles/components/Button";
 import Loading from "../../../components/Loading";
+import FeedbackComponent from "../../../components/Feedback";
+
+// Helpers
+import InputMask, { Props } from "react-input-mask";
+import mask from "../../../utils/mask";
 import { validateCNPJ as validateCNPJHelper } from "../../../helpers/validateCNPJ";
 import _ from "lodash";
-import FeedbackComponent from "../../../components/Feedback";
 import validator from "validator";
-import { Autocomplete } from "@mui/material";
 import { toast } from "react-toastify";
-
 interface IFormFields extends CustomerInterface {
   form?: {
     uf: { id: number; name: string; sigla: string } | null;
@@ -370,7 +384,6 @@ export default function CustomerForm(props: RouteComponentProps<IPageParams>) {
         .replace("-", "");
 
       isValidPhoneNumber = validator.isMobilePhone(landline, "pt-BR");
-
       return isValidPhoneNumber;
     }
   };
@@ -477,31 +490,36 @@ export default function CustomerForm(props: RouteComponentProps<IPageParams>) {
             paddingRight={15}
             paddingTop={8}
           >
-            <div
-              style={{
+            <Box
+              sx={{
                 display: "flex",
+                gap: "1rem",
                 alignItems: "center",
                 flexDirection: "row",
+                marginBottom: "2.5rem",
               }}
             >
-              <FormTitle>Cadastro de Cliente</FormTitle>
+              <Typography variant="h5" color="primary.main" fontWeight={700}>
+                Cadastro de Cliente
+              </Typography>
 
               {params.id && params.mode == "view" && !canEdit && (
                 <Button
-                  style={{ marginTop: -20, marginLeft: 15, color: "#0899BA" }}
+                  // style={{ marginTop: -20, marginLeft: 15, color: "#0899BA" }}
                   onClick={() => setCanEdit(true)}
                 >
-                  <Edit style={{ marginRight: 5, width: 18 }} />
+                  <Edit sx={{ marginRight: 1, width: 18 }} />
                   Editar
                 </Button>
               )}
-            </div>
+            </Box>
             <FormSection>
               <FormContent>
                 <FormGroupSection>
                   <Grid container>
                     <Grid item md={12} xs={12}>
                       <TextField
+                        color="secondary"
                         id="input-social-client"
                         label="Nome"
                         variant="outlined"
@@ -521,6 +539,7 @@ export default function CustomerForm(props: RouteComponentProps<IPageParams>) {
 
                     <Grid item md={7} xs={12}>
                       <TextField
+                        color="secondary"
                         id="input-social-name"
                         label="Razão Social"
                         variant="outlined"
@@ -558,6 +577,7 @@ export default function CustomerForm(props: RouteComponentProps<IPageParams>) {
                       >
                         {(inputProps: any) => (
                           <TextField
+                            color="secondary"
                             disabled={!canEdit}
                             {...inputProps}
                             id="input-fiscal-number"
@@ -572,19 +592,15 @@ export default function CustomerForm(props: RouteComponentProps<IPageParams>) {
                             // onChange={(element) => setState({ ...state, fiscal_number: element.target.value })}
                             placeholder="00.000.000/0000-00"
                             fullWidth
+                            helperText={
+                              !fieldsValidation.fiscal_number &&
+                              state.fiscal_number
+                                ? "CNPJ Inválido ou inexistente"
+                                : undefined
+                            }
                           />
                         )}
                       </InputMask>
-                      {!fieldsValidation.fiscal_number && state.fiscal_number && (
-                        <p
-                          style={{
-                            color: "#f44336",
-                            margin: "-2px 5px 10px",
-                          }}
-                        >
-                          CNPJ Inválido ou inexistente
-                        </p>
-                      )}
                     </Grid>
                   </Grid>
                 </FormGroupSection>
@@ -596,65 +612,75 @@ export default function CustomerForm(props: RouteComponentProps<IPageParams>) {
                 <FormGroupSection>
                   <Grid container>
                     <Grid item md={3} xs={12}>
-                      <FormControl
-                        variant="outlined"
-                        size="small"
-                        style={{ paddingRight: 10 }}
+                      <InputMask
+                        mask="99999-999"
+                        value={state.address.postal_code}
+                        disabled={!canEdit}
+                        onChange={(element) => {
+                          setState({
+                            ...state,
+                            address: {
+                              ...state.address,
+                              postal_code: element.target.value,
+                            },
+                          });
+                          setFieldValidations((prevState: any) => ({
+                            ...prevState,
+                            postal_code: !validator.isEmpty(
+                              element.target.value
+                            ),
+                          }));
+                        }}
+                        onBlur={getAddress}
                       >
-                        <InputLabel htmlFor="search-input">CEP</InputLabel>
-                        <InputMask
-                          mask="99999-999"
-                          value={state.address.postal_code}
-                          disabled={!canEdit}
-                          onChange={(element) => {
-                            setState({
-                              ...state,
-                              address: {
-                                ...state.address,
-                                postal_code: element.target.value,
-                              },
-                            });
-                            setFieldValidations((prevState: any) => ({
-                              ...prevState,
-                              postal_code: !validator.isEmpty(
-                                element.target.value
-                              ),
-                            }));
-                          }}
-                          onBlur={getAddress}
-                        >
-                          {(inputProps: Props) => (
-                            <OutlinedInputFiled
+                        {() => (
+                          <FormControl
+                            sx={{ padding: "0 12px 12px 0" }}
+                            variant="outlined"
+                            size="small"
+                            disabled={!canEdit}
+                            error={customerState.errorCep}
+                          >
+                            <InputLabel htmlFor="search-input">CEP</InputLabel>
+                            <OutlinedInput
+                              value={state.address.postal_code}
+                              color={
+                                customerState.errorCep ? "error" : "secondary"
+                              }
                               disabled={!canEdit}
                               error={customerState.errorCep}
                               id="input-postal-code"
                               label="CEP"
                               placeholder="00000-000"
                               endAdornment={
-                                <InputAdornment position="end">
+                                <InputAdornment
+                                  position="end"
+                                  sx={{
+                                    cursor: "pointer",
+                                    "& svg, path, circle": {
+                                      cursor: "pointer",
+                                    },
+                                  }}
+                                >
                                   <SearchOutlined
-                                    style={{ color: "var(--primary)" }}
+                                    color={canEdit ? "secondary" : "disabled"}
                                   />
                                 </InputAdornment>
                               }
                             />
-                          )}
-                        </InputMask>
-                        {customerState.errorCep && (
-                          <p
-                            style={{
-                              color: "#f44336",
-                              margin: "-2px 5px 10px",
-                            }}
-                          >
-                            CEP inválido
-                          </p>
+                            {customerState.errorCep && (
+                              <FormHelperText id="component-error-text">
+                                CEP inválido
+                              </FormHelperText>
+                            )}
+                          </FormControl>
                         )}
-                      </FormControl>
+                      </InputMask>
                     </Grid>
 
                     <Grid item md={9} xs={12}>
                       <TextField
+                        color="secondary"
                         id="input-address"
                         label="Endereço"
                         variant="outlined"
@@ -680,6 +706,7 @@ export default function CustomerForm(props: RouteComponentProps<IPageParams>) {
 
                     <Grid item md={2} xs={12}>
                       <TextField
+                        color="secondary"
                         id="input-address-number"
                         label="Número"
                         variant="outlined"
@@ -707,6 +734,7 @@ export default function CustomerForm(props: RouteComponentProps<IPageParams>) {
 
                     <Grid item md={10} xs={12}>
                       <TextField
+                        color="secondary"
                         id="input-address-complement"
                         label="Complemento"
                         variant="outlined"
@@ -728,6 +756,7 @@ export default function CustomerForm(props: RouteComponentProps<IPageParams>) {
 
                     <Grid item md={4} xs={12}>
                       <TextField
+                        color="secondary"
                         id="input-neighborhood"
                         label="Bairro"
                         variant="outlined"
@@ -754,6 +783,7 @@ export default function CustomerForm(props: RouteComponentProps<IPageParams>) {
                     </Grid>
                     <Grid item md={6} xs={12}>
                       <TextField
+                        color="secondary"
                         id="input-city"
                         label="Cidade"
                         variant="outlined"
@@ -778,8 +808,9 @@ export default function CustomerForm(props: RouteComponentProps<IPageParams>) {
                         disabled={!canEdit}
                       />
                     </Grid>
-                    <Grid item md={1} xs={12}>
+                    <Grid item md={2} xs={12}>
                       <TextField
+                        color="secondary"
                         id="input-address-uf"
                         label="UF"
                         variant="outlined"
@@ -804,6 +835,7 @@ export default function CustomerForm(props: RouteComponentProps<IPageParams>) {
                     </Grid>
                     <Grid item md={8} xs={12}>
                       <TextField
+                        color="secondary"
                         id="input-responsible-name"
                         label="Nome do responsável"
                         variant="outlined"
@@ -858,6 +890,7 @@ export default function CustomerForm(props: RouteComponentProps<IPageParams>) {
                       >
                         {(inputProps: any) => (
                           <TextField
+                            color="secondary"
                             disabled={!canEdit}
                             {...inputProps}
                             id="input-cellphone"
@@ -868,20 +901,27 @@ export default function CustomerForm(props: RouteComponentProps<IPageParams>) {
                             error={
                               !validatePhone() && state.phones[0].phone != ""
                             }
+                            helperText={
+                              !validatePhone() && state.phones[0].phone != ""
+                                ? "Insira um número válido"
+                                : undefined
+                            }
                             fullWidth
                           />
                         )}
                       </InputMask>
-                      {!validatePhone() && state.phones[0].phone && (
-                        <p
-                          style={{ color: "#f44336", margin: "-10px 5px 10px" }}
+                      {/* {!validatePhone() && state.phones[0].phone && (
+                        <Typography
+                          color="secondary.main"
+                          sx={{ margin: "-10px 5px 10px" }}
                         >
                           Por favor insira um número válido
-                        </p>
-                      )}
+                        </Typography>
+                      )} */}
                     </Grid>
                     <Grid item md={8} xs={12}>
                       <TextField
+                        color="secondary"
                         id="input-email"
                         label="E-mail"
                         variant="outlined"
@@ -936,6 +976,7 @@ export default function CustomerForm(props: RouteComponentProps<IPageParams>) {
                       >
                         {(inputProps: any) => (
                           <TextField
+                            color="secondary"
                             disabled={!canEdit}
                             {...inputProps}
                             id="input-phone"
@@ -948,20 +989,21 @@ export default function CustomerForm(props: RouteComponentProps<IPageParams>) {
                               state.phones[0]?.cellphone != ""
                             }
                             fullWidth
+                            helperText={
+                              !validateCellPhone() && state.phones[0]?.cellphone
+                                ? "Insira um número válido"
+                                : undefined
+                            }
                           />
                         )}
                       </InputMask>
-                      {!validateCellPhone() && state.phones[0]?.cellphone && (
-                        <p style={{ color: "#f44336", margin: "4px 4px" }}>
-                          Por favor insira um número válido
-                        </p>
-                      )}
                     </Grid>
                     {params.id && (
                       <Grid item md={3} xs={12}>
                         <FormControlLabel
                           control={
                             <Switch
+                              color="secondary"
                               disabled={!canEdit}
                               checked={state.active}
                               onChange={(event) => {
@@ -981,43 +1023,41 @@ export default function CustomerForm(props: RouteComponentProps<IPageParams>) {
                 </FormGroupSection>
                 <ButtonsContent style={{ paddingRight: 15 }}>
                   {!canEdit && (
-                    <ButtonComponent
-                      variant="outlined"
-                      // background="success_rounded"
+                    <Button
+                      variant="contained"
                       onClick={() => handleCancelForm()}
                     >
                       Voltar
-                    </ButtonComponent>
+                    </Button>
                   )}
                   {canEdit && (
-                    <ButtonComponent
+                    <Button
                       variant="outlined"
-                      sx={{
-                        textTransform: "capitalize",
-                        fontSize: "18px",
-                        "&:hover": {
-                          backgroundColor: "var(--danger-hover)",
-                          color: "var(--danger)",
-                          borderColor: "var(--danger-hover)",
-                        },
-                        maxHeight: "38px",
-                        borderColor: "var(--danger-hover)",
-                        color: "var(--danger-hover)",
-                        contrastText: "#fff",
-                      }}
+                      // sx={{
+                      //   textTransform: "capitalize",
+                      //   fontSize: "18px",
+                      //   "&:hover": {
+                      //     backgroundColor: "var(--danger-hover)",
+                      //     color: "var(--danger)",
+                      //     borderColor: "var(--danger-hover)",
+                      //   },
+                      //   maxHeight: "38px",
+                      //   borderColor: "var(--danger-hover)",
+                      //   color: "var(--danger-hover)",
+                      //   contrastText: "#fff",
+                      // }}
                       onClick={() => handleOpenModalCancel()}
                     >
                       Cancelar
-                    </ButtonComponent>
+                    </Button>
                   )}
                   {canEdit && (
-                    <ButtonComponent
+                    <Button
                       variant="contained"
-                      // background="success"
                       onClick={() => handleSaveFormCustomer()}
                     >
                       Salvar
-                    </ButtonComponent>
+                    </Button>
                   )}
                 </ButtonsContent>
               </FormContent>

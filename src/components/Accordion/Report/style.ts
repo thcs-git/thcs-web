@@ -8,57 +8,43 @@ import AccordionSummary, {
   AccordionSummaryProps,
 } from "@mui/material/AccordionSummary";
 import Box, { BoxProps } from "@mui/material/Box";
-import Container from "@mui/material/Container";
-import Button, { ButtonProps } from "@mui/material/Button";
+import Container, { ContainerProps } from "@mui/material/Container";
 import Paper, { PaperProps } from "@mui/material/Paper";
-import Stack, { StackProps } from "@mui/material/Stack";
+import { Typography, TypographyProps } from "@mui/material";
 
-export const AccordionStyled = styled(Accordion)`
-  color: var(--black);
-  margin: 0 16px;
-
-  .MuiAccordionSummary-root {
-  }
-  .Mui-expanded {
-    transition: 100ms;
-    background-color: var(--secondary);
-    color: var(--white);
-
-    svg {
-      color: var(--white);
-      fill: var(--white);
-    }
-  }
-`;
+export const TypographyFontWeight400 = styledMui(Typography)<TypographyProps>(
+  ({ theme }) => ({
+    fontWeight: 400,
+  })
+);
+export const AccordionStyled = styled(Accordion)``;
 
 export const AccordionDetailsStyled = styledMui(
   AccordionDetails
-)<AccordionDetailsProps>(({ theme }) => ({
-  padding: "0 16px",
-}));
+)<AccordionDetailsProps>(({ theme }) => ({}));
 
 export const AccordionSummaryStyled = styledMui(
   AccordionSummary
-)<AccordionSummaryProps>(({ theme }) => ({
-  fontWeight: "600",
-}));
+)<AccordionSummaryProps>(({ theme }) => ({}));
 
 export const HeaderDetailsAccordion = styledMui(Box)<BoxProps>(({ theme }) => ({
-  color: "var(--gray-dark)",
+  color: theme.palette.text.primary,
   display: "flex",
   flexDirection: "row",
   justifyContent: "space-between",
   minHeight: " 48px",
 }));
 
-export const ContentDetailsAccordion = styled(Box)`
-  color: var(--black);
-  display: flex;
-  flex-direction: row;
-  justify-content: space-between;
-  text-align: center;
-  min-height: 48px;
-`;
+export const ContentDetailsAccordion = styledMui(Box)<BoxProps>(
+  ({ theme }) => ({
+    color: theme.palette.text.primary,
+    display: "flex",
+    flexDirection: "row",
+    justifyContent: "space-between",
+    textAlign: "center",
+    minHeight: "48px",
+  })
+);
 export const TextCenterDetails = styledMui(Box)<BoxProps>(({ theme }) => ({
   display: "flex",
   justifyContent: "center",
@@ -67,48 +53,15 @@ export const TextCenterDetails = styledMui(Box)<BoxProps>(({ theme }) => ({
   margin: "auto 0",
 }));
 
-export const ContainerStyled = styled(Container)`
-  padding-bottom: 24px;
+export const ContainerStyled = styledMui(Container)<ContainerProps>(
+  ({ theme }) => ({
+    paddingBottom: "24px",
 
-  .MuiContainer-root {
-    margin: 16px 0 0 0;
-  }
-
-  // MuiAccordion
-  .MuiAccordion-root {
-    background-color: var(--white);
-
-    margin-bottom: 8px;
-  }
-  .MuiAccordion-root.Mui-expanded {
-    margin: 16px !important;
-  }
-  .MuiAccordion-root::before {
-    display: none;
-  }
-
-  .MuiAccordion-rounded {
-    border-radius: 12px !important;
-  }
-  // muiAccordionSumary
-  .MuiAccordionSummary-root {
-    border-radius: 12px 12px 12px 12px;
-    svg {
-      color: var(--secondary);
-    }
-  }
-  .MuiAccordionSummary-root.Mui-expanded {
-    border-radius: 12px 12px 0 0;
-  }
-  .MuiAccordionSummary-content {
-    display: flex;
-    justify-content: space-between;
-    color: var(--gray-dark);
-  }
-  .MuiAccordionSummary-content.Mui-expanded {
-    color: var(--white);
-  }
-`;
+    // "&.MuiContainer-root": {
+    //   margin: "16px 0 0 0",
+    // },
+  })
+);
 
 export const PaperStyled = styledMui(Paper)<PaperProps>(({ theme }) => ({
   minHeight: "48px",

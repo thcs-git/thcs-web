@@ -51,8 +51,9 @@ import {
   TextCenterDetails,
   ContainerStyled as Container,
   PaperStyled,
+  TypographyFontWeight400,
 } from "./style";
-
+import theme from "../../../theme/theme";
 // Helps
 import { formatDate } from "../../../helpers/date";
 import { toast } from "react-toastify";
@@ -140,18 +141,25 @@ export default function AccordionReport(props: IAccordionReport) {
   const { content, company_id, reportType, state, loading } = props;
   const dispatch = useDispatch();
   const integration = sessionStorage.getItem(SESSIONSTORAGE.INTEGRATION);
-
   const [expanded, setExpanded] = useState<string | false>("panel0");
   const careState = useSelector((state: ApplicationState) => state.cares);
+  const colorBackgroundActive = theme.palette.primary.main;
+  const colorBackgroundInactive = theme.palette.common.white;
+  const colorText = theme.palette.black60.main;
+  const colorTextDetails = theme.palette.text.primary;
+  const colorTextDesable = theme.palette.text.disabled;
   const NoData = () => (
-    <Box
-      sx={{
-        textAlign: "center",
-        color: "var(--gray-dark)",
-        padding: "8px 0 16px",
-      }}
-    >
-      Não há relatórios para o prontuário de {reportType}
+    <Box sx={{ width: "100%" }}>
+      <Typography
+        sx={{
+          textAlign: "center",
+          color: colorText,
+          padding: "8px 0 16px",
+          margin: "0 auto",
+        }}
+      >
+        Não há relatórios para o prontuário de {reportType}
+      </Typography>
     </Box>
   );
   const handleChange =
@@ -233,7 +241,7 @@ export default function AccordionReport(props: IAccordionReport) {
                   }}
                 >
                   <Lung
-                    fill={canceled ? "#7D7D7D" : "var(--secondary)"}
+                    fill={canceled ? colorTextDesable : colorBackgroundActive}
                     width={"20px"}
                     height={"20px"}
                   />
@@ -252,7 +260,7 @@ export default function AccordionReport(props: IAccordionReport) {
                   }}
                 >
                   <Frequency
-                    fill={canceled ? "#7D7D7D" : "var(--secondary)"}
+                    fill={canceled ? colorTextDesable : colorBackgroundActive}
                     width={"20px"}
                     height={"20px"}
                   />
@@ -271,7 +279,7 @@ export default function AccordionReport(props: IAccordionReport) {
                   }}
                 >
                   <BodilySurface
-                    fill={canceled ? "#7D7D7D" : "var(--secondary)"}
+                    fill={canceled ? colorTextDesable : colorBackgroundActive}
                     width={"20px"}
                     height={"20px"}
                   />
@@ -290,7 +298,7 @@ export default function AccordionReport(props: IAccordionReport) {
                   }}
                 >
                   <Exam
-                    fill={canceled ? "#7D7D7D" : "var(--secondary)"}
+                    fill={canceled ? colorTextDesable : colorBackgroundActive}
                     width={"20px"}
                     height={"20px"}
                   />
@@ -309,7 +317,7 @@ export default function AccordionReport(props: IAccordionReport) {
                   }}
                 >
                   <Height
-                    fill={canceled ? "#7D7D7D" : "var(--secondary)"}
+                    fill={canceled ? colorTextDesable : colorBackgroundActive}
                     width={"20px"}
                     height={"20px"}
                   />
@@ -328,7 +336,7 @@ export default function AccordionReport(props: IAccordionReport) {
                   }}
                 >
                   <Weight
-                    fill={canceled ? "#7D7D7D" : "var(--secondary)"}
+                    fill={canceled ? colorTextDesable : colorBackgroundActive}
                     width={"20px"}
                     height={"20px"}
                   />
@@ -347,7 +355,7 @@ export default function AccordionReport(props: IAccordionReport) {
                   }}
                 >
                   <BloodGlucose
-                    fill={canceled ? "#7D7D7D" : "var(--secondary)"}
+                    fill={canceled ? colorTextDesable : colorBackgroundActive}
                     width={"20px"}
                     height={"20px"}
                   />
@@ -366,7 +374,7 @@ export default function AccordionReport(props: IAccordionReport) {
                   }}
                 >
                   <Pain
-                    fill={canceled ? "#7D7D7D" : "var(--secondary)"}
+                    fill={canceled ? colorTextDesable : colorBackgroundActive}
                     width={"20px"}
                     height={"20px"}
                   />
@@ -385,7 +393,7 @@ export default function AccordionReport(props: IAccordionReport) {
                   }}
                 >
                   <Saturation
-                    fill={canceled ? "#7D7D7D" : "var(--secondary)"}
+                    fill={canceled ? colorTextDesable : colorBackgroundActive}
                     width={"20px"}
                     height={"20px"}
                   />
@@ -404,7 +412,7 @@ export default function AccordionReport(props: IAccordionReport) {
                   }}
                 >
                   <Temperature
-                    fill={canceled ? "#7D7D7D" : "var(--secondary)"}
+                    fill={canceled ? colorTextDesable : colorBackgroundActive}
                     width={"20px"}
                     height={"20px"}
                   />
@@ -435,7 +443,7 @@ export default function AccordionReport(props: IAccordionReport) {
             sx={{ "& svg, path, circle": { cursor: "help" }, cursor: "help" }}
           >
             <Presure
-              fill={canceled ? "#7D7D7D" : "var(--secondary)"}
+              fill={canceled ? colorTextDesable : colorBackgroundActive}
               width={"20px"}
               height={"20px"}
             />
@@ -446,510 +454,6 @@ export default function AccordionReport(props: IAccordionReport) {
     return measurementsItems;
   };
 
-  function handleHeaderDetails(type?: any) {
-    return (
-      <>
-        <HeaderDetailsAccordion>
-          {reportType !== "Check-in/out" && (
-            <TextCenterDetails
-              sx={{
-                width: `${
-                  type === "allergy" || type === "event" ? "100px" : "80px"
-                }`,
-              }}
-            >
-              Hora
-            </TextCenterDetails>
-          )}
-          <TextCenterDetails
-            sx={{
-              width: `${
-                type === "allergy" || type === "event" ? "250px" : "200px"
-              }`,
-            }}
-          >
-            Profissional
-          </TextCenterDetails>
-          <TextCenterDetails
-            sx={{
-              width: `${
-                type === "allergy" || type === "event" ? "250px" : "200px"
-              }`,
-            }}
-          >
-            {reportType === "Evolução"
-              ? "Especialidade"
-              : type === "event"
-              ? "Item de prescrição"
-              : "Função"}
-          </TextCenterDetails>
-          <TextCenterDetails
-            sx={{
-              width: `${
-                type === "allergy" ||
-                type === "event" ||
-                reportType === "Evolução" ||
-                reportType === "Check-in/out"
-                  ? "200px"
-                  : "320px"
-              }`,
-            }}
-          >
-            {type === "allergy"
-              ? "Alergia"
-              : type === "event"
-              ? "Eventos adversos"
-              : reportType === "Evolução"
-              ? "Tipo Evolução"
-              : reportType === "Check-in/out"
-              ? "Entrada"
-              : "Conteúdo"}
-          </TextCenterDetails>
-          {reportType === "Alergias" ? (
-            ""
-          ) : (
-            <TextCenterDetails
-              sx={{
-                width: `${
-                  reportType === "Evolução" || reportType === "Check-in/out"
-                    ? "200px"
-                    : "100px"
-                }`,
-                justifyContent: "center",
-              }}
-            >
-              {reportType === "Check-in/out" ? "Saída" : "Opções"}
-            </TextCenterDetails>
-          )}
-        </HeaderDetailsAccordion>
-        <Divider sx={{ width: "100%", margin: "0 auto" }} />
-      </>
-    );
-  }
-
-  const handleRow = (list: any, type?: string) => {
-    if (type) {
-      if (type === "allergy") {
-        if (content.data.allergy.length === 0) {
-          return (
-            <Box
-              sx={{
-                color: "var(--gray-dark)",
-                textAlign: "center",
-                margin: "16px 0",
-              }}
-            >
-              Não há alergias registradas para este paciente.
-            </Box>
-          );
-        } else
-          return list.map((column: any, index: number) => {
-            return (
-              <>
-                <ContentDetailsAccordion key={column._id}>
-                  <TextCenterDetails sx={{ width: "100px" }}>
-                    {formatDate(column.created_at, "DD/MM/YY HH:mm")}
-                  </TextCenterDetails>
-                  <TextCenterDetails sx={{ width: "250px" }}>
-                    {column.created_by
-                      ? integration
-                        ? getFirstAndLastName(capitalizeText(column.created_by))
-                        : getFirstAndLastName(
-                            capitalizeText(column.created_by.name)
-                          )
-                      : "-"}
-                  </TextCenterDetails>
-                  <TextCenterDetails sx={{ width: "250px" }}>
-                    {handleFunction(column, company_id, type)}
-                  </TextCenterDetails>
-                  <TextCenterDetails sx={{ width: "200px" }}>
-                    <Box
-                      sx={{
-                        display: "flex",
-                        flexWrap: "wrap",
-                        justifyContent: "center",
-                        alignItems: "center",
-                        gap: "4px",
-                        margin: "2px",
-                      }}
-                    >
-                      {integration
-                        ? capitalizeText(column.name)
-                        : capitalizeText(column.description)}
-                    </Box>
-                  </TextCenterDetails>
-                </ContentDetailsAccordion>
-                {list.length !== index + 1 ? (
-                  <Divider sx={{ width: "100%", margin: "0 auto" }} />
-                ) : (
-                  ""
-                )}
-              </>
-            );
-          });
-      } else if (type === "event") {
-        if (content.data.event.length === 0) {
-          return (
-            <Box
-              sx={{
-                color: "var(--gray-dark)",
-                textAlign: "center",
-                margin: "16px 0",
-              }}
-            >
-              Não há eventos adversos registrados para este paciente.
-            </Box>
-          );
-        } else
-          return list.map((column: any, index: number) => {
-            return (
-              <>
-                <ContentDetailsAccordion key={column._id}>
-                  <TextCenterDetails sx={{ width: "100px" }}>
-                    {formatDate(column.created_at, "DD/MM/YY HH:mm")}
-                  </TextCenterDetails>
-                  <TextCenterDetails sx={{ width: "250px" }}>
-                    {column.created_by
-                      ? integration
-                        ? typeof column.created_by === "string"
-                          ? getFirstAndLastName(
-                              capitalizeText(column.created_by)
-                            )
-                          : "-"
-                        : typeof column.created_by === "string"
-                        ? getFirstAndLastName(
-                            capitalizeText(column.created_by.name)
-                          )
-                        : "-"
-                      : "-"}
-                  </TextCenterDetails>
-                  <TextCenterDetails sx={{ width: "200px" }}>
-                    <Tooltip
-                      title={column.item.map((item: any, index: number) =>
-                        index === column.item.length - 1 ? item : item + " + "
-                      )}
-                    >
-                      <Box
-                        sx={{
-                          display: "flex",
-                          flexWrap: "wrap",
-                          justifyContent: "center",
-                          alignItems: "center",
-                          gap: "4px",
-                          margin: "2px",
-                          cursor: "help",
-                          "& svg, path": { cursor: "help" },
-                        }}
-                      >
-                        <Badge
-                          badgeContent={column.item.length}
-                          showZero
-                          color="primary"
-                          overlap="rectangular"
-                          sx={{
-                            ".MuiBadge-colorPrimary": {
-                              backgroundColor: "var(--secondary)",
-                              borderRadius: "4px",
-                              fontSize: "10px !important",
-                              right: "-2px",
-                              height: "16px",
-                              padding: "5px",
-                              minWidth: "min-content",
-                              cursor: "help",
-                            },
-                          }}
-                        >
-                          <Drug
-                            fill={"var(--secondary)"}
-                            width={"20px"}
-                            height={"20px"}
-                          />
-                        </Badge>
-                      </Box>
-                    </Tooltip>
-                  </TextCenterDetails>
-                  <TextCenterDetails sx={{ width: "200px" }}>
-                    <Tooltip
-                      title={column.type.map((item: any, index: number) =>
-                        index === column.type.length - 1
-                          ? capitalizeText(item)
-                          : capitalizeText(item) + "; "
-                      )}
-                    >
-                      <Box
-                        sx={{
-                          display: "flex",
-                          flexWrap: "wrap",
-                          justifyContent: "center",
-                          alignItems: "center",
-                          gap: "4px",
-                          margin: "2px",
-                          cursor: "help",
-                          "& svg, path": { cursor: "help" },
-                        }}
-                      >
-                        <Badge
-                          badgeContent={column.type.length}
-                          showZero
-                          color="primary"
-                          overlap="rectangular"
-                          sx={{
-                            ".MuiBadge-colorPrimary": {
-                              backgroundColor: "var(--secondary)",
-                              borderRadius: "4px",
-                              fontSize: "10px !important",
-                              right: "-9px",
-                              height: "14px",
-                              padding: "5px",
-                              minWidth: "min-content",
-                              cursor: "help",
-                            },
-                          }}
-                        >
-                          <AdverseEvent
-                            fill={"var(--secondary)"}
-                            width={"18px"}
-                            height={"18px"}
-                          />
-                        </Badge>
-                      </Box>
-                    </Tooltip>
-                  </TextCenterDetails>
-                </ContentDetailsAccordion>
-                {list.length !== index + 1 ? (
-                  <Divider sx={{ width: "100%", margin: "0 auto" }} />
-                ) : (
-                  ""
-                )}
-              </>
-            );
-          });
-      }
-    } else if (reportType === "Evolução") {
-      return list.map((column: any, index: number) => {
-        return (
-          <>
-            <ContentDetailsAccordion key={column._id}>
-              <TextCenterDetails
-                sx={{
-                  width: "80px",
-                  textDecoration: `${column.active ? "none" : "line-through"}`,
-                  color: `${column.active ? "#333333" : "#7D7D7D"}`,
-                }}
-              >
-                {formatDate(column.created_at, "HH:mm")}
-              </TextCenterDetails>
-              <TextCenterDetails
-                sx={{
-                  textDecoration: `${column.active ? "none" : "line-through"}`,
-                  color: `${column.active ? "#333333" : "#7D7D7D"}`,
-                }}
-              >
-                {getFirstAndLastName(
-                  capitalizeText(column.created_by[0]?.name)
-                )}
-              </TextCenterDetails>
-              <TextCenterDetails
-                sx={{
-                  textDecoration: `${column.active ? "none" : "line-through"}`,
-                  color: `${column.active ? "#333333" : "#7D7D7D"}`,
-                }}
-              >
-                {column.created_by[0]?.main_specialty_id[0]?.name
-                  ? column.created_by[0].main_specialty_id[0].name
-                  : "-"}
-              </TextCenterDetails>
-              <TextCenterDetails
-                sx={{
-                  textDecoration: `${column.active ? "none" : "line-through"}`,
-                  color: `${column.active ? "#333333" : "#7D7D7D"}`,
-                }}
-              >
-                {column.type}
-              </TextCenterDetails>
-              <TextCenterDetails>
-                {/*<DownloadIcon*/}
-                {/*  sx={{ color: "var(--secondary)", marginRight: "8px" }}*/}
-                {/*/>*/}
-                <IconButton
-                  color="secondary"
-                  aria-label="print"
-                  sx={{
-                    display: "flex",
-                    justifyContent: "center",
-                    alignItems: "center",
-                    cursor: "pointer",
-                    height: "36px",
-                    width: "36px",
-                    "& svg, path": { cursor: "pointer" },
-                  }}
-                  onClick={() => {
-                    const payload = {
-                      _id: column._id,
-                      type: "Id",
-                      name: column._id,
-                      dataStart: "",
-                      dataEnd: "",
-                      reportType: "Evolução",
-                      attendance_id: state?.data?._id,
-                    };
-                    dispatch(loadEvolutionFilterRequest(payload));
-                  }}
-                >
-                  <PrintIcon
-                    sx={{ cursor: "pointer", color: "var(--secondary)" }}
-                  />
-                </IconButton>
-              </TextCenterDetails>
-            </ContentDetailsAccordion>
-            {list.length !== index + 1 ? (
-              <Divider sx={{ width: "100%", margin: "0 auto" }} />
-            ) : (
-              ""
-            )}
-          </>
-        );
-      });
-    } else if (reportType === "Check-in/out") {
-      return list.map((data: any, index: number) => {
-        return data.list.map((column: any, index: number) => {
-          return (
-            <>
-              <ContentDetailsAccordion key={index}>
-                <TextCenterDetails>
-                  {getFirstAndLastName(capitalizeText(data._id.user[0].name))}
-                </TextCenterDetails>
-
-                <TextCenterDetails>
-                  {handleFunction(data._id.user[0].companies_links, company_id)}
-                </TextCenterDetails>
-
-                <TextCenterDetails>
-                  {formatDate(column[0].created_at, "HH:mm")}
-                </TextCenterDetails>
-                <TextCenterDetails>
-                  {column[1] ? formatDate(column[1].created_at, "HH:mm") : "-"}
-                </TextCenterDetails>
-              </ContentDetailsAccordion>
-              {list.length !== index + 1 ? (
-                <Divider sx={{ width: "100%", margin: "0 auto" }} />
-              ) : (
-                ""
-              )}
-            </>
-          );
-        });
-      });
-    } else {
-      return list.map((column: IAccordionInfo, index: number) => {
-        return (
-          <>
-            <ContentDetailsAccordion key={column._id}>
-              <TextCenterDetails
-                sx={{
-                  width: "80px",
-                  textDecoration: `${
-                    column.canceled ? "line-through" : "none"
-                  }`,
-                  color: `${column.canceled ? "#7D7D7D" : "#333333"}`,
-                }}
-              >
-                {formatDate(column.created_at, "HH:mm")}
-              </TextCenterDetails>
-              <TextCenterDetails
-                sx={{
-                  textDecoration: `${
-                    column.canceled ? "line-through" : "none"
-                  }`,
-                  color: `${column.canceled ? "#7D7D7D" : "#333333"}`,
-                }}
-              >
-                {getFirstAndLastName(capitalizeText(column.created_by[0].name))}
-              </TextCenterDetails>
-              <TextCenterDetails
-                sx={{
-                  textDecoration: `${
-                    column.canceled ? "line-through" : "none"
-                  }`,
-                  color: `${column.canceled ? "#7D7D7D" : "#333333"}`,
-                }}
-              >
-                {handleFunction(column, company_id)}
-              </TextCenterDetails>
-              <TextCenterDetails
-                sx={{
-                  width: "320px",
-                  textDecoration: `${
-                    column.canceled ? "line-through" : "none"
-                  }`,
-                  color: `${column.canceled ? "#7D7D7D" : "#333333"}`,
-                }}
-              >
-                <Box
-                  sx={{
-                    display: "flex",
-                    flexWrap: "wrap",
-                    justifyContent: "center",
-                    alignItems: "center",
-                    gap: "4px",
-                    margin: "2px",
-                  }}
-                >
-                  {handleMeasurementItemsIcons(
-                    checkMeasurementValue(column.itens),
-                    column.canceled
-                  )}
-                </Box>
-              </TextCenterDetails>
-              <TextCenterDetails
-                sx={{ width: "100px", justifyContent: "center" }}
-              >
-                <IconButton
-                  color="secondary"
-                  aria-label="print"
-                  sx={{
-                    cursor: "pointer",
-                    color: "var(--secondary)",
-                    display: "flex",
-                    justifyContent: "center",
-                    alignItems: "center",
-                    height: "36px",
-                    width: "36px",
-                  }}
-                  onClick={() => {
-                    if (reportType === "Aferições") {
-                      const payload = {
-                        _id: column._id,
-                        type: "Id",
-                        name: column._id,
-                        dataStart: "",
-                        dataEnd: "",
-                        reportType: "Aferições",
-                        attendance_id: state?.data?._id,
-                      };
-                      dispatch(loadMeasurementFilterRequest(payload));
-                    }
-                  }}
-                >
-                  <PrintIcon
-                    sx={{
-                      cursor: "pointer",
-                      "& svg, path": { cursor: "pointer" },
-                    }}
-                  />
-                </IconButton>
-              </TextCenterDetails>
-            </ContentDetailsAccordion>
-            {list.length !== index + 1 ? (
-              <Divider sx={{ width: "100%", margin: "0 auto" }} />
-            ) : (
-              ""
-            )}
-          </>
-        );
-      });
-    }
-  };
   // Accordion das Prescrições
   const prescriptionAccordion = (data: any) =>
     data.map((day: any, index: number) => (
@@ -961,7 +465,7 @@ export default function AccordionReport(props: IAccordionReport) {
             justifyContent: "center",
             alignItems: "center",
             zIndex: 5000,
-            left: "57rem",
+            left: "calc(100% - 7rem)",
             top: "0.4rem",
           }}
         >
@@ -981,8 +485,8 @@ export default function AccordionReport(props: IAccordionReport) {
               sx={{
                 color:
                   expanded === `panel${index}`
-                    ? "var(--white)"
-                    : "var(--secondary)",
+                    ? colorBackgroundInactive
+                    : colorBackgroundActive,
                 cursor: "pointer",
                 "& path": { cursor: "pointer" },
               }}
@@ -1015,21 +519,14 @@ export default function AccordionReport(props: IAccordionReport) {
               <Prescription
                 fill={
                   expanded === `panel${index}`
-                    ? "var(--white)"
-                    : "var(--gray-dark)"
+                    ? colorBackgroundInactive
+                    : colorText
                 }
                 width="22px"
                 height={"22px"}
               />
 
-              <Box
-                sx={{
-                  display: "flex",
-                  justifyContent: "space-between",
-                }}
-              >
-                {day[0]}
-              </Box>
+              <Typography>{day[0]}</Typography>
             </Box>
             <Box sx={{ cursor: "pointer", width: "36px" }}></Box>
           </AccordionSummary>
@@ -1043,12 +540,24 @@ export default function AccordionReport(props: IAccordionReport) {
   const prescriptionAccordionHeader = () => (
     <>
       <HeaderDetailsAccordion>
-        <TextCenterDetails>Id. Prescrição</TextCenterDetails>
-        <TextCenterDetails>Profissional</TextCenterDetails>
-        <TextCenterDetails>Função</TextCenterDetails>
-        <TextCenterDetails>Data Início</TextCenterDetails>
-        <TextCenterDetails>Data Fim</TextCenterDetails>
-        <TextCenterDetails sx={{ width: "100px" }}>Opções</TextCenterDetails>
+        <TextCenterDetails>
+          <Typography fontWeight={500}>Id. Prescrição</Typography>
+        </TextCenterDetails>
+        <TextCenterDetails>
+          <Typography fontWeight={500}>Profissional</Typography>
+        </TextCenterDetails>
+        <TextCenterDetails>
+          <Typography fontWeight={500}>Função</Typography>
+        </TextCenterDetails>
+        <TextCenterDetails>
+          <Typography fontWeight={500}>Data Início</Typography>
+        </TextCenterDetails>
+        <TextCenterDetails>
+          <Typography fontWeight={500}>Data Fim</Typography>
+        </TextCenterDetails>
+        <TextCenterDetails sx={{ width: "100px" }}>
+          <Typography fontWeight={500}>Opções</Typography>
+        </TextCenterDetails>
       </HeaderDetailsAccordion>
       <Divider sx={{ width: "100%", margin: "0 auto" }} />
     </>
@@ -1060,52 +569,58 @@ export default function AccordionReport(props: IAccordionReport) {
           <TextCenterDetails
             sx={{
               textDecoration: `${!column.active ? "line-through" : "none"}`,
-              color: `${!column.active ? "#7D7D7D" : "#333333"}`,
+              color: `${!column.active ? colorTextDesable : colorTextDetails}`,
             }}
           >
-            {column._id}
+            <Typography>{column._id}</Typography>
           </TextCenterDetails>
           <TextCenterDetails
             sx={{
               textDecoration: `${!column.active ? "line-through" : "none"}`,
-              color: `${!column.active ? "#7D7D7D" : "#333333"}`,
+              color: `${!column.active ? colorTextDesable : colorTextDetails}`,
             }}
           >
-            {getFirstAndLastName(capitalizeText(column.created_by))}
+            <Typography>
+              {getFirstAndLastName(capitalizeText(column.created_by))}
+            </Typography>
           </TextCenterDetails>
           <TextCenterDetails
             sx={{
               textDecoration: `${!column.active ? "line-through" : "none"}`,
-              color: `${!column.active ? "#7D7D7D" : "#333333"}`,
+              color: `${!column.active ? colorTextDesable : colorTextDetails}`,
             }}
           >
-            {capitalizeText(column.function)}
+            <Typography>{capitalizeText(column.function)}</Typography>
           </TextCenterDetails>
           <TextCenterDetails
             sx={{
               textDecoration: `${!column.active ? "line-through" : "none"}`,
-              color: `${!column.active ? "#7D7D7D" : "#333333"}`,
+              color: `${!column.active ? colorTextDesable : colorTextDetails}`,
             }}
           >
-            {column.start_at
-              ? `${formatDate(column.start_at, "DD/MM/YYYY")} às ${formatDate(
-                  column.start_at,
-                  "HH:mm"
-                )}`
-              : "Não informado"}
+            <Typography>
+              {column.start_at
+                ? `${formatDate(column.start_at, "DD/MM/YYYY")} às ${formatDate(
+                    column.start_at,
+                    "HH:mm"
+                  )}`
+                : "Não informado"}
+            </Typography>
           </TextCenterDetails>
           <TextCenterDetails
             sx={{
               textDecoration: `${!column.active ? "line-through" : "none"}`,
-              color: `${!column.active ? "#7D7D7D" : "#333333"}`,
+              color: `${!column.active ? colorTextDesable : colorTextDetails}`,
             }}
           >
-            {column.end_at
-              ? `${formatDate(column.end_at, "DD/MM/YYYY")} às ${formatDate(
-                  column.end_at,
-                  "HH:mm"
-                )}`
-              : "Não informado"}
+            <Typography>
+              {column.end_at
+                ? `${formatDate(column.end_at, "DD/MM/YYYY")} às ${formatDate(
+                    column.end_at,
+                    "HH:mm"
+                  )}`
+                : "Não informado"}
+            </Typography>
           </TextCenterDetails>
           <TextCenterDetails sx={{ width: "100px" }}>
             <IconButton
@@ -1129,7 +644,7 @@ export default function AccordionReport(props: IAccordionReport) {
             >
               <PrintIcon
                 sx={{
-                  color: "var(--secondary)",
+                  color: colorBackgroundActive,
                   cursor: "pointer",
                   "& > path": { cursor: "pointer" },
                 }}
@@ -1156,7 +671,7 @@ export default function AccordionReport(props: IAccordionReport) {
               justifyContent: "center",
               alignItems: "center",
               zIndex: 5000,
-              left: "57rem",
+              left: "calc(100% - 6rem)",
               top: "0.4rem",
             }}
           >
@@ -1178,8 +693,8 @@ export default function AccordionReport(props: IAccordionReport) {
                 sx={{
                   color:
                     expanded === `panel${item.id}`
-                      ? "var(--white)"
-                      : "var(--secondary)",
+                      ? colorBackgroundInactive
+                      : colorBackgroundActive,
                   cursor: "pointer",
                   "& path": { cursor: "pointer" },
                 }}
@@ -1213,14 +728,16 @@ export default function AccordionReport(props: IAccordionReport) {
                 <Antibiotic
                   fill={
                     expanded === `panel${item.id}`
-                      ? "var(--white)"
-                      : "var(--gray-dark)"
+                      ? colorBackgroundInactive
+                      : colorText
                   }
                   width="22px"
                   height={"22px"}
                 />
 
-                <Box>{formatDate(item.start_at, "DD/MM/YYYY")}</Box>
+                <Typography>
+                  {formatDate(item.start_at, "DD/MM/YYYY")}
+                </Typography>
                 <Box
                   sx={{
                     display: "flex",
@@ -1228,38 +745,39 @@ export default function AccordionReport(props: IAccordionReport) {
                     width: "85%",
                   }}
                 >
-                  <Box
+                  <Typography
                     sx={{
                       textDecoration: `${
                         !item.active ? "line-through" : "none"
                       }`,
-                      // color: `${!item.active ? "#7D7D7D" : "#333333"}`,
                     }}
                   >
                     {item.name}
-                  </Box>
+                  </Typography>
                   <Box
                     sx={{
                       display: "flex",
                       justifyContent: "center",
                       border:
                         expanded === `panel${item.id}`
-                          ? "1px solid var(--white)"
+                          ? `2px solid ${colorBackgroundInactive}`
                           : `${
                               item.active
-                                ? "1px solid var(--secondary)"
-                                : "1px solid var(--gray-dark)"
+                                ? `2px solid ${theme.palette.secondary.main}`
+                                : `2px solid ${colorTextDesable}`
                             }`,
                       borderRadius: "20px",
                       padding: "0 4px",
                       width: "115px",
                     }}
                   >
-                    {`Ciclo: D${item.actual_days}/D${item.qtd_days}`}
+                    <TypographyFontWeight400>
+                      {`Ciclo: D${item.actual_days}/D${item.qtd_days}`}
+                    </TypographyFontWeight400>
                   </Box>
                 </Box>
               </Box>
-              <Box sx={{ cursor: "pointer", width: "36px" }}></Box>
+              <Box sx={{ cursor: "pointer", width: "42px" }}></Box>
             </AccordionSummary>
             <AccordionDetails key={item.id}>
               {antibioticAccordionDetailsRows(item)}
@@ -1274,99 +792,91 @@ export default function AccordionReport(props: IAccordionReport) {
         <TextCenterDetails
           sx={{
             width: "min-content",
-            color: "var(--gray-dark)",
+            color: colorText,
             whiteSpace: "nowrap",
           }}
         >
-          Id. Prescrição:
+          <Typography>Id. Prescrição:</Typography>
         </TextCenterDetails>
         <TextCenterDetails sx={{ width: "100%", justifyContent: "flex-start" }}>
-          {item.prescription_id}
+          <Typography>{item.prescription_id}</Typography>
         </TextCenterDetails>
       </ContentDetailsAccordion>
       <Divider sx={{ width: "100%", margin: "0 auto" }} />
       <ContentDetailsAccordion sx={{ gap: "8px" }}>
-        <TextCenterDetails
-          sx={{ width: "min-content", color: "var(--gray-dark)" }}
-        >
-          Unidade:
+        <TextCenterDetails sx={{ width: "min-content", color: colorText }}>
+          <Typography>Unidade:</Typography>
         </TextCenterDetails>
         <TextCenterDetails
           sx={{
             width: "100%",
             justifyContent: "flex-start",
             textDecoration: `${!item.active ? "line-through" : "none"}`,
-            color: `${!item.active ? "#7D7D7D" : "#333333"}`,
+            color: `${!item.active ? colorTextDesable : colorTextDetails}`,
           }}
         >
-          {item.unity}
+          <Typography>{item.unity}</Typography>
         </TextCenterDetails>
       </ContentDetailsAccordion>
       <Divider sx={{ width: "100%", margin: "0 auto" }} />
       <ContentDetailsAccordion sx={{ gap: "8px" }}>
-        <TextCenterDetails
-          sx={{ width: "min-content", color: "var(--gray-dark)" }}
-        >
-          Quantidade:
+        <TextCenterDetails sx={{ width: "min-content", color: colorText }}>
+          <Typography>Quantidade:</Typography>
         </TextCenterDetails>
         <TextCenterDetails
           sx={{
             width: "100%",
             justifyContent: "flex-start",
             textDecoration: `${!item.active ? "line-through" : "none"}`,
-            color: `${!item.active ? "#7D7D7D" : "#333333"}`,
+            color: `${!item.active ? colorTextDesable : colorTextDetails}`,
           }}
         >
-          {item.amount}
+          <Typography>{item.amount}</Typography>
         </TextCenterDetails>
       </ContentDetailsAccordion>
       <Divider sx={{ width: "100%", margin: "0 auto" }} />
       <ContentDetailsAccordion sx={{ gap: "8px" }}>
-        <TextCenterDetails
-          sx={{ width: "min-content", color: "var(--gray-dark)" }}
-        >
-          Frequência:
+        <TextCenterDetails sx={{ width: "min-content", color: colorText }}>
+          <Typography>Frequência:</Typography>
         </TextCenterDetails>
         <TextCenterDetails
           sx={{
             width: "100%",
             justifyContent: "flex-start",
             textDecoration: `${!item.active ? "line-through" : "none"}`,
-            color: `${!item.active ? "#7D7D7D" : "#333333"}`,
+            color: `${!item.active ? colorTextDesable : colorTextDetails}`,
           }}
         >
-          {item.frequency}
+          <Typography>{item.frequency}</Typography>
         </TextCenterDetails>
       </ContentDetailsAccordion>
       <Divider sx={{ width: "100%", margin: "0 auto" }} />
       <ContentDetailsAccordion sx={{ gap: "8px" }}>
-        <TextCenterDetails
-          sx={{ width: "min-content", color: "var(--gray-dark)" }}
-        >
-          Horários:
+        <TextCenterDetails sx={{ width: "min-content", color: colorText }}>
+          <Typography>Horários:</Typography>
         </TextCenterDetails>
         <TextCenterDetails
           sx={{
             width: "100%",
             justifyContent: "flex-start",
             textDecoration: `${!item.active ? "line-through" : "none"}`,
-            color: `${!item.active ? "#7D7D7D" : "#333333"}`,
+            color: `${!item.active ? colorTextDesable : colorTextDetails}`,
           }}
         >
-          {item.hritem.map(
-            (itemHora: any, index: number) =>
-              `${formatDate(itemHora.time, "HH:mm")} ${
-                item.hritem.length - 1 === index ? "" : " - "
-              }`
-          )}
+          <Typography>
+            {item.hritem.map(
+              (itemHora: any, index: number) =>
+                `${formatDate(itemHora.time, "HH:mm")} ${
+                  item.hritem.length - 1 === index ? "" : " - "
+                }`
+            )}
+          </Typography>
         </TextCenterDetails>
       </ContentDetailsAccordion>
       <Divider sx={{ width: "100%", margin: "0 auto" }} />
       <ContentDetailsAccordion sx={{ gap: "8px" }}>
-        <TextCenterDetails
-          sx={{ width: "min-content", color: "var(--gray-dark)" }}
-        >
-          Observações:
+        <TextCenterDetails sx={{ width: "min-content", color: colorText }}>
+          <Typography>Observações:</Typography>
         </TextCenterDetails>
         <TextCenterDetails
           sx={{
@@ -1374,16 +884,16 @@ export default function AccordionReport(props: IAccordionReport) {
             justifyContent: "flex-start",
             whiteSpace: "nowrap",
             textDecoration: `${!item.active ? "line-through" : "none"}`,
-            color: `${!item.active ? "#7D7D7D" : "#333333"}`,
+            color: `${!item.active ? colorTextDesable : colorTextDetails}`,
           }}
         >
           {item.description.length < 115 ? (
-            capitalizeText(item.description)
+            <Typography>{capitalizeText(item.description)}</Typography>
           ) : (
             <Tooltip title={item.description}>
-              <Box>{`${capitalizeText(
+              <Typography>{`${capitalizeText(
                 item.description.substr(0, 115)
-              )} ...`}</Box>
+              )} ...`}</Typography>
             </Tooltip>
           )}
         </TextCenterDetails>
@@ -1393,11 +903,11 @@ export default function AccordionReport(props: IAccordionReport) {
         <TextCenterDetails
           sx={{
             width: "min-content",
-            color: "var(--gray-dark)",
+            color: colorText,
             justifyContent: "flex-start",
           }}
         >
-          Componentes:
+          <Typography>Componentes:</Typography>
         </TextCenterDetails>
         <TextCenterDetails
           sx={{
@@ -1416,25 +926,29 @@ export default function AccordionReport(props: IAccordionReport) {
                   alignItems: "center",
                   minHeight: "36px",
                   textDecoration: `${!item.active ? "line-through" : "none"}`,
-                  color: `${!item.active ? "#7D7D7D" : "#333333"}`,
+                  color: `${
+                    !item.active ? colorTextDesable : colorTextDetails
+                  }`,
                 }}
               >
-                <Box>
+                <Typography>
                   {
-                    <Box
+                    <Typography
                       sx={{
-                        color: "var(--secondary)",
+                        color: theme.palette.secondary.main,
                         display: "inline",
                       }}
                     >
                       {index + 1}
-                    </Box>
+                    </Typography>
                   }{" "}
                   - {capitalizeText(component.name)},{" "}
                   {capitalizeText(component.unity)}
-                </Box>
+                </Typography>
 
-                <Box mr={"12px"}>Quantidade: {component.amount}</Box>
+                <Typography mr={"12px"}>
+                  Quantidade: {component.amount}
+                </Typography>
               </Box>
               {item.components.length === index + 1 ? (
                 ""
@@ -1450,20 +964,18 @@ export default function AccordionReport(props: IAccordionReport) {
       </ContentDetailsAccordion>
       <Divider sx={{ width: "100%", margin: "0 auto" }} />
       <ContentDetailsAccordion sx={{ gap: "8px" }}>
-        <TextCenterDetails
-          sx={{ width: "max-content", color: "var(--gray-dark)" }}
-        >
-          {capitalizeText(item.function)}:
+        <TextCenterDetails sx={{ width: "max-content", color: colorText }}>
+          <Typography>{capitalizeText(item.function)}:</Typography>
         </TextCenterDetails>
         <TextCenterDetails
           sx={{
             width: "100%",
             justifyContent: "flex-start",
             textDecoration: `${!item.active ? "line-through" : "none"}`,
-            color: `${!item.active ? "#7D7D7D" : "#333333"}`,
+            color: `${!item.active ? colorTextDesable : colorTextDetails}`,
           }}
         >
-          {capitalizeText(item.created_by)}
+          <Typography>{capitalizeText(item.created_by)}</Typography>
         </TextCenterDetails>
       </ContentDetailsAccordion>
     </>
@@ -1776,14 +1288,12 @@ export default function AccordionReport(props: IAccordionReport) {
 
     return type === "description" ? dataSlit[1] : dataSlit[0];
   }
-
-  const checkAccordion = (data: any) =>
-    data.map((day: any, index: number) =>
+  const checkAccordion = (data: any) => {
+    return data.map((day: any, index: number) =>
       day[1].map(
         (prescription: any, index_sub: number) =>
-          prescription.converted_at && (
+          true && ( //prescription.converted_at
             <Box sx={{ position: "relative" }}>
-              {console.log(prescription)}
               <Box
                 sx={{
                   position: "absolute",
@@ -1791,7 +1301,7 @@ export default function AccordionReport(props: IAccordionReport) {
                   justifyContent: "center",
                   alignItems: "center",
                   zIndex: 5000,
-                  left: "57rem",
+                  left: "calc(100% - 7rem)",
                   top: "0.4rem",
                 }}
               >
@@ -1811,8 +1321,8 @@ export default function AccordionReport(props: IAccordionReport) {
                     sx={{
                       color:
                         expanded === `panel${prescription._id}`
-                          ? "var(--white)"
-                          : "var(--secondary)",
+                          ? colorBackgroundInactive
+                          : colorBackgroundActive,
                       cursor: "pointer",
                       "& path": { cursor: "pointer" },
                     }}
@@ -1846,30 +1356,24 @@ export default function AccordionReport(props: IAccordionReport) {
                     <CheckMedIcon
                       fill={
                         expanded === `panel${prescription._id}`
-                          ? "var(--white)"
-                          : "var(--gray-dark)"
+                          ? colorBackgroundInactive
+                          : colorText
                       }
                       width="22px"
                       height={"22px"}
                     />
 
-                    <Box
-                      sx={{
-                        display: "flex",
-                        justifyContent: "space-between",
-                      }}
-                    >
-                      Prescrição Médica
-                    </Box>
+                    <Typography>Prescrição Médica</Typography>
                   </Box>
-                  <Box sx={{ padding: "0 0 0 218px" }}>{`Validade: ${formatDate(
-                    prescription.start_at,
-                    "DD/MM/YYYY [às] HH:mm"
-                  )} | ${formatDate(
-                    prescription.end_at,
-                    "DD/MM/YYYY [às] HH:mm"
-                  )}`}</Box>
-                  <Box sx={{ cursor: "pointer", width: "36px" }}></Box>
+                  <Box sx={{ paddingRight: "calc(9%)" }}>
+                    <Typography>{`Validade: ${formatDate(
+                      prescription.start_at,
+                      "DD/MM/YYYY [às] HH:mm"
+                    )} | ${formatDate(
+                      prescription.end_at,
+                      "DD/MM/YYYY [às] HH:mm"
+                    )}`}</Typography>
+                  </Box>
                 </AccordionSummary>
                 <AccordionDetails sx={{ padding: 0 }}>
                   {checkAccordionHeader(
@@ -1883,6 +1387,7 @@ export default function AccordionReport(props: IAccordionReport) {
           )
       )
     );
+  };
   const checkAccordionHeader = (
     idPrescription: string,
     professional: string
@@ -1891,8 +1396,7 @@ export default function AccordionReport(props: IAccordionReport) {
       <HeaderDetailsAccordion
         sx={{
           justifyContent: "flex-start",
-          background: "#CAECF4",
-          // borderRadius: "0 0 12px 12px",
+          background: theme.palette.secondary.light,
         }}
       >
         <TextCenterDetails
@@ -1902,26 +1406,29 @@ export default function AccordionReport(props: IAccordionReport) {
             padding: "0 0 0 16px",
           }}
         >
-          {/* <DigitalIcon fill={"var(--secondary)"} /> */}
-          {`Código: ${idPrescription}`}
+          <Typography>{`Código: ${idPrescription}`}</Typography>
         </TextCenterDetails>
-        <TextCenterDetails
-          sx={{ width: "auto", paddingLeft: "268px" }}
-        >{`Prestador: ${professional}`}</TextCenterDetails>
+        <TextCenterDetails sx={{ width: "auto", paddingLeft: "268px" }}>
+          <Typography>{`Prestador: ${professional}`}</Typography>
+        </TextCenterDetails>
       </HeaderDetailsAccordion>
       <HeaderDetailsAccordion sx={{ padding: "0 16px", fontWeight: "600" }}>
         <TextCenterDetails
           sx={{ width: "405px", justifyContent: "flex-start" }}
         >
-          Itens de Prescrição
+          <Typography fontWeight={500}>Itens de Prescrição</Typography>
         </TextCenterDetails>
         <TextCenterDetails
           sx={{ width: "100px", justifyContent: "flex-start" }}
         >
-          Frequência
+          <Typography fontWeight={500}>Frequência</Typography>
         </TextCenterDetails>
-        <TextCenterDetails>Horário</TextCenterDetails>
-        <TextCenterDetails sx={{ width: "100px" }}>Opções</TextCenterDetails>
+        <TextCenterDetails>
+          <Typography fontWeight={500}>Horário</Typography>
+        </TextCenterDetails>
+        <TextCenterDetails sx={{ width: "100px" }}>
+          <Typography fontWeight={500}>Opções</Typography>
+        </TextCenterDetails>
       </HeaderDetailsAccordion>
       <Divider sx={{ width: "100%", margin: "0 auto" }} />
     </>
@@ -1933,37 +1440,41 @@ export default function AccordionReport(props: IAccordionReport) {
           <TextCenterDetails
             sx={{
               textDecoration: `${!item.active ? "line-through" : "none"}`,
-              color: `${!item.active ? "#7D7D7D" : "#333333"}`,
+              color: `${!item.active ? colorTextDesable : colorTextDetails}`,
               justifyContent: "flex-start",
               width: "406px",
             }}
           >
-            {item?.medication?.Nome}
+            <Typography>{item?.medication?.Nome}</Typography>
           </TextCenterDetails>
           <TextCenterDetails
             sx={{
               textDecoration: `${!item.active ? "line-through" : "none"}`,
-              color: `${!item.active ? "#7D7D7D" : "#333333"}`,
+              color: `${!item.active ? colorTextDesable : colorTextDetails}`,
               width: "100px",
               justifyContent: "flex-start",
             }}
           >
-            {`${parseFloat(item?.frequency?.interval) / 3600}h/${
-              parseFloat(item?.frequency?.interval) / 3600
-            }h`}
+            <Typography>
+              {`${parseFloat(item?.frequency?.interval) / 3600}h/${
+                parseFloat(item?.frequency?.interval) / 3600
+              }h`}
+            </Typography>
           </TextCenterDetails>
           <TextCenterDetails
             sx={{
               textDecoration: `${!item.active ? "line-through" : "none"}`,
-              color: `${!item.active ? "#7D7D7D" : "#333333"}`,
+              color: `${!item.active ? colorTextDesable : colorTextDetails}`,
             }}
           >
-            {item?.frequency?.doses?.length > 0 &&
-              item?.frequency?.doses?.map((dose: any, index: number) => {
-                return `${formatDate(dose.administer_date, "HH:mm")} ${
-                  item.frequency.doses.length - 1 === index ? "" : " - "
-                }`;
-              })}
+            <Typography>
+              {item?.frequency?.doses?.length > 0 &&
+                item?.frequency?.doses?.map((dose: any, index: number) => {
+                  return `${formatDate(dose.administer_date, "HH:mm")} ${
+                    item.frequency.doses.length - 1 === index ? "" : " - "
+                  }`;
+                })}
+            </Typography>
           </TextCenterDetails>
           <TextCenterDetails sx={{ width: "100px" }}>
             <IconButton
@@ -1980,7 +1491,7 @@ export default function AccordionReport(props: IAccordionReport) {
             >
               <PrintIcon
                 sx={{
-                  color: "var(--secondary)",
+                  color: colorBackgroundActive,
                   cursor: "pointer",
                   "& > path": { cursor: "pointer" },
                 }}
@@ -1995,298 +1506,1052 @@ export default function AccordionReport(props: IAccordionReport) {
         )}
       </>
     ));
+  // Accordion das alergias e eventos
+  const allergyAndEventsAccordion = (data: any) =>
+    Object.keys(data).map((item: any, index: number) => {
+      return (
+        <Box sx={{ position: "relative", width: "100%" }}>
+          <Box
+            sx={{
+              position: "absolute",
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
+              zIndex: 5000,
+              left: "calc(100% - 7rem)",
+              top: "0.4rem",
+            }}
+          >
+            <IconButton
+              aria-label="print"
+              sx={{
+                display: "flex",
+                justifyContent: "center",
+                alignItems: "center",
+                cursor: "pointer",
+                height: "36px",
+                width: "36px",
+              }}
+              onClick={() => {
+                if (item === "allergy") {
+                  const payload = {
+                    _id: "",
+                    type: "Group",
+                    name: "",
+                    dataStart: "",
+                    dataEnd: "",
+                    reportType: "Alergias",
+                    attendance_id: state?.data?._id,
+                    patient_id: state?.data?.patient_id?._id,
+                  };
+                  dispatch(loadAllergyFilterRequest(payload));
+                } else if (item === "event") {
+                  const payload = {
+                    _id: "",
+                    type: "Group",
+                    name: "",
+                    dataStart: "",
+                    dataEnd: "",
+                    reportType: "Evento Adverso",
+                    attendance_id: state?.data?._id,
+                    patient_id: state?.data?.patient_id?._id,
+                  };
+                  dispatch(loadAdverseEventFilterRequest(payload));
+                }
+              }}
+            >
+              <PrintIcon
+                sx={{
+                  color:
+                    expanded === `panel${index}`
+                      ? colorBackgroundInactive
+                      : colorBackgroundActive,
+                  cursor: "pointer",
+                  "& path": { cursor: "pointer" },
+                }}
+              />
+            </IconButton>
+          </Box>
+          <Accordion
+            key={item}
+            disableGutters={true}
+            expanded={expanded === `panel${index}`}
+            onChange={handleChange(`panel${index}`)}
+          >
+            <AccordionSummary
+              expandIcon={<ExpandMoreIcon />}
+              aria-controls={`panel${index}bh-content`}
+              id={`panel${index}bh-header`}
+              sx={{
+                "& div, svg, path, circle, rect": { cursor: "pointer" },
+                cursor: "pointer",
+              }}
+            >
+              <Box
+                sx={{
+                  display: "flex",
+                  gap: "8px",
+                  flexDirection: "row",
+                  justifyContent: "space-between",
+                }}
+              >
+                <Allergy
+                  fill={
+                    expanded === `panel${index}`
+                      ? colorBackgroundInactive
+                      : colorText
+                  }
+                  width="22px"
+                  height={"22px"}
+                />
+                <Box
+                  sx={{
+                    display: "flex",
+                    justifyContent: "space-between",
+                  }}
+                >
+                  <Typography>
+                    {item === "allergy" && "Alergias"}
+                    {item === "event" && "Eventos adversos"}
+                  </Typography>
+                </Box>
+              </Box>
+              <Box sx={{ width: "36px" }}></Box>
+            </AccordionSummary>
+            <AccordionDetails>
+              {allergyAndEventsAccordionHeader(item)}
+              {allergyAndEventsAccordionDetails(data[item], item)}
+            </AccordionDetails>
+          </Accordion>
+        </Box>
+      );
+    });
+  const allergyAndEventsAccordionHeader = (type: any) => (
+    <>
+      <HeaderDetailsAccordion>
+        <TextCenterDetails
+          sx={{
+            width: `${"110px"}`,
+          }}
+        >
+          <Typography fontWeight={500}>Hora</Typography>
+        </TextCenterDetails>
+        <TextCenterDetails
+          sx={{
+            width: `${"250px"}`,
+          }}
+        >
+          <Typography fontWeight={500}>Profissional</Typography>
+        </TextCenterDetails>
+        <TextCenterDetails
+          sx={{
+            width: `${type === "allergy" ? "250px" : "150px"}`,
+          }}
+        >
+          <Typography fontWeight={500}>
+            {type === "event" ? "Item de prescrição" : "Função"}
+          </Typography>
+        </TextCenterDetails>
+        <TextCenterDetails
+          sx={{
+            width: `${type === "allergy" ? "200px" : "150px"}`,
+          }}
+        >
+          <Typography fontWeight={500}>
+            {type === "allergy" ? "Alergia" : "Eventos adversos"}
+          </Typography>
+        </TextCenterDetails>
+      </HeaderDetailsAccordion>
+      <Divider sx={{ width: "100%", margin: "0 auto" }} />
+    </>
+  );
+  const allergyAndEventsAccordionDetails = (list: any, type: string) => {
+    if (type === "allergy") {
+      if (content.data.allergy.length === 0) {
+        return (
+          <Typography
+            sx={{
+              color: theme.palette.black60.main,
+              textAlign: "center",
+              margin: "16px 0",
+            }}
+          >
+            Não há alergias registradas para este paciente.
+          </Typography>
+        );
+      } else
+        return list.map((column: any, index: number) => {
+          return (
+            <>
+              <ContentDetailsAccordion key={column._id}>
+                <TextCenterDetails sx={{ width: "110px" }}>
+                  <Typography>
+                    {formatDate(column.created_at, "DD/MM/YY HH:mm")}
+                  </Typography>
+                </TextCenterDetails>
+                <TextCenterDetails sx={{ width: "250px" }}>
+                  <Typography>
+                    {column.created_by
+                      ? integration
+                        ? getFirstAndLastName(capitalizeText(column.created_by))
+                        : getFirstAndLastName(
+                            capitalizeText(column.created_by.name)
+                          )
+                      : "-"}
+                  </Typography>
+                </TextCenterDetails>
+                <TextCenterDetails sx={{ width: "250px" }}>
+                  <Typography>
+                    {handleFunction(column, company_id, type)}
+                  </Typography>
+                </TextCenterDetails>
+                <TextCenterDetails sx={{ width: "200px" }}>
+                  <Box
+                    sx={{
+                      display: "flex",
+                      flexWrap: "wrap",
+                      justifyContent: "center",
+                      alignItems: "center",
+                      gap: "4px",
+                      margin: "2px",
+                    }}
+                  >
+                    <Typography>
+                      {" "}
+                      {integration
+                        ? capitalizeText(column.name)
+                        : capitalizeText(column.description)}
+                    </Typography>
+                  </Box>
+                </TextCenterDetails>
+              </ContentDetailsAccordion>
+              {list.length !== index + 1 ? (
+                <Divider sx={{ width: "100%", margin: "0 auto" }} />
+              ) : (
+                ""
+              )}
+            </>
+          );
+        });
+    } else if (type === "event") {
+      if (content.data.event.length === 0) {
+        return (
+          <Typography
+            sx={{
+              color: theme.palette.black60.main,
+              textAlign: "center",
+              margin: "16px 0",
+            }}
+          >
+            Não há eventos adversos registrados para este paciente.
+          </Typography>
+        );
+      } else
+        return list.map((column: any, index: number) => {
+          return (
+            <>
+              <ContentDetailsAccordion key={column._id}>
+                <TextCenterDetails sx={{ width: "110px" }}>
+                  <Typography>
+                    {formatDate(column.created_at, "DD/MM/YY HH:mm")}
+                  </Typography>
+                </TextCenterDetails>
+                <TextCenterDetails sx={{ width: "250px" }}>
+                  <Typography>
+                    {column.created_by
+                      ? integration
+                        ? typeof column.created_by === "string"
+                          ? getFirstAndLastName(
+                              capitalizeText(column.created_by)
+                            )
+                          : "-"
+                        : typeof column.created_by === "string"
+                        ? getFirstAndLastName(
+                            capitalizeText(column.created_by.name)
+                          )
+                        : "-"
+                      : "-"}
+                  </Typography>
+                </TextCenterDetails>
+                <TextCenterDetails sx={{ width: "150px" }}>
+                  <Tooltip
+                    title={column.item.map((item: any, index: number) =>
+                      index === column.item.length - 1 ? item : item + " + "
+                    )}
+                  >
+                    <Box
+                      sx={{
+                        display: "flex",
+                        flexWrap: "wrap",
+                        justifyContent: "center",
+                        alignItems: "center",
+                        gap: "4px",
+                        margin: "2px",
+                        cursor: "help",
+                        "& svg, path": { cursor: "help" },
+                      }}
+                    >
+                      <Badge
+                        badgeContent={column.item.length}
+                        showZero
+                        color="primary"
+                        overlap="rectangular"
+                        sx={{
+                          ".MuiBadge-colorPrimary": {
+                            borderRadius: "4px",
+                            fontSize: "10px",
+                            right: "-2px",
+                            height: "16px",
+                            padding: "5px",
+                            minWidth: "min-content",
+                            cursor: "help",
+                          },
+                        }}
+                      >
+                        <Drug
+                          fill={theme.palette.primary.main}
+                          width={"20px"}
+                          height={"20px"}
+                        />
+                      </Badge>
+                    </Box>
+                  </Tooltip>
+                </TextCenterDetails>
+                <TextCenterDetails sx={{ width: "150px" }}>
+                  <Tooltip
+                    title={column.type.map((item: any, index: number) =>
+                      index === column.type.length - 1
+                        ? capitalizeText(item)
+                        : capitalizeText(item) + ", "
+                    )}
+                  >
+                    <Box
+                      sx={{
+                        display: "flex",
+                        flexWrap: "wrap",
+                        justifyContent: "center",
+                        alignItems: "center",
+                        gap: "4px",
+                        margin: "2px",
+                        cursor: "help",
+                        "& svg, path": { cursor: "help" },
+                      }}
+                    >
+                      <Badge
+                        badgeContent={column.type.length}
+                        showZero
+                        color="primary"
+                        overlap="rectangular"
+                        sx={{
+                          ".MuiBadge-colorPrimary": {
+                            borderRadius: "4px",
+                            fontSize: "10px !important",
+                            right: "-9px",
+                            height: "14px",
+                            padding: "5px",
+                            minWidth: "min-content",
+                            cursor: "help",
+                          },
+                        }}
+                      >
+                        <AdverseEvent
+                          fill={theme.palette.primary.main}
+                          width={"18px"}
+                          height={"18px"}
+                        />
+                      </Badge>
+                    </Box>
+                  </Tooltip>
+                </TextCenterDetails>
+              </ContentDetailsAccordion>
+              {list.length !== index + 1 ? (
+                <Divider sx={{ width: "100%", margin: "0 auto" }} />
+              ) : (
+                ""
+              )}
+            </>
+          );
+        });
+    }
+  };
+  // Accordion de check-in/out
+  const checkInOutAccordion = (data: any) =>
+    data.map(({ _id, list }: IDataAccordion, index: number) => {
+      return (
+        <Box sx={{ position: "relative" }}>
+          <Box
+            sx={{
+              position: "absolute",
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
+              zIndex: 5000,
+              left: "calc(100% - 7rem)",
+              top: "0.4rem",
+            }}
+          >
+            <IconButton
+              aria-label="print"
+              sx={{
+                display: "flex",
+                justifyContent: "center",
+                alignItems: "center",
+                cursor: "pointer",
+                height: "36px",
+                width: "36px",
+              }}
+              onClick={() => {
+                const payload = {
+                  _id: "",
+                  type: "Group",
+                  name: "",
+                  dataStart: _id,
+                  dataEnd: _id,
+                  reportType: "Check-in/out",
+                  attendance_id: state?.data?._id,
+                };
+                dispatch(loadCheckinFilterRequest(payload));
+              }}
+            >
+              <PrintIcon
+                sx={{
+                  color:
+                    expanded === `panel${index}`
+                      ? theme.palette.common.white
+                      : theme.palette.primary.main,
+                  cursor: "pointer",
+                  "& path": { cursor: "pointer" },
+                }}
+              />
+            </IconButton>
+          </Box>
+          <Accordion
+            key={_id}
+            disableGutters={true}
+            expanded={expanded === `panel${index}`}
+            onChange={handleChange(`panel${index}`)}
+          >
+            <AccordionSummary
+              expandIcon={<ExpandMoreIcon />}
+              aria-controls={`panel${index}bh-content`}
+              id={`panel${index}bh-header`}
+              sx={{
+                "& div, svg, path, circle, rect": {
+                  cursor: "pointer",
+                },
+                cursor: "pointer",
+              }}
+            >
+              <Box
+                sx={{
+                  display: "flex",
+                  gap: "8px",
+                  flexDirection: "row",
+                  justifyContent: "space-between",
+                }}
+              >
+                <Check
+                  fill={
+                    expanded === `panel${index}`
+                      ? colorBackgroundInactive
+                      : colorText
+                  }
+                  width={"22px"}
+                  height={"22px"}
+                />
+
+                <Typography>{formatDate(_id, "DD/MM/YY")}</Typography>
+              </Box>
+              <Box sx={{ width: "36px" }}></Box>
+            </AccordionSummary>
+            <AccordionDetails>
+              {checkInOutAccordionHeader()}
+              {checkInOutAccordionDetails(list)}
+            </AccordionDetails>
+          </Accordion>
+        </Box>
+      );
+    });
+  const checkInOutAccordionHeader = () => (
+    <>
+      <HeaderDetailsAccordion>
+        {reportType !== "Check-in/out" && (
+          <TextCenterDetails
+            sx={{
+              width: `${"80px"}`,
+            }}
+          >
+            <Typography fontWeight={500}>Hora</Typography>
+          </TextCenterDetails>
+        )}
+        <TextCenterDetails
+          sx={{
+            width: `${"200px"}`,
+          }}
+        >
+          <Typography fontWeight={500}>Profissional</Typography>
+        </TextCenterDetails>
+        <TextCenterDetails
+          sx={{
+            width: `${"200px"}`,
+          }}
+        >
+          <Typography fontWeight={500}>Função</Typography>
+        </TextCenterDetails>
+        <TextCenterDetails
+          sx={{
+            width: `${"200px"}`,
+          }}
+        >
+          <Typography fontWeight={500}>Entrada</Typography>
+        </TextCenterDetails>
+
+        <TextCenterDetails
+          sx={{
+            width: `${"200px"}`,
+            justifyContent: "center",
+          }}
+        >
+          <Typography fontWeight={500}>Saída</Typography>
+        </TextCenterDetails>
+      </HeaderDetailsAccordion>
+      <Divider sx={{ width: "100%", margin: "0 auto" }} />
+    </>
+  );
+  const checkInOutAccordionDetails = (list: any) =>
+    list.map((data: any, index: number) => {
+      return data.list.map((column: any, index: number) => (
+        <>
+          <ContentDetailsAccordion key={index}>
+            <TextCenterDetails>
+              <Typography>
+                {getFirstAndLastName(capitalizeText(data._id.user[0].name))}
+              </Typography>
+            </TextCenterDetails>
+            <TextCenterDetails>
+              <Typography>
+                {handleFunction(data._id.user[0].companies_links, company_id)}
+              </Typography>
+            </TextCenterDetails>
+            <TextCenterDetails>
+              <Typography>
+                {formatDate(column[0].created_at, "HH:mm")}
+              </Typography>
+            </TextCenterDetails>
+            <TextCenterDetails>
+              <Typography>
+                {column[1] ? formatDate(column[1].created_at, "HH:mm") : "-"}
+              </Typography>
+            </TextCenterDetails>
+          </ContentDetailsAccordion>
+          {list.length !== index + 1 ? (
+            <Divider sx={{ width: "100%", margin: "0 auto" }} />
+          ) : (
+            ""
+          )}
+        </>
+      ));
+    });
+  // Evolution accordion
+  const evolutionAccordion = (data: any) =>
+    content.data.map(({ _id, list }: IDataAccordion, index: number) => (
+      <Box sx={{ position: "relative" }}>
+        <Box
+          sx={{
+            position: "absolute",
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+            zIndex: 5000,
+            left: "calc(100% - 7rem)",
+            top: "0.4rem",
+          }}
+        >
+          <IconButton
+            aria-label="print"
+            sx={{
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
+              cursor: "pointer",
+              height: "36px",
+              width: "36px",
+            }}
+            onClick={() => {
+              const payload = {
+                _id: "",
+                type: "Group",
+                name: "",
+                dataStart: _id,
+                dataEnd: _id,
+                reportType: "Evolução",
+                attendance_id: state?.data?._id,
+              };
+              dispatch(loadEvolutionFilterRequest(payload));
+            }}
+          >
+            <PrintIcon
+              sx={{
+                color:
+                  expanded === `panel${index}`
+                    ? colorBackgroundInactive
+                    : colorBackgroundActive,
+                cursor: "pointer",
+                "& path": { cursor: "pointer" },
+              }}
+            />
+          </IconButton>
+        </Box>
+        <Accordion
+          key={_id}
+          disableGutters={true}
+          expanded={expanded === `panel${index}`}
+          onChange={handleChange(`panel${index}`)}
+        >
+          <AccordionSummary
+            expandIcon={<ExpandMoreIcon />}
+            aria-controls={`panel${index}bh-content`}
+            id={`panel${index}bh-header`}
+            sx={{
+              "& div, svg, path, circle, rect": {
+                cursor: "pointer",
+              },
+              cursor: "pointer",
+            }}
+          >
+            <Box
+              sx={{
+                display: "flex",
+                gap: "8px",
+                flexDirection: "row",
+                justifyContent: "space-between",
+              }}
+            >
+              <Evolution
+                fill={
+                  expanded === `panel${index}`
+                    ? colorBackgroundInactive
+                    : colorText
+                }
+                width={"22px"}
+                height={"22px"}
+              />
+
+              <Typography>{formatDate(_id, "DD/MM/YY")}</Typography>
+            </Box>
+            <Box sx={{ width: "36px" }}></Box>
+          </AccordionSummary>
+          <AccordionDetails>
+            {evolutionAccordionHeader()}
+            {evolutionAccordionDetails(list)}
+          </AccordionDetails>
+        </Accordion>
+      </Box>
+    ));
+  const evolutionAccordionHeader = () => (
+    <>
+      <HeaderDetailsAccordion>
+        <TextCenterDetails
+          sx={{
+            width: `${"80px"}`,
+          }}
+        >
+          <Typography fontWeight={500}>Hora</Typography>
+        </TextCenterDetails>
+
+        <TextCenterDetails
+          sx={{
+            width: `${"200px"}`,
+          }}
+        >
+          <Typography fontWeight={500}>Profissional</Typography>
+        </TextCenterDetails>
+        <TextCenterDetails
+          sx={{
+            width: `${"200px"}`,
+          }}
+        >
+          <Typography fontWeight={500}>Especialidade</Typography>
+        </TextCenterDetails>
+        <TextCenterDetails
+          sx={{
+            width: `${"200px"}`,
+          }}
+        >
+          <Typography fontWeight={500}>Tipo Evolução</Typography>
+        </TextCenterDetails>
+        <TextCenterDetails
+          sx={{
+            width: `${"200px"}`,
+            justifyContent: "center",
+          }}
+        >
+          <Typography fontWeight={500}>Opções</Typography>
+        </TextCenterDetails>
+      </HeaderDetailsAccordion>
+      <Divider sx={{ width: "100%", margin: "0 auto" }} />
+    </>
+  );
+  const evolutionAccordionDetails = (list: any) =>
+    list.map((column: any, index: number) => {
+      return (
+        <>
+          <ContentDetailsAccordion key={column._id}>
+            <TextCenterDetails
+              sx={{
+                width: "80px",
+                textDecoration: `${column.active ? "none" : "line-through"}`,
+                color: `${column.active ? colorTextDetails : colorTextDesable}`,
+              }}
+            >
+              <Typography>{formatDate(column.created_at, "HH:mm")}</Typography>
+            </TextCenterDetails>
+            <TextCenterDetails
+              sx={{
+                textDecoration: `${column.active ? "none" : "line-through"}`,
+                color: `${column.active ? colorTextDetails : colorTextDesable}`,
+              }}
+            >
+              <Typography>
+                {getFirstAndLastName(
+                  capitalizeText(column.created_by[0]?.name)
+                )}
+              </Typography>
+            </TextCenterDetails>
+            <TextCenterDetails
+              sx={{
+                textDecoration: `${column.active ? "none" : "line-through"}`,
+                color: `${column.active ? colorTextDetails : colorTextDesable}`,
+              }}
+            >
+              <Typography>
+                {column.created_by[0]?.main_specialty_id[0]?.name
+                  ? column.created_by[0].main_specialty_id[0].name
+                  : "-"}
+              </Typography>
+            </TextCenterDetails>
+            <TextCenterDetails
+              sx={{
+                textDecoration: `${column.active ? "none" : "line-through"}`,
+                color: `${column.active ? colorTextDetails : colorTextDesable}`,
+              }}
+            >
+              <Typography>{column.type}</Typography>
+            </TextCenterDetails>
+            <TextCenterDetails>
+              <IconButton
+                color="secondary"
+                aria-label="print"
+                sx={{
+                  display: "flex",
+                  justifyContent: "center",
+                  alignItems: "center",
+                  cursor: "pointer",
+                  height: "36px",
+                  width: "36px",
+                  "& svg, path": { cursor: "pointer" },
+                }}
+                onClick={() => {
+                  const payload = {
+                    _id: column._id,
+                    type: "Id",
+                    name: column._id,
+                    dataStart: "",
+                    dataEnd: "",
+                    reportType: "Evolução",
+                    attendance_id: state?.data?._id,
+                  };
+                  dispatch(loadEvolutionFilterRequest(payload));
+                }}
+              >
+                <PrintIcon
+                  sx={{ cursor: "pointer", color: colorBackgroundActive }}
+                />
+              </IconButton>
+            </TextCenterDetails>
+          </ContentDetailsAccordion>
+          {list.length !== index + 1 ? (
+            <Divider sx={{ width: "100%", margin: "0 auto" }} />
+          ) : (
+            ""
+          )}
+        </>
+      );
+    });
+  const measurementsAccordion = (data: any) =>
+    data.map(({ _id, list }: IDataAccordion, index: number) => {
+      return (
+        <Box sx={{ position: "relative" }}>
+          <Box
+            sx={{
+              position: "absolute",
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
+              zIndex: 5000,
+              left: "calc(100% - 7rem)",
+              top: "0.4rem",
+            }}
+          >
+            <IconButton
+              aria-label="print"
+              sx={{
+                display: "flex",
+                justifyContent: "center",
+                alignItems: "center",
+                cursor: "pointer",
+                height: "36px",
+                width: "36px",
+              }}
+              onClick={() => {
+                if (reportType === "Aferições") {
+                  const payload = {
+                    _id: "",
+                    type: "Group",
+                    name: "",
+                    dataStart: _id,
+                    dataEnd: _id,
+                    reportType: "Aferições",
+                    attendance_id: state?.data?._id,
+                  };
+                  dispatch(loadMeasurementFilterRequest(payload));
+                }
+              }}
+            >
+              <PrintIcon
+                sx={{
+                  color:
+                    expanded === `panel${index}`
+                      ? colorBackgroundInactive
+                      : colorBackgroundActive,
+                  cursor: "pointer",
+                  "& path": { cursor: "pointer" },
+                }}
+              />
+            </IconButton>
+          </Box>
+          <Accordion
+            key={_id}
+            disableGutters={true}
+            expanded={expanded === `panel${index}`}
+            onChange={handleChange(`panel${index}`)}
+          >
+            <AccordionSummary
+              expandIcon={<ExpandMoreIcon />}
+              aria-controls={`panel${index}bh-content`}
+              id={`panel${index}bh-header`}
+              sx={{
+                "& div, svg, path, circle, rect": {
+                  cursor: "pointer",
+                },
+                cursor: "pointer",
+              }}
+            >
+              <Box
+                sx={{
+                  display: "flex",
+                  gap: "8px",
+                  flexDirection: "row",
+                  justifyContent: "space-between",
+                }}
+              >
+                <IconMeasurement
+                  fill={
+                    expanded === `panel${index}`
+                      ? colorBackgroundInactive
+                      : colorText
+                  }
+                  width="22px"
+                  height={"22px"}
+                />
+
+                <Typography>{formatDate(_id, "DD/MM/YY")}</Typography>
+              </Box>
+              <Box sx={{ width: "36px" }}></Box>
+            </AccordionSummary>
+            <AccordionDetails>
+              {measurementsAccordionHeader()}
+              {measurementsAccordionDetails(list)}
+            </AccordionDetails>
+          </Accordion>
+        </Box>
+      );
+    });
+  const measurementsAccordionHeader = () => (
+    <>
+      <HeaderDetailsAccordion>
+        <TextCenterDetails
+          sx={{
+            width: `${"80px"}`,
+          }}
+        >
+          <Typography fontWeight={500}>Hora</Typography>
+        </TextCenterDetails>
+
+        <TextCenterDetails
+          sx={{
+            width: `${"200px"}`,
+          }}
+        >
+          <Typography fontWeight={500}>Profissional</Typography>
+        </TextCenterDetails>
+        <TextCenterDetails
+          sx={{
+            width: `${"200px"}`,
+          }}
+        >
+          <Typography fontWeight={500}>Função</Typography>
+        </TextCenterDetails>
+        <TextCenterDetails
+          sx={{
+            width: `${"320px"}`,
+          }}
+        >
+          <Typography fontWeight={500}>Conteúdo</Typography>
+        </TextCenterDetails>
+
+        <TextCenterDetails
+          sx={{
+            width: `${"100px"}`,
+            justifyContent: "center",
+          }}
+        >
+          <Typography fontWeight={500}>Opções</Typography>
+        </TextCenterDetails>
+      </HeaderDetailsAccordion>
+      <Divider sx={{ width: "100%", margin: "0 auto" }} />
+    </>
+  );
+  const measurementsAccordionDetails = (list: any) =>
+    list.map((column: IAccordionInfo, index: number) => {
+      return (
+        <>
+          <ContentDetailsAccordion key={column._id}>
+            <TextCenterDetails
+              sx={{
+                width: "80px",
+                textDecoration: `${column.canceled ? "line-through" : "none"}`,
+                color: `${column.canceled ? colorTextDesable : colorText}`,
+              }}
+            >
+              <Typography>{formatDate(column.created_at, "HH:mm")}</Typography>
+            </TextCenterDetails>
+            <TextCenterDetails
+              sx={{
+                textDecoration: `${column.canceled ? "line-through" : "none"}`,
+                color: `${column.canceled ? colorTextDesable : colorText}`,
+              }}
+            >
+              <Typography>
+                {getFirstAndLastName(capitalizeText(column.created_by[0].name))}
+              </Typography>
+            </TextCenterDetails>
+            <TextCenterDetails
+              sx={{
+                textDecoration: `${column.canceled ? "line-through" : "none"}`,
+                color: `${column.canceled ? colorTextDesable : colorText}`,
+              }}
+            >
+              <Typography>{handleFunction(column, company_id)}</Typography>
+            </TextCenterDetails>
+            <TextCenterDetails
+              sx={{
+                width: "320px",
+                textDecoration: `${column.canceled ? "line-through" : "none"}`,
+                color: `${column.canceled ? colorTextDesable : colorText}`,
+              }}
+            >
+              <Box
+                sx={{
+                  display: "flex",
+                  flexWrap: "wrap",
+                  justifyContent: "center",
+                  alignItems: "center",
+                  gap: "4px",
+                  margin: "2px",
+                }}
+              >
+                {handleMeasurementItemsIcons(
+                  checkMeasurementValue(column.itens),
+                  column.canceled
+                )}
+              </Box>
+            </TextCenterDetails>
+            <TextCenterDetails
+              sx={{ width: "100px", justifyContent: "center" }}
+            >
+              <IconButton
+                color="secondary"
+                aria-label="print"
+                sx={{
+                  cursor: "pointer",
+                  color: colorBackgroundActive,
+                  display: "flex",
+                  justifyContent: "center",
+                  alignItems: "center",
+                  height: "36px",
+                  width: "36px",
+                }}
+                onClick={() => {
+                  if (reportType === "Aferições") {
+                    const payload = {
+                      _id: column._id,
+                      type: "Id",
+                      name: column._id,
+                      dataStart: "",
+                      dataEnd: "",
+                      reportType: "Aferições",
+                      attendance_id: state?.data?._id,
+                    };
+                    dispatch(loadMeasurementFilterRequest(payload));
+                  }
+                }}
+              >
+                <PrintIcon
+                  sx={{
+                    cursor: "pointer",
+                    "& svg, path": { cursor: "pointer" },
+                  }}
+                />
+              </IconButton>
+            </TextCenterDetails>
+          </ContentDetailsAccordion>
+          {list.length !== index + 1 ? (
+            <Divider sx={{ width: "100%", margin: "0 auto" }} />
+          ) : (
+            ""
+          )}
+        </>
+      );
+    });
   return (
     <>
       {/* {loading && <Loading />} */}
 
       {content.data ? (
-        reportType === "Aferições" ||
-        reportType === "Evolução" ||
-        reportType === "Check-in/out" ? (
-          <Container>
-            {content.data.map(
-              ({ _id, list }: IDataAccordion, index: number) => {
-                return (
-                  <Box sx={{ position: "relative" }}>
-                    <Box
-                      sx={{
-                        position: "absolute",
-                        display: "flex",
-                        justifyContent: "center",
-                        alignItems: "center",
-                        zIndex: 5000,
-                        left: "57rem",
-                        top: "0.4rem",
-                      }}
-                    >
-                      <IconButton
-                        aria-label="print"
-                        sx={{
-                          display: "flex",
-                          justifyContent: "center",
-                          alignItems: "center",
-                          cursor: "pointer",
-                          height: "36px",
-                          width: "36px",
-                        }}
-                        onClick={() => {
-                          if (reportType === "Check-in/out") {
-                            const payload = {
-                              _id: "",
-                              type: "Group",
-                              name: "",
-                              dataStart: _id,
-                              dataEnd: _id,
-                              reportType: "Check-in/out",
-                              attendance_id: state?.data?._id,
-                            };
-                            dispatch(loadCheckinFilterRequest(payload));
-                          } else if (reportType === "Evolução") {
-                            const payload = {
-                              _id: "",
-                              type: "Group",
-                              name: "",
-                              dataStart: _id,
-                              dataEnd: _id,
-                              reportType: "Evolução",
-                              attendance_id: state?.data?._id,
-                            };
-                            dispatch(loadEvolutionFilterRequest(payload));
-                          } else if (reportType === "Aferições") {
-                            const payload = {
-                              _id: "",
-                              type: "Group",
-                              name: "",
-                              dataStart: _id,
-                              dataEnd: _id,
-                              reportType: "Aferições",
-                              attendance_id: state?.data?._id,
-                            };
-                            dispatch(loadMeasurementFilterRequest(payload));
-                          }
-                        }}
-                      >
-                        <PrintIcon
-                          sx={{
-                            color:
-                              expanded === `panel${index}`
-                                ? "var(--white)"
-                                : "var(--secondary)",
-                            cursor: "pointer",
-                            "& path": { cursor: "pointer" },
-                          }}
-                        />
-                      </IconButton>
-                    </Box>
-                    <Accordion
-                      key={_id}
-                      disableGutters={true}
-                      expanded={expanded === `panel${index}`}
-                      onChange={handleChange(`panel${index}`)}
-                    >
-                      <AccordionSummary
-                        expandIcon={<ExpandMoreIcon />}
-                        aria-controls={`panel${index}bh-content`}
-                        id={`panel${index}bh-header`}
-                        sx={{
-                          "& div, svg, path, circle, rect": {
-                            cursor: "pointer",
-                          },
-                          cursor: "pointer",
-                        }}
-                      >
-                        <Box
-                          sx={{
-                            display: "flex",
-                            gap: "8px",
-                            flexDirection: "row",
-                            justifyContent: "space-between",
-                          }}
-                        >
-                          {reportType === "Aferições" ? (
-                            <IconMeasurement
-                              fill={
-                                expanded === `panel${index}`
-                                  ? "var(--white)"
-                                  : "var(--gray-dark)"
-                              }
-                              width="22px"
-                              height={"22px"}
-                            />
-                          ) : reportType === "Evolução" ? (
-                            <Evolution
-                              fill={
-                                expanded === `panel${index}`
-                                  ? "var(--white)"
-                                  : "var(--gray-dark)"
-                              }
-                              width={"22px"}
-                              height={"22px"}
-                            />
-                          ) : reportType === "Check-in/out" ? (
-                            <Check
-                              fill={
-                                expanded === `panel${index}`
-                                  ? "var(--white)"
-                                  : "var(--gray-dark)"
-                              }
-                              width={"22px"}
-                              height={"22px"}
-                            />
-                          ) : (
-                            ""
-                          )}
-
-                          <Box
-                            sx={{
-                              display: "flex",
-                              justifyContent: "space-between",
-                            }}
-                          >
-                            {formatDate(_id, "DD/MM/YY")}
-                          </Box>
-                        </Box>
-                        <Box sx={{ width: "36px" }}></Box>
-                      </AccordionSummary>
-                      <AccordionDetails>
-                        {handleHeaderDetails()}
-                        {handleRow(list)}
-                      </AccordionDetails>
-                    </Accordion>
-                  </Box>
-                );
-              }
-            )}
-          </Container>
+        reportType === "Aferições" ? (
+          <Container>{measurementsAccordion(content.data)}</Container>
         ) : reportType === "Alergias" ? (
-          <Container>
-            {Object.keys(content.data).map((item: any, index: number) => {
-              return (
-                <Box sx={{ position: "relative" }}>
-                  <Box
-                    sx={{
-                      position: "absolute",
-                      display: "flex",
-                      justifyContent: "center",
-                      alignItems: "center",
-                      zIndex: 5000,
-                      left: "57rem",
-                      top: "0.4rem",
-                    }}
-                  >
-                    <IconButton
-                      aria-label="print"
-                      sx={{
-                        display: "flex",
-                        justifyContent: "center",
-                        alignItems: "center",
-                        cursor: "pointer",
-                        height: "36px",
-                        width: "36px",
-                      }}
-                      onClick={() => {
-                        if (item === "allergy") {
-                          const payload = {
-                            _id: "",
-                            type: "Group",
-                            name: "",
-                            dataStart: "",
-                            dataEnd: "",
-                            reportType: "Alergias",
-                            attendance_id: state?.data?._id,
-                            patient_id: state?.data?.patient_id?._id,
-                          };
-                          dispatch(loadAllergyFilterRequest(payload));
-                        } else if (item === "event") {
-                          const payload = {
-                            _id: "",
-                            type: "Group",
-                            name: "",
-                            dataStart: "",
-                            dataEnd: "",
-                            reportType: "Evento Adverso",
-                            attendance_id: state?.data?._id,
-                            patient_id: state?.data?.patient_id?._id,
-                          };
-                          dispatch(loadAdverseEventFilterRequest(payload));
-                        }
-                      }}
-                    >
-                      <PrintIcon
-                        sx={{
-                          color:
-                            expanded === `panel${index}`
-                              ? "var(--white)"
-                              : "var(--secondary)",
-                          cursor: "pointer",
-                          "& path": { cursor: "pointer" },
-                        }}
-                      />
-                    </IconButton>
-                  </Box>
-                  <Accordion
-                    key={item}
-                    disableGutters={true}
-                    expanded={expanded === `panel${index}`}
-                    onChange={handleChange(`panel${index}`)}
-                  >
-                    <AccordionSummary
-                      expandIcon={<ExpandMoreIcon />}
-                      aria-controls={`panel${index}bh-content`}
-                      id={`panel${index}bh-header`}
-                      sx={{
-                        "& div, svg, path, circle, rect": { cursor: "pointer" },
-                        cursor: "pointer",
-                      }}
-                    >
-                      <Box
-                        sx={{
-                          display: "flex",
-                          gap: "8px",
-                          flexDirection: "row",
-                          justifyContent: "space-between",
-                        }}
-                      >
-                        <Allergy
-                          fill={
-                            expanded === `panel${index}`
-                              ? "var(--white)"
-                              : "var(--gray-dark)"
-                          }
-                          width="22px"
-                          height={"22px"}
-                        />
-                        <Box
-                          sx={{
-                            display: "flex",
-                            justifyContent: "space-between",
-                          }}
-                        >
-                          {item === "allergy" && "Alergias"}
-                          {item === "event" && "Eventos adversos"}
-                        </Box>
-                      </Box>
-                      <Box sx={{ width: "36px" }}></Box>
-                    </AccordionSummary>
-                    <AccordionDetails>
-                      {handleHeaderDetails(item)}
-                      {handleRow(content.data[item], item)}
-                    </AccordionDetails>
-                  </Accordion>
-                </Box>
-              );
-            })}
-          </Container>
+          <Container>{allergyAndEventsAccordion(content.data)}</Container>
+        ) : reportType === "Evolução" ? (
+          <Container>{evolutionAccordion(content.data)}</Container>
+        ) : reportType === "Check-in/out" ? (
+          <Container>{checkInOutAccordion(content.data)}</Container>
         ) : reportType === "Prescrições" ? (
           content.data.length > 0 ? (
             <Container>
               {integration ? (
                 prescriptionAccordion(content.data)
               ) : (
-                <Box sx={{ textAlign: "center", color: "var(--gray-dark)" }}>
+                <Typography
+                  sx={{
+                    textAlign: "center",
+                    color: theme.palette.black60.main,
+                  }}
+                >
                   Acordion de Prescrição não configurada para ambiente sem
                   integração
-                </Box>
+                </Typography>
               )}
             </Container>
           ) : (
@@ -2308,10 +2573,10 @@ export default function AccordionReport(props: IAccordionReport) {
               {integration ? (
                 checkAccordion(content.data)
               ) : (
-                <Box sx={{ textAlign: "center", color: "var(--gray-dark)" }}>
+                <Typography sx={{ textAlign: "center", color: colorText }}>
                   Acordion de Checagens não configurada para ambiente sem
                   integração
-                </Box>
+                </Typography>
               )}
             </Container>
           ) : (

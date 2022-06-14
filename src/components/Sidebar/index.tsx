@@ -774,16 +774,16 @@ const Sibebar = (props: Props<any>) => {
           </DialogContentText>
         </DialogContent>
         <DialogActions>
+          <Button onClick={handleLogout} variant="contained" color="primary">
+            Sair
+          </Button>
           <Button
             onClick={handleCloseModalLogout}
             variant="outlined"
             color="secondary"
             autoFocus
           >
-            Não
-          </Button>
-          <Button onClick={handleLogout} variant="outlined" color="secondary">
-            Sim
+            Voltar
           </Button>
         </DialogActions>
       </Dialog>

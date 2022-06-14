@@ -36,6 +36,7 @@ import {
   DialogTitle,
   Fab,
   FormGroup,
+  useMediaQuery,
 } from "@mui/material";
 import { makeStyles } from "@mui/material/styles";
 import FormHelperText from "@mui/material/FormHelperText";
@@ -66,20 +67,38 @@ import Loading from "../../components/Loading";
 
 function Copyright() {
   return (
-    <Typography variant="body2" align="center">
-      <Link
-        href="https://www.tascominformatica.com.br/"
-        sx={{
-          textDecoration: "none",
-          "&:hover": { textDecoration: "underline" },
-        }}
-        target={"_blank"}
-      >
-        TASCOM
-      </Link>
-      {" © "}
-      {new Date().getFullYear()}
-    </Typography>
+    <Grid
+      item
+      sx={{
+        // backgroundColor: theme.palette.grey[200],
+        alignContent: "center",
+        // fontSize: "20px",
+        textDecoration: "bold",
+        borderTop: "1px solid #E7E7E7",
+        textAlign: "center",
+        padding: "0.1rem",
+        position: "fixed",
+        left: "0",
+        bottom: "0",
+        // height: "40px",
+        width: "100%",
+      }}
+    >
+      <Typography variant="body2" align="center">
+        <Link
+          href="https://www.tascominformatica.com.br/"
+          sx={{
+            textDecoration: "none",
+            "&:hover": { textDecoration: "underline" },
+          }}
+          target={"_blank"}
+        >
+          TASCOM
+        </Link>
+        {" © "}
+        {new Date().getFullYear()}
+      </Typography>
+    </Grid>
   );
 }
 
@@ -1596,6 +1615,12 @@ export default function SignIn() {
   //   // if (token) history.push('/dashboard');
   // }, []);
 
+  const xsQuery = useMediaQuery(`(max-width:${theme.breakpoints.values.xs}px)`);
+  const smQuery = useMediaQuery(`(max-width:${theme.breakpoints.values.sm}px)`);
+  const mdQuery = useMediaQuery(`(max-width:${theme.breakpoints.values.md}px)`);
+  const lgQuery = useMediaQuery(`(max-width:${theme.breakpoints.values.lg}px)`);
+  const xlQuery = useMediaQuery(`(max-width:${theme.breakpoints.values.xl}px)`);
+
   const handleClickShowPassword = useCallback(() => {
     setShowPassword((prev) => !prev);
   }, []);
@@ -1753,73 +1778,96 @@ export default function SignIn() {
     <>
       {loginState.loading && <Loading />}
       <Container
-        // maxWidth={"xs"}
         sx={{
+          height: "calc(100% - 24px)",
           display: "flex",
-          flexDirection: "column",
-          justifyContent: "center",
-          height: "100%",
-          maxWidth: "450px !important",
+          alignItems: "center",
         }}
       >
-        <div
-          style={{
-            marginTop: theme.spacing(2),
+        <Grid
+          container
+          gap={2}
+          sx={{
+            width: "100%",
             display: "flex",
-            flexDirection: "column",
             alignItems: "center",
+            justifyContent: "center",
+            // padding: "0 1rem",
           }}
         >
-          <Box
-            display="flex"
-            width={390}
-            height={165}
-            justifyContent="center"
-            alignItems="center"
-          >
-            <THCStype1 fill={theme.palette.primary.main} width={"1000px"} />
-            {/* <HomeIconLogo /> */}
-          </Box>
-
-          <WelcomeTextWrapper>
-            <Typography variant="body1">
-              Bem-vindo(a)! Realize seu login para continuar:
-            </Typography>
-          </WelcomeTextWrapper>
-          <form
-            style={{
-              width: "100%", // Fix IE 11 issue.
-              marginTop: theme.spacing(1),
+          <Grid
+            xs={12}
+            sm={12}
+            md={6}
+            lg={6}
+            item
+            sx={{
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
             }}
-            noValidate
           >
-            <FormControl fullWidth margin="normal" variant="outlined">
-              <InputLabel htmlFor="outlined-adornment-email" color="secondary">
-                E-mail
-              </InputLabel>
-              <OutlinedInput
-                color="secondary"
-                onKeyDown={handleKeyEnter}
-                error={inputEmail.error}
-                required
-                fullWidth
-                label="E-mail"
-                name="email"
-                autoComplete="number"
-                autoFocus
-                onChange={(inputValue) =>
-                  setInputEmail((prev) => ({
-                    ...prev,
-                    value: inputValue.target.value,
-                  }))
-                }
-                // onBlur={handleEmailValidator}
-                id="outlined-adornment-email"
-                value={inputEmail.value}
-                endAdornment={
-                  <InputAdornment position="end">
-                    {/* <div className={classes.wrapper}> */}
-                    {/* <Fab
+            <Box
+              display="flex"
+              width={"25rem"}
+              justifyContent="center"
+              alignItems="center"
+            >
+              <THCStype1
+                fill={theme.palette.primary.main}
+                // width={"25rem"}
+                width={"100%"}
+              />
+              {/* <HomeIconLogo /> */}
+            </Box>
+          </Grid>
+          <Grid item sx={{ width: "25rem" }}>
+            <WelcomeTextWrapper>
+              <Typography
+                variant="body1"
+                align={mdQuery ? "center" : "left"}
+                color={"text.primary"}
+              >
+                Bem-vindo(a)! Realize seu login para continuar:
+              </Typography>
+            </WelcomeTextWrapper>
+            <form
+              style={{
+                width: "100%", // Fix IE 11 issue.
+                marginTop: theme.spacing(1),
+              }}
+              noValidate
+            >
+              <FormControl fullWidth margin="normal" variant="outlined">
+                <InputLabel
+                  htmlFor="outlined-adornment-email"
+                  color="secondary"
+                >
+                  E-mail
+                </InputLabel>
+                <OutlinedInput
+                  color="secondary"
+                  onKeyDown={handleKeyEnter}
+                  error={inputEmail.error}
+                  required
+                  fullWidth
+                  label="E-mail"
+                  name="email"
+                  autoComplete="number"
+                  autoFocus
+                  onChange={(inputValue) =>
+                    setInputEmail((prev) => ({
+                      ...prev,
+                      value: inputValue.target.value,
+                    }))
+                  }
+                  // onBlur={handleEmailValidator}
+                  id="outlined-adornment-email"
+                  value={inputEmail.value}
+                  endAdornment={
+                    <InputAdornment position="end">
+                      {/* <div className={classes.wrapper}> */}
+                      {/* <Fab
                       className={classes.fab}
                       aria-label="save"
                       // color="secondary"
@@ -1827,245 +1875,254 @@ export default function SignIn() {
                       onClick={handleVerifyEmail}
                       style={{ color: "primary" }}
                     > */}
-                    <IconButton
-                      onClick={handleVerifyEmail}
-                      sx={{
-                        cursor: "pointer",
-                        "& svg, path": { cursor: "pointer" },
-                      }}
-                    >
-                      <ArrowForwardIcon color="secondary" />
-                    </IconButton>
-                    {/* </Fab> */}
-                    {/*<CircularProgress size={68} className={classes.fabProgress}/>*/}
-                    {/* </div> */}
-                  </InputAdornment>
-                }
-                // labelWidth={70}
-              />
-            </FormControl>
-            {loginState.email.user ? (
-              <>
-                {loginState.email.password ? (
-                  <>
-                    <FormControl fullWidth margin="normal" variant="outlined">
-                      <InputLabel
-                        htmlFor="outlined-adornment-password"
-                        color="secondary"
+                      <IconButton
+                        onClick={handleVerifyEmail}
+                        sx={{
+                          cursor: "pointer",
+                          "& svg, path": { cursor: "pointer" },
+                        }}
                       >
-                        Senha
-                      </InputLabel>
-                      <OutlinedInput
-                        label="senha"
-                        color="secondary"
-                        onKeyDown={handleKeyEnter}
-                        id="outlined-adornment-password"
-                        type={showPassword ? "text" : "password"}
-                        value={inputPassword.value}
-                        onChange={(inputValue) =>
-                          setInputPassword((prev) => ({
-                            ...prev,
-                            value: inputValue.target.value,
-                          }))
-                        }
-                        error={inputPassword.error}
-                        endAdornment={
-                          <InputAdornment position="end">
-                            <IconButton
-                              aria-label="toggle password visibility"
-                              onClick={handleClickShowPassword}
-                              edge="end"
-                            >
-                              {showPassword ? (
-                                <Visibility />
-                              ) : (
-                                <VisibilityOff />
-                              )}
-                            </IconButton>
-                          </InputAdornment>
-                        }
-                        // labelWidth={70}
-                      />
-                    </FormControl>
-                    <FormControlLabel
-                      control={<Checkbox value="remember" color="primary" />}
-                      label="Lembrar de mim neste computador"
-                    />
-                    <Button
-                      type="submit"
-                      fullWidth
-                      variant="contained"
-                      color="secondary"
-                      // className={classes.submit}
-                      onClick={handleLogin}
-                    >
-                      Entrar
-                    </Button>
-                  </>
-                ) : (
-                  <>
-                    <form onSubmit={formik.handleSubmit}>
-                      <TextField
-                        fullWidth
-                        color="secondary"
-                        sx={{ margin: "8px 0" }}
-                        id="password"
-                        name="password"
-                        label="Nova senha"
-                        type={showPassword ? "text" : "password"}
-                        value={formik.values.password}
-                        onChange={formik.handleChange}
-                        error={
-                          formik.touched.password &&
-                          Boolean(formik.errors.password)
-                        }
-                        helperText={
-                          formik.touched.password && formik.errors.password
-                        }
-                        InputProps={{
-                          endAdornment: (
+                        <ArrowForwardIcon color="secondary" />
+                      </IconButton>
+                      {/* </Fab> */}
+                      {/*<CircularProgress size={68} className={classes.fabProgress}/>*/}
+                      {/* </div> */}
+                    </InputAdornment>
+                  }
+                  // labelWidth={70}
+                />
+              </FormControl>
+              {loginState.email.user ? (
+                <>
+                  {loginState.email.password ? (
+                    <>
+                      <FormControl fullWidth margin="normal" variant="outlined">
+                        <InputLabel
+                          htmlFor="outlined-adornment-password"
+                          color="secondary"
+                        >
+                          Senha
+                        </InputLabel>
+                        <OutlinedInput
+                          label="senha"
+                          color="secondary"
+                          onKeyDown={handleKeyEnter}
+                          id="outlined-adornment-password"
+                          type={showPassword ? "text" : "password"}
+                          value={inputPassword.value}
+                          onChange={(inputValue) =>
+                            setInputPassword((prev) => ({
+                              ...prev,
+                              value: inputValue.target.value,
+                            }))
+                          }
+                          error={inputPassword.error}
+                          endAdornment={
                             <InputAdornment position="end">
                               <IconButton
                                 aria-label="toggle password visibility"
                                 onClick={handleClickShowPassword}
-                                onMouseDown={handleMouseDownPassword}
                                 edge="end"
+                                sx={{
+                                  // cursor: "pointer",
+                                  "& svg, path": { cursor: "pointer" },
+                                }}
                               >
                                 {showPassword ? (
-                                  <VisibilityOff />
-                                ) : (
                                   <Visibility />
+                                ) : (
+                                  <VisibilityOff />
                                 )}
                               </IconButton>
                             </InputAdornment>
-                          ),
-                        }}
+                          }
+                          // labelWidth={70}
+                        />
+                      </FormControl>
+                      <FormControlLabel
+                        control={<Checkbox value="remember" color="primary" />}
+                        label="Lembrar de mim neste computador"
                       />
-                      <TextField
+                      <Button
+                        type="submit"
                         fullWidth
+                        variant="contained"
                         color="secondary"
-                        sx={{ margin: "8px 0" }}
-                        id="confirmPassword"
-                        name="confirmPassword"
-                        label="Confirmar senha"
-                        type={showPassword ? "text" : "password"}
-                        value={formik.values.confirmPassword}
-                        onChange={formik.handleChange}
-                        error={
-                          formik.touched.confirmPassword &&
-                          Boolean(formik.errors.confirmPassword)
-                        }
-                        helperText={
-                          formik.touched.confirmPassword &&
-                          formik.errors.confirmPassword
-                        }
-                        InputProps={{
-                          endAdornment: (
-                            <InputAdornment position="end">
-                              <IconButton
-                                aria-label="toggle password visibility"
-                                onClick={handleClickShowPassword}
-                                onMouseDown={handleMouseDownPassword}
-                                edge="end"
-                              >
-                                {showPassword ? (
-                                  <VisibilityOff />
-                                ) : (
-                                  <Visibility />
-                                )}
-                              </IconButton>
-                            </InputAdornment>
-                          ),
-                        }}
-                      />
-
-                      <FormGroup
-                        row
-                        style={{
-                          margin: "0px 0px 8px 0px",
-                          alignItems: "center",
-                          display: "flex",
-                          flexWrap: "nowrap",
-                        }}
+                        // className={classes.submit}
+                        onClick={handleLogin}
                       >
-                        <Checkbox
-                          id="policyAccepted"
-                          name="policyAccepted"
-                          checked={formik.values.policyAccepted}
+                        Entrar
+                      </Button>
+                    </>
+                  ) : (
+                    <>
+                      <form onSubmit={formik.handleSubmit}>
+                        <TextField
+                          fullWidth
+                          color="secondary"
+                          sx={{ margin: "8px 0" }}
+                          id="password"
+                          name="password"
+                          label="Nova senha"
+                          type={showPassword ? "text" : "password"}
+                          value={formik.values.password}
                           onChange={formik.handleChange}
-                          color="primary"
+                          error={
+                            formik.touched.password &&
+                            Boolean(formik.errors.password)
+                          }
+                          helperText={
+                            formik.touched.password && formik.errors.password
+                          }
+                          InputProps={{
+                            endAdornment: (
+                              <InputAdornment position="end">
+                                <IconButton
+                                  aria-label="toggle password visibility"
+                                  onClick={handleClickShowPassword}
+                                  onMouseDown={handleMouseDownPassword}
+                                  edge="end"
+                                  sx={{
+                                    "& svg, path": { cursor: "pointer" },
+                                  }}
+                                >
+                                  {showPassword ? (
+                                    <VisibilityOff />
+                                  ) : (
+                                    <Visibility />
+                                  )}
+                                </IconButton>
+                              </InputAdornment>
+                            ),
+                          }}
+                        />
+                        <TextField
+                          fullWidth
+                          color="secondary"
+                          sx={{ margin: "8px 0" }}
+                          id="confirmPassword"
+                          name="confirmPassword"
+                          label="Confirmar senha"
+                          type={showPassword ? "text" : "password"}
+                          value={formik.values.confirmPassword}
+                          onChange={formik.handleChange}
+                          error={
+                            formik.touched.confirmPassword &&
+                            Boolean(formik.errors.confirmPassword)
+                          }
+                          helperText={
+                            formik.touched.confirmPassword &&
+                            formik.errors.confirmPassword
+                          }
+                          InputProps={{
+                            endAdornment: (
+                              <InputAdornment position="end">
+                                <IconButton
+                                  aria-label="toggle password visibility"
+                                  onClick={handleClickShowPassword}
+                                  onMouseDown={handleMouseDownPassword}
+                                  edge="end"
+                                  sx={{
+                                    "& svg, path": { cursor: "pointer" },
+                                  }}
+                                >
+                                  {showPassword ? (
+                                    <VisibilityOff />
+                                  ) : (
+                                    <Visibility />
+                                  )}
+                                </IconButton>
+                              </InputAdornment>
+                            ),
+                          }}
                         />
 
-                        <Typography variant="body2" sx={{ display: "inline" }}>
-                          Li e concordo com os{" "}
+                        <FormGroup
+                          row
+                          style={{
+                            margin: "0px 0px 8px 0px",
+                            alignItems: "center",
+                            display: "flex",
+                            flexWrap: "nowrap",
+                          }}
+                        >
+                          <Checkbox
+                            id="policyAccepted"
+                            name="policyAccepted"
+                            checked={formik.values.policyAccepted}
+                            onChange={formik.handleChange}
+                            color="primary"
+                          />
+
                           <Typography
                             variant="body2"
-                            onClick={() => setOpenPolicyModal(true)}
-                            sx={{
-                              display: "inline",
-                              cursor: "pointer",
-                              color: theme.palette.primary.main,
-                            }}
+                            sx={{ display: "inline" }}
                           >
-                            termos e politicas{" "}
+                            Li e concordo com os{" "}
+                            <Typography
+                              variant="body2"
+                              onClick={() => setOpenPolicyModal(true)}
+                              sx={{
+                                display: "inline",
+                                cursor: "pointer",
+                                color: theme.palette.primary.main,
+                              }}
+                            >
+                              termos e politicas{" "}
+                            </Typography>
+                            de privacidade
                           </Typography>
-                          de privacidade
-                        </Typography>
 
-                        <FormHelperText error sx={{ marginLeft: "14px" }}>
-                          {formik.submitCount && !formik.values.policyAccepted
-                            ? formik.errors.policyAccepted
-                            : ""}
-                        </FormHelperText>
-                      </FormGroup>
-                      <Button
-                        variant="contained"
-                        fullWidth
-                        onClick={() => formik.handleSubmit()}
-                        color="secondary"
-                        // sx={{
-                        //   textTransform: "capitalize",
-                        //   marginTop: 1,
-                        //   // background: "var(--success)",
-                        //   // "&:hover": {
-                        //   //   background: "var(--success-hover)",
-                        //   // },
-                        // }}
-                      >
-                        Salvar senha
-                      </Button>
-                    </form>
-                  </>
-                )}
-              </>
-            ) : (
-              <>
-                {/*<Button*/}
-                {/*  type="submit"*/}
-                {/*  fullWidth*/}
-                {/*  variant="contained"*/}
-                {/*  color="primary"*/}
-                {/*  className={classes.submit}*/}
-                {/*  onClick={handleVerifyEmail}*/}
-                {/*>*/}
-                {/*  Verificar*/}
-                {/*</Button>*/}
-              </>
-            )}
-            {/*<Button*/}
-            {/*  background="success_rounded"*/}
-            {/*  type="button"*/}
-            {/*  fullWidth*/}
-            {/*  variant="contained"*/}
-            {/*  className={classes.create_account}*/}
-            {/*  onClick={() => history.push('/register')}*/}
-            {/*>*/}
-            {/*  Criar conta*/}
-            {/*</Button>*/}
-            <Grid container sx={{ marginTop: "22px" }} justifyContent="center">
-              <Grid item>
-                <Link href="/forgotpassword" rel="noopener">
+                          <FormHelperText error sx={{ marginLeft: "14px" }}>
+                            {formik.submitCount && !formik.values.policyAccepted
+                              ? formik.errors.policyAccepted
+                              : ""}
+                          </FormHelperText>
+                        </FormGroup>
+                        <Button
+                          variant="contained"
+                          fullWidth
+                          onClick={() => formik.handleSubmit()}
+                          color="secondary"
+                        >
+                          Salvar senha
+                        </Button>
+                      </form>
+                    </>
+                  )}
+                </>
+              ) : (
+                <>
+                  {/*<Button*/}
+                  {/*  type="submit"*/}
+                  {/*  fullWidth*/}
+                  {/*  variant="contained"*/}
+                  {/*  color="primary"*/}
+                  {/*  className={classes.submit}*/}
+                  {/*  onClick={handleVerifyEmail}*/}
+                  {/*>*/}
+                  {/*  Verificar*/}
+                  {/*</Button>*/}
+                </>
+              )}
+              {/*<Button*/}
+              {/*  background="success_rounded"*/}
+              {/*  type="button"*/}
+              {/*  fullWidth*/}
+              {/*  variant="contained"*/}
+              {/*  className={classes.create_account}*/}
+              {/*  onClick={() => history.push('/register')}*/}
+              {/*>*/}
+              {/*  Criar conta*/}
+              {/*</Button>*/}
+
+              <Grid item mt={1}>
+                <Link
+                  onClick={() => history.push("/forgotpassword")}
+                  rel="noopener"
+                >
                   <Typography
+                    align={mdQuery ? "center" : "left"}
                     variant="body2"
                     sx={{
                       width: "auto",
@@ -2078,12 +2135,11 @@ export default function SignIn() {
                   </Typography>
                 </Link>
               </Grid>
-            </Grid>
-          </form>
-        </div>
-        <Box mt={8}>
+            </form>
+          </Grid>
+
           <Copyright />
-        </Box>
+        </Grid>
       </Container>
       <Dialog
         open={openPolicyModal}
