@@ -97,6 +97,7 @@ import {
   loadPrescriptionByCareId,
   loadPrescriptionWithItems,
   loadReportUnique as loadReportPrescriptionUnique,
+  loadReportCheck,
 } from "./prescripition/saga";
 
 import { AntibioticTypes } from "./antibiotic/types";
@@ -415,6 +416,7 @@ export default function* rootSaga(): any {
       PrescriptionTypes.LOAD_REQUEST_REPORT_UNIQUE,
       loadReportPrescriptionUnique
     ),
+    takeLatest(PrescriptionTypes.LOAD_REQUEST_REPORT_CHECK, loadReportCheck),
 
     /**
      * ANTIBIOTIC

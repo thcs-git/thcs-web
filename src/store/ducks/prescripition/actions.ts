@@ -51,3 +51,10 @@ export const loadSucessReportUnique = (data: any) =>
   action(PrescriptionTypes.LOAD_SUCCESS_REPORT_UNIQUE, data);
 export const loadFailureReportUnique = () =>
   action(PrescriptionTypes.LOAD_FAILURE_REPORT_UNIQUE);
+
+export const loadRequestReportCheck = (data: any) =>
+  action(PrescriptionTypes.LOAD_REQUEST_REPORT_CHECK, data);
+export const loadSuccesstReportCheck = (data: any) =>
+  action(PrescriptionTypes.LOAD_SUCCESS_REPORT_CHECK);
+export const loadFailureReportCheck = () =>
+  action(PrescriptionTypes.LOAD_FAILURE_REPORT_CHECK);

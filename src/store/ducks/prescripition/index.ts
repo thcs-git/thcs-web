@@ -153,6 +153,28 @@ const reducer: Reducer<PrescriptionState> = (state = INITIAL_STATE, action) => {
         success: false,
         error: true,
       };
+    case PrescriptionTypes.LOAD_REQUEST_REPORT_CHECK:
+      return {
+        ...state,
+        loading: true,
+        success: false,
+        error: false,
+      };
+    case PrescriptionTypes.LOAD_SUCCESS_REPORT_CHECK:
+      return {
+        ...state,
+        loading: false,
+        success: true,
+        error: false,
+      };
+    case PrescriptionTypes.LOAD_FAILURE_REPORT_CHECK:
+      return {
+        ...state,
+        loading: false,
+        success: false,
+        error: true,
+      };
+
     default:
       return state;
   }
