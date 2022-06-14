@@ -4,7 +4,7 @@ import { Typography } from "@mui/material";
 import { Title } from "../../../styles/components/Text";
 import Button from "@mui/material/Button";
 import theme from "../../../theme/theme";
-import THCStype2 from "../../../components/Icons/THCS_Type2";
+// import THCStype2 from "../../../components/Icons/THCS_Type2";
 import { ReactComponent as SollarLogo } from "../../../assets/img/marca-sollar-azul.svg";
 import { ReactComponent as NotFoundImage } from "../../../assets/img/404-illustration.svg";
 
@@ -15,7 +15,7 @@ export default function NotFound() {
 
   return (
     <Container>
-      <THCStype2 fill={theme.palette.primary.main} />
+      {/* <THCStype2 fill={theme.palette.primary.main} /> */}
 
       <div className="illustration-container">
         <NotFoundImage />
