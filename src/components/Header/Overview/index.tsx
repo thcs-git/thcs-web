@@ -102,20 +102,22 @@ export default function HeaderOverview(props: IProps) {
           </Typography>
         </Box>
       </Box>
+      {content.careState.data.tipo === "H" && (
+        <Box sx={{ display: "flex" }}>
+          <BoxIcon onClick={handleClickOpen} sx={{ paddingTop: "4px" }}>
+            <QRCodeIcon fill={theme.palette.common.black} />
+            <Typography
+              sx={{ cursor: "pointer" }}
+              fontWeight={700}
+              fontSize="0.75rem"
+              color={theme.palette.secondary.main}
+            >
+              QR CODE
+            </Typography>
+          </BoxIcon>
+        </Box>
+      )}
 
-      <Box sx={{ display: "flex" }}>
-        <BoxIcon onClick={handleClickOpen} sx={{ paddingTop: "4px" }}>
-          <QRCodeIcon fill={theme.palette.common.black} />
-          <Typography
-            sx={{ cursor: "pointer" }}
-            fontWeight={700}
-            fontSize="0.75rem"
-            color={theme.palette.secondary.main}
-          >
-            QR CODE
-          </Typography>
-        </BoxIcon>
-      </Box>
       <DialogQrCode
         tittle={{ card: "Qr Code", info: ["Qr code"] }}
         content={content}
