@@ -72,7 +72,7 @@ import StarRateIcon from "@mui/icons-material/StarRate";
 import FavoriteIcon from "@mui/icons-material/Favorite";
 import NotificationsIcon from "@mui/icons-material/Notifications";
 import THCStype3Icon from "../Icons/THCS_Type3";
-// import THCStype2Icon from "../Icons/THCS_Type2";
+import THCStype4Icon from "../Icons/THCS_Type4";
 import UserIcon from "../Icons/User";
 import { Logo, UserContent } from "./styles";
 import LOCALSTORAGE from "../../helpers/constants/localStorage";
@@ -449,7 +449,7 @@ const Sibebar = (props: Props<any>) => {
                 display: `${open ? "initial" : "none"}`,
               }}
             >
-              {/* <THCStype2Icon fill={"#f4f7ff"} width={"140px"} /> */}
+              <THCStype4Icon fill={"#f4f7ff"} width={"140px"} />
             </Box>
             <IconButton
               sx={{
