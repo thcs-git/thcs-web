@@ -182,8 +182,6 @@ export default function DialogInfo(props: IDialogProps) {
           return boxData(name, value.name);
         case "Subplano":
           return boxData(name, value.name);
-        case "Código do paciente":
-          return boxData(name, value);
         case "Número da carteira":
           return boxData(name, value);
         case "Data de validade":
@@ -244,6 +242,8 @@ export default function DialogInfo(props: IDialogProps) {
   function careData(content: IContent) {
     let itens = content.rows.map(({ name, value }: IRows, index: number) => {
       switch (name) {
+        case "Código do paciente":
+          return boxData(name, value);
         case "Data de Atendimento":
           return boxData(name, value);
         case "Tipo de internação":

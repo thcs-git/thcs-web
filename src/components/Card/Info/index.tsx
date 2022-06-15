@@ -132,6 +132,13 @@ export default function CardInfo(props: ICardInfo) {
               fontWeight={500}
             >{`${name}: ${value}`}</Typography>
           );
+        case "Código do paciente":
+          return (
+            <Typography
+              color={colorText}
+              fontWeight={500}
+            >{`${name}: ${value}`}</Typography>
+          );
         case "Médico Assistente":
           return (
             <Typography
