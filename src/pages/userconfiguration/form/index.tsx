@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useCallback } from "react";
-import { RouteComponentProps, useHistory } from "react-router-dom";
+import { RouteComponentProps, useNavigate } from "react-router-dom";
 
 //helps
 import LOCALSTORAGE from "../../../helpers/constants/localStorage";
@@ -28,7 +28,7 @@ export default function UserCongiguration(props: RouteComponentProps<any>) {
   const userState = useSelector((state: ApplicationState) => state.users);
   const currentUser = window.localStorage.getItem(LOCALSTORAGE.USER_ID);
   const dispatch = useDispatch();
-  const history = useHistory();
+  const navigate = useNavigate();
   const NavItems = [
     {
       name: "Dados Pessoais",
@@ -112,7 +112,7 @@ export default function UserCongiguration(props: RouteComponentProps<any>) {
     {
       name: "Voltar",
       onClick: () => {
-        history.push("/");
+        navigate("/");
       },
       variant: "contained",
       background: "primary",

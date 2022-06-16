@@ -15,7 +15,7 @@ import Sidebar from "../../components/Sidebar";
 import { Title } from "../../styles/components/Text";
 import { UserInterface } from "../../store/ducks/users/types";
 import LOCALSTORAGE from "../../helpers/constants/localStorage";
-import { Link, useHistory } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { ApplicationState } from "../../store";
 import { cleanAction, loadUserById } from "../../store/ducks/users/actions";
@@ -32,7 +32,7 @@ import {
 import SearchInput from "../../components/Inputs/Search";
 
 export default function Dashboard_user() {
-  const history = useHistory();
+  const navigate = useNavigate();
   const dispatch = useDispatch();
   const userState = useSelector((state: ApplicationState) => state.users);
   const [firstCall, setFirstcall] = useState(false);

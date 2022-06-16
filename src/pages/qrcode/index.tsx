@@ -10,7 +10,7 @@ import {
 import { CompanyInterface } from "../../store/ducks/companies/types";
 import { ApplicationState } from "../../store";
 import { Alert, AlertTitle } from "@mui/material";
-import { useHistory, RouteComponentProps } from "react-router-dom";
+import { useNavigate, RouteComponentProps } from "react-router-dom";
 import ReactDOM from "react-dom";
 import QRCode from "react-qr-code";
 import ReactToPrint from "react-to-print";
@@ -65,7 +65,7 @@ export default function QRcode() {
 
   const [patient, setPatient] = useState<any>({});
   const dispatch = useDispatch();
-  const history = useHistory();
+  const navigate = useNavigate();
   const [patientSearch, setPatientSearch] = useState<string>("");
   const patientState = useSelector((state: ApplicationState) => state.patients);
   const careState = useSelector((state: ApplicationState) => state.cares);
@@ -125,7 +125,7 @@ export default function QRcode() {
   };
   // useEffect(() => {
   //   if (careState.success && !careState.error && careState.data._id) {
-  //     history.push(`/patient/capture/${careState.data._id}/overview`);
+  //     navigate(`/patient/capture/${careState.data._id}/overview`);
   //   }
   // }, [careState])
   return (
@@ -183,7 +183,7 @@ export default function QRcode() {
                     <Button
                       // background="default"
                       onClick={() => {
-                        history.push(`/patient/${patient?._id}/edit`);
+                        navigate(`/patient/${patient?._id}/edit`);
                       }}
                     >
                       <CreateIcon />

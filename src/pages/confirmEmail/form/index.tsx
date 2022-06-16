@@ -2,7 +2,7 @@ import { TextField } from "@mui/material";
 import Button from "../../../components/Button";
 import React, { useState, useEffect, useCallback } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { RouteComponentProps, useHistory } from "react-router-dom";
+import { RouteComponentProps, useNavigate } from "react-router-dom";
 import { ReactComponent as SuccessImage } from "../../../assets/img/ilustracao-avaliacao-concluida.svg";
 import {
   FeedbackContent,
@@ -18,12 +18,10 @@ interface IPageParams {
   token?: string;
 }
 
-export default function ConfirmEmailForm(
-  props: RouteComponentProps<IPageParams>
-) {
-  const history = useHistory();
+export default function ConfirmEmailForm(props: IPageParams) {
+  const navigate = useNavigate();
   const dispatch = useDispatch();
-  const { params } = props.match;
+  const params = useParams();
   const [inputEmail, setInputEmail] = useState({ value: "" });
 
   useEffect(() => {

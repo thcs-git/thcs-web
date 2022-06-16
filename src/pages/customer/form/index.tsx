@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useCallback } from "react";
 // Router
-import { useHistory, RouteComponentProps } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 
 // Redux e sagas
 import { useDispatch, useSelector } from "react-redux";
@@ -85,8 +85,8 @@ interface IPageParams {
   mode?: string;
 }
 
-export default function CustomerForm(props: RouteComponentProps<IPageParams>) {
-  const history = useHistory();
+export default function CustomerForm(props: IPageParams) {
+  const navigate = useNavigate();
   const dispatch = useDispatch();
   // const useStyles = makeStyles((theme) => ({
   //   cancel: {
@@ -116,7 +116,7 @@ export default function CustomerForm(props: RouteComponentProps<IPageParams>) {
     error: false,
   });
   const [openModalCancel, setOpenModalCancel] = useState(false);
-  const { params } = props.match;
+  const params = useParams();
 
   const [canEdit, setCanEdit] = useState(true);
   const [fieldsValidation, setFieldValidations] = useState<any>({
@@ -290,7 +290,7 @@ export default function CustomerForm(props: RouteComponentProps<IPageParams>) {
 
   // useEffect QUEBRADO!!!!
   // useEffect(() => {
-  //   if (customerState.success && customerState.data?._id && !customerState.isRegistrationCompleted) history.push('/customer');
+  //   if (customerState.success && customerState.data?._id && !customerState.isRegistrationCompleted) navigate('/customer');
   // }, [customerState.success])
 
   useEffect(() => {
@@ -456,7 +456,7 @@ export default function CustomerForm(props: RouteComponentProps<IPageParams>) {
   function handleCancelForm() {
     dispatch(cleanAction());
     setOpenModalCancel(false);
-    history.push("/customer");
+    navigate("/customer");
   }
 
   if (validatePhone() == true && validateCellPhone() == true) {
@@ -475,11 +475,11 @@ export default function CustomerForm(props: RouteComponentProps<IPageParams>) {
             buttons
             successAction={() => {
               dispatch(cleanAction());
-              history.push("/custumer/create");
+              navigate("/custumer/create");
             }}
             defaultAction={() => {
               dispatch(cleanAction());
-              history.push("/customer");
+              navigate("/customer");
             }}
           />
         ) : (

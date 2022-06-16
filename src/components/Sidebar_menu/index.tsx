@@ -46,7 +46,7 @@ import React, { useState, useEffect, Props, useCallback } from "react";
 //   Typography,
 // } from "@mui/material";
 
-// import { useHistory } from "react-router-dom";
+// import { useNavigate } from "react-router-dom";
 
 // /**
 //  * Icons
@@ -185,7 +185,7 @@ import React, { useState, useEffect, Props, useCallback } from "react";
 //   permission?: boolean;
 // }
 // const Sibebar_menu = (props: Props<any>) => {
-//   const history = useHistory();
+//   const navigate = useNavigate();
 //   const classes = useStyles();
 //   const dispatch = useDispatch();
 
@@ -304,7 +304,7 @@ import React, { useState, useEffect, Props, useCallback } from "react";
 //         <List disablePadding={true}>
 //           <ListItem
 //             className={classes.logOutButton}
-//             onClick={() => history.push("/userconfiguration")}
+//             onClick={() => navigate("/userconfiguration")}
 //           >
 //             <ListItemIcon>
 //               <SettingsIcon style={{ color: "#fff" }} />
@@ -361,7 +361,7 @@ import React, { useState, useEffect, Props, useCallback } from "react";
 //           <Button
 //             onClick={() => {
 //               setOpenModalConfig(false);
-//               history.push(`/dashboard_user`);
+//               navigate(`/dashboard_user`);
 //               // location.reload()
 //             }}
 //             color="primary"

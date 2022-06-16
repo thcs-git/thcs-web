@@ -16,7 +16,7 @@ import { formatDate } from "../../../helpers/date";
 // import Table from "../../Table";
 import ButtonEdit from "../../Button/ButtonEdit";
 import ButtonView from "../../Button/ButtonView";
-import { useHistory } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 import {
   loadPermissionRequest,
@@ -57,7 +57,7 @@ const PermissionList = (props: IComponent) => {
     setModePermission,
   } = propsPermissionForm;
   const dispatch = useDispatch();
-  const history = useHistory();
+  const navigate = useNavigate();
   const [idPermission, setIdPermission] = useState("");
   const rightsOfLayoutState = useSelector(
     (state: ApplicationState) => state.layout.data.rights
@@ -174,7 +174,7 @@ const PermissionList = (props: IComponent) => {
                               : setModePermission("edit");
                             setIdPermission(permissions);
 
-                            // history.push(
+                            // navigate(
                             //   `/client/${customerState.data._id}/permission/${permissions}/edit/`
                             // );
                           }}

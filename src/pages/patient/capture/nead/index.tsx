@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback, useRef } from "react";
-import { useHistory, RouteComponentProps } from "react-router-dom";
+import { useNavigate, RouteComponentProps } from "react-router-dom";
 import {
   Container,
   StepLabel,
@@ -60,10 +60,10 @@ interface IPageParams {
   documentId?: string;
 }
 
-export default function Nead(props: RouteComponentProps<IPageParams>) {
-  const { params } = props.match;
+export default function Nead(props: IPageParams) {
+  const params = useParams();
 
-  const history = useHistory();
+  const navigate = useNavigate();
   const dispatch = useDispatch();
   const [error, setError] = React.useState(false);
   const [helperText, setHelperText] = React.useState("Selecione uma opção");
@@ -142,7 +142,7 @@ export default function Nead(props: RouteComponentProps<IPageParams>) {
       !documentState?.error
     ) {
       if (care?._id) {
-        history.push(`/patient/capture/${care._id}/overview/`, {
+        navigate(`/patient/capture/${care._id}/overview/`, {
           success: true,
         });
       }
@@ -964,7 +964,7 @@ export default function Nead(props: RouteComponentProps<IPageParams>) {
                 <Button
                   // background="default"
                   onClick={() =>
-                    history.push(`/patient/capture/${care?._id}/overview`)
+                    navigate(`/patient/capture/${care?._id}/overview`)
                   }
                 >
                   Voltar
@@ -1361,7 +1361,7 @@ export default function Nead(props: RouteComponentProps<IPageParams>) {
                 <Button
                   // background="default"
                   onClick={() =>
-                    history.push(`/patient/capture/${care?._id}/overview`)
+                    navigate(`/patient/capture/${care?._id}/overview`)
                   }
                 >
                   Cancelar

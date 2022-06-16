@@ -1,5 +1,5 @@
 import React, { ReactNode } from "react";
-import { useHistory } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { Typography } from "@mui/material";
 import { Title } from "../../../styles/components/Text";
 
@@ -17,7 +17,7 @@ interface ITabprops {
 export default function NotFound(props: ITabprops) {
   const { backOnclick } = props;
 
-  const history = useHistory();
+  const navigate = useNavigate();
 
   return (
     <Container>

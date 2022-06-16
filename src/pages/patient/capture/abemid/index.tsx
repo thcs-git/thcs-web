@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback } from "react";
-import { useHistory, RouteComponentProps } from "react-router-dom";
+import { useNavigate, RouteComponentProps } from "react-router-dom";
 import {
   Container,
   StepLabel,
@@ -69,11 +69,11 @@ interface IScore {
   status: string;
 }
 
-export default function Abemid(props: RouteComponentProps<IPageParams>) {
-  const { params } = props.match;
+export default function Abemid(props: IPageParams) {
+  const params = useParams();
   const { state: routeState } = props.location;
 
-  const history = useHistory();
+  const navigate = useNavigate();
   const dispatch = useDispatch();
 
   const careState = useSelector((state: ApplicationState) => state.cares);
@@ -185,7 +185,7 @@ export default function Abemid(props: RouteComponentProps<IPageParams>) {
         !documentState?.error
       ) {
         if (care?._id) {
-          history.push(`/patient/capture/${care._id}/overview/`, {
+          navigate(`/patient/capture/${care._id}/overview/`, {
             success: true,
           });
         }
@@ -767,7 +767,7 @@ export default function Abemid(props: RouteComponentProps<IPageParams>) {
                 <Button
                   // background="default"
                   onClick={() =>
-                    history.push(`/patient/capture/${care?._id}/overview`)
+                    navigate(`/patient/capture/${care?._id}/overview`)
                   }
                 >
                   voltar
@@ -980,7 +980,7 @@ export default function Abemid(props: RouteComponentProps<IPageParams>) {
                 <Button
                   // background="default"
                   onClick={() =>
-                    history.push(`/patient/capture/${care?._id}/overview`)
+                    navigate(`/patient/capture/${care?._id}/overview`)
                   }
                 >
                   Cancelar

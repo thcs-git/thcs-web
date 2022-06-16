@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback, ChangeEvent } from "react";
-import { useHistory } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import {
   Container,
   FormControl,
@@ -38,7 +38,7 @@ import {
 } from "./styles";
 
 export default function SpecialtyList() {
-  const history = useHistory();
+  const navigate = useNavigate();
   const dispatch = useDispatch();
   const especialtyState = useSelector(
     (state: ApplicationState) => state.specialties
@@ -77,7 +77,7 @@ export default function SpecialtyList() {
         <Container>
           <FormTitle>Lista de Especialidades</FormTitle>
           <SearchComponent
-            handleButton={() => history.push("/specialty/create/")}
+            handleButton={() => navigate("/specialty/create/")}
             buttonTitle="Novo"
             onChangeInput={debounceSearchRequest}
           />

@@ -13,7 +13,7 @@ import { FeedbackDescription } from "../recoverypassword/form/style";
 import { BoxCustom, FeedbackTitle } from "../userconfiguration/form/style";
 import React, { useState, useEffect, useCallback } from "react";
 import { UserRecoveryPassword } from "../../store/ducks/users/types";
-import { RouteComponentProps, useHistory } from "react-router-dom";
+import { RouteComponentProps, useNavigate } from "react-router-dom";
 import FeedbackComponent from "../../components/Feedback";
 import { ButtonDefault, ButtonsContent } from "./style";
 import { Visibility, VisibilityOff } from "@mui/icons-material";
@@ -28,7 +28,7 @@ import {
 } from "../../store/ducks/users/actions";
 import LOCALSTORAGE from "../../helpers/constants/localStorage";
 export default function RecoveryPassMenu() {
-  const history = useHistory();
+  const navigate = useNavigate();
   const dispatch = useDispatch();
   const SIZE_INPUT_PASSWORD = 6;
   const [newPassword, setNewPassword] = useState({ value: "", error: false });
@@ -185,7 +185,7 @@ export default function RecoveryPassMenu() {
                 <Button
                   variant="outlined"
                   onClick={() => {
-                    history.push("/userconfiguration");
+                    navigate("/userconfiguration");
                   }}
                 >
                   Voltar

@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import { useHistory } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 
 import { BoxCustom } from "./style";
@@ -17,7 +17,7 @@ import { loadCustomerById } from "../../../store/ducks/customers/actions";
 import LOCALSTORAGE from "../../../helpers/constants/localStorage";
 
 export default function ClientConfiguration() {
-  const history = useHistory();
+  const navigate = useNavigate();
   const dispatch = useDispatch();
   const customerState = useSelector(
     (state: ApplicationState) => state.customers

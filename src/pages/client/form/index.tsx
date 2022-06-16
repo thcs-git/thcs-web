@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useCallback } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { useHistory, RouteComponentProps } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import debounce from "lodash.debounce";
 import SESSIONSTORAGE from "../../../helpers/constants/sessionStorage";
 import InputMask, { Props } from "react-input-mask";
@@ -144,8 +144,8 @@ interface IPropsPermissionFrom {
   cleanSelectProfession: () => void;
 }
 
-export default function ClientForm(props: RouteComponentProps<IPageParams>) {
-  const history = useHistory();
+export default function ClientForm(props: IPageParams) {
+  const navigate = useNavigate();
   const dispatch = useDispatch();
 
   const customerState = useSelector(
@@ -162,7 +162,7 @@ export default function ClientForm(props: RouteComponentProps<IPageParams>) {
     error: false,
   });
   const [openModalCancel, setOpenModalCancel] = useState(false);
-  const { params } = props.match;
+  const params = useParams();
 
   const [canEdit, setCanEdit] = useState(true);
   const [canEditPermission, setCanEditPermission] = useState(true);
@@ -270,7 +270,7 @@ export default function ClientForm(props: RouteComponentProps<IPageParams>) {
     dispatch(cleanAction());
     if (params.id === ":id") {
       const currentCustomer = localStorage.getItem(LOCALSTORAGE.CUSTOMER) || "";
-      history.push(`/client/${currentCustomer}/view`);
+      navigate(`/client/${currentCustomer}/view`);
     }
     if (modePermission === "views") {
       setCanEditPermission(false);
@@ -377,7 +377,7 @@ export default function ClientForm(props: RouteComponentProps<IPageParams>) {
   }, [customerState.data?.address]);
 
   // useEffect(() => {
-  //   if (customerState.success && customerState.data?._id && !customerState.isRegistrationCompleted) history.push('/customer');
+  //   if (customerState.success && customerState.data?._id && !customerState.isRegistrationCompleted) navigate('/customer');
   // }, [customerState.success])
 
   useEffect(() => {
@@ -566,7 +566,7 @@ export default function ClientForm(props: RouteComponentProps<IPageParams>) {
   function handleCancelForm() {
     dispatch(cleanAction());
     setOpenModalCancel(false);
-    history.push("/");
+    navigate("/");
   }
 
   function handlePermissionReturn() {
@@ -575,9 +575,9 @@ export default function ClientForm(props: RouteComponentProps<IPageParams>) {
     setInitialTab(1);
     setModePermission("start");
     // if (canEdit) {
-    //   history.push(`/client/${currentCustomer}/edit`);
+    //   navigate(`/client/${currentCustomer}/edit`);
     // } else {
-    //   history.push(`/client/${currentCustomer}/view`);
+    //   navigate(`/client/${currentCustomer}/view`);
     // }
   }
 

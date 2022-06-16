@@ -1,8 +1,7 @@
 import React, { useCallback, useEffect, useState } from "react";
 
 // Router
-import { Link, useHistory } from "react-router-dom";
-import { RouteComponentProps } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 
 // MUI
 import { Typography, Container, Grid } from "@mui/material";
@@ -61,6 +60,7 @@ import { loadRequest as loadRequestAntibiotic } from "../../../store/ducks/antib
 import { loadRequest as loadRequestExams } from "../../../store/ducks/exams/actions";
 import { loadRequest as loadRequestAttests } from "../../../store/ducks/attest/actions";
 import { loadRequest as loadRequestCompanyLogo } from "../../../store/ducks/logo/actions";
+
 interface IPageParams {
   id?: string;
 }
@@ -87,14 +87,12 @@ interface IAllergiIntegration {
   };
 }
 
-export default function PatientOverview(
-  props: RouteComponentProps<IPageParams>
-) {
+export default function PatientOverview(props: IPageParams) {
   const integration = sessionStorage.getItem(SESSIONSTORAGE.INTEGRATION);
   const currentCompanyiD = localStorage.getItem(LOCALSTORAGE.COMPANY_SELECTED);
-  const history = useHistory();
+  const navigate = useNavigate();
   const dispatch = useDispatch();
-  const { params } = props.match;
+  const params = useParams();
   const careState = useSelector((state: ApplicationState) => state.cares);
   const patientState = useSelector((state: ApplicationState) => state.patients);
   const allergiesState = useSelector(
@@ -477,7 +475,7 @@ export default function PatientOverview(
     {
       name: "Voltar",
       onClick: () => {
-        !reportActive ? history.push("/care") : setReportActive(false);
+        !reportActive ? navigate("/care") : setReportActive(false);
         setSelectReportCard("");
       },
       variant: "contained",

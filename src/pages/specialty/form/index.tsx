@@ -11,7 +11,7 @@ import { SpecialtyInterface } from "../../../store/ducks/specialties/types";
 
 import { loadRequest as getCouncilsAction } from "../../../store/ducks/councils/actions";
 
-import { useHistory, RouteComponentProps } from "react-router-dom";
+import { useNavigate, RouteComponentProps } from "react-router-dom";
 import {
   Button,
   Container,
@@ -44,15 +44,15 @@ interface IPageParams {
   id?: string;
 }
 
-export default function SpecialtyForm(props: RouteComponentProps<IPageParams>) {
-  const history = useHistory();
+export default function SpecialtyForm(props: IPageParams) {
+  const navigate = useNavigate();
   const dispatch = useDispatch();
   const specialtyState = useSelector(
     (state: ApplicationState) => state.specialties
   );
   const councilState = useSelector((state: ApplicationState) => state.councils);
 
-  const { params } = props.match;
+  const params = useParams();
 
   const [state, setState] = useState<SpecialtyInterface>({
     _id: props.match.params.id || "",
@@ -110,7 +110,7 @@ export default function SpecialtyForm(props: RouteComponentProps<IPageParams>) {
 
   function handleCancelForm() {
     setOpenModalCancel(false);
-    history.push(`/specialty`);
+    navigate(`/specialty`);
   }
 
   const selectCouncil = useCallback(() => {
@@ -194,7 +194,7 @@ export default function SpecialtyForm(props: RouteComponentProps<IPageParams>) {
               // background="default"
               onClick={() =>
                 specialtyState.success
-                  ? history.push("/specialty")
+                  ? navigate("/specialty")
                   : handleOpenModalCancel()
               }
             >

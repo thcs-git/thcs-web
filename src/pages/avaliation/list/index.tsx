@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback, ChangeEvent } from "react";
-import { useHistory, Link } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import {
   Container,
   Button,
@@ -78,7 +78,7 @@ interface ICaptureStatus {
 }
 
 export default function AvaliationList() {
-  const history = useHistory();
+  const navigate = useNavigate();
   const dispatch = useDispatch();
   const careState = useSelector((state: ApplicationState) => state.cares);
 
@@ -117,7 +117,7 @@ export default function AvaliationList() {
 
   // useEffect(() => {
   //   if (careState.data.status === 'Atendimento') {
-  //     history.push(`care/${careState.data._id}/overview`);
+  //     navigate(`care/${careState.data._id}/overview`);
   //   }
   // }, [careState.data.status]);
 
@@ -336,7 +336,7 @@ export default function AvaliationList() {
           <ErrorOutline
             style={{ color: "#FF6565", cursor: "pointer" }}
             onClick={() =>
-              history.push(
+              navigate(
                 `/patient/capture/${found.care_id}/${documentRoute()}/${
                   found._id
                 }`
@@ -349,7 +349,7 @@ export default function AvaliationList() {
           <CheckIcon
             style={{ color: "#4FC66A", cursor: "pointer" }}
             onClick={() =>
-              history.push(
+              navigate(
                 `/patient/capture/${found.care_id}/${documentRoute()}/${
                   found._id
                 }`
@@ -530,7 +530,7 @@ export default function AvaliationList() {
     dispatch(getCares({ status: "Pre-Atendimento" }));
     dispatch(cleanAction());
 
-    history.push("/care/create/");
+    navigate("/care/create/");
   }, [captureStatus, careState]);
 
   const isDone = useCallback(
@@ -570,7 +570,7 @@ export default function AvaliationList() {
           <FormTitle>Lista de Avaliações</FormTitle>
 
           <SearchComponent
-            handleButton={() => history.push("/patient/capture/create")}
+            handleButton={() => navigate("/patient/capture/create")}
             buttonTitle="Nova avaliação"
             inputPlaceholder="Busque nome do Paciente, Atendimento e Status"
             onChangeInput={handleChangeInput}
@@ -652,7 +652,7 @@ export default function AvaliationList() {
                   >
                     <MenuItem
                       onClick={() =>
-                        history.push(`/patient/capture/${care._id}/overview`)
+                        navigate(`/patient/capture/${care._id}/overview`)
                       }
                     >
                       Visualizar perfil
@@ -1028,7 +1028,7 @@ export default function AvaliationList() {
       {/*                </ListItemCaptureStatus>*/}
       {/*              </TableCell>*/}
       {/*              <TableCell align="center">*/}
-      {/*                <Button onClick={() => history.push(`/patient/capture/${patient?._id}/overview`)}>*/}
+      {/*                <Button onClick={() => navigate(`/patient/capture/${patient?._id}/overview`)}>*/}
       {/*                  <VisibilityIcon style={{ color: '#0899BA' }} />*/}
       {/*                </Button>*/}
       {/*              </TableCell>*/}

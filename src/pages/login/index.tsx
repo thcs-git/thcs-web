@@ -1,6 +1,6 @@
 import React, { useCallback, useState, useEffect, useRef } from "react";
 // Router
-import { useHistory } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 // Redux e saga
 import { loadRequest, emailRequest } from "../../store/ducks/login/actions";
@@ -1584,7 +1584,7 @@ const policity = () => {
   );
 };
 export default function SignIn() {
-  const history = useHistory();
+  const navigate = useNavigate();
   const dispatch = useDispatch();
   const loginState = useSelector((state: ApplicationState) => state.login);
 
@@ -1612,7 +1612,7 @@ export default function SignIn() {
   //     toast.error('Sessão expirada');
   //   }
   //
-  //   // if (token) history.push('/dashboard');
+  //   // if (token) navigate('/dashboard');
   // }, []);
 
   const xsQuery = useMediaQuery(`(max-width:${theme.breakpoints.values.xs}px)`);
@@ -2111,14 +2111,14 @@ export default function SignIn() {
               {/*  fullWidth*/}
               {/*  variant="contained"*/}
               {/*  className={classes.create_account}*/}
-              {/*  onClick={() => history.push('/register')}*/}
+              {/*  onClick={() => navigate('/register')}*/}
               {/*>*/}
               {/*  Criar conta*/}
               {/*</Button>*/}
 
               <Grid item mt={1}>
                 <Link
-                  onClick={() => history.push("/forgotpassword")}
+                  onClick={() => navigate("/forgotpassword")}
                   rel="noopener"
                 >
                   <Typography

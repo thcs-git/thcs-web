@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useCallback } from "react";
 //Router
-import { RouteComponentProps, useHistory } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 
 //Redux e sagas
 import { useDispatch, useSelector } from "react-redux";
@@ -98,12 +98,10 @@ const validationSchema = yup.object({
     .required("Campo obrigatório")
     .email("Formato de e-mail incorreto"),
 });
-export default function ForgotPasswordPage(
-  props: RouteComponentProps<IPageParams>
-) {
-  const history = useHistory();
+export default function ForgotPasswordPage(props: IPageParams) {
+  const navigate = useNavigate();
   const dispatch = useDispatch();
-  const { params } = props.match;
+  const params = useParams();
   const [inputEmail, setInputEmail] = useState({ value: "" });
   const [sendEmail, setSendEmail] = useState(false);
   const userState = useSelector((state: ApplicationState) => state.users);
@@ -237,7 +235,7 @@ export default function ForgotPasswordPage(
           </Button>
 
           <Button
-            onClick={() => history.push("/login")}
+            onClick={() => navigate("/login")}
             variant="outlined"
             color="primary"
           >
@@ -306,7 +304,7 @@ export default function ForgotPasswordPage(
           type="submit"
           variant="outlined"
           color="primary"
-          onClick={() => history.push("/login")}
+          onClick={() => navigate("/login")}
         >
           Login
         </Button>

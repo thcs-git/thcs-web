@@ -1,5 +1,5 @@
 import React from "react";
-import { BrowserRouter, Switch, Route, Redirect } from "react-router-dom";
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 //redux
 import { useDispatch, useSelector } from "react-redux";
 import { ApplicationState } from "../store";
@@ -7,7 +7,7 @@ import { ApplicationState } from "../store";
 import { checkViewPermission } from "../utils/permissions";
 
 import GuestRoute from "./guest";
-import PrivateRoute from "./private";
+// import Route from "./private";
 
 import NotFound from "../pages/errors/not-found";
 
@@ -66,160 +66,450 @@ import ProfessionForm from "../pages/profession/form/index";
 
 import Login from "../pages/login";
 //import Register from '../pages/register';
+import ProtectedRoute from "./protectRoute";
+import LOCALSTORAGE from "../helpers/constants/localStorage";
 
-export default function Routes() {
+const hasToken = !!localStorage.getItem(LOCALSTORAGE.TOKEN);
+
+export default function SwitchRoutes() {
   const rightsOfLayoutState = useSelector(
     (state: ApplicationState) => state.layout.data.rights
   );
+
   return (
     <BrowserRouter>
-      <Switch>
-        {/* <GuestRoute path="/" component={Login} exact /> */}
-        {/* <GuestRoute path="/register" component={Register} /> */}
-        {/* <Route path="/" component={Login} exact /> */}
-        <Route path="/login" component={Login} />
-        <Route path="/:email/confirmemail" component={ConfirmEmail} />
-        <Route path="/confirmemail/:token" component={VerifyEmail} />
-        <Route path="/recoverypass/:token" component={RecoveryPassword} />
-        <Route path="/forgotpassword" component={ForgotPassword} />
+      <Routes>
+        {/* <GuestRoute path="/" element={Login} exact /> */}
+        {/* <GuestRoute path="/register" element={Register} /> */}
+        {/* <Route path="/" element={Login} exact /> */}
+        <Route
+          path="/login"
+          element={hasToken ? <Navigate to={"/"} /> : <Login />}
+        />
+        <Route
+          path="/:email/confirmemail"
+          element={hasToken ? <Navigate to={"/"} /> : <ConfirmEmail />}
+        />
+        <Route
+          path="/confirmemail/:token"
+          element={hasToken ? <Navigate to={"/"} /> : <VerifyEmail />}
+        />
+        <Route
+          path="/recoverypass/:token"
+          element={hasToken ? <Navigate to={"/"} /> : <RecoveryPassword />}
+        />
+        <Route
+          path="/forgotpassword"
+          element={hasToken ? <Navigate to={"/"} /> : <ForgotPassword />}
+        />
 
-        <PrivateRoute path="/recoverypassmenu" component={RecoveryPassMenu} />
-        <PrivateRoute
+        <Route
           path="/"
-          component={
+          element={
+            <ProtectedRoute>
+              {checkViewPermission(
+                "care",
+                JSON.stringify(rightsOfLayoutState)
+              ) ? (
+                <CareList />
+              ) : (
+                <UserConfiguration />
+              )}
+            </ProtectedRoute>
+          }
+        />
+
+        <Route path="/recoverypassmenu" element={RecoveryPassMenu} />
+        {/* <Route
+          path="/"
+          element={
             checkViewPermission("care", JSON.stringify(rightsOfLayoutState))
               ? CareList
               : UserConfiguration
           }
           exact
+        /> */}
+        <Route
+          path="/dashboard_user"
+          element={
+            <ProtectedRoute>
+              <Dashboard_user />
+            </ProtectedRoute>
+          }
         />
-        <PrivateRoute path="/dashboard_user" component={Dashboard_user} exact />
-        {/* <PrivateRoute path="/dashboard" component={Dashboard} /> */}
+        <Route
+          path="/dashboard"
+          element={
+            <ProtectedRoute>
+              <Dashboard />
+            </ProtectedRoute>
+          }
+        />
 
         {/* Configuration */}
-        <PrivateRoute path="/userconfiguration" component={UserConfiguration} />
-        <PrivateRoute
-          path="/clientconfiguration"
-          component={ClientConfiguration}
+        <Route
+          path="/userconfiguration"
+          element={
+            <ProtectedRoute>
+              <UserConfiguration />
+            </ProtectedRoute>
+          }
         />
+        <Route path="/clientconfiguration" element={ClientConfiguration} />
 
         {/* Clientes */}
-        <PrivateRoute path="/customer" component={CustomerList} exact />
-        <PrivateRoute
-          path="/customer/:id/:mode/edit"
-          component={CustomerForm}
+        <Route
+          path="/customer"
+          element={
+            <ProtectedRoute>
+              <CustomerList />
+            </ProtectedRoute>
+          }
         />
-        <PrivateRoute path="/customer/create" component={CustomerForm} />
-        <PrivateRoute path="/client/:id/:mode" component={ClientForm} />
+        <Route
+          path="/customer/:id/:mode/edit"
+          element={
+            <ProtectedRoute>
+              <CustomerForm />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/customer/create"
+          element={
+            <ProtectedRoute>
+              <CustomerForm />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/client/:id/:mode"
+          element={
+            <ProtectedRoute>
+              <ClientForm />
+            </ProtectedRoute>
+          }
+        />
 
         {/* Empresas */}
-        <PrivateRoute path="/company" component={CompanyList} exact />
-        <PrivateRoute path="/company/:id/:mode" component={CompanyForm} />
-        <PrivateRoute path="/company/create" component={CompanyForm} />
+        <Route
+          path="/company"
+          element={
+            <ProtectedRoute>
+              <CompanyList />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/company/:id/:mode"
+          element={
+            <ProtectedRoute>
+              <CompanyForm />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/company/create"
+          element={
+            <ProtectedRoute>
+              <CompanyForm />
+            </ProtectedRoute>
+          }
+        />
 
         {/* Especialidades */}
-        <PrivateRoute path="/specialty" component={SpecialtyList} exact />
-        <PrivateRoute path="/specialty/:id/edit" component={SpecialtyForm} />
-        <PrivateRoute path="/specialty/create" component={SpecialtyForm} />
+        <Route
+          path="/specialty"
+          element={
+            <ProtectedRoute>
+              <SpecialtyList />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/specialty/:id/edit"
+          element={
+            <ProtectedRoute>
+              <SpecialtyForm />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/specialty/create"
+          element={
+            <ProtectedRoute>
+              <SpecialtyForm />
+            </ProtectedRoute>
+          }
+        />
 
         {/* Conselhos */}
-        <PrivateRoute path="/council" component={CouncilList} exact />
-        <PrivateRoute path="/council/:id/edit" component={CouncilForm} />
-        <PrivateRoute path="/council/create" component={CouncilForm} />
+        <Route
+          path="/council"
+          element={
+            <ProtectedRoute>
+              <CouncilList />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/council/:id/edit"
+          element={
+            <ProtectedRoute>
+              <CouncilForm />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/council/create"
+          element={
+            <ProtectedRoute>
+              <CouncilForm />
+            </ProtectedRoute>
+          }
+        />
 
         {/* Areas */}
-        <PrivateRoute path="/area" component={AreaList} exact />
-        <PrivateRoute path="/area/:id/:mode/edit" component={AreaForm} />
-        <PrivateRoute path="/area/create" component={AreaForm} />
+        <Route
+          path="/area"
+          element={
+            <ProtectedRoute>
+              <AreaList />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/area/:id/:mode/edit"
+          element={
+            <ProtectedRoute>
+              <AreaForm />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/area/create"
+          element={
+            <ProtectedRoute>
+              <AreaForm />
+            </ProtectedRoute>
+          }
+        />
 
         {/* Usuário */}
-        <PrivateRoute path="/user" component={UserList} exact />
-        <PrivateRoute path="/user/:id/:mode/edit" component={UserForm} />
-        <PrivateRoute path="/user/:mode/create" component={UserForm} />
-        <PrivateRoute path="/userdesengaged" component={UserDisengaged} />
-        <PrivateRoute path="/userclient" component={UserClientList} exact />
-        <PrivateRoute
-          path="/userclient/:id/:mode/:callback"
-          component={UserClientForm}
+        <Route
+          path="/user"
+          element={
+            <ProtectedRoute>
+              <UserList />
+            </ProtectedRoute>
+          }
         />
-        <PrivateRoute path="/userclient/:id/:mode" component={UserClientForm} />
+        <Route
+          path="/user/:id/:mode/edit"
+          element={
+            <ProtectedRoute>
+              <UserForm />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/user/:mode/create"
+          element={
+            <ProtectedRoute>
+              <UserForm />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/userdesengaged"
+          element={
+            <ProtectedRoute>
+              <UserDisengaged />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/userclient"
+          element={
+            <ProtectedRoute>
+              <UserClientList />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/userclient/:id/:mode/:callback"
+          element={
+            <ProtectedRoute>
+              <UserClientForm />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/userclient/:id/:mode"
+          element={
+            <ProtectedRoute>
+              <UserClientForm />
+            </ProtectedRoute>
+          }
+        />
 
         {/* Patient */}
-        <PrivateRoute
+        <Route
           path="/patient/capture/create"
-          component={PatientCaptureCreate}
+          element={
+            <ProtectedRoute>
+              <PatientCaptureCreate />
+            </ProtectedRoute>
+          }
         />
-        <PrivateRoute
+        {/* <Route
           path="/patient/capture/:id/overview"
-          component={PatientCaptureOverview}
+          element={
+            <ProtectedRoute>
+              <PatientCaptureOverview />
+            </ProtectedRoute>
+          }
+        /> */}
+        <Route
+          path="/patient"
+          element={
+            <ProtectedRoute>
+              <PatientList />
+            </ProtectedRoute>
+          }
         />
-        <PrivateRoute path="/patient" component={PatientList} exact />
-        <PrivateRoute path="/patient/create" component={PatientForm} exact />
+        <Route
+          path="/patient/create"
+          element={
+            <ProtectedRoute>
+              <PatientForm />
+            </ProtectedRoute>
+          }
+        />
 
-        <PrivateRoute
+        {/* <Route
           path="/patient/capture/:id/nead"
-          component={PatientCaptureNead}
-          exact
+          element={
+            <ProtectedRoute>
+              <PatientCaptureNead />
+            </ProtectedRoute>
+          }
         />
-        <PrivateRoute
+        <Route
           path="/patient/capture/:id/nead/:documentId"
-          component={PatientCaptureNead}
+          element={
+            <ProtectedRoute>
+              <PatientCaptureNead />
+            </ProtectedRoute>
+          }
         />
 
-        <PrivateRoute
+        <Route
           path="/patient/capture/:id/abemid"
-          component={PatientCaptureAbemid}
-          exact
+          element={
+            <ProtectedRoute>
+              <PatientCaptureAbemid />
+            </ProtectedRoute>
+          }
         />
-        <PrivateRoute
+        <Route
           path="/patient/capture/:id/abemid/:documentId"
-          component={PatientCaptureAbemid}
+          element={
+            <ProtectedRoute>
+              <PatientCaptureAbemid />
+            </ProtectedRoute>
+          }
         />
 
-        <PrivateRoute
+        <Route
           path="/patient/capture/:id/socioambiental"
-          component={PatientCaptureSocioAmbiental}
-          exact
+          element={
+            <ProtectedRoute>
+              <PatientCaptureSocioAmbiental />
+            </ProtectedRoute>
+          }
         />
-        <PrivateRoute
+        <Route
           path="/patient/capture/:id/socioambiental/:documentId"
-          component={PatientCaptureSocioAmbiental}
-        />
+          element={
+            <ProtectedRoute>
+              <PatientCaptureSocioAmbiental />
+            </ProtectedRoute>
+          }
+        /> */}
 
-        <PrivateRoute
+        <Route
           path="/patient/:id/:mode/:callback/:callback_id"
-          component={PatientForm}
-          exact
+          element={
+            <ProtectedRoute>
+              <PatientForm />
+            </ProtectedRoute>
+          }
         />
-        <PrivateRoute path="/patient/:id/:mode" component={PatientForm} />
+        <Route
+          path="/patient/:id/:mode"
+          element={
+            <ProtectedRoute>
+              <PatientForm />
+            </ProtectedRoute>
+          }
+        />
 
         {/* Care */}
-        <PrivateRoute path="/care" component={CareList} exact />
+        <Route
+          path="/care"
+          element={
+            <ProtectedRoute>
+              <CareList />
+            </ProtectedRoute>
+          }
+        />
 
-        <PrivateRoute
+        <Route
           path="/care/:id/overview"
-          exact
-          component={CareOverview}
+          element={
+            <ProtectedRoute>
+              <CareOverview />
+            </ProtectedRoute>
+          }
         />
-        <PrivateRoute
+        <Route
           path="/care/:id/overview/schedule"
-          component={CareSchedule}
+          element={
+            <ProtectedRoute>
+              <CareSchedule />
+            </ProtectedRoute>
+          }
         />
-        <PrivateRoute
+        {/* <Route
           path="/care/:id/medical-records/document/:documentId/print"
-          component={PrintDocument}
-        />
+          element={<ProtectedRoute><PrintDocument/></ProtectedRoute>}
+        /> */}
 
         {/* Register */}
         {/* avaliation */}
-        <PrivateRoute path="/avaliation" component={AvaliationList} exact />
+        <Route
+          path="/avaliation"
+          element={
+            <ProtectedRoute>
+              <AvaliationList />
+            </ProtectedRoute>
+          }
+        />
         {/* qrcode */}
-        <PrivateRoute path="/qrcode" component={QrCode} exact></PrivateRoute>
-        {/* <PrivateRoute path="/avaliation/:id/edit" component={CareForm} />
-      <PrivateRoute path="/avaliation/create" component={CareForm} /> */}
+        <Route
+          path="/qrcode"
+          element={
+            <ProtectedRoute>
+              <QrCode />
+            </ProtectedRoute>
+          }
+        ></Route>
+        {/* <Route path="/avaliation/:id/edit" element={<ProtectedRoute><CareForm/></ProtectedRoute>} /> */}
+        {/* <Route path="/avaliation/create" element={<ProtectedRoute><CareForm/></ProtectedRoute>} /> */}
 
-        <Route component={NotFound} />
-      </Switch>
+        <Route path="*" element={<NotFound />} />
+      </Routes>
     </BrowserRouter>
   );
 }

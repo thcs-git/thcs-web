@@ -1,6 +1,6 @@
 import React, { useState, useCallback, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { useHistory } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import {
   Container,
   Dialog,
@@ -60,10 +60,10 @@ const registrationCompleted: React.FC<any> = (props) => {
   });
   // ----------------------------------------------
 
-  const history = useHistory();
+  const navigate = useNavigate();
   const dispatch = useDispatch();
 
-  const { params } = props.match;
+  const params = useParams();
 
   const [openModalConfirm, setOpenModalConfirm] = useState<boolean>(false);
   const { patients: patientState, cares: careState } = useSelector(
@@ -89,7 +89,7 @@ const registrationCompleted: React.FC<any> = (props) => {
 
   useEffect(() => {
     if (careState.success && !careState.error && careState.data._id) {
-      history.push(`/patient/capture/${careState.data._id}/overview`);
+      navigate(`/patient/capture/${careState.data._id}/overview`);
     }
   }, [careState]);
 
@@ -141,7 +141,7 @@ const registrationCompleted: React.FC<any> = (props) => {
             // background="success_rounded"
             onClick={() => {
               dispatch(setIfRegistrationCompleted(true));
-              history.push(`/patient/${patientState.data._id}/edit/edit`);
+              navigate(`/patient/${patientState.data._id}/edit/edit`);
             }}
           >
             Editar
@@ -161,7 +161,7 @@ const registrationCompleted: React.FC<any> = (props) => {
         <Button
           variant="contained"
           // background="success_rounded"
-          onClick={() => history.push("/patient")}
+          onClick={() => navigate("/patient")}
         >
           Listar pacientes
         </Button>

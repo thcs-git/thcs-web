@@ -1,11 +1,11 @@
 import React from "react";
-import { useHistory } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import Button from "@mui/material/Button";
 import Container from "@mui/material/Container";
 import Typography from "@mui/material/Typography";
 import theme from "../../../theme/theme";
 export default function NoPermission(props: any) {
-  const history = useHistory();
+  const navigate = useNavigate();
   return (
     <Container
       sx={{
@@ -20,7 +20,7 @@ export default function NoPermission(props: any) {
       <Typography variant="h5" sx={{ color: theme.palette.text.primary }}>
         Vocês não tem permissão para acessar esta página.
       </Typography>
-      <Button variant="contained" onClick={() => history.push("/")}>
+      <Button variant="contained" onClick={() => navigate("/")}>
         Início
       </Button>
     </Container>

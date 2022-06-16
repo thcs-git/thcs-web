@@ -5,7 +5,7 @@ import React, {
   useCallback,
   ChangeEvent,
 } from "react";
-import { useHistory } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 import debounce from "lodash.debounce";
 import { useDispatch, useSelector } from "react-redux";
@@ -46,7 +46,7 @@ import {
 const token = window.localStorage.getItem("token");
 
 export default function PrescriptionList() {
-  const history = useHistory();
+  const navigate = useNavigate();
   const dispatch = useDispatch();
 
   const prescriptionState = useSelector(
@@ -83,7 +83,7 @@ export default function PrescriptionList() {
           <FormTitle>Lista de Prescrições</FormTitle>
 
           <SearchComponent
-            handleButton={() => history.push("/prescription/create/")}
+            handleButton={() => navigate("/prescription/create/")}
             buttonTitle="Novo"
             onChangeInput={debounceSearchRequest}
           />

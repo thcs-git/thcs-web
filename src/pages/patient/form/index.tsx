@@ -3,7 +3,7 @@ import Tab from "@mui/material/Tab";
 import InputMask, { Props } from "react-input-mask";
 // import { cpf } from "cpf-cnpj-validator";
 import validator from "validator";
-import { useHistory, RouteComponentProps } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import _ from "lodash";
 import {
   Button,
@@ -126,8 +126,8 @@ function TabPanel(props: TabPanelProps) {
   );
 }
 
-export default function PatientForm(props: RouteComponentProps<IPageParams>) {
-  const history = useHistory();
+export default function PatientForm(props: IPageParams) {
+  const navigate = useNavigate();
   const dispatch = useDispatch();
   const patientState = useSelector((state: ApplicationState) => state.patients);
   const areaState = useSelector((state: ApplicationState) => state.areas);
@@ -141,7 +141,7 @@ export default function PatientForm(props: RouteComponentProps<IPageParams>) {
     error: false,
   });
 
-  const { params } = props.match;
+  const params = useParams();
   const [fieldsValidation, setFieldValidations] = useState<any>({
     name: false,
     social_name: false,
@@ -634,9 +634,9 @@ export default function PatientForm(props: RouteComponentProps<IPageParams>) {
   function handleCancelForm() {
     setOpenModalCancel(false);
     if (params.callback === "care") {
-      history.push(`/care/${params.callback_id}/overview`);
+      navigate(`/care/${params.callback_id}/overview`);
     } else {
-      history.push(`/patient`);
+      navigate(`/patient`);
     }
     dispatch(cleanAction());
   }
@@ -661,7 +661,7 @@ export default function PatientForm(props: RouteComponentProps<IPageParams>) {
     if (state?._id) {
       dispatch(updatePatientRequest(patientData));
       dispatch(cleanAction());
-      history.push("/patient");
+      navigate("/patient");
     } else {
       dispatch(createPatientRequest(patientData));
     }
@@ -709,7 +709,7 @@ export default function PatientForm(props: RouteComponentProps<IPageParams>) {
                             <ButtonEdit
                               setCanEdit={() => {
                                 setCanEdit(true);
-                                history.push(`/patient/${params.id}/edit/edit`);
+                                navigate(`/patient/${params.id}/edit/edit`);
                               }}
                               canEdit={canEdit}
                             >

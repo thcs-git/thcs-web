@@ -4,7 +4,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { ApplicationState } from "../../store";
 import { loadCompanyById } from "../../store/ducks/companies/actions";
 import { changeMenuSelected } from "../../store/ducks/layout/actions";
-import { useHistory } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 // MUI
 import {
@@ -117,7 +117,7 @@ interface PropsSidebar {
 }
 
 const Sibebar = (props: Props<any>) => {
-  const history = useHistory();
+  const navigate = useNavigate();
   // const classes = useStyles();
   const dispatch = useDispatch();
   const applicationState = useSelector((state: any) => state);
@@ -698,7 +698,7 @@ const Sibebar = (props: Props<any>) => {
                 <ListItem
                   key={index}
                   onClick={() => {
-                    history.push(item.route);
+                    navigate(item.route);
                     dispatch(changeMenuSelected(item.title));
                   }}
                   sx={{
@@ -736,7 +736,7 @@ const Sibebar = (props: Props<any>) => {
         </List>
         {/*<Divider/>*/}
         {/*<List disablePadding={true}>*/}
-        {/*  <ListItem className={classes.logOutButton} onClick={() => history.push("/userconfiguration")}>*/}
+        {/*  <ListItem className={classes.logOutButton} onClick={() => navigate("/userconfiguration")}>*/}
         {/*    <ListItemIcon>*/}
         {/*      <SettingsIcon style={{color: '#fff'}}/>*/}
         {/*    </ListItemIcon>*/}
@@ -814,7 +814,7 @@ const Sibebar = (props: Props<any>) => {
           <Button
             onClick={() => {
               setOpenModalMessage(false);
-              // history.push(`/dashboard`);
+              // navigate(`/dashboard`);
               //location.reload()
             }}
             color="secondary"
@@ -850,7 +850,7 @@ const Sibebar = (props: Props<any>) => {
           <Button
             onClick={() => {
               setOpenModalConfig(false);
-              history.push(`/dashboard`);
+              navigate(`/dashboard`);
               //location.reload()
             }}
             color="primary"

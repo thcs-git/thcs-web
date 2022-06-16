@@ -1,7 +1,7 @@
 import Button from "../../../components/Button";
 import React, { useState, useEffect, useCallback } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { RouteComponentProps, useHistory } from "react-router-dom";
+import { RouteComponentProps, useNavigate } from "react-router-dom";
 import { ReactComponent as SuccessImage } from "../../../assets/img/ilustracao-avaliacao-concluida.svg";
 import {
   FeedbackContent,
@@ -45,12 +45,10 @@ interface IPageParams {
   token?: string;
 }
 
-export default function RecoveryPasswordPage(
-  props: RouteComponentProps<IPageParams>
-) {
-  const history = useHistory();
+export default function RecoveryPasswordPage(props: IPageParams) {
+  const navigate = useNavigate();
   const dispatch = useDispatch();
-  const { params } = props.match;
+  const params = useParams();
   const [inputEmail, setInputEmail] = useState({ value: "", error: false });
   const [newPassword, setNewPassword] = useState({ value: "", error: false });
   const [newConfirmPassword, setNewConfirmPassword] = useState({ value: "" });
@@ -178,7 +176,7 @@ export default function RecoveryPasswordPage(
               variant="contained"
               style={{ background: "#4FC66A99", color: "white" }}
               onClick={() => {
-                history.push("/login");
+                navigate("/login");
               }}
             >
               Login
@@ -341,7 +339,7 @@ export default function RecoveryPasswordPage(
               variant="contained"
               style={{ background: "#4FC66A99", color: "white" }}
               onClick={() => {
-                history.push("/login");
+                navigate("/login");
               }}
             >
               Login
