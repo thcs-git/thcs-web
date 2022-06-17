@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
-    "@date-io/dayjs": "1.x",
+    "@date-io/dayjs": "2.14.0",
     "@date-io/moment": "^2.10.6",
     "@emotion/react": "^11.9.0",
     "@emotion/styled": "^11.8.1",
