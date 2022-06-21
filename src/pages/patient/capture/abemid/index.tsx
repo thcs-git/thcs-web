@@ -97,7 +97,7 @@ export default function Abemid(props: RouteComponentProps<IPageParams>) {
   const [steps, setSteps] = useState([
     {
       title: "KATZ",
-      finished: !!routeState.katzIsDone,
+      // finished: !!routeState.katzIsDone,
       score: { total: 0, complexity: "", status: "" },
     },
     {

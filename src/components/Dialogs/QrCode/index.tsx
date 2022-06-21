@@ -281,7 +281,7 @@ export default function DialogQrCode(props: IQrCodeProps) {
               </>
             ) : (
               <>
-                <Box>Não existe nenhum QR Code ativo</Box>
+                <Typography mb={2}>Não existe nenhum QR Code ativo</Typography>
                 <ButtonGeneration
                   variant="contained"
                   color="primary"
