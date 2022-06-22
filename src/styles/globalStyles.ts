@@ -47,7 +47,7 @@ export default createGlobalStyle`
   a, a:hover, a:visited, a:active {
     text-decoration: none;
     cursor:pointer;
-    color: var(--black);
+    color: rgba(0, 0, 0, 0.87);
   }
 
   /* h1, h2, h3, h4, h5 {

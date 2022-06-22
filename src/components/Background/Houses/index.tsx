@@ -31,10 +31,10 @@ const BackgroundHouses = ({
 
   const keyframeCloud = keyframes`
     0% {
-      left:-89px;
+      transform: translateX(0vw);
     }
     100%{
-      left:100%
+      transform: translateX(calc(100vw + 89px));
     }
    
     `;
@@ -42,6 +42,7 @@ const BackgroundHouses = ({
   for (let i = 0; i < quantityHouses; i++) {
     houses.push(
       <HouseGroup
+        key={`house-${i}`}
         width={"275px"}
         height={"148px"}
         houseColor={colorSecondary}
@@ -59,14 +60,15 @@ const BackgroundHouses = ({
   for (let i = 0; i < quantityClouds; i++) {
     clouds.push(
       <Box
+        key={`cloud-${i}`}
         sx={{
           animation: `${keyframeCloud} ${
-            35 + Math.floor(Math.random() * 20)
+            35 + Math.floor(Math.random() * 35)
           }s linear infinite`,
           animationDelay: `${i * 6 + Math.floor(Math.random() * 5)}s`,
           position: "absolute",
-          bottom: `${100 + Math.floor(Math.random() * 45)}px`,
-          left: "-100px",
+          bottom: `${100 + Math.floor(Math.random() * 70)}px`,
+          left: "-89px",
         }}
       >
         <CloudIcon fill={"white"} />
@@ -75,7 +77,7 @@ const BackgroundHouses = ({
   }
 
   return (
-    <Box sx={{ position: "relative" }}>
+    <Box sx={{ position: "relative", width: "100%" }}>
       {clouds}
 
       <Box

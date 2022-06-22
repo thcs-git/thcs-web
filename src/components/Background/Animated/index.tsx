@@ -73,7 +73,7 @@ function colorRandom(arrayLayout: string[][]) {
 }
 const interval = setInterval(() => {
   colorRandom(arrayLayout);
-  console.log("roletou");
+  // console.log("roletou");
   // clearInterval(interval);
 }, 7000);
 
@@ -112,6 +112,7 @@ const BackgroundAnimated = (): any => {
     }
     layout.push(
       <Box
+        key={`layout-${i}`}
         sx={{
           display: "flex",
           gap: "0.2px",
@@ -121,7 +122,11 @@ const BackgroundAnimated = (): any => {
       </Box>
     );
   }
-  return <Box sx={{ display: "flex", flexDirection: "column" }}>{layout}</Box>;
+  return (
+    <Box sx={{ display: "flex", flexDirection: "column", gap: "0.2px" }}>
+      {layout}
+    </Box>
+  );
 };
 // export default BackgroundAnimated;
 export default memo(BackgroundAnimated);
