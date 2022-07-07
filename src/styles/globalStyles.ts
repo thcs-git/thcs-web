@@ -11,7 +11,8 @@ export default createGlobalStyle`
     cursor: auto;
 
     *::-webkit-scrollbar {
-      width: .4em
+      width: 2px;
+
     }
 
     *::-webkit-scrollbar-track {
@@ -19,8 +20,9 @@ export default createGlobalStyle`
     }
 
     *::-webkit-scrollbar-thumb {
-      background-color: var(--cyan);
-      outline: 1px solid var(--cyan);
+      background-color: #000083;
+      outline: 1px solid #4949F3;
+      width: 30px;
     }
   }
 
@@ -45,7 +47,7 @@ export default createGlobalStyle`
   a, a:hover, a:visited, a:active {
     text-decoration: none;
     cursor:pointer;
-    color: var(--black);
+    color: rgba(0, 0, 0, 0.87);
   }
 
   /* h1, h2, h3, h4, h5 {
