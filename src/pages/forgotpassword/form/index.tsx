@@ -35,6 +35,8 @@ import { ReactComponent as SuccessImage } from "../../../assets/img/ilustracao-a
 import { ReactComponent as VerifyImage } from "../../../assets/img/illustracao-verificar-email.svg";
 //Components
 import Button from "../../../components/Button";
+import BackgroundAnimated from "../../../components/Background/Animated";
+import BackgroundHouses from "../../../components/Background/Houses";
 
 //Styles
 import {
@@ -92,7 +94,7 @@ interface IPageParams {
   email?: string;
   token?: string;
 }
-const validationSchema = yup.object({
+const validationSchemaForgotPassword = yup.object({
   email: yup
     .string()
     .required("Campo obrigatório")
@@ -104,7 +106,9 @@ export default function ForgotPasswordPage(
   const history = useHistory();
   const dispatch = useDispatch();
   const { params } = props.match;
-  const [inputEmail, setInputEmail] = useState({ value: "" });
+  const [inputEmailForRecovery, setInputEmailForRecovery] = useState({
+    value: "",
+  });
   const [sendEmail, setSendEmail] = useState(false);
   const userState = useSelector((state: ApplicationState) => state.users);
   const [state, setState] = useState<UserInterface>({
@@ -155,38 +159,38 @@ export default function ForgotPasswordPage(
   //   dispatch(loadUserByEmail(value));
 
   // }
-  const formik = useFormik({
+  const formikForgotPassword = useFormik({
     initialValues: {
       email: "",
     },
-    validationSchema: validationSchema,
+    validationSchema: validationSchemaForgotPassword,
     onSubmit: (values) => {
       dispatch(loadUserByEmail(values.email));
       setSendEmail(true);
-      setInputEmail({ value: values.email });
+      setInputEmailForRecovery({ value: values.email });
     },
     // dispatch(
     //   updateUserPasswordRequest({
-    //     email: inputEmail.value,
+    //     email: inputEmailForRecovery.value,
     //     password: values.password,
     //   })
     // );
     // dispatch(
-    //   loadRequest({ email: inputEmail.value, password: values.password })
+    //   loadRequest({ email: inputEmailForRecovery.value, password: values.password })
     // );
   });
   const handleUserbyEmail = useCallback(() => {
-    console.log(inputEmail.value);
-    dispatch(loadUserByEmail(inputEmail.value));
+    // console.log(inputEmailForRecovery.value);
+    dispatch(loadUserByEmail(inputEmailForRecovery.value));
     setSendEmail(true);
-  }, [inputEmail]);
+  }, [inputEmailForRecovery]);
 
   const recovery = () => (
     <Grid item sx={{ width: "25rem !important" }}>
       <Typography
         variant="h5"
         fontWeight={500}
-        color="primary.main"
+        color="white"
         mb={1}
         align={mdQuery ? "center" : "left"}
       >
@@ -196,25 +200,56 @@ export default function ForgotPasswordPage(
       <Typography
         variant="body1"
         mb={2}
-        color="text.primary"
+        color="white"
         align={mdQuery ? "center" : "left"}
       >
         Insira seu e-mail
       </Typography>
-      <FormControl fullWidth onSubmit={() => formik.handleSubmit()}>
+      <FormControl
+        fullWidth
+        onSubmit={() => formikForgotPassword.handleSubmit()}
+      >
         <TextField
           id="email"
           name="email"
-          value={formik.values.email}
-          onChange={formik.handleChange}
-          error={formik.touched.email && Boolean(formik.errors.email)}
-          helperText={formik.touched.email && formik.errors.email}
+          value={formikForgotPassword.values.email}
+          onChange={formikForgotPassword.handleChange}
+          error={
+            formikForgotPassword.touched.email &&
+            Boolean(formikForgotPassword.errors.email)
+          }
+          helperText={
+            formikForgotPassword.touched.email &&
+            formikForgotPassword.errors.email
+          }
           color="secondary"
           fullWidth
-          label="E-mail"
+          // label="E-mail"
+          placeholder="E-mail"
           variant="outlined"
           type={"email"}
-          size="small"
+          // size="small"
+          sx={{
+            "& .MuiOutlinedInput-root.MuiInputBase-root": {
+              background: "white",
+              "&.Mui-error": {
+                "& .MuiOutlinedInput-notchedOutline": {
+                  border: `4px solid ${theme.palette.error.main} !important`,
+                },
+              },
+              "&.Mui-focused": {
+                "& fieldset": {
+                  border: `4px solid ${theme.palette.secondary.main} !important`,
+                },
+                // borderColor: `${theme.palette.secondary.main} !important`,
+              },
+              "&:hover": {
+                "& fieldset": {
+                  border: `4px solid ${theme.palette.terciaryDark.main}`,
+                },
+              },
+            },
+          }}
         />
 
         <Grid
@@ -230,8 +265,13 @@ export default function ForgotPasswordPage(
             type="submit"
             fullWidth
             variant="contained"
-            color="primary"
-            onClick={() => formik.handleSubmit()}
+            color="success"
+            onClick={() => formikForgotPassword.handleSubmit()}
+            sx={{
+              backgroundColor: theme.palette.terciary.main,
+              color: theme.palette.primary.main,
+              "&:hover": { backgroundColor: theme.palette.terciaryDark.main },
+            }}
           >
             Enviar
           </Button>
@@ -239,7 +279,14 @@ export default function ForgotPasswordPage(
           <Button
             onClick={() => history.push("/login")}
             variant="outlined"
-            color="primary"
+            color="secondary"
+            sx={{
+              color: theme.palette.terciary.main,
+              border: `1px solid ${theme.palette.terciary.main}`,
+              "&:hover": {
+                border: `1px solid ${theme.palette.terciaryDark.main}`,
+              },
+            }}
           >
             Cancelar
           </Button>
@@ -252,31 +299,27 @@ export default function ForgotPasswordPage(
       <Typography
         variant="h5"
         fontWeight={500}
-        color="primary.main"
+        color="white"
         mb={1}
         align={mdQuery ? "center" : "left"}
       >
         Verifique seu e-mail
       </Typography>
       <Typography
-        color="text.primary"
+        color="white"
         variant="h6"
         align={mdQuery ? "center" : "left"}
       >
-        {`Enviamos um link de recuperação para o e-mail ${inputEmail.value}. Confira sua caixa de
+        {`Enviamos um link de recuperação para o e-mail ${inputEmailForRecovery.value}. Confira sua caixa de
         entrada e clique no link de confirmação para criar uma nova senha.`}
       </Typography>
-      <Typography
-        mt={1}
-        color="text.primary"
-        align={mdQuery ? "center" : "left"}
-      >
+      <Typography mt={1} color="white" align={mdQuery ? "center" : "left"}>
         Se não receber o e-mail em 5 minutos:
       </Typography>
       <Typography
         ml={1}
         mt={1}
-        color="text.primary"
+        color="white"
         align={mdQuery ? "center" : "left"}
       >
         - Verifique se o e-mail para recuperação está correto
@@ -293,7 +336,12 @@ export default function ForgotPasswordPage(
         }}
       >
         <Button
-          sx={{ height: "2rem" }}
+          sx={{
+            height: "2rem",
+            backgroundColor: theme.palette.terciary.main,
+            color: theme.palette.primary.main,
+            "&:hover": { backgroundColor: theme.palette.terciaryDark.main },
+          }}
           type="submit"
           variant="contained"
           color="primary"
@@ -302,7 +350,14 @@ export default function ForgotPasswordPage(
           Reenviar Email
         </Button>
         <Button
-          sx={{ height: "2rem" }}
+          sx={{
+            height: "2rem",
+            color: theme.palette.terciary.main,
+            border: `1px solid ${theme.palette.terciary.main}`,
+            "&:hover": {
+              border: `1px solid ${theme.palette.terciaryDark.main}`,
+            },
+          }}
           type="submit"
           variant="outlined"
           color="primary"
@@ -313,55 +368,21 @@ export default function ForgotPasswordPage(
       </Grid>
     </Grid>
   );
-  return (
-    <Container
-      sx={{
-        height: "calc(100vh - 20px)",
-        display: "flex",
-        alignItems: "center",
-      }}
-    >
-      <Grid
-        gap={2}
-        container
-        display="flex"
-        // flexDirection={"column"}
-        justifyContent="center"
-        alignItems="center"
-      >
-        <Grid
-          item
-          xs={12}
-          sm={12}
-          md={6}
-          lg={6}
-          sx={{
-            display: "flex",
-            justifyContent: "center",
-          }}
-        >
-          <Box sx={{ width: "25rem" }}>
-            <THCStype1 fill={theme.palette.primary.main} width={"100%"} />
-          </Box>
-        </Grid>
 
-        {sendEmail ? recoverySend() : recovery()}
-      </Grid>
-
+  function Copyright() {
+    return (
       <Grid
         item
         sx={{
-          // backgroundColor: theme.palette.grey[200],
           alignContent: "center",
-          // fontSize: "20px",
           textDecoration: "bold",
-          borderTop: "1px solid #E7E7E7",
+          background: "#d9d9d9",
+          borderTop: "1px solid #d9d9d9",
           textAlign: "center",
-          padding: "0.1rem",
           position: "fixed",
           left: "0",
           bottom: "0",
-          // height: "40px",
+          height: "24px",
           width: "100%",
         }}
       >
@@ -369,6 +390,7 @@ export default function ForgotPasswordPage(
           <Link
             href="https://www.tascominformatica.com.br/"
             sx={{
+              color: theme.palette.common.black,
               textDecoration: "none",
               "&:hover": { textDecoration: "underline" },
             }}
@@ -380,6 +402,71 @@ export default function ForgotPasswordPage(
           {new Date().getFullYear()}
         </Typography>
       </Grid>
+    );
+  }
+  return (
+    <Container
+      sx={{
+        maxWidth: "none !important",
+        height: "calc(100% - 24px)",
+        margin: 0,
+        backgroundColor: theme.palette.primary.main,
+        overflow: "hidden",
+        padding: "0px !important",
+        display: "flex",
+        flexDirection: "column",
+        justifyContent: "space-between",
+      }}
+    >
+      <Box sx={{ marginTop: "-20px" }}>
+        <BackgroundAnimated />
+      </Box>
+      <Container
+        sx={{
+          width: "100%",
+          padding: "16px",
+          position: "absolute",
+          top: 0,
+          height: "100%",
+          display: "flex",
+          alignItems: "center",
+          zIndex: 10,
+          maxWidth: "none !important",
+        }}
+      >
+        <Grid
+          gap={2}
+          container
+          sx={{
+            width: "100%",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            margin: "0 auto",
+            maxWidth: "1200px",
+          }}
+        >
+          <Grid
+            item
+            xs={12}
+            sm={12}
+            md={6}
+            lg={6}
+            sx={{
+              display: "flex",
+              justifyContent: "center",
+            }}
+          >
+            <Box sx={{ width: "25rem" }}>
+              <THCStype1 fill={theme.palette.common.white} width={"100%"} />
+            </Box>
+          </Grid>
+
+          {sendEmail ? recoverySend() : recovery()}
+        </Grid>
+      </Container>
+      <BackgroundHouses amountOfHouses={6} />
+      <Copyright />
     </Container>
   );
 }

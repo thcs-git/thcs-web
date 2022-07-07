@@ -1,4 +1,4 @@
-import React, { useCallback, useState, useEffect, useRef } from "react";
+import React, { useCallback, useState, useEffect, useRef, memo } from "react";
 // Router
 import { useHistory } from "react-router-dom";
 
@@ -6,7 +6,10 @@ import { useHistory } from "react-router-dom";
 import { loadRequest, emailRequest } from "../../store/ducks/login/actions";
 import { useDispatch, useSelector } from "react-redux";
 import { ApplicationState } from "../../store";
-import { updateUserPasswordRequest } from "../../store/ducks/users/actions";
+import {
+  updateUserPasswordRequest,
+  loadUserByEmail,
+} from "../../store/ducks/users/actions";
 
 //MUI
 import Container from "@mui/material/Container";
@@ -37,6 +40,7 @@ import {
   Fab,
   FormGroup,
   useMediaQuery,
+  keyframes,
 } from "@mui/material";
 import { makeStyles } from "@mui/material/styles";
 import FormHelperText from "@mui/material/FormHelperText";
@@ -54,7 +58,10 @@ import {
 import theme from "../../theme/theme";
 // icons
 import THCStype1 from "../../components/Icons/THCS_Type1";
-
+import House1 from "../../components/Icons/HouseType1";
+import House2 from "../../components/Icons/HouseType2";
+import HouseGroup from "../../components/Icons/HouseGroup";
+import CloudIcon from "../../components/Icons/Cloud";
 //Utils
 import validateEmail from "../../utils/validateEmail";
 import LOCALSTORAGE from "../../helpers/constants/localStorage";
@@ -64,7 +71,8 @@ import * as yup from "yup";
 // componentes
 import Alert from "../../components/Alert";
 import Loading from "../../components/Loading";
-
+import BackgroundAnimated from "../../components/Background/Animated";
+import BackgroundHouses from "../../components/Background/Houses";
 function Copyright() {
   return (
     <Grid
@@ -74,7 +82,8 @@ function Copyright() {
         alignContent: "center",
         // fontSize: "20px",
         textDecoration: "bold",
-        borderTop: "1px solid #E7E7E7",
+
+        borderTop: "1px solid #d9d9d9",
         textAlign: "center",
         padding: "0.1rem",
         position: "fixed",
@@ -84,7 +93,7 @@ function Copyright() {
         width: "100%",
       }}
     >
-      <Typography variant="body2" align="center">
+      <Typography variant="body2" align="center" sx={{ background: "#d9d9d9" }}>
         <Link
           href="https://www.tascominformatica.com.br/"
           sx={{
@@ -219,6 +228,12 @@ const validationSchema = yup.object({
     .required("Os termos e condições devem ser aceitos.")
     .oneOf([true], "Os termos e políticas devem ser aceitos."),
 });
+const validationSchemaRecoveryPassword = yup.object({
+  email: yup
+    .string()
+    .required("Campo obrigatório")
+    .email("Formato de e-mail incorreto"),
+});
 const policity = () => {
   return (
     <>
@@ -229,7 +244,7 @@ const policity = () => {
           component="div"
           sx={{ fontWeight: "bold" }}
         >
-          Sollar Soluções no Lar
+          T+HCS - Health, Care and Safety
         </Typography>
         <Typography
           variant="body1"
@@ -238,12 +253,12 @@ const policity = () => {
         >
           {" "}
           A proteção da privacidade e do uso legal de dados pessoais é um dos
-          pilares do Sollar, que tem como compromisso a garantia da segurança
-          dos dados e da privacidade de nossos usuários. Esta política de
+          pilares do T+HCS, que tem como compromisso a garantia da segurança dos
+          dados e da privacidade de nossos usuários. Esta política de
           privacidade explica como seus dados pessoais são coletados, usados,
           armazenados e divulgados através de nossa plataforma, sistema e
-          aplicativo móvel. O Sollar poderá alterar a presente política, devido
-          a quaisquer alterações em nossas operações ou nas leis e regulamentos
+          aplicativo móvel. O T+HCS poderá alterar a presente política, devido a
+          quaisquer alterações em nossas operações ou nas leis e regulamentos
           aplicáveis.
         </Typography>
         <Typography
@@ -271,7 +286,7 @@ const policity = () => {
           component="div"
           sx={{ color: theme.palette.error.main }}
         >
-          O SOLLAR SOLUÇÕES NO LAR é um sistema voltado a atenção domiciliar
+          O T+HCS SOLUÇÕES NO LAR é um sistema voltado a atenção domiciliar
           dividido em duas plataformas principais, uma voltada para desktop e
           ambientada na web e outra mobile distribuida e mantida pelas
           plataformas de distribuição do respespectivo provedor de os mibile
@@ -283,7 +298,7 @@ const policity = () => {
           color={theme.palette.text.primary}
         >
           Para efeitos da Lei nº 13.709/2018 (Lei Geral de Proteção de Dados), o
-          Sollar realiza o tratamento de seus dados pessoais, como Operador de
+          T+HCS realiza o tratamento de seus dados pessoais, como Operador de
           Dados, em acordo com esta política.
         </Typography>
         <Typography
@@ -329,7 +344,7 @@ const policity = () => {
           component="div"
           sx={{ fontWeight: "bold" }}
         >
-          DADOS TRATADOS PELO SOLLAR
+          DADOS TRATADOS PELO T+HCS
         </Typography>
         <Typography
           variant="body1"
@@ -411,7 +426,7 @@ const policity = () => {
           sobre a finalidade do tratamento, a categoria de dados a serem
           coletados, qual o período de retenção, dentre outras questões
           relacionadas diretamente com o tratamento de dados pessoais.
-          <br />É importante reforçar, para seu conhecimento, que Sollar apenas
+          <br />É importante reforçar, para seu conhecimento, que T+HCS apenas
           operacionaliza as decisões de tratamento feitas pelos clientes.
           Portanto, não exercemos a atividade de Controlador sobre os dados
           pessoais tratados através dos nossos sistemas.{" "}
@@ -550,7 +565,7 @@ const policity = () => {
           color={theme.palette.text.primary}
         >
           Quanto aos dados pessoais operados por nós a partir da utilização do
-          Sollar pelos clientes, cabe a estes, na condição de controladores, a
+          T+HCS pelos clientes, cabe a estes, na condição de controladores, a
           interação direta com os pais ou responsáveis legais das crianças, para
           o devido consentimento.{" "}
         </Typography>
@@ -567,7 +582,7 @@ const policity = () => {
           component="div"
           color={theme.palette.text.primary}
         >
-          Entre os tipos de Dados Pessoais que o Sollar coleta, por si mesmo ou
+          Entre os tipos de Dados Pessoais que o T+HCS coleta, por si mesmo ou
           através de terceiros, existem: permissão de câmera, permissão de
           localização precisa (interrupta), permissão de localização aproximada
           (interrupta), permissão de telefone, permissão de armazenamento,
@@ -592,7 +607,7 @@ const policity = () => {
           Os Dados Pessoais poderão ser fornecidos livremente pelo Usuário, ou,
           no caso dos Dados de Utilização, coletados automaticamente ao se
           utilizar este aplicativo. A menos que especificado diferentemente
-          todos os Dados solicitados pelo Sollar são obrigatórios e a falta de
+          todos os Dados solicitados pelo T+HCS são obrigatórios e a falta de
           fornecimento destes Dados poderá impossibilitar este aplicativo de
           fornecer os seus serviços.{" "}
         </Typography>
@@ -821,7 +836,7 @@ const policity = () => {
           component="div"
           color={theme.palette.text.primary}
         >
-          Dependendo do dispositivo específico do Usuário, o Sollar pode
+          Dependendo do dispositivo específico do Usuário, o T+HCS pode
           solicitar certas permissões que permitem-no acessar os Dados do
           dispositivo do Usuário conforme descrito abaixo.
         </Typography>
@@ -952,8 +967,8 @@ const policity = () => {
           color={theme.palette.text.primary}
         >
           Usada para acessar a localização aproximada do dispositivo do Usuário.
-          O Sollar poderá coletar, usar e compartilhar os Dados de localização
-          do Usuário para poder fornecer serviços com base na localização.{" "}
+          O T+HCS poderá coletar, usar e compartilhar os Dados de localização do
+          Usuário para poder fornecer serviços com base na localização.{" "}
         </Typography>
         <Typography
           variant="body1"
@@ -978,7 +993,7 @@ const policity = () => {
           color={theme.palette.text.primary}
         >
           Usada para acessar a localização precisa do dispositivo do Usuário. O
-          Sollar poderá coletar, usar e compartilhar os Dados de localização do
+          T+HCS poderá coletar, usar e compartilhar os Dados de localização do
           Usuário para poder fornecer serviços com base na localização.
         </Typography>
         <Typography
@@ -1071,7 +1086,7 @@ const policity = () => {
           component="div"
           color={theme.palette.text.primary}
         >
-          O Sollar pode coletar, usar e compartilhar a localização de dados do
+          O T+HCS pode coletar, usar e compartilhar a localização de dados do
           Usuário a fim de fornecer serviços baseados em localização.{" "}
         </Typography>
         <Typography
@@ -1105,7 +1120,7 @@ const policity = () => {
           component="div"
           color={theme.palette.text.primary}
         >
-          O Sollar solicita determinadas permissões do Usuário que lhe permitem
+          O T+HCS solicita determinadas permissões do Usuário que lhe permitem
           acessar os Dados do dispositivo do Usuário conforme descritos abaixo.
         </Typography>
         <Typography
@@ -1132,7 +1147,7 @@ const policity = () => {
           component="div"
           color={theme.palette.text.primary}
         >
-          O Sollar pode enviar notificações push para o Usuário.
+          O T+HCS pode enviar notificações push para o Usuário.
         </Typography>
         <Typography
           variant="body1"
@@ -1147,9 +1162,9 @@ const policity = () => {
           component="div"
           color={theme.palette.text.primary}
         >
-          O Sollar pode rastrear Usuários ao armazenar um identificador
-          exclusivo do seu dispositivo, para fins de análise ou para o
-          armazenamento das preferências dos Usuários.
+          O T+HCS pode rastrear Usuários ao armazenar um identificador exclusivo
+          do seu dispositivo, para fins de análise ou para o armazenamento das
+          preferências dos Usuários.
         </Typography>
         <Typography
           variant="h6"
@@ -1369,7 +1384,7 @@ const policity = () => {
           component="div"
           color={theme.palette.text.primary}
         >
-          O Sollar não suporta pedidos de “Não Me Rastreie”. Para determinar se
+          O T+HCS não suporta pedidos de “Não Me Rastreie”. Para determinar se
           qualquer um dos serviços de terceiros que utiliza honram solicitações
           de “Não Me Rastreie”, por favor leia as políticas de privacidade.
         </Typography>
@@ -1386,7 +1401,7 @@ const policity = () => {
           component="div"
           color={theme.palette.text.primary}
         >
-          O Sollar se reserva o direito de fazer alterações nesta Política de
+          O T+HCS se reserva o direito de fazer alterações nesta Política de
           Privacidade a qualquer momento, mediante comunicação aos seus Usuários
           nesta página e possivelmente dentro deste aplicativo e/ou – na medida
           em que for viável tecnicamente e juridicamente – enviando um aviso
@@ -1583,6 +1598,19 @@ const policity = () => {
     </>
   );
 };
+const colorPrimary = theme.palette.primary.main;
+const colorSecondary = theme.palette.secondary.main;
+const colorWhite = theme.palette.common.white;
+const colorTerciary = theme.palette.terciary.main;
+
+const generateTwoDifferentRandomNumbers = (max: number): number[] => {
+  const numberRandom1 = Math.floor(Math.random() * max);
+  const numberRandom2 = Math.floor(Math.random() * max);
+  return numberRandom1 !== numberRandom2
+    ? [numberRandom1, numberRandom2]
+    : generateTwoDifferentRandomNumbers(max);
+};
+
 export default function SignIn() {
   const history = useHistory();
   const dispatch = useDispatch();
@@ -1597,23 +1625,16 @@ export default function SignIn() {
     value: "",
     error: false,
   });
+  const [showRecoveryPassword, setShowRecoveryPassword] = useState(false);
+  const [inputEmailForRecovery, setInputEmailForRecovery] = useState({
+    value: "",
+  });
+  const [sendEmail, setSendEmail] = useState(false);
   const [checkPolicy, setCheckPolicy] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [rememberMe, setRememberMe] = useState(false);
   const [valid, setValid] = useState(false);
   const [openPolicyModal, setOpenPolicyModal] = useState(false);
-  // const classes = useStyles();
-  // useEffect(() => {
-  //   const expired = localStorage.getItem(LOCALSTORAGE.EXPIRED_SESSION);
-  //   const token = localStorage.getItem(LOCALSTORAGE.TOKEN);
-  //
-  //   if (expired) {
-  //     localStorage.removeItem(LOCALSTORAGE.EXPIRED_SESSION);
-  //     toast.error('Sessão expirada');
-  //   }
-  //
-  //   // if (token) history.push('/dashboard');
-  // }, []);
 
   const xsQuery = useMediaQuery(`(max-width:${theme.breakpoints.values.xs}px)`);
   const smQuery = useMediaQuery(`(max-width:${theme.breakpoints.values.sm}px)`);
@@ -1773,101 +1794,124 @@ export default function SignIn() {
       );
     },
   });
-
-  return (
-    <>
-      {loginState.loading && <Loading />}
-      <Container
-        sx={{
-          height: "calc(100% - 24px)",
-          display: "flex",
-          alignItems: "center",
-        }}
+  const formikRecoveryPassword = useFormik({
+    initialValues: {
+      email: "",
+    },
+    validationSchema: validationSchemaRecoveryPassword,
+    onSubmit: (values) => {
+      dispatch(loadUserByEmail(values.email));
+      setSendEmail(true);
+      setInputEmailForRecovery({ value: values.email });
+    },
+    // dispatch(
+    //   updateUserPasswordRequest({
+    //     email: inputEmailForRecovery.value,
+    //     password: values.password,
+    //   })
+    // );
+    // dispatch(
+    //   loadRequest({ email: inputEmailForRecovery.value, password: values.password })
+    // );
+  });
+  const handleUserbyEmail = useCallback(() => {
+    // console.log(inputEmailForRecovery.value);
+    dispatch(loadUserByEmail(inputEmailForRecovery.value));
+    setSendEmail(true);
+  }, [inputEmailForRecovery]);
+  const ForgotPassword = () => (
+    <Grid item mt={1}>
+      <Link
+        sx={{ width: "130px", display: "inline-block" }}
+        onClick={() => setShowRecoveryPassword(true)}
+        rel="noopener"
       >
-        <Grid
-          container
-          gap={2}
+        <Typography
+          align={mdQuery ? "center" : "left"}
+          variant="body2"
           sx={{
-            width: "100%",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            // padding: "0 1rem",
+            width: "auto",
+            cursor: "pointer",
+            color: theme.palette.terciary.main,
+            background: theme.palette.primary.main,
+            borderRadius: "4px",
+            padding: "0 4px",
+            "&:hover": {
+              color: theme.palette.common.white,
+              textDecoration: "underline",
+            },
           }}
         >
-          <Grid
-            xs={12}
-            sm={12}
-            md={6}
-            lg={6}
-            item
+          Esqueceu a senha?
+        </Typography>
+      </Link>
+    </Grid>
+  );
+  const renderOfLogin = () => (
+    <Grid item sx={{ width: "25rem" }}>
+      <WelcomeTextWrapper>
+        <Typography
+          fontWeight={500}
+          variant="body1"
+          align={mdQuery ? "center" : "left"}
+          color={"common.white"}
+        >
+          Bem-vindo(a)! Realize seu login para continuar:
+        </Typography>
+      </WelcomeTextWrapper>
+      <form
+        style={{
+          width: "100%", // Fix IE 11 issue.
+          marginTop: theme.spacing(1),
+        }}
+        noValidate
+      >
+        <FormControl
+          fullWidth
+          margin="normal"
+          variant="outlined"
+          sx={{
+            "& .MuiOutlinedInput-root.MuiInputBase-root": {
+              "&.Mui-focused": {
+                "& fieldset": {
+                  border: `4px solid ${theme.palette.secondary.main} !important`,
+                },
+                // borderColor: `${theme.palette.secondary.main} !important`,
+              },
+              "&:hover": {
+                "& fieldset": {
+                  border: `4px solid ${theme.palette.terciaryDark.main}`,
+                },
+              },
+            },
+          }}
+        >
+          <OutlinedInput
             sx={{
-              display: "flex",
-              justifyContent: "center",
-              alignItems: "center",
+              background: "white",
             }}
-          >
-            <Box
-              display="flex"
-              width={"25rem"}
-              justifyContent="center"
-              alignItems="center"
-            >
-              <THCStype1
-                fill={theme.palette.primary.main}
-                // width={"25rem"}
-                width={"100%"}
-              />
-              {/* <HomeIconLogo /> */}
-            </Box>
-          </Grid>
-          <Grid item sx={{ width: "25rem" }}>
-            <WelcomeTextWrapper>
-              <Typography
-                variant="body1"
-                align={mdQuery ? "center" : "left"}
-                color={"text.primary"}
-              >
-                Bem-vindo(a)! Realize seu login para continuar:
-              </Typography>
-            </WelcomeTextWrapper>
-            <form
-              style={{
-                width: "100%", // Fix IE 11 issue.
-                marginTop: theme.spacing(1),
-              }}
-              noValidate
-            >
-              <FormControl fullWidth margin="normal" variant="outlined">
-                <InputLabel
-                  htmlFor="outlined-adornment-email"
-                  color="secondary"
-                >
-                  E-mail
-                </InputLabel>
-                <OutlinedInput
-                  color="secondary"
-                  onKeyDown={handleKeyEnter}
-                  error={inputEmail.error}
-                  required
-                  fullWidth
-                  label="E-mail"
-                  name="email"
-                  autoComplete="number"
-                  autoFocus
-                  onChange={(inputValue) =>
-                    setInputEmail((prev) => ({
-                      ...prev,
-                      value: inputValue.target.value,
-                    }))
-                  }
-                  // onBlur={handleEmailValidator}
-                  id="outlined-adornment-email"
-                  value={inputEmail.value}
-                  endAdornment={
-                    <InputAdornment position="end">
-                      {/* <div className={classes.wrapper}> */}
-                      {/* <Fab
+            color="secondary"
+            onKeyDown={handleKeyEnter}
+            error={inputEmail.error}
+            required
+            fullWidth
+            placeholder="E-mail"
+            name="email"
+            autoComplete="number"
+            autoFocus
+            onChange={(inputValue) =>
+              setInputEmail((prev) => ({
+                ...prev,
+                value: inputValue.target.value,
+              }))
+            }
+            // onBlur={handleEmailValidator}
+            id="outlined-adornment-email"
+            value={inputEmail.value}
+            endAdornment={
+              <InputAdornment position="end">
+                {/* <div className={classes.wrapper}> */}
+                {/* <Fab
                       className={classes.fab}
                       aria-label="save"
                       // color="secondary"
@@ -1875,271 +1919,606 @@ export default function SignIn() {
                       onClick={handleVerifyEmail}
                       style={{ color: "primary" }}
                     > */}
-                      <IconButton
-                        onClick={handleVerifyEmail}
-                        sx={{
-                          cursor: "pointer",
-                          "& svg, path": { cursor: "pointer" },
-                        }}
-                      >
-                        <ArrowForwardIcon color="secondary" />
-                      </IconButton>
-                      {/* </Fab> */}
-                      {/*<CircularProgress size={68} className={classes.fabProgress}/>*/}
-                      {/* </div> */}
-                    </InputAdornment>
-                  }
-                  // labelWidth={70}
-                />
-              </FormControl>
-              {loginState.email.user ? (
-                <>
-                  {loginState.email.password ? (
-                    <>
-                      <FormControl fullWidth margin="normal" variant="outlined">
-                        <InputLabel
-                          htmlFor="outlined-adornment-password"
-                          color="secondary"
-                        >
-                          Senha
-                        </InputLabel>
-                        <OutlinedInput
-                          label="senha"
-                          color="secondary"
-                          onKeyDown={handleKeyEnter}
-                          id="outlined-adornment-password"
-                          type={showPassword ? "text" : "password"}
-                          value={inputPassword.value}
-                          onChange={(inputValue) =>
-                            setInputPassword((prev) => ({
-                              ...prev,
-                              value: inputValue.target.value,
-                            }))
-                          }
-                          error={inputPassword.error}
-                          endAdornment={
-                            <InputAdornment position="end">
-                              <IconButton
-                                aria-label="toggle password visibility"
-                                onClick={handleClickShowPassword}
-                                edge="end"
-                                sx={{
-                                  // cursor: "pointer",
-                                  "& svg, path": { cursor: "pointer" },
-                                }}
-                              >
-                                {showPassword ? (
-                                  <Visibility />
-                                ) : (
-                                  <VisibilityOff />
-                                )}
-                              </IconButton>
-                            </InputAdornment>
-                          }
-                          // labelWidth={70}
-                        />
-                      </FormControl>
-                      <FormControlLabel
-                        control={<Checkbox value="remember" color="primary" />}
-                        label="Lembrar de mim neste computador"
-                      />
-                      <Button
-                        type="submit"
-                        fullWidth
-                        variant="contained"
-                        color="secondary"
-                        // className={classes.submit}
-                        onClick={handleLogin}
-                      >
-                        Entrar
-                      </Button>
-                    </>
-                  ) : (
-                    <>
-                      <form onSubmit={formik.handleSubmit}>
-                        <TextField
-                          fullWidth
-                          color="secondary"
-                          sx={{ margin: "8px 0" }}
-                          id="password"
-                          name="password"
-                          label="Nova senha"
-                          type={showPassword ? "text" : "password"}
-                          value={formik.values.password}
-                          onChange={formik.handleChange}
-                          error={
-                            formik.touched.password &&
-                            Boolean(formik.errors.password)
-                          }
-                          helperText={
-                            formik.touched.password && formik.errors.password
-                          }
-                          InputProps={{
-                            endAdornment: (
-                              <InputAdornment position="end">
-                                <IconButton
-                                  aria-label="toggle password visibility"
-                                  onClick={handleClickShowPassword}
-                                  onMouseDown={handleMouseDownPassword}
-                                  edge="end"
-                                  sx={{
-                                    "& svg, path": { cursor: "pointer" },
-                                  }}
-                                >
-                                  {showPassword ? (
-                                    <VisibilityOff />
-                                  ) : (
-                                    <Visibility />
-                                  )}
-                                </IconButton>
-                              </InputAdornment>
-                            ),
-                          }}
-                        />
-                        <TextField
-                          fullWidth
-                          color="secondary"
-                          sx={{ margin: "8px 0" }}
-                          id="confirmPassword"
-                          name="confirmPassword"
-                          label="Confirmar senha"
-                          type={showPassword ? "text" : "password"}
-                          value={formik.values.confirmPassword}
-                          onChange={formik.handleChange}
-                          error={
-                            formik.touched.confirmPassword &&
-                            Boolean(formik.errors.confirmPassword)
-                          }
-                          helperText={
-                            formik.touched.confirmPassword &&
-                            formik.errors.confirmPassword
-                          }
-                          InputProps={{
-                            endAdornment: (
-                              <InputAdornment position="end">
-                                <IconButton
-                                  aria-label="toggle password visibility"
-                                  onClick={handleClickShowPassword}
-                                  onMouseDown={handleMouseDownPassword}
-                                  edge="end"
-                                  sx={{
-                                    "& svg, path": { cursor: "pointer" },
-                                  }}
-                                >
-                                  {showPassword ? (
-                                    <VisibilityOff />
-                                  ) : (
-                                    <Visibility />
-                                  )}
-                                </IconButton>
-                              </InputAdornment>
-                            ),
-                          }}
-                        />
-
-                        <FormGroup
-                          row
-                          style={{
-                            margin: "0px 0px 8px 0px",
-                            alignItems: "center",
-                            display: "flex",
-                            flexWrap: "nowrap",
-                          }}
-                        >
-                          <Checkbox
-                            id="policyAccepted"
-                            name="policyAccepted"
-                            checked={formik.values.policyAccepted}
-                            onChange={formik.handleChange}
-                            color="primary"
-                          />
-
-                          <Typography
-                            variant="body2"
-                            sx={{ display: "inline" }}
-                          >
-                            Li e concordo com os{" "}
-                            <Typography
-                              variant="body2"
-                              onClick={() => setOpenPolicyModal(true)}
-                              sx={{
-                                display: "inline",
-                                cursor: "pointer",
-                                color: theme.palette.primary.main,
-                              }}
-                            >
-                              termos e politicas{" "}
-                            </Typography>
-                            de privacidade
-                          </Typography>
-
-                          <FormHelperText error sx={{ marginLeft: "14px" }}>
-                            {formik.submitCount && !formik.values.policyAccepted
-                              ? formik.errors.policyAccepted
-                              : ""}
-                          </FormHelperText>
-                        </FormGroup>
-                        <Button
-                          variant="contained"
-                          fullWidth
-                          onClick={() => formik.handleSubmit()}
-                          color="secondary"
-                        >
-                          Salvar senha
-                        </Button>
-                      </form>
-                    </>
-                  )}
-                </>
-              ) : (
-                <>
-                  {/*<Button*/}
-                  {/*  type="submit"*/}
-                  {/*  fullWidth*/}
-                  {/*  variant="contained"*/}
-                  {/*  color="primary"*/}
-                  {/*  className={classes.submit}*/}
-                  {/*  onClick={handleVerifyEmail}*/}
-                  {/*>*/}
-                  {/*  Verificar*/}
-                  {/*</Button>*/}
-                </>
-              )}
-              {/*<Button*/}
-              {/*  background="success_rounded"*/}
-              {/*  type="button"*/}
-              {/*  fullWidth*/}
-              {/*  variant="contained"*/}
-              {/*  className={classes.create_account}*/}
-              {/*  onClick={() => history.push('/register')}*/}
-              {/*>*/}
-              {/*  Criar conta*/}
-              {/*</Button>*/}
-
-              <Grid item mt={1}>
-                <Link
-                  onClick={() => history.push("/forgotpassword")}
-                  rel="noopener"
+                <IconButton
+                  onClick={handleVerifyEmail}
+                  sx={{
+                    cursor: "pointer",
+                    "& svg, path": { cursor: "pointer" },
+                  }}
                 >
-                  <Typography
-                    align={mdQuery ? "center" : "left"}
-                    variant="body2"
+                  <ArrowForwardIcon color="secondary" />
+                </IconButton>
+                {/* </Fab> */}
+                {/*<CircularProgress size={68} className={classes.fabProgress}/>*/}
+                {/* </div> */}
+              </InputAdornment>
+            }
+            // labelWidth={70}
+          />
+        </FormControl>
+        {loginState.email.user ? (
+          <>
+            {loginState.email.password ? (
+              <>
+                <FormControl fullWidth margin="normal" variant="outlined">
+                  {/* <InputLabel
+                    htmlFor="outlined-adornment-password"
+                    color="secondary"
+                  >
+                    Senha
+                  </InputLabel> */}
+                  <OutlinedInput
                     sx={{
-                      width: "auto",
-                      cursor: "pointer",
-                      color: theme.palette.secondary.main,
-                      "&:hover": { color: theme.palette.secondary.dark },
+                      "&.MuiOutlinedInput-root.MuiInputBase-root": {
+                        background: "white",
+                        "&:hover": {
+                          "& fieldset": {
+                            border: `4px solid ${theme.palette.terciaryDark.main}`,
+                          },
+                        },
+                        "&.Mui-focused": {
+                          "& fieldset": {
+                            border: `4px solid ${theme.palette.secondary.main} `,
+                          },
+                        },
+                        "&.Mui-error": {
+                          "& fieldset": {
+                            border: `4px solid ${theme.palette.error.main}`,
+                          },
+                        },
+                      },
+                    }}
+                    placeholder="senha"
+                    color="secondary"
+                    onKeyDown={handleKeyEnter}
+                    id="outlined-adornment-password"
+                    type={showPassword ? "text" : "password"}
+                    value={inputPassword.value}
+                    onChange={(inputValue) =>
+                      setInputPassword((prev) => ({
+                        ...prev,
+                        value: inputValue.target.value,
+                      }))
+                    }
+                    error={inputPassword.error}
+                    endAdornment={
+                      <InputAdornment position="end">
+                        <IconButton
+                          aria-label="toggle password visibility"
+                          onClick={handleClickShowPassword}
+                          edge="end"
+                          sx={{
+                            // cursor: "pointer",
+                            "& svg, path": { cursor: "pointer" },
+                          }}
+                        >
+                          {showPassword ? <Visibility /> : <VisibilityOff />}
+                        </IconButton>
+                      </InputAdornment>
+                    }
+                    // labelWidth={70}
+                  />
+                </FormControl>
+                <FormControlLabel
+                  sx={{ "& .MuiTypography-root": { color: "white" } }}
+                  control={
+                    <Checkbox
+                      value="remember"
+                      color="primary"
+                      sx={{
+                        "&.MuiCheckbox-root": {
+                          "& svg": { color: theme.palette.terciary.main },
+                        },
+                      }}
+                    />
+                  }
+                  label="Lembrar de mim neste computador"
+                />
+                <Button
+                  type="submit"
+                  fullWidth
+                  variant="contained"
+                  color="secondary"
+                  sx={{
+                    background: theme.palette.terciary.main,
+                    color: theme.palette.text.primary,
+                    "&:hover": { background: theme.palette.terciaryDark.main },
+                  }}
+                  onClick={handleLogin}
+                >
+                  Entrar
+                </Button>
+              </>
+            ) : (
+              <>
+                <form onSubmit={formik.handleSubmit}>
+                  <TextField
+                    fullWidth
+                    color="secondary"
+                    sx={{
+                      margin: "8px 0",
+
+                      "& .MuiOutlinedInput-root.MuiInputBase-root": {
+                        background: "white",
+                        "&:hover": {
+                          "& fieldset": {
+                            border: `4px solid ${theme.palette.terciaryDark.main}`,
+                          },
+                        },
+                        "&.Mui-focused": {
+                          "& fieldset": {
+                            border: `4px solid ${theme.palette.secondary.main} `,
+                          },
+                        },
+                        "&.Mui-error": {
+                          "& fieldset": {
+                            border: `4px solid ${theme.palette.error.main}`,
+                          },
+                        },
+                      },
+                    }}
+                    id="password"
+                    name="password"
+                    placeholder="Nova senha"
+                    type={showPassword ? "text" : "password"}
+                    value={formik.values.password}
+                    onChange={formik.handleChange}
+                    error={
+                      formik.touched.password && Boolean(formik.errors.password)
+                    }
+                    helperText={
+                      formik.touched.password && formik.errors.password
+                    }
+                    InputProps={{
+                      endAdornment: (
+                        <InputAdornment position="end">
+                          <IconButton
+                            aria-label="toggle password visibility"
+                            onClick={handleClickShowPassword}
+                            onMouseDown={handleMouseDownPassword}
+                            edge="end"
+                            sx={{
+                              "& svg, path": { cursor: "pointer" },
+                            }}
+                          >
+                            {showPassword ? <VisibilityOff /> : <Visibility />}
+                          </IconButton>
+                        </InputAdornment>
+                      ),
+                    }}
+                  />
+                  <TextField
+                    fullWidth
+                    color="secondary"
+                    sx={{
+                      margin: "8px 0",
+
+                      "& .MuiOutlinedInput-root.MuiInputBase-root": {
+                        background: "white",
+                        "&:hover": {
+                          "& fieldset": {
+                            border: `4px solid ${theme.palette.terciaryDark.main}`,
+                          },
+                        },
+                        "&.Mui-focused": {
+                          "& fieldset": {
+                            border: `4px solid ${theme.palette.secondary.main} `,
+                          },
+                        },
+                        "&.Mui-error": {
+                          "& fieldset": {
+                            border: `4px solid ${theme.palette.error.main}`,
+                          },
+                        },
+                      },
+                    }}
+                    id="confirmPassword"
+                    name="confirmPassword"
+                    placeholder="Confirmar senha"
+                    type={showPassword ? "text" : "password"}
+                    value={formik.values.confirmPassword}
+                    onChange={formik.handleChange}
+                    error={
+                      formik.touched.confirmPassword &&
+                      Boolean(formik.errors.confirmPassword)
+                    }
+                    helperText={
+                      formik.touched.confirmPassword &&
+                      formik.errors.confirmPassword
+                    }
+                    InputProps={{
+                      endAdornment: (
+                        <InputAdornment position="end">
+                          <IconButton
+                            aria-label="toggle password visibility"
+                            onClick={handleClickShowPassword}
+                            onMouseDown={handleMouseDownPassword}
+                            edge="end"
+                            sx={{
+                              "& svg, path": { cursor: "pointer" },
+                            }}
+                          >
+                            {showPassword ? <VisibilityOff /> : <Visibility />}
+                          </IconButton>
+                        </InputAdornment>
+                      ),
+                    }}
+                  />
+
+                  <FormGroup
+                    row
+                    sx={{
+                      margin: "0px 0px 8px 0px",
+                      alignItems: "center",
+                      display: "flex",
+                      flexWrap: "nowrap",
                     }}
                   >
-                    Esqueceu a senha?
-                  </Typography>
-                </Link>
-              </Grid>
-            </form>
-          </Grid>
+                    <Checkbox
+                      id="policyAccepted"
+                      name="policyAccepted"
+                      checked={formik.values.policyAccepted}
+                      onChange={formik.handleChange}
+                      color="secondary"
+                      sx={{
+                        "&.MuiCheckbox-root": {
+                          "& svg": { color: theme.palette.terciary.main },
+                        },
+                      }}
+                    />
 
-          <Copyright />
+                    <Typography
+                      variant="body2"
+                      sx={{ display: "inline", color: "white" }}
+                    >
+                      Li e concordo com os{" "}
+                      <Typography
+                        variant="body2"
+                        onClick={() => setOpenPolicyModal(true)}
+                        sx={{
+                          display: "inline",
+                          cursor: "pointer",
+                          color: theme.palette.terciary.main,
+                          "&:hover": { textDecoration: "underline" },
+                        }}
+                      >
+                        termos e politicas{" "}
+                      </Typography>
+                      de privacidade
+                    </Typography>
+
+                    <FormHelperText error sx={{ marginLeft: "14px" }}>
+                      {formik.submitCount && !formik.values.policyAccepted
+                        ? formik.errors.policyAccepted
+                        : ""}
+                    </FormHelperText>
+                  </FormGroup>
+                  <Button
+                    variant="contained"
+                    fullWidth
+                    onClick={() => formik.handleSubmit()}
+                    color="secondary"
+                    sx={{
+                      background: theme.palette.terciary.main,
+                      color: theme.palette.text.primary,
+                      "&:hover": {
+                        background: theme.palette.terciaryDark.main,
+                      },
+                    }}
+                  >
+                    Salvar senha
+                  </Button>
+                </form>
+              </>
+            )}
+          </>
+        ) : (
+          <>
+            {/*<Button*/}
+            {/*  type="submit"*/}
+            {/*  fullWidth*/}
+            {/*  variant="contained"*/}
+            {/*  color="primary"*/}
+            {/*  className={classes.submit}*/}
+            {/*  onClick={handleVerifyEmail}*/}
+            {/*>*/}
+            {/*  Verificar*/}
+            {/*</Button>*/}
+          </>
+        )}
+        {/*<Button*/}
+        {/*  background="success_rounded"*/}
+        {/*  type="button"*/}
+        {/*  fullWidth*/}
+        {/*  variant="contained"*/}
+        {/*  className={classes.create_account}*/}
+        {/*  onClick={() => history.push('/register')}*/}
+        {/*>*/}
+        {/*  Criar conta*/}
+        {/*</Button>*/}
+        {console.log(loginState.email)}
+        {!loginState.email.user ? (
+          <ForgotPassword />
+        ) : loginState.email.password ? (
+          <ForgotPassword />
+        ) : (
+          ""
+        )}
+      </form>
+    </Grid>
+  );
+  const recovery = () => (
+    <Grid item sx={{ width: "25rem !important" }}>
+      <Typography
+        variant="h5"
+        fontWeight={500}
+        color="white"
+        mb={1}
+        align={mdQuery ? "center" : "left"}
+      >
+        Redefina sua senha
+      </Typography>
+
+      <Typography
+        variant="body1"
+        mb={2}
+        color="white"
+        align={mdQuery ? "center" : "left"}
+      >
+        Insira seu e-mail
+      </Typography>
+      <FormControl
+        fullWidth
+        onSubmit={() => formikRecoveryPassword.handleSubmit()}
+      >
+        <TextField
+          id="email"
+          name="email"
+          value={formikRecoveryPassword.values.email}
+          onChange={formikRecoveryPassword.handleChange}
+          error={
+            formikRecoveryPassword.touched.email &&
+            Boolean(formikRecoveryPassword.errors.email)
+          }
+          helperText={
+            formikRecoveryPassword.touched.email &&
+            formikRecoveryPassword.errors.email
+          }
+          color="secondary"
+          fullWidth
+          // label="E-mail"
+          placeholder="E-mail"
+          variant="outlined"
+          type={"email"}
+          // size="small"
+          sx={{
+            "& .MuiOutlinedInput-root.MuiInputBase-root": {
+              background: "white",
+              "&.Mui-error": {
+                "& .MuiOutlinedInput-notchedOutline": {
+                  border: `4px solid ${theme.palette.error.main} !important`,
+                },
+              },
+              "&.Mui-focused": {
+                "& fieldset": {
+                  border: `4px solid ${theme.palette.secondary.main} !important`,
+                },
+                // borderColor: `${theme.palette.secondary.main} !important`,
+              },
+              "&:hover": {
+                "& fieldset": {
+                  border: `4px solid ${theme.palette.terciaryDark.main}`,
+                },
+              },
+            },
+          }}
+        />
+
+        <Grid
+          item
+          sx={{
+            margin: "1rem 0",
+            display: "flex",
+            gap: "0.5rem",
+            flexWrap: smQuery ? "wrap" : "nowrap",
+          }}
+        >
+          <Button
+            type="submit"
+            fullWidth
+            variant="contained"
+            color="success"
+            onClick={() => formikRecoveryPassword.handleSubmit()}
+            sx={{
+              backgroundColor: theme.palette.terciary.main,
+              color: theme.palette.primary.main,
+              "&:hover": { backgroundColor: theme.palette.terciaryDark.main },
+            }}
+          >
+            Enviar
+          </Button>
+
+          <Button
+            onClick={() => setShowRecoveryPassword(false)}
+            variant="outlined"
+            color="secondary"
+            fullWidth
+            sx={{
+              color: theme.palette.terciary.main,
+              border: `1px solid ${theme.palette.terciary.main}`,
+              "&:hover": {
+                border: `1px solid ${theme.palette.terciaryDark.main}`,
+              },
+            }}
+          >
+            Cancelar
+          </Button>
         </Grid>
+      </FormControl>
+    </Grid>
+  );
+  const recoverySend = () => (
+    <Grid item sx={{ width: "25rem" }}>
+      <Typography
+        variant="h5"
+        fontWeight={500}
+        color="white"
+        mb={1}
+        align={mdQuery ? "center" : "left"}
+      >
+        Verifique seu e-mail
+      </Typography>
+      <Typography
+        color="white"
+        variant="h6"
+        align={mdQuery ? "center" : "left"}
+      >
+        {`Enviamos um link de recuperação para o e-mail ${inputEmailForRecovery.value}. Confira sua caixa de
+        entrada e clique no link de confirmação para criar uma nova senha.`}
+      </Typography>
+      <Typography mt={1} color="white" align={mdQuery ? "center" : "left"}>
+        Se não receber o e-mail em 5 minutos:
+      </Typography>
+      <Typography
+        ml={1}
+        mt={1}
+        color="white"
+        align={mdQuery ? "center" : "left"}
+      >
+        - Verifique se o e-mail para recuperação está correto
+        <br />- Verifique sua caixa de span
+      </Typography>
+
+      <Grid
+        item
+        sx={{
+          margin: "1rem 0",
+          display: "flex",
+          gap: "0.5rem",
+          flexWrap: smQuery ? "wrap" : "nowrap",
+        }}
+      >
+        <Button
+          sx={{
+            height: "2rem",
+            backgroundColor: theme.palette.terciary.main,
+            color: theme.palette.primary.main,
+            "&:hover": { backgroundColor: theme.palette.terciaryDark.main },
+          }}
+          type="submit"
+          variant="contained"
+          color="primary"
+          onClick={handleUserbyEmail}
+          fullWidth
+        >
+          Reenviar Email
+        </Button>
+        <Button
+          sx={{
+            height: "2rem",
+            color: theme.palette.terciary.main,
+            border: `1px solid ${theme.palette.terciary.main}`,
+            "&:hover": {
+              border: `1px solid ${theme.palette.terciaryDark.main}`,
+            },
+          }}
+          type="submit"
+          variant="outlined"
+          color="primary"
+          onClick={() => setShowRecoveryPassword(false)}
+          fullWidth
+        >
+          Login
+        </Button>
+      </Grid>
+    </Grid>
+  );
+
+  return (
+    <>
+      {loginState.loading && <Loading />}
+      <Container
+        sx={{
+          maxWidth: "none !important",
+          height: "calc(100% - 24px)",
+          margin: 0,
+          backgroundColor: theme.palette.primary.main,
+          overflow: "hidden",
+          padding: "0px !important",
+          display: "flex",
+          flexDirection: "column",
+          justifyContent: "space-between",
+          "& .MuiFormHelperText-root": { fontWeight: 700 },
+        }}
+      >
+        <Box sx={{ marginTop: "-20px" }}>
+          <BackgroundAnimated />
+        </Box>
+
+        <Container
+          sx={{
+            width: "100%",
+            padding: "16px",
+            position: "absolute",
+            top: 0,
+            height: "100%",
+            display: "flex",
+            alignItems: "center",
+            zIndex: 10,
+            maxWidth: "none !important",
+            // background: "pink",
+          }}
+        >
+          <Grid
+            container
+            gap={2}
+            sx={{
+              width: "100%",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              margin: "0 auto",
+              maxWidth: "1200px",
+              // padding: "0 1rem",
+            }}
+          >
+            <Grid
+              xs={12}
+              sm={12}
+              md={6}
+              lg={6}
+              item
+              sx={{
+                display: "flex",
+                justifyContent: "center",
+                alignItems: "center",
+              }}
+            >
+              <Box
+                display="flex"
+                width={"25rem"}
+                justifyContent="center"
+                alignItems="center"
+              >
+                <THCStype1
+                  fill={theme.palette.common.white}
+                  // width={"25rem"}
+                  width={"100%"}
+                />
+                {/* <HomeIconLogo /> */}
+              </Box>
+            </Grid>
+            {showRecoveryPassword
+              ? sendEmail
+                ? recoverySend()
+                : recovery()
+              : renderOfLogin()}
+
+            <Copyright />
+          </Grid>
+        </Container>
+        <BackgroundHouses amountOfHouses={6} />
+        {/* {generateRandomHouses(5)} */}
       </Container>
       <Dialog
         open={openPolicyModal}
