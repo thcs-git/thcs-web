@@ -473,29 +473,29 @@ export default function AccordionReport(props: IAccordionReport) {
             top: "0.4rem",
           }}
         >
-          <IconButton
-            aria-label="print"
-            sx={{
-              display: "flex",
-              justifyContent: "center",
-              alignItems: "center",
-              cursor: "pointer",
-              height: "36px",
-              width: "36px",
-            }}
-            onClick={() => {}}
-          >
-            <PrintIcon
-              sx={{
-                color:
-                  expanded === `panel${index}`
-                    ? colorBackgroundInactive
-                    : colorBackgroundActive,
-                cursor: "pointer",
-                "& path": { cursor: "pointer" },
-              }}
-            />
-          </IconButton>
+          {/*<IconButton*/}
+          {/*  aria-label="print"*/}
+          {/*  sx={{*/}
+          {/*    display: "flex",*/}
+          {/*    justifyContent: "center",*/}
+          {/*    alignItems: "center",*/}
+          {/*    cursor: "pointer",*/}
+          {/*    height: "36px",*/}
+          {/*    width: "36px",*/}
+          {/*  }}*/}
+          {/*  onClick={() => {}}*/}
+          {/*>*/}
+          {/*  <PrintIcon*/}
+          {/*    sx={{*/}
+          {/*      color:*/}
+          {/*        expanded === `panel${index}`*/}
+          {/*          ? colorBackgroundInactive*/}
+          {/*          : colorBackgroundActive,*/}
+          {/*      cursor: "pointer",*/}
+          {/*      "& path": { cursor: "pointer" },*/}
+          {/*    }}*/}
+          {/*  />*/}
+          {/*</IconButton>*/}
         </Box>
         <Accordion
           key={day[0]}
@@ -1499,10 +1499,11 @@ export default function AccordionReport(props: IAccordionReport) {
                 width: "36px",
               }}
               onClick={() => {}}
+              disabled={true}
             >
               <PrintIcon
                 sx={{
-                  color: colorBackgroundActive,
+                  color: '#999999',
                   cursor: "pointer",
                   "& > path": { cursor: "pointer" },
                 }}
@@ -2600,8 +2601,8 @@ export default function AccordionReport(props: IAccordionReport) {
         NoData()
       )}
 
-      {content.error &&
-        toast.error("Não foi possível carregar os relatórios deste prontuário")}
+      {/*{content.error &&*/}
+      {/*  toast.error("Não foi possível carregar os relatórios deste prontuário")}*/}
     </>
   );
 }
