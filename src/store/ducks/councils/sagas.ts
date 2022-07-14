@@ -48,7 +48,7 @@ export function* update({ payload: { data } }: any) {
     toast.success('Conselho atualizado com sucesso!');
     yield put(updateCouncilSuccess(response.data[0]))
   } catch (error) {
-    toast.error("Não foi possível atualizar os dados do conselho");
+    // toast.error("Não foi possível atualizar os dados do conselho");
     yield put(loadFailure());
   }
 }
