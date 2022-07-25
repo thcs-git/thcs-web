@@ -221,6 +221,15 @@ const PermissionForm = (props: IComponent) => {
         { crud: "create", label: "Gerar" },
       ],
     },
+    {
+      legend: "Mapa",
+      name: "map",
+      rights: [
+        { crud: "view", label: "Visualizar" },
+        { crud: "edit", label: "Criar/Editar" },
+        { crud: "create", label: "Gerar" },
+      ],
+    },
     // {
     //   legend: "Agenda",
     //   name: "schedule",
@@ -243,6 +252,7 @@ const PermissionForm = (props: IComponent) => {
         { crud: "prescription.create", label: "Receituários" },
         { crud: "certificate.create", label: "Atestado" },
         { crud: "exam.create", label: "Exames" },
+        { crud: "map.view", label: "Mapa" },
       ],
     },
   ];
