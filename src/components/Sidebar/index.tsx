@@ -307,6 +307,13 @@ const Sibebar = (props: Props<any>) => {
                 )
                 : sessionStorage.removeItem(SESSIONSTORAGE.INTEGRATION_NAME);
 
+            layoutState.data.time_zone
+                ? sessionStorage.setItem(
+                    SESSIONSTORAGE.INTEGRATION_TIME_ZONE,
+                    layoutState.data.time_zone
+                )
+                : sessionStorage.removeItem(SESSIONSTORAGE.INTEGRATION_NAME);
+
             const items: itemsInterface[] = [];
 
             _.sortBy(layoutState.data.menu, ["id"]).map((item: any) => {
