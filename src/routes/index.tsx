@@ -65,6 +65,8 @@ import QrCode from "../pages/qrcode/";
 import ProfessionForm from "../pages/profession/form/index";
 
 import Login from "../pages/login";
+import PatientOverviewRedirect from "../pages/CareOverviewRedirect";
+import CareOverviewRedirect from "../pages/CareOverviewRedirect";
 //import Register from '../pages/register';
 
 export default function Routes() {
@@ -200,6 +202,10 @@ export default function Routes() {
           path="/care/:id/overview"
           exact
           component={CareOverview}
+        />
+        <PrivateRoute
+            path="/care/:id/redirect"
+            component={CareOverviewRedirect}
         />
         <PrivateRoute
           path="/care/:id/overview/schedule"
