@@ -195,6 +195,9 @@ import { get as getAttests } from "./attest/sagas";
 import { LogoTypes } from "./logo/types";
 import { get as getLogo } from "./logo/sagas";
 
+import { TelemedicineTypes } from "./telemedicine/types";
+import { get as getTelemedicine } from "./telemedicine/sagas";
+
 export default function* rootSaga(): any {
   return yield all([
     takeLatest(LoginTypes.LOAD_REQUEST, doLogin),
@@ -442,5 +445,10 @@ export default function* rootSaga(): any {
      * LOGO
      */
     takeLatest(LogoTypes.LOAD_REQUEST, getLogo),
+
+    /**
+     * TELEMEDICINE
+     */
+    takeLatest(TelemedicineTypes.LOAD_REQUEST, getTelemedicine),
   ]);
 }
