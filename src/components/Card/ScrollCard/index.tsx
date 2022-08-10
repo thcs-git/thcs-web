@@ -93,7 +93,11 @@ export default function ScrollCard(props: IScroll) {
   }
   function handlerShowFilter(report: any, active: any) {
     if (active === true && existContent) {
-      if (report === "Evolução" || report === "Check-in/out") {
+      if (
+        report === "Evolução" ||
+        report === "Check-in/out" ||
+        report === "Telemedicina"
+      ) {
         return (
           <IconButton
             onClick={openFilter}

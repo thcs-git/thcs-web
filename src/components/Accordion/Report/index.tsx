@@ -88,7 +88,10 @@ import {
 } from "../../../store/ducks/prescripition/actions";
 
 import { loadRequestReportUnique as loadRequestReportAntibioticUnique } from "../../../store/ducks/antibiotic/actions";
-
+import {
+  loadRequestReportUnique,
+  loadRequestReportByDay,
+} from "../../../store/ducks/telemedicine/actions";
 interface IAccordionReport {
   content: {
     error: boolean;
@@ -2577,7 +2580,12 @@ export default function AccordionReport(props: IAccordionReport) {
               //   reportType: "Evolução",
               //   attendance_id: state?.data?._id,
               // };
-              // dispatch(loadEvolutionFilterRequest(payload));
+              dispatch(
+                loadRequestReportByDay({
+                  date: _id,
+                  external_attendance_id: careState.data._id,
+                })
+              );
             }}
           >
             <PrintIcon
@@ -2701,20 +2709,24 @@ export default function AccordionReport(props: IAccordionReport) {
                 height: "36px",
                 width: "36px",
               }}
-              // onClick={() => {
-              //   if (reportType === "Aferições") {
-              //     const payload = {
-              //       _id: column._id,
-              //       type: "Id",
-              //       name: column._id,
-              //       dataStart: "",
-              //       dataEnd: "",
-              //       reportType: "Aferições",
-              //       attendance_id: state?.data?._id,
-              //     };
-              //     dispatch(loadMeasurementFilterRequest(payload));
-              //   }
-              // }}
+              onClick={() => {
+                // if (reportType === "Aferições") {
+                //   const payload = {
+                //     _id: column._id,
+                //     type: "Id",
+                //     name: column._id,
+                //     dataStart: "",
+                //     dataEnd: "",
+                //     reportType: "Aferições",
+                //     attendance_id: state?.data?._id,
+                //   };
+                // }
+                let payload = {
+                  telemedicine_id: doc._id,
+                  external_attendance_id: careState.data._id,
+                };
+                dispatch(loadRequestReportUnique(payload));
+              }}
             >
               <PrintIcon
                 sx={{
