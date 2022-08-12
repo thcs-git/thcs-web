@@ -21,7 +21,7 @@ export function* get() {
       }
     );
     yield put(loadSuccess(response.data));
-  } catch (error) {
+  } catch (error: any) {
     const data = {
       menu: [
         {

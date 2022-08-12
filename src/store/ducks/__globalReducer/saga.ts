@@ -13,14 +13,15 @@ export async function getGeolocation(address: GlobalAddressInterface) {
         `/geocode/json?address=${street},${number},${district},${city},${state}`
       );
 
-      console.log('googleAddressData', googleAddressData);
+      console.log("googleAddressData", googleAddressData);
 
       if (googleAddressData.results) {
-        const { lat: latitude, lng: longitude } = googleAddressData.results[0].geometry.location;
-        return { latitude, longitude }
+        const { lat: latitude, lng: longitude } =
+          googleAddressData.results[0].geometry.location;
+        return { latitude, longitude };
       }
-    } catch (e) {
-      console.error('Get google maps data', e.message);
+    } catch (e: any) {
+      console.error("Get google maps data", e.message);
     }
   }
 }

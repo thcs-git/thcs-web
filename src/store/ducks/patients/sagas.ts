@@ -91,7 +91,7 @@ export function* createPatient({ payload: { data } }: any) {
         //   } = googleAddressData.results[0].geometry.location;
         //   data.address_id.geolocation = { latitude, longitude };
         // }
-      } catch (e) {
+      } catch (e: any) {
         console.error("Get google maps data", e.message);
       }
     }

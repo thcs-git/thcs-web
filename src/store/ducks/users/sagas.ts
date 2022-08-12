@@ -153,7 +153,7 @@ export async function* registerUser({ payload: { data } }: any) {
           googleAddressData.results[0].geometry.location;
         data.address.geolocation = { latitude, longitude };
       }
-    } catch (e) {
+    } catch (e: any) {
       console.error("Get google maps data", e.message);
     }
   }
@@ -260,7 +260,7 @@ export function* updateUser({ payload: { data } }: any) {
           googleAddressData.results[0].geometry.location;
         data.address.geolocation = { latitude, longitude };
       }
-    } catch (e) {
+    } catch (e: any) {
       console.error("Get google maps data", e.message);
     }
   }
