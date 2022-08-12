@@ -710,7 +710,7 @@ const Sibebar = (props: any) => {
                   key={index}
                   onClick={() => {
                     if (item.route !== "/map") {
-                      history.push(item.route);
+                      navigate(item.route);
                       dispatch(changeMenuSelected(item.title));
                     } else {
                       const token = localStorage.getItem("@sollar_token");
