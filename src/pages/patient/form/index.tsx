@@ -642,7 +642,7 @@ export default function PatientForm(props: IPageParams) {
   }
 
   const handleChangeRegistryType = useCallback(
-    (element) => {
+    (element: any) => {
       setType(element.target.value);
     },
     [type]

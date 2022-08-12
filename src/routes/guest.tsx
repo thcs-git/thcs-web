@@ -11,7 +11,7 @@ interface IGuestProps {
   exact?: boolean;
 }
 
-const GuestRoute: React.FC<IGuestProps> = ({ component: Component, ...rest }) => {
+const GuestRoute: React.FC<React.PropsWithChildren<IGuestProps>> = ({ component: Component, ...rest }) => {
   return (
     <Route
     {...rest}

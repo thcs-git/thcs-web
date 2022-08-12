@@ -515,7 +515,7 @@ export default function ClientForm(props: IPageParams) {
     }
   };
 
-  const validateCNPJField = useCallback((element) => {
+  const validateCNPJField = useCallback((element: any) => {
     const isValidField = validateCNPJHelper(element.target.value) || false;
     setFieldValidations((prevState: any) => ({
       ...prevState,
@@ -523,7 +523,7 @@ export default function ClientForm(props: IPageParams) {
     }));
   }, []);
 
-  const validationCellPhoneField = useCallback((element) => {
+  const validationCellPhoneField = useCallback((element: any) => {
     const isValidField = validator.isEmpty(element.target.value);
     setInputCellPhone((prevState) => ({
       ...prevState,

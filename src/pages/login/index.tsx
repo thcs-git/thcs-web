@@ -1626,7 +1626,7 @@ export default function SignIn() {
   }, []);
 
   const handlePassword = useCallback(
-    async (event) => {
+    async (event: any) => {
       event.preventDefault();
 
       if (inputEmail.error || inputPassword.error) return;
@@ -1641,7 +1641,7 @@ export default function SignIn() {
   );
 
   const handleLogin = useCallback(
-    async (event) => {
+    async (event: any) => {
       event.preventDefault();
 
       if (inputEmail.error || inputPassword.error) return;
@@ -1694,7 +1694,7 @@ export default function SignIn() {
   }, [inputPassword, inputConfirmPassword]);
 
   const handleVerifyEmail = useCallback(
-    async (event) => {
+    async (event: any) => {
       event.preventDefault();
 
       if (inputEmail.error) return;

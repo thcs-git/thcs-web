@@ -113,13 +113,13 @@ export default function UserList() {
   //   []
   // );
 
-  const handleActive = useCallback((user) => {
+  const handleActive = useCallback((user: any) => {
     return _.filter(user.companies_links, {
       companie_id: { _id: currentCompany },
     })[0]?.active;
   }, []);
 
-  const handleLinkedAt = useCallback((user) => {
+  const handleLinkedAt = useCallback((user: any) => {
     return _.filter(user.companies_links, {
       companie_id: { _id: currentCompany },
     })[0]?.linked_at;

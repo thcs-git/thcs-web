@@ -964,7 +964,7 @@ export default function SchedulePage(props: IPageParams) {
     [schedule]
   );
 
-  const a11yProps = useCallback((index) => {
+  const a11yProps = useCallback((index: any) => {
     return {
       id: `calendar-tab-${index}`,
       "aria-controls": `calendar-tabpanel-${index}`,
@@ -990,7 +990,7 @@ export default function SchedulePage(props: IPageParams) {
   }, []);
 
   const handleProfessionalCheck = useCallback(
-    (professionalID, event) => {
+    (professionalID: any, event: any) => {
       const hasProfessionalID = professionalChecks.some(
         (prof) => prof === professionalID
       );

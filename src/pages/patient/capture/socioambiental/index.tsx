@@ -301,7 +301,7 @@ export default function SocioAmbiental(props: IPageParams) {
     calculateScore();
   }, [documentGroup, document]);
 
-  const handleDescription = useCallback((field) => {
+  const handleDescription = useCallback((field: any) => {
     let description = field.description;
 
     description = description.replace("4", "1");

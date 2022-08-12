@@ -39,7 +39,7 @@ const ClientFormHeader = (props: IComponent) => {
     params,
   } = props;
 
-  const validateCNPJField = useCallback((element) => {
+  const validateCNPJField = useCallback((element: any) => {
     const isValidField = validateCNPJHelper(element.target.value) || false;
     setValidations((prevState: any) => ({
       ...prevState,

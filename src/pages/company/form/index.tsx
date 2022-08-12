@@ -375,7 +375,7 @@ export default function CompanyForm(props: IPageParams) {
     }
   }, [state]);
 
-  const validateCNPJField = useCallback((element) => {
+  const validateCNPJField = useCallback((element: any) => {
     const isValidField = validateCNPJHelper(element.target.value) || false;
     setFieldValidations((prevState: any) => ({
       ...prevState,
