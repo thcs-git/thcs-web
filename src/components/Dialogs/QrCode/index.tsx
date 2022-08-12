@@ -22,7 +22,7 @@ import {
   checkCreatePermission,
 } from "../../../utils/permissions";
 import crypto from "crypto";
-
+import { Buffer } from "buffer";
 // MUI
 import Dialog from "@mui/material/Dialog";
 import DialogActions from "@mui/material/DialogActions";
