@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback } from "react";
-import { useNavigate, RouteComponentProps } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import {
   Container,
   StepLabel,
@@ -71,7 +71,7 @@ interface IScore {
 
 export default function Abemid(props: IPageParams) {
   const params = useParams();
-  const { state: routeState } = props.location;
+  // const { state: routeState } = props.location;
 
   const navigate = useNavigate();
   const dispatch = useDispatch();
@@ -97,7 +97,7 @@ export default function Abemid(props: IPageParams) {
   const [steps, setSteps] = useState([
     {
       title: "KATZ",
-      finished: !!routeState.katzIsDone,
+      // finished: !!routeState.katzIsDone,
       score: { total: 0, complexity: "", status: "" },
     },
     {
@@ -151,7 +151,7 @@ export default function Abemid(props: IPageParams) {
 
   useEffect(() => {
     dispatch(actionDocumentGroupAbemidRequest());
-    dispatch(loadCareById(params.id));
+    params.id && dispatch(loadCareById(params.id));
 
     if (params?.documentId) {
       dispatch(
@@ -186,7 +186,7 @@ export default function Abemid(props: IPageParams) {
       ) {
         if (care?._id) {
           navigate(`/patient/capture/${care._id}/overview/`, {
-            success: true,
+            // success: true,
           });
         }
       }

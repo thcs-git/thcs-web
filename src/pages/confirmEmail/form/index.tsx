@@ -2,7 +2,7 @@ import { TextField } from "@mui/material";
 import Button from "../../../components/Button";
 import React, { useState, useEffect, useCallback } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { RouteComponentProps, useNavigate } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import { ReactComponent as SuccessImage } from "../../../assets/img/ilustracao-avaliacao-concluida.svg";
 import {
   FeedbackContent,

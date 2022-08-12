@@ -1,4 +1,4 @@
-import React, { useState, useEffect, Props, useCallback } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 // REDUX e REDUX-SAGA
 import { useDispatch, useSelector } from "react-redux";
 import { ApplicationState } from "../../store";
@@ -116,7 +116,7 @@ interface PropsSidebar {
   permission?: boolean;
 }
 
-const Sibebar = (props: Props<any>) => {
+const Sibebar = (props: any) => {
   const navigate = useNavigate();
   // const classes = useStyles();
   const dispatch = useDispatch();

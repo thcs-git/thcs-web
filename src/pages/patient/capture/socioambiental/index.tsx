@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback } from "react";
-import { useNavigate, RouteComponentProps } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import {
   Container,
   StepLabel,
@@ -100,7 +100,7 @@ export default function SocioAmbiental(props: IPageParams) {
 
   useEffect(() => {
     dispatch(actionDocumentGroupSocioAmbientalRequest());
-    dispatch(loadCareById(params.id));
+    params.id && dispatch(loadCareById(params.id));
 
     if (params?.documentId) {
       dispatch(
@@ -135,7 +135,7 @@ export default function SocioAmbiental(props: IPageParams) {
       ) {
         if (care?._id) {
           navigate(`/patient/capture/${care._id}/overview/`, {
-            success: true,
+            // success: true,
           });
         }
       }

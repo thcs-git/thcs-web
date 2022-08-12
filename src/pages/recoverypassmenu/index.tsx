@@ -13,7 +13,7 @@ import { FeedbackDescription } from "../recoverypassword/form/style";
 import { BoxCustom, FeedbackTitle } from "../userconfiguration/form/style";
 import React, { useState, useEffect, useCallback } from "react";
 import { UserRecoveryPassword } from "../../store/ducks/users/types";
-import { RouteComponentProps, useNavigate } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import FeedbackComponent from "../../components/Feedback";
 import { ButtonDefault, ButtonsContent } from "./style";
 import { Visibility, VisibilityOff } from "@mui/icons-material";

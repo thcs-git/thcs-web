@@ -6,7 +6,7 @@ import { ApplicationState } from "../store";
 // permissions
 import { checkViewPermission } from "../utils/permissions";
 
-import GuestRoute from "./guest";
+// import GuestRoute from "./guest";
 // import Route from "./private";
 
 import NotFound from "../pages/errors/not-found";
@@ -119,7 +119,7 @@ export default function SwitchRoutes() {
           }
         />
 
-        <Route path="/recoverypassmenu" element={RecoveryPassMenu} />
+        <Route path="/recoverypassmenu" element={<RecoveryPassMenu />} />
         {/* <Route
           path="/"
           element={
@@ -155,7 +155,7 @@ export default function SwitchRoutes() {
             </ProtectedRoute>
           }
         />
-        <Route path="/clientconfiguration" element={ClientConfiguration} />
+        <Route path="/clientconfiguration" element={<ClientConfiguration />} />
 
         {/* Clientes */}
         <Route

@@ -52,16 +52,16 @@ apiSollar.interceptors.request.use(
       localStorage.getItem(LOCALSTORAGE.SOLLAR_INTEGRATION_USER_ID) || "";
 
     if (token) {
-      config.headers.token = `${token}`;
-      config.headers.user = JSON.stringify({ id: user_id, username });
-      config.headers.company_id = company_id;
-      config.headers.customer_id = customer_id;
+      config.headers!.token = `${token}`;
+      config.headers!.user = JSON.stringify({ id: user_id, username });
+      config.headers!.company_id = company_id;
+      config.headers!.customer_id = customer_id;
     }
 
     if (integration_url) {
-      config.headers.integration_url = integration_url;
-      config.headers.external_company_id = external_company_id;
-      config.headers.external_user_id = external_user_id;
+      config.headers!.integration_url = integration_url;
+      config.headers!.external_company_id = external_company_id;
+      config.headers!.external_user_id = external_user_id;
     }
 
     return config;
@@ -110,15 +110,15 @@ apiSollarMobi.interceptors.request.use(
       localStorage.getItem(LOCALSTORAGE.SOLLAR_INTEGRATION_USER_ID) || "";
 
     if (token) {
-      config.headers.token = `${token}`;
-      config.headers.user = JSON.stringify({ id: user_id, username });
-      config.headers.company_id = company_id;
-      config.headers.customer_id = customer_id;
+      config.headers!.token = `${token}`;
+      config.headers!.user = JSON.stringify({ id: user_id, username });
+      config.headers!.company_id = company_id;
+      config.headers!.customer_id = customer_id;
     }
 
     if (integration_url) {
-      config.headers.integration_url = integration_url;
-      config.headers.external_company_id = external_company_id;
+      config.headers!.integration_url = integration_url;
+      config.headers!.external_company_id = external_company_id;
     }
 
     return config;
@@ -167,15 +167,15 @@ apiSollarReport.interceptors.request.use(
       localStorage.getItem(LOCALSTORAGE.SOLLAR_INTEGRATION_USER_ID) || "";
 
     if (token) {
-      config.headers.token = `${token}`;
-      config.headers.user = JSON.stringify({ id: user_id, username });
-      config.headers.company_id = company_id;
-      config.headers.customer_id = customer_id;
+      config.headers!.token = `${token}`;
+      config.headers!.user = JSON.stringify({ id: user_id, username });
+      config.headers!.company_id = company_id;
+      config.headers!.customer_id = customer_id;
     }
 
     if (integration_url) {
-      config.headers.integration_url = integration_url;
-      config.headers.external_company_id = external_company_id;
+      config.headers!.integration_url = integration_url;
+      config.headers!.external_company_id = external_company_id;
     }
 
     return config;
@@ -226,15 +226,15 @@ apiSollarNexoData.interceptors.request.use(
       localStorage.getItem(LOCALSTORAGE.SOLLAR_INTEGRATION_USER_ID) || "";
 
     if (token) {
-      config.headers.token = `${token}`;
-      config.headers.user = JSON.stringify({ id: user_id, username });
-      config.headers.company_id = company_id;
-      config.headers.customer_id = customer_id;
+      config.headers!.token = `${token}`;
+      config.headers!.user = JSON.stringify({ id: user_id, username });
+      config.headers!.company_id = company_id;
+      config.headers!.customer_id = customer_id;
     }
 
     if (integration_url) {
-      config.headers.integration_url = integration_url;
-      config.headers.external_company_id = external_company_id;
+      config.headers!.integration_url = integration_url;
+      config.headers!.external_company_id = external_company_id;
     }
 
     return config;

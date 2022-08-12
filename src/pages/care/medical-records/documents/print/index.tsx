@@ -32,7 +32,7 @@ export default function PrintDocument(props: IPageParams) {
   const careState = useSelector((state: ApplicationState) => state.cares);
 
   useEffect(() => {
-    dispatch(loadCareById(params.id));
+    params.id && dispatch(loadCareById(params.id));
 
     if (params?.documentId) {
       dispatch(getDocumentById(params.documentId));

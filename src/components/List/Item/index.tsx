@@ -1,18 +1,13 @@
-import React, { Props } from 'react';
+import React from "react";
 
-import {
-  ListItem as ListItemComponent,
-  ListItemContent
-} from './styles';
+import { ListItem as ListItemComponent, ListItemContent } from "./styles";
 
-const ListItem = (props: Props<any>) => {
+const ListItem = (props: any) => {
   return (
     <ListItemComponent variant="outlined">
-      <ListItemContent>
-        {props.children}
-      </ListItemContent>
+      <ListItemContent>{props.children}</ListItemContent>
     </ListItemComponent>
   );
-}
+};
 
 export default React.memo(ListItem);

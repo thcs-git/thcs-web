@@ -167,7 +167,7 @@ export default function AreaList() {
                 </TableCell>{" "}
                 {/* Socioambiental */}
                 <TableCell align="left">
-                  {mapDays(area.week_day)}
+                  <>{mapDays(area.week_day)}</>
                 </TableCell>{" "}
                 {/* Pedido */}
                 <TableCell align="left">

@@ -10,7 +10,7 @@ import {
 import { CompanyInterface } from "../../store/ducks/companies/types";
 import { ApplicationState } from "../../store";
 import { Alert, AlertTitle } from "@mui/material";
-import { useNavigate, RouteComponentProps } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import ReactDOM from "react-dom";
 import QRCode from "react-qr-code";
 import ReactToPrint from "react-to-print";

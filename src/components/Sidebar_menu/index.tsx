@@ -1,4 +1,4 @@
-import React, { useState, useEffect, Props, useCallback } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 // import { useDispatch, useSelector } from "react-redux";
 
 // import { ApplicationState } from "../../store";

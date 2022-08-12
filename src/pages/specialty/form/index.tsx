@@ -11,7 +11,7 @@ import { SpecialtyInterface } from "../../../store/ducks/specialties/types";
 
 import { loadRequest as getCouncilsAction } from "../../../store/ducks/councils/actions";
 
-import { useNavigate, RouteComponentProps } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import {
   Button,
   Container,

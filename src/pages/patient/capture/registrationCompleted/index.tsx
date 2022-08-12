@@ -1,6 +1,6 @@
 import React, { useState, useCallback, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import {
   Container,
   Dialog,
@@ -40,7 +40,9 @@ import CaptureDataDialog from "../../../../components/Dialogs/CaptureData";
 import { age } from "../../../../helpers/date";
 import LOCALSTORAGE from "../../../../helpers/constants/localStorage";
 
-const registrationCompleted: React.FC<React.PropsWithChildren<any>> = (props) => {
+const registrationCompleted: React.FC<React.PropsWithChildren<any>> = (
+  props
+) => {
   // ----------------------------------------------
   const [care, setCare] = useState<CareInterface>({
     health_insurance_id: "5f903db15104287582ba58af",

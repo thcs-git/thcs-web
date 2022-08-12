@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useCallback } from "react";
-import { RouteComponentProps, useNavigate } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 
 //helps
 import LOCALSTORAGE from "../../../helpers/constants/localStorage";

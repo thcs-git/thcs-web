@@ -1,5 +1,5 @@
 import React, { useState, useCallback, useEffect } from "react";
-import { useNavigate, RouteComponentProps } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import {
   Container,
   Dialog,
@@ -76,7 +76,7 @@ import {
   PatientNotFound,
 } from "./styles";
 
-export default function PatientCaptureForm(props: RouteComponentProps) {
+export default function PatientCaptureForm(props: any) {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 

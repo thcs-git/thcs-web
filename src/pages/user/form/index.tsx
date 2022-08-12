@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback } from "react";
-import { useNavigate, RouteComponentProps, Link } from "react-router-dom";
+import { useNavigate, useParams, Link } from "react-router-dom";
 // import { cpf } from "cpf-cnpj-validator";
 import {
   Button,

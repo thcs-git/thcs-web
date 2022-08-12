@@ -124,7 +124,7 @@ export default function PatientCaptureForm(props: IPageParams) {
   );
 
   const params = useParams();
-  const { state } = props.location;
+  // const { state } = props.location;
 
   const userSessionId = localStorage.getItem(LOCALSTORAGE.USER_ID) || "";
 
@@ -145,7 +145,7 @@ export default function PatientCaptureForm(props: IPageParams) {
   const [captureData, setCaptureData] = useState<ICaptureData | any>({});
 
   useEffect(() => {
-    getCare(params.id);
+    params.id && getCare(params.id);
     dispatch(healthInsuranceRequest());
     setDocumentHistory([]);
   }, []);
@@ -374,8 +374,14 @@ export default function PatientCaptureForm(props: IPageParams) {
       }
 
       document_id
-        ? navigate(`${routes[id]}/${document_id}`, { katzIsDone })
-        : navigate(routes[id], { katzIsDone });
+        ? navigate(
+            `${routes[id]}/${document_id}`
+            // , { katzIsDone }
+          )
+        : navigate(
+            routes[id]
+            // , { katzIsDone }
+          );
     },
     [care]
   );

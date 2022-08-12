@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback, useRef } from "react";
-import { useNavigate, RouteComponentProps } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import {
   Container,
   StepLabel,
@@ -107,7 +107,7 @@ export default function Nead(props: IPageParams) {
 
   useEffect(() => {
     dispatch(actionDocumentGroupNeadRequest());
-    dispatch(loadCareById(params.id));
+    params.id && dispatch(loadCareById(params.id));
 
     if (params?.documentId) {
       dispatch(
@@ -143,7 +143,7 @@ export default function Nead(props: IPageParams) {
     ) {
       if (care?._id) {
         navigate(`/patient/capture/${care._id}/overview/`, {
-          success: true,
+          // success: true,
         });
       }
     }
