@@ -18,7 +18,7 @@ import LOCALSTORAGE from "../../../helpers/constants/localStorage";
 export function* get({ payload }: any) {
   try {
     const response: AxiosResponse = yield call(
-      apiSollar.get,
+      apiSollar.get as any,
       `/care/antibiotics/${payload}`
     );
     yield put(loadSuccess(response.data));
@@ -36,7 +36,7 @@ export function* loadReportUnique(data: any) {
   console.log(data.payload, "payloadddd");
   try {
     const response: AxiosResponse = yield call(
-      apiSollarReport.get,
+      apiSollarReport.get as any,
       `antibiotic/${data.payload}`,
       {
         responseType: "blob",

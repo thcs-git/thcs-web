@@ -559,7 +559,7 @@ export default function CompanyForm(props: IPageParams) {
                             }));
                           }}
                         >
-                          {(inputProps: any) => (
+                          {/* {(inputProps: any) => (
                             <TextField
                               disabled={!canEdit}
                               {...inputProps}
@@ -574,7 +574,7 @@ export default function CompanyForm(props: IPageParams) {
                                 state.fiscal_number != ""
                               }
                             />
-                          )}
+                          )} */}
                         </InputMask>
                         {!fieldsValidation.fiscal_number &&
                           state.fiscal_number && (
@@ -616,7 +616,7 @@ export default function CompanyForm(props: IPageParams) {
                             }
                             onBlur={getAddress}
                           >
-                            {(inputProps: any) => (
+                            {/* {(inputProps: any) => (
                               <OutlinedInputFiled
                                 disabled={!canEdit}
                                 error={companyState.errorCep}
@@ -633,7 +633,7 @@ export default function CompanyForm(props: IPageParams) {
                                   </InputAdornment>
                                 }
                               />
-                            )}
+                            )} */}
                           </InputMask>
                         </FormControl>
                         {companyState.error && state.address.postal_code != "" && (
@@ -842,7 +842,7 @@ export default function CompanyForm(props: IPageParams) {
                         }}
                         onBlur={validatePhone}
                       >
-                        {(inputProps: any) => (
+                        {/* {(inputProps: any) => (
                           <TextField
                             {...inputProps}
                             error={!validatePhone() && state.phone != ""}
@@ -854,7 +854,7 @@ export default function CompanyForm(props: IPageParams) {
                             fullWidth
                             disabled={!canEdit}
                           />
-                        )}
+                        )} */}
                       </InputMask>
                       {!validatePhone() && state.phone && (
                         <p
@@ -902,7 +902,7 @@ export default function CompanyForm(props: IPageParams) {
                         }}
                         onBlur={validateCellPhone}
                       >
-                        {(inputProps: any) => (
+                        {/* {(inputProps: any) => (
                           <TextField
                             id="input-cellphone"
                             label="Celular"
@@ -917,7 +917,7 @@ export default function CompanyForm(props: IPageParams) {
                             fullWidth
                             disabled={!canEdit}
                           />
-                        )}
+                        )} */}
                       </InputMask>
                       {!validateCellPhone() && state.cellphone && (
                         <p

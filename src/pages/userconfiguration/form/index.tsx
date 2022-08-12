@@ -23,7 +23,7 @@ import { getAddress as getAddressAction } from "../../../store/ducks/customers/a
 // MUI
 import Container from "@mui/material/Container";
 
-export default function UserCongiguration(props: RouteComponentProps<any>) {
+export default function UserCongiguration(props: any) {
   const params = { mode: "view" };
   const userState = useSelector((state: ApplicationState) => state.users);
   const currentUser = window.localStorage.getItem(LOCALSTORAGE.USER_ID);

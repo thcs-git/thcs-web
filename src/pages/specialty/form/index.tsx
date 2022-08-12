@@ -55,7 +55,7 @@ export default function SpecialtyForm(props: IPageParams) {
   const params = useParams();
 
   const [state, setState] = useState<SpecialtyInterface>({
-    _id: props.match.params.id || "",
+    _id: params.id || "",
     name: "",
     describe: "",
     council_id: { _id: "", name: "" },

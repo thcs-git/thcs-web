@@ -575,7 +575,7 @@ export default function CustomerForm(props: IPageParams) {
                         }}
                         onBlur={validateCNPJField}
                       >
-                        {(inputProps: any) => (
+                        {/* {(inputProps: any) => (
                           <TextField
                             color="secondary"
                             disabled={!canEdit}
@@ -599,7 +599,7 @@ export default function CustomerForm(props: IPageParams) {
                                 : undefined
                             }
                           />
-                        )}
+                        )} */}
                       </InputMask>
                     </Grid>
                   </Grid>
@@ -633,7 +633,7 @@ export default function CustomerForm(props: IPageParams) {
                         }}
                         onBlur={getAddress}
                       >
-                        {() => (
+                        {/* {() => (
                           <FormControl
                             sx={{ padding: "0 12px 12px 0" }}
                             variant="outlined"
@@ -674,7 +674,7 @@ export default function CustomerForm(props: IPageParams) {
                               </FormHelperText>
                             )}
                           </FormControl>
-                        )}
+                        )} */}
                       </InputMask>
                     </Grid>
 
@@ -888,7 +888,7 @@ export default function CustomerForm(props: IPageParams) {
                         // onBlur={(element)=>{
                         //   setFieldValidations((prevState: any) => ({ ...prevState, phone: !validator.isEmpty(element.target.value) }));}}
                       >
-                        {(inputProps: any) => (
+                        {/* {(inputProps: any) => (
                           <TextField
                             color="secondary"
                             disabled={!canEdit}
@@ -908,7 +908,7 @@ export default function CustomerForm(props: IPageParams) {
                             }
                             fullWidth
                           />
-                        )}
+                        )} */}
                       </InputMask>
                       {/* {!validatePhone() && state.phones[0].phone && (
                         <Typography
@@ -974,7 +974,7 @@ export default function CustomerForm(props: IPageParams) {
                           }
                         }}
                       >
-                        {(inputProps: any) => (
+                        {/* {(inputProps: any) => (
                           <TextField
                             color="secondary"
                             disabled={!canEdit}
@@ -995,7 +995,7 @@ export default function CustomerForm(props: IPageParams) {
                                 : undefined
                             }
                           />
-                        )}
+                        )} */}
                       </InputMask>
                     </Grid>
                     {params.id && (

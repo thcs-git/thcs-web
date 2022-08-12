@@ -1140,7 +1140,7 @@ export default function UserForm(props: IPageParams) {
                                 }));
                               }}
                             >
-                              {(inputProps: any) => (
+                              {/* {(inputProps: any) => (
                                 <TextField
                                   {...inputProps}
                                   disabled={!canEdit}
@@ -1155,7 +1155,7 @@ export default function UserForm(props: IPageParams) {
                                   }
                                   fullWidth
                                 />
-                              )}
+                              )} */}
                             </InputMask>
                             {!checkIsCpfValid() && state.fiscal_number != "" && (
                               <p
@@ -1186,7 +1186,7 @@ export default function UserForm(props: IPageParams) {
                                 }))
                               }
                             >
-                              {(inputProps: any) => (
+                              {/* {(inputProps: any) => (
                                 <TextField
                                   {...inputProps}
                                   disabled={!canEdit}
@@ -1201,7 +1201,7 @@ export default function UserForm(props: IPageParams) {
                                   }
                                   fullWidth
                                 />
-                              )}
+                              )} */}
                             </InputMask>
                           </Grid>
 
@@ -1319,7 +1319,7 @@ export default function UserForm(props: IPageParams) {
                                 }}
                                 onBlur={getAddress}
                               >
-                                {(inputProps: any) => (
+                                {/* {(inputProps: any) => (
                                   <TextField
                                     {...inputProps}
                                     disabled={!canEdit}
@@ -1334,7 +1334,7 @@ export default function UserForm(props: IPageParams) {
                                     }
                                     fullWidth
                                   />
-                                )}
+                                )} */}
                               </InputMask>
                               {userState.error &&
                                 !fieldsValidation.address.postal_code && (
@@ -1575,7 +1575,7 @@ export default function UserForm(props: IPageParams) {
                               }}
                               onBlur={validatePhone}
                             >
-                              {(inputProps: any) => (
+                              {/* {(inputProps: any) => (
                                 <TextField
                                   {...inputProps}
                                   disabled={!canEdit}
@@ -1590,7 +1590,7 @@ export default function UserForm(props: IPageParams) {
                                   }
                                   fullWidth
                                 />
-                              )}
+                              )} */}
                             </InputMask>
                             {!validatePhone() && state.phones[0]?.number && (
                               <p
@@ -1624,7 +1624,7 @@ export default function UserForm(props: IPageParams) {
                               }}
                               onBlur={validateCellPhone}
                             >
-                              {(inputProps: any) => (
+                              {/* {(inputProps: any) => (
                                 <TextField
                                   {...inputProps}
                                   disabled={!canEdit}
@@ -1639,7 +1639,7 @@ export default function UserForm(props: IPageParams) {
                                   }
                                   fullWidth
                                 />
-                              )}
+                              )} */}
                             </InputMask>
                             {!validateCellPhone() &&
                               state.phones[0]?.cellnumber && (
@@ -2654,7 +2654,7 @@ export default function UserForm(props: IPageParams) {
                                 }));
                               }}
                             >
-                              {(inputProps: any) => (
+                              {/* {(inputProps: any) => (
                                 <TextField
                                   {...inputProps}
                                   disabled={!canEdit}
@@ -2669,7 +2669,7 @@ export default function UserForm(props: IPageParams) {
                                   }
                                   fullWidth
                                 />
-                              )}
+                              )} */}
                             </InputMask>
                             {!checkIsCpfValid() && state.fiscal_number != "" && (
                               <p
@@ -2700,7 +2700,7 @@ export default function UserForm(props: IPageParams) {
                                 }))
                               }
                             >
-                              {(inputProps: any) => (
+                              {/* {(inputProps: any) => (
                                 <TextField
                                   {...inputProps}
                                   disabled={!canEdit}
@@ -2715,7 +2715,7 @@ export default function UserForm(props: IPageParams) {
                                   }
                                   fullWidth
                                 />
-                              )}
+                              )} */}
                             </InputMask>
                           </Grid>
 
@@ -2833,7 +2833,7 @@ export default function UserForm(props: IPageParams) {
                                 }}
                                 onBlur={getAddress}
                               >
-                                {(inputProps: any) => (
+                                {/* {(inputProps: any) => (
                                   <TextField
                                     {...inputProps}
                                     disabled={!canEdit}
@@ -2848,7 +2848,7 @@ export default function UserForm(props: IPageParams) {
                                     }
                                     fullWidth
                                   />
-                                )}
+                                )} */}
                               </InputMask>
                               {userState.error &&
                                 !fieldsValidation.address.postal_code && (
@@ -3090,7 +3090,7 @@ export default function UserForm(props: IPageParams) {
                               }}
                               onBlur={validatePhone}
                             >
-                              {(inputProps: any) => (
+                              {/* {(inputProps: any) => (
                                 <TextField
                                   {...inputProps}
                                   disabled={!canEdit}
@@ -3105,7 +3105,7 @@ export default function UserForm(props: IPageParams) {
                                   }
                                   fullWidth
                                 />
-                              )}
+                              )} */}
                             </InputMask>
                             {!validatePhone() && state.phones[0]?.number && (
                               <p
@@ -3141,7 +3141,7 @@ export default function UserForm(props: IPageParams) {
                               }}
                               onBlur={validateCellPhone}
                             >
-                              {(inputProps: any) => (
+                              {/* {(inputProps: any) => (
                                 <TextField
                                   {...inputProps}
                                   disabled={!canEdit}
@@ -3156,7 +3156,7 @@ export default function UserForm(props: IPageParams) {
                                   }
                                   fullWidth
                                 />
-                              )}
+                              )} */}
                             </InputMask>
                             {!validateCellPhone() &&
                               state.phones[0]?.cellnumber && (

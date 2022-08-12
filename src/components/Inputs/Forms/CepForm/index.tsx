@@ -106,7 +106,7 @@ const CepForm = (props: IComponent) => {
                   }}
                   onBlur={getAddress}
                 >
-                  {(inputProps: Props) => (
+                  {/* {(inputProps: Props) => (
                     <OutlinedInputFiled
                       disabled={!canEdit}
                       error={cepStatus}
@@ -119,7 +119,7 @@ const CepForm = (props: IComponent) => {
                       }
                       {...a11yProps("input-postal-code", index)}
                     />
-                  )}
+                  )} */}
                 </InputMask>
                 {cepStatus && (
                   <p style={{ color: "#f44336", margin: "-2px 5px 10px" }}>

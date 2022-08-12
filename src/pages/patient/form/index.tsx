@@ -959,7 +959,7 @@ export default function PatientForm(props: IPageParams) {
                                     }}
                                     onBlur={checkIsCpfValid}
                                   >
-                                    {(inputProps: any) => (
+                                    {/* {(inputProps: any) => (
                                       <OutlinedInputFiled
                                         id="input-fiscal-number"
                                         placeholder="000.000.000-00"
@@ -973,7 +973,7 @@ export default function PatientForm(props: IPageParams) {
                                         //   !!state.fiscal_number
                                         // }
                                       />
-                                    )}
+                                    )} */}
                                   </InputMask>
                                   {"!!cpf.isValid(state.fiscal_number) == false" &&
                                     state.fiscal_number != "___.___.___-__" &&
@@ -1021,14 +1021,14 @@ export default function PatientForm(props: IPageParams) {
                                       }))
                                     }
                                   >
-                                    {(inputProps: any) => (
+                                    {/* {(inputProps: any) => (
                                       <OutlinedInputFiled
                                         id="input-nation-id"
                                         placeholder="000.000.000-00"
                                         // labelWidth={80}
                                         style={{ marginRight: 12 }}
                                       />
-                                    )}
+                                    )} */}
                                   </InputMask>
                                 </FormControl>
                               </Grid>
@@ -1207,7 +1207,7 @@ export default function PatientForm(props: IPageParams) {
                                     }}
                                     onBlur={getAddress}
                                   >
-                                    {(inputProps: Props) => (
+                                    {/* {(inputProps: Props) => (
                                       <OutlinedInputFiled
                                         error={patientState.errorCep}
                                         id="input-postal-code"
@@ -1228,7 +1228,7 @@ export default function PatientForm(props: IPageParams) {
                                           marginBottom: 5,
                                         }}
                                       />
-                                    )}
+                                    )} */}
                                   </InputMask>
                                 </FormControl>
                                 {patientState.errorCep &&
@@ -1481,7 +1481,7 @@ export default function PatientForm(props: IPageParams) {
                                     }}
                                     onBlur={validatePhone}
                                   >
-                                    {(inputProps: any) => (
+                                    {/* {(inputProps: any) => (
                                       <OutlinedInputFiled
                                         id="input-telefone"
                                         placeholder="(00) 0000-0000"
@@ -1492,7 +1492,7 @@ export default function PatientForm(props: IPageParams) {
                                         // labelWidth={80}
                                         style={{ marginRight: 12 }}
                                       />
-                                    )}
+                                    )} */}
                                   </InputMask>
                                 </FormControl>
                                 {!validatePhone() && state.phones[0]?.number && (
@@ -1539,7 +1539,7 @@ export default function PatientForm(props: IPageParams) {
                                     }}
                                     onBlur={validateCellPhone}
                                   >
-                                    {(inputProps: any) => (
+                                    {/* {(inputProps: any) => (
                                       <OutlinedInputFiled
                                         id="input-cellphone"
                                         placeholder="(00) 0 0000-0000"
@@ -1550,7 +1550,7 @@ export default function PatientForm(props: IPageParams) {
                                           state.phones[0]?.cellnumber != ""
                                         }
                                       />
-                                    )}
+                                    )} */}
                                   </InputMask>
                                 </FormControl>
                                 {!validateCellPhone() &&
@@ -1622,7 +1622,7 @@ export default function PatientForm(props: IPageParams) {
                                     }}
                                     onBlur={validateResponsableCellPhone}
                                   >
-                                    {(inputProps: any) => (
+                                    {/* {(inputProps: any) => (
                                       <OutlinedInputFiled
                                         id="input-reponsable-phone"
                                         placeholder="(00) 0 0000-0000"
@@ -1633,7 +1633,7 @@ export default function PatientForm(props: IPageParams) {
                                         }
                                         style={{ marginRight: 12 }}
                                       />
-                                    )}
+                                    )} */}
                                   </InputMask>
                                 </FormControl>
                                 {!validateResponsableCellPhone() &&

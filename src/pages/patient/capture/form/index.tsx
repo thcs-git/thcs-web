@@ -301,7 +301,7 @@ export default function PatientCaptureForm(props: any) {
                   onChange={(element) => setPatientSearch(element.target.value)}
                   //  onBlur={(element) => searchPatient(element.target.value)}
                 >
-                  {(inputProps: any) => (
+                  {/* {(inputProps: any) => (
                     <TextField
                       id="input-search-fiscal-number"
                       label="Paciente"
@@ -312,7 +312,7 @@ export default function PatientCaptureForm(props: any) {
                       fullWidth
                       autoFocus
                     />
-                  )}
+                  )} */}
                 </InputMask>
                 <Button
                   // background="success"
