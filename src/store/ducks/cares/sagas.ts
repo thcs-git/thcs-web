@@ -92,7 +92,7 @@ export function* get({ payload }: any) {
 
     yield put(searchCareSuccess(response.data));
   } catch (error) {
-    toast.error("Erro ao buscar os atendimentos");
+    // toast.error("Erro ao buscar os atendimentos");
     yield put(loadFailure());
   }
 }
@@ -122,7 +122,7 @@ export function* getPopUp({ payload }: any) {
 
     yield put(searchPatientSuccess(response.data));
   } catch (error) {
-    toast.error("Erro ao buscar o Paciente");
+    // toast.error("Erro ao buscar o Paciente");
     yield put(loadFailure());
   }
 }
@@ -157,7 +157,7 @@ export function* search({ payload }: any) {
 
     yield put(loadSuccess(response.data));
   } catch (error) {
-    toast.error("Erro ao buscar os atendimentos");
+    // toast.error("Erro ao buscar os atendimentos");
     yield put(loadFailure());
   }
 }
@@ -822,7 +822,7 @@ export function* getChekInReport({ payload }: any) {
     yield put(loadCheckinReportSuccess(response.data));
   } catch (err) {
     yield put(loadCheckinReportFailure());
-    toast.error("Erro Ao Buscar Relatório De Check-In/Out");
+    // toast.error("Erro Ao Buscar Relatório De Check-In/Out");
   }
 }
 
@@ -853,7 +853,7 @@ export function* getFilterCheckin({ payload }: any) {
     );
     yield put(loadCheckinReportSuccess(response.data));
   } catch (err) {
-    toast.error("Erro ao Filtrar Relatório De Check-In/Out");
+    // toast.error("Erro ao Filtrar Relatório De Check-In/Out");
     yield put(loadCheckinReportFailure());
   }
 }
@@ -885,7 +885,7 @@ export function* getFilterEvolution({ payload }: any) {
     );
     yield put(loadEvolutionFilterSuccess(response.data));
   } catch (err) {
-    toast.error("Erro ao Filtrar Relatório De Evolução");
+    // toast.error("Erro ao Filtrar Relatório De Evolução");
     yield put(loadCheckinReportFailure());
   }
 }
@@ -917,7 +917,7 @@ export function* getFilterMeasurement({ payload }: any) {
     );
     yield put(loadMeasurementFilterSuccess(response.data));
   } catch (err) {
-    toast.error("Erro ao Filtrar Relatório De Aferição");
+    // toast.error("Erro ao Filtrar Relatório De Aferição");
     yield put(loadCheckinReportFailure());
   }
 }
@@ -949,7 +949,7 @@ export function* getFilterAllergy({ payload }: any) {
     );
     yield put(loadAllergyFilterSuccess(response.data));
   } catch (err) {
-    toast.error("Erro ao Filtrar Relatório De Alergia");
+    // toast.error("Erro ao Filtrar Relatório De Alergia");
     yield put(loadCheckinReportFailure());
   }
 }
@@ -981,7 +981,7 @@ export function* getFilterAdverseEvent({ payload }: any) {
     );
     yield put(loadAdverseEventFilterSuccess(response.data));
   } catch (err) {
-    toast.error("Erro ao Filtrar Relatório De Evento Adverso");
+    // toast.error("Erro ao Filtrar Relatório De Evento Adverso");
     yield put(loadCheckinReportFailure());
   }
 }

@@ -121,7 +121,6 @@ export default function DialogQrCode(props: IQrCodeProps) {
   const handleClose = () => {
     setOpenDialog(false);
   };
-
   function handlerQrCode() {
     const newQrCode = {
       created_by: user_id,
@@ -129,6 +128,7 @@ export default function DialogQrCode(props: IQrCodeProps) {
       attendance_id: !integration ? careState.data._id : undefined,
       external_attendance_id: integration ? careState.data._id : undefined,
       company_id: company_id,
+      external_patient_id: careState?.data?.patient_id?._id,
     };
 
     qrCodeState.data = newQrCode;
@@ -281,7 +281,7 @@ export default function DialogQrCode(props: IQrCodeProps) {
               </>
             ) : (
               <>
-                <Box>Não existe nenhum QR Code ativo</Box>
+                <Typography mb={2}>Não existe nenhum QR Code ativo</Typography>
                 <ButtonGeneration
                   variant="contained"
                   color="primary"

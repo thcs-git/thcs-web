@@ -65,6 +65,8 @@ import QrCode from "../pages/qrcode/";
 import ProfessionForm from "../pages/profession/form/index";
 
 import Login from "../pages/login";
+import PatientOverviewRedirect from "../pages/CareOverviewRedirect";
+import CareOverviewRedirect from "../pages/CareOverviewRedirect";
 //import Register from '../pages/register';
 import ProtectedRoute from "./protectRoute";
 import LOCALSTORAGE from "../helpers/constants/localStorage";
@@ -473,6 +475,7 @@ export default function SwitchRoutes() {
             </ProtectedRoute>
           }
         />
+        <Route path="/care/:id/redirect" element={<CareOverviewRedirect />} />
         <Route
           path="/care/:id/overview/schedule"
           element={

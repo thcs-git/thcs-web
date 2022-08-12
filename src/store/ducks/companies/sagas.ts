@@ -175,7 +175,7 @@ export function* update({ payload: { data } }: any) {
     toast.success("Empresa atualizada com sucesso!");
     yield put(updateCompanySuccess(response.data[0]));
   } catch (error) {
-    toast.error("Não foi possível atualizar os dados da empresa");
+    // toast.error("Não foi possível atualizar os dados da empresa");
     yield put(loadFailure());
   }
 }

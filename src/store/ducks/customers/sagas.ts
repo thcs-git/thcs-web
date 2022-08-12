@@ -35,7 +35,7 @@ export function* get({ payload }: any) {
 
     yield put(loadSuccess(data));
   } catch (error) {
-    toast.error("Não foi possível buscar os dados dos clientes");
+    // toast.error("Não foi possível buscar os dados dos clientes");
     yield put(loadFailure());
   }
 }
@@ -61,7 +61,7 @@ export function* getCustomerById({ payload: { id: _id } }: any) {
     }
     yield put(loadSuccessCustomerById(response.data));
   } catch (error) {
-    toast.error("Não foi possível carregar o cliente");
+    // toast.error("Não foi possível carregar o cliente");
     yield put(loadFailure());
   }
 }
@@ -78,11 +78,11 @@ export function* createCompanyCustomer({ payload: { data } }: any) {
       yield put(createCustomerSuccess(response.data[0]));
       toast.success("Cliente cadastrado com sucesso!");
     } else {
-      toast.error("Não foi possível cadastrar um novo cliente");
+      // toast.error("Não foi possível cadastrar um novo cliente");
       yield put(loadFailure());
     }
   } catch (e) {
-    toast.error("Não foi possível cadastrar um novo cliente");
+    // toast.error("Não foi possível cadastrar um novo cliente");
     yield put(loadFailure());
   }
 }
@@ -120,7 +120,7 @@ export function* updateCompanyCustomer({ payload: { data } }: any) {
     toast.success("Empresa atualizada com sucesso!");
     yield put(updateCustomerSuccess(response.data));
   } catch (error) {
-    toast.error("Não foi possível atualizar os dados do cliente");
+    // toast.error("Não foi possível atualizar os dados do cliente");
     yield put(loadFailure());
   }
 }
@@ -167,11 +167,11 @@ export function* loadPermission({ payload: { id: _id } }: any) {
     if (response.data) {
       yield put(loadPermissionSuccess(response.data));
     } else {
-      toast.error("Não foi possível buscar os dados da permissão");
+      // toast.error("Não foi possível buscar os dados da permissão");
       yield put(loadFailure());
     }
   } catch (e) {
-    toast.error("Não foi possível buscar os dados da permissão");
+    // toast.error("Não foi possível buscar os dados da permissão");
     yield put(loadFailure());
   }
 }
@@ -188,11 +188,11 @@ export function* updatePermissionCustomer({ payload: { data } }: any) {
     if (response.data) {
       yield put(updatePermissionSuccess(response.data));
     } else {
-      toast.error("Não foi possível buscar os dados da permissão");
+      // toast.error("Não foi possível buscar os dados da permissão");
       yield put(loadFailure());
     }
   } catch (e) {
-    toast.error("Não foi possível buscar os dados da permissão");
+    // toast.error("Não foi possível buscar os dados da permissão");
     yield put(loadFailure());
   }
 }
@@ -210,11 +210,11 @@ export function* createPermission({ payload: { data } }: any) {
       yield put(createPermissionSuccess(response.data));
       toast.success("Permissão cadastrada com sucesso!");
     } else {
-      toast.error("Não foi possível cadastrar uma nova permissão");
+      // toast.error("Não foi possível cadastrar uma nova permissão");
       yield put(loadFailure());
     }
   } catch (e) {
-    toast.error("Não foi possível cadastrar uma nova permissão");
+    // toast.error("Não foi possível cadastrar uma nova permissão");
     yield put(loadFailure());
   }
 }

@@ -70,6 +70,7 @@ import GroupAddIcon from "@mui/icons-material/GroupAdd";
 import LocalHospital from "@mui/icons-material/LocalHospital";
 import StarRateIcon from "@mui/icons-material/StarRate";
 import FavoriteIcon from "@mui/icons-material/Favorite";
+import PublicIcon from "@mui/icons-material/Public";
 import NotificationsIcon from "@mui/icons-material/Notifications";
 import THCStype3Icon from "../Icons/THCS_Type3";
 import THCStype4Icon from "../Icons/THCS_Type4";
@@ -83,6 +84,8 @@ import { loadRequest } from "../../store/ducks/layout/actions";
 import Message from "../Message";
 import DialogChangeCompany from "../Dialogs/ChangeCompany";
 import Loading from "../Loading";
+import crypto from "crypto";
+import CryptoJS from "crypto-js";
 
 const drawerWidth = 250;
 
@@ -244,6 +247,7 @@ const Sibebar = (props: any) => {
     PersonIcon: PersonIcon,
     StarRateIcon: StarRateIcon,
     SettingsIcon: SettingsIcon,
+    PublicIcon: PublicIcon,
     default: AssignmentIndIcon,
   };
 
@@ -300,6 +304,13 @@ const Sibebar = (props: any) => {
         ? sessionStorage.setItem(
             SESSIONSTORAGE.INTEGRATION_NAME,
             layoutState.data.integration_name
+          )
+        : sessionStorage.removeItem(SESSIONSTORAGE.INTEGRATION_NAME);
+
+      layoutState.data.time_zone
+        ? sessionStorage.setItem(
+            SESSIONSTORAGE.INTEGRATION_TIME_ZONE,
+            layoutState.data.time_zone
           )
         : sessionStorage.removeItem(SESSIONSTORAGE.INTEGRATION_NAME);
 
@@ -698,8 +709,49 @@ const Sibebar = (props: any) => {
                 <ListItem
                   key={index}
                   onClick={() => {
-                    navigate(item.route);
-                    dispatch(changeMenuSelected(item.title));
+                    if (item.route !== "/map") {
+                      history.push(item.route);
+                      dispatch(changeMenuSelected(item.title));
+                    } else {
+                      const token = localStorage.getItem("@sollar_token");
+                      const integration_url = sessionStorage.getItem(
+                        "@sollar_integration"
+                      );
+                      const external_sector_id = "763";
+                      const company_id = localStorage.getItem(
+                        "@sollar_company_selected"
+                      );
+                      const external_company_id = localStorage.getItem(
+                        "@sollar_integration_company_selected"
+                      );
+                      const external_user_id = localStorage.getItem(
+                        "@dollar_integration_user_id"
+                      );
+
+                      const key = process.env.REACT_APP_CHIPER_KEY || "";
+
+                      const payload = {
+                        token,
+                        integration_url,
+                        external_sector_id,
+                        company_id,
+                        external_company_id,
+                        external_user_id,
+                      };
+
+                      const ciphertext = CryptoJS.AES.encrypt(
+                        JSON.stringify(payload),
+                        key
+                      );
+                      const hash = CryptoJS.enc.Base64url.stringify(
+                        CryptoJS.enc.Utf8.parse(ciphertext.toString())
+                      );
+                      window.open(
+                        process.env.REACT_APP_BASE_MAP + `/hash/${hash}`,
+                        "_blank",
+                        "noopener,noreferrer"
+                      );
+                    }
                   }}
                   sx={{
                     backgroundColor: `${
@@ -736,7 +788,7 @@ const Sibebar = (props: any) => {
         </List>
         {/*<Divider/>*/}
         {/*<List disablePadding={true}>*/}
-        {/*  <ListItem className={classes.logOutButton} onClick={() => navigate("/userconfiguration")}>*/}
+        {/*  <ListItem className={classes.logOutButton} onClick={() => history.push("/userconfiguration")}>*/}
         {/*    <ListItemIcon>*/}
         {/*      <SettingsIcon style={{color: '#fff'}}/>*/}
         {/*    </ListItemIcon>*/}
@@ -814,7 +866,7 @@ const Sibebar = (props: any) => {
           <Button
             onClick={() => {
               setOpenModalMessage(false);
-              // navigate(`/dashboard`);
+              // history.push(`/dashboard`);
               //location.reload()
             }}
             color="secondary"
@@ -850,7 +902,7 @@ const Sibebar = (props: any) => {
           <Button
             onClick={() => {
               setOpenModalConfig(false);
-              navigate(`/dashboard`);
+              history.push(`/dashboard`);
               //location.reload()
             }}
             color="primary"

@@ -102,7 +102,7 @@ export default function HeaderOverview(props: IProps) {
           </Typography>
         </Box>
       </Box>
-      {content.careState.data.tipo === "H" && (
+      {content.careState.data.tipo === "HOME CARE" && (
         <Box sx={{ display: "flex" }}>
           <BoxIcon onClick={handleClickOpen} sx={{ paddingTop: "4px" }}>
             <QRCodeIcon fill={theme.palette.common.black} />
