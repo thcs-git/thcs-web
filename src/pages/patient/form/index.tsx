@@ -72,7 +72,7 @@ import {
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 import { loadSuccess } from "../../../store/ducks/areas/actions";
-import { objectValues } from "react-toastify/dist/utils";
+// import { objectValues } from "react-toastify/dist/utils";
 import { createPrescriptionRequest } from "../../../store/ducks/prescripition/actions";
 import { AreaInterface } from "../../../store/ducks/areas/types";
 import TabTittle from "../../../components/Text/TabTittle";
