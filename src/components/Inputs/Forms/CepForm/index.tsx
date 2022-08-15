@@ -75,12 +75,12 @@ const CepForm = (props: IComponent) => {
 
   return (
     <FormGroupSection>
-      <Grid container>
+      <Grid container sx={{ width: "100%" }}>
         {params.mode === "view" && !canEdit ? (
           <ViewCard content={content} />
         ) : (
           <>
-            <Grid item md={2} xs={12}>
+            <Grid item md={12} xs={12}>
               <FormControl
                 variant="outlined"
                 size="small"

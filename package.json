@@ -34,7 +34,7 @@
     "pdfmake": "^0.2.5",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
-    "react-glider": "^3.0.1",
+    "react-glider": "^3.1.0",
     "react-google-maps": "^9.4.5",
     "react-input-mask": "^2.0.4",
     "react-qr-code": "^2.0.7",

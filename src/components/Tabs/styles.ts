@@ -53,24 +53,38 @@ export const TabNavItem = styled(Tab)`
   }
 `;
 
-export const TabNavItem_1 = styled(Tab)`
-  font-weight: bold;
-  color: var(--gray-dark);
-  /* display: flex; */
-  width: 100%;
-  cursor: pointer;
+// export const TabNavItem_1 = styled(Tab)`
+//   font-weight: bold;
+//   color: var(--gray-dark);
+//   /* display: flex; */
+//   width: 100%;
+//   cursor: pointer;
 
-  max-width: 100%;
-  box-shadow: none;
+//   max-width: 100%;
+//   box-shadow: none;
 
-  &.active {
-    color: var(--primary);
-  }
+//   &.active {
+//     color: var(--primary);
+//   }
 
-  &:focus {
-    outline: 0 !important;
-  }
-`;
+//   &:focus {
+//     outline: 0 !important;
+//   }
+// `;
+export const TabNavItem_1 = styledMui(Tab)<TabProps>(({ theme }) => ({
+  fontWeight: "bold",
+  color: "var(--gray-dark)",
+  width: "100%",
+  cursor: "pointer",
+  maxWidth: "100%",
+  boxShadow: "none",
+  "&.active": {
+    color: "var(--primary)",
+  },
+  "&:focus": {
+    outline: "0 !important",
+  },
+}));
 
 // export const TabNavItem_1 = styled(Tab);
 

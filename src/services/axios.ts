@@ -34,6 +34,8 @@ export const googleMaps = axios.create({
   baseURL: process.env.REACT_APP_GOOGLE_MAPS_API,
 });
 
+const IntegrationLocalUrl = "http://localhost:3232/api";
+
 apiSollar.interceptors.request.use(
   function (config) {
     // Do something before request is sent
@@ -44,7 +46,8 @@ apiSollar.interceptors.request.use(
       localStorage.getItem(LOCALSTORAGE.COMPANY_SELECTED) || "";
     const customer_id = localStorage.getItem(LOCALSTORAGE.CUSTOMER) || "";
     const integration_url =
-      sessionStorage.getItem(SESSIONSTORAGE.INTEGRATION) || "";
+      // sessionStorage.getItem(SESSIONSTORAGE.INTEGRATION) || "";
+      IntegrationLocalUrl;
     // "https://88e9-177-221-37-197.ngrok.io/api";
     const external_company_id =
       localStorage.getItem(LOCALSTORAGE.INTEGRATION_COMPANY_SELECTED) || "";
@@ -102,7 +105,8 @@ apiSollarMobi.interceptors.request.use(
       localStorage.getItem(LOCALSTORAGE.COMPANY_SELECTED) || "";
     const customer_id = localStorage.getItem(LOCALSTORAGE.CUSTOMER) || "";
     const integration_url =
-      sessionStorage.getItem(SESSIONSTORAGE.INTEGRATION) || "";
+      // sessionStorage.getItem(SESSIONSTORAGE.INTEGRATION) || "";
+      IntegrationLocalUrl;
     // "https://88e9-177-221-37-197.ngrok.io/api";
     const external_company_id =
       localStorage.getItem(LOCALSTORAGE.INTEGRATION_COMPANY_SELECTED) || "";
@@ -159,7 +163,8 @@ apiSollarReport.interceptors.request.use(
       localStorage.getItem(LOCALSTORAGE.COMPANY_SELECTED) || "";
     const customer_id = localStorage.getItem(LOCALSTORAGE.CUSTOMER) || "";
     const integration_url =
-      sessionStorage.getItem(SESSIONSTORAGE.INTEGRATION) || "";
+      // sessionStorage.getItem(SESSIONSTORAGE.INTEGRATION) || "";
+      IntegrationLocalUrl;
     // "https://88e9-177-221-37-197.ngrok.io/api";
     const external_company_id =
       localStorage.getItem(LOCALSTORAGE.INTEGRATION_COMPANY_SELECTED) || "";
@@ -218,7 +223,8 @@ apiSollarNexoData.interceptors.request.use(
       localStorage.getItem(LOCALSTORAGE.COMPANY_SELECTED) || "";
     const customer_id = localStorage.getItem(LOCALSTORAGE.CUSTOMER) || "";
     const integration_url =
-      sessionStorage.getItem(SESSIONSTORAGE.INTEGRATION) || "";
+      // sessionStorage.getItem(SESSIONSTORAGE.INTEGRATION) || "";
+      IntegrationLocalUrl;
     // "https://88e9-177-221-37-197.ngrok.io/api";
     const external_company_id =
       localStorage.getItem(LOCALSTORAGE.INTEGRATION_COMPANY_SELECTED) || "";
