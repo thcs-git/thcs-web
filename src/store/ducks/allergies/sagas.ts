@@ -9,7 +9,7 @@ import { toast } from "react-toastify";
 export function* load(data: any) {
   try {
     const response: AxiosResponse = yield call(
-      apiSollarMobi.get,
+      apiSollarMobi.get as any,
       `/allergies`,
       { params: { patient_id: data.payload } }
     );

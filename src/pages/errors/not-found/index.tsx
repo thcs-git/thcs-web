@@ -1,5 +1,5 @@
 import React from "react";
-import { useHistory } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { Typography } from "@mui/material";
 import { Title } from "../../../styles/components/Text";
 import Button from "@mui/material/Button";
@@ -11,7 +11,7 @@ import { ReactComponent as NotFoundImage } from "../../../assets/img/404-illustr
 import { ContainerComponent as Container } from "./styles";
 
 export default function NotFound() {
-  const history = useHistory();
+  const navigate = useNavigate();
 
   return (
     <Container>
@@ -31,7 +31,7 @@ export default function NotFound() {
         Confira se você digitou a URL corretamente e tente novamente.
       </Typography>
 
-      <Button onClick={() => history.push("/")} variant="contained">
+      <Button onClick={() => navigate("/")} variant="contained">
         Voltar
       </Button>
     </Container>

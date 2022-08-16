@@ -39,7 +39,7 @@ const ClientFormHeader = (props: IComponent) => {
     params,
   } = props;
 
-  const validateCNPJField = useCallback((element) => {
+  const validateCNPJField = useCallback((element: any) => {
     const isValidField = validateCNPJHelper(element.target.value) || false;
     setValidations((prevState: any) => ({
       ...prevState,
@@ -121,7 +121,7 @@ const ClientFormHeader = (props: IComponent) => {
                 }}
                 onBlur={validateCNPJField}
               >
-                {(inputProps: any) => (
+                {/* {(inputProps: any) => (
                   <TextField
                     disabled={!canEdit}
                     {...inputProps}
@@ -135,7 +135,7 @@ const ClientFormHeader = (props: IComponent) => {
                     fullWidth
                     {...a11yProps("input-fiscal-number", index)}
                   />
-                )}
+                )} */}
               </InputMask>
               {fieldsValidation.fiscal_number && state.fiscal_number && (
                 <p style={{ color: "#f44336", margin: "-2px 5px 10px" }}>

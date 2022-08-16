@@ -1,4 +1,4 @@
-import React, { useState, Props } from "react";
+import React, { useState } from "react";
 import {
   FormControl,
   InputLabel,
@@ -10,7 +10,7 @@ import { SearchOutlined } from "@mui/icons-material";
 
 import { FormSearch } from "./styles";
 
-interface ISearchInput extends Props<any> {
+interface ISearchInput {
   label: string;
 }
 

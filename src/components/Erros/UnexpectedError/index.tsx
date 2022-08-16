@@ -1,6 +1,6 @@
 import React from "react";
 // router
-import { useHistory } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 //mui
 import Button from "@mui/material/Button";
 import Container from "@mui/material/Container";
@@ -13,7 +13,7 @@ import AlertIcon from "../../Icons/Alert";
 import theme from "../../../theme/theme";
 
 export default function UnexpectedError() {
-  const history = useHistory();
+  const navigate = useNavigate();
 
   return (
     <Container sx={{ width: "100%", height: "100vh" }}>
@@ -81,7 +81,7 @@ export default function UnexpectedError() {
           <Button
             sx={{ minWidth: "11.5rem" }}
             variant="outlined"
-            onClick={() => history.push("/")}
+            onClick={() => navigate("/")}
           >
             Início
           </Button>

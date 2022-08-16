@@ -1,5 +1,5 @@
 import React, { useState, useCallback, useEffect } from "react";
-import { useHistory, RouteComponentProps } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import {
   Container,
   TableRow,
@@ -111,12 +111,10 @@ interface ICaptureData {
   status: string;
 }
 
-export default function PatientCaptureForm(
-  props: RouteComponentProps<IPageParams>
-) {
+export default function PatientCaptureForm(props: IPageParams) {
   console.log("teste");
   const dispatch = useDispatch();
-  const history = useHistory();
+  const navigate = useNavigate();
   const careState = useSelector((state: ApplicationState) => state.cares);
   const documentGroupsState = useSelector(
     (state: ApplicationState) => state.documentGroups
@@ -125,8 +123,8 @@ export default function PatientCaptureForm(
     (state: ApplicationState) => state.documents
   );
 
-  const { params } = props.match;
-  const { state } = props.location;
+  const params = useParams();
+  // const { state } = props.location;
 
   const userSessionId = localStorage.getItem(LOCALSTORAGE.USER_ID) || "";
 
@@ -147,7 +145,7 @@ export default function PatientCaptureForm(
   const [captureData, setCaptureData] = useState<ICaptureData | any>({});
 
   useEffect(() => {
-    getCare(params.id);
+    params.id && getCare(params.id);
     dispatch(healthInsuranceRequest());
     setDocumentHistory([]);
   }, []);
@@ -376,8 +374,14 @@ export default function PatientCaptureForm(
       }
 
       document_id
-        ? history.push(`${routes[id]}/${document_id}`, { katzIsDone })
-        : history.push(routes[id], { katzIsDone });
+        ? navigate(
+            `${routes[id]}/${document_id}`
+            // , { katzIsDone }
+          )
+        : navigate(
+            routes[id]
+            // , { katzIsDone }
+          );
     },
     [care]
   );
@@ -476,7 +480,7 @@ export default function PatientCaptureForm(
     dispatch(updateCareRequest(updateParams));
     dispatch(cleanAction());
 
-    history.push("/avaliation");
+    navigate("/avaliation");
   }, [care, captureData]);
 
   const handleSubmitNewCapture = useCallback(() => {
@@ -514,7 +518,7 @@ export default function PatientCaptureForm(
   }, [care, careState]);
 
   const handleNewCaptureData = useCallback(() => {
-    history.push(`/patient/capture/${careState.data._id}/overview`);
+    navigate(`/patient/capture/${careState.data._id}/overview`);
   }, [careState.success]);
 
   const handleValidadeFinishEnable = useCallback(() => {
@@ -892,7 +896,7 @@ export default function PatientCaptureForm(
           <BackButtonContent>
             <Button
               // background="primary"
-              onClick={() => history.push("/avaliation")}
+              onClick={() => navigate("/avaliation")}
             >
               Voltar
             </Button>

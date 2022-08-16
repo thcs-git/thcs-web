@@ -6,7 +6,7 @@ import React, {
   ChangeEvent,
 } from "react";
 // router
-import { useHistory, Link } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 
 //redux e sagas
 import { useDispatch, useSelector } from "react-redux";
@@ -51,7 +51,7 @@ import {
 } from "../../../utils/permissions";
 
 export default function CompanyList() {
-  const history = useHistory();
+  const navigate = useNavigate();
   const dispatch = useDispatch();
 
   const companyState = useSelector(
@@ -127,7 +127,7 @@ export default function CompanyList() {
             {integration ? (
               <>
                 <SearchComponent
-                  handleButton={() => history.push("/company/create/")}
+                  handleButton={() => navigate("/company/create/")}
                   inputPlaceholder="Pesquise por nome fantasia, CNPJ, status, etc..."
                   buttonTitle=""
                   onChangeInput={handleChangeInput}
@@ -191,7 +191,7 @@ export default function CompanyList() {
             ) : (
               <>
                 <SearchComponent
-                  handleButton={() => history.push("/company/create/")}
+                  handleButton={() => navigate("/company/create/")}
                   inputPlaceholder="Pesquise por nome fantasia, CNPJ, status, etc..."
                   buttonTitle="Novo"
                   onChangeInput={handleChangeInput}
@@ -258,14 +258,14 @@ export default function CompanyList() {
                             >
                               <MenuItem
                                 onClick={() =>
-                                  history.push(`/company/${company._id}/edit`)
+                                  navigate(`/company/${company._id}/edit`)
                                 }
                               >
                                 Editar
                               </MenuItem>
                               <MenuItem
                                 onClick={() =>
-                                  history.push(`/company/${company._id}/view`)
+                                  navigate(`/company/${company._id}/view`)
                                 }
                               >
                                 Visualizar

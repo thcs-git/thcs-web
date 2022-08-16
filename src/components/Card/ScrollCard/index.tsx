@@ -184,7 +184,7 @@ export default function ScrollCard(props: IScroll) {
     );
   });
   return (
-    <Container>
+    <Container sx={{ width: "calc(100% - 80px)" }}>
       <Box
         sx={{
           display: "flex",

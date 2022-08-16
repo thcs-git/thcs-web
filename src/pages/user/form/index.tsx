@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback } from "react";
-import { useHistory, RouteComponentProps, Link } from "react-router-dom";
+import { useNavigate, useParams, Link } from "react-router-dom";
 // import { cpf } from "cpf-cnpj-validator";
 import {
   Button,
@@ -110,8 +110,8 @@ interface IPageParams {
   mode?: string;
 }
 
-export default function UserForm(props: RouteComponentProps<IPageParams>) {
-  const history = useHistory();
+export default function UserForm(props: IPageParams) {
+  const navigate = useNavigate();
   const dispatch = useDispatch();
 
   const userState = useSelector((state: ApplicationState) => state.users);
@@ -127,7 +127,7 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
   );
   const [canEdit, setCanEdit] = useState(true);
   const [linkChecked, setLinkChecked] = useState(false);
-  const { params } = props.match;
+  const params = useParams();
 
   const currentCompany =
     localStorage.getItem(LOCALSTORAGE.COMPANY_SELECTED) || "";
@@ -566,11 +566,11 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
   function handleCancelForm() {
     setOpenModalCancel(false);
     if (params?.mode == "config") {
-      history.push(`/userconfiguration`);
+      navigate(`/userconfiguration`);
     } else if (params?.mode == "link") {
-      history.push(`/user`);
+      navigate(`/user`);
     } else {
-      history.push(`/user`);
+      navigate(`/user`);
     }
   }
 
@@ -688,9 +688,9 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
 
   function handlerReturn() {
     if (params.mode == "link" || params.mode === "linking") {
-      history.push("/userdesengaged");
+      navigate("/userdesengaged");
     } else {
-      history.push("/user");
+      navigate("/user");
     }
   }
 
@@ -937,9 +937,9 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
     if (state?._id) {
       dispatch(updateUserRequest(state));
       if (params.mode == "link" || params.mode === "linking") {
-        history.push("/userdesengaged");
+        navigate("/userdesengaged");
       } else if (params.mode == "view") {
-        history.push("/userdesengaged");
+        navigate("/userdesengaged");
       }
     } else {
       dispatch(createUserRequest(state));
@@ -949,13 +949,13 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
   const handleBackFormUser = useCallback(() => {
     if (state?._id) {
       if (params.mode == "link" || params.mode === "linking") {
-        history.push("/user");
+        navigate("/user");
       } else if (params.mode == "view") {
-        history.push("/user");
+        navigate("/user");
       } else if (params.mode == "config") {
-        history.push("/userconfiguration");
+        navigate("/userconfiguration");
       } else {
-        history.push("/user");
+        navigate("/user");
       }
     }
   }, [state]);
@@ -975,14 +975,14 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
                 successAction={() => {
                   dispatch(cleanAction());
                   if (currentC != "SEM") {
-                    history.push("/dashboard_user");
+                    navigate("/dashboard_user");
                   } else {
-                    history.push("/dashboard_user");
+                    navigate("/dashboard_user");
                   }
                 }}
                 defaultAction={() => {
                   dispatch(cleanAction());
-                  history.push("/dashboard_user");
+                  navigate("/dashboard_user");
                 }}
               />
             ) : (
@@ -1140,7 +1140,7 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
                                 }));
                               }}
                             >
-                              {(inputProps: any) => (
+                              {/* {(inputProps: any) => (
                                 <TextField
                                   {...inputProps}
                                   disabled={!canEdit}
@@ -1155,7 +1155,7 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
                                   }
                                   fullWidth
                                 />
-                              )}
+                              )} */}
                             </InputMask>
                             {!checkIsCpfValid() && state.fiscal_number != "" && (
                               <p
@@ -1186,7 +1186,7 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
                                 }))
                               }
                             >
-                              {(inputProps: any) => (
+                              {/* {(inputProps: any) => (
                                 <TextField
                                   {...inputProps}
                                   disabled={!canEdit}
@@ -1201,7 +1201,7 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
                                   }
                                   fullWidth
                                 />
-                              )}
+                              )} */}
                             </InputMask>
                           </Grid>
 
@@ -1319,7 +1319,7 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
                                 }}
                                 onBlur={getAddress}
                               >
-                                {(inputProps: any) => (
+                                {/* {(inputProps: any) => (
                                   <TextField
                                     {...inputProps}
                                     disabled={!canEdit}
@@ -1334,7 +1334,7 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
                                     }
                                     fullWidth
                                   />
-                                )}
+                                )} */}
                               </InputMask>
                               {userState.error &&
                                 !fieldsValidation.address.postal_code && (
@@ -1575,7 +1575,7 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
                               }}
                               onBlur={validatePhone}
                             >
-                              {(inputProps: any) => (
+                              {/* {(inputProps: any) => (
                                 <TextField
                                   {...inputProps}
                                   disabled={!canEdit}
@@ -1590,7 +1590,7 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
                                   }
                                   fullWidth
                                 />
-                              )}
+                              )} */}
                             </InputMask>
                             {!validatePhone() && state.phones[0]?.number && (
                               <p
@@ -1624,7 +1624,7 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
                               }}
                               onBlur={validateCellPhone}
                             >
-                              {(inputProps: any) => (
+                              {/* {(inputProps: any) => (
                                 <TextField
                                   {...inputProps}
                                   disabled={!canEdit}
@@ -1639,7 +1639,7 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
                                   }
                                   fullWidth
                                 />
-                              )}
+                              )} */}
                             </InputMask>
                             {!validateCellPhone() &&
                               state.phones[0]?.cellnumber && (
@@ -2483,14 +2483,14 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
                 successAction={() => {
                   dispatch(cleanAction());
                   if (currentC != "SEM") {
-                    history.push("/dashboard_user");
+                    navigate("/dashboard_user");
                   } else {
-                    history.push("/dashboard_user");
+                    navigate("/dashboard_user");
                   }
                 }}
                 defaultAction={() => {
                   dispatch(cleanAction());
-                  history.push("/dashboard_user");
+                  navigate("/dashboard_user");
                 }}
               />
             ) : (
@@ -2654,7 +2654,7 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
                                 }));
                               }}
                             >
-                              {(inputProps: any) => (
+                              {/* {(inputProps: any) => (
                                 <TextField
                                   {...inputProps}
                                   disabled={!canEdit}
@@ -2669,7 +2669,7 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
                                   }
                                   fullWidth
                                 />
-                              )}
+                              )} */}
                             </InputMask>
                             {!checkIsCpfValid() && state.fiscal_number != "" && (
                               <p
@@ -2700,7 +2700,7 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
                                 }))
                               }
                             >
-                              {(inputProps: any) => (
+                              {/* {(inputProps: any) => (
                                 <TextField
                                   {...inputProps}
                                   disabled={!canEdit}
@@ -2715,7 +2715,7 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
                                   }
                                   fullWidth
                                 />
-                              )}
+                              )} */}
                             </InputMask>
                           </Grid>
 
@@ -2833,7 +2833,7 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
                                 }}
                                 onBlur={getAddress}
                               >
-                                {(inputProps: any) => (
+                                {/* {(inputProps: any) => (
                                   <TextField
                                     {...inputProps}
                                     disabled={!canEdit}
@@ -2848,7 +2848,7 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
                                     }
                                     fullWidth
                                   />
-                                )}
+                                )} */}
                               </InputMask>
                               {userState.error &&
                                 !fieldsValidation.address.postal_code && (
@@ -3090,7 +3090,7 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
                               }}
                               onBlur={validatePhone}
                             >
-                              {(inputProps: any) => (
+                              {/* {(inputProps: any) => (
                                 <TextField
                                   {...inputProps}
                                   disabled={!canEdit}
@@ -3105,7 +3105,7 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
                                   }
                                   fullWidth
                                 />
-                              )}
+                              )} */}
                             </InputMask>
                             {!validatePhone() && state.phones[0]?.number && (
                               <p
@@ -3141,7 +3141,7 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
                               }}
                               onBlur={validateCellPhone}
                             >
-                              {(inputProps: any) => (
+                              {/* {(inputProps: any) => (
                                 <TextField
                                   {...inputProps}
                                   disabled={!canEdit}
@@ -3156,7 +3156,7 @@ export default function UserForm(props: RouteComponentProps<IPageParams>) {
                                   }
                                   fullWidth
                                 />
-                              )}
+                              )} */}
                             </InputMask>
                             {!validateCellPhone() &&
                               state.phones[0]?.cellnumber && (

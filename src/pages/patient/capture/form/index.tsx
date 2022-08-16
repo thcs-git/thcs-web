@@ -1,5 +1,5 @@
 import React, { useState, useCallback, useEffect } from "react";
-import { useHistory, RouteComponentProps } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import {
   Container,
   Dialog,
@@ -76,9 +76,9 @@ import {
   PatientNotFound,
 } from "./styles";
 
-export default function PatientCaptureForm(props: RouteComponentProps) {
+export default function PatientCaptureForm(props: any) {
   const dispatch = useDispatch();
-  const history = useHistory();
+  const navigate = useNavigate();
 
   const {
     location: { search: searchParams },
@@ -129,7 +129,7 @@ export default function PatientCaptureForm(props: RouteComponentProps) {
 
   useEffect(() => {
     if (careState.success && !careState.error && careState.data._id) {
-      history.push(`/patient/capture/${careState.data._id}/overview`);
+      navigate(`/patient/capture/${careState.data._id}/overview`);
     }
   }, [careState]);
 
@@ -178,7 +178,7 @@ export default function PatientCaptureForm(props: RouteComponentProps) {
           <Error
             style={{ color: "#FF6565", cursor: "pointer" }}
             onClick={() =>
-              history.push(
+              navigate(
                 `/patient/capture/${found.care_id}/${documentRoute()}/${
                   found._id
                 }`
@@ -191,7 +191,7 @@ export default function PatientCaptureForm(props: RouteComponentProps) {
           <CheckIcon
             style={{ color: "#4FC66A", cursor: "pointer" }}
             onClick={() =>
-              history.push(
+              navigate(
                 `/patient/capture/${found.care_id}/${documentRoute()}/${
                   found._id
                 }`
@@ -268,7 +268,7 @@ export default function PatientCaptureForm(props: RouteComponentProps) {
       setOpenModalCancel(true);
     } else {
       setOpenModalCancel(false);
-      history.push("/avaliation");
+      navigate("/avaliation");
     }
   }
 
@@ -279,7 +279,7 @@ export default function PatientCaptureForm(props: RouteComponentProps) {
   function handleCancelForm() {
     dispatch(cleanAction());
     setOpenModalCancel(false);
-    history.push("/avaliation");
+    navigate("/avaliation");
   }
 
   return (
@@ -301,7 +301,7 @@ export default function PatientCaptureForm(props: RouteComponentProps) {
                   onChange={(element) => setPatientSearch(element.target.value)}
                   //  onBlur={(element) => searchPatient(element.target.value)}
                 >
-                  {(inputProps: any) => (
+                  {/* {(inputProps: any) => (
                     <TextField
                       id="input-search-fiscal-number"
                       label="Paciente"
@@ -312,7 +312,7 @@ export default function PatientCaptureForm(props: RouteComponentProps) {
                       fullWidth
                       autoFocus
                     />
-                  )}
+                  )} */}
                 </InputMask>
                 <Button
                   // background="success"
@@ -351,7 +351,7 @@ export default function PatientCaptureForm(props: RouteComponentProps) {
                       <Button
                         // background="default"
                         onClick={() => {
-                          history.push(`/patient/${patient?._id}/edit`);
+                          navigate(`/patient/${patient?._id}/edit`);
                         }}
                       >
                         <CreateIcon />
@@ -543,9 +543,7 @@ export default function PatientCaptureForm(props: RouteComponentProps) {
                         <TableCell>
                           <Button
                             onClick={() => {
-                              history.push(
-                                `/patient/capture/${care._id}/overview`
-                              );
+                              navigate(`/patient/capture/${care._id}/overview`);
                             }}
                             color="primary"
                           >

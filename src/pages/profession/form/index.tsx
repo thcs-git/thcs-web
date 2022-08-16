@@ -120,7 +120,7 @@ export default function ProfessionForm() {
   }, []);
 
   const handleLogin = useCallback(
-    async (event) => {
+    async (event: any) => {
       event.preventDefault();
 
       if (inputEmail.error || inputPassword.error) return;

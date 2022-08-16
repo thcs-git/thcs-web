@@ -233,7 +233,9 @@ export default function DialogInfo(props: IDialogProps) {
     });
 
     const arrEmpty = (
-      <Box>Não foram realizados nenhum check-in/out neste atendimento.</Box>
+      <Typography>
+        Não foram realizados nenhum check-in/out neste atendimento.
+      </Typography>
     );
 
     return arr.length > 0 ? team : arrEmpty;

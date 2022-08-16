@@ -1,10 +1,10 @@
-import React, { useState, useEffect, Props, useCallback } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 // REDUX e REDUX-SAGA
 import { useDispatch, useSelector } from "react-redux";
 import { ApplicationState } from "../../store";
 import { loadCompanyById } from "../../store/ducks/companies/actions";
 import { changeMenuSelected } from "../../store/ducks/layout/actions";
-import { useHistory } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 // MUI
 import {
@@ -119,8 +119,8 @@ interface PropsSidebar {
   permission?: boolean;
 }
 
-const Sibebar = (props: Props<any>) => {
-  const history = useHistory();
+const Sibebar = (props: any) => {
+  const navigate = useNavigate();
   // const classes = useStyles();
   const dispatch = useDispatch();
   const applicationState = useSelector((state: any) => state);
@@ -711,7 +711,7 @@ const Sibebar = (props: Props<any>) => {
                   key={index}
                   onClick={() => {
                     if (item.route !== "/map") {
-                      history.push(item.route);
+                      navigate(item.route);
                       dispatch(changeMenuSelected(item.title));
                     } else {
                       const token = localStorage.getItem("@sollar_token");

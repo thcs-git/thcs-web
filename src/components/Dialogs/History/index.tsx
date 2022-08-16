@@ -1,6 +1,6 @@
 import React, { useEffect, useCallback } from "react";
 //router
-import { useHistory } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 //redux e saga
 import { useDispatch, useSelector } from "react-redux";
@@ -81,7 +81,7 @@ export default function HistoryDialog(props: IDialogProps) {
     historyType,
   } = props;
   const dispatch = useDispatch();
-  const history = useHistory();
+  const navigate = useNavigate();
   const integration = sessionStorage.getItem(SESSIONSTORAGE.INTEGRATION);
   const careState = useSelector((state: ApplicationState) => state.cares);
   const handleType = useCallback(
@@ -263,7 +263,7 @@ export default function HistoryDialog(props: IDialogProps) {
               {/*              <p>{care?.company_id?.name}</p>*/}
               {/*            </TableCell>*/}
               {/*            <TableCell align="center">*/}
-              {/*              <Button onClick={() => history.push(`/care/${care?._id}/overview`)}>*/}
+              {/*              <Button onClick={() => navigate(`/care/${care?._id}/overview`)}>*/}
               {/*                <VisibilityIcon style={{color: '#0899BA'}}/>*/}
               {/*              </Button>*/}
               {/*            </TableCell>*/}
@@ -290,7 +290,7 @@ export default function HistoryDialog(props: IDialogProps) {
               {/*              <p>{care?.company_id?.name}</p>*/}
               {/*            </TableCell>*/}
               {/*            <TableCell align="center">*/}
-              {/*              <Button onClick={() => history.push(`/patient/capture/${care?._id}/overview`)}>*/}
+              {/*              <Button onClick={() => navigate(`/patient/capture/${care?._id}/overview`)}>*/}
               {/*                <VisibilityIcon style={{color: '#0899BA'}}/>*/}
               {/*              </Button>*/}
               {/*            </TableCell>*/}
@@ -320,7 +320,7 @@ export default function HistoryDialog(props: IDialogProps) {
               {/*          : patient?.care_type_id}*/}
               {/*      </TableCell>*/}
               {/*      <TableCell align="center">*/}
-              {/*        <Button onClick={() => history.push(`/care/${patient?._id}/overview`)}>*/}
+              {/*        <Button onClick={() => navigate(`/care/${patient?._id}/overview`)}>*/}
               {/*          <VisibilityIcon style={{color: '#0899BA'}}/>*/}
               {/*        </Button>*/}
               {/*      </TableCell>*/}

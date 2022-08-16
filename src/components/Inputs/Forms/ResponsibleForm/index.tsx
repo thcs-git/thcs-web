@@ -143,7 +143,7 @@ const ResponsibleForm = (props: IComponent) => {
                 // onBlur={(element)=>{
                 //   setFieldValidations((prevState: any) => ({ ...prevState, phone: !validator.isEmpty(element.target.value) }));}}
               >
-                {(inputProps: any) => (
+                {/* {(inputProps: any) => (
                   <TextField
                     disabled={!canEdit}
                     {...inputProps}
@@ -155,7 +155,7 @@ const ResponsibleForm = (props: IComponent) => {
                     fullWidth
                     {...a11yProps("input-cellphone", index)}
                   />
-                )}
+                )} */}
               </InputMask>
               {!validatePhone() && state.phones[0].phone && (
                 <p style={{ color: "#f44336", margin: "-10px 5px 10px" }}>
@@ -215,7 +215,7 @@ const ResponsibleForm = (props: IComponent) => {
                   }
                 }}
               >
-                {(inputProps: any) => (
+                {/* {(inputProps: any) => (
                   <TextField
                     disabled={!canEdit}
                     {...inputProps}
@@ -229,7 +229,7 @@ const ResponsibleForm = (props: IComponent) => {
                     fullWidth
                     {...a11yProps("input-phone", index)}
                   />
-                )}
+                )} */}
               </InputMask>
               {!validateCellPhone() && state.phones[0]?.cellphone && (
                 <p style={{ color: "#f44336", margin: "4px 4px" }}>

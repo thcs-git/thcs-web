@@ -34,6 +34,8 @@ export const googleMaps = axios.create({
   baseURL: process.env.REACT_APP_GOOGLE_MAPS_API,
 });
 
+const IntegrationLocalUrl = "http://localhost:3232/api";
+
 apiSollar.interceptors.request.use(
   function (config) {
     // Do something before request is sent
@@ -44,7 +46,8 @@ apiSollar.interceptors.request.use(
       localStorage.getItem(LOCALSTORAGE.COMPANY_SELECTED) || "";
     const customer_id = localStorage.getItem(LOCALSTORAGE.CUSTOMER) || "";
     const integration_url =
-      sessionStorage.getItem(SESSIONSTORAGE.INTEGRATION) || "";
+      // sessionStorage.getItem(SESSIONSTORAGE.INTEGRATION) || "";
+      IntegrationLocalUrl;
     // "https://88e9-177-221-37-197.ngrok.io/api";
     const external_company_id =
       localStorage.getItem(LOCALSTORAGE.INTEGRATION_COMPANY_SELECTED) || "";
@@ -52,16 +55,16 @@ apiSollar.interceptors.request.use(
       localStorage.getItem(LOCALSTORAGE.SOLLAR_INTEGRATION_USER_ID) || "";
 
     if (token) {
-      config.headers.token = `${token}`;
-      config.headers.user = JSON.stringify({ id: user_id, username });
-      config.headers.company_id = company_id;
-      config.headers.customer_id = customer_id;
+      config.headers!.token = `${token}`;
+      config.headers!.user = JSON.stringify({ id: user_id, username });
+      config.headers!.company_id = company_id;
+      config.headers!.customer_id = customer_id;
     }
 
     if (integration_url) {
-      config.headers.integration_url = integration_url;
-      config.headers.external_company_id = external_company_id;
-      config.headers.external_user_id = external_user_id;
+      config.headers!.integration_url = integration_url;
+      config.headers!.external_company_id = external_company_id;
+      config.headers!.external_user_id = external_user_id;
     }
 
     return config;
@@ -102,7 +105,8 @@ apiSollarMobi.interceptors.request.use(
       localStorage.getItem(LOCALSTORAGE.COMPANY_SELECTED) || "";
     const customer_id = localStorage.getItem(LOCALSTORAGE.CUSTOMER) || "";
     const integration_url =
-      sessionStorage.getItem(SESSIONSTORAGE.INTEGRATION) || "";
+      // sessionStorage.getItem(SESSIONSTORAGE.INTEGRATION) || "";
+      IntegrationLocalUrl;
     // "https://88e9-177-221-37-197.ngrok.io/api";
     const external_company_id =
       localStorage.getItem(LOCALSTORAGE.INTEGRATION_COMPANY_SELECTED) || "";
@@ -110,15 +114,15 @@ apiSollarMobi.interceptors.request.use(
       localStorage.getItem(LOCALSTORAGE.SOLLAR_INTEGRATION_USER_ID) || "";
 
     if (token) {
-      config.headers.token = `${token}`;
-      config.headers.user = JSON.stringify({ id: user_id, username });
-      config.headers.company_id = company_id;
-      config.headers.customer_id = customer_id;
+      config.headers!.token = `${token}`;
+      config.headers!.user = JSON.stringify({ id: user_id, username });
+      config.headers!.company_id = company_id;
+      config.headers!.customer_id = customer_id;
     }
 
     if (integration_url) {
-      config.headers.integration_url = integration_url;
-      config.headers.external_company_id = external_company_id;
+      config.headers!.integration_url = integration_url;
+      config.headers!.external_company_id = external_company_id;
     }
 
     return config;
@@ -159,7 +163,8 @@ apiSollarReport.interceptors.request.use(
       localStorage.getItem(LOCALSTORAGE.COMPANY_SELECTED) || "";
     const customer_id = localStorage.getItem(LOCALSTORAGE.CUSTOMER) || "";
     const integration_url =
-      sessionStorage.getItem(SESSIONSTORAGE.INTEGRATION) || "";
+      // sessionStorage.getItem(SESSIONSTORAGE.INTEGRATION) || "";
+      IntegrationLocalUrl;
     // "https://88e9-177-221-37-197.ngrok.io/api";
     const external_company_id =
       localStorage.getItem(LOCALSTORAGE.INTEGRATION_COMPANY_SELECTED) || "";
@@ -167,15 +172,15 @@ apiSollarReport.interceptors.request.use(
       localStorage.getItem(LOCALSTORAGE.SOLLAR_INTEGRATION_USER_ID) || "";
 
     if (token) {
-      config.headers.token = `${token}`;
-      config.headers.user = JSON.stringify({ id: user_id, username });
-      config.headers.company_id = company_id;
-      config.headers.customer_id = customer_id;
+      config.headers!.token = `${token}`;
+      config.headers!.user = JSON.stringify({ id: user_id, username });
+      config.headers!.company_id = company_id;
+      config.headers!.customer_id = customer_id;
     }
 
     if (integration_url) {
-      config.headers.integration_url = integration_url;
-      config.headers.external_company_id = external_company_id;
+      config.headers!.integration_url = integration_url;
+      config.headers!.external_company_id = external_company_id;
     }
 
     return config;
@@ -218,7 +223,8 @@ apiSollarNexoData.interceptors.request.use(
       localStorage.getItem(LOCALSTORAGE.COMPANY_SELECTED) || "";
     const customer_id = localStorage.getItem(LOCALSTORAGE.CUSTOMER) || "";
     const integration_url =
-      sessionStorage.getItem(SESSIONSTORAGE.INTEGRATION) || "";
+      // sessionStorage.getItem(SESSIONSTORAGE.INTEGRATION) || "";
+      IntegrationLocalUrl;
     // "https://88e9-177-221-37-197.ngrok.io/api";
     const external_company_id =
       localStorage.getItem(LOCALSTORAGE.INTEGRATION_COMPANY_SELECTED) || "";
@@ -226,15 +232,15 @@ apiSollarNexoData.interceptors.request.use(
       localStorage.getItem(LOCALSTORAGE.SOLLAR_INTEGRATION_USER_ID) || "";
 
     if (token) {
-      config.headers.token = `${token}`;
-      config.headers.user = JSON.stringify({ id: user_id, username });
-      config.headers.company_id = company_id;
-      config.headers.customer_id = customer_id;
+      config.headers!.token = `${token}`;
+      config.headers!.user = JSON.stringify({ id: user_id, username });
+      config.headers!.company_id = company_id;
+      config.headers!.customer_id = customer_id;
     }
 
     if (integration_url) {
-      config.headers.integration_url = integration_url;
-      config.headers.external_company_id = external_company_id;
+      config.headers!.integration_url = integration_url;
+      config.headers!.external_company_id = external_company_id;
     }
 
     return config;

@@ -1,6 +1,6 @@
 import React, { useCallback, useState, useEffect, useRef, memo } from "react";
 // Router
-import { useHistory } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 // Redux e saga
 import { loadRequest, emailRequest } from "../../store/ducks/login/actions";
@@ -1612,7 +1612,7 @@ const generateTwoDifferentRandomNumbers = (max: number): number[] => {
 };
 
 export default function SignIn() {
-  const history = useHistory();
+  const navigate = useNavigate();
   const dispatch = useDispatch();
   const loginState = useSelector((state: ApplicationState) => state.login);
 
@@ -1647,7 +1647,7 @@ export default function SignIn() {
   }, []);
 
   const handlePassword = useCallback(
-    async (event) => {
+    async (event: any) => {
       event.preventDefault();
 
       if (inputEmail.error || inputPassword.error) return;
@@ -1662,7 +1662,7 @@ export default function SignIn() {
   );
 
   const handleLogin = useCallback(
-    async (event) => {
+    async (event: any) => {
       event.preventDefault();
 
       if (inputEmail.error || inputPassword.error) return;
@@ -1715,7 +1715,7 @@ export default function SignIn() {
   }, [inputPassword, inputConfirmPassword]);
 
   const handleVerifyEmail = useCallback(
-    async (event) => {
+    async (event: any) => {
       event.preventDefault();
 
       if (inputEmail.error) return;
@@ -1866,52 +1866,53 @@ export default function SignIn() {
         }}
         noValidate
       >
-        <FormControl
-          fullWidth
-          margin="normal"
-          variant="outlined"
-          sx={{
-            "& .MuiOutlinedInput-root.MuiInputBase-root": {
-              "&.Mui-focused": {
-                "& fieldset": {
-                  border: `4px solid ${theme.palette.secondary.main} !important`,
-                },
-                // borderColor: `${theme.palette.secondary.main} !important`,
-              },
-              "&:hover": {
-                "& fieldset": {
-                  border: `4px solid ${theme.palette.terciaryDark.main}`,
-                },
-              },
-            },
-          }}
-        >
-          <OutlinedInput
-            sx={{
-              background: "white",
-            }}
-            color="secondary"
-            onKeyDown={handleKeyEnter}
-            error={inputEmail.error}
-            required
+        <>
+          <FormControl
             fullWidth
-            placeholder="E-mail"
-            name="email"
-            autoComplete="number"
-            autoFocus
-            onChange={(inputValue) =>
-              setInputEmail((prev) => ({
-                ...prev,
-                value: inputValue.target.value,
-              }))
-            }
-            // onBlur={handleEmailValidator}
-            id="outlined-adornment-email"
-            value={inputEmail.value}
-            endAdornment={
-              <InputAdornment position="end">
-                {/* <div className={classes.wrapper}> */}
-                {/* <Fab
+            margin="normal"
+            variant="outlined"
+            sx={{
+              "& .MuiOutlinedInput-root.MuiInputBase-root": {
+                "&.Mui-focused": {
+                  "& fieldset": {
+                    border: `4px solid ${theme.palette.secondary.main} !important`,
+                  },
+                  // borderColor: `${theme.palette.secondary.main} !important`,
+                },
+                "&:hover": {
+                  "& fieldset": {
+                    border: `4px solid ${theme.palette.terciaryDark.main}`,
+                  },
+                },
+              },
+            }}
+          >
+            <OutlinedInput
+              sx={{
+                background: "white",
+              }}
+              color="secondary"
+              onKeyDown={handleKeyEnter}
+              error={inputEmail.error}
+              required
+              fullWidth
+              placeholder="E-mail"
+              name="email"
+              autoComplete="number"
+              autoFocus
+              onChange={(inputValue) =>
+                setInputEmail((prev) => ({
+                  ...prev,
+                  value: inputValue.target.value,
+                }))
+              }
+              // onBlur={handleEmailValidator}
+              id="outlined-adornment-email"
+              value={inputEmail.value}
+              endAdornment={
+                <InputAdornment position="end">
+                  {/* <div className={classes.wrapper}> */}
+                  {/* <Fab
                       className={classes.fab}
                       aria-label="save"
                       // color="secondary"
@@ -1919,284 +1920,105 @@ export default function SignIn() {
                       onClick={handleVerifyEmail}
                       style={{ color: "primary" }}
                     > */}
-                <IconButton
-                  onClick={handleVerifyEmail}
-                  sx={{
-                    cursor: "pointer",
-                    "& svg, path": { cursor: "pointer" },
-                  }}
-                >
-                  <ArrowForwardIcon color="secondary" />
-                </IconButton>
-                {/* </Fab> */}
-                {/*<CircularProgress size={68} className={classes.fabProgress}/>*/}
-                {/* </div> */}
-              </InputAdornment>
-            }
-            // labelWidth={70}
-          />
-        </FormControl>
-        {loginState.email.user ? (
-          <>
-            {loginState.email.password ? (
-              <>
-                <FormControl fullWidth margin="normal" variant="outlined">
-                  {/* <InputLabel
+                  <IconButton
+                    onClick={handleVerifyEmail}
+                    sx={{
+                      cursor: "pointer",
+                      "& svg, path": { cursor: "pointer" },
+                    }}
+                  >
+                    <ArrowForwardIcon color="secondary" />
+                  </IconButton>
+                  {/* </Fab> */}
+                  {/*<CircularProgress size={68} className={classes.fabProgress}/>*/}
+                  {/* </div> */}
+                </InputAdornment>
+              }
+              // labelWidth={70}
+            />
+          </FormControl>
+          {loginState.email.user ? (
+            <>
+              {loginState.email.password ? (
+                <>
+                  <FormControl fullWidth margin="normal" variant="outlined">
+                    {/* <InputLabel
                     htmlFor="outlined-adornment-password"
                     color="secondary"
                   >
                     Senha
                   </InputLabel> */}
-                  <OutlinedInput
-                    sx={{
-                      "&.MuiOutlinedInput-root.MuiInputBase-root": {
-                        background: "white",
-                        "&:hover": {
-                          "& fieldset": {
-                            border: `4px solid ${theme.palette.terciaryDark.main}`,
-                          },
-                        },
-                        "&.Mui-focused": {
-                          "& fieldset": {
-                            border: `4px solid ${theme.palette.secondary.main} `,
-                          },
-                        },
-                        "&.Mui-error": {
-                          "& fieldset": {
-                            border: `4px solid ${theme.palette.error.main}`,
-                          },
-                        },
-                      },
-                    }}
-                    placeholder="senha"
-                    color="secondary"
-                    onKeyDown={handleKeyEnter}
-                    id="outlined-adornment-password"
-                    type={showPassword ? "text" : "password"}
-                    value={inputPassword.value}
-                    onChange={(inputValue) =>
-                      setInputPassword((prev) => ({
-                        ...prev,
-                        value: inputValue.target.value,
-                      }))
-                    }
-                    error={inputPassword.error}
-                    endAdornment={
-                      <InputAdornment position="end">
-                        <IconButton
-                          aria-label="toggle password visibility"
-                          onClick={handleClickShowPassword}
-                          edge="end"
-                          sx={{
-                            // cursor: "pointer",
-                            "& svg, path": { cursor: "pointer" },
-                          }}
-                        >
-                          {showPassword ? <Visibility /> : <VisibilityOff />}
-                        </IconButton>
-                      </InputAdornment>
-                    }
-                    // labelWidth={70}
-                  />
-                </FormControl>
-                <FormControlLabel
-                  sx={{ "& .MuiTypography-root": { color: "white" } }}
-                  control={
-                    <Checkbox
-                      value="remember"
-                      color="primary"
+                    <OutlinedInput
                       sx={{
-                        "&.MuiCheckbox-root": {
-                          "& svg": { color: theme.palette.terciary.main },
+                        "&.MuiOutlinedInput-root.MuiInputBase-root": {
+                          background: "white",
+                          "&:hover": {
+                            "& fieldset": {
+                              border: `4px solid ${theme.palette.terciaryDark.main}`,
+                            },
+                          },
+                          "&.Mui-focused": {
+                            "& fieldset": {
+                              border: `4px solid ${theme.palette.secondary.main} `,
+                            },
+                          },
+                          "&.Mui-error": {
+                            "& fieldset": {
+                              border: `4px solid ${theme.palette.error.main}`,
+                            },
+                          },
                         },
                       }}
-                    />
-                  }
-                  label="Lembrar de mim neste computador"
-                />
-                <Button
-                  type="submit"
-                  fullWidth
-                  variant="contained"
-                  color="secondary"
-                  sx={{
-                    background: theme.palette.terciary.main,
-                    color: theme.palette.text.primary,
-                    "&:hover": { background: theme.palette.terciaryDark.main },
-                  }}
-                  onClick={handleLogin}
-                >
-                  Entrar
-                </Button>
-              </>
-            ) : (
-              <>
-                <form onSubmit={formik.handleSubmit}>
-                  <TextField
-                    fullWidth
-                    color="secondary"
-                    sx={{
-                      margin: "8px 0",
-
-                      "& .MuiOutlinedInput-root.MuiInputBase-root": {
-                        background: "white",
-                        "&:hover": {
-                          "& fieldset": {
-                            border: `4px solid ${theme.palette.terciaryDark.main}`,
-                          },
-                        },
-                        "&.Mui-focused": {
-                          "& fieldset": {
-                            border: `4px solid ${theme.palette.secondary.main} `,
-                          },
-                        },
-                        "&.Mui-error": {
-                          "& fieldset": {
-                            border: `4px solid ${theme.palette.error.main}`,
-                          },
-                        },
-                      },
-                    }}
-                    id="password"
-                    name="password"
-                    placeholder="Nova senha"
-                    type={showPassword ? "text" : "password"}
-                    value={formik.values.password}
-                    onChange={formik.handleChange}
-                    error={
-                      formik.touched.password && Boolean(formik.errors.password)
-                    }
-                    helperText={
-                      formik.touched.password && formik.errors.password
-                    }
-                    InputProps={{
-                      endAdornment: (
-                        <InputAdornment position="end">
-                          <IconButton
-                            aria-label="toggle password visibility"
-                            onClick={handleClickShowPassword}
-                            onMouseDown={handleMouseDownPassword}
-                            edge="end"
-                            sx={{
-                              "& svg, path": { cursor: "pointer" },
-                            }}
-                          >
-                            {showPassword ? <VisibilityOff /> : <Visibility />}
-                          </IconButton>
-                        </InputAdornment>
-                      ),
-                    }}
-                  />
-                  <TextField
-                    fullWidth
-                    color="secondary"
-                    sx={{
-                      margin: "8px 0",
-
-                      "& .MuiOutlinedInput-root.MuiInputBase-root": {
-                        background: "white",
-                        "&:hover": {
-                          "& fieldset": {
-                            border: `4px solid ${theme.palette.terciaryDark.main}`,
-                          },
-                        },
-                        "&.Mui-focused": {
-                          "& fieldset": {
-                            border: `4px solid ${theme.palette.secondary.main} `,
-                          },
-                        },
-                        "&.Mui-error": {
-                          "& fieldset": {
-                            border: `4px solid ${theme.palette.error.main}`,
-                          },
-                        },
-                      },
-                    }}
-                    id="confirmPassword"
-                    name="confirmPassword"
-                    placeholder="Confirmar senha"
-                    type={showPassword ? "text" : "password"}
-                    value={formik.values.confirmPassword}
-                    onChange={formik.handleChange}
-                    error={
-                      formik.touched.confirmPassword &&
-                      Boolean(formik.errors.confirmPassword)
-                    }
-                    helperText={
-                      formik.touched.confirmPassword &&
-                      formik.errors.confirmPassword
-                    }
-                    InputProps={{
-                      endAdornment: (
-                        <InputAdornment position="end">
-                          <IconButton
-                            aria-label="toggle password visibility"
-                            onClick={handleClickShowPassword}
-                            onMouseDown={handleMouseDownPassword}
-                            edge="end"
-                            sx={{
-                              "& svg, path": { cursor: "pointer" },
-                            }}
-                          >
-                            {showPassword ? <VisibilityOff /> : <Visibility />}
-                          </IconButton>
-                        </InputAdornment>
-                      ),
-                    }}
-                  />
-
-                  <FormGroup
-                    row
-                    sx={{
-                      margin: "0px 0px 8px 0px",
-                      alignItems: "center",
-                      display: "flex",
-                      flexWrap: "nowrap",
-                    }}
-                  >
-                    <Checkbox
-                      id="policyAccepted"
-                      name="policyAccepted"
-                      checked={formik.values.policyAccepted}
-                      onChange={formik.handleChange}
+                      placeholder="senha"
                       color="secondary"
-                      sx={{
-                        "&.MuiCheckbox-root": {
-                          "& svg": { color: theme.palette.terciary.main },
-                        },
-                      }}
+                      onKeyDown={handleKeyEnter}
+                      id="outlined-adornment-password"
+                      type={showPassword ? "text" : "password"}
+                      value={inputPassword.value}
+                      onChange={(inputValue) =>
+                        setInputPassword((prev) => ({
+                          ...prev,
+                          value: inputValue.target.value,
+                        }))
+                      }
+                      error={inputPassword.error}
+                      endAdornment={
+                        <InputAdornment position="end">
+                          <IconButton
+                            aria-label="toggle password visibility"
+                            onClick={handleClickShowPassword}
+                            edge="end"
+                            sx={{
+                              // cursor: "pointer",
+                              "& svg, path": { cursor: "pointer" },
+                            }}
+                          >
+                            {showPassword ? <Visibility /> : <VisibilityOff />}
+                          </IconButton>
+                        </InputAdornment>
+                      }
+                      // labelWidth={70}
                     />
-
-                    <Typography
-                      variant="body2"
-                      sx={{ display: "inline", color: "white" }}
-                    >
-                      Li e concordo com os{" "}
-                      <Typography
-                        variant="body2"
-                        onClick={() => setOpenPolicyModal(true)}
+                  </FormControl>
+                  <FormControlLabel
+                    sx={{ "& .MuiTypography-root": { color: "white" } }}
+                    control={
+                      <Checkbox
+                        value="remember"
+                        color="primary"
                         sx={{
-                          display: "inline",
-                          cursor: "pointer",
-                          color: theme.palette.terciary.main,
-                          "&:hover": { textDecoration: "underline" },
+                          "&.MuiCheckbox-root": {
+                            "& svg": { color: theme.palette.terciary.main },
+                          },
                         }}
-                      >
-                        termos e politicas{" "}
-                      </Typography>
-                      de privacidade
-                    </Typography>
-
-                    <FormHelperText error sx={{ marginLeft: "14px" }}>
-                      {formik.submitCount && !formik.values.policyAccepted
-                        ? formik.errors.policyAccepted
-                        : ""}
-                    </FormHelperText>
-                  </FormGroup>
+                      />
+                    }
+                    label="Lembrar de mim neste computador"
+                  />
                   <Button
-                    variant="contained"
+                    type="submit"
                     fullWidth
-                    onClick={() => formik.handleSubmit()}
+                    variant="contained"
                     color="secondary"
                     sx={{
                       background: theme.palette.terciary.main,
@@ -2205,48 +2027,240 @@ export default function SignIn() {
                         background: theme.palette.terciaryDark.main,
                       },
                     }}
+                    onClick={handleLogin}
                   >
-                    Salvar senha
+                    Entrar
                   </Button>
-                </form>
-              </>
-            )}
-          </>
-        ) : (
-          <>
-            {/*<Button*/}
-            {/*  type="submit"*/}
-            {/*  fullWidth*/}
-            {/*  variant="contained"*/}
-            {/*  color="primary"*/}
-            {/*  className={classes.submit}*/}
-            {/*  onClick={handleVerifyEmail}*/}
-            {/*>*/}
-            {/*  Verificar*/}
-            {/*</Button>*/}
-          </>
-        )}
-        {/*<Button*/}
-        {/*  background="success_rounded"*/}
-        {/*  type="button"*/}
-        {/*  fullWidth*/}
-        {/*  variant="contained"*/}
-        {/*  className={classes.create_account}*/}
-        {/*  onClick={() => history.push('/register')}*/}
-        {/*>*/}
-        {/*  Criar conta*/}
-        {/*</Button>*/}
-        {console.log(loginState.email)}
-        {!loginState.email.user ? (
-          <ForgotPassword />
-        ) : loginState.email.password ? (
-          <ForgotPassword />
-        ) : (
-          ""
-        )}
+                </>
+              ) : (
+                <>
+                  <form onSubmit={formik.handleSubmit}>
+                    <TextField
+                      fullWidth
+                      color="secondary"
+                      sx={{
+                        margin: "8px 0",
+
+                        "& .MuiOutlinedInput-root.MuiInputBase-root": {
+                          background: "white",
+                          "&:hover": {
+                            "& fieldset": {
+                              border: `4px solid ${theme.palette.terciaryDark.main}`,
+                            },
+                          },
+                          "&.Mui-focused": {
+                            "& fieldset": {
+                              border: `4px solid ${theme.palette.secondary.main} `,
+                            },
+                          },
+                          "&.Mui-error": {
+                            "& fieldset": {
+                              border: `4px solid ${theme.palette.error.main}`,
+                            },
+                          },
+                        },
+                      }}
+                      id="password"
+                      name="password"
+                      placeholder="Nova senha"
+                      type={showPassword ? "text" : "password"}
+                      value={formik.values.password}
+                      onChange={formik.handleChange}
+                      error={
+                        formik.touched.password &&
+                        Boolean(formik.errors.password)
+                      }
+                      helperText={
+                        formik.touched.password && formik.errors.password
+                      }
+                      InputProps={{
+                        endAdornment: (
+                          <InputAdornment position="end">
+                            <IconButton
+                              aria-label="toggle password visibility"
+                              onClick={handleClickShowPassword}
+                              onMouseDown={handleMouseDownPassword}
+                              edge="end"
+                              sx={{
+                                "& svg, path": { cursor: "pointer" },
+                              }}
+                            >
+                              {showPassword ? (
+                                <VisibilityOff />
+                              ) : (
+                                <Visibility />
+                              )}
+                            </IconButton>
+                          </InputAdornment>
+                        ),
+                      }}
+                    />
+                    <TextField
+                      fullWidth
+                      color="secondary"
+                      sx={{
+                        margin: "8px 0",
+
+                        "& .MuiOutlinedInput-root.MuiInputBase-root": {
+                          background: "white",
+                          "&:hover": {
+                            "& fieldset": {
+                              border: `4px solid ${theme.palette.terciaryDark.main}`,
+                            },
+                          },
+                          "&.Mui-focused": {
+                            "& fieldset": {
+                              border: `4px solid ${theme.palette.secondary.main} `,
+                            },
+                          },
+                          "&.Mui-error": {
+                            "& fieldset": {
+                              border: `4px solid ${theme.palette.error.main}`,
+                            },
+                          },
+                        },
+                      }}
+                      id="confirmPassword"
+                      name="confirmPassword"
+                      placeholder="Confirmar senha"
+                      type={showPassword ? "text" : "password"}
+                      value={formik.values.confirmPassword}
+                      onChange={formik.handleChange}
+                      error={
+                        formik.touched.confirmPassword &&
+                        Boolean(formik.errors.confirmPassword)
+                      }
+                      helperText={
+                        formik.touched.confirmPassword &&
+                        formik.errors.confirmPassword
+                      }
+                      InputProps={{
+                        endAdornment: (
+                          <InputAdornment position="end">
+                            <IconButton
+                              aria-label="toggle password visibility"
+                              onClick={handleClickShowPassword}
+                              onMouseDown={handleMouseDownPassword}
+                              edge="end"
+                              sx={{
+                                "& svg, path": { cursor: "pointer" },
+                              }}
+                            >
+                              {showPassword ? (
+                                <VisibilityOff />
+                              ) : (
+                                <Visibility />
+                              )}
+                            </IconButton>
+                          </InputAdornment>
+                        ),
+                      }}
+                    />
+
+                    <FormGroup
+                      row
+                      sx={{
+                        margin: "0px 0px 8px 0px",
+                        alignItems: "center",
+                        display: "flex",
+                        flexWrap: "nowrap",
+                      }}
+                    >
+                      <Checkbox
+                        id="policyAccepted"
+                        name="policyAccepted"
+                        checked={formik.values.policyAccepted}
+                        onChange={formik.handleChange}
+                        color="secondary"
+                        sx={{
+                          "&.MuiCheckbox-root": {
+                            "& svg": { color: theme.palette.terciary.main },
+                          },
+                        }}
+                      />
+
+                      <Typography
+                        variant="body2"
+                        sx={{ display: "inline", color: "white" }}
+                      >
+                        Li e concordo com os{" "}
+                        <Typography
+                          variant="body2"
+                          onClick={() => setOpenPolicyModal(true)}
+                          sx={{
+                            display: "inline",
+                            cursor: "pointer",
+                            color: theme.palette.terciary.main,
+                            "&:hover": { textDecoration: "underline" },
+                          }}
+                        >
+                          termos e politicas{" "}
+                        </Typography>
+                        de privacidade
+                      </Typography>
+
+                      <FormHelperText error sx={{ marginLeft: "14px" }}>
+                        {formik.submitCount && !formik.values.policyAccepted
+                          ? formik.errors.policyAccepted
+                          : ""}
+                      </FormHelperText>
+                    </FormGroup>
+                    <Button
+                      variant="contained"
+                      fullWidth
+                      onClick={() => formik.handleSubmit()}
+                      color="secondary"
+                      sx={{
+                        background: theme.palette.terciary.main,
+                        color: theme.palette.text.primary,
+                        "&:hover": {
+                          background: theme.palette.terciaryDark.main,
+                        },
+                      }}
+                    >
+                      Salvar senha
+                    </Button>
+                  </form>
+                </>
+              )}
+            </>
+          ) : (
+            <>
+              {/*<Button*/}
+              {/*  type="submit"*/}
+              {/*  fullWidth*/}
+              {/*  variant="contained"*/}
+              {/*  color="primary"*/}
+              {/*  className={classes.submit}*/}
+              {/*  onClick={handleVerifyEmail}*/}
+              {/*>*/}
+              {/*  Verificar*/}
+              {/*</Button>*/}
+            </>
+          )}
+          {/*<Button*/}
+          {/*  background="success_rounded"*/}
+          {/*  type="button"*/}
+          {/*  fullWidth*/}
+          {/*  variant="contained"*/}
+          {/*  className={classes.create_account}*/}
+          {/*  onClick={() => history.push('/register')}*/}
+          {/*>*/}
+          {/*  Criar conta*/}
+          {/*</Button>*/}
+          {console.log(loginState.email)}
+          {!loginState.email.user ? (
+            <ForgotPassword />
+          ) : loginState.email.password ? (
+            <ForgotPassword />
+          ) : (
+            ""
+          )}
+        </>
       </form>
     </Grid>
   );
+
   const recovery = () => (
     <Grid item sx={{ width: "25rem !important" }}>
       <Typography
