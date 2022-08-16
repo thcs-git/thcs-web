@@ -88,7 +88,7 @@ export function* getFilterTelemedicine({ payload }: any) {
       ? { token, external_attendance_id: payload.attendance_id }
       : { token, attendance_id: payload.attendance_id };
     const response: AxiosResponse = yield call(
-      apiSollarReport.get,
+      apiSollarReport.get as any,
       `/telemedicine/get/filter?dataStart=${dataStart}&dataEnd=${dataEnd}&name=${name}&type=${type}`,
       { responseType: "blob", headers: { ...headers } }
     );

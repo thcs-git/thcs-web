@@ -176,7 +176,7 @@ export default function FilterReport(props: IPropsFilter) {
       toast.error("Atualize a página antes de gerar o relatório.");
     } else if (!type) {
       toast.error("Selecione filtro para Prestador ou Função");
-    } else if (!name) {
+    } else if (!name && type !== "NaoAtendido") {
       toast.warn(
         type === "Prestador" ? `Selecione o ${type}` : `Selecione a ${type}`
       );
@@ -404,7 +404,7 @@ export default function FilterReport(props: IPropsFilter) {
         }
       });
     } else if (reportType === "Evolução") {
-      contentReport.data.map((day: any) => {
+      contentReport?.data?.map((day: any) => {
         if (day) {
           day.list.map((checks: any) => {
             if (checks.list) {
@@ -485,7 +485,9 @@ export default function FilterReport(props: IPropsFilter) {
               "&.Mui-focused": { color: theme.palette.secondary.main },
             }}
           >
-            Filtrar por prestador ou função
+            {reportType === "Telemedicina"
+              ? "Filter por função, prestador ou por não atendidos"
+              : "Filtrar por prestador ou função"}
           </FormLabel>
           <RadioGroup
             row
@@ -507,6 +509,14 @@ export default function FilterReport(props: IPropsFilter) {
               control={<Radio color="secondary" />}
               label="Função"
             />
+            {reportType === "Telemedicina" && (
+              <FormControlLabel
+                sx={{ cursor: "pointer" }}
+                value="NaoAtendido"
+                control={<Radio color="secondary" />}
+                label="Não atendido"
+              />
+            )}
           </RadioGroup>
         </FormControl>
         <FormControl
@@ -519,13 +529,20 @@ export default function FilterReport(props: IPropsFilter) {
             renderInput={(params) => (
               <TextField
                 {...params}
-                label={`Selecione ${
-                  stateFilter.type === "Função"
-                    ? `a ${stateFilter.type.toLocaleLowerCase()}`
-                    : `o ${stateFilter.type.toLocaleLowerCase()}`
-                }`}
+                label={
+                  stateFilter.type === "NaoAtendido"
+                    ? "Inativado"
+                    : `Selecione ${
+                        stateFilter.type === "Função"
+                          ? `a ${stateFilter.type.toLocaleLowerCase()}`
+                          : stateFilter.type === "Prestador"
+                          ? `o ${stateFilter.type.toLocaleLowerCase()}`
+                          : ""
+                      }`
+                }
               />
             )}
+            disabled={stateFilter.type === "NaoAtendido"}
             value={stateFilter}
             onChange={(event, value) => {
               if (value) {
