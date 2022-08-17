@@ -15,6 +15,7 @@ import AlergicIcon from "../../Icons/allergic";
 import CheckIcon from "../../Icons/Check";
 import FilterListIcon from "@mui/icons-material/FilterList";
 import AttestIcon from "../../Icons/Attest";
+import AttachmentIcon from "../../Icons/Attachment";
 //MUI
 import Box from "@mui/material/Box";
 import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
@@ -148,6 +149,7 @@ export default function ScrollCard(props: IScroll) {
           {name === "Evolução" && <EvolutionIcon fill={colorIconsCard} />}
           {name === "Exames" && <ExamIcon fill={colorIconsCard} />}
           {name === "Atestados" && <AttestIcon fill={colorIconsCard} />}
+          {name === "Anexos" && <AttachmentIcon fill={colorIconsCard} />}
         </IconCard>
         <FooterCard
           className="FoorterCard"

@@ -41,6 +41,7 @@ import ExamsIcon from "../../Icons/ExamsReport";
 import AttestIcon from "../../Icons/Attest";
 import CheckMedIcon from "../../Icons/CheckMed";
 import DigitalIcon from "../../Icons/Digital";
+import AttachmentIcon from "../../Icons/Attachment";
 // styled components and style
 import {
   AccordionStyled as Accordion,
@@ -85,6 +86,11 @@ import {
 } from "../../../store/ducks/prescripition/actions";
 
 import { loadRequestReportUnique as loadRequestReportAntibioticUnique } from "../../../store/ducks/antibiotic/actions";
+import {
+  attachmentList,
+  attachments,
+} from "../../../store/ducks/attachment/types";
+import { loadRequestFile } from "../../../store/ducks/attachment/actions";
 
 interface IAccordionReport {
   content: {
@@ -1503,7 +1509,7 @@ export default function AccordionReport(props: IAccordionReport) {
             >
               <PrintIcon
                 sx={{
-                  color: '#999999',
+                  color: "#999999",
                   cursor: "pointer",
                   "& > path": { cursor: "pointer" },
                 }}
@@ -2290,6 +2296,7 @@ export default function AccordionReport(props: IAccordionReport) {
         </>
       );
     });
+  // measurements Accordion
   const measurementsAccordion = (data: any) =>
     data.map(({ _id, list }: IDataAccordion, index: number) => {
       return (
@@ -2536,6 +2543,187 @@ export default function AccordionReport(props: IAccordionReport) {
         </>
       );
     });
+  // Attachments accordion
+  const attachmentsAccordion = (data: any) =>
+    content.data.map(({ _id, list }: attachmentList, index: number) => (
+      <Box sx={{ position: "relative" }}>
+        <Box
+          sx={{
+            position: "absolute",
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+            zIndex: 5000,
+            left: "calc(100% - 7rem)",
+            top: "0.4rem",
+          }}
+        >
+          {/* <IconButton
+            aria-label="print"
+            sx={{
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
+              cursor: "pointer",
+              height: "36px",
+              width: "36px",
+            }}
+            onClick={() => {
+              const payload = {
+                _id: "",
+                type: "Group",
+                name: "",
+                dataStart: _id,
+                dataEnd: _id,
+                reportType: "Evolução",
+                attendance_id: state?.data?._id,
+              };
+              // dispatch(loadEvolutionFilterRequest(payload));
+            }}
+          >
+            <PrintIcon
+              sx={{
+                color:
+                  expanded === `panel${index}`
+                    ? colorBackgroundInactive
+                    : colorBackgroundActive,
+                cursor: "pointer",
+                "& path": { cursor: "pointer" },
+              }}
+            />
+          </IconButton> */}
+        </Box>
+        <Accordion
+          key={_id.type}
+          disableGutters={true}
+          expanded={expanded === `panel${index}`}
+          onChange={handleChange(`panel${index}`)}
+        >
+          <AccordionSummary
+            expandIcon={<ExpandMoreIcon />}
+            aria-controls={`panel${index}bh-content`}
+            id={`panel${index}bh-header`}
+            sx={{
+              "& div, svg, path, circle, rect": {
+                cursor: "pointer",
+              },
+              cursor: "pointer",
+            }}
+          >
+            <Box
+              sx={{
+                display: "flex",
+                gap: "8px",
+                flexDirection: "row",
+                justifyContent: "space-between",
+              }}
+            >
+              <AttachmentIcon
+                fill={
+                  expanded === `panel${index}`
+                    ? colorBackgroundInactive
+                    : colorText
+                }
+                width={"22px"}
+                height={"22px"}
+              />
+
+              <Typography>
+                {_id.type === "image"
+                  ? "Exames de imagem"
+                  : _id.type === "laboratory"
+                  ? "Exames de laboratório"
+                  : _id.type === "other"
+                  ? "Outros documentos"
+                  : ""}
+              </Typography>
+            </Box>
+            <Box sx={{ width: "36px" }}></Box>
+          </AccordionSummary>
+          <AccordionDetails>
+            {attachmentsAccordionHeader()}
+            {attachmentsAccordionDetails(list)}
+          </AccordionDetails>
+        </Accordion>
+      </Box>
+    ));
+  const attachmentsAccordionHeader = () => (
+    <>
+      <HeaderDetailsAccordion>
+        <TextCenterDetails>
+          <Typography fontWeight={500}>Data de Upload</Typography>
+        </TextCenterDetails>
+        <TextCenterDetails>
+          <Typography fontWeight={500}>Solicitante</Typography>
+        </TextCenterDetails>
+        <TextCenterDetails>
+          <Typography fontWeight={500}>Nome do arquivo</Typography>
+        </TextCenterDetails>
+        <TextCenterDetails>
+          <Typography fontWeight={500}>Opções</Typography>
+        </TextCenterDetails>
+      </HeaderDetailsAccordion>
+      <Divider sx={{ width: "100%", margin: "0 auto" }} />
+    </>
+  );
+  const attachmentsAccordionDetails = (list: attachments[]) =>
+    list.map((column: attachments, index: number) => {
+      return (
+        <>
+          <ContentDetailsAccordion key={column._id}>
+            <TextCenterDetails>
+              <Typography sx={{ maxWidth: "248px" }}>
+                {formatDate(
+                  column.documents.upload_date,
+                  "DD/MM/YYYY [às] HH:mm"
+                )}
+              </Typography>
+            </TextCenterDetails>
+            <TextCenterDetails>
+              <Typography sx={{ maxWidth: "248px" }}>
+                {column.documents.requester_name
+                  ? column.documents.requester_name
+                  : "Não informado"}
+              </Typography>
+            </TextCenterDetails>
+            <TextCenterDetails>
+              <Typography sx={{ maxWidth: "248px" }}>
+                {column.documents.name_file.split("ETAG#")[1]}
+              </Typography>
+            </TextCenterDetails>
+
+            <TextCenterDetails>
+              <IconButton
+                color="secondary"
+                aria-label="print"
+                sx={{
+                  display: "flex",
+                  justifyContent: "center",
+                  alignItems: "center",
+                  cursor: "pointer",
+                  height: "36px",
+                  width: "36px",
+                  "& svg, path": { cursor: "pointer" },
+                }}
+                onClick={() => {
+                  dispatch(loadRequestFile(column.documents.name_file));
+                }}
+              >
+                <PrintIcon
+                  sx={{ cursor: "pointer", color: colorBackgroundActive }}
+                />
+              </IconButton>
+            </TextCenterDetails>
+          </ContentDetailsAccordion>
+          {list.length !== index + 1 ? (
+            <Divider sx={{ width: "100%", margin: "0 auto" }} />
+          ) : (
+            ""
+          )}
+        </>
+      );
+    });
+  // console.log(content.data);
   return (
     <>
       {/* {loading && <Loading />} */}
@@ -2591,6 +2779,12 @@ export default function AccordionReport(props: IAccordionReport) {
                 </Typography>
               )}
             </Container>
+          ) : (
+            NoData()
+          )
+        ) : reportType === "Anexos" ? (
+          content.data.length > 0 ? (
+            <Container>{attachmentsAccordion(content.data)}</Container>
           ) : (
             NoData()
           )

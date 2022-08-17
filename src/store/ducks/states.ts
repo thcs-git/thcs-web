@@ -67,6 +67,9 @@ import { AttestState } from "./attest/types";
 
 import { INITIAL_STATE as INITIAL_STATE_LOGO } from "./logo";
 import { LogoState } from "./logo/types";
+
+import { INITIAL_STATE as INITIAL_STATE_ATACHMENT } from "./attachment";
+import { AttachmentState } from "./attachment/types";
 /**
  * Initial state tree interface
  */
@@ -93,6 +96,7 @@ export interface IInitialState {
   exams: Readonly<ExamsState>;
   attest: Readonly<AttestState>;
   logo: Readonly<LogoState>;
+  attachments: Readonly<AttachmentState>;
 }
 
 /**
@@ -121,4 +125,5 @@ export const InitialState: IInitialState = {
   exams: INITIAL_STATE_EXAMS,
   attest: INITIAL_STATE_ATTEST,
   logo: INITIAL_STATE_LOGO,
+  attachments: INITIAL_STATE_ATACHMENT,
 };

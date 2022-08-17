@@ -195,6 +195,9 @@ import { get as getAttests } from "./attest/sagas";
 import { LogoTypes } from "./logo/types";
 import { get as getLogo } from "./logo/sagas";
 
+import { AttachmentTypes } from "./attachment/types";
+import { get as getAttachments, getFile } from "./attachment/sagas";
+
 export default function* rootSaga(): any {
   return yield all([
     takeLatest(LoginTypes.LOAD_REQUEST, doLogin),
@@ -442,5 +445,11 @@ export default function* rootSaga(): any {
      * LOGO
      */
     takeLatest(LogoTypes.LOAD_REQUEST, getLogo),
+
+    /**
+     * ATTACHMENTS
+     */
+    takeLatest(AttachmentTypes.LOAD_REQUEST, getAttachments),
+    takeLatest(AttachmentTypes.LOAD_REQUEST_FILE, getFile),
   ]);
 }

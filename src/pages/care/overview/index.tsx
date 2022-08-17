@@ -60,7 +60,7 @@ import { loadRequest as loadRequestAntibiotic } from "../../../store/ducks/antib
 import { loadRequest as loadRequestExams } from "../../../store/ducks/exams/actions";
 import { loadRequest as loadRequestAttests } from "../../../store/ducks/attest/actions";
 import { loadRequest as loadRequestCompanyLogo } from "../../../store/ducks/logo/actions";
-
+import { loadRequest as loadRequestAttachments } from "../../../store/ducks/attachment/actions";
 interface IPageParams {
   id?: string;
 }
@@ -110,6 +110,9 @@ export default function PatientOverview(props: IPageParams) {
   const qrCodeState = useSelector((state: ApplicationState) => state.qrCode);
   const examsState = useSelector((state: ApplicationState) => state.exams);
   const attestState = useSelector((state: ApplicationState) => state.attest);
+  const attachmentState = useSelector(
+    (state: ApplicationState) => state.attachments
+  );
   const rightsOfLayoutState = useSelector(
     (state: ApplicationState) => state.layout.data.rights
   );
@@ -179,6 +182,8 @@ export default function PatientOverview(props: IPageParams) {
               attendance_id: attendanceId,
             })
           );
+    } else if (patientId && reportType === "Anexos") {
+      dispatch(loadRequestAttachments(patientId));
     }
   }, [careState.data._id, reportType]);
   const handleTeam = useCallback(() => {
@@ -427,6 +432,7 @@ export default function PatientOverview(props: IPageParams) {
     "Antibióticos",
     "Evolução",
     "Aferições",
+    "Anexos",
   ];
   const personalCard = {
     card: "Dados Pessoais",
@@ -550,6 +556,11 @@ export default function PatientOverview(props: IPageParams) {
         data: Object.entries(prescriptionState.data.prescriptionData),
         error: prescriptionState.error,
       };
+    } else if (report === "Anexos" && attachmentState.data.length > 0) {
+      return {
+        data: attachmentState.data,
+        error: attachmentState.error,
+      };
     } else {
       return "";
     }
@@ -581,6 +592,8 @@ export default function PatientOverview(props: IPageParams) {
         return attestState.loading;
       case "Checagens":
         return prescriptionState.loading;
+      case "Anexos":
+        return attachmentState.loading;
       default:
         return false;
     }
