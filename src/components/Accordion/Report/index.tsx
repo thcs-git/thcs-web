@@ -2688,7 +2688,7 @@ export default function AccordionReport(props: IAccordionReport) {
             </TextCenterDetails>
             <TextCenterDetails>
               <Typography sx={{ maxWidth: "248px" }}>
-                {column.documents.name_file.split("ETAG#")[1]}
+                {column.documents.name}
               </Typography>
             </TextCenterDetails>
 

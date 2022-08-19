@@ -18,6 +18,7 @@ export interface attachments {
     external_attendance_id: number;
     document_type: string;
     requester_name: string;
+    name: string;
   };
 }
 
