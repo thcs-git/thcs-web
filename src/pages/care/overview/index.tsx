@@ -60,7 +60,7 @@ import { loadRequest as loadRequestAntibiotic } from "../../../store/ducks/antib
 import { loadRequest as loadRequestExams } from "../../../store/ducks/exams/actions";
 import { loadRequest as loadRequestAttests } from "../../../store/ducks/attest/actions";
 import { loadRequest as loadRequestCompanyLogo } from "../../../store/ducks/logo/actions";
-
+import { loadRequest as loadRequestTelemedicine } from "../../../store/ducks/telemedicine/actions";
 interface IPageParams {
   id?: string;
 }
@@ -110,6 +110,9 @@ export default function PatientOverview(props: IPageParams) {
   const qrCodeState = useSelector((state: ApplicationState) => state.qrCode);
   const examsState = useSelector((state: ApplicationState) => state.exams);
   const attestState = useSelector((state: ApplicationState) => state.attest);
+  const telemedicineState = useSelector(
+    (state: ApplicationState) => state.telemedicine
+  );
   const rightsOfLayoutState = useSelector(
     (state: ApplicationState) => state.layout.data.rights
   );
@@ -179,6 +182,8 @@ export default function PatientOverview(props: IPageParams) {
               attendance_id: attendanceId,
             })
           );
+    } else if (attendanceId && reportType === "Telemedicina") {
+      dispatch(loadRequestTelemedicine(attendanceId));
     }
   }, [careState.data._id, reportType]);
   const handleTeam = useCallback(() => {
@@ -427,6 +432,7 @@ export default function PatientOverview(props: IPageParams) {
     "Antibióticos",
     "Evolução",
     "Aferições",
+    "Telemedicina",
   ];
   const personalCard = {
     card: "Dados Pessoais",
@@ -550,6 +556,11 @@ export default function PatientOverview(props: IPageParams) {
         data: Object.entries(prescriptionState.data.prescriptionData),
         error: prescriptionState.error,
       };
+    } else if (report === "Telemedicina" && telemedicineState.data.length > 0) {
+      return {
+        data: telemedicineState.data,
+        error: telemedicineState.error,
+      };
     } else {
       return "";
     }
@@ -581,10 +592,13 @@ export default function PatientOverview(props: IPageParams) {
         return attestState.loading;
       case "Checagens":
         return prescriptionState.loading;
+      case "Telemedicina":
+        return telemedicineState.loading;
       default:
         return false;
     }
   }
+  // console.log(telemedicineState);
 
   return (
     <Sidebar>

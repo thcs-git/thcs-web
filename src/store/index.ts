@@ -23,6 +23,7 @@ import { AntibioticState } from "./ducks/antibiotic/types";
 import { ExamsState } from "./ducks/exams/types";
 import { AttestState } from "./ducks/attest/types";
 import { LogoState } from "./ducks/logo/types";
+import { TelemedicineState } from "./ducks/telemedicine/types";
 
 import { InitialState } from "./ducks/states";
 import combinedReducers from "./ducks/rootReducer";
@@ -51,6 +52,7 @@ export interface ApplicationState {
   exams: ExamsState;
   attest: AttestState;
   logo: LogoState;
+  telemedicine: TelemedicineState;
 }
 
 const sagaMiddleware = createSagaMiddleware();
