@@ -30,3 +30,5 @@ sketch
 ### cypress ###
 cypress/screenshots
 cypress/videos
+
+dist
