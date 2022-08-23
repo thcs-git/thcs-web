@@ -7,7 +7,7 @@ import MeasurementIcon from "../../Icons/measurement";
 import ExamIcon from "../../Icons/ExamsReport";
 import AntibioticsIcon from "../../Icons/Antibiotic";
 import EvolutionIcon from "../../Icons/Evolution";
-
+import TelemedicineIcon from "../../Icons/Telemedicine";
 // import { ReactComponent as DiagnosisIcon } from "../../../assets/img/icon-diagnosis.svg";
 import CheckMedIcon from "../../Icons/CheckMed";
 import { ReactComponent as HistoryIcon } from "../../../assets/img/icon-history.svg";
@@ -148,6 +148,9 @@ export default function ScrollCard(props: IScroll) {
           {name === "Evolução" && <EvolutionIcon fill={colorIconsCard} />}
           {name === "Exames" && <ExamIcon fill={colorIconsCard} />}
           {name === "Atestados" && <AttestIcon fill={colorIconsCard} />}
+          {name === "Telemedicina" && (
+            <TelemedicineIcon fill={colorIconsCard} />
+          )}
         </IconCard>
         <FooterCard
           className="FoorterCard"
