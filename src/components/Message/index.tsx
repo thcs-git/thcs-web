@@ -64,7 +64,7 @@ export default function Message() {
   }, [messageState]);
 
   const handleOpenMessageIdModal = useCallback(
-    (index) => {
+    (index: any) => {
       dispatch(loadMessageById(messageState.list.data[index]._id));
       setState((prevState) => ({
         ...prevState,

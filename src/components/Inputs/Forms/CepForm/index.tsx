@@ -75,12 +75,12 @@ const CepForm = (props: IComponent) => {
 
   return (
     <FormGroupSection>
-      <Grid container>
+      <Grid container sx={{ width: "100%" }}>
         {params.mode === "view" && !canEdit ? (
           <ViewCard content={content} />
         ) : (
           <>
-            <Grid item md={2} xs={12}>
+            <Grid item md={12} xs={12}>
               <FormControl
                 variant="outlined"
                 size="small"
@@ -106,7 +106,7 @@ const CepForm = (props: IComponent) => {
                   }}
                   onBlur={getAddress}
                 >
-                  {(inputProps: Props) => (
+                  {/* {(inputProps: Props) => (
                     <OutlinedInputFiled
                       disabled={!canEdit}
                       error={cepStatus}
@@ -119,7 +119,7 @@ const CepForm = (props: IComponent) => {
                       }
                       {...a11yProps("input-postal-code", index)}
                     />
-                  )}
+                  )} */}
                 </InputMask>
                 {cepStatus && (
                   <p style={{ color: "#f44336", margin: "-2px 5px 10px" }}>

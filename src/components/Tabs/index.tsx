@@ -803,19 +803,14 @@ const TabForm = (props: ITabprops) => {
                       )}
                     </>
                   )}
-                  {components.map((component: string, sub_index: number) => (
-                    <>
-                      {handleComponents(
+                  <Box sx={{ display: "flex", flexDirection: "column" }}>
+                    {components.map((component: string, sub_index: number) =>
+                      handleComponents(
                         component,
                         parseInt(`${index}${sub_index}`)
-                      )}
-                      {/* {sub_index != last && (
-                      <Grid item md={12} xs={12}>
-                        <Divider style={{ marginBottom: 28, marginTop: 20 }} />
-                      </Grid>
-                    )} */}
-                    </>
-                  ))}
+                      )
+                    )}
+                  </Box>
                 </TabPanel>
               );
             }

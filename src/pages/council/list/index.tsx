@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useCallback, ChangeEvent } from "react";
-import { useHistory } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import {
   Container,
   FormControl,
@@ -37,7 +37,7 @@ import {
 } from "./styles";
 
 export default function CouncilList() {
-  const history = useHistory();
+  const navigate = useNavigate();
   const dispatch = useDispatch();
   const councilState = useSelector((state: ApplicationState) => state.councils);
 
@@ -95,7 +95,7 @@ export default function CouncilList() {
           <FormTitle>Lista de Conselhos</FormTitle>
 
           <SearchComponent
-            handleButton={() => history.push("/council/create/")}
+            handleButton={() => navigate("/council/create/")}
             buttonTitle="Novo"
             onChangeInput={handleChangeInput}
             value={search}

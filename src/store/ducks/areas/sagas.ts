@@ -21,7 +21,7 @@ const token = localStorage.getItem("token");
 export function* get({ payload }: any) {
   const { params } = payload;
   const response: AxiosResponse = yield call(
-    apiSollar.get,
+    apiSollar.get as any,
     `/patientarea?limit=${params.limit ?? 10}&page=${params.page || 1}${
       params.search ? "&search=" + params.search : ""
     }`
@@ -30,7 +30,7 @@ export function* get({ payload }: any) {
   try {
     const { params } = payload;
     const response: AxiosResponse = yield call(
-      apiSollar.get,
+      apiSollar.get as any,
       `/patientarea?limit=${params.limit ?? 10}&page=${params.page || 1}`
     );
 
@@ -43,10 +43,14 @@ export function* get({ payload }: any) {
 
 export function* getAreaById({ payload: { id: _id } }: any) {
   try {
-    const response: AxiosResponse = yield call(apiSollar.get, `/patientarea`, {
-      headers: { token },
-      params: { _id },
-    });
+    const response: AxiosResponse = yield call(
+      apiSollar.get as any,
+      `/patientarea`,
+      {
+        headers: { token },
+        params: { _id },
+      }
+    );
 
     yield put(loadSuccessGetAreaById(response.data));
   } catch (error) {
@@ -57,7 +61,7 @@ export function* getAreaById({ payload: { id: _id } }: any) {
 export function* createArea({ payload: { data } }: any) {
   try {
     const response: AxiosResponse = yield call(
-      apiSollar.post,
+      apiSollar.post as any,
       `/patientarea/store`,
       data,
       { headers: { token } }
@@ -77,7 +81,7 @@ export function* updateArea({ payload: { data } }: any) {
 
   try {
     const response: AxiosResponse = yield call(
-      apiSollar.put,
+      apiSollar.put as any,
       `/patientarea/${_id}/update`,
       { ...data },
       { headers: { token } }
@@ -94,7 +98,7 @@ export function* getCitys({ payload: { value } }: any) {
   console.log(value);
   try {
     const response: AxiosResponse = yield call(
-      apiSollar.get,
+      apiSollar.get as any,
       `/location?&state=${value}`,
       {
         headers: { token },
@@ -110,7 +114,7 @@ export function* getCitys({ payload: { value } }: any) {
 export function* getDistrict({ payload: { value } }: any) {
   try {
     const response: AxiosResponse = yield call(
-      apiSollar.get,
+      apiSollar.get as any,
       `/districts?&city=${value.city}&state=${value.state}`,
       {
         headers: { token },
@@ -145,7 +149,7 @@ export function* getPoints({ payload: { value } }: any) {
   try {
     console.log("value", value);
     const response: AxiosResponse = yield call(
-      apiSollar.get,
+      apiSollar.get as any,
       `/points?patientarea_id=${value}`,
       {
         headers: { token },
@@ -161,7 +165,7 @@ export function* getPoints({ payload: { value } }: any) {
 export function* searchArea({ payload: { value } }: any) {
   try {
     const response: AxiosResponse = yield call(
-      apiSollar.get,
+      apiSollar.get as any,
       `/patientarea/?limit=10&page=1${!!value ? "&search=" + value : ""}`
     );
     yield put(loadSuccess(response.data));

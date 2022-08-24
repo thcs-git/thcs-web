@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useCallback } from "react";
 // Router
-import { useHistory, RouteComponentProps } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 
 // Redux e sagas
 import { useDispatch, useSelector } from "react-redux";
@@ -85,8 +85,8 @@ interface IPageParams {
   mode?: string;
 }
 
-export default function CustomerForm(props: RouteComponentProps<IPageParams>) {
-  const history = useHistory();
+export default function CustomerForm(props: IPageParams) {
+  const navigate = useNavigate();
   const dispatch = useDispatch();
   // const useStyles = makeStyles((theme) => ({
   //   cancel: {
@@ -116,7 +116,7 @@ export default function CustomerForm(props: RouteComponentProps<IPageParams>) {
     error: false,
   });
   const [openModalCancel, setOpenModalCancel] = useState(false);
-  const { params } = props.match;
+  const params = useParams();
 
   const [canEdit, setCanEdit] = useState(true);
   const [fieldsValidation, setFieldValidations] = useState<any>({
@@ -290,7 +290,7 @@ export default function CustomerForm(props: RouteComponentProps<IPageParams>) {
 
   // useEffect QUEBRADO!!!!
   // useEffect(() => {
-  //   if (customerState.success && customerState.data?._id && !customerState.isRegistrationCompleted) history.push('/customer');
+  //   if (customerState.success && customerState.data?._id && !customerState.isRegistrationCompleted) navigate('/customer');
   // }, [customerState.success])
 
   useEffect(() => {
@@ -401,7 +401,7 @@ export default function CustomerForm(props: RouteComponentProps<IPageParams>) {
     }
   };
 
-  const validateCNPJField = useCallback((element) => {
+  const validateCNPJField = useCallback((element: any) => {
     const isValidField = validateCNPJHelper(element.target.value) || false;
     setFieldValidations((prevState: any) => ({
       ...prevState,
@@ -409,7 +409,7 @@ export default function CustomerForm(props: RouteComponentProps<IPageParams>) {
     }));
   }, []);
 
-  const validationCellPhoneField = useCallback((element) => {
+  const validationCellPhoneField = useCallback((element: any) => {
     const isValidField = validator.isEmpty(element.target.value);
     setInputCellPhone((prevState) => ({
       ...prevState,
@@ -456,7 +456,7 @@ export default function CustomerForm(props: RouteComponentProps<IPageParams>) {
   function handleCancelForm() {
     dispatch(cleanAction());
     setOpenModalCancel(false);
-    history.push("/customer");
+    navigate("/customer");
   }
 
   if (validatePhone() == true && validateCellPhone() == true) {
@@ -475,11 +475,11 @@ export default function CustomerForm(props: RouteComponentProps<IPageParams>) {
             buttons
             successAction={() => {
               dispatch(cleanAction());
-              history.push("/custumer/create");
+              navigate("/custumer/create");
             }}
             defaultAction={() => {
               dispatch(cleanAction());
-              history.push("/customer");
+              navigate("/customer");
             }}
           />
         ) : (
@@ -575,7 +575,7 @@ export default function CustomerForm(props: RouteComponentProps<IPageParams>) {
                         }}
                         onBlur={validateCNPJField}
                       >
-                        {(inputProps: any) => (
+                        {/* {(inputProps: any) => (
                           <TextField
                             color="secondary"
                             disabled={!canEdit}
@@ -599,7 +599,7 @@ export default function CustomerForm(props: RouteComponentProps<IPageParams>) {
                                 : undefined
                             }
                           />
-                        )}
+                        )} */}
                       </InputMask>
                     </Grid>
                   </Grid>
@@ -633,7 +633,7 @@ export default function CustomerForm(props: RouteComponentProps<IPageParams>) {
                         }}
                         onBlur={getAddress}
                       >
-                        {() => (
+                        {/* {() => (
                           <FormControl
                             sx={{ padding: "0 12px 12px 0" }}
                             variant="outlined"
@@ -674,7 +674,7 @@ export default function CustomerForm(props: RouteComponentProps<IPageParams>) {
                               </FormHelperText>
                             )}
                           </FormControl>
-                        )}
+                        )} */}
                       </InputMask>
                     </Grid>
 
@@ -888,7 +888,7 @@ export default function CustomerForm(props: RouteComponentProps<IPageParams>) {
                         // onBlur={(element)=>{
                         //   setFieldValidations((prevState: any) => ({ ...prevState, phone: !validator.isEmpty(element.target.value) }));}}
                       >
-                        {(inputProps: any) => (
+                        {/* {(inputProps: any) => (
                           <TextField
                             color="secondary"
                             disabled={!canEdit}
@@ -908,7 +908,7 @@ export default function CustomerForm(props: RouteComponentProps<IPageParams>) {
                             }
                             fullWidth
                           />
-                        )}
+                        )} */}
                       </InputMask>
                       {/* {!validatePhone() && state.phones[0].phone && (
                         <Typography
@@ -974,7 +974,7 @@ export default function CustomerForm(props: RouteComponentProps<IPageParams>) {
                           }
                         }}
                       >
-                        {(inputProps: any) => (
+                        {/* {(inputProps: any) => (
                           <TextField
                             color="secondary"
                             disabled={!canEdit}
@@ -995,7 +995,7 @@ export default function CustomerForm(props: RouteComponentProps<IPageParams>) {
                                 : undefined
                             }
                           />
-                        )}
+                        )} */}
                       </InputMask>
                     </Grid>
                     {params.id && (

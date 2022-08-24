@@ -8,7 +8,7 @@ import { loadSuccess, loadFailure } from "./actions";
 export function* get({ payload }: any) {
   try {
     const response: AxiosResponse = yield call(
-      apiSollarNexoData.post,
+      apiSollarNexoData.post as any,
       `/paciente/atestados`,
       "",
       { headers: { external_patient_id: payload } }

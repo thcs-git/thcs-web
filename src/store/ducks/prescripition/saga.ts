@@ -25,7 +25,7 @@ import LOCALSTORAGE from "../../../helpers/constants/localStorage";
 export function* get({ payload }: any) {
   const { params } = payload;
   const response: AxiosResponse = yield call(
-    apiSollar.get,
+    apiSollar.get as any,
     `/prescription?limit=${params.limit ?? 10}&page=${params.page || 1}${
       params.search ? "&search=" + params.search : ""
     }`
@@ -40,7 +40,7 @@ export function* get({ payload }: any) {
 
 export function* store({ payload }: any) {
   const response: AxiosResponse = yield call(
-    apiSollar.post,
+    apiSollar.post as any,
     `/prescription/store`,
     { ...payload }
   );
@@ -54,9 +54,13 @@ export function* store({ payload }: any) {
 
 export function* getById({ payload: { id: _id } }: any) {
   try {
-    const response: AxiosResponse = yield call(apiSollar.get, `/prescription`, {
-      params: { _id },
-    });
+    const response: AxiosResponse = yield call(
+      apiSollar.get as any,
+      `/prescription`,
+      {
+        params: { _id },
+      }
+    );
     yield put(loadSuccessGetPrescriptionById(response.data));
   } catch (error) {
     yield put(loadFailure());
@@ -68,7 +72,7 @@ export function* update({ payload: { data } }: any) {
 
   try {
     const response: AxiosResponse = yield call(
-      apiSollar.put,
+      apiSollar.put as any,
       `/prescription/${_id}/update`,
       { ...data }
     );
@@ -84,7 +88,7 @@ export function* update({ payload: { data } }: any) {
 export function* searchPrescription({ payload: { value } }: any) {
   try {
     const response: AxiosResponse = yield call(
-      apiSollar.get,
+      apiSollar.get as any,
       `/prescription/?limit=10&page=1${!!value ? "&search=" + value : ""}`
     );
     yield put(loadSuccess(response.data));
@@ -99,7 +103,7 @@ export function* loadPrescriptionByCareId({ payload }: any) {
 
   try {
     const response: AxiosResponse = yield call(
-      apiSollar.get,
+      apiSollar.get as any,
       "care/prescription?items=false",
       { headers: payload.data }
     );
@@ -113,7 +117,7 @@ export function* loadPrescriptionByCareId({ payload }: any) {
 export function* loadPrescriptionWithItems({ payload }: any) {
   try {
     const response: AxiosResponse = yield call(
-      apiSollar.get,
+      apiSollar.get as any,
       "care/prescription",
       { headers: payload }
     );
@@ -132,7 +136,7 @@ export function* loadReportUnique(data: any) {
   console.log(data.payload, "data payload em prescription");
   try {
     const response: AxiosResponse = yield call(
-      apiSollarReport.get,
+      apiSollarReport.get as any,
       `prescription/${id}`,
       {
         responseType: "blob",
@@ -149,7 +153,7 @@ export function* loadReportCheck(data: any) {
   try {
     const { id, careId } = data.payload;
     const response: AxiosResponse = yield call(
-      apiSollarReport.get,
+      apiSollarReport.get as any,
       `checks/${id}`,
       { responseType: "blob", headers: { external_attendance_id: careId } }
     );

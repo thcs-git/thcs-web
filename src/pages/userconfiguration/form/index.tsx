@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useCallback } from "react";
-import { RouteComponentProps, useHistory } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 
 //helps
 import LOCALSTORAGE from "../../../helpers/constants/localStorage";
@@ -23,12 +23,12 @@ import { getAddress as getAddressAction } from "../../../store/ducks/customers/a
 // MUI
 import Container from "@mui/material/Container";
 
-export default function UserCongiguration(props: RouteComponentProps<any>) {
+export default function UserCongiguration(props: any) {
   const params = { mode: "view" };
   const userState = useSelector((state: ApplicationState) => state.users);
   const currentUser = window.localStorage.getItem(LOCALSTORAGE.USER_ID);
   const dispatch = useDispatch();
-  const history = useHistory();
+  const navigate = useNavigate();
   const NavItems = [
     {
       name: "Dados Pessoais",
@@ -112,7 +112,7 @@ export default function UserCongiguration(props: RouteComponentProps<any>) {
     {
       name: "Voltar",
       onClick: () => {
-        history.push("/");
+        navigate("/");
       },
       variant: "contained",
       background: "primary",

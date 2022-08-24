@@ -2,7 +2,7 @@ import { ApplicationState } from "../store/index";
 import { useSelector } from "react-redux";
 import SESSIONSTORAGE from "../helpers/constants/sessionStorage";
 import { toast } from "react-toastify";
-import { useHistory } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 /** * tipos de RIGHTS - Portal
  

@@ -39,7 +39,8 @@ interface Irows {
 
 export default function ViewCard(props: IProps) {
   const { content, md } = props;
-  const md_value = md ? md : 12;
+  // const md_value = md ? md : 12;
+  const md_value = 12;
 
   {
     /* variaveis com informações da company */
@@ -166,7 +167,7 @@ export default function ViewCard(props: IProps) {
   return (
     <ThemeProvider theme={theme}>
       {content.detailsCompanyIs ? (
-        <Grid item md={md_value}>
+        <Grid item sx={{ width: "100%" }}>
           <Grid
             container
             style={{
@@ -280,16 +281,17 @@ export default function ViewCard(props: IProps) {
           </Grid>
         </Grid>
       ) : content.details === "CepForm" ? (
-        <Grid item md={md_value}>
+        <Grid item sx={{ width: "100%" }}>
           <Grid
             container
-            style={{
+            sx={{
+              width: "100%",
               flexDirection: "column",
               paddingLeft: "10px",
               paddingTop: "10px",
             }}
           >
-            <Grid item style={{ paddingBottom: "0" }}>
+            <Grid item style={{ paddingBottom: "0", width: "100%" }}>
               <WrapperTitleData>
                 <LocationIcon fill={theme.palette.primary.main} />
 

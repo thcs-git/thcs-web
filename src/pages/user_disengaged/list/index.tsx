@@ -5,7 +5,7 @@ import React, {
   useCallback,
   ChangeEvent,
 } from "react";
-import { useHistory, Link } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import Loading from "../../../components/Loading";
 import {
@@ -48,7 +48,7 @@ import Slide from "@mui/material/Slide";
 import MoreHorizTwoToneIcon from "@mui/icons-material/MoreHorizTwoTone";
 
 export default function UserDisengaged() {
-  const history = useHistory();
+  const navigate = useNavigate();
   const dispatch = useDispatch();
   const [search, setSearch] = useState("");
   const userState = useSelector((state: ApplicationState) => state.users);
@@ -130,7 +130,7 @@ export default function UserDisengaged() {
         <Container>
           <FormTitle>Lista de Profissionais Desvinculados</FormTitle>
           <SearchComponent
-            handleButton={() => history.push("/company/create/")}
+            handleButton={() => navigate("/company/create/")}
             inputPlaceholder="Pesquise por nome, estado,função ou especialidade"
             buttonTitle=""
             onChangeInput={handleChangeInput}
@@ -204,16 +204,12 @@ export default function UserDisengaged() {
                     onClose={handleCloseRowMenu}
                   >
                     <MenuItem
-                      onClick={() =>
-                        history.push(`/user/${user._id}/linking/edit`)
-                      }
+                      onClick={() => navigate(`/user/${user._id}/linking/edit`)}
                     >
                       Vincular a Empresa
                     </MenuItem>
                     <MenuItem
-                      onClick={() =>
-                        history.push(`/user/${user._id}/link/edit`)
-                      }
+                      onClick={() => navigate(`/user/${user._id}/link/edit`)}
                     >
                       Visualizar
                     </MenuItem>

@@ -275,6 +275,14 @@ theme = createTheme(theme, {
         },
       },
     },
+    // APPBAR
+    MuiAppBar: {
+      styleOverrides: {
+        root: {
+          boxShadow: "none",
+        },
+      },
+    },
   },
 });
 

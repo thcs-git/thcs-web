@@ -35,14 +35,14 @@ export function* get({ payload }: any) {
 
   try {
     // const response: AxiosResponse = yield call(
-    //   integration ? apiIntegra(integration).get:apiSollar.get,
+    //   integration ? apiIntegra(integration).get:apiSollar.get as any,
     //   `/patient?limit=${params.limit ?? 10}&page=${params.page || 1}${
     //     params.search ? "&search=" + params.search : ""
     //   }`
     // );
 
     const response: AxiosResponse = yield call(
-      apiSollar.get,
+      apiSollar.get as any,
       `/patient?limit=${params.limit ?? 10}&page=${params.page || 1}${
         params.search ? "&search=" + params.search : ""
       }`
@@ -64,7 +64,7 @@ export function* getPatientById({ payload: { id: _id } }: any) {
     //     apiIntegra(integration),
     //     `/patient/${_id}`, {});
     // } else {
-    response = yield call(apiSollar.get, `/patient`, {
+    response = yield call(apiSollar.get as any, `/patient`, {
       headers: { token },
       params: { _id },
     });
@@ -91,13 +91,13 @@ export function* createPatient({ payload: { data } }: any) {
         //   } = googleAddressData.results[0].geometry.location;
         //   data.address_id.geolocation = { latitude, longitude };
         // }
-      } catch (e) {
+      } catch (e: any) {
         console.error("Get google maps data", e.message);
       }
     }
 
     const response: AxiosResponse = yield call(
-      apiSollar.post,
+      apiSollar.post as any,
       `/patient/store`,
       data,
       { headers: { token } }
@@ -136,7 +136,7 @@ export function* updatePatient({ payload: { data } }: any) {
 
   try {
     const response: AxiosResponse = yield call(
-      apiSollar.put,
+      apiSollar.put as any,
       `/patient/${_id}/update`,
       { ...data },
       { headers: { token } }
@@ -184,7 +184,7 @@ export function* searchPatient({ payload: { params } }: any) {
     }
 
     const response: AxiosResponse = yield call(
-      apiSollar.get,
+      apiSollar.get as any,
       `/patient/?limit=${params.limit ?? 10}&page=${
         params.page || 1
       }${searchQuery}`,
@@ -206,7 +206,7 @@ export function* getPatientCapture({ payload }: any) {
     const { params } = payload;
     console.log("cheguei");
     const response: AxiosResponse = yield call(
-      apiSollar.get,
+      apiSollar.get as any,
       `/getPatientCapture
       `
     );
@@ -223,7 +223,7 @@ export function* getLastMeasurement({ payload }: any) {
     const { params } = payload;
 
     const response: AxiosResponse = yield call(
-      apiSollar.get,
+      apiSollar.get as any,
       `/measurement/lastEntries?&patient_id=${params.patient_id}`,
       {
         headers: { token },
