@@ -19,6 +19,9 @@ export const apiSollarReport = axios.create({
 export const apiSollarNexoData = axios.create({
   baseURL: process.env.REACT_APP_BASE_API_NEXODATA,
 });
+export const apiSollarChatbot = axios.create({
+  baseURL: process.env.REACT_APP_BASE_CHATBOT,
+});
 
 export function apiIntegra(url: string) {
   return axios.create({
@@ -270,6 +273,42 @@ googleMaps.interceptors.request.use(
     return config;
   },
   function (error) {
+    return Promise.reject(error);
+  }
+);
+
+apiSollarChatbot.interceptors.request.use(
+  function (config) {
+    const token = localStorage.getItem(LOCALSTORAGE.TOKEN);
+    const username = localStorage.getItem(LOCALSTORAGE.USERNAME) || "";
+    const user_id = localStorage.getItem(LOCALSTORAGE.USER_ID) || "";
+    const company_id =
+      localStorage.getItem(LOCALSTORAGE.COMPANY_SELECTED) || "";
+    const customer_id = localStorage.getItem(LOCALSTORAGE.CUSTOMER) || "";
+    const integration_url =
+       sessionStorage.getItem(SESSIONSTORAGE.INTEGRATION) || "";
+    const external_company_id =
+      localStorage.getItem(LOCALSTORAGE.INTEGRATION_COMPANY_SELECTED) || "";
+    const external_user_id =
+      localStorage.getItem(LOCALSTORAGE.SOLLAR_INTEGRATION_USER_ID) || "";
+
+    if (token) {
+      config.headers!.token = `${token}`;
+      config.headers!.user = JSON.stringify({ id: user_id, username });
+      config.headers!.company_id = company_id;
+      config.headers!.customer_id = customer_id;
+    }
+
+    if (integration_url) {
+      config.headers!.integration_url = integration_url;
+      config.headers!.external_company_id = external_company_id;
+    }
+
+    return config;
+  },
+
+  function (error) {
+    // Do something with request error
     return Promise.reject(error);
   }
 );

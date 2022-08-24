@@ -70,6 +70,9 @@ import { LogoState } from "./logo/types";
 
 import { INITIAL_STATE as INITIAL_STATE_TELEMEDICINE } from "./telemedicine";
 import { TelemedicineState } from "./telemedicine/types";
+
+import { INITIAL_STATE as INITIAL_STATE_ATACHMENT } from "./attachment";
+import { AttachmentState } from "./attachment/types";
 /**
  * Initial state tree interface
  */
@@ -97,6 +100,7 @@ export interface IInitialState {
   attest: Readonly<AttestState>;
   logo: Readonly<LogoState>;
   telemedicine: Readonly<TelemedicineState>;
+  attachments: Readonly<AttachmentState>;
 }
 
 /**
@@ -126,4 +130,5 @@ export const InitialState: IInitialState = {
   attest: INITIAL_STATE_ATTEST,
   logo: INITIAL_STATE_LOGO,
   telemedicine: INITIAL_STATE_TELEMEDICINE,
+  attachments: INITIAL_STATE_ATACHMENT,
 };

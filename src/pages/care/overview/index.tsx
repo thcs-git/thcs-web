@@ -61,6 +61,7 @@ import { loadRequest as loadRequestExams } from "../../../store/ducks/exams/acti
 import { loadRequest as loadRequestAttests } from "../../../store/ducks/attest/actions";
 import { loadRequest as loadRequestCompanyLogo } from "../../../store/ducks/logo/actions";
 import { loadRequest as loadRequestTelemedicine } from "../../../store/ducks/telemedicine/actions";
+import { loadRequest as loadRequestAttachments } from "../../../store/ducks/attachment/actions";
 interface IPageParams {
   id?: string;
 }
@@ -112,6 +113,9 @@ export default function PatientOverview(props: IPageParams) {
   const attestState = useSelector((state: ApplicationState) => state.attest);
   const telemedicineState = useSelector(
     (state: ApplicationState) => state.telemedicine
+  );
+  const attachmentState = useSelector(
+    (state: ApplicationState) => state.attachments
   );
   const rightsOfLayoutState = useSelector(
     (state: ApplicationState) => state.layout.data.rights
@@ -184,6 +188,8 @@ export default function PatientOverview(props: IPageParams) {
           );
     } else if (attendanceId && reportType === "Telemedicina") {
       dispatch(loadRequestTelemedicine(attendanceId));
+    } else if (patientId && reportType === "Anexos") {
+      dispatch(loadRequestAttachments(patientId));
     }
   }, [careState.data._id, reportType]);
   const handleTeam = useCallback(() => {
@@ -433,6 +439,7 @@ export default function PatientOverview(props: IPageParams) {
     "Evolução",
     "Aferições",
     "Telemedicina",
+    "Anexos",
   ];
   const personalCard = {
     card: "Dados Pessoais",
@@ -561,6 +568,11 @@ export default function PatientOverview(props: IPageParams) {
         data: telemedicineState.data,
         error: telemedicineState.error,
       };
+    } else if (report === "Anexos" && attachmentState.data.length > 0) {
+      return {
+        data: attachmentState.data,
+        error: attachmentState.error,
+      };
     } else {
       return "";
     }
@@ -594,11 +606,12 @@ export default function PatientOverview(props: IPageParams) {
         return prescriptionState.loading;
       case "Telemedicina":
         return telemedicineState.loading;
+      case "Anexos":
+        return attachmentState.loading;
       default:
         return false;
     }
   }
-  // console.log(telemedicineState);
 
   return (
     <Sidebar>

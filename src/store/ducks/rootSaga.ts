@@ -203,6 +203,9 @@ import {
   getFilterTelemedicine,
 } from "./telemedicine/sagas";
 
+import { AttachmentTypes } from "./attachment/types";
+import { get as getAttachments, getFile } from "./attachment/sagas";
+
 export default function* rootSaga(): any {
   return yield all([
     takeLatest(LoginTypes.LOAD_REQUEST, doLogin),
@@ -467,5 +470,11 @@ export default function* rootSaga(): any {
       TelemedicineTypes.LOAD_REQUEST_REPORT_FILTER,
       getFilterTelemedicine
     ),
+
+    /**
+     * ATTACHMENTS
+     */
+    takeLatest(AttachmentTypes.LOAD_REQUEST, getAttachments),
+    takeLatest(AttachmentTypes.LOAD_REQUEST_FILE, getFile),
   ]);
 }
