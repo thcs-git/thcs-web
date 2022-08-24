@@ -58,3 +58,10 @@ export const loadSuccesstReportCheck = (data: any) =>
   action(PrescriptionTypes.LOAD_SUCCESS_REPORT_CHECK);
 export const loadFailureReportCheck = () =>
   action(PrescriptionTypes.LOAD_FAILURE_REPORT_CHECK);
+
+export const loadRequestReportByDate = (data: any) =>
+  action(PrescriptionTypes.LOAD_REQUEST_REPORT_BY_DATE, data);
+export const loadSucessReportByDate = (data: any) =>
+  action(PrescriptionTypes.LOAD_SUCCESS_REPORT_BY_DATE, data);
+export const loadFailureReportByDate = () =>
+  action(PrescriptionTypes.LOAD_FAILURE_REPORT_BY_DATE);

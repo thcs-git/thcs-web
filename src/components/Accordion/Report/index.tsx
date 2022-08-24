@@ -91,6 +91,7 @@ import {
   attachments,
 } from "../../../store/ducks/attachment/types";
 import { loadRequestFile } from "../../../store/ducks/attachment/actions";
+import { loadRequestReportByDate } from "../../../store/ducks/prescripition/actions";
 
 interface IAccordionReport {
   content: {
@@ -479,29 +480,38 @@ export default function AccordionReport(props: IAccordionReport) {
             top: "0.4rem",
           }}
         >
-          {/*<IconButton*/}
-          {/*  aria-label="print"*/}
-          {/*  sx={{*/}
-          {/*    display: "flex",*/}
-          {/*    justifyContent: "center",*/}
-          {/*    alignItems: "center",*/}
-          {/*    cursor: "pointer",*/}
-          {/*    height: "36px",*/}
-          {/*    width: "36px",*/}
-          {/*  }}*/}
-          {/*  onClick={() => {}}*/}
-          {/*>*/}
-          {/*  <PrintIcon*/}
-          {/*    sx={{*/}
-          {/*      color:*/}
-          {/*        expanded === `panel${index}`*/}
-          {/*          ? colorBackgroundInactive*/}
-          {/*          : colorBackgroundActive,*/}
-          {/*      cursor: "pointer",*/}
-          {/*      "& path": { cursor: "pointer" },*/}
-          {/*    }}*/}
-          {/*  />*/}
-          {/*</IconButton>*/}
+          <IconButton
+            aria-label="print"
+            sx={{
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
+              cursor: "pointer",
+              height: "36px",
+              width: "36px",
+            }}
+            onClick={() => {
+              let dayModify = day[0].split("/");
+              dayModify = `${dayModify[2]}-${dayModify[1]}-${dayModify[0]}`;
+              let params = {
+                careId: careState.data._id,
+                date: dayModify,
+                external_sector_id: careState.data.capture?.sector_id,
+              };
+              dispatch(loadRequestReportByDate(params));
+            }}
+          >
+            <PrintIcon
+              sx={{
+                color:
+                  expanded === `panel${index}`
+                    ? colorBackgroundInactive
+                    : colorBackgroundActive,
+                cursor: "pointer",
+                "& path": { cursor: "pointer" },
+              }}
+            />
+          </IconButton>
         </Box>
         <Accordion
           key={day[0]}

@@ -17,6 +17,8 @@ import {
   loadFailureReportUnique,
   loadFailureReportCheck,
   loadSuccesstReportCheck,
+  loadFailureReportByDate,
+  loadSucessReportByDate,
 } from "./actions";
 import { PrescriptionInterface } from "./types";
 import SESSIONSTORAGE from "../../../helpers/constants/sessionStorage";
@@ -133,7 +135,6 @@ export function* loadReportUnique(data: any) {
   const user_id = localStorage.getItem(LOCALSTORAGE.USER_ID);
   const { id, careId } = data.payload;
 
-  console.log(data.payload, "data payload em prescription");
   try {
     const response: AxiosResponse = yield call(
       apiSollarReport.get as any,
@@ -161,5 +162,23 @@ export function* loadReportCheck(data: any) {
     yield put(loadSuccesstReportCheck(response.data));
   } catch (error) {
     yield put(loadFailureReportCheck());
+  }
+}
+export function* loadReportByDate(data: any) {
+  const { careId, date, external_sector_id } = data.payload;
+
+  try {
+    const response: AxiosResponse = yield call(
+      apiSollarReport.get as any,
+      `prescription/getBy/date?date=${date}`,
+      {
+        responseType: "blob",
+        headers: { external_attendance_id: careId, external_sector_id },
+      }
+    );
+    yield put(loadSucessReportByDate(response.data));
+  } catch (error) {
+    toast.info("Não foi possível gerar relatório de prescrições.");
+    yield put(loadFailureReportByDate());
   }
 }
