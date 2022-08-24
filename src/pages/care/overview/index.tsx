@@ -61,6 +61,7 @@ import { loadRequest as loadRequestExams } from "../../../store/ducks/exams/acti
 import { loadRequest as loadRequestAttests } from "../../../store/ducks/attest/actions";
 import { loadRequest as loadRequestCompanyLogo } from "../../../store/ducks/logo/actions";
 import { loadRequest as loadRequestAttachments } from "../../../store/ducks/attachment/actions";
+import { loadRequest as loadRequestTelemedicine } from "../../../store/ducks/telemedicine/actions";
 interface IPageParams {
   id?: string;
 }
@@ -112,6 +113,9 @@ export default function PatientOverview(props: IPageParams) {
   const attestState = useSelector((state: ApplicationState) => state.attest);
   const attachmentState = useSelector(
     (state: ApplicationState) => state.attachments
+  );
+  const telemedicineState = useSelector(
+    (state: ApplicationState) => state.telemedicine
   );
   const rightsOfLayoutState = useSelector(
     (state: ApplicationState) => state.layout.data.rights
@@ -184,6 +188,8 @@ export default function PatientOverview(props: IPageParams) {
           );
     } else if (patientId && reportType === "Anexos") {
       dispatch(loadRequestAttachments(patientId));
+    } else if (attendanceId && reportType === "Telemedicina") {
+      dispatch(loadRequestTelemedicine(attendanceId));
     }
   }, [careState.data._id, reportType]);
   const handleTeam = useCallback(() => {
@@ -210,7 +216,7 @@ export default function PatientOverview(props: IPageParams) {
     setTeam(teamUsers);
   }, [careState.schedule]);
 
-  const rows = [];
+  const rows: any[] = [];
   (function handleDataRows() {
     careState?.data?.patient_id?.name &&
       rows.push({ name: "Nome", value: careState?.data?.patient_id?.name });
@@ -433,6 +439,7 @@ export default function PatientOverview(props: IPageParams) {
     "Evolução",
     "Aferições",
     "Anexos",
+    "Telemedicina",
   ];
   const personalCard = {
     card: "Dados Pessoais",
@@ -561,6 +568,11 @@ export default function PatientOverview(props: IPageParams) {
         data: attachmentState.data,
         error: attachmentState.error,
       };
+    } else if (report === "Telemedicina" && telemedicineState.data.length > 0) {
+      return {
+        data: telemedicineState.data,
+        error: telemedicineState.error,
+      };
     } else {
       return "";
     }
@@ -594,10 +606,13 @@ export default function PatientOverview(props: IPageParams) {
         return prescriptionState.loading;
       case "Anexos":
         return attachmentState.loading;
+      case "Telemedicina":
+        return telemedicineState.loading;
       default:
         return false;
     }
   }
+  // console.log(telemedicineState);
 
   return (
     <Sidebar>

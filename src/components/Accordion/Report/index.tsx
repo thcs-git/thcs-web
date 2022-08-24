@@ -42,6 +42,7 @@ import AttestIcon from "../../Icons/Attest";
 import CheckMedIcon from "../../Icons/CheckMed";
 import DigitalIcon from "../../Icons/Digital";
 import AttachmentIcon from "../../Icons/Attachment";
+import TelemedicineIcon from "../../Icons/Telemedicine";
 // styled components and style
 import {
   AccordionStyled as Accordion,
@@ -64,6 +65,8 @@ import dayjs from "dayjs";
 // components
 import Loading from "../../Loading";
 // types REDUX
+import { Telemedicine } from "../../../store/ducks/telemedicine/types";
+
 import {
   AllergiesInterface,
   AllergiesItem,
@@ -173,6 +176,7 @@ export default function AccordionReport(props: IAccordionReport) {
       </Typography>
     </Box>
   );
+
   const handleChange =
     (panel: string) => (event: React.SyntheticEvent, isExpanded: boolean) => {
       setExpanded(isExpanded ? panel : false);
@@ -2733,6 +2737,240 @@ export default function AccordionReport(props: IAccordionReport) {
         </>
       );
     });
+  // Accordion das Telemedicines
+  const telemedicineAccordion = (data: any) =>
+    content.data.map(({ _id, list }: any, index: number) => (
+      <Box sx={{ position: "relative" }}>
+        <Box
+          sx={{
+            position: "absolute",
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+            zIndex: 5000,
+            left: "calc(100% - 7rem)",
+            top: "0.4rem",
+          }}
+        >
+          <IconButton
+            aria-label="print"
+            sx={{
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
+              cursor: "pointer",
+              height: "36px",
+              width: "36px",
+            }}
+            onClick={() => {
+              // const payload = {
+              //   _id: "",
+              //   type: "Group",
+              //   name: "",
+              //   dataStart: _id,
+              //   dataEnd: _id,
+              //   reportType: "Evolução",
+              //   attendance_id: state?.data?._id,
+              // };
+              // dispatch(loadEvolutionFilterRequest(payload));
+            }}
+          >
+            <PrintIcon
+              sx={{
+                color:
+                  expanded === `panel${index}`
+                    ? colorBackgroundInactive
+                    : colorBackgroundActive,
+                cursor: "pointer",
+                "& path": { cursor: "pointer" },
+              }}
+            />
+          </IconButton>
+        </Box>
+        <Accordion
+          key={_id}
+          disableGutters={true}
+          expanded={expanded === `panel${index}`}
+          onChange={handleChange(`panel${index}`)}
+        >
+          <AccordionSummary
+            expandIcon={<ExpandMoreIcon />}
+            aria-controls={`panel${index}bh-content`}
+            id={`panel${index}bh-header`}
+            sx={{
+              "& div, svg, path, circle, rect": {
+                cursor: "pointer",
+              },
+              cursor: "pointer",
+            }}
+          >
+            <Box
+              sx={{
+                display: "flex",
+                gap: "8px",
+                flexDirection: "row",
+                justifyContent: "space-between",
+              }}
+            >
+              <TelemedicineIcon
+                fill={
+                  expanded === `panel${index}`
+                    ? colorBackgroundInactive
+                    : colorText
+                }
+                width={"22px"}
+                height={"22px"}
+              />
+
+              <Typography>{_id.date.split("-").join("/")}</Typography>
+            </Box>
+            <Box sx={{ width: "36px" }}></Box>
+          </AccordionSummary>
+          <AccordionDetails>
+            {telemedicineAccordionHeader()}
+            {telemedicineAccordionDetails(list)}
+          </AccordionDetails>
+        </Accordion>
+      </Box>
+    ));
+  const telemedicineAccordionHeader = () => (
+    <>
+      <HeaderDetailsAccordion>
+        <TextCenterDetails
+          sx={{
+            width: `${"200px"}`,
+          }}
+        >
+          <Typography fontWeight={500}>Hora de Solicitação</Typography>
+        </TextCenterDetails>
+
+        <TextCenterDetails
+          sx={{
+            width: `${"200px"}`,
+          }}
+        >
+          <Typography fontWeight={500}>Status do atendimento</Typography>
+        </TextCenterDetails>
+        <TextCenterDetails
+          sx={{
+            width: `${"200px"}`,
+          }}
+        >
+          <Typography fontWeight={500}>Hora do status</Typography>
+        </TextCenterDetails>
+        <TextCenterDetails
+          sx={{
+            width: `${"125px"}`,
+            justifyContent: "center",
+          }}
+        >
+          <Typography fontWeight={500}>Opções</Typography>
+        </TextCenterDetails>
+      </HeaderDetailsAccordion>
+      <Divider sx={{ width: "100%", margin: "0 auto" }} />
+    </>
+  );
+  const telemedicineAccordionDetails = (list: any): any =>
+    list.map((doc: any, index: number) => (
+      <>
+        <ContentDetailsAccordion key={index}>
+          <TextCenterDetails>
+            <Typography>{formatDate(doc.created_at, "HH:mm")}</Typography>
+          </TextCenterDetails>
+          <TextCenterDetails>
+            <Typography>{handleStatusTelemedicine(doc).status}</Typography>
+          </TextCenterDetails>
+          <TextCenterDetails>
+            <Typography>{handleStatusTelemedicine(doc).time}</Typography>
+          </TextCenterDetails>
+          <TextCenterDetails sx={{ width: "125px", justifyContent: "center" }}>
+            <IconButton
+              color="secondary"
+              aria-label="print"
+              sx={{
+                cursor: "pointer",
+                color: colorBackgroundActive,
+                display: "flex",
+                justifyContent: "center",
+                alignItems: "center",
+                height: "36px",
+                width: "36px",
+              }}
+              // onClick={() => {
+              //   if (reportType === "Aferições") {
+              //     const payload = {
+              //       _id: column._id,
+              //       type: "Id",
+              //       name: column._id,
+              //       dataStart: "",
+              //       dataEnd: "",
+              //       reportType: "Aferições",
+              //       attendance_id: state?.data?._id,
+              //     };
+              //     dispatch(loadMeasurementFilterRequest(payload));
+              //   }
+              // }}
+            >
+              <PrintIcon
+                sx={{
+                  cursor: "pointer",
+                  "& svg, path": { cursor: "pointer" },
+                }}
+              />
+            </IconButton>
+          </TextCenterDetails>
+        </ContentDetailsAccordion>
+        {list.length !== index + 1 ? (
+          <Divider sx={{ width: "100%", margin: "0 auto" }} />
+        ) : (
+          ""
+        )}
+      </>
+    ));
+  const handleStatusTelemedicine = (doc: any) => {
+    let statusDetails = {
+      status: "indefinido",
+      time: "",
+    };
+    const detailsForStatus = [
+      "active",
+      "start_at",
+      "finished_at",
+      "link_timestamp",
+      "link_click_timestamp",
+      "patient_canceled_at",
+      "provider_canceled_at",
+    ];
+
+    if (doc.patient_canceled_at || doc.provider_canceled_at) {
+      if (doc.patient_canceled_at) {
+        statusDetails.status = "Cancelado pelo paciente";
+        statusDetails.time = formatDate(doc.patient_canceled_at, "HH:mm");
+      } else if (doc.provider_canceled_at) {
+        statusDetails.status = "Cancelado pelo prestador";
+        statusDetails.time = formatDate(doc.provider_canceled_at, "HH:mm");
+      }
+    } else if (doc.link_expired_timestamp) {
+      statusDetails.status = "Sessão expirada";
+      statusDetails.time = formatDate(doc.link_expired_timestamp, "HH:mm");
+    } else if (doc.finished_at) {
+      statusDetails.status = "Finalizado";
+      statusDetails.time = formatDate(doc.finished_at, "HH:mm");
+    } else if (doc.attending_provider_id && doc.link_click_timestamp) {
+      statusDetails.status = "Em atendimento";
+      statusDetails.time = formatDate(doc.start_at, "HH:mm");
+    } else if (doc.link_click_timestamp) {
+      statusDetails.status = "Paciente em sala";
+      statusDetails.time = formatDate(doc.link_click_timestamp, "HH:mm");
+    } else if (doc.provider_click_timestemp) {
+      statusDetails.status = "Prestador em sala";
+      statusDetails.time = formatDate(doc.provider_click_timestemp, "HH:mm");
+    }
+    // prstador na sala -> verificar attending provider id
+
+    return statusDetails;
+  };
+
   // console.log(content.data);
   return (
     <>
@@ -2798,6 +3036,8 @@ export default function AccordionReport(props: IAccordionReport) {
           ) : (
             NoData()
           )
+        ) : reportType === "Telemedicina" && content.data.length > 0 ? (
+          <Container>{telemedicineAccordion(content.data)}</Container>
         ) : (
           ""
         )

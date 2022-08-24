@@ -198,6 +198,8 @@ import { get as getLogo } from "./logo/sagas";
 
 import { AttachmentTypes } from "./attachment/types";
 import { get as getAttachments, getFile } from "./attachment/sagas";
+import { TelemedicineTypes } from "./telemedicine/types";
+import { get as getTelemedicine } from "./telemedicine/sagas";
 
 export default function* rootSaga(): any {
   return yield all([
@@ -455,5 +457,9 @@ export default function* rootSaga(): any {
      */
     takeLatest(AttachmentTypes.LOAD_REQUEST, getAttachments),
     takeLatest(AttachmentTypes.LOAD_REQUEST_FILE, getFile),
+    /*
+     * TELEMEDICINE
+     */
+    takeLatest(TelemedicineTypes.LOAD_REQUEST, getTelemedicine),
   ]);
 }
