@@ -6,7 +6,7 @@ import React, {
   ChangeEvent,
 } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { RouteComponentProps, useHistory } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import { Help as HelpIcon } from "@mui/icons-material";
 import Checkbox from "@mui/material/Checkbox";
 import {
@@ -158,8 +158,8 @@ interface ITabPanelProps {
   value: number | string;
 }
 
-export default function SchedulePage(props: RouteComponentProps<IPageParams>) {
-  const history = useHistory();
+export default function SchedulePage(props: IPageParams) {
+  const navigate = useNavigate();
   const dispatch = useDispatch();
   const careState = useSelector((state: ApplicationState) => state.cares);
   const userState = useSelector((state: ApplicationState) => state.users);
@@ -167,7 +167,7 @@ export default function SchedulePage(props: RouteComponentProps<IPageParams>) {
     (state: ApplicationState) => state.companies
   );
 
-  const { params } = props.match;
+  const params = useParams();
 
   let eventGuid = 0;
   let todayStr = new Date().toISOString().replace(/T.*$/, ""); // YYYY-MM-DD of today
@@ -964,7 +964,7 @@ export default function SchedulePage(props: RouteComponentProps<IPageParams>) {
     [schedule]
   );
 
-  const a11yProps = useCallback((index) => {
+  const a11yProps = useCallback((index: any) => {
     return {
       id: `calendar-tab-${index}`,
       "aria-controls": `calendar-tabpanel-${index}`,
@@ -990,7 +990,7 @@ export default function SchedulePage(props: RouteComponentProps<IPageParams>) {
   }, []);
 
   const handleProfessionalCheck = useCallback(
-    (professionalID, event) => {
+    (professionalID: any, event: any) => {
       const hasProfessionalID = professionalChecks.some(
         (prof) => prof === professionalID
       );
@@ -1088,7 +1088,7 @@ export default function SchedulePage(props: RouteComponentProps<IPageParams>) {
 
   const handleClickButton = useCallback(() => {
     // dispatch(setIfRegistrationCompleted(false))
-    // history.push('/patient/create/')
+    // navigate('/patient/create/')
   }, []);
   return (
     <>
@@ -1417,7 +1417,7 @@ export default function SchedulePage(props: RouteComponentProps<IPageParams>) {
           <FormTitle />
           <div>
             <ButtonComponent
-              onClick={() => history.push(`/care/${params.id}/overview`)}
+              onClick={() => navigate(`/care/${params.id}/overview`)}
               // background="primary"
             >
               Voltar

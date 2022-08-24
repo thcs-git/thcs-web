@@ -19,7 +19,7 @@ import _ from "lodash";
 export function* doLogin({ payload }: any) {
   try {
     const response: AxiosResponse = yield call(
-      apiSollar.post,
+      apiSollar.post as any,
       `/user/login`,
       payload?.credentials
     );
@@ -154,7 +154,7 @@ export function* doLogin({ payload }: any) {
 export function* checkEmail({ payload }: any) {
   try {
     const response: AxiosResponse = yield call(
-      apiSollar.post,
+      apiSollar.post as any,
       `/user/checkemail`,
       payload.credentials
     );

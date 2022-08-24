@@ -7,7 +7,7 @@ import TabForm from "../../../components/Tabs";
 import TabTittle from "../../../components/Text/TabTittle";
 import NotFound from "../../../components/Erros/NotFound";
 
-import { RouteComponentProps, useHistory } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { ApplicationState } from "../../../store";
 import { UserInterface } from "../../../store/ducks/users/types";
@@ -31,13 +31,11 @@ interface IPageParams {
   callback?: string;
 }
 
-export default function UserClientForm(
-  props: RouteComponentProps<IPageParams>
-) {
-  const { params } = props.match;
+export default function UserClientForm(props: IPageParams) {
+  const params = useParams();
 
   const dispatch = useDispatch();
-  const history = useHistory();
+  const navigate = useNavigate();
 
   const userState = useSelector((state: ApplicationState) => state.users);
   const rightsOfLayoutState = useSelector(
@@ -163,11 +161,11 @@ export default function UserClientForm(
 
   const handleSaveFormUser = useCallback(() => {
     dispatch(updateUserRequest(state));
-    history.push("/userclient");
+    navigate("/userclient");
   }, [state]);
 
   const handleCancelFormUser = useCallback(() => {
-    history.push("/userclient");
+    navigate("/userclient");
   }, []);
 
   const integration = sessionStorage.getItem(SESSIONSTORAGE.INTEGRATION);
@@ -219,7 +217,7 @@ export default function UserClientForm(
                 <ButtonTabs canEdit={canEdit} buttons={buttons} />
               </>
             ) : (
-              <NotFound backOnclick={() => history.push("/")} />
+              <NotFound backOnclick={() => navigate("/")} />
             )}
           </Container>
         ) : (

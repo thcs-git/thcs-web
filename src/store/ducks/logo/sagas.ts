@@ -6,7 +6,7 @@ import { loadFailure, loadSuccess } from "./actions";
 
 export function* get() {
   try {
-    const response: AxiosResponse = yield call(apiSollar.get, "/logo");
+    const response: AxiosResponse = yield call(apiSollar.get as any, "/logo");
     yield put(loadSuccess(response.data));
   } catch (err) {
     yield put(loadFailure());

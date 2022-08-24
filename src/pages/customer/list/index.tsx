@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useCallback, ChangeEvent } from "react";
 
 // router
-import { useHistory, Link } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 
 // Redux e Saga
 import { useDispatch, useSelector } from "react-redux";
@@ -31,7 +31,7 @@ import PaginationComponent from "../../../components/Pagination";
 import SearchComponent from "../../../components/List/Search";
 
 export default function CustomerList() {
-  const history = useHistory();
+  const navigate = useNavigate();
   const dispatch = useDispatch();
   const customerState = useSelector(
     (state: ApplicationState) => state.customers
@@ -106,7 +106,7 @@ export default function CustomerList() {
         </Typography>
 
         <SearchComponent
-          handleButton={() => history.push("/customer/create/")}
+          handleButton={() => navigate("/customer/create/")}
           buttonTitle=""
           inputPlaceholder="Pesquise por nome fantasia, CNPJ, status, etc..."
           onChangeInput={handleChangeInput}

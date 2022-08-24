@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback } from "react";
-import { useHistory, RouteComponentProps } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import {
   Container,
   StepLabel,
@@ -58,12 +58,10 @@ interface IScore {
   status: string;
 }
 
-export default function SocioAmbiental(
-  props: RouteComponentProps<IPageParams>
-) {
-  const { params } = props.match;
+export default function SocioAmbiental(props: IPageParams) {
+  const params = useParams();
 
-  const history = useHistory();
+  const navigate = useNavigate();
   const dispatch = useDispatch();
 
   const careState = useSelector((state: ApplicationState) => state.cares);
@@ -102,7 +100,7 @@ export default function SocioAmbiental(
 
   useEffect(() => {
     dispatch(actionDocumentGroupSocioAmbientalRequest());
-    dispatch(loadCareById(params.id));
+    params.id && dispatch(loadCareById(params.id));
 
     if (params?.documentId) {
       dispatch(
@@ -136,8 +134,8 @@ export default function SocioAmbiental(
         !documentState?.error
       ) {
         if (care?._id) {
-          history.push(`/patient/capture/${care._id}/overview/`, {
-            success: true,
+          navigate(`/patient/capture/${care._id}/overview/`, {
+            // success: true,
           });
         }
       }
@@ -303,7 +301,7 @@ export default function SocioAmbiental(
     calculateScore();
   }, [documentGroup, document]);
 
-  const handleDescription = useCallback((field) => {
+  const handleDescription = useCallback((field: any) => {
     let description = field.description;
 
     description = description.replace("4", "1");
@@ -474,7 +472,7 @@ export default function SocioAmbiental(
                 <Button
                   // background="default"
                   onClick={() =>
-                    history.push(`/patient/capture/${care?._id}/overview`)
+                    navigate(`/patient/capture/${care?._id}/overview`)
                   }
                 >
                   Voltar
@@ -568,7 +566,7 @@ export default function SocioAmbiental(
                 <Button
                   // background="default"
                   onClick={() =>
-                    history.push(`/patient/capture/${care?._id}/overview`)
+                    navigate(`/patient/capture/${care?._id}/overview`)
                   }
                 >
                   Cancelar

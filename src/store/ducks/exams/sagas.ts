@@ -11,7 +11,7 @@ import { loadFailure, loadSuccess } from "./actions";
 export function* get({ payload }: any) {
   try {
     const response: AxiosResponse = yield call(
-      apiSollarNexoData.post,
+      apiSollarNexoData.post as any,
       `/paciente/exames`,
       "",
       { headers: { external_patient_id: payload } }

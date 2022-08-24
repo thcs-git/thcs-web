@@ -10,7 +10,7 @@ import {
   updateCouncilRequest,
 } from "../../../store/ducks/councils/actions";
 
-import { useHistory, RouteComponentProps } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import {
   Container,
   Dialog,
@@ -44,12 +44,12 @@ interface IPageParams {
   id?: string;
 }
 
-const EspecialtyForm = (props: RouteComponentProps<IPageParams>) => {
-  const history = useHistory();
+const EspecialtyForm = (props: IPageParams) => {
+  const navigate = useNavigate();
   const dispatch = useDispatch();
   const councilState = useSelector((state: ApplicationState) => state.councils);
 
-  const { params } = props.match;
+  const params = useParams();
   const [state, setState] = useState<IFormFields>({
     _id: params.id || "",
     company_id: { _id: "5fbc1eed871112075d3f9f7e" },
@@ -97,7 +97,7 @@ const EspecialtyForm = (props: RouteComponentProps<IPageParams>) => {
 
   function handleCancelForm() {
     setOpenModalCancel(false);
-    history.push(`/council`);
+    navigate(`/council`);
   }
 
   return (
@@ -176,7 +176,7 @@ const EspecialtyForm = (props: RouteComponentProps<IPageParams>) => {
               // background="default"
               onClick={() =>
                 councilState.success
-                  ? history.push("/council")
+                  ? navigate("/council")
                   : handleOpenModalCancel()
               }
             >

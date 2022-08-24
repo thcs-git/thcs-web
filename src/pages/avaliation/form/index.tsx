@@ -20,7 +20,7 @@ import { loadRequest as getUsersAction } from "../../../store/ducks/users/action
 import { PatientInterface } from "../../../store/ducks/patients/types";
 import { searchRequest as searchPatientAction } from "../../../store/ducks/patients/actions";
 
-import { useHistory, RouteComponentProps } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import {
   Badge,
   Container,
@@ -76,15 +76,15 @@ interface TabPanelProps {
   value: any;
 }
 
-export default function AreaForm(props: RouteComponentProps<IPageParams>) {
-  const history = useHistory();
+export default function AreaForm(props: IPageParams) {
+  const navigate = useNavigate();
   const dispatch = useDispatch();
   const careState = useSelector((state: ApplicationState) => state.cares);
   const areaState = useSelector((state: ApplicationState) => state.areas);
   const userState = useSelector((state: ApplicationState) => state.users);
   const patientState = useSelector((state: ApplicationState) => state.patients);
 
-  const { params } = props.match;
+  const params = useParams();
 
   const [state, setState] = useState<IFormFields>({
     tipo: "",
@@ -193,7 +193,7 @@ export default function AreaForm(props: RouteComponentProps<IPageParams>) {
 
   function handleCancelForm() {
     setOpenModalCancel(false);
-    history.push(`/care`);
+    navigate(`/care`);
   }
 
   const handleBloodType = useCallback((event: any, newValue: any) => {
@@ -273,7 +273,7 @@ export default function AreaForm(props: RouteComponentProps<IPageParams>) {
                           <Button
                             // background="default"
                             onClick={() => {
-                              history.push(`/patient/${patient?._id}/edit`);
+                              navigate(`/patient/${patient?._id}/edit`);
                             }}
                           >
                             <CreateIcon />

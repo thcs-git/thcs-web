@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback, ChangeEvent } from "react";
-import { useHistory } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import {
   Container,
   TableRow,
@@ -24,7 +24,7 @@ import Button from "../../../styles/components/Button";
 import { ListLink, ListItemStatus, ItemTable } from "./styles";
 
 export default function AreaList() {
-  const history = useHistory();
+  const navigate = useNavigate();
   const dispatch = useDispatch();
   const [errorSearch, setErrorSearch] = useState({ value: false });
   const areaState = useSelector((state: ApplicationState) => state.areas);
@@ -132,7 +132,7 @@ export default function AreaList() {
           <FormTitle>Lista de Áreas</FormTitle>
 
           <SearchComponent
-            handleButton={() => history.push("/area/create/")}
+            handleButton={() => navigate("/area/create/")}
             buttonTitle="Nova Área"
             inputPlaceholder="Pesquise  por área, abastecimento, status e etc.."
             onChangeInput={handleChangeInput}
@@ -167,7 +167,7 @@ export default function AreaList() {
                 </TableCell>{" "}
                 {/* Socioambiental */}
                 <TableCell align="left">
-                  {mapDays(area.week_day)}
+                  <>{mapDays(area.week_day)}</>
                 </TableCell>{" "}
                 {/* Pedido */}
                 <TableCell align="left">
@@ -199,16 +199,12 @@ export default function AreaList() {
                     onClose={handleCloseRowMenu}
                   >
                     <MenuItem
-                      onClick={() =>
-                        history.push(`/area/${area._id}/edit/edit`)
-                      }
+                      onClick={() => navigate(`/area/${area._id}/edit/edit`)}
                     >
                       Editar
                     </MenuItem>
                     <MenuItem
-                      onClick={() =>
-                        history.push(`/area/${area._id}/view/edit`)
-                      }
+                      onClick={() => navigate(`/area/${area._id}/view/edit`)}
                     >
                       Visualizar
                     </MenuItem>

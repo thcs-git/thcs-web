@@ -27,7 +27,7 @@ export function* get({ payload }: any) {
 
   try {
     const { data } = yield call(
-      apiSollar.get,
+      apiSollar.get as any,
       `/client?limit=${params.limit ?? 10}&page=${params.page || 1}${
         params.search ? "&search=" + params.search : ""
       }`
@@ -42,9 +42,13 @@ export function* get({ payload }: any) {
 
 export function* getCustomerById({ payload: { id: _id } }: any) {
   try {
-    const response: AxiosResponse = yield call(apiSollar.get, `/client`, {
-      params: { _id },
-    });
+    const response: AxiosResponse = yield call(
+      apiSollar.get as any,
+      `/client`,
+      {
+        params: { _id },
+      }
+    );
     const { phones = [] } = response.data;
     if (phones.length > 0) {
       phones.forEach((phone: any) => {
@@ -65,7 +69,7 @@ export function* getCustomerById({ payload: { id: _id } }: any) {
 export function* createCompanyCustomer({ payload: { data } }: any) {
   try {
     const response: AxiosResponse = yield call(
-      apiSollar.post,
+      apiSollar.post as any,
       `/client/store`,
       data
     );
@@ -108,7 +112,7 @@ export function* updateCompanyCustomer({ payload: { data } }: any) {
     data.phones = phones;
 
     const response: AxiosResponse = yield call(
-      apiSollar.put,
+      apiSollar.put as any,
       `/client/${_id}/update`,
       { ...data }
     );
@@ -142,7 +146,7 @@ export function* getAddress({ payload }: any) {
 export function* searchCustomer({ payload: { value } }: any) {
   try {
     const response: AxiosResponse = yield call(
-      apiSollar.get,
+      apiSollar.get as any,
       `/client/?limit=10&page=1${!!value ? "&search=" + value : ""}`
     );
     yield put(loadSuccess(response.data));
@@ -155,7 +159,7 @@ export function* searchCustomer({ payload: { value } }: any) {
 export function* loadPermission({ payload: { id: _id } }: any) {
   try {
     const response: AxiosResponse = yield call(
-      apiSollar.get,
+      apiSollar.get as any,
       `/permission/${_id}`,
       { headers: { token, customer_id } }
     );
@@ -175,7 +179,7 @@ export function* loadPermission({ payload: { id: _id } }: any) {
 export function* updatePermissionCustomer({ payload: { data } }: any) {
   try {
     const response: AxiosResponse = yield call(
-      apiSollar.put,
+      apiSollar.put as any,
       `/permission/${data._id}`,
       data,
       { headers: { token, customer_id } }
@@ -196,7 +200,7 @@ export function* updatePermissionCustomer({ payload: { data } }: any) {
 export function* createPermission({ payload: { data } }: any) {
   try {
     const response: AxiosResponse = yield call(
-      apiSollar.post,
+      apiSollar.post as any,
       `/permission`,
       data,
       { headers: { token, customer_id } }

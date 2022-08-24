@@ -1,13 +1,13 @@
 /**
  * REACT
  */
-import React, {useEffect} from 'react';
+import React, { useEffect } from "react";
 
 /**
  * MODULES
  */
-import {useSelector} from "react-redux";
-import {useParams} from "react-router-dom";
+import { useSelector } from "react-redux";
+import { useParams } from "react-router-dom";
 
 /**
  * UTILS
@@ -23,7 +23,7 @@ import CareRedirect from "../../components/Redirect/CareRedirect";
 /**
  * STATE
  */
-import {ApplicationState} from "../../store";
+import { ApplicationState } from "../../store";
 
 /**
  * Interface For Component
@@ -31,7 +31,7 @@ import {ApplicationState} from "../../store";
  * @prop {string} id
  */
 interface ICareOverviewRedirect {
-    id: string;
+  id: string;
 }
 
 /**
@@ -39,19 +39,19 @@ interface ICareOverviewRedirect {
  * @constructor
  */
 function CareOverviewRedirect() {
-    const {id} = useParams<ICareOverviewRedirect>();
-    const layoutState = useSelector((state: ApplicationState) => state.layout);
-    useEffect(() => {
-        if (layoutState.success) {
-            redirect(`/care/${id}/overview`)
-        }
-    }, [layoutState.success])
+  const { id } = useParams();
+  const layoutState = useSelector((state: ApplicationState) => state.layout);
+  useEffect(() => {
+    if (layoutState.success) {
+      redirect(`/care/${id}/overview`);
+    }
+  }, [layoutState.success]);
 
-    return (
-        <Sidebar>
-            <CareRedirect/>
-        </Sidebar>
-    )
+  return (
+    <Sidebar>
+      <CareRedirect />
+    </Sidebar>
+  );
 }
 
 export default CareOverviewRedirect;

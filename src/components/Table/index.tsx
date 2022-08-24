@@ -1,6 +1,6 @@
 import React, { ReactNode, useCallback } from "react";
 // router
-import { useHistory, Link } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 
 // redux e sagas
 import { UserInterface, UserState } from "../../store/ducks/users/types";
@@ -81,7 +81,7 @@ const TableComponent = (props: ITableProps) => {
     typeTable,
   } = props;
 
-  const history = useHistory();
+  const navigate = useNavigate();
   const currentCompanyId = localStorage.getItem(LOCALSTORAGE.COMPANY_SELECTED);
   const currentCustomerId = localStorage.getItem(LOCALSTORAGE.CUSTOMER);
 
@@ -391,11 +391,9 @@ const TableComponent = (props: ITableProps) => {
                       open={anchorEl?.id === `btn_user-menu${index}`}
                       onClose={handleCloseRowMenu}
                     >
-                      {/*<MenuItem onClick={() => history.push(`/user/${user._id}/edit/edit`)}>Editar</MenuItem>*/}
+                      {/*<MenuItem onClick={() => navigate(`/user/${user._id}/edit/edit`)}>Editar</MenuItem>*/}
                       <MenuItem
-                        onClick={() =>
-                          history.push(`/userclient/${user._id}/view`)
-                        }
+                        onClick={() => navigate(`/userclient/${user._id}/view`)}
                       >
                         Visualizar
                       </MenuItem>
@@ -479,21 +477,21 @@ const TableComponent = (props: ITableProps) => {
                     >
                       <MenuItem
                         onClick={() =>
-                          history.push(`/patient/${patient._id}/edit/edit`)
+                          navigate(`/patient/${patient._id}/edit/edit`)
                         }
                       >
                         Editar
                       </MenuItem>
                       <MenuItem
                         onClick={() =>
-                          history.push(`/patient/${patient._id}/view/edit`)
+                          navigate(`/patient/${patient._id}/view/edit`)
                         }
                       >
                         Visualizar
                       </MenuItem>
                       <MenuItem
                         onClick={() =>
-                          history.push(
+                          navigate(
                             `/patient/capture/create?patient_id=${patient._id}`
                           )
                         }
@@ -550,9 +548,7 @@ const TableComponent = (props: ITableProps) => {
                           cursor: "pointer",
                           "& svg, path": { cursor: "pointer" },
                         }}
-                        onClick={() =>
-                          history.push(`/care/${care?._id}/overview`)
-                        }
+                        onClick={() => navigate(`/care/${care?._id}/overview`)}
                       >
                         <VisibilityIcon color="secondary" />
                       </IconButton>
@@ -590,9 +586,7 @@ const TableComponent = (props: ITableProps) => {
                     </TableCell>
                     <TableCell align="center">
                       <Button
-                        onClick={() =>
-                          history.push(`/care/${care?._id}/overview`)
-                        }
+                        onClick={() => navigate(`/care/${care?._id}/overview`)}
                       >
                         <VisibilityIcon style={{ color: "#0899BA" }} />
                       </Button>

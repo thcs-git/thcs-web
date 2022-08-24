@@ -11,7 +11,7 @@ const token = localStorage.getItem("token");
 
 export function* get(data: LoadRequestParams) {
   try {
-    let response: AxiosResponse = yield call(apiSollar.get, `/qrcode`, {
+    let response: AxiosResponse = yield call(apiSollar.get as any, `/qrcode`, {
       headers: { token },
       params: data,
     });
@@ -25,7 +25,7 @@ export function* get(data: LoadRequestParams) {
 export function* createQrCode({ payload }: any) {
   try {
     const response: AxiosResponse = yield call(
-      apiSollar.post,
+      apiSollar.post as any,
       `/qrcode/store`,
       { ...payload }
     );
@@ -39,7 +39,7 @@ export function* createQrCode({ payload }: any) {
 export function* updateQrCode({ payload: { data } }: any) {
   try {
     const response: AxiosResponse = yield call(
-      apiSollar.put,
+      apiSollar.put as any,
       `/qrcode/update`,
       data
       // { headers: { token } }

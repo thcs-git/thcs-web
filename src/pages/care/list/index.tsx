@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback, ChangeEvent } from "react";
-import { useHistory, Link } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import {
   Container,
   Button,
@@ -60,7 +60,7 @@ import NoPermission from "../../../components/Erros/NoPermission";
 import theme from "../../../theme/theme";
 import TabTittle from "../../../components/Text/TabTittle";
 export default function CouncilList() {
-  const history = useHistory();
+  const navigate = useNavigate();
   const dispatch = useDispatch();
   const careState = useSelector((state: ApplicationState) => state.cares);
   const [tabIndex, setTabIndex] = useState(0);
@@ -215,7 +215,7 @@ export default function CouncilList() {
             {integration ? (
               <>
                 <SearchComponent
-                  handleButton={() => history.push("/care/create/")}
+                  handleButton={() => navigate("/care/create/")}
                   buttonTitle=""
                   inputPlaceholder="Pesquise por nome, nº de atendimento, CPF, etc..."
                   switches={true}
@@ -275,7 +275,7 @@ export default function CouncilList() {
             ) : (
               <>
                 <SearchComponent
-                  handleButton={() => history.push("/care/create/")}
+                  handleButton={() => navigate("/care/create/")}
                   buttonTitle=""
                   inputPlaceholder="Pesquise por nome, nº de atendimento, CPF, etc..."
                   switches={true}
@@ -491,7 +491,7 @@ export default function CouncilList() {
         {/*                  : patient?.care_type_id}*/}
         {/*              </TableCell>*/}
         {/*              <TableCell align="center">*/}
-        {/*                <Button onClick={() => history.push(`/care/${patient?._id}/overview`)}>*/}
+        {/*                <Button onClick={() => navigate(`/care/${patient?._id}/overview`)}>*/}
         {/*                  <VisibilityIcon style={{color: '#0899BA'}}/>*/}
         {/*                </Button>*/}
         {/*              </TableCell>*/}

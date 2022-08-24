@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useState } from "react";
-import { useHistory } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 // redux e sagas
 import { useDispatch, useSelector } from "react-redux";
 import { loadUserById } from "../../../store/ducks/users/actions";
@@ -53,7 +53,7 @@ export default function DialogChangeCompany(props: IChangeCompany) {
   });
   const [valueChangeCheck, setValueChangeCheck] = useState(false);
   const dispatch = useDispatch();
-  const history = useHistory();
+  const navigate = useNavigate();
   const loading = open && companies.length === 0;
   const userState = useSelector((state: ApplicationState) => state.users);
   const [companySelected, setCompanySelected] = useState<any>("");
@@ -188,7 +188,7 @@ export default function DialogChangeCompany(props: IChangeCompany) {
                 changeCompany(companySelected);
                 dispatch(loadRequestLayout());
                 dispatch(loadRequestLogo());
-                history.push(`/`);
+                navigate(`/`);
               } else {
                 toast.warning("Você deve escolher a empresa.");
               }

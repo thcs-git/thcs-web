@@ -20,7 +20,7 @@ export function* get({ payload }: any) {
   const { params } = payload;
 
   const response: AxiosResponse = yield call(
-    apiSollar.get,
+    apiSollar.get as any,
     `/profession?limit=${params.limit ?? 100}&page=${params.page || 1}${
       params.search ? "&search=" + params.search : ""
     }`
@@ -37,7 +37,7 @@ export function* get({ payload }: any) {
 export function* createProfession({ payload: { data } }: any) {
   try {
     const response: AxiosResponse = yield call(
-      apiSollar.post,
+      apiSollar.post as any,
       `/patient/store`,
       data,
       { headers: { token } }
@@ -58,7 +58,7 @@ export function* updateProfession({ payload: { data } }: any) {
 
   try {
     const response: AxiosResponse = yield call(
-      apiSollar.put,
+      apiSollar.put as any,
       `/profession/${_id}/update`,
       { ...data },
       { headers: { token } }
@@ -90,7 +90,7 @@ export function* searchProfession({ payload: { params } }: any) {
     }
 
     const response: AxiosResponse = yield call(
-      apiSollar.get,
+      apiSollar.get as any,
       `/profession/?limit=${params.limit ?? 10}&page=${
         params.page || 1
       }${searchQuery}`,

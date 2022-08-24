@@ -47,7 +47,7 @@ export function* get({ payload }: any) {
     //   );
     // } else {
     response = yield call(
-      apiSollar.get,
+      apiSollar.get as any,
       `/user?limit=${params.limit ?? 10}&page=${params.page || 1}${
         params.search ? "&search=" + params.search : ""
       }${params.profession_id ? "&profession_id=" + params.profession_id : ""}`
@@ -68,7 +68,7 @@ export function* getUserById({ payload: { id: _id, page: page } }: any) {
     // if (integration && !(page === 'sidebar' || page === 'userconfiguration')) {
     //   response = yield call(apiIntegra(integration), `/user/${_id}`, {});
     // } else {
-    response = yield call(apiSollar.get, `/user`, {
+    response = yield call(apiSollar.get as any, `/user`, {
       headers: { token },
       params: { _id },
     });
@@ -83,7 +83,7 @@ export function* getUserById({ payload: { id: _id, page: page } }: any) {
 export function* getUserByEmail({ payload: { email: email } }: any) {
   try {
     const response: AxiosResponse = yield call(
-      apiSollar.get,
+      apiSollar.get as any,
       `/user/confirmUserbyEmail`,
       {
         params: { email },
@@ -100,7 +100,7 @@ export function* loadGetUserDisengaged({ payload }: any) {
   const { params } = payload;
   try {
     const response: AxiosResponse = yield call(
-      apiSollar.get,
+      apiSollar.get as any,
       `/user/getUserDisengaged?limit=${params.limit ?? 10}&page=${
         params.page || 1
       }`,
@@ -153,14 +153,14 @@ export async function* registerUser({ payload: { data } }: any) {
           googleAddressData.results[0].geometry.location;
         data.address.geolocation = { latitude, longitude };
       }
-    } catch (e) {
+    } catch (e: any) {
       console.error("Get google maps data", e.message);
     }
   }
 
   try {
     const response: AxiosResponse = yield call(
-      apiSollar.post,
+      apiSollar.post as any,
       `/user/register`,
       data,
       { headers: { token } }
@@ -207,7 +207,7 @@ export function* createUser({ payload: { data } }: any) {
 
   try {
     const response: AxiosResponse = yield call(
-      apiSollar.post,
+      apiSollar.post as any,
       `/user/store`,
       data,
       { headers: { token } }
@@ -260,14 +260,14 @@ export function* updateUser({ payload: { data } }: any) {
           googleAddressData.results[0].geometry.location;
         data.address.geolocation = { latitude, longitude };
       }
-    } catch (e) {
+    } catch (e: any) {
       console.error("Get google maps data", e.message);
     }
   }
 
   try {
     const response: AxiosResponse = yield call(
-      apiSollar.put,
+      apiSollar.put as any,
       `/user/${_id}/update`,
       { ...data },
       { headers: { token } }
@@ -284,7 +284,7 @@ export function* updateUser({ payload: { data } }: any) {
 export function* updateUserPassword({ payload: { data } }: any) {
   try {
     const response: AxiosResponse = yield call(
-      apiSollar.patch,
+      apiSollar.patch as any,
       `/user/updatepassword`,
       { ...data },
       { headers: { token } }
@@ -317,9 +317,13 @@ export function* getAddress({ payload }: any) {
 
 export function* getProfessions() {
   try {
-    const response: AxiosResponse = yield call(apiSollar.get, `/profession`, {
-      headers: { token },
-    });
+    const response: AxiosResponse = yield call(
+      apiSollar.get as any,
+      `/profession`,
+      {
+        headers: { token },
+      }
+    );
 
     yield put(loadProfessionsSuccess(response.data));
   } catch (error) {
@@ -330,7 +334,7 @@ export function* getProfessions() {
 export function* searchUser({ payload: { data } }: any) {
   try {
     const response: AxiosResponse = yield call(
-      apiSollar.get,
+      apiSollar.get as any,
       `/user/?limit=10&page=1`,
       { params: data }
     );
@@ -344,7 +348,7 @@ export function* searchUser({ payload: { data } }: any) {
 export function* searchUserDisengaged({ payload: { value } }: any) {
   try {
     const response: AxiosResponse = yield call(
-      apiSollar.get,
+      apiSollar.get as any,
       `/user/getUserDisengaged?limit=10&page=1${
         !!value ? "&search=" + value : ""
       }`
@@ -359,7 +363,7 @@ export function* searchUserDisengaged({ payload: { value } }: any) {
 export function* getUserTypes({ payload: { value } }: any) {
   try {
     const response: AxiosResponse = yield call(
-      apiSollar.get,
+      apiSollar.get as any,
       `/usertype/?limit=10&page=1${!!value ? "&search=" + value : ""}`
     );
     yield put(loadUserTypesSuccess(response.data));
@@ -372,7 +376,7 @@ export function* getUserTypes({ payload: { value } }: any) {
 export function* checkEmail({ payload: { token } }: any) {
   try {
     const response: AxiosResponse = yield call(
-      apiSollar.get,
+      apiSollar.get as any,
       `/email?token=${token}`
     );
     yield put(loadCheckSuccess(response.data));
@@ -390,7 +394,7 @@ export function* recoveryPassword({ payload: { data } }: any) {
   // localStorage.removeItem(LOCALSTORAGE.CUSTOMER_NAME);
   try {
     const response: AxiosResponse = yield call(
-      apiSollar.post,
+      apiSollar.post as any,
       `/users/recoverypassword`,
       { ...data }
     );
@@ -403,7 +407,7 @@ export function* recoveryPassword({ payload: { data } }: any) {
 export function* recoverypasswordiftoken({ payload: { data } }: any) {
   try {
     const response: AxiosResponse = yield call(
-      apiSollar.post,
+      apiSollar.post as any,
       `/users/recoverypasswordiftoken`,
       { ...data }
     );
@@ -421,7 +425,7 @@ export function* recoverypasswordiftoken({ payload: { data } }: any) {
 export function* loadConfirmUser({ payload: { token } }: any) {
   try {
     const response: AxiosResponse = yield call(
-      apiSollar.get,
+      apiSollar.get as any,
       `/user/confirm?token=${token}`
     );
     yield put(loadSuccessConfirm(response.data));
@@ -443,7 +447,7 @@ export function* getByClient({ payload }: any) {
     //   );
     // } else {
     response = yield call(
-      apiSollar.get,
+      apiSollar.get as any,
       `/user/getByClient?limit=${params.limit ?? 10}&page=${params.page || 1}${
         params.search ? "&search=" + params.search : ""
       }${params.profession_id ? "&profession_id=" + params.profession_id : ""}`

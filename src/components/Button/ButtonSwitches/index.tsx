@@ -1,6 +1,10 @@
 import React, { ChangeEvent, useState } from "react";
 import { Button, Grid, Typography } from "@mui/material";
-import { ButtonComponent, ButtonGroupComponent } from "./styles";
+import {
+  ButtonComponent,
+  ButtonGroupComponent,
+  ButtonSwitchStyle,
+} from "./styles";
 import moment from "moment";
 import { formatDate } from "../../../helpers/date";
 
@@ -33,7 +37,7 @@ export default function ButtonSwitches(props: switchesProps) {
   return (
     <>
       <Grid container mb={"20px"} gap={"12px"}>
-        <ButtonComponent
+        <ButtonSwitchStyle
           value={handleValue(0)}
           onClick={handleChange}
           tabIndex={0}
@@ -46,8 +50,8 @@ export default function ButtonSwitches(props: switchesProps) {
           >
             Em Atendimento
           </Typography>
-        </ButtonComponent>
-        <ButtonComponent
+        </ButtonSwitchStyle>
+        <ButtonSwitchStyle
           value={handleValue(1)}
           onClick={handleChange}
           tabIndex={1}
@@ -60,8 +64,8 @@ export default function ButtonSwitches(props: switchesProps) {
           >
             Alta
           </Typography>
-        </ButtonComponent>
-        <ButtonComponent
+        </ButtonSwitchStyle>
+        <ButtonSwitchStyle
           value={handleValue(2)}
           onClick={handleChange}
           tabIndex={2}
@@ -74,7 +78,7 @@ export default function ButtonSwitches(props: switchesProps) {
           >
             Todos
           </Typography>
-        </ButtonComponent>
+        </ButtonSwitchStyle>
       </Grid>
     </>
   );

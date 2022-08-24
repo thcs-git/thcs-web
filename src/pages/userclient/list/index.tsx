@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useCallback, ChangeEvent } from "react";
 //router
-import { useHistory, Link } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 
 // Redux e saga
 import { useDispatch, useSelector } from "react-redux";
@@ -68,7 +68,7 @@ const currentCompany =
 
 export default function UserClientList() {
   const dispatch = useDispatch();
-  const history = useHistory();
+  const navigate = useNavigate();
   const userState = useSelector((state: ApplicationState) => state.users);
   const rightsOfLayoutState = useSelector(
     (state: ApplicationState) => state.layout.data.rights
@@ -106,13 +106,13 @@ export default function UserClientList() {
   //   []
   // );
 
-  const handleActive = useCallback((user) => {
+  const handleActive = useCallback((user: any) => {
     return _.filter(user.companies_links, {
       companie_id: { _id: currentCompany },
     })[0]?.active;
   }, []);
 
-  const handleLinkedAt = useCallback((user) => {
+  const handleLinkedAt = useCallback((user: any) => {
     return _.filter(user.companies_links, {
       companie_id: { _id: currentCompany },
     })[0]?.linked_at;
@@ -177,7 +177,7 @@ export default function UserClientList() {
             {integration ? (
               <>
                 <SearchComponent
-                  handleButton={() => history.push("/user/edit/create/")}
+                  handleButton={() => navigate("/user/edit/create/")}
                   buttonTitle=""
                   inputPlaceholder="Pesquise por prestador, especialidades, status, etc..."
                   onChangeInput={handleChangeInput}
@@ -205,7 +205,7 @@ export default function UserClientList() {
             ) : (
               <>
                 <SearchComponent
-                  handleButton={() => history.push("/user/edit/create/")}
+                  handleButton={() => navigate("/user/edit/create/")}
                   buttonTitle=""
                   inputPlaceholder="Pesquise por prestador, especialidades, status, etc..."
                   onChangeInput={handleChangeInput}

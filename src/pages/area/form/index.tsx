@@ -31,7 +31,7 @@ import {
   loadProfessionsRequest,
 } from "../../../store/ducks/users/actions";
 import { toast } from "react-toastify";
-import { useHistory, RouteComponentProps } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { GoogleMap, Marker } from "react-google-maps";
 import {
   Badge,
@@ -102,8 +102,8 @@ interface TabPanelProps {
   value: any;
 }
 
-export default function AreaForm(props: RouteComponentProps<IPageParams>) {
-  const history = useHistory();
+export default function AreaForm(props: IPageParams) {
+  const navigate = useNavigate();
   const dispatch = useDispatch();
   const [inputName, setInputName] = useState({ value: "", error: false });
   const [inputDays, setInputDays] = useState({ value: "", error: false });
@@ -121,7 +121,7 @@ export default function AreaForm(props: RouteComponentProps<IPageParams>) {
   );
   const [canEdit, setCanEdit] = useState(true);
 
-  const { params } = props.match;
+  const params = useParams();
   // const useStyles = makeStyles((theme) => ({
   //   register: {
   //     textTransform: "capitalize",
@@ -418,7 +418,7 @@ export default function AreaForm(props: RouteComponentProps<IPageParams>) {
         state.neighborhoods.length > 0
       ) {
         dispatch(updateAreaRequest(state));
-        history.push(`/area`);
+        navigate(`/area`);
       } else {
         toast.error(
           "Infelizmente não foi possível salvar a área, há campos não preenchidos no formulário"
@@ -431,7 +431,7 @@ export default function AreaForm(props: RouteComponentProps<IPageParams>) {
         state.neighborhoods.length > 0
       ) {
         dispatch(createAreaRequest(state));
-        history.push(`/area`);
+        navigate(`/area`);
       } else {
         toast.error(
           "Infelizmente não foi possível salvar a área, há campos não preenchidos no formulário"
@@ -468,7 +468,7 @@ export default function AreaForm(props: RouteComponentProps<IPageParams>) {
 
   function handleCancelForm() {
     setOpenModalCancel(false);
-    history.push(`/area`);
+    navigate(`/area`);
   }
   function handleChangeSupply(value: any) {
     setState((prevState) => ({

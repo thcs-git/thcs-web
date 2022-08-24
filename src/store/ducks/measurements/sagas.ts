@@ -7,7 +7,7 @@ import { loadFailure, loadSuccess } from "./actions";
 export function* get(data: any) {
   try {
     const response: AxiosResponse = yield call(
-      apiSollarMobi.post,
+      apiSollarMobi.post as any,
       `/measurement/report`,
       { search: data.payload }
     );
