@@ -196,7 +196,12 @@ import { LogoTypes } from "./logo/types";
 import { get as getLogo } from "./logo/sagas";
 
 import { TelemedicineTypes } from "./telemedicine/types";
-import { get as getTelemedicine } from "./telemedicine/sagas";
+import {
+  get as getTelemedicine,
+  getReportUnique as getReportUniqueTelemedicine,
+  getReportByDay as getReportByDayTemeledicine,
+  getFilterTelemedicine,
+} from "./telemedicine/sagas";
 
 export default function* rootSaga(): any {
   return yield all([
@@ -450,5 +455,17 @@ export default function* rootSaga(): any {
      * TELEMEDICINE
      */
     takeLatest(TelemedicineTypes.LOAD_REQUEST, getTelemedicine),
+    takeLatest(
+      TelemedicineTypes.LOAD_REQUEST_REPORT_UNIQUE,
+      getReportUniqueTelemedicine
+    ),
+    takeLatest(
+      TelemedicineTypes.LOAD_REQUEST_REPORT_BY_DAY,
+      getReportByDayTemeledicine
+    ),
+    takeLatest(
+      TelemedicineTypes.LOAD_REQUEST_REPORT_FILTER,
+      getFilterTelemedicine
+    ),
   ]);
 }

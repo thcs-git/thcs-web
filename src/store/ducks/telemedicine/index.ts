@@ -33,6 +33,48 @@ const reducer: Reducer<TelemedicineState> = (state = INITIAL_STATE, action) => {
         error: true,
         success: false,
       };
+    case TelemedicineTypes.LOAD_REQUEST_REPORT_UNIQUE:
+      return {
+        ...state,
+        loading: true,
+        error: false,
+        success: false,
+      };
+    case TelemedicineTypes.LOAD_SUCCESS_REPORT_UNIQUE:
+      return {
+        ...state,
+        loading: false,
+        error: false,
+        success: true,
+      };
+    case TelemedicineTypes.LOAD_REQUEST_REPORT_BY_DAY:
+      return {
+        ...state,
+        loading: true,
+        error: false,
+        success: false,
+      };
+    case TelemedicineTypes.LOAD_SUCCESS_REPORT_BY_DAY:
+      return {
+        ...state,
+        loading: false,
+        error: false,
+        success: true,
+      };
+    case TelemedicineTypes.LOAD_REQUEST_REPORT_FILTER:
+      return {
+        ...state,
+        loading: true,
+        error: false,
+        success: false,
+      };
+    case TelemedicineTypes.LOAD_SUCCESS_REPORT_FILTER:
+      return {
+        ...state,
+        loading: false,
+        error: false,
+        success: true,
+      };
 
     default:
       return state;

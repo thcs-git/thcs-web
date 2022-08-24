@@ -2,6 +2,12 @@ export enum TelemedicineTypes {
   LOAD_REQUEST = "@telemedicine/LOAD_REQUEST",
   LOAD_SUCCESS = "@telemedicine/LOAD_SUCCESS",
   LOAD_FAILURE = "@telemedicine/LOAD_FAILURE",
+  LOAD_REQUEST_REPORT_UNIQUE = "@telemedicine/LOAD_REQUEST_REPORT_UNIQUE",
+  LOAD_SUCCESS_REPORT_UNIQUE = "@telemedicine/LOAD_SUCCESS_REPORT_UNIQUE",
+  LOAD_REQUEST_REPORT_BY_DAY = "@telemedicine/LOAD_REQUEST_REPORT_BY_DAY",
+  LOAD_SUCCESS_REPORT_BY_DAY = "@telemedicine/LOAD_SUCCESS_REPORT_BY_DAY",
+  LOAD_REQUEST_REPORT_FILTER = "@telemedicine/LOAD_REQUEST_REPORT_FILTER",
+  LOAD_SUCCESS_REPORT_FILTER = "@telemedicine/LOAD_SUCCESS_REPORT_FILTER",
 }
 export interface Telemedicine {
   _id: any;
