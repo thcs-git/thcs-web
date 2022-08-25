@@ -28,19 +28,17 @@ export function* get({ payload }: any) {
   }
 }
 
-export function* loadReportUnique(data: any) {
+export function* loadReportUnique({ payload }: any) {
   const integration = sessionStorage.getItem(SESSIONSTORAGE.INTEGRATION);
   const user_id = localStorage.getItem(LOCALSTORAGE.USER_ID);
-  const id = data.payload;
 
-  console.log(data.payload, "payloadddd");
   try {
     const response: AxiosResponse = yield call(
       apiSollarReport.get as any,
-      `antibiotic/${data.payload}`,
+      `antibiotic/${payload.id}`,
       {
         responseType: "blob",
-        headers: { user_id },
+        headers: { user_id, external_attendance_id: payload.careId },
       }
     );
     yield put(loadSucessReportUnique(response.data));
