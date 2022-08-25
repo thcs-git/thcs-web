@@ -216,7 +216,7 @@ export default function PatientOverview(props: IPageParams) {
     setTeam(teamUsers);
   }, [careState.schedule]);
 
-  const rows = [];
+  const rows: any[] = [];
   (function handleDataRows() {
     careState?.data?.patient_id?.name &&
       rows.push({ name: "Nome", value: careState?.data?.patient_id?.name });

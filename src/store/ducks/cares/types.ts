@@ -230,6 +230,7 @@ export interface CareInterface {
     doctor?: string;
     assistant_doctor?: string;
     sector?: string;
+    sector_id?: number;
     bed?: string;
     health_insurance_id?: string;
     health_plan_id?: string;

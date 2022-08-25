@@ -25,8 +25,8 @@ import antibiotic from "./antibiotic";
 import exams from "./exams";
 import attest from "./attest";
 import logo from "./logo";
-import telemedicine from "./telemedicine";
 import attachments from "./attachment";
+import telemedicine from "./telemedicine";
 
 export default combineReducers<IInitialState>({
   areas,
@@ -51,6 +51,6 @@ export default combineReducers<IInitialState>({
   exams,
   attest,
   logo,
-  telemedicine,
   attachments,
+  telemedicine,
 });

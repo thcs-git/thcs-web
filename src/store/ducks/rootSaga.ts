@@ -98,6 +98,7 @@ import {
   loadPrescriptionWithItems,
   loadReportUnique as loadReportPrescriptionUnique,
   loadReportCheck,
+  loadReportByDate as loadReportPrescriptionByDate,
 } from "./prescripition/saga";
 
 import { AntibioticTypes } from "./antibiotic/types";
@@ -195,6 +196,9 @@ import { get as getAttests } from "./attest/sagas";
 import { LogoTypes } from "./logo/types";
 import { get as getLogo } from "./logo/sagas";
 
+import { AttachmentTypes } from "./attachment/types";
+import { get as getAttachments, getFile } from "./attachment/sagas";
+
 import { TelemedicineTypes } from "./telemedicine/types";
 import {
   get as getTelemedicine,
@@ -202,9 +206,6 @@ import {
   getReportByDay as getReportByDayTemeledicine,
   getFilterTelemedicine,
 } from "./telemedicine/sagas";
-
-import { AttachmentTypes } from "./attachment/types";
-import { get as getAttachments, getFile } from "./attachment/sagas";
 
 export default function* rootSaga(): any {
   return yield all([
@@ -428,7 +429,10 @@ export default function* rootSaga(): any {
       loadReportPrescriptionUnique
     ),
     takeLatest(PrescriptionTypes.LOAD_REQUEST_REPORT_CHECK, loadReportCheck),
-
+    takeLatest(
+      PrescriptionTypes.LOAD_REQUEST_REPORT_BY_DATE,
+      loadReportPrescriptionByDate
+    ),
     /**
      * ANTIBIOTIC
      */
@@ -455,26 +459,26 @@ export default function* rootSaga(): any {
     takeLatest(LogoTypes.LOAD_REQUEST, getLogo),
 
     /**
-     * TELEMEDICINE
-     */
-    takeLatest(TelemedicineTypes.LOAD_REQUEST, getTelemedicine),
-    takeLatest(
-      TelemedicineTypes.LOAD_REQUEST_REPORT_UNIQUE,
-      getReportUniqueTelemedicine
-    ),
-    takeLatest(
-      TelemedicineTypes.LOAD_REQUEST_REPORT_BY_DAY,
-      getReportByDayTemeledicine
-    ),
-    takeLatest(
-      TelemedicineTypes.LOAD_REQUEST_REPORT_FILTER,
-      getFilterTelemedicine
-    ),
-
-    /**
      * ATTACHMENTS
      */
     takeLatest(AttachmentTypes.LOAD_REQUEST, getAttachments),
     takeLatest(AttachmentTypes.LOAD_REQUEST_FILE, getFile),
+
+    /**
+     * TELEMEDICINE
+     */
+    takeLatest(TelemedicineTypes.LOAD_REQUEST, getTelemedicine),
+    takeLatest(
+        TelemedicineTypes.LOAD_REQUEST_REPORT_UNIQUE,
+        getReportUniqueTelemedicine
+    ),
+    takeLatest(
+        TelemedicineTypes.LOAD_REQUEST_REPORT_BY_DAY,
+        getReportByDayTemeledicine
+    ),
+    takeLatest(
+        TelemedicineTypes.LOAD_REQUEST_REPORT_FILTER,
+        getFilterTelemedicine
+    ),
   ]);
 }
