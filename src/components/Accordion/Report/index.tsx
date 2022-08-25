@@ -716,7 +716,12 @@ export default function AccordionReport(props: IAccordionReport) {
                 width: "36px",
               }}
               onClick={() => {
-                dispatch(loadRequestReportAntibioticUnique(item.id));
+                dispatch(
+                  loadRequestReportAntibioticUnique({
+                    id: item.id,
+                    careId: careState.data._id,
+                  })
+                );
               }}
             >
               <PrintIcon
