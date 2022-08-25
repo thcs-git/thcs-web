@@ -48,6 +48,7 @@ apiSollar.interceptors.request.use(
     const customer_id = localStorage.getItem(LOCALSTORAGE.CUSTOMER) || "";
     const integration_url =
       sessionStorage.getItem(SESSIONSTORAGE.INTEGRATION) || "";
+    // "http://localhost:3232/api";
     const external_company_id =
       localStorage.getItem(LOCALSTORAGE.INTEGRATION_COMPANY_SELECTED) || "";
     const external_user_id =

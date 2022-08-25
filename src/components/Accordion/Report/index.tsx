@@ -228,7 +228,11 @@ export default function AccordionReport(props: IAccordionReport) {
       );
     }
   };
-
+  const handleSpecialty = (list: any, company: string) => {
+    return list.created_by[0].companies_links.map((item: any) => {
+      return item.companie_id === company ? item.main_specialty : "";
+    });
+  };
   function checkMeasurementValue(measurements: IAccordionItem[]) {
     let measurementCheck: IAccordionItem[] = [];
     measurements.map((item: IAccordionItem) => {
@@ -2259,9 +2263,9 @@ export default function AccordionReport(props: IAccordionReport) {
               }}
             >
               <Typography>
-                {column.created_by[0]?.main_specialty_id[0]?.name
-                  ? column.created_by[0].main_specialty_id[0].name
-                  : "-"}
+                {handleSpecialty(column, company_id)
+                  ? handleSpecialty(column, company_id)
+                  : "Não informado"}
               </Typography>
             </TextCenterDetails>
             <TextCenterDetails
