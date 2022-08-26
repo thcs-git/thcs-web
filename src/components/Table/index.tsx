@@ -130,7 +130,7 @@ const TableComponent = (props: ITableProps) => {
     for (let i = 0; i < list.length; i++) {
       // console.log(list[i].main_specialty_external);
       // console.log(list[i].main_specialty);
-      if (list[i].companie_id._id === company) {
+      if (list[i]?.companie_id?._id === company) {
         if (type === "function") {
           return list[i].function;
         } else if (type === "main") {
@@ -141,7 +141,7 @@ const TableComponent = (props: ITableProps) => {
       }
     }
     for (let i = 0; i < list.length; i++) {
-      if (list[i].companie_id.customer_id._id === customer) {
+      if (list[i]?.companie_id?.customer_id?._id === customer) {
         if (type === "function") {
           return list[i].function;
         } else if (type === "main") {
