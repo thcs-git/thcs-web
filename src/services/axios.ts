@@ -36,6 +36,8 @@ export const ibge = axios.create({
 export const googleMaps = axios.create({
   baseURL: process.env.REACT_APP_GOOGLE_MAPS_API,
 });
+let integrationUrl =
+  sessionStorage.getItem(SESSIONSTORAGE.INTEGRATION) || "";
 
 apiSollar.interceptors.request.use(
   function (config) {
@@ -46,9 +48,7 @@ apiSollar.interceptors.request.use(
     const company_id =
       localStorage.getItem(LOCALSTORAGE.COMPANY_SELECTED) || "";
     const customer_id = localStorage.getItem(LOCALSTORAGE.CUSTOMER) || "";
-    const integration_url =
-      sessionStorage.getItem(SESSIONSTORAGE.INTEGRATION) || "";
-    // "http://localhost:3232/api";
+    const integration_url = integrationUrl;
     const external_company_id =
       localStorage.getItem(LOCALSTORAGE.INTEGRATION_COMPANY_SELECTED) || "";
     const external_user_id =
@@ -104,8 +104,7 @@ apiSollarMobi.interceptors.request.use(
     const company_id =
       localStorage.getItem(LOCALSTORAGE.COMPANY_SELECTED) || "";
     const customer_id = localStorage.getItem(LOCALSTORAGE.CUSTOMER) || "";
-    const integration_url =
-      sessionStorage.getItem(SESSIONSTORAGE.INTEGRATION) || "";
+    const integration_url = integrationUrl;
     const external_company_id =
       localStorage.getItem(LOCALSTORAGE.INTEGRATION_COMPANY_SELECTED) || "";
     const external_user_id =
@@ -160,8 +159,7 @@ apiSollarReport.interceptors.request.use(
     const company_id =
       localStorage.getItem(LOCALSTORAGE.COMPANY_SELECTED) || "";
     const customer_id = localStorage.getItem(LOCALSTORAGE.CUSTOMER) || "";
-    const integration_url =
-      sessionStorage.getItem(SESSIONSTORAGE.INTEGRATION) || "";
+    const integration_url = integrationUrl;
     const external_company_id =
       localStorage.getItem(LOCALSTORAGE.INTEGRATION_COMPANY_SELECTED) || "";
     const external_user_id =
@@ -218,8 +216,7 @@ apiSollarNexoData.interceptors.request.use(
     const company_id =
       localStorage.getItem(LOCALSTORAGE.COMPANY_SELECTED) || "";
     const customer_id = localStorage.getItem(LOCALSTORAGE.CUSTOMER) || "";
-    const integration_url =
-      sessionStorage.getItem(SESSIONSTORAGE.INTEGRATION) || "";
+    const integration_url = integrationUrl;
     const external_company_id =
       localStorage.getItem(LOCALSTORAGE.INTEGRATION_COMPANY_SELECTED) || "";
     const external_user_id =
@@ -286,8 +283,7 @@ apiSollarChatbot.interceptors.request.use(
     const company_id =
       localStorage.getItem(LOCALSTORAGE.COMPANY_SELECTED) || "";
     const customer_id = localStorage.getItem(LOCALSTORAGE.CUSTOMER) || "";
-    const integration_url =
-      sessionStorage.getItem(SESSIONSTORAGE.INTEGRATION) || "";
+    const integration_url = integrationUrl;
     const external_company_id =
       localStorage.getItem(LOCALSTORAGE.INTEGRATION_COMPANY_SELECTED) || "";
     const external_user_id =
