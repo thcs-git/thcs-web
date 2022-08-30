@@ -22,6 +22,7 @@ const UserProfessionForm = (props: IComponent) => {
   const currentCompanyId = localStorage.getItem(LOCALSTORAGE.COMPANY_SELECTED);
   const currentCustomerId = localStorage.getItem(LOCALSTORAGE.CUSTOMER);
   const specialties: any[] = [];
+
   state.specialties.lenght > 0 &&
     state.specialties.map((item: any) => {
       specialties.push(item.name);
@@ -34,7 +35,7 @@ const UserProfessionForm = (props: IComponent) => {
     customer: string | null
   ) {
     for (let i = 0; i < list.length; i++) {
-      if (list[i].companie_id._id === company) {
+      if (list[i]?.companie_id?._id === company) {
         if (type === "function") {
           return list[i].function;
         } else if (type === "main") {
@@ -45,7 +46,7 @@ const UserProfessionForm = (props: IComponent) => {
       }
     }
     for (let i = 0; i < list.length; i++) {
-      if (list[i].companie_id.customer_id._id === customer) {
+      if (list[i]?.companie_id?.customer_id?._id === customer) {
         if (type === "function") {
           return list[i].function;
         } else if (type === "main") {
