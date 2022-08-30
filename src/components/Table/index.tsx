@@ -128,8 +128,6 @@ const TableComponent = (props: ITableProps) => {
     customer: string | null
   ) {
     for (let i = 0; i < list.length; i++) {
-      // console.log(list[i].main_specialty_external);
-      // console.log(list[i].main_specialty);
       if (list[i]?.companie_id?._id === company) {
         if (type === "function") {
           return list[i].function;
@@ -137,6 +135,8 @@ const TableComponent = (props: ITableProps) => {
           return list[i].main_specialty;
         } else if (type === "specialties") {
           return list[i].specialties;
+        } else if (type === "username") {
+          return list[i].username;
         }
       }
     }
@@ -148,11 +148,14 @@ const TableComponent = (props: ITableProps) => {
           return list[i].main_specialty;
         } else if (type === "specialties") {
           return list[i].specialties;
+        } else if (type === "username") {
+          return list[i].username;
         }
       }
     }
     return "";
   }
+
   return (
     <ThemeProvider theme={theme}>
       <TableContainer component={Paper}>
@@ -231,7 +234,16 @@ const TableComponent = (props: ITableProps) => {
                     sx={{ cursor: "pointer", "& a": { cursor: "pointer" } }}
                   >
                     <Link key={index} to={`/userclient/${user._id}/view`}>
-                      {user?.username}
+                      {handleEmpty(
+                        capitalizeText(
+                          handleCompanie_link(
+                            user?.companies_links,
+                            currentCompanyId,
+                            "username",
+                            currentCustomerId
+                          )
+                        )
+                      )}
                     </Link>
                   </TableCell>
                   {handleCpf && (
