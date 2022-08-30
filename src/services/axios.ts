@@ -37,8 +37,7 @@ export const googleMaps = axios.create({
   baseURL: process.env.REACT_APP_GOOGLE_MAPS_API,
 });
 let integrationUrl =
-  // sessionStorage.getItem(SESSIONSTORAGE.INTEGRATION) || "";
-  "http://localhost:3232/api";
+  sessionStorage.getItem(SESSIONSTORAGE.INTEGRATION) || "";
 
 apiSollar.interceptors.request.use(
   function (config) {
@@ -50,7 +49,6 @@ apiSollar.interceptors.request.use(
       localStorage.getItem(LOCALSTORAGE.COMPANY_SELECTED) || "";
     const customer_id = localStorage.getItem(LOCALSTORAGE.CUSTOMER) || "";
     const integration_url = integrationUrl;
-    // "http://localhost:3232/api";
     const external_company_id =
       localStorage.getItem(LOCALSTORAGE.INTEGRATION_COMPANY_SELECTED) || "";
     const external_user_id =
