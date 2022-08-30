@@ -161,11 +161,11 @@ export default function UserClientForm(props: IPageParams) {
 
   const handleSaveFormUser = useCallback(() => {
     dispatch(updateUserRequest(state));
-    navigate("/userclient");
+    navigate(-1);
   }, [state]);
 
   const handleCancelFormUser = useCallback(() => {
-    navigate("/userclient");
+    navigate(-1);
   }, []);
 
   const integration = sessionStorage.getItem(SESSIONSTORAGE.INTEGRATION);
