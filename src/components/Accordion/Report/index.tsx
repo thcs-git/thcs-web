@@ -2568,205 +2568,205 @@ export default function AccordionReport(props: IAccordionReport) {
         </>
       );
     });
-// Accordion das Telemedicines
+  // Accordion das Telemedicines
   const telemedicineAccordion = (data: any) =>
-      content.data.map(({ _id, list }: any, index: number) => (
-          <Box sx={{ position: "relative" }}>
+    content.data.map(({ _id, list }: any, index: number) => (
+      <Box sx={{ position: "relative" }}>
+        <Box
+          sx={{
+            position: "absolute",
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+            zIndex: 5000,
+            left: "calc(100% - 7rem)",
+            top: "0.4rem",
+          }}
+        >
+          <IconButton
+            aria-label="print"
+            sx={{
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
+              cursor: "pointer",
+              height: "36px",
+              width: "36px",
+            }}
+            onClick={() => {
+              // const payload = {
+              //   _id: "",
+              //   type: "Group",
+              //   name: "",
+              //   dataStart: _id,
+              //   dataEnd: _id,
+              //   reportType: "Evolução",
+              //   attendance_id: state?.data?._id,
+              // };
+              dispatch(
+                loadRequestReportByDay({
+                  date: _id,
+                  external_attendance_id: careState.data._id,
+                })
+              );
+            }}
+          >
+            <PrintIcon
+              sx={{
+                color:
+                  expanded === `panel${index}`
+                    ? colorBackgroundInactive
+                    : colorBackgroundActive,
+                cursor: "pointer",
+                "& path": { cursor: "pointer" },
+              }}
+            />
+          </IconButton>
+        </Box>
+        <Accordion
+          key={_id}
+          disableGutters={true}
+          expanded={expanded === `panel${index}`}
+          onChange={handleChange(`panel${index}`)}
+        >
+          <AccordionSummary
+            expandIcon={<ExpandMoreIcon />}
+            aria-controls={`panel${index}bh-content`}
+            id={`panel${index}bh-header`}
+            sx={{
+              "& div, svg, path, circle, rect": {
+                cursor: "pointer",
+              },
+              cursor: "pointer",
+            }}
+          >
             <Box
-                sx={{
-                  position: "absolute",
-                  display: "flex",
-                  justifyContent: "center",
-                  alignItems: "center",
-                  zIndex: 5000,
-                  left: "calc(100% - 7rem)",
-                  top: "0.4rem",
-                }}
+              sx={{
+                display: "flex",
+                gap: "8px",
+                flexDirection: "row",
+                justifyContent: "space-between",
+              }}
             >
-              <IconButton
-                  aria-label="print"
-                  sx={{
-                    display: "flex",
-                    justifyContent: "center",
-                    alignItems: "center",
-                    cursor: "pointer",
-                    height: "36px",
-                    width: "36px",
-                  }}
-                  onClick={() => {
-                    // const payload = {
-                    //   _id: "",
-                    //   type: "Group",
-                    //   name: "",
-                    //   dataStart: _id,
-                    //   dataEnd: _id,
-                    //   reportType: "Evolução",
-                    //   attendance_id: state?.data?._id,
-                    // };
-                    dispatch(
-                        loadRequestReportByDay({
-                          date: _id,
-                          external_attendance_id: careState.data._id,
-                        })
-                    );
-                  }}
-              >
-                <PrintIcon
-                    sx={{
-                      color:
-                          expanded === `panel${index}`
-                              ? colorBackgroundInactive
-                              : colorBackgroundActive,
-                      cursor: "pointer",
-                      "& path": { cursor: "pointer" },
-                    }}
-                />
-              </IconButton>
+              <TelemedicineIcon
+                fill={
+                  expanded === `panel${index}`
+                    ? colorBackgroundInactive
+                    : colorText
+                }
+                width={"22px"}
+                height={"22px"}
+              />
+
+              <Typography>{_id.date.split("-").join("/")}</Typography>
             </Box>
-            <Accordion
-                key={_id}
-                disableGutters={true}
-                expanded={expanded === `panel${index}`}
-                onChange={handleChange(`panel${index}`)}
-            >
-              <AccordionSummary
-                  expandIcon={<ExpandMoreIcon />}
-                  aria-controls={`panel${index}bh-content`}
-                  id={`panel${index}bh-header`}
-                  sx={{
-                    "& div, svg, path, circle, rect": {
-                      cursor: "pointer",
-                    },
-                    cursor: "pointer",
-                  }}
-              >
-                <Box
-                    sx={{
-                      display: "flex",
-                      gap: "8px",
-                      flexDirection: "row",
-                      justifyContent: "space-between",
-                    }}
-                >
-                  <TelemedicineIcon
-                      fill={
-                        expanded === `panel${index}`
-                            ? colorBackgroundInactive
-                            : colorText
-                      }
-                      width={"22px"}
-                      height={"22px"}
-                  />
-
-                  <Typography>{_id.date.split("-").join("/")}</Typography>
-                </Box>
-                <Box sx={{ width: "36px" }}></Box>
-              </AccordionSummary>
-              <AccordionDetails>
-                {telemedicineAccordionHeader()}
-                {telemedicineAccordionDetails(list)}
-              </AccordionDetails>
-            </Accordion>
-          </Box>
-      ));
+            <Box sx={{ width: "36px" }}></Box>
+          </AccordionSummary>
+          <AccordionDetails>
+            {telemedicineAccordionHeader()}
+            {telemedicineAccordionDetails(list)}
+          </AccordionDetails>
+        </Accordion>
+      </Box>
+    ));
   const telemedicineAccordionHeader = () => (
-      <>
-        <HeaderDetailsAccordion>
-          <TextCenterDetails
-              sx={{
-                width: `${"200px"}`,
-              }}
-          >
-            <Typography fontWeight={500}>Hora de Solicitação</Typography>
-          </TextCenterDetails>
+    <>
+      <HeaderDetailsAccordion>
+        <TextCenterDetails
+          sx={{
+            width: `${"200px"}`,
+          }}
+        >
+          <Typography fontWeight={500}>Hora de Solicitação</Typography>
+        </TextCenterDetails>
 
-          <TextCenterDetails
-              sx={{
-                width: `${"200px"}`,
-              }}
-          >
-            <Typography fontWeight={500}>Status do atendimento</Typography>
-          </TextCenterDetails>
-          <TextCenterDetails
-              sx={{
-                width: `${"200px"}`,
-              }}
-          >
-            <Typography fontWeight={500}>Hora do status</Typography>
-          </TextCenterDetails>
-          <TextCenterDetails
-              sx={{
-                width: `${"125px"}`,
-                justifyContent: "center",
-              }}
-          >
-            <Typography fontWeight={500}>Opções</Typography>
-          </TextCenterDetails>
-        </HeaderDetailsAccordion>
-        <Divider sx={{ width: "100%", margin: "0 auto" }} />
-      </>
+        <TextCenterDetails
+          sx={{
+            width: `${"200px"}`,
+          }}
+        >
+          <Typography fontWeight={500}>Status do atendimento</Typography>
+        </TextCenterDetails>
+        <TextCenterDetails
+          sx={{
+            width: `${"200px"}`,
+          }}
+        >
+          <Typography fontWeight={500}>Hora do status</Typography>
+        </TextCenterDetails>
+        <TextCenterDetails
+          sx={{
+            width: `${"125px"}`,
+            justifyContent: "center",
+          }}
+        >
+          <Typography fontWeight={500}>Opções</Typography>
+        </TextCenterDetails>
+      </HeaderDetailsAccordion>
+      <Divider sx={{ width: "100%", margin: "0 auto" }} />
+    </>
   );
   const telemedicineAccordionDetails = (list: any): any =>
-      list.map((doc: any, index: number) => (
-          <>
-            <ContentDetailsAccordion key={index}>
-              <TextCenterDetails>
-                <Typography>{formatDate(doc.created_at, "HH:mm")}</Typography>
-              </TextCenterDetails>
-              <TextCenterDetails>
-                <Typography>{handleStatusTelemedicine(doc).status}</Typography>
-              </TextCenterDetails>
-              <TextCenterDetails>
-                <Typography>{handleStatusTelemedicine(doc).time}</Typography>
-              </TextCenterDetails>
-              <TextCenterDetails sx={{ width: "125px", justifyContent: "center" }}>
-                <IconButton
-                    color="secondary"
-                    aria-label="print"
-                    sx={{
-                      cursor: "pointer",
-                      color: colorBackgroundActive,
-                      display: "flex",
-                      justifyContent: "center",
-                      alignItems: "center",
-                      height: "36px",
-                      width: "36px",
-                    }}
-                    onClick={() => {
-                      // if (reportType === "Aferições") {
-                      //   const payload = {
-                      //     _id: column._id,
-                      //     type: "Id",
-                      //     name: column._id,
-                      //     dataStart: "",
-                      //     dataEnd: "",
-                      //     reportType: "Aferições",
-                      //     attendance_id: state?.data?._id,
-                      //   };
-                      // }
-                      let payload = {
-                        telemedicine_id: doc._id,
-                        external_attendance_id: careState.data._id,
-                      };
-                      dispatch(loadRequestReportUnique(payload));
-                    }}
-                >
-                  <PrintIcon
-                      sx={{
-                        cursor: "pointer",
-                        "& svg, path": { cursor: "pointer" },
-                      }}
-                  />
-                </IconButton>
-              </TextCenterDetails>
-            </ContentDetailsAccordion>
-            {list.length !== index + 1 ? (
-                <Divider sx={{ width: "100%", margin: "0 auto" }} />
-            ) : (
-                ""
-            )}
-          </>
-      ));
+    list.map((doc: any, index: number) => (
+      <>
+        <ContentDetailsAccordion key={index}>
+          <TextCenterDetails>
+            <Typography>{formatDate(doc.created_at, "HH:mm")}</Typography>
+          </TextCenterDetails>
+          <TextCenterDetails>
+            <Typography>{handleStatusTelemedicine(doc).status}</Typography>
+          </TextCenterDetails>
+          <TextCenterDetails>
+            <Typography>{handleStatusTelemedicine(doc).time}</Typography>
+          </TextCenterDetails>
+          <TextCenterDetails sx={{ width: "125px", justifyContent: "center" }}>
+            <IconButton
+              color="secondary"
+              aria-label="print"
+              sx={{
+                cursor: "pointer",
+                color: colorBackgroundActive,
+                display: "flex",
+                justifyContent: "center",
+                alignItems: "center",
+                height: "36px",
+                width: "36px",
+              }}
+              onClick={() => {
+                // if (reportType === "Aferições") {
+                //   const payload = {
+                //     _id: column._id,
+                //     type: "Id",
+                //     name: column._id,
+                //     dataStart: "",
+                //     dataEnd: "",
+                //     reportType: "Aferições",
+                //     attendance_id: state?.data?._id,
+                //   };
+                // }
+                let payload = {
+                  telemedicine_id: doc._id,
+                  external_attendance_id: careState.data._id,
+                };
+                dispatch(loadRequestReportUnique(payload));
+              }}
+            >
+              <PrintIcon
+                sx={{
+                  cursor: "pointer",
+                  "& svg, path": { cursor: "pointer" },
+                }}
+              />
+            </IconButton>
+          </TextCenterDetails>
+        </ContentDetailsAccordion>
+        {list.length !== index + 1 ? (
+          <Divider sx={{ width: "100%", margin: "0 auto" }} />
+        ) : (
+          ""
+        )}
+      </>
+    ));
   const handleStatusTelemedicine = (doc: any) => {
     let statusDetails = {
       status: "indefinido",
@@ -2793,8 +2793,8 @@ export default function AccordionReport(props: IAccordionReport) {
     } else if (doc.link_expired_timestamp) {
       statusDetails.status = "Sessão expirada";
       statusDetails.time = formatDate(doc.link_expired_timestamp, "HH:mm");
-    } else if (doc.finished_at) {
-      statusDetails.status = "Finalizado";
+    } else if (doc.finished_at || doc.evolution_id) {
+      statusDetails.status = "Atendido";
       statusDetails.time = formatDate(doc.finished_at, "HH:mm");
     } else if (doc.attending_provider_id && doc.link_click_timestamp) {
       statusDetails.status = "Em atendimento";
@@ -2813,20 +2813,20 @@ export default function AccordionReport(props: IAccordionReport) {
   // console.log("content!!!", content.data);
   // Attachments accordion
   const attachmentsAccordion = (data: any) =>
-      content.data.map(({ _id, list }: attachmentList, index: number) => (
-          <Box sx={{ position: "relative" }}>
-            <Box
-                sx={{
-                  position: "absolute",
-                  display: "flex",
-                  justifyContent: "center",
-                  alignItems: "center",
-                  zIndex: 5000,
-                  left: "calc(100% - 7rem)",
-                  top: "0.4rem",
-                }}
-            >
-              {/* <IconButton
+    content.data.map(({ _id, list }: attachmentList, index: number) => (
+      <Box sx={{ position: "relative" }}>
+        <Box
+          sx={{
+            position: "absolute",
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+            zIndex: 5000,
+            left: "calc(100% - 7rem)",
+            top: "0.4rem",
+          }}
+        >
+          {/* <IconButton
             aria-label="print"
             sx={{
               display: "flex",
@@ -2860,213 +2860,213 @@ export default function AccordionReport(props: IAccordionReport) {
               }}
             />
           </IconButton> */}
-            </Box>
-            <Accordion
-                key={_id.type}
-                disableGutters={true}
-                expanded={expanded === `panel${index}`}
-                onChange={handleChange(`panel${index}`)}
+        </Box>
+        <Accordion
+          key={_id.type}
+          disableGutters={true}
+          expanded={expanded === `panel${index}`}
+          onChange={handleChange(`panel${index}`)}
+        >
+          <AccordionSummary
+            expandIcon={<ExpandMoreIcon />}
+            aria-controls={`panel${index}bh-content`}
+            id={`panel${index}bh-header`}
+            sx={{
+              "& div, svg, path, circle, rect": {
+                cursor: "pointer",
+              },
+              cursor: "pointer",
+            }}
+          >
+            <Box
+              sx={{
+                display: "flex",
+                gap: "8px",
+                flexDirection: "row",
+                justifyContent: "space-between",
+              }}
             >
-              <AccordionSummary
-                  expandIcon={<ExpandMoreIcon />}
-                  aria-controls={`panel${index}bh-content`}
-                  id={`panel${index}bh-header`}
-                  sx={{
-                    "& div, svg, path, circle, rect": {
-                      cursor: "pointer",
-                    },
-                    cursor: "pointer",
-                  }}
-              >
-                <Box
-                    sx={{
-                      display: "flex",
-                      gap: "8px",
-                      flexDirection: "row",
-                      justifyContent: "space-between",
-                    }}
-                >
-                  <AttachmentIcon
-                      fill={
-                        expanded === `panel${index}`
-                            ? colorBackgroundInactive
-                            : colorText
-                      }
-                      width={"22px"}
-                      height={"22px"}
-                  />
+              <AttachmentIcon
+                fill={
+                  expanded === `panel${index}`
+                    ? colorBackgroundInactive
+                    : colorText
+                }
+                width={"22px"}
+                height={"22px"}
+              />
 
-                  <Typography>
-                    {_id.type === "image"
-                        ? "Exames de imagem"
-                        : _id.type === "laboratory"
-                            ? "Exames de laboratório"
-                            : _id.type === "other"
-                                ? "Outros documentos"
-                                : ""}
-                  </Typography>
-                </Box>
-                <Box sx={{ width: "36px" }}></Box>
-              </AccordionSummary>
-              <AccordionDetails>
-                {attachmentsAccordionHeader()}
-                {attachmentsAccordionDetails(list)}
-              </AccordionDetails>
-            </Accordion>
-          </Box>
-      ));
+              <Typography>
+                {_id.type === "image"
+                  ? "Exames de imagem"
+                  : _id.type === "laboratory"
+                  ? "Exames de laboratório"
+                  : _id.type === "other"
+                  ? "Outros documentos"
+                  : ""}
+              </Typography>
+            </Box>
+            <Box sx={{ width: "36px" }}></Box>
+          </AccordionSummary>
+          <AccordionDetails>
+            {attachmentsAccordionHeader()}
+            {attachmentsAccordionDetails(list)}
+          </AccordionDetails>
+        </Accordion>
+      </Box>
+    ));
   const attachmentsAccordionHeader = () => (
-      <>
-        <HeaderDetailsAccordion>
-          <TextCenterDetails>
-            <Typography fontWeight={500}>Data de Upload</Typography>
-          </TextCenterDetails>
-          <TextCenterDetails>
-            <Typography fontWeight={500}>Solicitante</Typography>
-          </TextCenterDetails>
-          <TextCenterDetails>
-            <Typography fontWeight={500}>Nome do arquivo</Typography>
-          </TextCenterDetails>
-          <TextCenterDetails>
-            <Typography fontWeight={500}>Opções</Typography>
-          </TextCenterDetails>
-        </HeaderDetailsAccordion>
-        <Divider sx={{ width: "100%", margin: "0 auto" }} />
-      </>
+    <>
+      <HeaderDetailsAccordion>
+        <TextCenterDetails>
+          <Typography fontWeight={500}>Data de Upload</Typography>
+        </TextCenterDetails>
+        <TextCenterDetails>
+          <Typography fontWeight={500}>Solicitante</Typography>
+        </TextCenterDetails>
+        <TextCenterDetails>
+          <Typography fontWeight={500}>Nome do arquivo</Typography>
+        </TextCenterDetails>
+        <TextCenterDetails>
+          <Typography fontWeight={500}>Opções</Typography>
+        </TextCenterDetails>
+      </HeaderDetailsAccordion>
+      <Divider sx={{ width: "100%", margin: "0 auto" }} />
+    </>
   );
   const attachmentsAccordionDetails = (list: attachments[]) =>
-      list.map((column: attachments, index: number) => {
-        return (
-            <>
-              <ContentDetailsAccordion key={column._id}>
-                <TextCenterDetails>
-                  <Typography sx={{ maxWidth: "248px" }}>
-                    {formatDate(
-                        column.documents.upload_date,
-                        "DD/MM/YYYY [às] HH:mm"
-                    )}
-                  </Typography>
-                </TextCenterDetails>
-                <TextCenterDetails>
-                  <Typography sx={{ maxWidth: "248px" }}>
-                    {column.documents.requester_name
-                        ? column.documents.requester_name
-                        : "Não informado"}
-                  </Typography>
-                </TextCenterDetails>
-                <TextCenterDetails>
-                  <Typography sx={{ maxWidth: "248px" }}>
-                    {column.documents.name}
-                  </Typography>
-                </TextCenterDetails>
+    list.map((column: attachments, index: number) => {
+      return (
+        <>
+          <ContentDetailsAccordion key={column._id}>
+            <TextCenterDetails>
+              <Typography sx={{ maxWidth: "248px" }}>
+                {formatDate(
+                  column.documents.upload_date,
+                  "DD/MM/YYYY [às] HH:mm"
+                )}
+              </Typography>
+            </TextCenterDetails>
+            <TextCenterDetails>
+              <Typography sx={{ maxWidth: "248px" }}>
+                {column.documents.requester_name
+                  ? column.documents.requester_name
+                  : "Não informado"}
+              </Typography>
+            </TextCenterDetails>
+            <TextCenterDetails>
+              <Typography sx={{ maxWidth: "248px" }}>
+                {column.documents.name}
+              </Typography>
+            </TextCenterDetails>
 
-                <TextCenterDetails>
-                  <IconButton
-                      color="secondary"
-                      aria-label="print"
-                      sx={{
-                        display: "flex",
-                        justifyContent: "center",
-                        alignItems: "center",
-                        cursor: "pointer",
-                        height: "36px",
-                        width: "36px",
-                        "& svg, path": { cursor: "pointer" },
-                      }}
-                      onClick={() => {
-                        dispatch(loadRequestFile(column.documents.name_file));
-                      }}
-                  >
-                    <PrintIcon
-                        sx={{ cursor: "pointer", color: colorBackgroundActive }}
-                    />
-                  </IconButton>
-                </TextCenterDetails>
-              </ContentDetailsAccordion>
-              {list.length !== index + 1 ? (
-                  <Divider sx={{ width: "100%", margin: "0 auto" }} />
-              ) : (
-                  ""
-              )}
-            </>
-        );
-      });
+            <TextCenterDetails>
+              <IconButton
+                color="secondary"
+                aria-label="print"
+                sx={{
+                  display: "flex",
+                  justifyContent: "center",
+                  alignItems: "center",
+                  cursor: "pointer",
+                  height: "36px",
+                  width: "36px",
+                  "& svg, path": { cursor: "pointer" },
+                }}
+                onClick={() => {
+                  dispatch(loadRequestFile(column.documents.name_file));
+                }}
+              >
+                <PrintIcon
+                  sx={{ cursor: "pointer", color: colorBackgroundActive }}
+                />
+              </IconButton>
+            </TextCenterDetails>
+          </ContentDetailsAccordion>
+          {list.length !== index + 1 ? (
+            <Divider sx={{ width: "100%", margin: "0 auto" }} />
+          ) : (
+            ""
+          )}
+        </>
+      );
+    });
   // console.log(content.data);
   return (
-      <>
-        {/* {loading && <Loading />} */}
+    <>
+      {/* {loading && <Loading />} */}
 
-        {content.data ? (
-            reportType === "Aferições" ? (
-                <Container>{measurementsAccordion(content.data)}</Container>
-            ) : reportType === "Alergias" ? (
-                <Container>{allergyAndEventsAccordion(content.data)}</Container>
-            ) : reportType === "Evolução" ? (
-                <Container>{evolutionAccordion(content.data)}</Container>
-            ) : reportType === "Check-in/out" ? (
-                <Container>{checkInOutAccordion(content.data)}</Container>
-            ) : reportType === "Prescrições" ? (
-                content.data.length > 0 ? (
-                    <Container>
-                      {integration ? (
-                          prescriptionAccordion(content.data)
-                      ) : (
-                          <Typography
-                              sx={{
-                                textAlign: "center",
-                                color: theme.palette.black60.main,
-                              }}
-                          >
-                            Acordion de Prescrição não configurada para ambiente sem
-                            integração
-                          </Typography>
-                      )}
-                    </Container>
-                ) : (
-                    NoData()
-                )
-            ) : reportType === "Antibióticos" ? (
-                <Container>{antibioticAccordion(content.data)}</Container>
-            ) : reportType === "Exames" ? (
-                <Container>
-                  {examsAccordion(groupExamsByDate(content.data))}
-                </Container>
-            ) : reportType === "Atestados" ? (
-                <Container>
-                  {attestAccordion(groupAttestsByDate(content.data))}
-                </Container>
-            ) : reportType === "Checagens" ? (
-                content.data.length > 0 ? (
-                    <Container>
-                      {integration ? (
-                          checkAccordion(content.data)
-                      ) : (
-                          <Typography sx={{ textAlign: "center", color: colorText }}>
-                            Acordion de Checagens não configurada para ambiente sem
-                            integração
-                          </Typography>
-                      )}
-                    </Container>
-                ) : (
-                    NoData()
-                )
-            ) : reportType === "Anexos" ? (
-                content.data.length > 0 ? (
-                    <Container>{attachmentsAccordion(content.data)}</Container>
-                ) : (
-                    NoData()
-                )
-            ) : reportType === "Telemedicina" && content.data.length > 0 ? (
-                <Container>{telemedicineAccordion(content.data)}</Container>
-            ) : (
-                ""
-            )
-        ) : (
+      {content.data ? (
+        reportType === "Aferições" ? (
+          <Container>{measurementsAccordion(content.data)}</Container>
+        ) : reportType === "Alergias" ? (
+          <Container>{allergyAndEventsAccordion(content.data)}</Container>
+        ) : reportType === "Evolução" ? (
+          <Container>{evolutionAccordion(content.data)}</Container>
+        ) : reportType === "Check-in/out" ? (
+          <Container>{checkInOutAccordion(content.data)}</Container>
+        ) : reportType === "Prescrições" ? (
+          content.data.length > 0 ? (
+            <Container>
+              {integration ? (
+                prescriptionAccordion(content.data)
+              ) : (
+                <Typography
+                  sx={{
+                    textAlign: "center",
+                    color: theme.palette.black60.main,
+                  }}
+                >
+                  Acordion de Prescrição não configurada para ambiente sem
+                  integração
+                </Typography>
+              )}
+            </Container>
+          ) : (
             NoData()
-        )}
+          )
+        ) : reportType === "Antibióticos" ? (
+          <Container>{antibioticAccordion(content.data)}</Container>
+        ) : reportType === "Exames" ? (
+          <Container>
+            {examsAccordion(groupExamsByDate(content.data))}
+          </Container>
+        ) : reportType === "Atestados" ? (
+          <Container>
+            {attestAccordion(groupAttestsByDate(content.data))}
+          </Container>
+        ) : reportType === "Checagens" ? (
+          content.data.length > 0 ? (
+            <Container>
+              {integration ? (
+                checkAccordion(content.data)
+              ) : (
+                <Typography sx={{ textAlign: "center", color: colorText }}>
+                  Acordion de Checagens não configurada para ambiente sem
+                  integração
+                </Typography>
+              )}
+            </Container>
+          ) : (
+            NoData()
+          )
+        ) : reportType === "Anexos" ? (
+          content.data.length > 0 ? (
+            <Container>{attachmentsAccordion(content.data)}</Container>
+          ) : (
+            NoData()
+          )
+        ) : reportType === "Telemedicina" && content.data.length > 0 ? (
+          <Container>{telemedicineAccordion(content.data)}</Container>
+        ) : (
+          ""
+        )
+      ) : (
+        NoData()
+      )}
 
-        {/*{content.error &&*/}
-        {/*  toast.error("Não foi possível carregar os relatórios deste prontuário")}*/}
-      </>
+      {/*{content.error &&*/}
+      {/*  toast.error("Não foi possível carregar os relatórios deste prontuário")}*/}
+    </>
   );
 }
