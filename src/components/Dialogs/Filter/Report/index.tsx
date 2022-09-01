@@ -381,6 +381,7 @@ export default function FilterReport(props: IPropsFilter) {
 
   function handleAutocompleteData(type: string) {
     let List: any[] = [];
+
     if (reportType === "Check-in/out") {
       careState.checkin.data.map((day: any) => {
         if (day) {
@@ -404,26 +405,23 @@ export default function FilterReport(props: IPropsFilter) {
         }
       });
     } else if (reportType === "Evolução") {
-      contentReport?.data?.map((day: any) => {
-        if (day) {
-          day.list.map((checks: any) => {
-            if (checks.list) {
-              checks.list.map((user: any) => {
-                const itemList: any = {
-                  name:
-                    type === "Função"
-                      ? handleFunction(
-                          user[0].user_id[0].companies_links,
-                          careState.data.company_id
-                        )
-                      : capitalizeText(user[0].user_id[0].name),
-                  _id: type === "Função" ? "" : user[0].user_id[0]._id,
-                };
-                List.push(itemList);
-              });
-            }
+      contentReport?.data?.forEach((day: any) => {
+        day.list.forEach((evolution: any) => {
+          evolution.created_by.forEach((user: any) => {
+            // console.log(user);
+            const itemList: any = {
+              name:
+                type === "Função"
+                  ? handleFunction(
+                      user.companies_links,
+                      careState.data.company_id
+                    )
+                  : capitalizeText(user.name),
+              _id: type === "Função" ? "" : user._id,
+            };
+            List.push(itemList);
           });
-        }
+        });
       });
     } else if (reportType === "Telemedicina") {
       contentReport?.data?.map((day: any) =>
@@ -519,54 +517,57 @@ export default function FilterReport(props: IPropsFilter) {
             )}
           </RadioGroup>
         </FormControl>
-        <FormControl
-          sx={{ display: "flex", flexDirection: "column", gap: "12px" }}
-        >
-          <Autocomplete
-            id="combo-box-profession-or-professional"
-            options={handleAutocompleteData(stateFilter.type)}
-            getOptionLabel={(option) => option.name}
-            renderInput={(params) => (
-              <TextField
-                {...params}
-                label={
-                  stateFilter.type === "NaoAtendido"
-                    ? "Inativado"
-                    : `Selecione ${
-                        stateFilter.type === "Função"
-                          ? `a ${stateFilter.type.toLocaleLowerCase()}`
-                          : stateFilter.type === "Prestador"
-                          ? `o ${stateFilter.type.toLocaleLowerCase()}`
-                          : ""
-                      }`
+        {stateFilter.type !== "NaoAtendido" && (
+          <FormControl
+            sx={{ display: "flex", flexDirection: "column", gap: "12px" }}
+          >
+            <Autocomplete
+              id="combo-box-profession-or-professional"
+              options={handleAutocompleteData(stateFilter.type)}
+              getOptionLabel={(option) => option.name}
+              renderInput={(params) => (
+                <TextField
+                  {...params}
+                  label={
+                    stateFilter.type === "NaoAtendido"
+                      ? "Inativado"
+                      : `Selecione ${
+                          stateFilter.type === "Função"
+                            ? `a ${stateFilter.type.toLocaleLowerCase()}`
+                            : stateFilter.type === "Prestador"
+                            ? `o ${stateFilter.type.toLocaleLowerCase()}`
+                            : ""
+                        }`
+                  }
+                />
+              )}
+              disabled={stateFilter.type === "NaoAtendido"}
+              value={stateFilter}
+              onChange={(event, value) => {
+                if (value) {
+                  setStateFilter((state: any) => {
+                    return {
+                      ...state,
+                      name: value.name,
+                      _id: value._id,
+                    };
+                  });
+                } else {
+                  setStateFilter((state: any) => {
+                    return {
+                      ...state,
+                      name: "",
+                      _id: "",
+                    };
+                  });
                 }
-              />
-            )}
-            disabled={stateFilter.type === "NaoAtendido"}
-            value={stateFilter}
-            onChange={(event, value) => {
-              if (value) {
-                setStateFilter((state: any) => {
-                  return {
-                    ...state,
-                    name: value.name,
-                    _id: value._id,
-                  };
-                });
-              } else {
-                setStateFilter((state: any) => {
-                  return {
-                    ...state,
-                    name: "",
-                    _id: "",
-                  };
-                });
-              }
-            }}
-            size="small"
-            fullWidth
-          />
-        </FormControl>
+              }}
+              size="small"
+              fullWidth
+            />
+          </FormControl>
+        )}
+
         <FormControl>
           <FormLabel
             id="demo-radio-buttons-group-label"
