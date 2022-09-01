@@ -36,9 +36,8 @@ export const ibge = axios.create({
 export const googleMaps = axios.create({
   baseURL: process.env.REACT_APP_GOOGLE_MAPS_API,
 });
-let integrationUrl =
-  sessionStorage.getItem(SESSIONSTORAGE.INTEGRATION) || "";
-
+let integrationUrl = sessionStorage.getItem(SESSIONSTORAGE.INTEGRATION) || "";
+// "http://localhost:3232/api";
 apiSollar.interceptors.request.use(
   function (config) {
     // Do something before request is sent
