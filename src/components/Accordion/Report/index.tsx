@@ -1323,6 +1323,8 @@ export default function AccordionReport(props: IAccordionReport) {
 
     return type === "description" ? dataSlit[1] : dataSlit[0];
   }
+
+  // acordion de checagem
   const checkAccordion = (data: any) => {
     return data.map((day: any, index: number) =>
       day[1].map(
@@ -1476,79 +1478,90 @@ export default function AccordionReport(props: IAccordionReport) {
     </>
   );
   const checkAccordionDetails = (data: any) =>
-    data.items.map((item: any, index: number) => (
-      <>
-        <ContentDetailsAccordion key={item._id} sx={{ padding: "0 16px" }}>
-          <TextCenterDetails
-            sx={{
-              textDecoration: `${!item.active ? "line-through" : "none"}`,
-              color: `${!item.active ? colorTextDesable : colorTextDetails}`,
-              justifyContent: "flex-start",
-              width: "406px",
-            }}
-          >
-            <Typography>{item?.medication?.Nome}</Typography>
-          </TextCenterDetails>
-          <TextCenterDetails
-            sx={{
-              textDecoration: `${!item.active ? "line-through" : "none"}`,
-              color: `${!item.active ? colorTextDesable : colorTextDetails}`,
-              width: "100px",
-              justifyContent: "flex-start",
-            }}
-          >
-            <Typography>
-              {`${parseFloat(item?.frequency?.interval) / 3600}h/${
-                parseFloat(item?.frequency?.interval) / 3600
-              }h`}
-            </Typography>
-          </TextCenterDetails>
-          <TextCenterDetails
-            sx={{
-              textDecoration: `${!item.active ? "line-through" : "none"}`,
-              color: `${!item.active ? colorTextDesable : colorTextDetails}`,
-            }}
-          >
-            <Typography>
-              {item?.frequency?.doses?.length > 0 &&
-                item?.frequency?.doses?.map((dose: any, index: number) => {
-                  return `${formatDate(dose.administer_date, "HH:mm")} ${
-                    item.frequency.doses.length - 1 === index ? "" : " - "
-                  }`;
-                })}
-            </Typography>
-          </TextCenterDetails>
-          <TextCenterDetails sx={{ width: "100px" }}>
-            <IconButton
-              aria-label="print"
+    data.items.map((item: any, index: number) => {
+      return (
+        <>
+          <ContentDetailsAccordion key={item._id} sx={{ padding: "0 16px" }}>
+            <TextCenterDetails
               sx={{
-                display: "flex",
-                justifyContent: "center",
-                alignItems: "center",
-                cursor: "pointer",
-                height: "36px",
-                width: "36px",
+                textDecoration: `${!item.active ? "line-through" : "none"}`,
+                color: `${!item.active ? colorTextDesable : colorTextDetails}`,
+                justifyContent: "flex-start",
+                width: "406px",
               }}
-              onClick={() => {}}
-              disabled={true}
             >
-              <PrintIcon
+              <Typography>{item?.medication?.Nome}</Typography>
+            </TextCenterDetails>
+            <TextCenterDetails
+              sx={{
+                textDecoration: `${!item.active ? "line-through" : "none"}`,
+                color: `${!item.active ? colorTextDesable : colorTextDetails}`,
+                width: "100px",
+                justifyContent: "flex-start",
+              }}
+            >
+              <Typography>
+                {`${parseFloat(item?.frequency?.interval) / 3600}h/${
+                  parseFloat(item?.frequency?.interval) / 3600
+                }h`}
+              </Typography>
+            </TextCenterDetails>
+            <TextCenterDetails
+              sx={{
+                textDecoration: `${!item.active ? "line-through" : "none"}`,
+                color: `${!item.active ? colorTextDesable : colorTextDetails}`,
+              }}
+            >
+              <Typography>
+                {item?.frequency?.doses?.length > 0 &&
+                  item?.frequency?.doses?.map((dose: any, index: number) => {
+                    return `${formatDate(dose.administer_date, "HH:mm")} ${
+                      item.frequency.doses.length - 1 === index ? "" : " - "
+                    }`;
+                  })}
+              </Typography>
+            </TextCenterDetails>
+            <TextCenterDetails sx={{ width: "100px" }}>
+              <IconButton
+                aria-label="print"
                 sx={{
-                  color: "#999999",
+                  display: "flex",
+                  justifyContent: "center",
+                  alignItems: "center",
                   cursor: "pointer",
-                  "& > path": { cursor: "pointer" },
+                  height: "36px",
+                  width: "36px",
                 }}
-              />
-            </IconButton>
-          </TextCenterDetails>
-        </ContentDetailsAccordion>
-        {data.length !== index + 1 ? (
-          <Divider sx={{ width: "100%", margin: "0 auto" }} />
-        ) : (
-          ""
-        )}
-      </>
-    ));
+                onClick={() => {
+                  dispatch(
+                    loadRequestReportCheck({
+                      id: data._id,
+                      careId: careState.data._id,
+                      typeReport: "uniqueItem",
+                      idItem: item._id,
+                    })
+                  );
+                }}
+                // disabled={true}
+              >
+                <PrintIcon
+                  sx={{
+                    color: colorBackgroundActive,
+                    cursor: "pointer",
+                    "& path": { cursor: "pointer" },
+                  }}
+                />
+              </IconButton>
+            </TextCenterDetails>
+          </ContentDetailsAccordion>
+          {data.length !== index + 1 ? (
+            <Divider sx={{ width: "100%", margin: "0 auto" }} />
+          ) : (
+            ""
+          )}
+        </>
+      );
+    });
   // Accordion das alergias e eventos
   const allergyAndEventsAccordion = (data: any) =>
     Object.keys(data).map((item: any, index: number) => {
