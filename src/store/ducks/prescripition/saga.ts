@@ -152,11 +152,16 @@ export function* loadReportUnique(data: any) {
 }
 export function* loadReportCheck(data: any) {
   try {
-    const { id, careId } = data.payload;
+    const { id, careId, typeReport, idItem } = data.payload;
     const response: AxiosResponse = yield call(
       apiSollarReport.get as any,
-      `checks/${id}`,
-      { responseType: "blob", headers: { external_attendance_id: careId } }
+      `checks/${id}${
+        typeReport ? `?typeReport=${typeReport}&idItem=${idItem}` : ""
+      }`,
+      {
+        responseType: "blob",
+        headers: { external_attendance_id: careId },
+      }
     );
 
     yield put(loadSuccesstReportCheck(response.data));
