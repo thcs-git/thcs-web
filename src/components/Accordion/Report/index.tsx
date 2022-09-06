@@ -2932,7 +2932,7 @@ export default function AccordionReport(props: IAccordionReport) {
     <>
       <HeaderDetailsAccordion>
         <TextCenterDetails>
-          <Typography fontWeight={500}>Data de Upload</Typography>
+          <Typography fontWeight={500}>Anexado em</Typography>
         </TextCenterDetails>
         <TextCenterDetails>
           <Typography fontWeight={500}>Solicitante</Typography>
