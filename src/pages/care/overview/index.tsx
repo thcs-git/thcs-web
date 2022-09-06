@@ -62,6 +62,7 @@ import { loadRequest as loadRequestAttests } from "../../../store/ducks/attest/a
 import { loadRequest as loadRequestCompanyLogo } from "../../../store/ducks/logo/actions";
 import { loadRequest as loadRequestTelemedicine } from "../../../store/ducks/telemedicine/actions";
 import { loadRequest as loadRequestAttachments } from "../../../store/ducks/attachment/actions";
+import { loadRequest as LoadRequestForms } from "../../../store/ducks/forms/actions";
 interface IPageParams {
   id?: string;
 }
@@ -117,6 +118,7 @@ export default function PatientOverview(props: IPageParams) {
   const attachmentState = useSelector(
     (state: ApplicationState) => state.attachments
   );
+  const formState = useSelector((state: ApplicationState) => state.forms);
   const rightsOfLayoutState = useSelector(
     (state: ApplicationState) => state.layout.data.rights
   );
@@ -190,8 +192,11 @@ export default function PatientOverview(props: IPageParams) {
       dispatch(loadRequestTelemedicine(attendanceId));
     } else if (patientId && reportType === "Anexos") {
       dispatch(loadRequestAttachments(patientId));
+    } else if (attendanceId && reportType === "Formulários") {
+      dispatch(LoadRequestForms(attendanceId));
     }
   }, [careState.data._id, reportType]);
+
   const handleTeam = useCallback(() => {
     const teamUsers: any = [];
 
@@ -429,6 +434,7 @@ export default function PatientOverview(props: IPageParams) {
     md: 6,
   };
   const cards = [
+    "Formulários",
     "Atestados",
     "Exames",
     "Check-in/out",
@@ -573,6 +579,11 @@ export default function PatientOverview(props: IPageParams) {
         data: attachmentState.data,
         error: attachmentState.error,
       };
+    } else if (report === "Formulários" && formState.data.length > 0) {
+      return {
+        data: formState.data,
+        error: formState.error,
+      };
     } else {
       return "";
     }
@@ -608,6 +619,8 @@ export default function PatientOverview(props: IPageParams) {
         return telemedicineState.loading;
       case "Anexos":
         return attachmentState.loading;
+      case "Formulários":
+        return formState.loading;
       default:
         return false;
     }

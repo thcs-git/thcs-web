@@ -43,6 +43,7 @@ import CheckMedIcon from "../../Icons/CheckMed";
 import DigitalIcon from "../../Icons/Digital";
 import TelemedicineIcon from "../../Icons/Telemedicine";
 import AttachmentIcon from "../../Icons/Attachment";
+import FormIcon from "../../Icons/Form";
 // styled components and style
 import {
   AccordionStyled as Accordion,
@@ -97,6 +98,7 @@ import {
 } from "../../../store/ducks/attachment/types";
 import { loadRequestFile } from "../../../store/ducks/attachment/actions";
 import { loadRequestReportByDate } from "../../../store/ducks/prescripition/actions";
+import { FormGroup, FormsData } from "../../../store/ducks/forms/types";
 
 interface IAccordionReport {
   content: {
@@ -3004,11 +3006,170 @@ export default function AccordionReport(props: IAccordionReport) {
         </>
       );
     });
+  // Forms Accordion
+  const formsAccordion = (data: FormGroup[]) =>
+    data.map(({ _id, list }: FormGroup, index: number) => {
+      return (
+        <Box sx={{ position: "relative" }}>
+          <Box
+            sx={{
+              position: "absolute",
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
+              zIndex: 5000,
+              left: "calc(100% - 7rem)",
+              top: "0.4rem",
+            }}
+          >
+            <IconButton
+              disabled
+              aria-label="print"
+              sx={{
+                display: "flex",
+                justifyContent: "center",
+                alignItems: "center",
+                cursor: "pointer",
+                height: "36px",
+                width: "36px",
+              }}
+              onClick={() => {
+                // dispatch(loadEvolutionFilterRequest(payload));
+              }}
+            >
+              <PrintIcon
+                sx={{
+                  color:
+                    expanded === `panel${index}`
+                      ? colorBackgroundInactive
+                      : colorBackgroundActive,
+                  cursor: "pointer",
+                  "& path": { cursor: "pointer" },
+                }}
+              />
+            </IconButton>
+          </Box>
+          <Accordion
+            key={`${_id}-${index}`}
+            disableGutters={true}
+            expanded={expanded === `panel${index}`}
+            onChange={handleChange(`panel${index}`)}
+          >
+            <AccordionSummary
+              expandIcon={<ExpandMoreIcon />}
+              aria-controls={`panel${index}bh-content`}
+              id={`panel${index}bh-header`}
+              sx={{
+                "& div, svg, path, circle, rect": {
+                  cursor: "pointer",
+                },
+                cursor: "pointer",
+              }}
+            >
+              <Box
+                sx={{
+                  display: "flex",
+                  gap: "8px",
+                  flexDirection: "row",
+                  justifyContent: "space-between",
+                }}
+              >
+                <FormIcon
+                  fill={
+                    expanded === `panel${index}`
+                      ? colorBackgroundInactive
+                      : colorText
+                  }
+                  width={"22px"}
+                  height={"22px"}
+                />
+
+                <Typography>{_id}</Typography>
+              </Box>
+              <Box sx={{ width: "36px" }}></Box>
+            </AccordionSummary>
+            <AccordionDetails>
+              {formsAccordionHeader()}
+              {formsAccordionDetails(list)}
+            </AccordionDetails>
+          </Accordion>
+        </Box>
+      );
+    });
+  const formsAccordionHeader = () => (
+    <>
+      <HeaderDetailsAccordion>
+        <TextCenterDetails sx={{ justifyContent: "flex-start" }}>
+          <Typography fontWeight={500}>Prestador</Typography>
+        </TextCenterDetails>
+        <TextCenterDetails>
+          <Typography fontWeight={500}>Data/hora</Typography>
+        </TextCenterDetails>
+        <TextCenterDetails>
+          <Typography fontWeight={500}>Nome do arquivo</Typography>
+        </TextCenterDetails>
+        <TextCenterDetails sx={{ width: "125px" }}>
+          <Typography fontWeight={500}>Opções</Typography>
+        </TextCenterDetails>
+      </HeaderDetailsAccordion>
+      <Divider sx={{ width: "100%", margin: "0 auto" }} />
+    </>
+  );
+  const formsAccordionDetails = (list: FormsData[]) =>
+    list.map((form: FormsData, index: number) => {
+      return (
+        <>
+          <ContentDetailsAccordion key={form._id}>
+            <TextCenterDetails sx={{ justifyContent: "flex-start" }}>
+              <Typography sx={{ maxWidth: "248px" }}>
+                {form.created_by.name}
+              </Typography>
+            </TextCenterDetails>
+            <TextCenterDetails>
+              <Typography sx={{ maxWidth: "248px" }}>
+                {formatDate(form.created_at, "DD/MM/YYYY [às] HH:mm")}
+              </Typography>
+            </TextCenterDetails>
+            <TextCenterDetails>
+              <Typography sx={{ maxWidth: "248px" }}>{form.name}</Typography>
+            </TextCenterDetails>
+
+            <TextCenterDetails sx={{ width: "125px" }}>
+              <IconButton
+                disabled
+                color="secondary"
+                aria-label="print"
+                sx={{
+                  display: "flex",
+                  justifyContent: "center",
+                  alignItems: "center",
+                  cursor: "pointer",
+                  height: "36px",
+                  width: "36px",
+                  "& svg, path": { cursor: "pointer" },
+                }}
+                onClick={() => {
+                  // dispatch(loadRequestFile(column.documents.name_file));
+                }}
+              >
+                <PrintIcon
+                  sx={{ cursor: "pointer", color: colorBackgroundActive }}
+                />
+              </IconButton>
+            </TextCenterDetails>
+          </ContentDetailsAccordion>
+          {list.length !== index + 1 ? (
+            <Divider sx={{ width: "100%", margin: "0 auto" }} />
+          ) : (
+            ""
+          )}
+        </>
+      );
+    });
+
   // console.log(content.data);
   return (
     <>
-      {/* {loading && <Loading />} */}
-
       {content.data ? (
         reportType === "Aferições" ? (
           <Container>{measurementsAccordion(content.data)}</Container>
@@ -3071,6 +3232,8 @@ export default function AccordionReport(props: IAccordionReport) {
           )
         ) : reportType === "Telemedicina" && content.data.length > 0 ? (
           <Container>{telemedicineAccordion(content.data)}</Container>
+        ) : reportType === "Formulários" && content.data.length > 0 ? (
+          <Container>{formsAccordion(content.data)}</Container>
         ) : (
           ""
         )
