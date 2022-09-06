@@ -434,7 +434,6 @@ export default function PatientOverview(props: IPageParams) {
     md: 6,
   };
   const cards = [
-    "Formulários",
     "Atestados",
     "Exames",
     "Check-in/out",
@@ -446,6 +445,7 @@ export default function PatientOverview(props: IPageParams) {
     "Aferições",
     "Telemedicina",
     "Anexos",
+    "Formulários",
   ];
   const personalCard = {
     card: "Dados Pessoais",
