@@ -123,49 +123,32 @@ export default function FilterReport(props: IPropsFilter) {
   }
   function handleMinDateReport() {
     if (reportType === "Check-in/out") {
-      if (contentReport) {
-        return dayjs(contentReport.data[contentReport.data.length - 1]._id);
-      } else {
-        return null;
-      }
+      return contentReport
+        ? dayjs(contentReport.data[contentReport.data.length - 1]._id)
+        : undefined;
     } else if (reportType === "Evolução") {
-      if (contentReport) {
-        return dayjs(contentReport.data[contentReport.data.length - 1]._id);
-      } else {
-        return null;
-      }
+      return contentReport
+        ? dayjs(contentReport.data[contentReport.data.length - 1]._id)
+        : undefined;
     } else if (reportType === "Telemedicina") {
-      if (contentReport) {
-        let data = handleDateFormat(
-          contentReport.data[contentReport.data.length - 1]._id.date
-        );
-        return dayjs(data);
-      } else {
-        return null;
-      }
+      return contentReport
+        ? dayjs(
+            handleDateFormat(
+              contentReport.data[contentReport.data.length - 1]._id.date
+            )
+          )
+        : undefined;
     }
   }
   function handleMaxDateReport() {
     if (reportType === "Check-in/out") {
-      if (contentReport) {
-        return dayjs(contentReport.data[0]._id);
-      } else {
-        return undefined;
-      }
+      return contentReport ? dayjs(contentReport.data[0]._id) : undefined;
     } else if (reportType === "Evolução") {
-      if (contentReport) {
-        return dayjs(contentReport.data[0]._id);
-      } else {
-        return undefined;
-      }
+      return contentReport ? dayjs(contentReport.data[0]._id) : undefined;
     } else if (reportType === "Telemedicina") {
-      if (contentReport) {
-        // console.log("ENTROUU");
-        let data = handleDateFormat(contentReport.data[0]._id.date);
-        return dayjs(data);
-      } else {
-        return undefined;
-      }
+      return contentReport
+        ? dayjs(handleDateFormat(contentReport.data[0]._id.date))
+        : undefined;
     }
   }
 
