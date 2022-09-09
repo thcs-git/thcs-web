@@ -27,7 +27,7 @@ import attest from "./attest";
 import logo from "./logo";
 import attachments from "./attachment";
 import telemedicine from "./telemedicine";
-
+import forms from "./forms";
 export default combineReducers<IInitialState>({
   areas,
   login,
@@ -53,4 +53,5 @@ export default combineReducers<IInitialState>({
   logo,
   attachments,
   telemedicine,
+  forms,
 });

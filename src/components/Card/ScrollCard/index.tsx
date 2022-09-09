@@ -10,12 +10,12 @@ import EvolutionIcon from "../../Icons/Evolution";
 import TelemedicineIcon from "../../Icons/Telemedicine";
 // import { ReactComponent as DiagnosisIcon } from "../../../assets/img/icon-diagnosis.svg";
 import CheckMedIcon from "../../Icons/CheckMed";
-import { ReactComponent as HistoryIcon } from "../../../assets/img/icon-history.svg";
 import AlergicIcon from "../../Icons/allergic";
 import CheckIcon from "../../Icons/Check";
 import FilterListIcon from "@mui/icons-material/FilterList";
 import AttestIcon from "../../Icons/Attest";
 import AttachmentIcon from "../../Icons/Attachment";
+import FormIcon from "../../Icons/Form";
 //MUI
 import Box from "@mui/material/Box";
 import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
@@ -157,6 +157,7 @@ export default function ScrollCard(props: IScroll) {
             <TelemedicineIcon fill={colorIconsCard} />
           )}
           {name === "Anexos" && <AttachmentIcon fill={colorIconsCard} />}
+          {name === "Formulários" && <FormIcon fill={colorIconsCard} />}
         </IconCard>
         <FooterCard
           className="FoorterCard"

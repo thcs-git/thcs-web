@@ -403,6 +403,7 @@ const Sibebar = (props: any) => {
       "cares.evolution",
       "telemedicine",
       "attachments",
+      "forms"
     ];
 
     for (let i = 0; i < states.length; i++) {

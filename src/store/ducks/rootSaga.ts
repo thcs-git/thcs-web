@@ -207,6 +207,9 @@ import {
   getFilterTelemedicine,
 } from "./telemedicine/sagas";
 
+import { FormTypes } from "./forms/types";
+import { getForms } from "./forms/sagas";
+
 export default function* rootSaga(): any {
   return yield all([
     takeLatest(LoginTypes.LOAD_REQUEST, doLogin),
@@ -480,5 +483,10 @@ export default function* rootSaga(): any {
         TelemedicineTypes.LOAD_REQUEST_REPORT_FILTER,
         getFilterTelemedicine
     ),
+
+    /**
+     * FORMS
+     */
+    takeLatest(FormTypes.LOAD_REQUEST, getForms)
   ]);
 }
