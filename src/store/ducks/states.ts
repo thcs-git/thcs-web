@@ -73,6 +73,9 @@ import { AttachmentState } from "./attachment/types";
 
 import { INITIAL_STATE as INITIAL_STATE_TELEMEDICINE } from "./telemedicine";
 import { TelemedicineState } from "./telemedicine/types";
+
+import { INITIAL_STATE as INITIAL_STATE_FORM } from "./forms";
+import { FormState } from "./forms/types";
 /**
  * Initial state tree interface
  */
@@ -101,6 +104,7 @@ export interface IInitialState {
   logo: Readonly<LogoState>;
   attachments: Readonly<AttachmentState>;
   telemedicine: Readonly<TelemedicineState>;
+  forms: Readonly<FormState>;
 }
 
 /**
@@ -131,4 +135,5 @@ export const InitialState: IInitialState = {
   logo: INITIAL_STATE_LOGO,
   attachments: INITIAL_STATE_ATACHMENT,
   telemedicine: INITIAL_STATE_TELEMEDICINE,
+  forms: INITIAL_STATE_FORM,
 };

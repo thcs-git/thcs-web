@@ -25,6 +25,7 @@ import { AttestState } from "./ducks/attest/types";
 import { LogoState } from "./ducks/logo/types";
 import { TelemedicineState } from "./ducks/telemedicine/types";
 import { AttachmentState } from "./ducks/attachment/types";
+import { FormState } from "./ducks/forms/types";
 
 import { InitialState } from "./ducks/states";
 import combinedReducers from "./ducks/rootReducer";
@@ -55,6 +56,7 @@ export interface ApplicationState {
   logo: LogoState;
   telemedicine: TelemedicineState;
   attachments: AttachmentState;
+  forms: FormState;
 }
 
 const sagaMiddleware = createSagaMiddleware();
