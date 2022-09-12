@@ -68,18 +68,18 @@ export default function CouncilList() {
     (state: ApplicationState) => state.layout.data.rights
   );
   const currentCompany = localStorage.getItem(LOCALSTORAGE.COMPANY_SELECTED);
-  let valueStatus: string;
-
+  // let valueStatus: string;
+  const [valueStatus, setValueStatus] = useState("");
   useEffect(() => {
     if (tabIndex === 0) {
       dispatch(getCares({ status: "Atendimento" }));
-      valueStatus = "Atendimento";
+      setValueStatus("Atendimento");
     } else if (tabIndex === 1) {
       dispatch(getCares({ status: "Alta" }));
-      valueStatus = "Alta";
+      setValueStatus("Alta");
     } else {
       dispatch(getCares({ status: "Todos" }));
-      valueStatus = "Todos";
+      setValueStatus("Todos");
     }
 
     // if (!(sessionStorage.getItem(SESSIONSTORAGE.INTEGRATION))) {
@@ -413,7 +413,7 @@ export default function CouncilList() {
                   })
                 )
               }
-              handleChangeRowsPerPage={(event) =>
+              handleChangeRowsPerPage={(event) => {
                 dispatch(
                   loadRequest({
                     limit: event.target.value,
@@ -421,8 +421,8 @@ export default function CouncilList() {
                     status: valueStatus,
                     search,
                   })
-                )
-              }
+                );
+              }}
             />
           </Container>
         ) : (
