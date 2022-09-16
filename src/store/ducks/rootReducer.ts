@@ -28,6 +28,8 @@ import logo from "./logo";
 import attachments from "./attachment";
 import telemedicine from "./telemedicine";
 import forms from "./forms";
+import customerLogs from "./customerLogs";
+import attachmentsIntegration from "./attachmentsIntegration";
 export default combineReducers<IInitialState>({
   areas,
   login,
@@ -54,4 +56,6 @@ export default combineReducers<IInitialState>({
   attachments,
   telemedicine,
   forms,
+  customerLogs,
+  attachmentsIntegration,
 });
