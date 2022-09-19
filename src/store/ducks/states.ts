@@ -76,6 +76,12 @@ import { TelemedicineState } from "./telemedicine/types";
 
 import { INITIAL_STATE as INITIAL_STATE_FORM } from "./forms";
 import { FormState } from "./forms/types";
+
+import { INITIAL_STATE as INITIAL_STATE_CUSTOMER_LOGS } from "./customerLogs";
+import { CustomerLogsState } from "./customerLogs/types";
+
+import { INITIAL_STATE as INITIAL_STATE_ATTACHMENTS_INTEGRATION } from "./attachmentsIntegration";
+import { AttachmentsIntegrationState } from "./attachmentsIntegration/types";
 /**
  * Initial state tree interface
  */
@@ -105,6 +111,8 @@ export interface IInitialState {
   attachments: Readonly<AttachmentState>;
   telemedicine: Readonly<TelemedicineState>;
   forms: Readonly<FormState>;
+  customerLogs: Readonly<CustomerLogsState>;
+  attachmentsIntegration: Readonly<AttachmentsIntegrationState>;
 }
 
 /**
@@ -136,4 +144,6 @@ export const InitialState: IInitialState = {
   attachments: INITIAL_STATE_ATACHMENT,
   telemedicine: INITIAL_STATE_TELEMEDICINE,
   forms: INITIAL_STATE_FORM,
+  customerLogs: INITIAL_STATE_CUSTOMER_LOGS,
+  attachmentsIntegration: INITIAL_STATE_ATTACHMENTS_INTEGRATION,
 };
