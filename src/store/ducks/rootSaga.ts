@@ -210,6 +210,12 @@ import {
 import { FormTypes } from "./forms/types";
 import { getForms } from "./forms/sagas";
 
+import { CustomerLogsTypes } from "./customerLogs/types";
+import { getCustomerLogs } from "./customerLogs/sagas";
+
+import { AttachmentsIntegrationTypes } from "./attachmentsIntegration/types";
+import { dispatchDocsForIntegration } from "./attachmentsIntegration/sagas";
+
 export default function* rootSaga(): any {
   return yield all([
     takeLatest(LoginTypes.LOAD_REQUEST, doLogin),
@@ -472,21 +478,32 @@ export default function* rootSaga(): any {
      */
     takeLatest(TelemedicineTypes.LOAD_REQUEST, getTelemedicine),
     takeLatest(
-        TelemedicineTypes.LOAD_REQUEST_REPORT_UNIQUE,
-        getReportUniqueTelemedicine
+      TelemedicineTypes.LOAD_REQUEST_REPORT_UNIQUE,
+      getReportUniqueTelemedicine
     ),
     takeLatest(
-        TelemedicineTypes.LOAD_REQUEST_REPORT_BY_DAY,
-        getReportByDayTemeledicine
+      TelemedicineTypes.LOAD_REQUEST_REPORT_BY_DAY,
+      getReportByDayTemeledicine
     ),
     takeLatest(
-        TelemedicineTypes.LOAD_REQUEST_REPORT_FILTER,
-        getFilterTelemedicine
+      TelemedicineTypes.LOAD_REQUEST_REPORT_FILTER,
+      getFilterTelemedicine
     ),
 
     /**
      * FORMS
      */
-    takeLatest(FormTypes.LOAD_REQUEST, getForms)
+    takeLatest(FormTypes.LOAD_REQUEST, getForms),
+    /**
+     * LOGS
+     */
+    takeLatest(CustomerLogsTypes.LOAD_REQUEST, getCustomerLogs),
+    /**
+     * ATTACHMENTS INTEGRATION
+     */
+    takeLatest(
+      AttachmentsIntegrationTypes.DISPATCH_DOCS,
+      dispatchDocsForIntegration
+    ),
   ]);
 }
