@@ -1,53 +1,53 @@
-import React, { useState, useEffect, useCallback } from "react";
+import React, {useState, useEffect, useCallback} from "react";
 // REDUX e REDUX-SAGA
-import { useDispatch, useSelector } from "react-redux";
-import { ApplicationState } from "../../store";
-import { loadCompanyById } from "../../store/ducks/companies/actions";
-import { changeMenuSelected } from "../../store/ducks/layout/actions";
-import { useNavigate } from "react-router-dom";
+import {useDispatch, useSelector} from "react-redux";
+import {ApplicationState} from "../../store";
+import {loadCompanyById} from "../../store/ducks/companies/actions";
+import {changeMenuSelected} from "../../store/ducks/layout/actions";
+import {useNavigate} from "react-router-dom";
 
 // MUI
 import {
-  createStyles,
-  // makeStyles,
-  useTheme,
-  Theme,
-  // ThemeProvider,
+    createStyles,
+    // makeStyles,
+    useTheme,
+    Theme,
+    // ThemeProvider,
 } from "@mui/material/styles";
-import { ThemeProvider } from "@mui/material/styles";
+import {ThemeProvider} from "@mui/material/styles";
 import theme from "../../theme/theme";
 import {
-  // Drawer,
-  List,
-  IconButton,
-  ListItem,
-  ListItemIcon,
-  ListItemText,
+    // Drawer,
+    List,
+    IconButton,
+    ListItem,
+    ListItemIcon,
+    ListItemText,
 } from "@mui/material";
 
 // import Drawer from "@mui/material/Drawer";
 import CssBaseline from "@mui/material/CssBaseline";
 // import Divider from "@mui/material/Divider";
-import { TransitionProps } from "@mui/material/transitions";
+import {TransitionProps} from "@mui/material/transitions";
 import {
-  Accordion,
-  AccordionDetails,
-  AccordionSummary,
-  Badge,
-  Box,
-  Button,
-  Dialog,
-  DialogActions,
-  DialogContent,
-  DialogContentText,
-  DialogTitle,
-  Grid,
-  MenuItem,
-  Typography,
-  Container,
-  Drawer,
-  Divider,
-  Slide,
+    Accordion,
+    AccordionDetails,
+    AccordionSummary,
+    Badge,
+    Box,
+    Button,
+    Dialog,
+    DialogActions,
+    DialogContent,
+    DialogContentText,
+    DialogTitle,
+    Grid,
+    MenuItem,
+    Typography,
+    Container,
+    Drawer,
+    Divider,
+    Slide,
 } from "@mui/material";
 
 //UTILS
@@ -75,241 +75,243 @@ import NotificationsIcon from "@mui/icons-material/Notifications";
 import THCStype3Icon from "../Icons/THCS_Type3";
 import THCStype4Icon from "../Icons/THCS_Type4";
 import UserIcon from "../Icons/User";
-import { Logo, UserContent } from "./styles";
+import {Logo, UserContent} from "./styles";
 import LOCALSTORAGE from "../../helpers/constants/localStorage";
 // Components
 import SESSIONSTORAGE from "../../helpers/constants/sessionStorage";
 import _ from "lodash";
-import { loadRequest } from "../../store/ducks/layout/actions";
+import {loadRequest} from "../../store/ducks/layout/actions";
 import Message from "../Message";
 import DialogChangeCompany from "../Dialogs/ChangeCompany";
 import Loading from "../Loading";
 import crypto from "crypto";
 import CryptoJS from "crypto-js";
 
+
+// Storage
+import localStorageConst from "../../helpers/constants/localStorage";
+import sessionStorageConst from "../../helpers/constants/sessionStorage";
+
 const drawerWidth = 250;
 
 const capitalizeText = (words: string) => {
-  if (words) {
-    return words
-      .toLowerCase()
-      .split(" ")
-      .map((text: string) => {
-        return (text = text.charAt(0).toUpperCase() + text.substring(1));
-      })
-      .join(" ");
-  } else return "";
+    if (words) {
+        return words
+            .toLowerCase()
+            .split(" ")
+            .map((text: string) => {
+                return (text = text.charAt(0).toUpperCase() + text.substring(1));
+            })
+            .join(" ");
+    } else return "";
 };
 const getFirstAndLastName = (fullName: string) => {
-  return `${fullName.split(" ")[0]} ${
-    fullName.split(" ")[fullName.split(" ").length - 1]
-  }`;
+    return `${fullName.split(" ")[0]} ${
+        fullName.split(" ")[fullName.split(" ").length - 1]
+    }`;
 };
 
 const Transition = React.forwardRef(function Transition(
-  props: TransitionProps & {
-    children: React.ReactElement<any, any>;
-  },
-  ref: React.Ref<unknown>
+    props: TransitionProps & {
+        children: React.ReactElement<any, any>;
+    },
+    ref: React.Ref<unknown>
 ) {
-  return <Slide direction="up" ref={ref} {...props} />;
+    return <Slide direction="up" ref={ref} {...props} />;
 });
 
 interface PropsSidebar {
-  permission?: boolean;
+    permission?: boolean;
 }
 
 const Sibebar = (props: any) => {
-  const navigate = useNavigate();
-  // const classes = useStyles();
-  const dispatch = useDispatch();
-  const applicationState = useSelector((state: any) => state);
-  const layoutState = useSelector((state: ApplicationState) => state.layout);
-  const currentCompany = localStorage.getItem(LOCALSTORAGE.COMPANY_SELECTED);
+    const navigate = useNavigate();
+    // const classes = useStyles();
+    const dispatch = useDispatch();
+    const applicationState = useSelector((state: any) => state);
+    const layoutState = useSelector((state: ApplicationState) => state.layout);
+    const currentCompany = localStorage.getItem(LOCALSTORAGE.COMPANY_SELECTED);
 
-  const [open, setOpen] = useState<Boolean>(() => {
-    let toggleSidebar =
-      localStorage.getItem(LOCALSTORAGE.TOGGLE_SIDEBAR) || "false";
-    return JSON.parse(toggleSidebar);
-  });
-  const [username, setUsername] = useState(
-    localStorage.getItem(LOCALSTORAGE.USERNAME) || ""
-  );
-  const [company, setCompany] = useState({
-    _id: localStorage.getItem(LOCALSTORAGE.COMPANY_SELECTED) || "",
-    name: localStorage.getItem(LOCALSTORAGE.COMPANY_NAME) || "",
-  });
-
-  const [customer, setCustomer] = useState({
-    _id: localStorage.getItem(LOCALSTORAGE.CUSTOMER) || "",
-    name: localStorage.getItem(LOCALSTORAGE.CUSTOMER_NAME) || "",
-  });
-  const [openModalLogout, setOpenModalLogout] = useState(false);
-  const [openModalConfig, setOpenModalConfig] = useState(false);
-  const [openModalMessage, setOpenModalMessage] = useState(false);
-
-  const [openDialogCompany, setOpenDialogCompany] = React.useState(false);
-  const currentCompanyName =
-    localStorage.getItem(LOCALSTORAGE.COMPANY_NAME) || "";
-  const currentCustomerName =
-    localStorage.getItem(LOCALSTORAGE.CUSTOMER_NAME) || "";
-
-  const handleClickOpenDialogCompany = () => {
-    setOpenDialogCompany(true);
-  };
-
-  const handleCloseDialogCompany = () => {
-    setOpenDialogCompany(false);
-  };
-
-  const handleDrawerClose = useCallback(() => {
-    setOpen((prev) => {
-      localStorage.setItem(LOCALSTORAGE.TOGGLE_SIDEBAR, JSON.stringify(!prev));
-      return !prev;
+    const [open, setOpen] = useState<Boolean>(() => {
+        let toggleSidebar =
+            localStorage.getItem(LOCALSTORAGE.TOGGLE_SIDEBAR) || "false";
+        return JSON.parse(toggleSidebar);
     });
-  }, []);
+    const [username, setUsername] = useState(
+        localStorage.getItem(LOCALSTORAGE.USERNAME) || ""
+    );
+    const [company, setCompany] = useState({
+        _id: localStorage.getItem(LOCALSTORAGE.COMPANY_SELECTED) || "",
+        name: localStorage.getItem(LOCALSTORAGE.COMPANY_NAME) || "",
+    });
 
-  const handleLogout = useCallback(() => {
-    localStorage.removeItem("@sollar_token");
-    localStorage.removeItem("@sollar_username");
-    localStorage.removeItem("@sollar_user_id");
-    // localStorage.removeItem('@sollar_company_selected');
-    // localStorage.removeItem('@sollar_company_name');
-    localStorage.removeItem("@sollar_customer");
+    const [customer, setCustomer] = useState({
+        _id: localStorage.getItem(LOCALSTORAGE.CUSTOMER) || "",
+        name: localStorage.getItem(LOCALSTORAGE.CUSTOMER_NAME) || "",
+    });
+    const [openModalLogout, setOpenModalLogout] = useState(false);
+    const [openModalConfig, setOpenModalConfig] = useState(false);
+    const [openModalMessage, setOpenModalMessage] = useState(false);
 
-    sessionStorage.removeItem(SESSIONSTORAGE.MENU);
-    sessionStorage.removeItem(SESSIONSTORAGE.RIGHTS);
-    sessionStorage.removeItem(SESSIONSTORAGE.INTEGRATION);
-    sessionStorage.removeItem(SESSIONSTORAGE.INTEGRATION_NAME);
+    const [openDialogCompany, setOpenDialogCompany] = React.useState(false);
+    const currentCompanyName =
+        localStorage.getItem(LOCALSTORAGE.COMPANY_NAME) || "";
+    const currentCustomerName =
+        localStorage.getItem(LOCALSTORAGE.CUSTOMER_NAME) || "";
 
-    window.location.reload();
-  }, []);
+    const handleClickOpenDialogCompany = () => {
+        setOpenDialogCompany(true);
+    };
 
-  const handleCustomerName = useCallback((name: string) => {
-    if (name.length > 25) {
-      return _.truncate(name, {
-        length: 25,
-        separator: " ",
-        omission: " ...",
-      });
-    } else {
-      return name;
-    }
-  }, []);
+    const handleCloseDialogCompany = () => {
+        setOpenDialogCompany(false);
+    };
 
-  const handleCompanyName = useCallback((name: string) => {
-    if (name.length > 25) {
-      return _.truncate(name, {
-        length: 25,
-        separator: " ",
-        omission: " ...",
-      });
-    } else {
-      return name;
-    }
-  }, []);
-
-  const handleOpenModalLogout = useCallback(() => {
-    setOpenModalLogout(true);
-  }, []);
-
-  const handleCloseModalLogout = useCallback(() => {
-    setOpenModalLogout(false);
-  }, []);
-
-  const handleToggleModalConfig = useCallback(() => {
-    setOpenModalConfig(!openModalConfig);
-  }, []);
-
-  const [itemsMenu, setItemsMenu] = useState<any>([]);
-
-  interface iconInterface {
-    name: string;
-    style?: any;
-  }
-
-  interface itemsInterface {
-    title: any;
-    route: any;
-    modal: any;
-    icon: JSX.Element;
-  }
-
-  const iconTypes: any = {
-    AssignmentIndIcon: AssignmentIndIcon,
-    BusinessIcon: BusinessIcon,
-    DashboardIcon: DashboardIcon,
-    ExitToApp: ExitToApp,
-    FavoriteIcon: FavoriteIcon,
-    GroupAddIcon: GroupAddIcon,
-    LocalHospital: LocalHospital,
-    LocationOncon: LocationOncon,
-    PersonIcon: PersonIcon,
-    StarRateIcon: StarRateIcon,
-    SettingsIcon: SettingsIcon,
-    PublicIcon: PublicIcon,
-    default: AssignmentIndIcon,
-  };
-
-  const modalTypes: any = {
-    ExitToApp: handleOpenModalLogout,
-    default: handleOpenModalLogout,
-  };
-
-  const IconComponent = ({ name, ...props }: iconInterface) => {
-    let Icon = iconTypes[name] ?? iconTypes.default;
-    return <Icon {...props} />;
-  };
-
-  useEffect(() => {
-    let menu = JSON.parse(sessionStorage.getItem(SESSIONSTORAGE.MENU) ?? "[]");
-    if (itemsMenu.length === 0 && menu.length === 0) {
-      dispatch(loadRequest());
-    } else if (itemsMenu.length === 0 && menu.length > 0) {
-      const items: itemsInterface[] = [];
-
-      _.sortBy(menu, ["id"]).map((item: any) => {
-        items.push({
-          title: item.name,
-          route: item.slug,
-          modal: item.modal ? modalTypes[item.icon] : "",
-          icon: (
-            <IconComponent name={item.icon} style={{ color: item.color }} />
-          ),
+    const handleDrawerClose = useCallback(() => {
+        setOpen((prev) => {
+            localStorage.setItem(LOCALSTORAGE.TOGGLE_SIDEBAR, JSON.stringify(!prev));
+            return !prev;
         });
-      });
-      setItemsMenu(items);
+    }, []);
+
+    const handleLogout = useCallback(() => {
+        localStorage.removeItem(localStorageConst.TOKEN);
+        localStorage.removeItem(localStorageConst.USERNAME);
+        localStorage.removeItem(localStorageConst.USER_ID);
+        // localStorage.removeItem('@sollar_company_selected');
+        // localStorage.removeItem('@sollar_company_name');
+        localStorage.removeItem(localStorageConst.CUSTOMER);
+
+        sessionStorage.removeItem(SESSIONSTORAGE.MENU);
+        sessionStorage.removeItem(SESSIONSTORAGE.RIGHTS);
+        sessionStorage.removeItem(SESSIONSTORAGE.INTEGRATION);
+        sessionStorage.removeItem(SESSIONSTORAGE.INTEGRATION_NAME);
+
+        window.location.reload();
+    }, []);
+
+    const handleCustomerName = useCallback((name: string) => {
+        if (name.length > 25) {
+            return _.truncate(name, {
+                length: 25,
+                separator: " ",
+                omission: " ...",
+            });
+        } else {
+            return name;
+        }
+    }, []);
+
+    const handleCompanyName = useCallback((name: string) => {
+        if (name.length > 25) {
+            return _.truncate(name, {
+                length: 25,
+                separator: " ",
+                omission: " ...",
+            });
+        } else {
+            return name;
+        }
+    }, []);
+
+    const handleOpenModalLogout = useCallback(() => {
+        setOpenModalLogout(true);
+    }, []);
+
+    const handleCloseModalLogout = useCallback(() => {
+        setOpenModalLogout(false);
+    }, []);
+
+    const handleToggleModalConfig = useCallback(() => {
+        setOpenModalConfig(!openModalConfig);
+    }, []);
+
+    const [itemsMenu, setItemsMenu] = useState<any>([]);
+
+    interface iconInterface {
+        name: string;
+        style?: any;
     }
-  }, []);
 
-  useEffect(() => {
-    if (layoutState.success) {
-      localStorage.setItem(LOCALSTORAGE.TOKEN, layoutState.data.token);
+    interface itemsInterface {
+        title: any;
+        route: any;
+        modal: any;
+        icon: JSX.Element;
+    }
 
-      sessionStorage.setItem(
-        SESSIONSTORAGE.MENU,
-        JSON.stringify(layoutState.data.menu)
-      );
-      sessionStorage.setItem(
-        SESSIONSTORAGE.RIGHTS,
-        JSON.stringify(layoutState.data.rights)
-      );
-      layoutState.data.integration
-        ? sessionStorage.setItem(
-            SESSIONSTORAGE.INTEGRATION,
+    const iconTypes: any = {
+        AssignmentIndIcon: AssignmentIndIcon,
+        BusinessIcon: BusinessIcon,
+        DashboardIcon: DashboardIcon,
+        ExitToApp: ExitToApp,
+        FavoriteIcon: FavoriteIcon,
+        GroupAddIcon: GroupAddIcon,
+        LocalHospital: LocalHospital,
+        LocationOncon: LocationOncon,
+        PersonIcon: PersonIcon,
+        StarRateIcon: StarRateIcon,
+        SettingsIcon: SettingsIcon,
+        PublicIcon: PublicIcon,
+        default: AssignmentIndIcon,
+    };
+
+    const modalTypes: any = {
+        ExitToApp: handleOpenModalLogout,
+        default: handleOpenModalLogout,
+    };
+
+    const IconComponent = ({name, ...props}: iconInterface) => {
+        let Icon = iconTypes[name] ?? iconTypes.default;
+        return <Icon {...props} />;
+    };
+
+    useEffect(() => {
+        let menu = JSON.parse(sessionStorage.getItem(SESSIONSTORAGE.MENU) ?? "[]");
+        if (itemsMenu.length === 0 && menu.length === 0) {
+            dispatch(loadRequest());
+        } else if (itemsMenu.length === 0 && menu.length > 0) {
+            const items: itemsInterface[] = [];
+
+            _.sortBy(menu, ["id"]).map((item: any) => {
+                items.push({
+                    title: item.name,
+                    route: item.slug,
+                    modal: item.modal ? modalTypes[item.icon] : "",
+                    icon: (
+                        <IconComponent name={item.icon} style={{color: item.color}}/>
+                    ),
+                });
+            });
+            setItemsMenu(items);
+        }
+    }, []);
+
+    useEffect(() => {
+        if (layoutState.success) {
+            localStorage.setItem(LOCALSTORAGE.TOKEN, layoutState.data.token);
+
+            sessionStorage.setItem(
+                SESSIONSTORAGE.MENU,
+                JSON.stringify(layoutState.data.menu)
+            );
+            sessionStorage.setItem(
+                SESSIONSTORAGE.RIGHTS,
+                JSON.stringify(layoutState.data.rights)
+            );
             layoutState.data.integration
-          )
-        : sessionStorage.removeItem(SESSIONSTORAGE.INTEGRATION);
-      layoutState.data.integration_name
-        ? sessionStorage.setItem(
-            SESSIONSTORAGE.INTEGRATION_NAME,
+                ? sessionStorage.setItem(
+                    SESSIONSTORAGE.INTEGRATION,
+                    layoutState.data.integration
+                )
+                : sessionStorage.removeItem(SESSIONSTORAGE.INTEGRATION);
             layoutState.data.integration_name
-          )
-        : sessionStorage.removeItem(SESSIONSTORAGE.INTEGRATION_NAME);
+                ? sessionStorage.setItem(
+                    SESSIONSTORAGE.INTEGRATION_NAME,
+                    layoutState.data.integration_name
+                )
+                : sessionStorage.removeItem(SESSIONSTORAGE.INTEGRATION_NAME);
 
-      layoutState.data.time_zone
-        ? sessionStorage.setItem(
-            SESSIONSTORAGE.INTEGRATION_TIME_ZONE,
             layoutState.data.time_zone
           )
         : sessionStorage.removeItem(SESSIONSTORAGE.INTEGRATION_NAME);
@@ -484,67 +486,111 @@ const Sibebar = (props: any) => {
               }}
               onClick={handleDrawerClose}
             >
-              {open ? (
-                <ChevronLeftIcon sx={{ color: theme.palette.common.white }} />
-              ) : (
-                <MenuIcon sx={{ color: theme.palette.common.white }} />
-              )}
-            </IconButton>
-          </Box>
-        </Box>
-        {/* <Divider /> */}
-        <Box
-          sx={{
-            paddingTop: "8px",
-            width: "auto",
-            transition: "0.2s linear",
-            display: "flex",
-            flexDirection: "column",
-            justifyContent: "center",
-            alignItems: "center",
-            // "& svg": { width: `${open ? "100px" : "auto"}` },
-          }}
-        >
-          {open ? (
-            <UserIcon
-              fill={theme.palette.common.white}
-              width={"48px"}
-              height={"48px"}
-            />
-          ) : (
-            <THCStype3Icon
-              fill={theme.palette.common.white}
-              width={"24px"}
-              height={"24px"}
-            />
-          )}
-          <Divider />
-        </Box>
-
-        <UserContent>
-          {open ? (
-            <>
-              <div>
-                <Grid
-                  container
-                  // spacing={2}
-                  // xs={12}
-                  // md={12}
-                  style={{ justifyContent: "space-evenly" }}
+                <Box
+                    sx={{
+                        display: "flex",
+                        flexDirection: "column",
+                        justifyContent: "center",
+                        alignItems: "center",
+                        paddingTop: "16px",
+                        gap: "10px",
+                    }}
                 >
-                  <Grid item>
-                    <Typography
-                      variant="h5"
-                      color={"white"}
-                      fontWeight="700"
-                      sx={{
-                        maxWidth: "230px",
-                      }}
+                    <Box
+                        sx={{
+                            marginLeft: `${open ? "32px" : "0"}`,
+                            display: "flex",
+                            flexDirection: "row",
+                            justifyContent: "center",
+                            alignItems: "center",
+                            gap: "8px",
+                        }}
                     >
-                      {getFirstAndLastName(capitalizeText(username))}
-                    </Typography>
-                  </Grid>
-                  {/* <ListItem
+                        <Box
+                            sx={{
+                                display: `${open ? "initial" : "none"}`,
+                            }}
+                        >
+                            <THCStype4Icon fill={"#f4f7ff"} width={"140px"}/>
+                        </Box>
+                        <IconButton
+                            sx={{
+                                marginBottom: `${open ? "22px" : "0"}`,
+                                display: "flex",
+                                justifyContent: "center",
+                                alignItems: "center",
+                                width: `${open ? "48px" : "48px"}`,
+                                height: `${open ? "48px" : "48px"}`,
+                                cursor: "pointer",
+                                "& svg, path": {cursor: "pointer"},
+                                "& svg": {margin: "0px"},
+                                "&:hover": {
+                                    backgroundColor: theme.palette.secondary.dark,
+                                },
+                            }}
+                            onClick={handleDrawerClose}
+                        >
+                            {open ? (
+                                <ChevronLeftIcon sx={{color: theme.palette.common.white}}/>
+                            ) : (
+                                <MenuIcon sx={{color: theme.palette.common.white}}/>
+                            )}
+                        </IconButton>
+                    </Box>
+                </Box>
+                {/* <Divider /> */}
+                <Box
+                    sx={{
+                        paddingTop: "8px",
+                        width: "auto",
+                        transition: "0.2s linear",
+                        display: "flex",
+                        flexDirection: "column",
+                        justifyContent: "center",
+                        alignItems: "center",
+                        // "& svg": { width: `${open ? "100px" : "auto"}` },
+                    }}
+                >
+                    {open ? (
+                        <UserIcon
+                            fill={theme.palette.common.white}
+                            width={"48px"}
+                            height={"48px"}
+                        />
+                    ) : (
+                        <THCStype3Icon
+                            fill={theme.palette.common.white}
+                            width={"24px"}
+                            height={"24px"}
+                        />
+                    )}
+                    <Divider/>
+                </Box>
+
+                <UserContent>
+                    {open ? (
+                        <>
+                            <div>
+                                <Grid
+                                    container
+                                    // spacing={2}
+                                    // xs={12}
+                                    // md={12}
+                                    style={{justifyContent: "space-evenly"}}
+                                >
+                                    <Grid item>
+                                        <Typography
+                                            variant="h5"
+                                            color={"white"}
+                                            fontWeight="700"
+                                            sx={{
+                                                maxWidth: "230px",
+                                            }}
+                                        >
+                                            {getFirstAndLastName(capitalizeText(username))}
+                                        </Typography>
+                                    </Grid>
+                                    {/* <ListItem
                       sx={{
                         display: "flex",
                         justifyContent: "center",
@@ -579,72 +625,72 @@ const Sibebar = (props: any) => {
                         </Badge>
                       </Grid>
                     </ListItem> */}
-                </Grid>
-                <br />
-                <div
-                  style={{
-                    display: "flex",
-                    flexDirection: "column",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    cursor: "pointer",
-                  }}
-                >
-                  <ListItem
-                    sx={{
-                      cursor: "pointer",
-                      "& svg, path, span, div, h4": {
-                        cursor: "pointer",
-                        color: theme.palette.common.white,
-                      },
-                    }}
-                    style={{ padding: 0 }}
-                    onClick={() => {
-                      handleClickOpenDialogCompany();
-                      setOpenModalConfig(true);
-                    }}
-                  >
-                    <BusinessIcon />
-                    <ListItemText style={{ color: "#ffff", cursor: "pointer" }}>
-                      <div
-                        style={{
-                          display: "flex",
-                          flexDirection: "column",
-                          alignItems: "center",
-                          justifyContent: "center",
-                        }}
-                      >
-                        <Typography
-                          variant="body2"
-                          sx={{ marginLeft: "10px", cursor: "pointer" }}
-                          fontWeight="600"
-                        >
-                          {handleCustomerName(currentCustomerName)}
-                        </Typography>
+                                </Grid>
+                                <br/>
+                                <div
+                                    style={{
+                                        display: "flex",
+                                        flexDirection: "column",
+                                        alignItems: "center",
+                                        justifyContent: "center",
+                                        cursor: "pointer",
+                                    }}
+                                >
+                                    <ListItem
+                                        sx={{
+                                            cursor: "pointer",
+                                            "& svg, path, span, div, h4": {
+                                                cursor: "pointer",
+                                                color: theme.palette.common.white,
+                                            },
+                                        }}
+                                        style={{padding: 0}}
+                                        onClick={() => {
+                                            handleClickOpenDialogCompany();
+                                            setOpenModalConfig(true);
+                                        }}
+                                    >
+                                        <BusinessIcon/>
+                                        <ListItemText style={{color: "#ffff", cursor: "pointer"}}>
+                                            <div
+                                                style={{
+                                                    display: "flex",
+                                                    flexDirection: "column",
+                                                    alignItems: "center",
+                                                    justifyContent: "center",
+                                                }}
+                                            >
+                                                <Typography
+                                                    variant="body2"
+                                                    sx={{marginLeft: "10px", cursor: "pointer"}}
+                                                    fontWeight="600"
+                                                >
+                                                    {handleCustomerName(currentCustomerName)}
+                                                </Typography>
 
-                        <Typography
-                          variant="body2"
-                          sx={{ marginLeft: "10px", cursor: "pointer" }}
-                          fontWeight="600"
-                        >
-                          {handleCompanyName(currentCompanyName)}
-                        </Typography>
-                      </div>
-                    </ListItemText>
-                    <EditIcon
-                      style={{
-                        color: "#fff",
-                        fontSize: "14px",
-                        marginLeft: "10px",
-                      }}
-                    />
-                  </ListItem>
-                </div>
-              </div>
-            </>
-          ) : (
-            <>
-              {/* <ListItem
+                                                <Typography
+                                                    variant="body2"
+                                                    sx={{marginLeft: "10px", cursor: "pointer"}}
+                                                    fontWeight="600"
+                                                >
+                                                    {handleCompanyName(currentCompanyName)}
+                                                </Typography>
+                                            </div>
+                                        </ListItemText>
+                                        <EditIcon
+                                            style={{
+                                                color: "#fff",
+                                                fontSize: "14px",
+                                                marginLeft: "10px",
+                                            }}
+                                        />
+                                    </ListItem>
+                                </div>
+                            </div>
+                        </>
+                    ) : (
+                        <>
+                            {/* <ListItem
                   sx={{ width: "auto" }}
                   // className={classes.logOutButton}
                   onClick={() => setOpenModalMessage(true)}
@@ -669,230 +715,232 @@ const Sibebar = (props: any) => {
                   </Badge>
                 </ListItem> */}
 
-              <br />
-            </>
-          )}
-        </UserContent>
-        <List>
-          {itemsMenu.map((item: any, index: any) => (
-            <>
-              {item.modal ? (
-                <ListItem
-                  key={index}
-                  onClick={item.modal}
-                  sx={{
-                    backgroundColor: `${
-                      layoutState.data.menuSelected === item.title
-                        ? `${theme.palette.primary.dark}`
-                        : ""
-                    }`,
-                    "&:hover": {
-                      transition: "ease-in-out 200ms",
-                      backgroundColor: `${theme.palette.primary.light}`,
-                      cursor: "pointer",
-                      "& svg, path, span, div, h4": { cursor: "pointer" },
-                    },
-                  }}
+                            <br/>
+                        </>
+                    )}
+                </UserContent>
+                <List>
+                    {itemsMenu.map((item: any, index: any) => (
+                        <>
+                            {item.modal ? (
+                                <ListItem
+                                    key={index}
+                                    onClick={item.modal}
+                                    sx={{
+                                        backgroundColor: `${
+                                            layoutState.data.menuSelected === item.title
+                                                ? `${theme.palette.primary.dark}`
+                                                : ""
+                                        }`,
+                                        "&:hover": {
+                                            transition: "ease-in-out 200ms",
+                                            backgroundColor: `${theme.palette.primary.light}`,
+                                            cursor: "pointer",
+                                            "& svg, path, span, div, h4": {cursor: "pointer"},
+                                        },
+                                    }}
+                                >
+                                    <ListItemIcon sx={{marginLeft: "6px"}}>
+                                        {item.icon}
+                                    </ListItemIcon>
+                                    <ListItemText
+                                        primary={
+                                            <Typography
+                                                variant="body1"
+                                                sx={{cursor: "pointer"}}
+                                                color={theme.palette.common.white}
+                                            >
+                                                {item.title}
+                                            </Typography>
+                                        }
+                                        style={{color: "#ffff", cursor: "pointer"}}
+                                    />
+                                </ListItem>
+                            ) : (
+                                <ListItem
+                                    key={index}
+                                    onClick={() => {
+                                        if (item.route !== "/map") {
+                                            navigate(item.route);
+                                            dispatch(changeMenuSelected(item.title));
+                                        } else {
+                                            const token = localStorage.getItem(
+                                                localStorageConst.TOKEN
+                                            );
+                                            const integration_url = sessionStorage.getItem(
+                                                sessionStorageConst.INTEGRATION
+                                            );
+                                            const external_sector_id = "763";
+                                            const company_id = localStorage.getItem(
+                                                localStorageConst.COMPANY_SELECTED
+                                            );
+                                            const external_company_id = localStorage.getItem(
+                                                localStorageConst.INTEGRATION_COMPANY_SELECTED
+                                            );
+                                            const external_user_id = localStorage.getItem(
+                                                localStorageConst.SOLLAR_INTEGRATION_USER_ID
+                                            );
+
+                                            const key = process.env.REACT_APP_CHIPER_KEY || "";
+
+                                            const payload = {
+                                                token,
+                                                integration_url,
+                                                external_sector_id,
+                                                company_id,
+                                                external_company_id,
+                                                external_user_id,
+                                            };
+
+                                            const ciphertext = CryptoJS.AES.encrypt(
+                                                JSON.stringify(payload),
+                                                key
+                                            );
+                                            const hash = CryptoJS.enc.Base64url.stringify(
+                                                CryptoJS.enc.Utf8.parse(ciphertext.toString())
+                                            );
+                                            window.open(
+                                                process.env.REACT_APP_BASE_MAP + `/hash/${hash}`,
+                                                "_blank",
+                                                "noopener,noreferrer"
+                                            );
+                                        }
+                                    }}
+                                    sx={{
+                                        backgroundColor: `${
+                                            layoutState.data.menuSelected === item.title
+                                                ? `${theme.palette.primary.dark}`
+                                                : ""
+                                        }`,
+                                        "&:hover": {
+                                            transition: "ease-in-out 200ms",
+                                            backgroundColor: `${theme.palette.primary.light}`,
+                                            cursor: "pointer",
+                                            "& svg, path, span, div, h4": {cursor: "pointer"},
+                                        },
+                                    }}
+                                >
+                                    <ListItemIcon sx={{marginLeft: "6px"}}>
+                                        {item.icon}
+                                    </ListItemIcon>
+                                    <ListItemText
+                                        primary={
+                                            <Typography
+                                                variant="body1"
+                                                sx={{cursor: "pointer"}}
+                                                color={theme.palette.common.white}
+                                            >
+                                                {item.title}
+                                            </Typography>
+                                        }
+                                    />
+                                </ListItem>
+                            )}
+                        </>
+                    ))}
+                </List>
+                {/*<Divider/>*/}
+                {/*<List disablePadding={true}>*/}
+                {/*  <ListItem className={classes.logOutButton} onClick={() => history.push("/userconfiguration")}>*/}
+                {/*    <ListItemIcon>*/}
+                {/*      <SettingsIcon style={{color: '#fff'}}/>*/}
+                {/*    </ListItemIcon>*/}
+                {/*    <ListItemText primary="Configurações"/>*/}
+                {/*  </ListItem>*/}
+                {/*  <ListItem className={classes.logOutButton} onClick={handleOpenModalLogout}>*/}
+                {/*    <ListItemIcon>*/}
+                {/*      <ExitToApp style={{color: '#fff'}}/>*/}
+                {/*    </ListItemIcon>*/}
+                {/*    <ListItemText primary="Sair"/>*/}
+                {/*  </ListItem>*/}
+                {/*</List>*/}
+            </Drawer>
+            {/* dialog sair */}
+            <Dialog
+                open={openModalLogout}
+                onClose={handleCloseModalLogout}
+                aria-labelledby="alert-dialog-title"
+                aria-describedby="alert-dialog-description"
+            >
+                <DialogTitle id="alert-dialog-title">
+                    <Typography
+                        variant="h5"
+                        color={theme.palette.primary.main}
+                        fontWeight="600"
+                    >
+                        Já vai?
+                    </Typography>
+                </DialogTitle>
+                <DialogContent>
+                    <DialogContentText id="alert-dialog-description">
+                        <Typography variant="body1">
+                            Tem certeza que deseja sair do T+HCS?
+                        </Typography>
+                    </DialogContentText>
+                </DialogContent>
+                <DialogActions>
+                    <Button onClick={handleLogout} variant="contained" color="primary">
+                        Sair
+                    </Button>
+                    <Button
+                        onClick={handleCloseModalLogout}
+                        variant="outlined"
+                        color="secondary"
+                        autoFocus
+                    >
+                        Voltar
+                    </Button>
+                </DialogActions>
+            </Dialog>
+            {/* dialog mensagens */}
+            <Dialog
+                open={openModalMessage}
+                onClose={() => setOpenModalMessage(false)}
+                aria-labelledby="alert-dialog-title"
+                aria-describedby="alert-dialog-description"
+                TransitionComponent={Transition}
+            >
+                <DialogTitle
+                    id="alert-dialog-title"
+                    // color={theme.palette.primary.main}
                 >
-                  <ListItemIcon sx={{ marginLeft: "6px" }}>
-                    {item.icon}
-                  </ListItemIcon>
-                  <ListItemText
-                    primary={
-                      <Typography
-                        variant="body1"
-                        sx={{ cursor: "pointer" }}
-                        color={theme.palette.common.white}
-                      >
-                        {item.title}
-                      </Typography>
-                    }
-                    style={{ color: "#ffff", cursor: "pointer" }}
-                  />
-                </ListItem>
-              ) : (
-                <ListItem
-                  key={index}
-                  onClick={() => {
-                    if (item.route !== "/map") {
-                      navigate(item.route);
-                      dispatch(changeMenuSelected(item.title));
-                    } else {
-                      const token = localStorage.getItem("@sollar_token");
-                      const integration_url = sessionStorage.getItem(
-                        "@sollar_integration"
-                      );
-                      const external_sector_id = "763";
-                      const company_id = localStorage.getItem(
-                        "@sollar_company_selected"
-                      );
-                      const external_company_id = localStorage.getItem(
-                        "@sollar_integration_company_selected"
-                      );
-                      const external_user_id = localStorage.getItem(
-                        "@dollar_integration_user_id"
-                      );
+                    <Typography
+                        variant="h5"
+                        color={theme.palette.primary.main}
+                        fontWeight="600"
+                    >
+                        Mensagens
+                    </Typography>
+                </DialogTitle>
+                <DialogContent>
+                    <Message/>
+                </DialogContent>
+                <DialogActions>
+                    <Button
+                        onClick={() => {
+                            setOpenModalMessage(false);
+                            // history.push(`/dashboard`);
+                            //location.reload()
+                        }}
+                        color="secondary"
+                        variant="outlined"
+                    >
+                        Fechar
+                    </Button>
+                </DialogActions>
+            </Dialog>
+            <DialogChangeCompany
+                open={openDialogCompany}
+                setOpen={setOpenDialogCompany}
+            />
 
-                      const key = process.env.REACT_APP_CHIPER_KEY || "";
+            <Container sx={{flex: 1, padding: theme.spacing(3), paddingBottom: 20}}>
+                {props.children}
+            </Container>
 
-                      const payload = {
-                        token,
-                        integration_url,
-                        external_sector_id,
-                        company_id,
-                        external_company_id,
-                        external_user_id,
-                      };
+            {/* {console.log(openDialogCompany)} */}
 
-                      const ciphertext = CryptoJS.AES.encrypt(
-                        JSON.stringify(payload),
-                        key
-                      );
-                      const hash = CryptoJS.enc.Base64url.stringify(
-                        CryptoJS.enc.Utf8.parse(ciphertext.toString())
-                      );
-                      window.open(
-                        process.env.REACT_APP_BASE_MAP + `/hash/${hash}`,
-                        "_blank",
-                        "noopener,noreferrer"
-                      );
-                    }
-                  }}
-                  sx={{
-                    backgroundColor: `${
-                      layoutState.data.menuSelected === item.title
-                        ? `${theme.palette.primary.dark}`
-                        : ""
-                    }`,
-                    "&:hover": {
-                      transition: "ease-in-out 200ms",
-                      backgroundColor: `${theme.palette.primary.light}`,
-                      cursor: "pointer",
-                      "& svg, path, span, div, h4": { cursor: "pointer" },
-                    },
-                  }}
-                >
-                  <ListItemIcon sx={{ marginLeft: "6px" }}>
-                    {item.icon}
-                  </ListItemIcon>
-                  <ListItemText
-                    primary={
-                      <Typography
-                        variant="body1"
-                        sx={{ cursor: "pointer" }}
-                        color={theme.palette.common.white}
-                      >
-                        {item.title}
-                      </Typography>
-                    }
-                  />
-                </ListItem>
-              )}
-            </>
-          ))}
-        </List>
-        {/*<Divider/>*/}
-        {/*<List disablePadding={true}>*/}
-        {/*  <ListItem className={classes.logOutButton} onClick={() => history.push("/userconfiguration")}>*/}
-        {/*    <ListItemIcon>*/}
-        {/*      <SettingsIcon style={{color: '#fff'}}/>*/}
-        {/*    </ListItemIcon>*/}
-        {/*    <ListItemText primary="Configurações"/>*/}
-        {/*  </ListItem>*/}
-        {/*  <ListItem className={classes.logOutButton} onClick={handleOpenModalLogout}>*/}
-        {/*    <ListItemIcon>*/}
-        {/*      <ExitToApp style={{color: '#fff'}}/>*/}
-        {/*    </ListItemIcon>*/}
-        {/*    <ListItemText primary="Sair"/>*/}
-        {/*  </ListItem>*/}
-        {/*</List>*/}
-      </Drawer>
-      {/* dialog sair */}
-      <Dialog
-        open={openModalLogout}
-        onClose={handleCloseModalLogout}
-        aria-labelledby="alert-dialog-title"
-        aria-describedby="alert-dialog-description"
-      >
-        <DialogTitle id="alert-dialog-title">
-          <Typography
-            variant="h5"
-            color={theme.palette.primary.main}
-            fontWeight="600"
-          >
-            Já vai?
-          </Typography>
-        </DialogTitle>
-        <DialogContent>
-          <DialogContentText id="alert-dialog-description">
-            <Typography variant="body1">
-              Tem certeza que deseja sair do T+HCS?
-            </Typography>
-          </DialogContentText>
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={handleLogout} variant="contained" color="primary">
-            Sair
-          </Button>
-          <Button
-            onClick={handleCloseModalLogout}
-            variant="outlined"
-            color="secondary"
-            autoFocus
-          >
-            Voltar
-          </Button>
-        </DialogActions>
-      </Dialog>
-      {/* dialog mensagens */}
-      <Dialog
-        open={openModalMessage}
-        onClose={() => setOpenModalMessage(false)}
-        aria-labelledby="alert-dialog-title"
-        aria-describedby="alert-dialog-description"
-        TransitionComponent={Transition}
-      >
-        <DialogTitle
-          id="alert-dialog-title"
-          // color={theme.palette.primary.main}
-        >
-          <Typography
-            variant="h5"
-            color={theme.palette.primary.main}
-            fontWeight="600"
-          >
-            Mensagens
-          </Typography>
-        </DialogTitle>
-        <DialogContent>
-          <Message />
-        </DialogContent>
-        <DialogActions>
-          <Button
-            onClick={() => {
-              setOpenModalMessage(false);
-              // history.push(`/dashboard`);
-              //location.reload()
-            }}
-            color="secondary"
-            variant="outlined"
-          >
-            Fechar
-          </Button>
-        </DialogActions>
-      </Dialog>
-      <DialogChangeCompany
-        open={openDialogCompany}
-        setOpen={setOpenDialogCompany}
-      />
-
-      <Container sx={{ flex: 1, padding: theme.spacing(3), paddingBottom: 20 }}>
-        {props.children}
-      </Container>
-
-      {/* {console.log(openDialogCompany)} */}
-
-      {/* <Dialog
+            {/* <Dialog
         open={openModalConfig}
         // onClose={handleToggleModalConfig}
         aria-labelledby="alert-dialog-title"
@@ -916,8 +964,8 @@ const Sibebar = (props: any) => {
           </Button>
         </DialogActions>
       </Dialog> */}
-    </Box>
-  );
+        </Box>
+    );
 };
 
 export default React.memo(Sibebar);
