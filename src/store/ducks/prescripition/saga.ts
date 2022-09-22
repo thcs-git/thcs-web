@@ -106,7 +106,7 @@ export function* loadPrescriptionByCareId({ payload }: any) {
   try {
     const response: AxiosResponse = yield call(
       apiSollar.get as any,
-      "care/prescription?items=false",
+      "care/prescription",
       { headers: payload.data }
     );
     yield put(loadSuccessByCareId(response.data));
