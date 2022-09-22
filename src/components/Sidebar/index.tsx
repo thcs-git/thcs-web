@@ -381,67 +381,113 @@ const Sibebar = (props: any) => {
     const checkLoading = useCallback(() => {
         let loading = false;
 
-        const states: any = [
-            // "allergies",
-            "antibiotic",
-            "areas",
-            "attest",
-            "cares",
-            "companies",
-            "councils",
-            "customers",
-            "documentGroups",
-            "documents",
-            "exams",
-            "layout",
-            "login",
-            // "logo", // a logo
-            "measurements",
-            "message",
-            "patients",
-            "prescription",
-            "profession",
-            "qrCode",
-            "specialties",
-            "users",
-            "cares.checkin",
-            "cares.evolution",
-            "telemedicine",
-            "attachments",
-            "forms"
-        ];
+    const states: any = [
+      // "allergies",
+      "antibiotic",
+      "areas",
+      "attest",
+      "cares",
+      "companies",
+      "councils",
+      "customers",
+      "documentGroups",
+      "documents",
+      "exams",
+      "layout",
+      "login",
+      // "logo", // a logo
+      "measurements",
+      "message",
+      "patients",
+      "prescription",
+      "profession",
+      "qrCode",
+      "specialties",
+      "users",
+      "cares.checkin",
+      "cares.evolution",
+      "telemedicine",
+      "attachments",
+      "forms",
+      "logs",
+      "attachmentsIntegration",
+    ];
 
-        for (let i = 0; i < states.length; i++) {
-            if (applicationState[`${states[i]}`]?.loading) {
-                loading = true;
-            }
-        }
-        return loading;
-    }, [applicationState]);
-    return (
-        <Box sx={{display: "flex", flex: 1}}>
-            {checkLoading() && <Loading/>}
-            {/* <CssBaseline /> */}
-            <Drawer
-                variant="permanent"
-                sx={{
-                    overflowX: open ? "visible" : "hidden",
-                    height: "100%",
-                    "& .MuiPaper-root": {
-                        overflowX: open ? "visible" : "hidden",
-                        backgroundColor: theme.palette.primary.main,
-                        transition: theme.transitions.create("all"),
-                        width: open ? drawerWidth : theme.spacing(9),
-                    },
-                    width: open ? drawerWidth : theme.spacing(9),
-                    flexShrink: 0,
-                    whiteSpace: "nowrap",
-                    background: theme.palette.primary.main,
-                    transition: theme.transitions.create("width", {
-                        easing: theme.transitions.easing.sharp,
-                        duration: theme.transitions.duration.enteringScreen,
-                    }),
-                }}
+    for (let i = 0; i < states.length; i++) {
+      if (applicationState[`${states[i]}`]?.loading) {
+        loading = true;
+      }
+    }
+    return loading;
+  }, [applicationState]);
+  return (
+    <Box sx={{ display: "flex", flex: 1 }}>
+      {checkLoading() && <Loading />}
+      {/* <CssBaseline /> */}
+      <Drawer
+        variant="permanent"
+        sx={{
+          overflowX: open ? "visible" : "hidden",
+          height: "100%",
+          "& .MuiPaper-root": {
+            overflowX: open ? "visible" : "hidden",
+            backgroundColor: theme.palette.primary.main,
+            transition: theme.transitions.create("all"),
+            width: open ? drawerWidth : theme.spacing(9),
+          },
+          width: open ? drawerWidth : theme.spacing(9),
+          flexShrink: 0,
+          whiteSpace: "nowrap",
+          background: theme.palette.primary.main,
+          transition: theme.transitions.create("width", {
+            easing: theme.transitions.easing.sharp,
+            duration: theme.transitions.duration.enteringScreen,
+          }),
+        }}
+      >
+        <Box
+          sx={{
+            display: "flex",
+            flexDirection: "column",
+            justifyContent: "center",
+            alignItems: "center",
+            paddingTop: "16px",
+            gap: "10px",
+          }}
+        >
+          <Box
+            sx={{
+              marginLeft: `${open ? "32px" : "0"}`,
+              display: "flex",
+              flexDirection: "row",
+              justifyContent: "center",
+              alignItems: "center",
+              gap: "8px",
+            }}
+          >
+            <Box
+              sx={{
+                display: `${open ? "initial" : "none"}`,
+              }}
+            >
+              <THCStype4Icon fill={"#f4f7ff"} width={"140px"} />
+            </Box>
+            <IconButton
+              sx={{
+                marginBottom: `${open ? "22px" : "0"}`,
+                display: "flex",
+                justifyContent: "center",
+                alignItems: "center",
+                width: `${open ? "48px" : "48px"}`,
+                height: `${open ? "48px" : "48px"}`,
+                cursor: "pointer",
+                "& svg, path": { cursor: "pointer" },
+                "& svg": { margin: "0px" },
+                "&:hover": {
+                  backgroundColor: theme.palette.secondary.dark,
+                },
+              }}
+              onClick={handleDrawerClose}
             >
                 <Box
                     sx={{

@@ -1,4 +1,11 @@
-import React, { useState, useEffect, useCallback } from "react";
+import React, {
+  useState,
+  useEffect,
+  useCallback,
+  useRef,
+  DetailedHTMLProps,
+  FormHTMLAttributes,
+} from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate, useParams } from "react-router-dom";
 import debounce from "lodash.debounce";
@@ -23,7 +30,7 @@ import {
 } from "../../../store/ducks/customers/types";
 import { createUserRequest as createUserAction } from "../../../store/ducks/users/actions";
 import { UserInterface, UserState } from "../../../store/ducks/users/types";
-
+import { dispatchDocs } from "../../../store/ducks/attachmentsIntegration/actions";
 // MUI e style
 import {
   SearchOutlined,
@@ -88,7 +95,7 @@ import {
   checkEditPermission,
   checkCreatePermission,
 } from "../../../utils/permissions";
-
+import daysj from "dayjs";
 import LOCALSTORAGE from "../../../helpers/constants/localStorage";
 //componentes
 import Loading from "../../../components/Loading";
@@ -103,6 +110,7 @@ import ButtonTabs from "../../../components/Button/ButtonTabs";
 import PermissionForm from "../../../components/Inputs/Forms/PermisionForm";
 import FeedbackComponent from "../../../components/Feedback";
 import NoPermission from "../../../components/Erros/NoPermission";
+import dayjs from "dayjs";
 
 interface IFormFields extends CustomerInterface {
   form?: {
@@ -251,6 +259,8 @@ export default function ClientForm(props: IPageParams) {
   const [modePermission, setModePermission] = useState("start");
 
   const [open, setOpen] = React.useState(false);
+  const objectSubmitRef = useRef<HTMLFormElement>(null);
+
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
 
@@ -267,6 +277,9 @@ export default function ClientForm(props: IPageParams) {
   var isValidCellPhoneNumber: any;
   var formValid: any;
   useEffect(() => {
+    // dispatch(loadRequestClientLogs());
+  }, [permissionState]);
+  useEffect(() => {
     dispatch(cleanAction());
     if (params.id === ":id") {
       const currentCustomer = localStorage.getItem(LOCALSTORAGE.CUSTOMER) || "";
@@ -278,12 +291,10 @@ export default function ClientForm(props: IPageParams) {
     if (modePermission === "edit") {
       setCanEditPermission(true);
     }
-
     // if (_.split(window.location.pathname, "/").slice(-2)[0] === "view") {
     //   setCanEditPermission(false);
     // }
   }, []);
-
   useEffect(() => {
     setState((prevState) => {
       return {
@@ -396,6 +407,7 @@ export default function ClientForm(props: IPageParams) {
       params.id != ":id"
     ) {
       dispatch(loadCustomerById(params.id));
+      // dispatch(requestClientLogs());
     }
   }, [dispatch, params]);
 
@@ -606,6 +618,63 @@ export default function ClientForm(props: IPageParams) {
     formValid = true;
   }
 
+  function handleSendLogs() {
+    console.log("click em handleSendLogs");
+    // BACK SERÁ ESTRUTURADO PARA RESPONDER PARA O FRONT QUANDO O DESPACHO FOR FINALIZADO.
+    // QUANDO ISSO OCORRER, SETAR O STATUS PARA "done"
+    const handleLocalStorageAndDispatch = () => {
+      localStorage.setItem(
+        LOCALSTORAGE.STATUS_ATTACHMENTS_INTEGRATION,
+        JSON.stringify({
+          status: "live",
+          date: new Date(),
+        })
+      );
+
+      dispatch(dispatchDocs({ external_user_name: userState.data.name }));
+    };
+
+    let statusIntegration = localStorage.getItem(
+      LOCALSTORAGE.STATUS_ATTACHMENTS_INTEGRATION
+    );
+
+    if (statusIntegration === null) {
+      handleLocalStorageAndDispatch();
+      return;
+    }
+
+    if (statusIntegration.length === 0) {
+      handleLocalStorageAndDispatch();
+      return;
+    }
+
+    if (
+      !JSON.parse(statusIntegration || "{}")?.status ||
+      JSON.parse(statusIntegration || "{}")?.status === "done"
+    ) {
+      handleLocalStorageAndDispatch();
+      return;
+    }
+
+    if (!!JSON.parse(statusIntegration || "{}").date) {
+      let date1 = dayjs(JSON.parse(statusIntegration || "{}").date);
+      let date2 = dayjs();
+
+      let difference = date2.diff(date1, "minutes");
+
+      if (difference >= 5) {
+        handleLocalStorageAndDispatch();
+        return;
+      }
+    }
+
+    toast.warning("Documentos em despacho");
+  }
+
+  function handleSaveObjectIntegration() {
+    objectSubmitRef?.current?.requestSubmit();
+  }
+
   const NavItems = [
     {
       name: "DADOS DO CLIENTE",
@@ -618,6 +687,10 @@ export default function ClientForm(props: IPageParams) {
     {
       name: "INTEGRAÇÃO",
       components: ["IntegrationForm"],
+    },
+    {
+      name: "LOGs",
+      components: ["ClientLogs"],
     },
   ];
 
@@ -635,6 +708,20 @@ export default function ClientForm(props: IPageParams) {
       variant: "contained",
       background: "success",
       show: false,
+    },
+    {
+      name: "Enviar",
+      onClick: handleSendLogs,
+      variant: "contained",
+      background: "primary",
+      show: initialTab === 3 ? true : false,
+    },
+    {
+      name: "Salvar",
+      onClick: handleSaveObjectIntegration,
+      variant: "contained",
+      background: "primary",
+      show: initialTab === 2 ? true : false,
     },
   ];
 
@@ -755,6 +842,7 @@ export default function ClientForm(props: IPageParams) {
                 setInitialTab={setInitialTab}
                 params={params}
                 propsPermissionForm={propsPermissionForm}
+                objectSubmitRef={objectSubmitRef}
               />
               {modePermission === "start" && (
                 <ButtonTabs canEdit={canEdit} buttons={buttons} />

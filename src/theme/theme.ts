@@ -8,6 +8,9 @@ import {
   ThemeOptions,
   experimental_sx as sx,
 } from "@mui/material/styles";
+import { DataGrid, ptBR } from "@mui/x-data-grid";
+import { ptBR as pickersPtBR } from "@mui/x-date-pickers";
+import { ptBR as corePtBR } from "@mui/material/locale";
 
 declare module "@mui/material/styles" {
   interface Palette {
@@ -90,6 +93,9 @@ let theme: Theme = createTheme({
   components: {
     // se precisar usar o intelisense do VScode, usar a variável defaultTheme
   },
+  // ptBR,
+  // pickersPtBR,
+  // corePtBR,
 });
 
 theme = createTheme(theme, {

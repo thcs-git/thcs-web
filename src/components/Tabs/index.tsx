@@ -1,4 +1,9 @@
-import React, { useState, ReactNode } from "react";
+import React, {
+  useState,
+  ReactNode,
+  DetailedHTMLProps,
+  FormHTMLAttributes,
+} from "react";
 import { Theme } from "@mui/material/styles";
 
 import { Badge, Divider, Grid, Typography } from "@mui/material";
@@ -35,7 +40,7 @@ import CheckListForm from "../Inputs/Forms/CheckListForm";
 import CompanyForm from "../Inputs/Forms/CompanyForm";
 import PatientForm from "../Inputs/Forms/patientForm";
 import ChangePasswordConfiguration from "../Inputs/Forms/ChangePasswordTab";
-
+import ClientLogs from "../List/ClientLogs";
 import CompanyIcon from "../Icons/Company";
 import UserIcon from "../Icons/User";
 import { ReactComponent as EmailIcon } from "../../assets/img/Icon-email.svg";
@@ -114,6 +119,7 @@ interface ITabprops {
   propsPermissionForm?: IPropsPermissionFrom;
   autoCompleteSetting?: any;
   modePermission?: string;
+  objectSubmitRef?: React.RefObject<HTMLFormElement>;
 }
 
 interface IPageParams {
@@ -178,6 +184,7 @@ const TabForm = (props: ITabprops) => {
     propsPermissionForm,
     autoCompleteSetting,
     modePermission,
+    objectSubmitRef,
   } = props;
   const handleChange = (event: React.ChangeEvent<{}>, newValue: number) => {
     setValue(newValue);
@@ -341,10 +348,13 @@ const TabForm = (props: ITabprops) => {
             state={state}
             setState={setState ? setState : () => false}
             canEdit={canEdit ? canEdit : false}
+            objectSubmitRef={objectSubmitRef}
           />
         );
       case "ChangePassword":
         return <ChangePasswordConfiguration state={state} />;
+      case "ClientLogs":
+        return <ClientLogs state={state} customerState={customerState} />;
       default:
         return <TabBodyItem>Not found!</TabBodyItem>;
     }
@@ -719,6 +729,7 @@ const TabForm = (props: ITabprops) => {
                               </Typography>
                             </WrapperName>
                             <ButtonStyle
+                              sx={{ height: "32px" }}
                               variant="outlined"
                               onClick={() => {
                                 !checkEditPermission(
@@ -776,7 +787,8 @@ const TabForm = (props: ITabprops) => {
                         <>
                           <WrapperName>
                             {name === "DADOS DO CLIENTE" ||
-                            name === "INTEGRAÇÃO" ? (
+                            name === "INTEGRAÇÃO" ||
+                            name === "LOGs" ? (
                               <CompanyIcon fill={theme.palette.primary.main} />
                             ) : (
                               <UserIcon fill={theme.palette.primary.main} />
