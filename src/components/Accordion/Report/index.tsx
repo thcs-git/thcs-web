@@ -2092,30 +2092,35 @@ export default function AccordionReport(props: IAccordionReport) {
       <Divider sx={{ width: "100%", margin: "0 auto" }} />
     </>
   );
-  const checkInOutAccordionDetails = (list: any) =>
-    list.map((data: any, index: number) => {
-      return data.list.map((column: any, index: number) => (
+  const checkInOutAccordionDetails = (list: any) => {
+    return list.map((itemList: any, index: number) => {
+      return (
         <>
           <ContentDetailsAccordion key={index}>
             <TextCenterDetails>
               <Typography>
-                {getFirstAndLastName(capitalizeText(data._id.user[0].name))}
+                {getFirstAndLastName(
+                  capitalizeText(itemList[0].user_id[0].name)
+                )}
               </Typography>
             </TextCenterDetails>
             <TextCenterDetails>
               <Typography>
-                {handleFunction(data._id.user[0].companies_links, company_id)}
+                {handleFunction(
+                  itemList[0].user_id[0].companies_links,
+                  company_id
+                )}
               </Typography>
             </TextCenterDetails>
             <TextCenterDetails>
               <Typography>
-                {formatDate(column[0].created_at, "HH:mm")}
+                {formatDate(itemList[0].created_at, "HH:mm", timeZone)}
               </Typography>
             </TextCenterDetails>
             <TextCenterDetails>
               <Typography>
-                {column[1]
-                  ? formatDate(column[1].created_at, "HH:mm", timeZone)
+                {itemList[1]
+                  ? formatDate(itemList[1].created_at, "HH:mm", timeZone)
                   : "-"}
               </Typography>
             </TextCenterDetails>
@@ -2126,8 +2131,9 @@ export default function AccordionReport(props: IAccordionReport) {
             ""
           )}
         </>
-      ));
+      );
     });
+  };
   // Evolution accordion
   const evolutionAccordion = (data: any) =>
     content.data.map(({ _id, list }: IDataAccordion, index: number) => (
@@ -3212,7 +3218,6 @@ export default function AccordionReport(props: IAccordionReport) {
       );
     });
 
-  // console.log(content.data);
   return (
     <>
       {content.data ? (
