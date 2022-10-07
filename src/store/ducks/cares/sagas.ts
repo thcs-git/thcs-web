@@ -796,10 +796,10 @@ export function* getChekin({ payload }: any) {
       ? { external_attendance_id: payload }
       : { attendance_id: payload };
     const response: AxiosResponse = yield call(
-      apiSollarMobi.post as any,
+      apiSollar.get as any,
       `/checkin/getGroup`,
-      { attendance_id: payload },
-      { headers: { ...headers } }
+      { headers: { ...headers } },
+      { attendance_id: payload }
     );
     yield put(loadCheckinSuccess(response.data));
   } catch (err) {

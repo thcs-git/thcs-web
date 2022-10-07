@@ -170,21 +170,17 @@ export default function CardInfo(props: ICardInfo) {
     content.careState.checkin.data.map((day: any, index: number) => {
       if (day) {
         day.list.map((checks: any, index: number) => {
-          if (checks.list) {
-            checks.list.map((user: any) => {
-              const professional: ITeam = {
-                name: getFirstAndLastName(
-                  capitalizeText(user[0].user_id[0].name)
-                ),
-                function: handleFunction(
-                  user[0].user_id[0].companies_links,
-                  careState.data.company_id
-                ),
-                user_id: user[0].user_id[0]._id,
-              };
-              team.push(professional);
-            });
-          }
+          const professional: ITeam = {
+            name: getFirstAndLastName(
+              capitalizeText(checks[0].user_id[0].name)
+            ),
+            function: handleFunction(
+              checks[0].user_id[0].companies_links,
+              careState.data.company_id
+            ),
+            user_id: checks[0].user_id[0]._id,
+          };
+          team.push(professional);
         });
       }
     });
