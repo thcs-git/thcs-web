@@ -368,22 +368,18 @@ export default function FilterReport(props: IPropsFilter) {
     if (reportType === "Check-in/out") {
       careState.checkin.data.map((day: any) => {
         if (day) {
-          day.list.map((checks: any) => {
-            if (checks.list) {
-              checks.list.map((user: any) => {
-                const itemList: any = {
-                  name:
-                    type === "Função"
-                      ? handleFunction(
-                          user[0].user_id[0].companies_links,
-                          careState.data.company_id
-                        )
-                      : capitalizeText(user[0].user_id[0].name),
-                  _id: type === "Função" ? "" : user[0].user_id[0]._id,
-                };
-                List.push(itemList);
-              });
-            }
+          day?.list?.map((check: any) => {
+            const itemList: any = {
+              name:
+                type === "Função"
+                  ? handleFunction(
+                      check[0].user_id[0].companies_links,
+                      careState.data.company_id
+                    )
+                  : capitalizeText(check[0].user_id[0].name),
+              _id: type === "Função" ? "" : check[0].user_id[0]._id,
+            };
+            List.push(itemList);
           });
         }
       });
