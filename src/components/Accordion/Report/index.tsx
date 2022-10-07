@@ -166,6 +166,8 @@ export default function AccordionReport(props: IAccordionReport) {
   const colorText = theme.palette.black60.main;
   const colorTextDetails = theme.palette.text.primary;
   const colorTextDesable = theme.palette.text.disabled;
+  const timeZone =
+    sessionStorage.getItem(SESSIONSTORAGE.INTEGRATION_TIME_ZONE) || undefined;
   const NoData = () => (
     <Box sx={{ width: "100%" }}>
       <Typography
@@ -632,9 +634,10 @@ export default function AccordionReport(props: IAccordionReport) {
           >
             <Typography>
               {column.start_at
-                ? `${formatDate(column.start_at, "DD/MM/YYYY")} às ${formatDate(
+                ? `${formatDate(
                     column.start_at,
-                    "HH:mm"
+                    "DD/MM/YYYY [às] HH:mm",
+                    timeZone
                   )}`
                 : "Não informado"}
             </Typography>
@@ -647,9 +650,10 @@ export default function AccordionReport(props: IAccordionReport) {
           >
             <Typography>
               {column.end_at
-                ? `${formatDate(column.end_at, "DD/MM/YYYY")} às ${formatDate(
+                ? `${formatDate(
                     column.end_at,
-                    "HH:mm"
+                    "DD/MM/YYYY [às] HH:mm",
+                    timeZone
                   )}`
                 : "Não informado"}
             </Typography>
@@ -903,7 +907,7 @@ export default function AccordionReport(props: IAccordionReport) {
           <Typography>
             {item.hritem.map(
               (itemHora: any, index: number) =>
-                `${formatDate(itemHora.time, "HH:mm")} ${
+                `${formatDate(itemHora.time, "HH:mm", timeZone)} ${
                   item.hritem.length - 1 === index ? "" : " - "
                 }`
             )}
@@ -1090,7 +1094,7 @@ export default function AccordionReport(props: IAccordionReport) {
         <>
           <ContentDetailsAccordion key={index}>
             <TextCenterDetails sx={{ width: "100px" }}>
-              {formatDate(column.DataCriacao, "HH:mm")}
+              {formatDate(column.DataCriacao, "HH:mm", timeZone)}
             </TextCenterDetails>
             <TextCenterDetails sx={{ width: "350px" }}>
               {column?.Prescritor?.Nome
@@ -1140,7 +1144,9 @@ export default function AccordionReport(props: IAccordionReport) {
       let existDate = false;
       let indexExistDate = -1;
       group.map((data: any, index: number) => {
-        if (data.day === formatDate(exams.DataCriacao, "DD/MM/YYYY")) {
+        if (
+          data.day === formatDate(exams.DataCriacao, "DD/MM/YYYY", timeZone)
+        ) {
           existDate = true;
           indexExistDate = index;
         }
@@ -1148,7 +1154,7 @@ export default function AccordionReport(props: IAccordionReport) {
 
       if (!existDate) {
         group.push({
-          day: formatDate(exams.DataCriacao, "DD/MM/YYYY"),
+          day: formatDate(exams.DataCriacao, "DD/MM/YYYY", timeZone),
           exams: [{ ...exams }],
         });
       } else {
@@ -1256,14 +1262,16 @@ export default function AccordionReport(props: IAccordionReport) {
             <TextCenterDetails sx={{ width: "140px" }}>
               {`${formatDate(
                 column.Atestado.DataInicio,
-                "DD/MM/YY"
-              )} às ${formatDate(column.Atestado.DataInicio, "HH:mm")}`}
+                "DD/MM/YY [às] HH:mm",
+                timeZone
+              )}`}
             </TextCenterDetails>
             <TextCenterDetails sx={{ width: "140px" }}>
               {`${formatDate(
                 column.Atestado.DataTermino,
-                "DD/MM/YY"
-              )} às ${formatDate(column.Atestado.DataTermino, "HH:mm")}`}
+                "DD/MM/YY [às] HH:mm",
+                timeZone
+              )}`}
             </TextCenterDetails>
 
             <TextCenterDetails sx={{ width: "100px" }}>
@@ -1303,7 +1311,9 @@ export default function AccordionReport(props: IAccordionReport) {
       let existDate = false;
       let indexExistDate = -1;
       group.map((data: any, index: number) => {
-        if (data.day === formatDate(attest.DataCriacao, "DD/MM/YYYY")) {
+        if (
+          data.day === formatDate(attest.DataCriacao, "DD/MM/YYYY", timeZone)
+        ) {
           existDate = true;
           indexExistDate = index;
         }
@@ -1311,7 +1321,7 @@ export default function AccordionReport(props: IAccordionReport) {
 
       if (!existDate) {
         group.push({
-          day: formatDate(attest.DataCriacao, "DD/MM/YYYY"),
+          day: formatDate(attest.DataCriacao, "DD/MM/YYYY", timeZone),
           attest: [{ ...attest }],
         });
       } else {
@@ -1414,10 +1424,12 @@ export default function AccordionReport(props: IAccordionReport) {
                   <Box sx={{ paddingRight: "calc(9%)" }}>
                     <Typography>{`Validade: ${formatDate(
                       prescription.start_at,
-                      "DD/MM/YYYY [às] HH:mm"
+                      "DD/MM/YYYY [às] HH:mm",
+                      timeZone
                     )} | ${formatDate(
                       prescription.end_at,
-                      "DD/MM/YYYY [às] HH:mm"
+                      "DD/MM/YYYY [às] HH:mm",
+                      timeZone
                     )}`}</Typography>
                   </Box>
                 </AccordionSummary>
@@ -1517,7 +1529,11 @@ export default function AccordionReport(props: IAccordionReport) {
               <Typography>
                 {item?.frequency?.doses?.length > 0 &&
                   item?.frequency?.doses?.map((dose: any, index: number) => {
-                    return `${formatDate(dose.administer_date, "HH:mm")} ${
+                    return `${formatDate(
+                      dose.administer_date,
+                      "HH:mm",
+                      timeZone
+                    )} ${
                       item.frequency.doses.length - 1 === index ? "" : " - "
                     }`;
                   })}
@@ -1744,7 +1760,7 @@ export default function AccordionReport(props: IAccordionReport) {
               <ContentDetailsAccordion key={column._id}>
                 <TextCenterDetails sx={{ width: "110px" }}>
                   <Typography>
-                    {formatDate(column.created_at, "DD/MM/YY HH:mm")}
+                    {formatDate(column.created_at, "DD/MM/YY HH:mm", timeZone)}
                   </Typography>
                 </TextCenterDetails>
                 <TextCenterDetails sx={{ width: "250px" }}>
@@ -1811,7 +1827,7 @@ export default function AccordionReport(props: IAccordionReport) {
               <ContentDetailsAccordion key={column._id}>
                 <TextCenterDetails sx={{ width: "110px" }}>
                   <Typography>
-                    {formatDate(column.created_at, "DD/MM/YY HH:mm")}
+                    {formatDate(column.created_at, "DD/MM/YY HH:mm", timeZone)}
                   </Typography>
                 </TextCenterDetails>
                 <TextCenterDetails sx={{ width: "250px" }}>
@@ -2018,7 +2034,7 @@ export default function AccordionReport(props: IAccordionReport) {
                   height={"22px"}
                 />
 
-                <Typography>{formatDate(_id, "DD/MM/YY")}</Typography>
+                <Typography>{formatDate(_id, "DD/MM/YY", timeZone)}</Typography>
               </Box>
               <Box sx={{ width: "36px" }}></Box>
             </AccordionSummary>
@@ -2076,29 +2092,36 @@ export default function AccordionReport(props: IAccordionReport) {
       <Divider sx={{ width: "100%", margin: "0 auto" }} />
     </>
   );
-  const checkInOutAccordionDetails = (list: any) =>
-    list.map((data: any, index: number) => {
-      return data.list.map((column: any, index: number) => (
+  const checkInOutAccordionDetails = (list: any) => {
+    return list.map((itemList: any, index: number) => {
+      return (
         <>
           <ContentDetailsAccordion key={index}>
             <TextCenterDetails>
               <Typography>
-                {getFirstAndLastName(capitalizeText(data._id.user[0].name))}
+                {getFirstAndLastName(
+                  capitalizeText(itemList[0].user_id[0].name)
+                )}
               </Typography>
             </TextCenterDetails>
             <TextCenterDetails>
               <Typography>
-                {handleFunction(data._id.user[0].companies_links, company_id)}
+                {handleFunction(
+                  itemList[0].user_id[0].companies_links,
+                  company_id
+                )}
               </Typography>
             </TextCenterDetails>
             <TextCenterDetails>
               <Typography>
-                {formatDate(column[0].created_at, "HH:mm")}
+                {formatDate(itemList[0].created_at, "HH:mm", timeZone)}
               </Typography>
             </TextCenterDetails>
             <TextCenterDetails>
               <Typography>
-                {column[1] ? formatDate(column[1].created_at, "HH:mm") : "-"}
+                {itemList[1]
+                  ? formatDate(itemList[1].created_at, "HH:mm", timeZone)
+                  : "-"}
               </Typography>
             </TextCenterDetails>
           </ContentDetailsAccordion>
@@ -2108,8 +2131,9 @@ export default function AccordionReport(props: IAccordionReport) {
             ""
           )}
         </>
-      ));
+      );
     });
+  };
   // Evolution accordion
   const evolutionAccordion = (data: any) =>
     content.data.map(({ _id, list }: IDataAccordion, index: number) => (
@@ -2195,7 +2219,7 @@ export default function AccordionReport(props: IAccordionReport) {
                 height={"22px"}
               />
 
-              <Typography>{formatDate(_id, "DD/MM/YY")}</Typography>
+              <Typography>{formatDate(_id, "DD/MM/YY", timeZone)}</Typography>
             </Box>
             <Box sx={{ width: "36px" }}></Box>
           </AccordionSummary>
@@ -2262,7 +2286,9 @@ export default function AccordionReport(props: IAccordionReport) {
                 color: `${column.active ? colorTextDetails : colorTextDesable}`,
               }}
             >
-              <Typography>{formatDate(column.created_at, "HH:mm")}</Typography>
+              <Typography>
+                {formatDate(column.created_at, "HH:mm", timeZone)}
+              </Typography>
             </TextCenterDetails>
             <TextCenterDetails
               sx={{
@@ -2424,7 +2450,7 @@ export default function AccordionReport(props: IAccordionReport) {
                   height={"22px"}
                 />
 
-                <Typography>{formatDate(_id, "DD/MM/YY")}</Typography>
+                <Typography>{formatDate(_id, "DD/MM/YY", timeZone)}</Typography>
               </Box>
               <Box sx={{ width: "36px" }}></Box>
             </AccordionSummary>
@@ -2493,7 +2519,9 @@ export default function AccordionReport(props: IAccordionReport) {
                 color: `${column.canceled ? colorTextDesable : colorText}`,
               }}
             >
-              <Typography>{formatDate(column.created_at, "HH:mm")}</Typography>
+              <Typography>
+                {formatDate(column.created_at, "HH:mm", timeZone)}
+              </Typography>
             </TextCenterDetails>
             <TextCenterDetails
               sx={{
@@ -2726,7 +2754,9 @@ export default function AccordionReport(props: IAccordionReport) {
       <>
         <ContentDetailsAccordion key={index}>
           <TextCenterDetails>
-            <Typography>{formatDate(doc.created_at, "HH:mm")}</Typography>
+            <Typography>
+              {formatDate(doc.created_at, "HH:mm", timeZone)}
+            </Typography>
           </TextCenterDetails>
           <TextCenterDetails>
             <Typography>{handleStatusTelemedicine(doc).status}</Typography>
@@ -2800,26 +2830,46 @@ export default function AccordionReport(props: IAccordionReport) {
     if (doc.patient_canceled_at || doc.provider_canceled_at) {
       if (doc.patient_canceled_at) {
         statusDetails.status = "Cancelado pelo paciente";
-        statusDetails.time = formatDate(doc.patient_canceled_at, "HH:mm");
+        statusDetails.time = formatDate(
+          doc.patient_canceled_at,
+          "HH:mm",
+          timeZone
+        );
       } else if (doc.provider_canceled_at) {
         statusDetails.status = "Cancelado pelo prestador";
-        statusDetails.time = formatDate(doc.provider_canceled_at, "HH:mm");
+        statusDetails.time = formatDate(
+          doc.provider_canceled_at,
+          "HH:mm",
+          timeZone
+        );
       }
     } else if (doc.link_expired_timestamp) {
       statusDetails.status = "Sessão expirada";
-      statusDetails.time = formatDate(doc.link_expired_timestamp, "HH:mm");
+      statusDetails.time = formatDate(
+        doc.link_expired_timestamp,
+        "HH:mm",
+        timeZone
+      );
     } else if (doc.finished_at || doc.evolution_id) {
       statusDetails.status = "Atendido";
       statusDetails.time = formatDate(doc.finished_at, "HH:mm");
     } else if (doc.attending_provider_id && doc.link_click_timestamp) {
       statusDetails.status = "Em atendimento";
-      statusDetails.time = formatDate(doc.start_at, "HH:mm");
+      statusDetails.time = formatDate(doc.start_at, "HH:mm", timeZone);
     } else if (doc.link_click_timestamp) {
       statusDetails.status = "Paciente em sala";
-      statusDetails.time = formatDate(doc.link_click_timestamp, "HH:mm");
+      statusDetails.time = formatDate(
+        doc.link_click_timestamp,
+        "HH:mm",
+        timeZone
+      );
     } else if (doc.provider_click_timestemp) {
       statusDetails.status = "Prestador em sala";
-      statusDetails.time = formatDate(doc.provider_click_timestemp, "HH:mm");
+      statusDetails.time = formatDate(
+        doc.provider_click_timestemp,
+        "HH:mm",
+        timeZone
+      );
     }
     // prstador na sala -> verificar attending provider id
 
@@ -2958,7 +3008,8 @@ export default function AccordionReport(props: IAccordionReport) {
               <Typography sx={{ maxWidth: "248px" }}>
                 {formatDate(
                   column.documents.upload_date,
-                  "DD/MM/YYYY [às] HH:mm"
+                  "DD/MM/YYYY [às] HH:mm",
+                  timeZone
                 )}
               </Typography>
             </TextCenterDetails>
@@ -3127,7 +3178,7 @@ export default function AccordionReport(props: IAccordionReport) {
             </TextCenterDetails>
             <TextCenterDetails>
               <Typography sx={{ maxWidth: "248px" }}>
-                {formatDate(form.created_at, "DD/MM/YYYY [às] HH:mm")}
+                {formatDate(form.created_at, "DD/MM/YYYY [às] HH:mm", timeZone)}
               </Typography>
             </TextCenterDetails>
             <TextCenterDetails>
@@ -3167,7 +3218,6 @@ export default function AccordionReport(props: IAccordionReport) {
       );
     });
 
-  // console.log(content.data);
   return (
     <>
       {content.data ? (
