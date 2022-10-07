@@ -302,7 +302,7 @@ export default function PatientList() {
     { name: "Empresa", align: "center" },
     { name: "Visualizar", align: "left" },
   ];
-  console.log(patientState);
+  // console.log(patientState);
   return (
     <>
       <Sidebar>
@@ -329,13 +329,14 @@ export default function PatientList() {
                     { name: "Data de Nascimento", align: "center" },
                     { name: "CPF", align: "center" },
                     { name: "Mãe", align: "left" },
+                    { name: "", align: "left" },
                   ]}
                   patientState={patientState}
                   integration={integration}
                   toggleHistoryModal={toggleHistoryModal}
                   toggleHistoryModal_2={toggleHistoryModal_2}
                 >
-                  {"pages/patient/list filho s/ integration"}
+                  {"pages/patient/list filho c/ integration"}
                 </Table>
               </>
             ) : (
@@ -440,6 +441,16 @@ export default function PatientList() {
         />
         {/*<Dialog*/}
 
+        {/* {Histórico de atendimento} */}
+        <HistoryDialog
+          modalOpen={historyModalOpen}
+          setModalOpen={setHistoryModalOpen}
+          historyPatient={historyPatient}
+          historyPatientName={historyPatientName}
+          tableCells={tableCellsAvaliation}
+          historyType={"care"}
+        />
+
         {/*  maxWidth="lg"*/}
         {/*  open={historyModalOpen}*/}
         {/*  onClose={() => setHistoryModalOpen(false)}*/}
@@ -504,15 +515,6 @@ export default function PatientList() {
         {/*  </DialogActions>*/}
         {/*</Dialog>*/}
 
-        {/* {Histórico de atendimento} */}
-        <HistoryDialog
-          modalOpen={historyModalOpen}
-          setModalOpen={setHistoryModalOpen}
-          historyPatient={historyPatient}
-          historyPatientName={historyPatientName}
-          tableCells={tableCellsAvaliation}
-          historyType={"avaliation"}
-        />
         {/*<Dialog*/}
 
         {/*  maxWidth="lg"*/}
