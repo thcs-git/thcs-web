@@ -30,7 +30,10 @@ import {
 } from "../../../store/ducks/customers/types";
 import { createUserRequest as createUserAction } from "../../../store/ducks/users/actions";
 import { UserInterface, UserState } from "../../../store/ducks/users/types";
-import { dispatchDocs } from "../../../store/ducks/attachmentsIntegration/actions";
+import {
+  dispatchDocs,
+  verifyStatusDocs,
+} from "../../../store/ducks/attachmentsIntegration/actions";
 // MUI e style
 import {
   SearchOutlined,
@@ -60,7 +63,7 @@ import Fade from "@mui/material/Fade";
 import Button from "@mui/material/Button";
 import Typography from "@mui/material/Typography";
 import { IButtons } from "../../../components/Button/ButtonTabs";
-
+import CircularProgress from "@mui/material/CircularProgress";
 import {
   ButtonsContent,
   ButtonDefeault,
@@ -160,6 +163,10 @@ export default function ClientForm(props: IPageParams) {
     (state: ApplicationState) => state.customers
   );
   const userState = useSelector((state: ApplicationState) => state.users);
+  const attachmentIntegrationState = useSelector(
+    (state: ApplicationState) => state.attachmentsIntegration
+  );
+
   const rightsOfLayoutState = useSelector(
     (state: ApplicationState) => state.layout.data.rights
   );
@@ -291,10 +298,14 @@ export default function ClientForm(props: IPageParams) {
     if (modePermission === "edit") {
       setCanEditPermission(true);
     }
+
+    dispatch(verifyStatusDocs());
+
     // if (_.split(window.location.pathname, "/").slice(-2)[0] === "view") {
     //   setCanEditPermission(false);
     // }
   }, []);
+
   useEffect(() => {
     setState((prevState) => {
       return {
@@ -619,56 +630,7 @@ export default function ClientForm(props: IPageParams) {
   }
 
   function handleSendLogs() {
-    console.log("click em handleSendLogs");
-    // BACK SERÁ ESTRUTURADO PARA RESPONDER PARA O FRONT QUANDO O DESPACHO FOR FINALIZADO.
-    // QUANDO ISSO OCORRER, SETAR O STATUS PARA "done"
-    const handleLocalStorageAndDispatch = () => {
-      localStorage.setItem(
-        LOCALSTORAGE.STATUS_ATTACHMENTS_INTEGRATION,
-        JSON.stringify({
-          status: "live",
-          date: new Date(),
-        })
-      );
-
-      dispatch(dispatchDocs({ external_user_name: userState.data.name }));
-    };
-
-    let statusIntegration = localStorage.getItem(
-      LOCALSTORAGE.STATUS_ATTACHMENTS_INTEGRATION
-    );
-
-    if (statusIntegration === null) {
-      handleLocalStorageAndDispatch();
-      return;
-    }
-
-    if (statusIntegration.length === 0) {
-      handleLocalStorageAndDispatch();
-      return;
-    }
-
-    if (
-      !JSON.parse(statusIntegration || "{}")?.status ||
-      JSON.parse(statusIntegration || "{}")?.status === "done"
-    ) {
-      handleLocalStorageAndDispatch();
-      return;
-    }
-
-    if (!!JSON.parse(statusIntegration || "{}").date) {
-      let date1 = dayjs(JSON.parse(statusIntegration || "{}").date);
-      let date2 = dayjs();
-
-      let difference = date2.diff(date1, "minutes");
-
-      if (difference >= 5) {
-        handleLocalStorageAndDispatch();
-        return;
-      }
-    }
-
-    toast.warning("Documentos em despacho");
+    dispatch(dispatchDocs({ external_user_name: userState.data.name }));
   }
 
   function handleSaveObjectIntegration() {
@@ -710,11 +672,17 @@ export default function ClientForm(props: IPageParams) {
       show: false,
     },
     {
-      name: "Enviar",
+      name: attachmentIntegrationState.loading ? "" : "Enviar",
       onClick: handleSendLogs,
       variant: "contained",
       background: "primary",
       show: initialTab === 3 ? true : false,
+      component: attachmentIntegrationState.loading ? (
+        <Box sx={{ width: "51px", height: "20px" }}>
+          <CircularProgress size={"1rem"} />
+        </Box>
+      ) : undefined,
+      disabled: attachmentIntegrationState.loading,
     },
     {
       name: "Salvar",
