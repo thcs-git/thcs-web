@@ -40,7 +40,15 @@ const ButtonTabs = (props: IComponent) => {
       <ButtonsContent>
         {buttons.map(
           (
-            { name, variant, background, onClick, show, component }: IButtons,
+            {
+              name,
+              variant,
+              background,
+              onClick,
+              show,
+              component,
+              ...IButtons
+            }: IButtons,
             index: number
           ) => (
             <>
@@ -50,7 +58,7 @@ const ButtonTabs = (props: IComponent) => {
                   color={background}
                   onClick={onClick}
                   key={index}
-                  // {...IButtons}
+                  {...IButtons}
                 >
                   <Typography
                     variant="body2"

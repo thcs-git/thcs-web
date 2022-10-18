@@ -804,7 +804,7 @@ export function* getChekin({ payload }: any) {
     yield put(loadCheckinSuccess(response.data));
   } catch (err) {
     yield put(loadCheckinFailure());
-    toast.error("Erro ao buscar Evoluções");
+    toast.error("Erro ao buscar Checkins");
   }
 }
 
