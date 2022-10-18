@@ -727,8 +727,7 @@ const Sibebar = (props: any) => {
                       const integration_url = sessionStorage.getItem(
                         sessionStorageConst.INTEGRATION
                       );
-                      /** TODO COLOCAR ESSA VALOR DINAMICO (DESMOCAR)*/
-                      const external_sector_id = "438";
+                      const external_sector_id = "763";
                       const company_id = localStorage.getItem(
                         localStorageConst.COMPANY_SELECTED
                       );
