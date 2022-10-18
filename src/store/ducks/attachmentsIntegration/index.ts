@@ -19,7 +19,12 @@ const reducer: Reducer<AttachmentsIntegrationState> = (
     case AttachmentsIntegrationTypes.DISPATCH_DOCS:
       return { ...state, loading: true };
     case AttachmentsIntegrationTypes.DISPATCH_DOCS_SUCCESS:
-      return { ...state, loading: false, error: false, success: true };
+      return {
+        ...state,
+        loading: action.payload.status === 200 ? false : true,
+        error: false,
+        success: true,
+      };
     case AttachmentsIntegrationTypes.DISPATCH_DOCS_FAILURE:
       return {
         ...state,
@@ -27,6 +32,26 @@ const reducer: Reducer<AttachmentsIntegrationState> = (
         success: false,
         error: true,
         data: INITIAL_STATE.data,
+      };
+    case AttachmentsIntegrationTypes.VERIFY_STATUS_DOCS:
+      return {
+        ...state,
+        loading: true,
+      };
+    case AttachmentsIntegrationTypes.VERIFY_STATUS_DOCS_SUCCESS:
+      return {
+        ...state,
+        loading: action.payload.beingIntegrated,
+        error: false,
+        success: true,
+      };
+
+    case AttachmentsIntegrationTypes.VERIFY_STATUS_DOCS_FAILURE:
+      return {
+        ...state,
+        loading: false,
+        error: true,
+        success: false,
       };
     default:
       return state;

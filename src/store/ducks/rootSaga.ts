@@ -214,7 +214,10 @@ import { CustomerLogsTypes } from "./customerLogs/types";
 import { getCustomerLogs } from "./customerLogs/sagas";
 
 import { AttachmentsIntegrationTypes } from "./attachmentsIntegration/types";
-import { dispatchDocsForIntegration } from "./attachmentsIntegration/sagas";
+import {
+  dispatchDocsForIntegration,
+  verifyStatus as verifyStatusDocsIntegration,
+} from "./attachmentsIntegration/sagas";
 
 export default function* rootSaga(): any {
   return yield all([
@@ -504,6 +507,10 @@ export default function* rootSaga(): any {
     takeLatest(
       AttachmentsIntegrationTypes.DISPATCH_DOCS,
       dispatchDocsForIntegration
+    ),
+    takeLatest(
+      AttachmentsIntegrationTypes.VERIFY_STATUS_DOCS,
+      verifyStatusDocsIntegration
     ),
   ]);
 }
