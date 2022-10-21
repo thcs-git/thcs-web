@@ -443,6 +443,38 @@ const TableComponent = (props: ITableProps) => {
                     {handleEmpty(patient.fiscal_number)}
                   </TableCell>
                   <TableCell align="left">{patient.mother_name}</TableCell>
+                  <TableCell>
+                    <IconButton
+                      aria-controls={`simple-menu${index}`}
+                      id={`btn_simple-menu${index}`}
+                      aria-haspopup="true"
+                      onClick={handleOpenRowMenu}
+                      sx={{
+                        cursor: "pointer",
+                        "& svg, path": { cursor: "pointer" },
+                      }}
+                    >
+                      <MoreVert color="secondary" />
+                    </IconButton>
+                    <Menu
+                      id={`simple-menu${index}`}
+                      anchorEl={anchorEl}
+                      keepMounted
+                      open={anchorEl?.id === `btn_simple-menu${index}`}
+                      onClose={handleCloseRowMenu}
+                    >
+                      {toggleHistoryModal && (
+                        <MenuItem
+                          onClick={() => {
+                            toggleHistoryModal(index, patient);
+                            handleCloseRowMenu();
+                          }}
+                        >
+                          Histórico
+                        </MenuItem>
+                      )}
+                    </Menu>
+                  </TableCell>
                 </TableRow>
               ))}
 
