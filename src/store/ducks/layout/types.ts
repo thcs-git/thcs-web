@@ -29,6 +29,7 @@ export interface LayoutInterface {
     rights?: string[];
     integration?: string | null;
     integration_name?: string | null;
+    integration_token?: string | null;
     menuSelected?: string;
     time_zone?: string;
 }

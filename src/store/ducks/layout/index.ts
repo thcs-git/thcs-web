@@ -8,6 +8,7 @@ export const INITIAL_STATE: LayoutState = {
     rights: [],
     integration: null,
     integration_name: null,
+    integration_token: null,
     menuSelected: "",
   },
   success: false,

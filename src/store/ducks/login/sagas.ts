@@ -77,6 +77,13 @@ export function* doLogin({ payload }: any) {
           SESSIONSTORAGE.INTEGRATION_NAME,
           lastLastLogin?.companie_id?.customer_id?.integration_name
         );
+
+      lastLastLogin?.companie_id?.customer_id?.integration_token &&
+      sessionStorage.setItem(
+          SESSIONSTORAGE.INTEGRATION_TOKEN,
+          lastLastLogin?.companie_id?.customer_id?.integration_token
+      );
+
       lastLastLogin?.company_external_id &&
         localStorage.setItem(
           LOCALSTORAGE.INTEGRATION_COMPANY_SELECTED,
@@ -120,6 +127,12 @@ export function* doLogin({ payload }: any) {
           SESSIONSTORAGE.INTEGRATION_NAME,
           data.companies_links[0]?.companie_id?.customer_id?.integration_name
         );
+
+      data.companies_links[0]?.companie_id?.customer_id?.integration_token &&
+      sessionStorage.setItem(
+          SESSIONSTORAGE.INTEGRATION_TOKEN,
+          data.companies_links[0]?.companie_id?.customer_id?.integration_token
+      );
 
       data.companies_links[0]?.company_external_id &&
         localStorage.setItem(

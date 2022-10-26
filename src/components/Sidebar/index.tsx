@@ -184,6 +184,7 @@ const Sibebar = (props: any) => {
     sessionStorage.removeItem(SESSIONSTORAGE.RIGHTS);
     sessionStorage.removeItem(SESSIONSTORAGE.INTEGRATION);
     sessionStorage.removeItem(SESSIONSTORAGE.INTEGRATION_NAME);
+    sessionStorage.removeItem(SESSIONSTORAGE.INTEGRATION_TOKEN);
 
     window.location.reload();
   }, []);
@@ -310,12 +311,19 @@ const Sibebar = (props: any) => {
           )
         : sessionStorage.removeItem(SESSIONSTORAGE.INTEGRATION_NAME);
 
+      layoutState.data.integration_token
+          ? sessionStorage.setItem(
+              SESSIONSTORAGE.INTEGRATION_TOKEN,
+              layoutState.data.integration_token
+          )
+          : sessionStorage.removeItem(SESSIONSTORAGE.INTEGRATION_TOKEN);
+
       layoutState.data.time_zone
         ? sessionStorage.setItem(
             SESSIONSTORAGE.INTEGRATION_TIME_ZONE,
             layoutState.data.time_zone
           )
-        : sessionStorage.removeItem(SESSIONSTORAGE.INTEGRATION_NAME);
+        : sessionStorage.removeItem(SESSIONSTORAGE.INTEGRATION_TIME_ZONE);
 
       const items: itemsInterface[] = [];
 
@@ -727,6 +735,9 @@ const Sibebar = (props: any) => {
                       const integration_url = sessionStorage.getItem(
                         sessionStorageConst.INTEGRATION
                       );
+                      const integration_token = sessionStorage.getItem(
+                          sessionStorageConst.INTEGRATION_TOKEN
+                      );
                       /** TODO COLOCAR ESSA VALOR DINAMICO (DESMOCAR)*/
                       const external_sector_id = "438";
                       const company_id = localStorage.getItem(
@@ -748,6 +759,7 @@ const Sibebar = (props: any) => {
                         company_id,
                         external_company_id,
                         external_user_id,
+                        integration_token,
                       };
 
                       const ciphertext = CryptoJS.AES.encrypt(
