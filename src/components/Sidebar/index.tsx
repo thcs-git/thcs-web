@@ -408,6 +408,7 @@ const Sibebar = (props: any) => {
       "attachments",
       "forms",
       "logs",
+      "customerLogs",
       // "attachmentsIntegration",
     ];
 
