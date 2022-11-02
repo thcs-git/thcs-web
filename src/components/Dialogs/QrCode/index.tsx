@@ -258,7 +258,7 @@ export default function DialogQrCode(props: IQrCodeProps) {
                     variant="contained"
                     color="primary"
                     onClick={() =>
-                      checkEditPermission(
+                      checkCreatePermission(
                         "qrcode",
                         JSON.stringify(rightsOfLayoutState)
                       )
