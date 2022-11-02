@@ -8,6 +8,7 @@ import {
   verifyStatusDocsSuccess,
   verifyStatusDocsFailure,
 } from "./actions";
+import { loadRequest as loadRequestCustomerLogs } from "../customerLogs/actions";
 import { getAttachment } from "./selectors";
 
 export function* dispatchDocsForIntegration({
@@ -24,9 +25,11 @@ export function* dispatchDocsForIntegration({
     toast.success("Integração dos documentos finalizada");
 
     yield put(dispatchDocsSuccess(response.data));
+    yield put(loadRequestCustomerLogs());
   } catch (error) {
     toast.error("Não foi possível integrar documentos");
     yield put(dispatchDocsFailure());
+    yield put(loadRequestCustomerLogs());
   }
 }
 
