@@ -111,96 +111,6 @@ function Copyright() {
   );
 }
 
-// const useStyles = makeStyles((theme) => ({
-//   container: {
-//     display: "flex",
-//     flexDirection: "column",
-//     justifyContent: "center",
-//     height: "100%",
-//   },
-//   paper: {
-//     marginTop: theme.spacing(2),
-//     display: "flex",
-//     flexDirection: "column",
-//     alignItems: "center",
-//   },
-//   avatar: {
-//     margin: theme.spacing(1),
-//     backgroundColor: theme.palette.secondary.main,
-//   },
-//   form: {
-//     width: "100%", // Fix IE 11 issue.
-//     marginTop: theme.spacing(1),
-//     // "& .MuiOutlinedInput-root": {
-//     //   "&.Mui-focused fieldset": {
-//     //     borderColor: "var(--secondary)",
-//     //   },
-//     // },
-//   },
-//   create_account: {
-//     marginBottom: "14px",
-//     "&:hover": {
-//       background: "#f7f7f7",
-//       fontWeight: "bold",
-//       transition: "300ms",
-//     },
-//   },
-//   submit: {
-//     margin: theme.spacing(3, 0, 2),
-//     padding: "10px",
-//     textTransform: "capitalize",
-//     fontSize: "18px",
-//     backgroundColor: "var(--success)",
-//     "&:hover": {
-//       backgroundColor: "#4fc66ae3",
-//       fontWeight: "bold",
-//       transition: "300ms",
-//     },
-//   },
-//   register: {
-//     margin: theme.spacing(1, 0, 2),
-//     padding: "10px",
-//     textTransform: "capitalize",
-//     fontSize: "18px",
-//     "&:hover": {
-//       backgroundColor: "var(--success-hover)",
-//       borderColor: "var(--success-hover)",
-//       color: "white",
-//     },
-//     borderColor: "var(--success-hover)",
-//     contrastText: "#fff",
-//   },
-//   wrapper: {
-//     margin: theme.spacing(1),
-//     position: "relative",
-//   },
-//   buttonSuccess: {
-//     backgroundColor: "green[500]",
-//     "&:hover": {
-//       backgroundColor: "green[700]",
-//     },
-//   },
-//   fab: {
-//     width: "35px",
-//     height: "25px",
-//   },
-//   fabProgress: {
-//     color: "green[500]",
-//     position: "absolute",
-//     top: -6,
-//     left: -6,
-//     zIndex: 1,
-//   },
-//   buttonProgress: {
-//     color: "green[500]",
-//     position: "absolute",
-//     top: "50%",
-//     left: "50%",
-//     marginTop: -12,
-//     marginLeft: -12,
-//   },
-// }));
-
 const SIZE_INPUT_PASSWORD = 6;
 
 const validationSchema = yup.object({
@@ -1615,7 +1525,7 @@ export default function SignIn() {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const loginState = useSelector((state: ApplicationState) => state.login);
-
+  console.log(loginState.email, "loginState.email");
   const [inputEmail, setInputEmail] = useState({ value: "", error: false });
   const [inputPassword, setInputPassword] = useState({
     value: "",
@@ -1819,6 +1729,7 @@ export default function SignIn() {
     dispatch(loadUserByEmail(inputEmailForRecovery.value));
     setSendEmail(true);
   }, [inputEmailForRecovery]);
+
   const ForgotPassword = () => (
     <Grid item mt={1}>
       <Link
@@ -1942,12 +1853,6 @@ export default function SignIn() {
               {loginState.email.password ? (
                 <>
                   <FormControl fullWidth margin="normal" variant="outlined">
-                    {/* <InputLabel
-                    htmlFor="outlined-adornment-password"
-                    color="secondary"
-                  >
-                    Senha
-                  </InputLabel> */}
                     <OutlinedInput
                       sx={{
                         "&.MuiOutlinedInput-root.MuiInputBase-root": {
@@ -2480,7 +2385,6 @@ export default function SignIn() {
             alignItems: "center",
             zIndex: 10,
             maxWidth: "none !important",
-            // background: "pink",
           }}
         >
           <Grid
@@ -2493,7 +2397,6 @@ export default function SignIn() {
               justifyContent: "center",
               margin: "0 auto",
               maxWidth: "1200px",
-              // padding: "0 1rem",
             }}
           >
             <Grid
@@ -2519,7 +2422,6 @@ export default function SignIn() {
                   // width={"25rem"}
                   width={"100%"}
                 />
-                {/* <HomeIconLogo /> */}
               </Box>
             </Grid>
             {showRecoveryPassword
@@ -2532,7 +2434,6 @@ export default function SignIn() {
           </Grid>
         </Container>
         <BackgroundHouses amountOfHouses={6} />
-        {/* {generateRandomHouses(5)} */}
       </Container>
       <Dialog
         open={openPolicyModal}
@@ -2546,9 +2447,6 @@ export default function SignIn() {
         </DialogTitle>
         <DialogContent dividers={true}>
           <DialogContentText id="scroll-dialog-description" tabIndex={-1}>
-            {/* {[...new Array(500)]
-              .map(() => `Cras mattis. Asdasd asd.`)
-              .join("\n")} */}
             {policity()}
           </DialogContentText>
         </DialogContent>
@@ -2557,7 +2455,6 @@ export default function SignIn() {
             variant="contained"
             onClick={() => {
               setOpenPolicyModal(false);
-
               formik.values.policyAccepted = false;
               // setCheckPolicy(false);
             }}
