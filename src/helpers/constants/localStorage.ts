@@ -1,5 +1,6 @@
 export default {
   TOKEN: "@thcs_token",
+  TOKEN_AUX: "@thcs_token_aux",
   TOGGLE_SIDEBAR: "@thcs_toggle_s_fixed",
   EXPIRED_SESSION: "@thcs_expired_session",
   REMEMBER_ME: "@thcs_remember_me",

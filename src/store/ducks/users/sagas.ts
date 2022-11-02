@@ -31,7 +31,8 @@ import { ViacepDataInterface } from "./types";
 import { getGeolocation } from "../__globalReducer/saga";
 import SESSIONSTORAGE from "../../../helpers/constants/sessionStorage";
 
-const token = localStorage.getItem("token");
+const token = localStorage.getItem(LOCALSTORAGE.TOKEN);
+const tokenAux = localStorage.getItem(LOCALSTORAGE.TOKEN_AUX);
 
 export function* get({ payload }: any) {
   try {
@@ -287,7 +288,7 @@ export function* updateUserPassword({ payload: { data } }: any) {
       apiSollar.patch as any,
       `/user/updatepassword`,
       { ...data },
-      { headers: { token } }
+      { headers: { token: tokenAux } }
     );
 
     yield put(updateUserSuccess(response.data));

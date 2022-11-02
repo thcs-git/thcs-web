@@ -79,10 +79,10 @@ export function* doLogin({ payload }: any) {
         );
 
       lastLastLogin?.companie_id?.customer_id?.integration_token &&
-      sessionStorage.setItem(
+        sessionStorage.setItem(
           SESSIONSTORAGE.INTEGRATION_TOKEN,
           lastLastLogin?.companie_id?.customer_id?.integration_token
-      );
+        );
 
       lastLastLogin?.company_external_id &&
         localStorage.setItem(
@@ -129,10 +129,10 @@ export function* doLogin({ payload }: any) {
         );
 
       data.companies_links[0]?.companie_id?.customer_id?.integration_token &&
-      sessionStorage.setItem(
+        sessionStorage.setItem(
           SESSIONSTORAGE.INTEGRATION_TOKEN,
           data.companies_links[0]?.companie_id?.customer_id?.integration_token
-      );
+        );
 
       data.companies_links[0]?.company_external_id &&
         localStorage.setItem(
@@ -174,7 +174,7 @@ export function* checkEmail({ payload }: any) {
 
     const { data } = response;
     data.token.auth &&
-      localStorage.setItem(LOCALSTORAGE.TOKEN, data.token.token);
+      localStorage.setItem(LOCALSTORAGE.TOKEN_AUX, data.token.token);
     yield put(emailSuccess(data));
   } catch (err) {
     console.log("err", err);
