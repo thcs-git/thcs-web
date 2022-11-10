@@ -32,3 +32,7 @@ cypress/screenshots
 cypress/videos
 
 dist
+
+publish-thcs-frontend.sh
+run-thcs-frontend-web-prd.sh
+thcs-google-credentials.json
