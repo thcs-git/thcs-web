@@ -533,7 +533,7 @@ const TabForm = (props: ITabprops) => {
                 id="combo-box-profession"
                 // disabled={mode === "view"}
                 options={autoCompleteSetting.handleProfessionList()}
-                getOptionLabel={(option) => option.name}
+                getOptionLabel={(option:any) => option.name}
                 renderInput={(params) => (
                   <TextField
                     {...params}

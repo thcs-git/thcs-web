@@ -8,11 +8,11 @@ WORKDIR /usr/src/app
 COPY package*.json ./
 COPY yarn.lock ./
 
-RUN yarn --prod
+RUN yarn --network-timeout 100000
 
 COPY . .
 
-#RUN yarn build
+RUN yarn build
 
 FROM nginx:1.23.2-alpine AS runner
 

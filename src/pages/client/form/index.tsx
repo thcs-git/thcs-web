@@ -731,9 +731,10 @@ export default function ClientForm(props: IPageParams) {
     { name: "Visualizar", align: "center" },
     { name: "Editar", align: "center" },
   ];
-
   const propsPermissionForm: IPropsPermissionFrom = {
+    // @ts-ignore
     state: permissionState,
+    // @ts-ignore
     setState: setPermissionState,
     customerState: customerState,
     userState: userState,

@@ -1410,7 +1410,7 @@ export default function PatientForm(props: IPageParams) {
                                   size="small"
                                   defaultValue={selectPatientArea()}
                                   // value={selectPatientArea()}
-                                  onChange={(event: any, newValue) => {
+                                  onChange={(event: any, newValue:any) => {
                                     if (newValue) {
                                       setState({
                                         ...state,

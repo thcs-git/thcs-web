@@ -503,7 +503,7 @@ export default function FilterReport(props: IPropsFilter) {
             <Autocomplete
               id="combo-box-profession-or-professional"
               options={handleAutocompleteData(stateFilter.type)}
-              getOptionLabel={(option) => option.name}
+              getOptionLabel={(option:any) => option.name}
               renderInput={(params) => (
                 <TextField
                   {...params}

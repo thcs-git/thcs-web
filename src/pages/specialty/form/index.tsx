@@ -148,7 +148,7 @@ export default function SpecialtyForm(props: IPageParams) {
                   <Autocomplete
                     id="combo-box-council"
                     options={councilState.list.data}
-                    getOptionLabel={(option) => option.name}
+                    getOptionLabel={(option:any) => option.name}
                     renderInput={(params) => (
                       <TextField
                         {...params}

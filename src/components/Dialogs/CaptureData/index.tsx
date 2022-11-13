@@ -127,7 +127,7 @@ export default function CaptureDataDialog(props: IDialogProps) {
                     disabled={cantEdit}
                     id="combo-box-health-insurance"
                     options={careState.healthInsurance}
-                    getOptionLabel={(option) => option.name}
+                    getOptionLabel={(option:any) => option.name}
                     value={selectHealhInsurance()}
                     // getOptionSelected={(option, value) =>
                     //   option._id === captureData.health_insurance_id
@@ -139,7 +139,7 @@ export default function CaptureDataDialog(props: IDialogProps) {
                         variant="outlined"
                       />
                     )}
-                    onChange={(event, value) => {
+                    onChange={(event, value:any) => {
                       if (value) {
                         setCaptureData({
                           ...captureData,
@@ -182,7 +182,7 @@ export default function CaptureDataDialog(props: IDialogProps) {
                   <Autocomplete
                     id="combo-box-health-plan"
                     options={careState.healthPlan}
-                    getOptionLabel={(option) => option.name}
+                    getOptionLabel={(option:any) => option.name}
                     value={selectHealhPlan()}
                     // getOptionSelected={(option, value) =>
                     //   option._id === captureData.health_plan_id
@@ -191,7 +191,7 @@ export default function CaptureDataDialog(props: IDialogProps) {
                       <TextField {...params} label="Plano" variant="outlined" />
                     )}
                     size="small"
-                    onChange={(event, value) => {
+                    onChange={(event, value: any) => {
                       if (value) {
                         setCaptureData({
                           ...captureData,
@@ -212,7 +212,7 @@ export default function CaptureDataDialog(props: IDialogProps) {
                   <Autocomplete
                     id="combo-box-health-sub-plan"
                     options={careState.healthSubPlan}
-                    getOptionLabel={(option) => option.name}
+                    getOptionLabel={(option:any) => option.name}
                     value={selectHealhSubPlan()}
                     // getOptionSelected={(option, value) =>
                     //   option._id === captureData.health_sub_plan_id
@@ -225,7 +225,7 @@ export default function CaptureDataDialog(props: IDialogProps) {
                       />
                     )}
                     size="small"
-                    onChange={(event, value) => {
+                    onChange={(event, value:any) => {
                       if (value) {
                         setCaptureData({
                           ...captureData,

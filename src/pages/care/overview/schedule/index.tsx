@@ -1472,7 +1472,7 @@ export default function SchedulePage(props: IPageParams) {
                   <Autocomplete
                     id="combo-box-profession"
                     options={userState.data.professions || []}
-                    getOptionLabel={(option) => option.name}
+                    getOptionLabel={(option:any) => option.name}
                     renderInput={(params) => (
                       <TextField
                         {...params}
@@ -1484,7 +1484,7 @@ export default function SchedulePage(props: IPageParams) {
                     // onChange={(element, value) => setSchedule(prevState => ({ ...prevState, user_id: value?._id }))}
                     noOptionsText="Nenhum resultado encontrado"
                     value={selectProfession()}
-                    onChange={(event, value) => {
+                    onChange={(event, value: any) => {
                       handleSelectProfession(
                         value ? value : { _id: "", name: "" }
                       );
@@ -1497,7 +1497,7 @@ export default function SchedulePage(props: IPageParams) {
                   <Autocomplete
                     id="combo-box-user"
                     options={userState.list.data}
-                    getOptionLabel={(option) => option.name}
+                    getOptionLabel={(option:any) => option.name}
                     renderInput={(params) => (
                       <TextField
                         {...params}
@@ -1506,7 +1506,7 @@ export default function SchedulePage(props: IPageParams) {
                       />
                     )}
                     size="small"
-                    onChange={(element, value) =>
+                    onChange={(element, value: any) =>
                       setSchedule((prevState) => ({
                         ...prevState,
                         user_id: `${value?._id}`,
@@ -1659,7 +1659,7 @@ export default function SchedulePage(props: IPageParams) {
                         <Autocomplete
                           id="combo-box-repeat-options"
                           options={repeatOptions}
-                          getOptionLabel={(option) => option.title}
+                          getOptionLabel={(option:any) => option.title}
                           renderInput={(params) => (
                             <TextField
                               {...params}
@@ -1668,7 +1668,7 @@ export default function SchedulePage(props: IPageParams) {
                             />
                           )}
                           size="small"
-                          onChange={(element, value) =>
+                          onChange={(element, value:any) =>
                             setSchedule((prevState) => ({
                               ...prevState,
                               days_interval_repeat: value?.interval,
@@ -1818,7 +1818,7 @@ export default function SchedulePage(props: IPageParams) {
                   <Autocomplete
                     id="combo-box-profession"
                     options={userState.data.professions || []}
-                    getOptionLabel={(option) => option.name}
+                    getOptionLabel={(option:any) => option.name}
                     renderInput={(params) => (
                       <TextField {...params} label="" variant="outlined" />
                     )}
@@ -1826,7 +1826,7 @@ export default function SchedulePage(props: IPageParams) {
                     // onChange={(element, value) => setSchedule(prevState => ({ ...prevState, user_id: value?._id }))}
                     noOptionsText="Nenhum resultado encontrado"
                     value={selectProfession()}
-                    onChange={(event, value) => {
+                    onChange={(event, value:any) => {
                       handleSelectProfession(
                         value ? value : { _id: "", name: "" }
                       );
@@ -1841,12 +1841,12 @@ export default function SchedulePage(props: IPageParams) {
                   <Autocomplete
                     id="combo-box-user"
                     options={userState.list.data}
-                    getOptionLabel={(option) => option.name}
+                    getOptionLabel={(option:any) => option.name}
                     renderInput={(params) => (
                       <TextField {...params} label="" variant="outlined" />
                     )}
                     size="small"
-                    onChange={(element, value) =>
+                    onChange={(element, value:any) =>
                       setSchedule((prevState) => ({
                         ...prevState,
                         user_id: `${value?._id}`,
@@ -2278,7 +2278,7 @@ export default function SchedulePage(props: IPageParams) {
                                 <Autocomplete
                                   id="combo-box-user"
                                   options={userState.list.data}
-                                  getOptionLabel={(option) => option.name}
+                                  getOptionLabel={(option:any) => option.name}
                                   renderInput={(params) => (
                                     <TextField
                                       {...params}
@@ -2287,7 +2287,7 @@ export default function SchedulePage(props: IPageParams) {
                                     />
                                   )}
                                   size="small"
-                                  onChange={(element, value) =>
+                                  onChange={(element, value:any) =>
                                     setSchedule((prevState) => ({
                                       ...prevState,
                                       exchange: {

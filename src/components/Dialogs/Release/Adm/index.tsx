@@ -177,7 +177,7 @@ export default function AdmReleaseDialog(props: IDialogProps) {
                   <Autocomplete
                     id="input-release-reason"
                     options={careState.cid}
-                    getOptionLabel={(option) => option.name}
+                    getOptionLabel={(option:any) => option.name}
                     value={selectCid()}
                     // getOptionSelected={(option, value) => option._id === captureData.health_insurance_id}
                     renderInput={(params) => (
@@ -187,7 +187,7 @@ export default function AdmReleaseDialog(props: IDialogProps) {
                         variant="outlined"
                       />
                     )}
-                    onChange={(event, value) => {
+                    onChange={(event, value:any) => {
                       if (value) {
                         handleSelectCid({
                           _id: value._id || "",
@@ -207,7 +207,7 @@ export default function AdmReleaseDialog(props: IDialogProps) {
                   <Autocomplete
                     id="input-cid"
                     options={careState.release_reason}
-                    getOptionLabel={(option) => option.name}
+                    getOptionLabel={(option:any) => option.name}
                     value={selectReleaseReason()}
                     // getOptionSelected={(option, value) => option._id === captureData.health_insurance_id}
                     renderInput={(params) => (
@@ -217,7 +217,7 @@ export default function AdmReleaseDialog(props: IDialogProps) {
                         variant="outlined"
                       />
                     )}
-                    onChange={(event, value) => {
+                    onChange={(event, value:any) => {
                       if (value) {
                         handleSelectReleaseReason({
                           _id: value._id || "",

@@ -1733,7 +1733,7 @@ export default function UserForm(props: IPageParams) {
                                 // }
                                 // defaultValue={selectProfession()}
                                 value={selectProfession()}
-                                onChange={(event, value) => {
+                                onChange={(event, value:any) => {
                                   if (value) {
                                     handleSelectProfession(value);
                                   } else {
@@ -1754,7 +1754,7 @@ export default function UserForm(props: IPageParams) {
                                 id="combo-box-council"
                                 disabled={!canEdit}
                                 options={councilState.list.data}
-                                getOptionLabel={(option) =>
+                                getOptionLabel={(option:any) =>
                                   `${option.initials} - ${option.name}`
                                 }
                                 renderInput={(params) => (
@@ -1789,7 +1789,7 @@ export default function UserForm(props: IPageParams) {
                                 id="combo-box-council-state"
                                 options={ufs}
                                 disabled={!canEdit}
-                                getOptionLabel={(option) => option.initials}
+                                getOptionLabel={(option:any) => option.initials}
                                 renderInput={(params) => (
                                   <TextField
                                     {...params}
@@ -1858,7 +1858,7 @@ export default function UserForm(props: IPageParams) {
                                 id="combo-box-main-especialty"
                                 disabled={!canEdit}
                                 options={specialtyState.list.data}
-                                getOptionLabel={(option) => option.name}
+                                getOptionLabel={(option:any) => option.name}
                                 renderInput={(params) => (
                                   <TextField
                                     {...params}
@@ -1870,7 +1870,7 @@ export default function UserForm(props: IPageParams) {
                                 //   option._id === state?.main_specialty_id.name
                                 // }
                                 value={selectMainSpecialty()}
-                                onChange={(event, value) => {
+                                onChange={(event, value:any) => {
                                   if (value) {
                                     handleSelectMainSpecialty(value);
                                   }
@@ -1897,7 +1897,7 @@ export default function UserForm(props: IPageParams) {
                                 id="combo-box-especialty"
                                 options={specialties}
                                 disabled={!canEdit}
-                                getOptionLabel={(option) => option.name}
+                                getOptionLabel={(option:any) => option.name}
                                 renderInput={(params: any) => {
                                   params.inputProps.value = "";
                                   return (
@@ -3250,7 +3250,7 @@ export default function UserForm(props: IPageParams) {
                                 // }
                                 // defaultValue={selectProfession()}
                                 value={selectProfession()}
-                                onChange={(event, value) => {
+                                onChange={(event, value:any) => {
                                   if (value) {
                                     handleSelectProfession(value);
                                   } else {
@@ -3271,7 +3271,7 @@ export default function UserForm(props: IPageParams) {
                                 id="combo-box-council"
                                 disabled={!canEdit}
                                 options={councilState.list.data}
-                                getOptionLabel={(option) =>
+                                getOptionLabel={(option:any) =>
                                   `${option.initials} - ${option.name}`
                                 }
                                 renderInput={(params) => (
@@ -3306,7 +3306,7 @@ export default function UserForm(props: IPageParams) {
                                 id="combo-box-council-state"
                                 options={ufs}
                                 disabled={!canEdit}
-                                getOptionLabel={(option) => option.initials}
+                                getOptionLabel={(option:any) => option.initials}
                                 renderInput={(params) => (
                                   <TextField
                                     {...params}
@@ -3366,7 +3366,7 @@ export default function UserForm(props: IPageParams) {
                                 id="combo-box-main-especialty"
                                 disabled={!canEdit}
                                 options={specialtyState.list.data}
-                                getOptionLabel={(option) => option.name}
+                                getOptionLabel={(option:any) => option.name}
                                 renderInput={(params) => (
                                   <TextField
                                     {...params}
@@ -3378,7 +3378,7 @@ export default function UserForm(props: IPageParams) {
                                 //   option._id === state?.main_specialty_id
                                 // }
                                 value={selectMainSpecialty()}
-                                onChange={(event, value) => {
+                                onChange={(event, value:any) => {
                                   if (value) {
                                     handleSelectMainSpecialty(value);
                                   }
@@ -3397,7 +3397,7 @@ export default function UserForm(props: IPageParams) {
                                 id="combo-box-especialty"
                                 options={specialties}
                                 disabled={!canEdit}
-                                getOptionLabel={(option) => option.name}
+                                getOptionLabel={(option:any) => option.name}
                                 renderInput={(params: any) => {
                                   params.inputProps.value = "";
                                   return (

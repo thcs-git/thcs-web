@@ -468,7 +468,7 @@ export default function AreaForm(props: IPageParams) {
                   <Autocomplete
                     id="combo-box-users"
                     options={userState.list.data}
-                    getOptionLabel={(option) => option.name}
+                    getOptionLabel={(option:any) => option.name}
                     renderInput={(params) => (
                       <TextField
                         {...params}
@@ -477,7 +477,7 @@ export default function AreaForm(props: IPageParams) {
                       />
                     )}
                     size="small"
-                    onChange={(event, value) => {
+                    onChange={(event, value:any) => {
                       if (value) {
                         handleSelectUser({
                           _id: value._id || "",
@@ -492,12 +492,12 @@ export default function AreaForm(props: IPageParams) {
                   <Autocomplete
                     id="combo-box-areas"
                     options={areaState.list.data}
-                    getOptionLabel={(option) => option.name}
+                    getOptionLabel={(option:any) => option.name}
                     renderInput={(params) => (
                       <TextField {...params} label="Área" variant="outlined" />
                     )}
                     size="small"
-                    onChange={(event, value) => {
+                    onChange={(event, value:any) => {
                       if (value) {
                         handleSelectArea({
                           _id: value._id || "",

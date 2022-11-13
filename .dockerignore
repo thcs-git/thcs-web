@@ -10,3 +10,4 @@ publish-thcs-frontend.sh
 run-thcs-frontend-web-prd.sh
 run-thcs-frontend-web-hml.sh
 thcs-google-credentials.json
+/build

@@ -797,7 +797,7 @@ export default function AreaForm(props: IPageParams) {
                             <Autocomplete
                               id="combo-box-day-of-week"
                               options={daysOfTheWeek}
-                              getOptionLabel={(option) => option.name}
+                              getOptionLabel={(option:any) => option.name}
                               renderInput={(params) => (
                                 <TextField
                                   {...params}
@@ -862,7 +862,7 @@ export default function AreaForm(props: IPageParams) {
                           id="combo-box-neigthborhoods-states"
                           options={States || []}
                           disabled={!canEdit}
-                          getOptionLabel={(option) => option.name}
+                          getOptionLabel={(option:any) => option.name}
                           renderInput={(params) => (
                             <TextField
                               {...params}
@@ -1017,7 +1017,7 @@ export default function AreaForm(props: IPageParams) {
                           id="combo-box-profession"
                           disabled={!canEdit}
                           options={userState.data.professions || []}
-                          getOptionLabel={(option) => option.name}
+                          getOptionLabel={(option:any) => option.name}
                           renderInput={(params) => (
                             <TextField
                               {...params}
@@ -1043,7 +1043,7 @@ export default function AreaForm(props: IPageParams) {
                           id="combo-box-users"
                           disabled={!canEdit}
                           options={userState.list.data}
-                          getOptionLabel={(option) => option.name}
+                          getOptionLabel={(option:any) => option.name}
                           renderInput={(params) => (
                             <TextField
                               {...params}
@@ -1052,7 +1052,7 @@ export default function AreaForm(props: IPageParams) {
                             />
                           )}
                           size="small"
-                          onChange={(event, value) => {
+                          onChange={(event, value:any) => {
                             if (value) {
                               handleSelectUser({
                                 _id: value._id || "",
