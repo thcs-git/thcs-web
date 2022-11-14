@@ -3185,18 +3185,49 @@ export default function AccordionReport(props: IAccordionReport) {
       return (
         <>
           <ContentDetailsAccordion key={form._id}>
-            <TextCenterDetails sx={{ justifyContent: "flex-start" }}>
+            <TextCenterDetails
+              sx={{
+                justifyContent: "flex-start",
+                textDecoration: `${
+                  form.status === "canceled" ? "line-through" : "none"
+                }`,
+                color: `${
+                  form.status === "canceled" ? colorTextDesable : colorText
+                }`,
+              }}
+            >
               <Typography sx={{ maxWidth: "248px" }}>
                 {form.created_by.name}
               </Typography>
             </TextCenterDetails>
-            <TextCenterDetails>
+            <TextCenterDetails
+              sx={{
+                textDecoration: `${
+                  form.status === "canceled" ? "line-through" : "none"
+                }`,
+                color: `${
+                  form.status === "canceled" ? colorTextDesable : colorText
+                }`,
+              }}
+            >
               <Typography sx={{ maxWidth: "248px" }}>
                 {formatDate(form.created_at, "DD/MM/YYYY [às] HH:mm", timeZone)}
               </Typography>
             </TextCenterDetails>
             <TextCenterDetails>
-              <Typography sx={{ maxWidth: "248px" }}>{form.name}</Typography>
+              <Typography
+                sx={{
+                  maxWidth: "248px",
+                  textDecoration: `${
+                    form.status === "canceled" ? "line-through" : "none"
+                  }`,
+                  color: `${
+                    form.status === "canceled" ? colorTextDesable : colorText
+                  }`,
+                }}
+              >
+                {form.name}
+              </Typography>
             </TextCenterDetails>
 
             <TextCenterDetails sx={{ width: "125px" }}>
