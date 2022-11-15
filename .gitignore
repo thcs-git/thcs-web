@@ -34,7 +34,15 @@ cypress/videos
 dist
 
 publish-thcs-frontend.sh
+publish-thcs-frontend-prd.sh
+publish-thcs-frontend-hml.sh
+publish-thcs-frontend-qa.sh
+
 run-thcs-frontend-web-prd.sh
 run-thcs-frontend-web-hml.sh
+
 thcs-google-credentials.json
-.env
+
+.env.prd
+.env.hml
+.env.qa
