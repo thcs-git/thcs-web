@@ -2508,124 +2508,109 @@ export default function AccordionReport(props: IAccordionReport) {
     </>
   );
   const measurementsAccordionDetails = (list: any) =>
-    list
-      .sort(
-        (a: any, b: any) =>
-          Number(new Date(b.created_at)) - Number(new Date(a.created_at))
-      )
-      .map((column: IAccordionInfo, index: number) => {
-        return (
-          <>
-            <ContentDetailsAccordion key={column._id}>
-              <TextCenterDetails
+    list.map((column: IAccordionInfo, index: number) => {
+      return (
+        <>
+          <ContentDetailsAccordion key={column._id}>
+            <TextCenterDetails
+              sx={{
+                width: "80px",
+                textDecoration: `${column.canceled ? "line-through" : "none"}`,
+                color: `${column.canceled ? colorTextDesable : colorText}`,
+              }}
+            >
+              <Typography>
+                {formatDate(column.created_at, "HH:mm", timeZone)}
+              </Typography>
+            </TextCenterDetails>
+            <TextCenterDetails
+              sx={{
+                textDecoration: `${column.canceled ? "line-through" : "none"}`,
+                color: `${column.canceled ? colorTextDesable : colorText}`,
+              }}
+            >
+              <Typography>
+                {getFirstAndLastName(capitalizeText(column.created_by[0].name))}
+              </Typography>
+            </TextCenterDetails>
+            <TextCenterDetails
+              sx={{
+                textDecoration: `${column.canceled ? "line-through" : "none"}`,
+                color: `${column.canceled ? colorTextDesable : colorText}`,
+              }}
+            >
+              <Typography>{handleFunction(column, company_id)}</Typography>
+            </TextCenterDetails>
+            <TextCenterDetails
+              sx={{
+                width: "320px",
+                textDecoration: `${column.canceled ? "line-through" : "none"}`,
+                color: `${column.canceled ? colorTextDesable : colorText}`,
+              }}
+            >
+              <Box
                 sx={{
-                  width: "80px",
-                  textDecoration: `${
-                    column.canceled ? "line-through" : "none"
-                  }`,
-                  color: `${column.canceled ? colorTextDesable : colorText}`,
+                  display: "flex",
+                  flexWrap: "wrap",
+                  justifyContent: "center",
+                  alignItems: "center",
+                  gap: "4px",
+                  margin: "2px",
                 }}
               >
-                <Typography>
-                  {formatDate(column.created_at, "HH:mm", timeZone)}
-                </Typography>
-              </TextCenterDetails>
-              <TextCenterDetails
+                {handleMeasurementItemsIcons(
+                  checkMeasurementValue(column.itens),
+                  column.canceled
+                )}
+              </Box>
+            </TextCenterDetails>
+            <TextCenterDetails
+              sx={{ width: "100px", justifyContent: "center" }}
+            >
+              <IconButton
+                color="secondary"
+                aria-label="print"
                 sx={{
-                  textDecoration: `${
-                    column.canceled ? "line-through" : "none"
-                  }`,
-                  color: `${column.canceled ? colorTextDesable : colorText}`,
+                  cursor: "pointer",
+                  color: colorBackgroundActive,
+                  display: "flex",
+                  justifyContent: "center",
+                  alignItems: "center",
+                  height: "36px",
+                  width: "36px",
+                }}
+                onClick={() => {
+                  if (reportType === "Aferições") {
+                    const payload = {
+                      _id: column._id,
+                      type: "Id",
+                      name: column._id,
+                      dataStart: "",
+                      dataEnd: "",
+                      reportType: "Aferições",
+                      attendance_id: state?.data?._id,
+                    };
+                    dispatch(loadMeasurementFilterRequest(payload));
+                  }
                 }}
               >
-                <Typography>
-                  {getFirstAndLastName(
-                    capitalizeText(column.created_by[0].name)
-                  )}
-                </Typography>
-              </TextCenterDetails>
-              <TextCenterDetails
-                sx={{
-                  textDecoration: `${
-                    column.canceled ? "line-through" : "none"
-                  }`,
-                  color: `${column.canceled ? colorTextDesable : colorText}`,
-                }}
-              >
-                <Typography>{handleFunction(column, company_id)}</Typography>
-              </TextCenterDetails>
-              <TextCenterDetails
-                sx={{
-                  width: "320px",
-                  textDecoration: `${
-                    column.canceled ? "line-through" : "none"
-                  }`,
-                  color: `${column.canceled ? colorTextDesable : colorText}`,
-                }}
-              >
-                <Box
-                  sx={{
-                    display: "flex",
-                    flexWrap: "wrap",
-                    justifyContent: "center",
-                    alignItems: "center",
-                    gap: "4px",
-                    margin: "2px",
-                  }}
-                >
-                  {handleMeasurementItemsIcons(
-                    checkMeasurementValue(column.itens),
-                    column.canceled
-                  )}
-                </Box>
-              </TextCenterDetails>
-              <TextCenterDetails
-                sx={{ width: "100px", justifyContent: "center" }}
-              >
-                <IconButton
-                  color="secondary"
-                  aria-label="print"
+                <PrintIcon
                   sx={{
                     cursor: "pointer",
-                    color: colorBackgroundActive,
-                    display: "flex",
-                    justifyContent: "center",
-                    alignItems: "center",
-                    height: "36px",
-                    width: "36px",
+                    "& svg, path": { cursor: "pointer" },
                   }}
-                  onClick={() => {
-                    if (reportType === "Aferições") {
-                      const payload = {
-                        _id: column._id,
-                        type: "Id",
-                        name: column._id,
-                        dataStart: "",
-                        dataEnd: "",
-                        reportType: "Aferições",
-                        attendance_id: state?.data?._id,
-                      };
-                      dispatch(loadMeasurementFilterRequest(payload));
-                    }
-                  }}
-                >
-                  <PrintIcon
-                    sx={{
-                      cursor: "pointer",
-                      "& svg, path": { cursor: "pointer" },
-                    }}
-                  />
-                </IconButton>
-              </TextCenterDetails>
-            </ContentDetailsAccordion>
-            {list.length !== index + 1 ? (
-              <Divider sx={{ width: "100%", margin: "0 auto" }} />
-            ) : (
-              ""
-            )}
-          </>
-        );
-      });
+                />
+              </IconButton>
+            </TextCenterDetails>
+          </ContentDetailsAccordion>
+          {list.length !== index + 1 ? (
+            <Divider sx={{ width: "100%", margin: "0 auto" }} />
+          ) : (
+            ""
+          )}
+        </>
+      );
+    });
   // Accordion das Telemedicines
   const telemedicineAccordion = (data: any) =>
     content.data.map(({ _id, list }: any, index: number) => (
@@ -3185,49 +3170,18 @@ export default function AccordionReport(props: IAccordionReport) {
       return (
         <>
           <ContentDetailsAccordion key={form._id}>
-            <TextCenterDetails
-              sx={{
-                justifyContent: "flex-start",
-                textDecoration: `${
-                  form.status === "canceled" ? "line-through" : "none"
-                }`,
-                color: `${
-                  form.status === "canceled" ? colorTextDesable : colorText
-                }`,
-              }}
-            >
+            <TextCenterDetails sx={{ justifyContent: "flex-start" }}>
               <Typography sx={{ maxWidth: "248px" }}>
                 {form.created_by.name}
               </Typography>
             </TextCenterDetails>
-            <TextCenterDetails
-              sx={{
-                textDecoration: `${
-                  form.status === "canceled" ? "line-through" : "none"
-                }`,
-                color: `${
-                  form.status === "canceled" ? colorTextDesable : colorText
-                }`,
-              }}
-            >
+            <TextCenterDetails>
               <Typography sx={{ maxWidth: "248px" }}>
                 {formatDate(form.created_at, "DD/MM/YYYY [às] HH:mm", timeZone)}
               </Typography>
             </TextCenterDetails>
             <TextCenterDetails>
-              <Typography
-                sx={{
-                  maxWidth: "248px",
-                  textDecoration: `${
-                    form.status === "canceled" ? "line-through" : "none"
-                  }`,
-                  color: `${
-                    form.status === "canceled" ? colorTextDesable : colorText
-                  }`,
-                }}
-              >
-                {form.name}
-              </Typography>
+              <Typography sx={{ maxWidth: "248px" }}>{form.name}</Typography>
             </TextCenterDetails>
 
             <TextCenterDetails sx={{ width: "125px" }}>
