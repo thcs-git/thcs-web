@@ -70,15 +70,16 @@ export default function CouncilList() {
   const currentCompany = localStorage.getItem(LOCALSTORAGE.COMPANY_SELECTED);
   // let valueStatus: string;
   const [valueStatus, setValueStatus] = useState("");
+
   useEffect(() => {
     if (tabIndex === 0) {
-      dispatch(getCares({ status: "Atendimento" }));
+      dispatch(getCares({ status: "Atendimento", search }));
       setValueStatus("Atendimento");
     } else if (tabIndex === 1) {
-      dispatch(getCares({ status: "Alta" }));
+      dispatch(getCares({ status: "Alta", search }));
       setValueStatus("Alta");
     } else {
-      dispatch(getCares({ status: "Todos" }));
+      dispatch(getCares({ status: "Todos", search }));
       setValueStatus("Todos");
     }
 
@@ -132,9 +133,10 @@ export default function CouncilList() {
   // );
 
   // const debounceSearchRequest = debounce(handleChangeInput, 900);
-  const handleSearchInput = useCallback((event: any) => {
+
+  const handleSearchInput = (event: any) => {
     dispatch(getCares({ search: event, status: valueStatus }));
-  }, []);
+  };
 
   const handleChangeInput = (
     event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
