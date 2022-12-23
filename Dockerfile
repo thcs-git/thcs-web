@@ -1,7 +1,6 @@
 FROM node:16-alpine AS builder
 
-ARG NODE_ENV=production
-ENV NODE_ENV=${NODE_ENV}
+ARG BUILD_ARG='build:hml'
 
 WORKDIR /usr/src/app
 
@@ -12,9 +11,12 @@ RUN yarn --network-timeout 100000
 
 COPY . .
 
-RUN yarn build
+RUN yarn ${BUILD_ARG}
 
 FROM nginx:1.23.2-alpine AS runner
+
+ARG NODE_ENV=production
+ENV NODE_ENV=${NODE_ENV}
 
 WORKDIR /usr/src/app
 
