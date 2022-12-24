@@ -2103,27 +2103,24 @@ export default function AccordionReport(props: IAccordionReport) {
             <TextCenterDetails>
               <Typography>
                 {getFirstAndLastName(
-                  capitalizeText(itemList[0].user_id[0].name)
+                  capitalizeText(itemList.user_name)
                 )}
               </Typography>
             </TextCenterDetails>
             <TextCenterDetails>
               <Typography>
-                {handleFunction(
-                  itemList[0].user_id[0].companies_links,
-                  company_id
-                )}
+                {itemList.function}
               </Typography>
             </TextCenterDetails>
             <TextCenterDetails>
               <Typography>
-                {formatDate(itemList[0].created_at, "HH:mm", timeZone)}
+                {formatDate(itemList.in.created_at, "DD/MM - HH:mm", timeZone)}
               </Typography>
             </TextCenterDetails>
             <TextCenterDetails>
               <Typography>
-                {itemList[1]
-                  ? formatDate(itemList[1].created_at, "HH:mm", timeZone)
+                {itemList.out
+                  ? formatDate(itemList.out.created_at, "DD/MM - HH:mm", timeZone)
                   : "-"}
               </Typography>
             </TextCenterDetails>

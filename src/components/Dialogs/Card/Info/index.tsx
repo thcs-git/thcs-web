@@ -198,13 +198,10 @@ export default function DialogInfo(props: IDialogProps) {
         day.list.map((checks: any, index: number) => {
           const professional: ITeam = {
             name: getFirstAndLastName(
-              capitalizeText(checks[0].user_id[0].name)
+                capitalizeText(checks.user_name)
             ),
-            function: handleFunction(
-              checks[0].user_id[0].companies_links,
-              content.careState.data.company_id
-            ),
-            user_id: checks[0].user_id[0]._id,
+            function: checks.function,
+            user_id: checks.user._id,
           };
           team.push(professional);
         });
