@@ -183,6 +183,40 @@ export default function AccordionReport(props: IAccordionReport) {
     </Box>
   );
 
+  const PrintPrescriptionButton = (data) => {
+    if (!!data.data.items[0].frequency.doses.length || data.data.items[0].acm || data.data.items[0].sn) {
+      return (
+        <IconButton
+          aria-label="print"
+          sx={{
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+            cursor: "pointer",
+            height: "36px",
+            width: "36px",
+          }}
+          onClick={() => {
+            dispatch(
+              loadRequestReportPrescriptionUnique({
+                id: data.data._id,
+                careId: careState.data._id,
+              })
+            );
+          }}
+        >
+          <PrintIcon
+            sx={{
+              color: colorBackgroundActive,
+              cursor: "pointer",
+              "& > path": { cursor: "pointer" },
+            }}
+          />
+        </IconButton>
+      )
+    }
+  }
+
   const handleChange =
     (panel: string) => (event: React.SyntheticEvent, isExpanded: boolean) => {
       setExpanded(isExpanded ? panel : false);
@@ -659,33 +693,7 @@ export default function AccordionReport(props: IAccordionReport) {
             </Typography>
           </TextCenterDetails>
           <TextCenterDetails sx={{ width: "100px" }}>
-            <IconButton
-              aria-label="print"
-              sx={{
-                display: "flex",
-                justifyContent: "center",
-                alignItems: "center",
-                cursor: "pointer",
-                height: "36px",
-                width: "36px",
-              }}
-              onClick={() => {
-                dispatch(
-                  loadRequestReportPrescriptionUnique({
-                    id: column._id,
-                    careId: careState.data._id,
-                  })
-                );
-              }}
-            >
-              <PrintIcon
-                sx={{
-                  color: colorBackgroundActive,
-                  cursor: "pointer",
-                  "& > path": { cursor: "pointer" },
-                }}
-              />
-            </IconButton>
+            <PrintPrescriptionButton data={column}/>
           </TextCenterDetails>
         </ContentDetailsAccordion>
         {data.length !== index + 1 ? (
@@ -3245,7 +3253,7 @@ export default function AccordionReport(props: IAccordionReport) {
                   "& svg, path": { cursor: "pointer" },
                 }}
                 onClick={() => {
-                  // dispatch(loadRequestFile(column.documents.name_file));
+                  // dispatch(loadRequestFile(form.name));
                 }}
               >
                 <PrintIcon
