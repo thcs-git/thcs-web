@@ -1,6 +1,6 @@
 FROM node:16-alpine AS builder
 
-ARG BUILD_ARG='build:qa'
+ARG BUILD_ARG='build:hml'
 
 WORKDIR /usr/src/app
 
@@ -27,5 +27,7 @@ RUN rm /etc/nginx/conf.d/default.conf
 COPY nginx/nginx.conf /etc/nginx/conf.d
 
 COPY package*.json ./
+
+EXPOSE 3011
 
 CMD ["nginx", "-g", "daemon off;"]

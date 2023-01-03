@@ -372,12 +372,9 @@ export default function FilterReport(props: IPropsFilter) {
             const itemList: any = {
               name:
                 type === "Função"
-                  ? handleFunction(
-                      check[0].user_id[0].companies_links,
-                      careState.data.company_id
-                    )
-                  : capitalizeText(check[0].user_id[0].name),
-              _id: type === "Função" ? "" : check[0].user_id[0]._id,
+                  ? check.function
+                  : capitalizeText(check.user_name),
+              _id: type === "Função" ? "" : check.user._id,
             };
             List.push(itemList);
           });
