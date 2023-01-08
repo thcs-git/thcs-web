@@ -733,8 +733,8 @@ const Sibebar = (props: any) => {
                                             const token = localStorage.getItem(
                                                 localStorageConst.TOKEN
                                             );
-                                            // const integration_url = process.env.THCS_INTEGRATION_URL || sessionStorage.getItem(sessionStorageConst.INTEGRATION);
-                                            const integration_url = 'https://017f-170-78-98-229.ngrok.io/api';
+                                            const integration_url = process.env.THCS_INTEGRATION_URL || sessionStorage.getItem(sessionStorageConst.INTEGRATION);
+                                            // const integration_url = 'https://017f-170-78-98-229.ngrok.io/api';
                                             const integration_token = sessionStorage.getItem(
                                                 sessionStorageConst.INTEGRATION_TOKEN
                                             );
