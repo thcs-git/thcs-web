@@ -1,32 +1,13 @@
 import React, { useEffect, useRef } from "react";
+import Lottie from 'lottie-react'
 import { createPortal } from "react-dom";
-import { makeStyles, createStyles, Theme } from "@mui/material/styles";
 import { CircularProgressProps } from "@mui/material/CircularProgress";
-
-import { ReactComponent as LoadingSollar } from "../../assets/img/loading-sollar.svg";
-
-// const useStylesFacebook = makeStyles((theme: Theme) =>
-//   createStyles({
-//     bottom: {
-//       color: theme.palette.grey[theme.palette.type === "light" ? 200 : 700],
-//     },
-//     top: {
-//       color: "#0899BA",
-//       animationDuration: "550ms",
-//       position: "absolute",
-//       left: 0,
-//     },
-//     circle: {
-//       strokeLinecap: "round",
-//     },
-//   })
-// );
+import loading from "../../assets/img/Load_T+HCS.json";
 
 const body = document.querySelector("body");
 const divRoot = document.querySelector("#root");
 
 const FacebookCircularProgress = (props: CircularProgressProps) => {
-  // const classes = useStylesFacebook();
   const elementSpinner = useRef(document.createElement("div"));
   elementSpinner.current.setAttribute("class", "spinner-loading");
 
@@ -40,29 +21,11 @@ const FacebookCircularProgress = (props: CircularProgressProps) => {
     };
   }, []);
 
+  const Loading = () => {
+    return <Lottie animationData={loading} loop style={{width: 100, height: 100}} />
+  }
   const spinner = (
-    <>
-      {/* <CircularProgress
-        variant="determinate"
-        className={classes.bottom}
-        size={40}
-        thickness={4}
-        {...props}
-        value={100}
-      />
-      <CircularProgress
-        variant="indeterminate"
-        disableShrink
-        className={classes.top}
-        classes={{
-          circle: classes.circle,
-        }}
-        size={40}
-        thickness={4}
-        {...props}
-      /> */}
-      <LoadingSollar width={80} />
-    </>
+      <Loading />
   );
 
   return createPortal(spinner, elementSpinner.current);
