@@ -648,7 +648,7 @@ const TableComponent = (props: ITableProps) => {
                     sx={{ cursor: "pointer", "& a": { cursor: "pointer" } }}
                   >
                     <Link to={`/care/${care._id}/overview`}>
-                      {care.patient_id?.social_name
+                      {care.patient_id?.social_status
                         ? handleEmpty(care.patient_id?.social_name)
                         : handleEmpty(care.patient_id?.name)}
                     </Link>
