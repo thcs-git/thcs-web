@@ -1677,7 +1677,7 @@ export default function SignIn() {
       setValid(false);
     }
   }, [inputConfirmPassword, inputPassword, checkPolicy]);
-  useEffect(() => {}, [loginState]);
+  useEffect(() => { }, [loginState]);
   const handleMouseDownPassword = (
     event: React.MouseEvent<HTMLButtonElement>
   ) => {
@@ -1710,6 +1710,7 @@ export default function SignIn() {
     },
     validationSchema: validationSchemaRecoveryPassword,
     onSubmit: (values) => {
+      localStorage.setItem(LOCALSTORAGE.USERNAME, values.email)
       dispatch(loadUserByEmail(values.email));
       setSendEmail(true);
       setInputEmailForRecovery({ value: values.email });
@@ -1845,7 +1846,7 @@ export default function SignIn() {
                   {/* </div> */}
                 </InputAdornment>
               }
-              // labelWidth={70}
+            // labelWidth={70}
             />
           </FormControl>
           {loginState.email.user ? (
@@ -1902,7 +1903,7 @@ export default function SignIn() {
                           </IconButton>
                         </InputAdornment>
                       }
-                      // labelWidth={70}
+                    // labelWidth={70}
                     />
                   </FormControl>
                   <FormControlLabel

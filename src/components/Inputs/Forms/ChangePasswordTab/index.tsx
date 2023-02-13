@@ -42,6 +42,9 @@ const validationSchema = yup.object({
       SIZE_INPUT_PASSWORD,
       `A senha deve ter no mínimo ${SIZE_INPUT_PASSWORD} caracteres`
     )
+    .matches(/^.*(?=.*[A-Z]).*$/, "Mínimo de uma letra maiúscula")
+    .matches(/^.*(?=.*[!@#$%&*)?(+-]).*$/, "Mínimo de um caractere especial")
+    .matches(/^.*(?:\d{2}).*$/, "Mínimo de dois números")
     .max(20, "Senha deve ter no maximo 20 caracteres")
     .required("Campo obrigatório")
     .notOneOf(
@@ -54,6 +57,9 @@ const validationSchema = yup.object({
       SIZE_INPUT_PASSWORD,
       `A senha deve ter no mínimo ${SIZE_INPUT_PASSWORD} caracteres`
     )
+    .matches(/^.*(?=.*[A-Z]).*$/, "Mínimo de uma letra maiúscula")
+    .matches(/^.*(?=.*[!@#$%&*)?(+-]).*$/, "Mínimo de um caractere especial")
+    .matches(/^.*(?:\d{2}).*$/, "Mínimo de dois números")
     .required("Campo obrigatório")
     .oneOf(
       [yup.ref("password"), null],

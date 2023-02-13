@@ -49,8 +49,7 @@ export function* get({ payload }: any) {
     // } else {
     response = yield call(
       apiSollar.get as any,
-      `/user?limit=${params.limit ?? 10}&page=${params.page || 1}${
-        params.search ? "&search=" + params.search : ""
+      `/user?limit=${params.limit ?? 10}&page=${params.page || 1}${params.search ? "&search=" + params.search : ""
       }${params.profession_id ? "&profession_id=" + params.profession_id : ""}`
     );
     // }
@@ -102,8 +101,7 @@ export function* loadGetUserDisengaged({ payload }: any) {
   try {
     const response: AxiosResponse = yield call(
       apiSollar.get as any,
-      `/user/getUserDisengaged?limit=${params.limit ?? 10}&page=${
-        params.page || 1
+      `/user/getUserDisengaged?limit=${params.limit ?? 10}&page=${params.page || 1
       }`,
       {
         headers: { token },
@@ -350,8 +348,7 @@ export function* searchUserDisengaged({ payload: { value } }: any) {
   try {
     const response: AxiosResponse = yield call(
       apiSollar.get as any,
-      `/user/getUserDisengaged?limit=10&page=1${
-        !!value ? "&search=" + value : ""
+      `/user/getUserDisengaged?limit=10&page=1${!!value ? "&search=" + value : ""
       }`
     );
     yield put(loadSuccessGetUserDisengaged(response.data));
@@ -388,7 +385,7 @@ export function* checkEmail({ payload: { token } }: any) {
 
 export function* recoveryPassword({ payload: { data } }: any) {
   localStorage.removeItem(LOCALSTORAGE.TOKEN);
-  localStorage.removeItem(LOCALSTORAGE.USERNAME);
+  //localStorage.removeItem(LOCALSTORAGE.USERNAME);
   localStorage.removeItem(LOCALSTORAGE.USER_ID);
   localStorage.removeItem(LOCALSTORAGE.COMPANY_SELECTED);
   localStorage.removeItem(LOCALSTORAGE.CUSTOMER);
@@ -449,8 +446,7 @@ export function* getByClient({ payload }: any) {
     // } else {
     response = yield call(
       apiSollar.get as any,
-      `/user/getByClient?limit=${params.limit ?? 10}&page=${params.page || 1}${
-        params.search ? "&search=" + params.search : ""
+      `/user/getByClient?limit=${params.limit ?? 10}&page=${params.page || 1}${params.search ? "&search=" + params.search : ""
       }${params.profession_id ? "&profession_id=" + params.profession_id : ""}`
     );
     // }

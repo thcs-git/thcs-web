@@ -36,8 +36,8 @@ export const ibge = axios.create({
 export const googleMaps = axios.create({
     baseURL: process.env.REACT_APP_GOOGLE_MAPS_API,
 });
-let integrationUrl = sessionStorage.getItem(SESSIONSTORAGE.INTEGRATION) || "";
-// let integrationUrl = 'http://localhost:3232/api';
+//let integrationUrl = sessionStorage.getItem(SESSIONSTORAGE.INTEGRATION) || "";
+let integrationUrl = 'http://localhost:3232/api';
 // "http://localhost:3232/api";
 apiSollar.interceptors.request.use(
     function (config) {
@@ -57,7 +57,7 @@ apiSollar.interceptors.request.use(
 
         if (token) {
             config.headers!.token = `${token}`;
-            config.headers!.user = JSON.stringify({id: user_id, username});
+            config.headers!.user = JSON.stringify({ id: user_id, username });
             config.headers!.company_id = company_id;
             config.headers!.customer_id = customer_id;
         }
@@ -84,7 +84,7 @@ apiSollar.interceptors.response.use(
     (error) => {
         if (!error.response) return;
 
-        const {errors} = error.response.data;
+        const { errors } = error.response.data;
         if (errors?.name === "TokenExpiredError") {
             localStorage.removeItem(LOCALSTORAGE.TOKEN);
             localStorage.setItem(
@@ -115,7 +115,7 @@ apiSollarMobi.interceptors.request.use(
 
         if (token) {
             config.headers!.token = `${token}`;
-            config.headers!.user = JSON.stringify({id: user_id, username});
+            config.headers!.user = JSON.stringify({ id: user_id, username });
             config.headers!.company_id = company_id;
             config.headers!.customer_id = customer_id;
         }
@@ -141,7 +141,7 @@ apiSollarMobi.interceptors.response.use(
     (error) => {
         if (!error.response) return;
 
-        const {errors} = error.response.data;
+        const { errors } = error.response.data;
         if (errors?.name === "TokenExpiredError") {
             localStorage.removeItem(LOCALSTORAGE.TOKEN);
             localStorage.setItem(
@@ -172,7 +172,7 @@ apiSollarReport.interceptors.request.use(
 
         if (token) {
             config.headers!.token = `${token}`;
-            config.headers!.user = JSON.stringify({id: user_id, username});
+            config.headers!.user = JSON.stringify({ id: user_id, username });
             config.headers!.company_id = company_id;
             config.headers!.customer_id = customer_id;
         }
@@ -193,7 +193,7 @@ apiSollarReport.interceptors.request.use(
 
 apiSollarReport.interceptors.response.use(
     (response) => {
-        const file = new Blob([response.data], {type: "application/pdf"});
+        const file = new Blob([response.data], { type: "application/pdf" });
         const fileURL = URL.createObjectURL(file);
         window.open(fileURL);
         return response;
@@ -231,7 +231,7 @@ apiSollarNexoData.interceptors.request.use(
 
         if (token) {
             config.headers!.token = `${token}`;
-            config.headers!.user = JSON.stringify({id: user_id, username});
+            config.headers!.user = JSON.stringify({ id: user_id, username });
             config.headers!.company_id = company_id;
             config.headers!.customer_id = customer_id;
         }
@@ -257,7 +257,7 @@ apiSollarNexoData.interceptors.response.use(
     (error) => {
         if (!error.response) return;
 
-        const {errors} = error.response.data;
+        const { errors } = error.response.data;
         if (errors?.name === "TokenExpiredError") {
             localStorage.removeItem(LOCALSTORAGE.TOKEN);
             localStorage.setItem(
@@ -300,7 +300,7 @@ apiSollarChatbot.interceptors.request.use(
 
         if (token) {
             config.headers!.token = `${token}`;
-            config.headers!.user = JSON.stringify({id: user_id, username});
+            config.headers!.user = JSON.stringify({ id: user_id, username });
             config.headers!.company_id = company_id;
             config.headers!.customer_id = customer_id;
         }

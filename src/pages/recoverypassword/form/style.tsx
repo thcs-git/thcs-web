@@ -33,12 +33,12 @@ export const HomeIconLogo = styled(HomeIcon)`
 
 export const TokenIconErro = styled(TokenErro)`
   margin-bottom: 8px;
-  height: 400px;
+  height: 250px;
   width: 400px;
   `;
 export const TokenIconSuccess = styled(TokenSuccess)`
 margin-bottom: 8px;
-height: 400px;
+height: 250px;
 width: 400px;
 `;
 
@@ -59,7 +59,6 @@ export const FeedbackButtonsContent = styled.p`
   display: flex;
   align-items: center;
   justify-content: center;
-
   margin-top: 2.25rem;
 
   & > button:not(:last-child) {
