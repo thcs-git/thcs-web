@@ -208,7 +208,7 @@ import {
 } from "./telemedicine/sagas";
 
 import { FormTypes } from "./forms/types";
-import { getForms } from "./forms/sagas";
+import { getForms,getFilterForms } from "./forms/sagas";
 
 import { CustomerLogsTypes } from "./customerLogs/types";
 import { getCustomerLogs } from "./customerLogs/sagas";
@@ -497,6 +497,7 @@ export default function* rootSaga(): any {
      * FORMS
      */
     takeLatest(FormTypes.LOAD_REQUEST, getForms),
+    takeLatest(FormTypes.LOAD_FORMS_FILTER_REQUEST, getFilterForms),
     /**
      * LOGS
      */
