@@ -100,7 +100,7 @@ export default function DialogChangeCompany(props: IChangeCompany) {
   }, []);
   const changeCompany = useCallback(
     (company: any) => {
-      console.log(company)
+
       if (company) {
         localStorage.setItem(
           LOCALSTORAGE.COMPANY_SELECTED,

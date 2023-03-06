@@ -183,9 +183,7 @@ export default function AccordionReport(props: IAccordionReport) {
       </Typography>
     </Box>
   );
-  useEffect(() => {
-    console.log(props, "props");
-  }, [props]);
+
   const PrintPrescriptionButton = (data) => {
     if (
       !!data.data.items[0].frequency.doses.length ||
@@ -2785,7 +2783,6 @@ export default function AccordionReport(props: IAccordionReport) {
   );
   const telemedicineAccordionDetails = (list: any): any =>
     list.map((doc: any, index: number) => {
-      console.log(doc);
       return (
         <>
           <ContentDetailsAccordion key={index}>
@@ -3201,7 +3198,6 @@ export default function AccordionReport(props: IAccordionReport) {
   );
   const formsAccordionDetails = (list: FormsData[]) =>
     list.map((form: FormsData, index: number) => {
-      console.log(form, "form");
       return (
         <>
           <ContentDetailsAccordion key={form._id}>
