@@ -144,6 +144,7 @@ interface IAccordionInfo {
   ];
   itens: IAccordionItem[];
   patient_id: string;
+  in: {created_at: string};
 }
 
 interface IAccordionItem {
@@ -1962,6 +1963,7 @@ export default function AccordionReport(props: IAccordionReport) {
   // Accordion de check-in/out
   const checkInOutAccordion = (data: any) =>
     data.map(({ _id, list }: IDataAccordion, index: number) => {
+      const dateEntry = list.map((item) => (formatDate(item.in.created_at, "YYYY-MM-DD", timeZone)));
       return (
         <Box sx={{ position: "relative" }}>
           <Box
@@ -1990,7 +1992,7 @@ export default function AccordionReport(props: IAccordionReport) {
                   _id: "",
                   type: "Group",
                   name: "",
-                  dataStart: _id,
+                  dataStart: dateEntry[dateEntry.length - 1],
                   dataEnd: _id,
                   reportType: "Check-in/out",
                   attendance_id: state?.data?._id,

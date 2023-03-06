@@ -827,6 +827,7 @@ export function* getChekInReport({ payload }: any) {
 }
 
 export function* getFilterCheckin({ payload }: any) {
+  console.log(payload)
   try {
     let { dataStart, dataEnd, type, name } = payload;
     dataStart =
