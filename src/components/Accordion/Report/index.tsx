@@ -99,6 +99,7 @@ import {
 import { loadRequestFile } from "../../../store/ducks/attachment/actions";
 import { loadRequestReportByDate } from "../../../store/ducks/prescripition/actions";
 import { FormGroup, FormsData } from "../../../store/ducks/forms/types";
+import { loadFormsFilterRequest } from "../../../store/ducks/forms/actions";
 
 interface IAccordionReport {
   content: {
@@ -184,7 +185,11 @@ export default function AccordionReport(props: IAccordionReport) {
   );
 
   const PrintPrescriptionButton = (data) => {
-    if (!!data.data.items[0].frequency.doses.length || data.data.items[0].acm || data.data.items[0].sn) {
+    if (
+      !!data.data.items[0].frequency.doses.length ||
+      data.data.items[0].acm ||
+      data.data.items[0].sn
+    ) {
       return (
         <IconButton
           aria-label="print"
@@ -213,9 +218,9 @@ export default function AccordionReport(props: IAccordionReport) {
             }}
           />
         </IconButton>
-      )
+      );
     }
-  }
+  };
 
   const handleChange =
     (panel: string) => (event: React.SyntheticEvent, isExpanded: boolean) => {
@@ -693,7 +698,7 @@ export default function AccordionReport(props: IAccordionReport) {
             </Typography>
           </TextCenterDetails>
           <TextCenterDetails sx={{ width: "100px" }}>
-            <PrintPrescriptionButton data={column}/>
+            <PrintPrescriptionButton data={column} />
           </TextCenterDetails>
         </ContentDetailsAccordion>
         {data.length !== index + 1 ? (
@@ -1537,14 +1542,18 @@ export default function AccordionReport(props: IAccordionReport) {
               <Typography>
                 {item?.frequency?.doses?.length > 0 &&
                   item?.frequency?.doses?.map((dose: any, index: number) => {
-
                     if (dose.original) {
                       return `${formatDate(
-                          dose.original_date || dose.administer_date,
-                          "HH:mm",
-                          timeZone
+                        dose.original_date || dose.administer_date,
+                        "HH:mm",
+                        timeZone
                       )} ${
-                          _.filter(item.frequency.doses, {original: true}).length - 1 === index ? "" : " - "
+                        _.filter(item.frequency.doses, { original: true })
+                          .length -
+                          1 ===
+                        index
+                          ? ""
+                          : " - "
                       }`;
                     }
                   })}
@@ -2110,15 +2119,11 @@ export default function AccordionReport(props: IAccordionReport) {
           <ContentDetailsAccordion key={index}>
             <TextCenterDetails>
               <Typography>
-                {getFirstAndLastName(
-                  capitalizeText(itemList.user_name)
-                )}
+                {getFirstAndLastName(capitalizeText(itemList.user_name))}
               </Typography>
             </TextCenterDetails>
             <TextCenterDetails>
-              <Typography>
-                {itemList.function}
-              </Typography>
+              <Typography>{itemList.function}</Typography>
             </TextCenterDetails>
             <TextCenterDetails>
               <Typography>
@@ -2128,7 +2133,11 @@ export default function AccordionReport(props: IAccordionReport) {
             <TextCenterDetails>
               <Typography>
                 {itemList.out
-                  ? formatDate(itemList.out.created_at, "DD/MM - HH:mm", timeZone)
+                  ? formatDate(
+                      itemList.out.created_at,
+                      "DD/MM - HH:mm",
+                      timeZone
+                    )
                   : "-"}
               </Typography>
             </TextCenterDetails>
@@ -2774,7 +2783,6 @@ export default function AccordionReport(props: IAccordionReport) {
   );
   const telemedicineAccordionDetails = (list: any): any =>
     list.map((doc: any, index: number) => {
-      console.log(doc);
       return (
         <>
           <ContentDetailsAccordion key={index}>
@@ -3107,7 +3115,7 @@ export default function AccordionReport(props: IAccordionReport) {
                 width: "36px",
               }}
               onClick={() => {
-                // dispatch(loadEvolutionFilterRequest(payload));
+                //  dispatch(loadEvolutionFilterRequest(payload));
               }}
             >
               <PrintIcon
@@ -3240,7 +3248,6 @@ export default function AccordionReport(props: IAccordionReport) {
 
             <TextCenterDetails sx={{ width: "125px" }}>
               <IconButton
-                disabled
                 color="secondary"
                 aria-label="print"
                 sx={{
@@ -3253,7 +3260,14 @@ export default function AccordionReport(props: IAccordionReport) {
                   "& svg, path": { cursor: "pointer" },
                 }}
                 onClick={() => {
-                  // dispatch(loadRequestFile(form.name));
+                  dispatch(
+                    loadFormsFilterRequest({
+                      name_doc: form.name,
+                      attendance_id: state?.data?._id,
+                      name: form.created_by.name,
+                      type: "Prestador",
+                    })
+                  );
                 }}
               >
                 <PrintIcon
