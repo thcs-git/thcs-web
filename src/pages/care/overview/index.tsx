@@ -434,8 +434,8 @@ export default function PatientOverview(props: IPageParams) {
     md: 6,
   };
   const cards = [
-    "Atestados",
-    "Exames",
+    // "Atestados",
+    // "Exames",
     "Check-in/out",
     "Alergias",
     "Prescrições",
@@ -443,8 +443,8 @@ export default function PatientOverview(props: IPageParams) {
     "Antibióticos",
     "Evolução",
     "Aferições",
-    "Telemedicina",
-    "Anexos",
+    // "Telemedicina",
+    // "Anexos",
     "Formulários",
   ];
   const personalCard = {
