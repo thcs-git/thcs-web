@@ -2,6 +2,8 @@ export enum FormTypes {
   LOAD_REQUEST = "@forms/LOAD_REQUEST",
   LOAD_SUCCESS = "@forms/LOAD_SUCCESS",
   LOAD_FAILURE = "@forms/LOAD_FAILURE",
+  LOAD_FORMS_FILTER_REQUEST = "@forms/LOAD_FORMS_FILTER_REQUEST",
+  LOAD_FORMS_FILTER_SUCCESS = "@forms/LOAD_FORMS_FILTER_SUCCESS"
 }
 
 export interface FormsExternalData {
