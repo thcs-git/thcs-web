@@ -193,15 +193,16 @@ export default function DialogInfo(props: IDialogProps) {
 
   function handleTeamData(content: IContent) {
     let team: ITeam[] = [];
-    content.careState.checkin.data.map((day: any, index: number) => {
+    content?.careState?.checkin?.data?.map((day: any, index: number) => {
       if (day) {
-        day.list.map((checks: any, index: number) => {
+        day?.list?.map((checks: any, index: number) => {
+          console.log(checks);
           const professional: ITeam = {
             name: getFirstAndLastName(
                 capitalizeText(checks.user_name)
             ),
-            function: checks.function,
-            user_id: checks.user._id,
+            function: checks?.function,
+            user_id: checks?.user?._id,
           };
           team.push(professional);
         });
