@@ -25,6 +25,7 @@ import {
   loadRecoverySuccess,
   loadSuccessConfirm,
 } from "./actions";
+import { loadRequest } from "../login/actions";
 
 import { ViacepDataInterface } from "./types";
 
@@ -291,7 +292,7 @@ export function* updateUserPassword({ payload: { data } }: any) {
       { headers: { token: tokenAux } }
     );
 
-    yield put(updateUserSuccess(response.data));
+    yield put(loadRequest(data));
   } catch (error) {
     // toast.error("Não foi possível atualizar os dados do usuario");
     yield put(loadFailure());

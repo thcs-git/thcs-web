@@ -372,9 +372,9 @@ export default function FilterReport(props: IPropsFilter) {
             const itemList: any = {
               name:
                 type === "Função"
-                  ? check.function
-                  : capitalizeText(check.user_name),
-              _id: type === "Função" ? "" : check.user._id,
+                  ? check?.function
+                  : capitalizeText(check?.user_name),
+              _id: type === "Função" ? "" : check?.user?._id,
             };
             List.push(itemList);
           });
