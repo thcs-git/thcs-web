@@ -120,6 +120,9 @@ const validationSchema = yup.object({
       SIZE_INPUT_PASSWORD,
       `A senha deve ter no mínimo ${SIZE_INPUT_PASSWORD} caracteres`
     )
+    .matches(/^.(?=.[A-Z]).*$/, "Mínimo de uma letra maiúscula")
+    .matches(/^.(?=.[!@#$%&)?(+-]).$/, "Mínimo de um caractere especial")
+    .matches(/^.(?:\d{2}).$/, "Mínimo de dois números")
     .max(20, "Senha deve ter no maximo 20 caracteres")
     .required("Campo obrigatório"),
   confirmPassword: yup
@@ -1525,7 +1528,6 @@ export default function SignIn() {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const loginState = useSelector((state: ApplicationState) => state.login);
-  console.log(loginState.email, "loginState.email");
   const [inputEmail, setInputEmail] = useState({ value: "", error: false });
   const [inputPassword, setInputPassword] = useState({
     value: "",
@@ -1698,9 +1700,6 @@ export default function SignIn() {
           email: inputEmail.value,
           password: values.password,
         })
-      );
-      dispatch(
-        loadRequest({ email: inputEmail.value, password: values.password })
       );
     },
   });
