@@ -18,9 +18,7 @@ import Grid from "@mui/material/Grid";
 import Link from "@mui/material/Link";
 import Checkbox from "@mui/material/Checkbox";
 import TextField from "@mui/material/TextField";
-import InputLabel from "@mui/material/InputLabel";
 import IconButton from "@mui/material/IconButton";
-import CssBaseline from "@mui/material/CssBaseline";
 import FormControl from "@mui/material/FormControl";
 import OutlinedInput from "@mui/material/OutlinedInput";
 import InputAdornment from "@mui/material/InputAdornment";
@@ -29,50 +27,33 @@ import Button from "@mui/material/Button";
 import Visibility from "@mui/icons-material/Visibility";
 import VisibilityOff from "@mui/icons-material/VisibilityOff";
 import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
-import ButtomMui from "@mui/material/Button";
 import {
-  CircularProgress,
   Dialog,
   DialogActions,
   DialogContent,
   DialogContentText,
   DialogTitle,
-  Fab,
   FormGroup,
   useMediaQuery,
-  keyframes,
 } from "@mui/material";
-import { makeStyles } from "@mui/material/styles";
 import FormHelperText from "@mui/material/FormHelperText";
 import Typography from "@mui/material/Typography";
 // styles
 import {
-  ContainerLogin,
   WelcomeTextWrapper,
-  HomeIconLogo,
-  LogoText,
-  TextGray,
-  TextBlue,
-  ButtonGreen,
 } from "./styles";
 import theme from "../../theme/theme";
 // icons
 import THCStype1 from "../../components/Icons/THCS_Type1";
-import House1 from "../../components/Icons/HouseType1";
-import House2 from "../../components/Icons/HouseType2";
-import HouseGroup from "../../components/Icons/HouseGroup";
-import CloudIcon from "../../components/Icons/Cloud";
 //Utils
 import validateEmail from "../../utils/validateEmail";
-import LOCALSTORAGE from "../../helpers/constants/localStorage";
-import { toast } from "react-toastify";
 import { useFormik } from "formik";
 import * as yup from "yup";
 // componentes
-import Alert from "../../components/Alert";
 import Loading from "../../components/Loading";
 import BackgroundAnimated from "../../components/Background/Animated";
 import BackgroundHouses from "../../components/Background/Houses";
+import StrengthPasswordMeter from "../../components/StrengthPasswordMeter";
 function Copyright() {
   return (
     <Grid
@@ -120,9 +101,10 @@ const validationSchema = yup.object({
       SIZE_INPUT_PASSWORD,
       `A senha deve ter no mínimo ${SIZE_INPUT_PASSWORD} caracteres`
     )
-    .matches(/^.(?=.[A-Z]).*$/, "Mínimo de uma letra maiúscula")
-    .matches(/^.(?=.[!@#$%&)?(+-]).$/, "Mínimo de um caractere especial")
-    .matches(/^.(?:\d{2}).$/, "Mínimo de dois números")
+    .matches(
+      /^.*((?=.*[!@#$%^&*()\-_=+{};:,<.>]){1})(?=.*\d)((?=.*[a-z]){1})((?=.*[A-Z]){1}).*$/,
+      "A senha deve conter de uma letra maiúscula, uma minúscula, um caractere especial e um número!"
+    )
     .max(20, "Senha deve ter no maximo 20 caracteres")
     .required("Campo obrigatório"),
   confirmPassword: yup
@@ -1999,6 +1981,7 @@ export default function SignIn() {
                         ),
                       }}
                     />
+                    <StrengthPasswordMeter password={formik.values.password}/>
                     <TextField
                       fullWidth
                       color="secondary"
@@ -2060,6 +2043,24 @@ export default function SignIn() {
                         ),
                       }}
                     />
+                    <Typography fontSize={14} color={"#FFF"}>
+                      A senha deve conter no mínimo:
+                    </Typography>
+                    <Typography fontSize={12} color={"#FFF"}>
+                      - Seis caracteres
+                    </Typography>
+                    <Typography fontSize={12} color={"#FFF"}>
+                      - Uma letra maiúscula
+                    </Typography>
+                    <Typography fontSize={12} color={"#FFF"}>
+                      - Uma letra minúscula
+                    </Typography>
+                    <Typography fontSize={12} color={"#FFF"}>
+                      - Um número
+                    </Typography>
+                    <Typography fontSize={12} color={"#FFF"}>
+                      - Um caracter especial (@!#$%&*)
+                    </Typography>
 
                     <FormGroup
                       row

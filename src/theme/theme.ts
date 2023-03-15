@@ -82,9 +82,9 @@ let theme: Theme = createTheme({
     //black]
     black60: { main: "rgba(0, 0, 0, 0.7)" },
     // gerals
-    error: { main: "#E73A3A" },
+    error: { main: "#E73A3A", light: "#C45118" },
     warning: { main: "#F9CA24" },
-    success: { main: "#4FC66A" },
+    success: { main: "#4FC66A", dark: "#1D8F1D" },
     background: { default: "#fafafa", paper: "#FFF" },
   },
   typography: {
