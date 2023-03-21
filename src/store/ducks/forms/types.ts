@@ -3,7 +3,9 @@ export enum FormTypes {
   LOAD_SUCCESS = "@forms/LOAD_SUCCESS",
   LOAD_FAILURE = "@forms/LOAD_FAILURE",
   LOAD_FORMS_FILTER_REQUEST = "@forms/LOAD_FORMS_FILTER_REQUEST",
-  LOAD_FORMS_FILTER_SUCCESS = "@forms/LOAD_FORMS_FILTER_SUCCESS"
+  LOAD_FORMS_FILTER_SUCCESS = "@forms/LOAD_FORMS_FILTER_SUCCESS",
+  LOAD_FORMS_GROUP_BY_DATE_REQUEST = "@forms/LOAD_FORMS_GROUP_BY_DATE_REQUEST",
+  LOAD_FORMS_GROUP_BY_DATE_REQUEST_SUCCESS = "@forms/LOAD_FORMS_GROUP_BY_DATE_REQUEST_SUCCESS",
 }
 
 export interface FormsExternalData {
@@ -29,7 +31,7 @@ export interface FormsData {
   external_data: FormsExternalData;
   fields: FormField[];
   status: string;
-  created_by: { name: string };
+  created_by: { _id: string, name: string };
   created_at: string;
   __v: number;
 }
