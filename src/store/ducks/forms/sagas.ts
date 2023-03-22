@@ -7,7 +7,7 @@ import {
 } from "../../../services/axios";
 import { AxiosResponse } from "axios";
 import { toast } from "react-toastify";
-import { loadFailure, loadSuccess, loadFormsFilterError, loadFormsFilterSuccess } from "./actions";
+import { loadFailure, loadSuccess, loadFormsFilterError, loadFormsFilterSuccess, loadFormsGroupByDateRequestSuccess, loadFormsGroupRequestError } from "./actions";
 import { LoadRequestParams, FormTypes } from "./types";
 import SESSIONSTORAGE from "../../../helpers/constants/sessionStorage";
 interface IAction {
@@ -27,15 +27,38 @@ export function* getForms({ payload }: IAction) {
   }
 }
 
-export function* getFilterForms({ payload }:any){
-  try{
+export function* getFilterForms({ payload }: any) {
+  const { name_doc, name, type, attendance_id } = payload
+  try {
     const integration = sessionStorage.getItem(SESSIONSTORAGE.INTEGRATION);
        const headers = integration
-      ? { token, external_attendance_id: payload.attendance_id }
-      : { token, attendance_id: payload.attendance_id };
-    const response:AxiosResponse = yield call( apiSollarReport.get as any,`/forms?name_doc=${payload.name_doc}&name=${payload.name}&type=${payload.type}`,{responseType: "blob",headers: { ...headers }})
+      ? { token, external_attendance_id: attendance_id }
+      : { token, attendance_id: attendance_id };
+    const response: AxiosResponse = yield call(apiSollarReport.get as any,`/forms`,
+    {
+      responseType: "blob",
+      headers: { ...headers },
+      params: { name_doc: name_doc, name: name, type: type }
+    })
     yield put(loadFormsFilterSuccess(response.data));
   }catch(error){
     yield put(loadFormsFilterError())
+  }
+}
+
+export function* getFormsGroupByDate({ payload }: any) {
+  const { dataStart, dataEnd, type, attendance_id } = payload
+  try {
+    const integration = sessionStorage.getItem(SESSIONSTORAGE.INTEGRATION);
+    const headers = integration ? { token, external_attendance_id: attendance_id } : { token, attendance_id: attendance_id }
+    const response :AxiosResponse = yield call(apiSollarReport.get as any,`/forms/bygroup`,
+    {
+      responseType: "blob",
+      headers: { ...headers },
+      params: { dataStart: dataStart, dataEnd: dataEnd, type: type, attendance_id: attendance_id }
+    })
+    yield put(loadFormsGroupByDateRequestSuccess(response.data));
+  } catch (error) {
+    yield put(loadFormsGroupRequestError())
   }
 }
