@@ -24,6 +24,7 @@ import Grid from "@mui/material/Grid";
 import { BoxCustom, FeedbackTitle, FeedbackDescription } from "./styles";
 import { Typography } from "@mui/material";
 import theme from "../../../../theme/theme";
+import StrengthPasswordMeter from "../../../StrengthPasswordMeter";
 //components
 interface IPageParams {
   id?: string;
@@ -41,6 +42,10 @@ const validationSchema = yup.object({
     .min(
       SIZE_INPUT_PASSWORD,
       `A senha deve ter no mínimo ${SIZE_INPUT_PASSWORD} caracteres`
+    )
+    .matches(
+      /^.*((?=.*[!@#$%^&*()\-_=+{};:,<.>]){1})(?=.*\d)((?=.*[a-z]){1})((?=.*[A-Z]){1}).*$/,
+      "A senha deve conter uma letra maiúscula, uma minúscula, um caractere especial e um número!"
     )
     .max(20, "Senha deve ter no maximo 20 caracteres")
     .required("Campo obrigatório")
@@ -180,6 +185,7 @@ export default function ChangePasswordConfiguration(props: IPageParams) {
               ),
             }}
           />
+          <StrengthPasswordMeter password={formik.values.password} styles={{color: "#000", borderColor: "#0004", border: 1}} />
           <TextField
             color="secondary"
             fullWidth
@@ -213,6 +219,24 @@ export default function ChangePasswordConfiguration(props: IPageParams) {
               ),
             }}
           />
+          <Typography fontSize={14} color={"#000"}>
+            A senha deve conter no mínimo:
+          </Typography>
+          <Typography fontSize={12} color={"#000"}>
+            - Seis caracteres
+          </Typography>
+          <Typography fontSize={12} color={"#000"}>
+            - Uma letra maiúscula
+          </Typography>
+          <Typography fontSize={12} color={"#000"}>
+            - Uma letra minúscula
+          </Typography>
+          <Typography fontSize={12} color={"#000"}>
+            - Um número
+          </Typography>
+          <Typography fontSize={12} color={"#000"}>
+            - Um caracter especial (@!#$%&*)
+          </Typography>
 
           <Button
             variant="contained"

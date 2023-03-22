@@ -30,6 +30,7 @@
     "env-cmd": "^10.1.0",
     "eslint": "^8.21.0",
     "formik": "^2.2.9",
+    "framer-motion": "^10.2.5",
     "history": "^5.0.0",
     "lodash.debounce": "^4.0.8",
     "lottie-react": "^2.3.1",
