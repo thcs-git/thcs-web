@@ -41,6 +41,20 @@ const reducer: Reducer<FormState> = (state = INITIAL_STATE, action) => {
         success:true,
         error:false
       }
+    case FormTypes.LOAD_FORMS_GROUP_BY_DATE_REQUEST:
+      return {
+        ...state,
+        loading:true,
+        error:false,
+        success:false
+      }
+    case FormTypes.LOAD_FORMS_GROUP_BY_DATE_REQUEST_SUCCESS:
+      return {
+        ...state,
+        loading:false,
+        success:true,
+        error:false
+      }
     default:
       return state;
   }

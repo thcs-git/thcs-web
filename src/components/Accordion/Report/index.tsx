@@ -99,7 +99,7 @@ import {
 import { loadRequestFile } from "../../../store/ducks/attachment/actions";
 import { loadRequestReportByDate } from "../../../store/ducks/prescripition/actions";
 import { FormGroup, FormsData } from "../../../store/ducks/forms/types";
-import { loadFormsFilterRequest } from "../../../store/ducks/forms/actions";
+import { loadFormsFilterRequest, loadFormsGroupByDateRequest } from "../../../store/ducks/forms/actions";
 
 interface IAccordionReport {
   content: {
@@ -3104,7 +3104,6 @@ export default function AccordionReport(props: IAccordionReport) {
             }}
           >
             <IconButton
-              disabled
               aria-label="print"
               sx={{
                 display: "flex",
@@ -3115,7 +3114,13 @@ export default function AccordionReport(props: IAccordionReport) {
                 width: "36px",
               }}
               onClick={() => {
-                //  dispatch(loadEvolutionFilterRequest(payload));
+                const payload = {
+                  dataStart: _id,
+                  dataEnd: _id,
+                  type: "Prestador",
+                  attendance_id: state?.data?._id
+                }
+                 dispatch(loadFormsGroupByDateRequest(payload));
               }}
             >
               <PrintIcon
@@ -3165,7 +3170,7 @@ export default function AccordionReport(props: IAccordionReport) {
                   height={"22px"}
                 />
 
-                <Typography>{_id}</Typography>
+                <Typography>{formatDate(_id, "DD/MM/YYYY")}</Typography>
               </Box>
               <Box sx={{ width: "36px" }}></Box>
             </AccordionSummary>
@@ -3184,7 +3189,7 @@ export default function AccordionReport(props: IAccordionReport) {
           <Typography fontWeight={500}>Prestador</Typography>
         </TextCenterDetails>
         <TextCenterDetails>
-          <Typography fontWeight={500}>Data/hora</Typography>
+          <Typography fontWeight={500}>Horário</Typography>
         </TextCenterDetails>
         <TextCenterDetails>
           <Typography fontWeight={500}>Nome do arquivo</Typography>
@@ -3227,7 +3232,7 @@ export default function AccordionReport(props: IAccordionReport) {
               }}
             >
               <Typography sx={{ maxWidth: "248px" }}>
-                {formatDate(form.created_at, "DD/MM/YYYY [às] HH:mm", timeZone)}
+                {formatDate(form.created_at, "[ás] HH:mm", timeZone)}
               </Typography>
             </TextCenterDetails>
             <TextCenterDetails>
