@@ -389,7 +389,6 @@ export function* checkEmail({ payload: { token } }: any) {
 
 export function* recoveryPassword({ payload: { data } }: any) {
   localStorage.removeItem(LOCALSTORAGE.TOKEN);
-  localStorage.removeItem(LOCALSTORAGE.USERNAME);
   localStorage.removeItem(LOCALSTORAGE.USER_ID);
   localStorage.removeItem(LOCALSTORAGE.COMPANY_SELECTED);
   localStorage.removeItem(LOCALSTORAGE.CUSTOMER);
@@ -399,7 +398,7 @@ export function* recoveryPassword({ payload: { data } }: any) {
       apiSollar.post as any,
       `/users/recoverypassword`,
       { ...data }
-    );
+      );
     yield put(loadRecoverySuccess(response.data));
   } catch (error) {
     yield put(loadFailure());

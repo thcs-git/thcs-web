@@ -69,7 +69,9 @@ export interface SpecialtiesUserInterface {
 }
 
 export interface UserRecoveryPassword {
-  _id: string;
+  _id?: string;
+  email?: string;
+  token?: string
   password: string;
   oldPassword?: string;
 }
