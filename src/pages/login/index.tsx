@@ -54,6 +54,7 @@ import Loading from "../../components/Loading";
 import BackgroundAnimated from "../../components/Background/Animated";
 import BackgroundHouses from "../../components/Background/Houses";
 import StrengthPasswordMeter from "../../components/StrengthPasswordMeter";
+import LOCALSTORAGE from "../../helpers/constants/localStorage";
 function Copyright() {
   return (
     <Grid
@@ -1691,19 +1692,12 @@ export default function SignIn() {
     },
     validationSchema: validationSchemaRecoveryPassword,
     onSubmit: (values) => {
+      localStorage.setItem(LOCALSTORAGE.USERNAME, values.email)
+      localStorage.removeItem(LOCALSTORAGE.TOKEN);
       dispatch(loadUserByEmail(values.email));
       setSendEmail(true);
       setInputEmailForRecovery({ value: values.email });
     },
-    // dispatch(
-    //   updateUserPasswordRequest({
-    //     email: inputEmailForRecovery.value,
-    //     password: values.password,
-    //   })
-    // );
-    // dispatch(
-    //   loadRequest({ email: inputEmailForRecovery.value, password: values.password })
-    // );
   });
   const handleUserbyEmail = useCallback(() => {
     // console.log(inputEmailForRecovery.value);
