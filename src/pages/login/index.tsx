@@ -27,6 +27,7 @@ import Button from "@mui/material/Button";
 import Visibility from "@mui/icons-material/Visibility";
 import VisibilityOff from "@mui/icons-material/VisibilityOff";
 import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
+import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import {
   Dialog,
   DialogActions,
@@ -39,9 +40,7 @@ import {
 import FormHelperText from "@mui/material/FormHelperText";
 import Typography from "@mui/material/Typography";
 // styles
-import {
-  WelcomeTextWrapper,
-} from "./styles";
+import { WelcomeTextWrapper } from "./styles";
 import theme from "../../theme/theme";
 // icons
 import THCStype1 from "../../components/Icons/THCS_Type1";
@@ -1705,6 +1704,14 @@ export default function SignIn() {
     setSendEmail(true);
   }, [inputEmailForRecovery]);
 
+  const handleDisplayBack = (emailState) => {
+    if (emailState) {
+      return "block"
+    } else {
+      return "none"
+    }
+  }
+
   const ForgotPassword = () => (
     <Grid item mt={1}>
       <Link
@@ -1735,6 +1742,19 @@ export default function SignIn() {
   );
   const renderOfLogin = () => (
     <Grid item sx={{ width: "25rem" }}>
+      <IconButton
+        onClick={() => {
+          loginState.email.user = false;
+          navigate('/')
+        }}
+        sx={{
+          display: handleDisplayBack(loginState.email.user),
+          cursor: "pointer",
+          "& svg, path": { cursor: "pointer" },
+        }}
+      >
+        <ArrowBackIcon sx={{ color: "#FFF" }} />
+      </IconButton>
       <WelcomeTextWrapper>
         <Typography
           fontWeight={500}
@@ -1793,6 +1813,7 @@ export default function SignIn() {
                 }))
               }
               // onBlur={handleEmailValidator}
+              disabled={loginState.email.user}
               id="outlined-adornment-email"
               value={inputEmail.value}
               endAdornment={
@@ -1807,6 +1828,7 @@ export default function SignIn() {
                       style={{ color: "primary" }}
                     > */}
                   <IconButton
+                    disabled={loginState.email.user}
                     onClick={handleVerifyEmail}
                     sx={{
                       cursor: "pointer",
