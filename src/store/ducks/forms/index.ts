@@ -55,6 +55,20 @@ const reducer: Reducer<FormState> = (state = INITIAL_STATE, action) => {
         success:true,
         error:false
       }
+    case FormTypes.LOAD_FORMS_TABS_REQUEST:
+      return {
+        ...state,
+        loading: true,
+        error: false,
+        success: false
+      }
+    case FormTypes.LOAD_FORMS_TABS_SUCCESS:
+      return {
+        ...state,
+        loading: false,
+        success: true,
+        error: false
+      }
     default:
       return state;
   }

@@ -13,8 +13,8 @@ import Divider from "@mui/material/Divider";
 import Tooltip from "@mui/material/Tooltip";
 import Badge from "@mui/material/Badge";
 import Stack from "@mui/material/Stack";
-import { IconButton } from "@mui/material";
-
+import { IconButton, Tab, Tabs } from "@mui/material";
+import { TabContext, TabList, TabPanel } from "@mui/lab";
 // icons
 import IconMeasurement from "../../Icons/measurement";
 import PrintIcon from "@mui/icons-material/Print";
@@ -99,7 +99,11 @@ import {
 import { loadRequestFile } from "../../../store/ducks/attachment/actions";
 import { loadRequestReportByDate } from "../../../store/ducks/prescripition/actions";
 import { FormGroup, FormsData } from "../../../store/ducks/forms/types";
-import { loadFormsFilterRequest, loadFormsGroupByDateRequest } from "../../../store/ducks/forms/actions";
+import {
+  loadFormsFilterRequest,
+  loadFormsGroupByDateRequest,
+  loadFormsTabsRequest,
+} from "../../../store/ducks/forms/actions";
 
 interface IAccordionReport {
   content: {
@@ -156,11 +160,18 @@ interface IAccordionItem {
   value: string;
 }
 
+interface TabPanelProps {
+  children?: React.ReactNode;
+  index: number;
+  value: number;
+}
+
 export default function AccordionReport(props: IAccordionReport) {
   const { content, company_id, reportType, state, loading } = props;
   const dispatch = useDispatch();
   const integration = sessionStorage.getItem(SESSIONSTORAGE.INTEGRATION);
   const [expanded, setExpanded] = useState<string | false>("panel0");
+  const [valueTabForm, setValueTabForm] = useState(0);
   const careState = useSelector((state: ApplicationState) => state.cares);
   const colorBackgroundActive = theme.palette.primary.main;
   const colorBackgroundInactive = theme.palette.common.white;
@@ -222,10 +233,37 @@ export default function AccordionReport(props: IAccordionReport) {
     }
   };
 
+  function TabPanel(props: TabPanelProps) {
+    const { children, value, index } = props;
+
+    return (
+      <Box role="tabpanel" hidden={value !== index} id={`tab-${index}`}>
+        {value === index && (
+          <Box sx={{ p: 2 }}>
+            <Typography>{children}</Typography>
+          </Box>
+        )}
+      </Box>
+    );
+  }
+
+  function a11yProps(index: number) {
+    return {
+      id: `tab-${index}`,
+    };
+  }
+
   const handleChange =
     (panel: string) => (event: React.SyntheticEvent, isExpanded: boolean) => {
       setExpanded(isExpanded ? panel : false);
     };
+
+  const handleChangeTabForm = (
+    event: React.SyntheticEvent,
+    newValue: number
+  ) => {
+    setValueTabForm(newValue);
+  };
 
   const capitalizeText = (words: string) => {
     if (words) {
@@ -3088,100 +3126,31 @@ export default function AccordionReport(props: IAccordionReport) {
       );
     });
   // Forms Accordion
-  const formsAccordion = (data: FormGroup[]) =>
-    data.map(({ _id, list }: FormGroup, index: number) => {
-      return (
-        <Box sx={{ position: "relative" }}>
-          <Box
-            sx={{
-              position: "absolute",
-              display: "flex",
-              justifyContent: "center",
-              alignItems: "center",
-              zIndex: 5000,
-              left: "calc(100% - 7rem)",
-              top: "0.4rem",
-            }}
-          >
-            <IconButton
-              aria-label="print"
-              sx={{
-                display: "flex",
-                justifyContent: "center",
-                alignItems: "center",
-                cursor: "pointer",
-                height: "36px",
-                width: "36px",
-              }}
-              onClick={() => {
-                const payload = {
-                  dataStart: _id,
-                  dataEnd: _id,
-                  type: "Prestador",
-                  attendance_id: state?.data?._id
-                }
-                 dispatch(loadFormsGroupByDateRequest(payload));
-              }}
-            >
-              <PrintIcon
-                sx={{
-                  color:
-                    expanded === `panel${index}`
-                      ? colorBackgroundInactive
-                      : colorBackgroundActive,
-                  cursor: "pointer",
-                  "& path": { cursor: "pointer" },
-                }}
-              />
-            </IconButton>
-          </Box>
-          <Accordion
-            key={`${_id}-${index}`}
-            disableGutters={true}
-            expanded={expanded === `panel${index}`}
-            onChange={handleChange(`panel${index}`)}
-          >
-            <AccordionSummary
-              expandIcon={<ExpandMoreIcon />}
-              aria-controls={`panel${index}bh-content`}
-              id={`panel${index}bh-header`}
-              sx={{
-                "& div, svg, path, circle, rect": {
-                  cursor: "pointer",
-                },
-                cursor: "pointer",
-              }}
-            >
-              <Box
-                sx={{
-                  display: "flex",
-                  gap: "8px",
-                  flexDirection: "row",
-                  justifyContent: "space-between",
-                }}
-              >
-                <FormIcon
-                  fill={
-                    expanded === `panel${index}`
-                      ? colorBackgroundInactive
-                      : colorText
-                  }
-                  width={"22px"}
-                  height={"22px"}
-                />
-
-                <Typography>{formatDate(_id, "DD/MM/YYYY")}</Typography>
-              </Box>
-              <Box sx={{ width: "36px" }}></Box>
-            </AccordionSummary>
-            <AccordionDetails>
-              {formsAccordionHeader()}
-              {formsAccordionDetails(list)}
-            </AccordionDetails>
-          </Accordion>
-        </Box>
-      );
-    });
+  const formsAccordion = (data: FormGroup[]) => (
+    <Box>
+      <Box sx={{ display: "flex", justifyContent: "center" }}>
+        <Tabs
+          value={valueTabForm}
+          onChange={handleChangeTabForm}
+          scrollButtons="auto"
+          // onClick={dispatch(loadRequest)}
+        >
+          {data.map(({ _id, name }: FormGroup, index: number) => {
+            return (
+              <Tab label={name} key={`${_id}-${index}`} {...a11yProps(index)} />
+            );
+          })}
+        </Tabs>
+      </Box>
+      {data.map(({ _id, name }: FormGroup, index: number) => {
+        return (
+          <TabPanel value={valueTabForm} index={index}>
+            {name}
+          </TabPanel>
+        );
+      })}
+    </Box>
+  );
   const formsAccordionHeader = () => (
     <>
       <HeaderDetailsAccordion>

@@ -7,7 +7,7 @@ import {
 } from "../../../services/axios";
 import { AxiosResponse } from "axios";
 import { toast } from "react-toastify";
-import { loadFailure, loadSuccess, loadFormsFilterError, loadFormsFilterSuccess, loadFormsGroupByDateRequestSuccess, loadFormsGroupRequestError } from "./actions";
+import { loadFailure, loadSuccess, loadFormsFilterError, loadFormsFilterSuccess, loadFormsGroupByDateRequestSuccess, loadFormsGroupRequestError, loadFormsTabsSuccess, loadFormsTabsError } from "./actions";
 import { LoadRequestParams, FormTypes } from "./types";
 import SESSIONSTORAGE from "../../../helpers/constants/sessionStorage";
 interface IAction {
@@ -24,6 +24,18 @@ export function* getForms({ payload }: IAction) {
   } catch (error) {
     toast.error("Não foi possivel carregar formulários");
     yield put(loadFailure());
+  }
+}
+
+export function* getFormsTabs({ payload }: any) {
+  try {
+    const response: AxiosResponse = yield call(apiSollar.get, `/formsTabs`, {
+      headers: { customer_id: payload },
+    });
+    yield put(loadFormsTabsSuccess(response.data));
+  } catch (error) {
+    toast.error("Não foi possivel carregar formulários");
+    yield put(loadFormsTabsError());
   }
 }
 
