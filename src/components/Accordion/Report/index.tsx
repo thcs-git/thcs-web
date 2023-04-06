@@ -3146,6 +3146,98 @@ export default function AccordionReport(props: IAccordionReport) {
         return (
           <TabPanel value={valueTabForm} index={index}>
             {name}
+            {/* return (
+            <Box sx={{ position: "relative" }}>
+              <Box
+                sx={{
+                  position: "absolute",
+                  display: "flex",
+                  justifyContent: "center",
+                  alignItems: "center",
+                  zIndex: 5000,
+                  left: "calc(100% - 7rem)",
+                  top: "0.4rem",
+                }}
+              >
+                <IconButton
+                  aria-label="print"
+                  sx={{
+                    display: "flex",
+                    justifyContent: "center",
+                    alignItems: "center",
+                    cursor: "pointer",
+                    height: "36px",
+                    width: "36px",
+                  }}
+                  onClick={() => {
+                    const payload = {
+                      dataStart: _id,
+                      dataEnd: _id,
+                      type: "Prestador",
+                      attendance_id: state?.data?._id,
+                    };
+                    dispatch(loadFormsGroupByDateRequest(payload));
+                  }}
+                >
+                  <PrintIcon
+                    sx={{
+                      color:
+                        expanded === `panel${index}`
+                          ? colorBackgroundInactive
+                          : colorBackgroundActive,
+                      cursor: "pointer",
+                      "& path": { cursor: "pointer" },
+                    }}
+                  />
+                </IconButton>
+              </Box>
+              <Accordion
+                key={`${_id}-${index}`}
+                disableGutters={true}
+                expanded={expanded === `panel${index}`}
+                onChange={handleChange(`panel${index}`)}
+              >
+                <AccordionSummary
+                  expandIcon={<ExpandMoreIcon />}
+                  aria-controls={`panel${index}bh-content`}
+                  id={`panel${index}bh-header`}
+                  sx={{
+                    "& div, svg, path, circle, rect": {
+                      cursor: "pointer",
+                    },
+                    cursor: "pointer",
+                  }}
+                >
+                  <Box
+                    sx={{
+                      display: "flex",
+                      gap: "8px",
+                      flexDirection: "row",
+                      justifyContent: "space-between",
+                    }}
+                  >
+                    <FormIcon
+                      fill={
+                        expanded === `panel${index}`
+                          ? colorBackgroundInactive
+                          : colorText
+                      }
+                      width={"22px"}
+                      height={"22px"}
+                    />
+
+                    <Typography>{formatDate(_id, "DD/MM/YYYY")}</Typography>
+                    <Typography>{name}</Typography>
+                  </Box>
+                  <Box sx={{ width: "36px" }}></Box>
+                </AccordionSummary>
+                <AccordionDetails>
+                  {formsAccordionHeader()}
+                  {formsAccordionDetails(list)}
+                </AccordionDetails>
+              </Accordion>
+            </Box>
+            ); */}
           </TabPanel>
         );
       })}
