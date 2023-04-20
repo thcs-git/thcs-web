@@ -41,8 +41,20 @@ export interface FormsData {
 export interface FormGroup {
   _id: string;
   name: string;
+  list?: FormsData[];
+}
+export interface FormTabGroup {
+  _id: string;
+  list?: FormsData;
 }
 export interface FormState {
+  data: FormGroup[];
+  loading: boolean;
+  success: boolean;
+  error: boolean;
+  formTab?: FormTabsState[];
+}
+export interface FormTabsState {
   data: FormGroup[];
   loading: boolean;
   success: boolean;
@@ -50,6 +62,6 @@ export interface FormState {
 }
 
 export type LoadRequestParams = {
-  company_id: string;
+  document_id: string;
   external_attendance_id: string;
 };

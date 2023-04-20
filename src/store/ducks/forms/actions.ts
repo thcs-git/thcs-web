@@ -1,7 +1,7 @@
 import { action } from "typesafe-actions";
-import { FormTypes, FormsData } from "./types";
+import { FormTypes, FormsData, LoadRequestParams } from "./types";
 
-export const loadRequest = (data: string) =>
+export const loadRequest = (data: LoadRequestParams) =>
   action(FormTypes.LOAD_REQUEST, data);
 export const loadSuccess = (forms: FormsData) =>
   action(FormTypes.LOAD_SUCCESS, forms);

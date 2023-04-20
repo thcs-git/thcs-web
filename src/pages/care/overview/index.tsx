@@ -194,8 +194,7 @@ export default function PatientOverview(props: IPageParams) {
     } else if (patientId && reportType === "Anexos") {
       dispatch(loadRequestAttachments(patientId));
     } else if (attendanceId && reportType === "Formulários") {
-      dispatch(LoadRequestForms(attendanceId));
-      // dispatch(loadFormsTabsRequest(currentCustomerId));
+      dispatch(loadFormsTabsRequest(currentCustomerId));
     }
   }, [careState.data._id, reportType]);
 
@@ -581,9 +580,9 @@ export default function PatientOverview(props: IPageParams) {
         data: attachmentState.data,
         error: attachmentState.error,
       };
-    } else if (report === "Formulários" && formState.data.length > 0) {
+    } else if (report === "Formulários" && formState.formTab.length > 0) {
       return {
-        data: formState.data,
+        data: formState.formTab,
         error: formState.error,
       };
     } else {
