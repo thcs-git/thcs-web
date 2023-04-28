@@ -6,6 +6,8 @@ export enum FormTypes {
   LOAD_FORMS_FILTER_SUCCESS = "@forms/LOAD_FORMS_FILTER_SUCCESS",
   LOAD_FORMS_GROUP_BY_DATE_REQUEST = "@forms/LOAD_FORMS_GROUP_BY_DATE_REQUEST",
   LOAD_FORMS_GROUP_BY_DATE_REQUEST_SUCCESS = "@forms/LOAD_FORMS_GROUP_BY_DATE_REQUEST_SUCCESS",
+  LOAD_FORMS_TABS_REQUEST = "@forms/LOAD_FORMS_TABS_REQUEST",
+  LOAD_FORMS_TABS_SUCCESS = "@forms/LOAD_FORMS_TABS_SUCESS",
 }
 
 export interface FormsExternalData {
@@ -38,9 +40,21 @@ export interface FormsData {
 
 export interface FormGroup {
   _id: string;
-  list: FormsData[];
+  name: string;
+  list?: FormsData[];
+}
+export interface FormTabGroup {
+  _id: string;
+  list?: FormsData;
 }
 export interface FormState {
+  data: FormGroup[];
+  loading: boolean;
+  success: boolean;
+  error: boolean;
+  formTab?: FormTabsState[];
+}
+export interface FormTabsState {
   data: FormGroup[];
   loading: boolean;
   success: boolean;
@@ -48,6 +62,6 @@ export interface FormState {
 }
 
 export type LoadRequestParams = {
-  company_id: string;
+  document_id: string;
   external_attendance_id: string;
 };
