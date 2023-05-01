@@ -143,7 +143,6 @@ export function* update({ payload: { data } }: any) {
   try {
     const phones = [];
 
-    console.log("data", data);
 
     if (data?.phone?.length > 0) {
       phones.push({

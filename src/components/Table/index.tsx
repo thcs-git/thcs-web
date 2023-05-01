@@ -251,7 +251,6 @@ const TableComponent = (props: ITableProps) => {
                       {handleEmpty(handleCpf(user?.fiscal_number))}
                     </TableCell>
                   )}
-                  {/* {console.log(user)} */}
                   {
                     <TableCell>
                       {handleEmpty(

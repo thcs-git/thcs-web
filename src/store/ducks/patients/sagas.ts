@@ -204,7 +204,6 @@ export function* searchPatient({ payload: { params } }: any) {
 export function* getPatientCapture({ payload }: any) {
   try {
     const { params } = payload;
-    console.log("cheguei");
     const response: AxiosResponse = yield call(
       apiSollar.get as any,
       `/getPatientCapture

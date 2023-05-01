@@ -155,7 +155,6 @@ export default function FilterReport(props: IPropsFilter) {
   }
 
   function handleGenerateReportValidation() {
-    console.log(stateFilter)
     const { attendance_id, reportType, type, name, dataEnd, dataStart } =
       stateFilter;
     if (!attendance_id || !reportType) {
@@ -524,7 +523,6 @@ export default function FilterReport(props: IPropsFilter) {
               disabled={stateFilter.type === "NaoAtendido"}
               value={stateFilter}
               onChange={(event, value) => {
-                console.log(value)
                 if (value) {
                   setStateFilter((state: any) => {
                     return {

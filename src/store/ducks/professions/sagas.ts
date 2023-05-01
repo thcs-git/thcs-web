@@ -25,7 +25,6 @@ export function* get({ payload }: any) {
       params.search ? "&search=" + params.search : ""
     }`
   );
-  console.log(response);
 
   try {
     yield put(loadSuccess(response.data));

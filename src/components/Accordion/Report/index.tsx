@@ -1594,7 +1594,6 @@ export default function AccordionReport(props: IAccordionReport) {
               <Typography>
                 {item?.frequency?.doses?.length > 0 &&
                   item?.frequency?.doses?.map((dose: any, index: number) => {
-                    console.log(dose)
                     if (dose.original) {
                       return `${formatDate(
                         dose.original_date || dose.administer_date,
@@ -2958,7 +2957,6 @@ export default function AccordionReport(props: IAccordionReport) {
 
     return statusDetails;
   };
-  // console.log("content!!!", content.data);
   // Attachments accordion
   const attachmentsAccordion = (data: any) =>
     content.data.map(({ _id, list }: attachmentList, index: number) => (

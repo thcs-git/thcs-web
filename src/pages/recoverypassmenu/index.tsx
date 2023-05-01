@@ -42,7 +42,6 @@ export default function RecoveryPassMenu() {
   const currentUser = window.localStorage.getItem(LOCALSTORAGE.USER_ID);
 
   useEffect(() => {
-    // console.log(currentUser);
     if (currentUser) {
       setUserecovery((prev) => ({
         ...prev,
@@ -56,7 +55,6 @@ export default function RecoveryPassMenu() {
   }, []);
 
   const handleValidatePassword = useCallback(() => {
-    console.log(userecovery);
     setNewPassword((prev) => ({
       ...prev,
       error: !(
@@ -74,7 +72,6 @@ export default function RecoveryPassMenu() {
 
   const recoveryPassword = useCallback(() => {
     if (!newPassword.error) {
-      // console.log(userecovery);
       dispatch(loadRecoveryPasswordiftoken(userecovery));
       setOk(true);
     }

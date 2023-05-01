@@ -48,7 +48,6 @@ export default function Dashboard() {
     },
   ];
   // const rights = sessionStorage.getItem(SESSIONSTORAGE.RIGHTS);
-  // console.log(rights);
 
   return (
     <Sidebar>

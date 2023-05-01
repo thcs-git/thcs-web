@@ -19,7 +19,6 @@ export function* get({ payload }: any) {
     delete searchParams.limit;
     delete searchParams.page;
 
-    console.log("search params documents", searchParams);
 
     const response: AxiosResponse = yield call(
       apiSollar.get as any,
@@ -35,7 +34,6 @@ export function* get({ payload }: any) {
 }
 
 export function* store({ payload }: any) {
-  console.log("saga document payload", payload);
 
   const response: AxiosResponse = yield call(
     apiSollar.post as any,
@@ -66,14 +64,11 @@ export function* getByCareId({ payload }: any) {
 
 export function* getByScore({ payload }: any) {
   const { params } = payload;
-  console.log("saga docu", params);
 
   const response: AxiosResponse = yield call(
     apiSollar.get as any,
     `/documents/getbyScore?patient_id=${params.patient}&document_group_id=${params.document_group_id}`
   );
-  console.log("id_patient", params.patient);
-  console.log(response.data);
   try {
     yield put(loadSuccessGetByCareId(response.data));
   } catch (error) {

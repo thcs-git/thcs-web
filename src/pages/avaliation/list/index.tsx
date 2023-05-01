@@ -125,7 +125,6 @@ export default function AvaliationList() {
     (care: any) => {
       let complexitiesArray: any = [];
       let complexity: string = "";
-      //console.log(care)
       care?.documents_id?.map((field: any) => {
         complexitiesArray.push(field.complexity);
       });
@@ -428,7 +427,6 @@ export default function AvaliationList() {
       return;
     } else {
       if (files && files?.length > 0) {
-        // console.log(files[0]);
         if (files[0].type == "application/pdf" && files[0].size < 5000000) {
           setFile((prevState) => ({
             ...prevState,
@@ -538,17 +536,13 @@ export default function AvaliationList() {
       let patientId = _.filter(careState.list2.data, {
         patient_id: { _id: care?.patient_id._id },
       });
-      //console.log("teste", patientId);
       setpatientArray(patientId);
-      //console.log(patientArray);
     },
     [careState]
   );
 
   // const isPopup = useCallback(() => {
-  //   //{console.log(patientArray)}
   //   patientArray?.map((patient: any) => {
-  //     console.log(patient)
   //     return "string"
   //   })
   // }, [patientArray]);

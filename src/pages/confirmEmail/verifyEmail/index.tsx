@@ -70,7 +70,6 @@ export default function VerifyEmailForm(props: IPageParams) {
   });
 
   useEffect(() => {
-    console.log(params);
     if (params.token) {
       dispatch(cleanAction());
       dispatch(loadCheckEmail(params.token));

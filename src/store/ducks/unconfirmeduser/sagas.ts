@@ -153,8 +153,6 @@ export function* updateUnconfirmedUser({ payload: { data } }: any) {
       { headers: { token } }
     );
 
-    console.log(response.data);
-
     toast.success("Usuário atualizado com sucesso!");
     yield put(updateUnconfirmedUserSuccess(response.data));
   } catch (error) {

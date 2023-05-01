@@ -424,11 +424,9 @@ export default function PatientCaptureForm(props: any) {
                                 item._id === selectedPatient?._id)
                             ) {
                               setSelectedPatient({});
-                              console.log("nao");
                               setCanEdit(false);
                             } else {
                               setSelectedPatient(item);
-                              console.log("sim");
                               setCanEdit(true);
                             }
                           }}

@@ -52,7 +52,6 @@ export default function MyComponent(props: IMapsProps) {
       coordenadas.lat = lat - 0.5;
       coordenadas.lng = lng - 0.5;
     }
-    console.log(coordenadas);
     return coordenadas;
   };
   const handleMouseExit = (index: any) => {

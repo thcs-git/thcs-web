@@ -374,14 +374,6 @@ export default function SchedulePage(props: IPageParams) {
       `${schedule.end_plantao} ${schedule.end_hour_plantao}`
     ).format();
 
-    console.log({
-      professionalTypeValue,
-      startDateAt,
-      endDateAt,
-      selectProfession: selectProfession(),
-      selectUser: selectUser(),
-      workInDaysValue,
-    });
   }, [professionalTypeValue, schedule, userState, workInDaysValue]);
 
   const handleAddEvent = useCallback(
@@ -458,7 +450,6 @@ export default function SchedulePage(props: IPageParams) {
         }
 
         if (schedule?.data?._id) {
-          console.log(schedule.day);
 
           setDayOptionsModalOpen(false);
 
@@ -473,12 +464,10 @@ export default function SchedulePage(props: IPageParams) {
                 start: startAt,
                 end: endAt,
               };
-              console.log(eventCopy[key]);
             }
           });
 
           setEvents(eventCopy);
-          console.log("testando,", events);
           setSchedule((prevState) => ({
             ...prevState,
             _id: data._id,
@@ -487,7 +476,6 @@ export default function SchedulePage(props: IPageParams) {
             end_at: endAt,
           }));
 
-          console.log(schedule);
           dispatch(
             updateScheduleAction({
               ...schedule,
@@ -509,7 +497,6 @@ export default function SchedulePage(props: IPageParams) {
           };
 
           // A label fica com background azul quando o evento é do dia todo, ou seja, não tem hora de inicio ou fim, apenas a data '2021-02-22'
-          console.log("newEvent", newEvent);
 
           setEvents((prevState: any) => [...prevState, newEvent]);
 
