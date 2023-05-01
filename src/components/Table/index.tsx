@@ -583,6 +583,9 @@ const TableComponent = (props: ITableProps) => {
                         : "-"}
                     </TableCell>
                     <TableCell align="center">
+                      {handleEmpty(care?.tipo)}
+                    </TableCell>
+                    <TableCell align="center">
                       {handleEmpty(care?.area)}
                     </TableCell>
                     <TableCell>{handleEmpty(care?.company)}</TableCell>

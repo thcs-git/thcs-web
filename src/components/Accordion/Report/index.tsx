@@ -1594,6 +1594,7 @@ export default function AccordionReport(props: IAccordionReport) {
               <Typography>
                 {item?.frequency?.doses?.length > 0 &&
                   item?.frequency?.doses?.map((dose: any, index: number) => {
+                    console.log(dose)
                     if (dose.original) {
                       return `${formatDate(
                         dose.original_date || dose.administer_date,
@@ -1628,7 +1629,7 @@ export default function AccordionReport(props: IAccordionReport) {
                       id: data._id,
                       careId: careState.data._id,
                       typeReport: "uniqueItem",
-                      idItem: item._id,
+                      idItem: item.external_item_id,
                     })
                   );
                 }}

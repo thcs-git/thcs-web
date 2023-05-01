@@ -66,6 +66,7 @@ interface IFilter {
   dataEnd: any;
   reportType: string;
   attendance_id: string;
+  userId: string;
 }
 
 export default function FilterReport(props: IPropsFilter) {
@@ -87,6 +88,7 @@ export default function FilterReport(props: IPropsFilter) {
     dataEnd: null,
     reportType: "",
     attendance_id: "",
+    userId: "",
   });
   const CustomWidthTooltip = styled(({ className, ...props }: TooltipProps) => (
     <Tooltip {...props} classes={{ popper: className }} />
@@ -153,6 +155,7 @@ export default function FilterReport(props: IPropsFilter) {
   }
 
   function handleGenerateReportValidation() {
+    console.log(stateFilter)
     const { attendance_id, reportType, type, name, dataEnd, dataStart } =
       stateFilter;
     if (!attendance_id || !reportType) {
@@ -308,6 +311,7 @@ export default function FilterReport(props: IPropsFilter) {
         dataStart: null,
         name: "",
         type: "Prestador",
+        userId: ""
       };
     });
   }
@@ -520,6 +524,7 @@ export default function FilterReport(props: IPropsFilter) {
               disabled={stateFilter.type === "NaoAtendido"}
               value={stateFilter}
               onChange={(event, value) => {
+                console.log(value)
                 if (value) {
                   setStateFilter((state: any) => {
                     return {

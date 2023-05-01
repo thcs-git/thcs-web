@@ -290,6 +290,7 @@ export default function PatientList() {
     { name: "Atendimento", align: "left" },
     { name: "Data da Alta", align: "left" },
     { name: "Tipo", align: "center" },
+    { name: "Área", align: "center" },
     { name: "Empresa", align: "center" },
     { name: "Visualizar", align: "center" },
   ];

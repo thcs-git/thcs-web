@@ -55,7 +55,6 @@ apiSollar.interceptors.request.use(
         const external_user_id =
             localStorage.getItem(LOCALSTORAGE.SOLLAR_INTEGRATION_USER_ID) || "";
         let integrationToken = sessionStorage.getItem(SESSIONSTORAGE.INTEGRATION_TOKEN) || "";
-
         if (token) {
             config.headers!.token = `${token}`;
             config.headers!.user = JSON.stringify({id: user_id, username});
@@ -182,6 +181,7 @@ apiSollarReport.interceptors.request.use(
             config.headers!.integration_url = integration_url;
             config.headers!.integration_token = integrationToken;
             config.headers!.external_company_id = external_company_id;
+            config.headers!.external_user_id = external_user_id;
         }
 
         return config;
