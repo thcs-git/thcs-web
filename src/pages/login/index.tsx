@@ -1699,7 +1699,6 @@ export default function SignIn() {
     },
   });
   const handleUserbyEmail = useCallback(() => {
-    // console.log(inputEmailForRecovery.value);
     dispatch(loadUserByEmail(inputEmailForRecovery.value));
     setSendEmail(true);
   }, [inputEmailForRecovery]);
@@ -2169,7 +2168,6 @@ export default function SignIn() {
           {/*>*/}
           {/*  Criar conta*/}
           {/*</Button>*/}
-          {console.log(loginState.email)}
           {!loginState.email.user ? (
             <ForgotPassword />
           ) : loginState.email.password ? (

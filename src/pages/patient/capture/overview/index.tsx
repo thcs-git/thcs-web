@@ -112,7 +112,6 @@ interface ICaptureData {
 }
 
 export default function PatientCaptureForm(props: IPageParams) {
-  console.log("teste");
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const careState = useSelector((state: ApplicationState) => state.cares);
@@ -179,14 +178,11 @@ export default function PatientCaptureForm(props: IPageParams) {
     //     patient: careState.data.patient_id?._id,
     //     document_group_id: document_group_id
     //   }));
-    //   console.log("ds", careState.data);
     // }
     // if(careState.data.status){
-    //   console.log("d", documentGroupsState.list.data);
     // }
     if (documentState.success) {
       setDocumentHistory(documentState.list);
-      console.log("t", documentState.list);
     }
   }, [documentState]);
 
@@ -216,7 +212,6 @@ export default function PatientCaptureForm(props: IPageParams) {
       return;
     } else {
       if (files && files?.length > 0) {
-        // console.log(files[0]);
         if (files[0].type == "application/pdf" && files[0].size < 5000000) {
           setFile((prevState) => ({
             ...prevState,
@@ -233,7 +228,6 @@ export default function PatientCaptureForm(props: IPageParams) {
 
     if (files && files?.length > 0) {
       const fileData: any = await readFile(files[0]);
-      // console.log(fileData)
       // if (!file.error) {
       //   setCaptureStatus(prevState => ({
       //     ...prevState,
@@ -410,7 +404,6 @@ export default function PatientCaptureForm(props: IPageParams) {
   );
 
   const toggleHistoryModal_2 = useCallback(() => {
-    console.log("tt", documentState);
     setDocumentHistory(documentState.list.data);
   }, [documentState]);
 

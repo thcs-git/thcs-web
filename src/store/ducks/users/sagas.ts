@@ -285,6 +285,7 @@ export function* updateUser({ payload: { data } }: any) {
 
 export function* updateUserPassword({ payload: { data } }: any) {
   try {
+    const tokenAux = localStorage.getItem(LOCALSTORAGE.TOKEN_AUX);
     const response: AxiosResponse = yield call(
       apiSollar.patch as any,
       `/user/updatepassword`,

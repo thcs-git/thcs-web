@@ -196,7 +196,6 @@ export default function DialogInfo(props: IDialogProps) {
     content?.careState?.checkin?.data?.map((day: any, index: number) => {
       if (day) {
         day?.list?.map((checks: any, index: number) => {
-          console.log(checks);
           const professional: ITeam = {
             name: getFirstAndLastName(
                 capitalizeText(checks.user_name)

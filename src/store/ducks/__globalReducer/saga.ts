@@ -13,7 +13,6 @@ export async function getGeolocation(address: GlobalAddressInterface) {
         `/geocode/json?address=${street},${number},${district},${city},${state}`
       );
 
-      console.log("googleAddressData", googleAddressData);
 
       if (googleAddressData.results) {
         const { lat: latitude, lng: longitude } =

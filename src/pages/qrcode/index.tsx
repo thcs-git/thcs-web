@@ -105,7 +105,6 @@ export default function QRcode() {
       setPatient(patientState.list.data[0]);
       setPatientSearch(patientState.list.data[0].fiscal_number);
 
-      console.log(patientState.list);
 
       dispatch(
         getCares({

@@ -178,7 +178,6 @@ export default function ForgotPasswordPage(props: IPageParams) {
     // );
   });
   const handleUserbyEmail = useCallback(() => {
-    // console.log(inputEmailForRecovery.value);
     dispatch(loadUserByEmail(inputEmailForRecovery.value));
     setSendEmail(true);
   }, [inputEmailForRecovery]);

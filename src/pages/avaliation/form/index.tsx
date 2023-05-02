@@ -180,7 +180,6 @@ export default function AreaForm(props: IPageParams) {
     //   dispatch(createCareRequest(state));
     // }
 
-    console.log("state", state);
   }
 
   function handleOpenModalCancel() {
@@ -441,7 +440,6 @@ export default function AreaForm(props: IPageParams) {
                     //     cellphone: element.target.value
                     //   }));
 
-                    //   console.log('form', form);
                     // }}
                     fullWidth
                   />
@@ -459,7 +457,6 @@ export default function AreaForm(props: IPageParams) {
                     //     cellphone: element.target.value
                     //   }));
 
-                    //   console.log('form', form);
                     // }}
                     fullWidth
                   />

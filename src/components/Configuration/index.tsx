@@ -44,7 +44,6 @@ export default function Configuration() {
     });
 
     const filter = _.filter(userCompanies, { active: true });
-    //console.log(filter);
 
     setCompanies(_.filter(filter, { companie_id: { active: true } }));
   }, [userState]);
@@ -58,7 +57,6 @@ export default function Configuration() {
   const changeCompany = useCallback(
     (company: any) => {
       if (company) {
-        // console.log(company.companie_id.id);
         localStorage.setItem(
           LOCALSTORAGE.COMPANY_SELECTED,
           company.companie_id._id

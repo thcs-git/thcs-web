@@ -42,7 +42,7 @@ const Pagination = (props: PaginationProps) => {
         rowsPerPage={parseInt(rowsPerPage)}
         page={parseInt(page) - 1}
         onPageChange={(e, page) => {
-          // console.log(page);
+          // a
         }}
         labelRowsPerPage={
           <Typography variant="body1" fontFamily={theme.typography.fontFamily}>

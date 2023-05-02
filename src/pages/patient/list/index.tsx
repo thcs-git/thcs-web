@@ -168,9 +168,7 @@ export default function PatientList() {
       let patientId = _.filter(careState.list2.data, {
         patient_id: { _id: care },
       });
-      // console.log("teste", patientId);
       setpatientArray(patientId);
-      //console.log(patientArray);
     },
     [careState]
   );
@@ -197,7 +195,6 @@ export default function PatientList() {
     (care: any) => {
       let complexitiesArray: any = [];
       let complexity: string = "";
-      //console.log(care)
       care?.documents_id?.map((field: any) => {
         complexitiesArray.push(field.complexity);
       });
@@ -290,6 +287,7 @@ export default function PatientList() {
     { name: "Atendimento", align: "left" },
     { name: "Data da Alta", align: "left" },
     { name: "Tipo", align: "center" },
+    { name: "Área", align: "center" },
     { name: "Empresa", align: "center" },
     { name: "Visualizar", align: "center" },
   ];
@@ -302,7 +300,6 @@ export default function PatientList() {
     { name: "Empresa", align: "center" },
     { name: "Visualizar", align: "left" },
   ];
-  // console.log(patientState);
   return (
     <>
       <Sidebar>

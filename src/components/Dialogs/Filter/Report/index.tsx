@@ -66,6 +66,7 @@ interface IFilter {
   dataEnd: any;
   reportType: string;
   attendance_id: string;
+  userId: string;
 }
 
 export default function FilterReport(props: IPropsFilter) {
@@ -87,6 +88,7 @@ export default function FilterReport(props: IPropsFilter) {
     dataEnd: null,
     reportType: "",
     attendance_id: "",
+    userId: "",
   });
   const CustomWidthTooltip = styled(({ className, ...props }: TooltipProps) => (
     <Tooltip {...props} classes={{ popper: className }} />
@@ -308,6 +310,7 @@ export default function FilterReport(props: IPropsFilter) {
         dataStart: null,
         name: "",
         type: "Prestador",
+        userId: ""
       };
     });
   }

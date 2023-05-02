@@ -6,6 +6,7 @@ export const INITIAL_STATE: FormState = {
   loading: false,
   success: false,
   error: false,
+  formTab: [],
 };
 
 const reducer: Reducer<FormState> = (state = INITIAL_STATE, action) => {
@@ -14,6 +15,7 @@ const reducer: Reducer<FormState> = (state = INITIAL_STATE, action) => {
       return { ...state, loading: true };
     case FormTypes.LOAD_SUCCESS:
       return {
+        ...state,
         loading: false,
         error: false,
         success: true,
@@ -54,6 +56,21 @@ const reducer: Reducer<FormState> = (state = INITIAL_STATE, action) => {
         loading:false,
         success:true,
         error:false
+      }
+    case FormTypes.LOAD_FORMS_TABS_REQUEST:
+      return {
+        ...state,
+        loading: true,
+        error: false,
+        success: false
+      }
+    case FormTypes.LOAD_FORMS_TABS_SUCCESS:
+      return {
+        ...state,
+        formTab: action.payload,
+        loading: false,
+        success: true,
+        error: false
       }
     default:
       return state;

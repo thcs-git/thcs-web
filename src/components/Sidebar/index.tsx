@@ -908,7 +908,6 @@ const Sibebar = (props: any) => {
                 {props.children}
             </Container>
 
-            {/* {console.log(openDialogCompany)} */}
 
             {/* <Dialog
         open={openModalConfig}

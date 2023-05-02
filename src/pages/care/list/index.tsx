@@ -175,9 +175,7 @@ export default function CouncilList() {
       let patientId = _.filter(careState.list2.data, {
         patient_id: { _id: care?.patient_id._id },
       });
-      //console.log("teste", patientId);
       setpatientArray(patientId);
-      //console.log(patientArray);
     },
     [careState]
   );
@@ -201,6 +199,7 @@ export default function CouncilList() {
     { name: "Data do Atendimento", align: "left" },
     { name: "Atendimento", align: "left" },
     { name: "Data da Alta", align: "left" },
+    { name: "Tipo", align: "center" },
     { name: "Área", align: "center" },
     { name: "Empresa", align: "center" },
     { name: "Visualizar", align: "center" },

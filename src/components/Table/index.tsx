@@ -251,7 +251,6 @@ const TableComponent = (props: ITableProps) => {
                       {handleEmpty(handleCpf(user?.fiscal_number))}
                     </TableCell>
                   )}
-                  {/* {console.log(user)} */}
                   {
                     <TableCell>
                       {handleEmpty(
@@ -581,6 +580,9 @@ const TableComponent = (props: ITableProps) => {
                             )
                           )
                         : "-"}
+                    </TableCell>
+                    <TableCell align="center">
+                      {handleEmpty(care?.tipo)}
                     </TableCell>
                     <TableCell align="center">
                       {handleEmpty(care?.area)}

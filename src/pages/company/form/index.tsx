@@ -178,7 +178,6 @@ export default function CompanyForm(props: IPageParams) {
         },
       }));
     }
-    // console.log(companyState);
     companyState.data &&
       setState((prevState) => {
         return {

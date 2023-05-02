@@ -62,7 +62,7 @@ import { loadRequest as loadRequestAttests } from "../../../store/ducks/attest/a
 import { loadRequest as loadRequestCompanyLogo } from "../../../store/ducks/logo/actions";
 import { loadRequest as loadRequestTelemedicine } from "../../../store/ducks/telemedicine/actions";
 import { loadRequest as loadRequestAttachments } from "../../../store/ducks/attachment/actions";
-import { loadRequest as LoadRequestForms } from "../../../store/ducks/forms/actions";
+import { loadFormsTabsRequest, loadRequest as LoadRequestForms } from "../../../store/ducks/forms/actions";
 interface IPageParams {
   id?: string;
 }
@@ -92,6 +92,7 @@ interface IAllergiIntegration {
 export default function PatientOverview(props: IPageParams) {
   const integration = sessionStorage.getItem(SESSIONSTORAGE.INTEGRATION);
   const currentCompanyiD = localStorage.getItem(LOCALSTORAGE.COMPANY_SELECTED);
+  const currentCustomerId = localStorage.getItem(LOCALSTORAGE.CUSTOMER);
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const params = useParams();
@@ -193,7 +194,7 @@ export default function PatientOverview(props: IPageParams) {
     } else if (patientId && reportType === "Anexos") {
       dispatch(loadRequestAttachments(patientId));
     } else if (attendanceId && reportType === "Formulários") {
-      dispatch(LoadRequestForms(attendanceId));
+      dispatch(loadFormsTabsRequest(currentCustomerId));
     }
   }, [careState.data._id, reportType]);
 
@@ -579,9 +580,9 @@ export default function PatientOverview(props: IPageParams) {
         data: attachmentState.data,
         error: attachmentState.error,
       };
-    } else if (report === "Formulários" && formState.data.length > 0) {
+    } else if (report === "Formulários" && formState.formTab.length > 0) {
       return {
-        data: formState.data,
+        data: formState.formTab,
         error: formState.error,
       };
     } else {

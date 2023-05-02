@@ -300,7 +300,6 @@ export default function AreaForm(props: IPageParams) {
 
   useEffect(() => {
     let usersIfProfession = null;
-    console.log(areaState);
     if (state.users.length > 1) {
       state.users.map((item) => {});
     }
@@ -358,13 +357,11 @@ export default function AreaForm(props: IPageParams) {
         ...prev,
         error: true,
       }));
-      // console.log('true')
     } else {
       setInpuCity((prev) => ({
         ...prev,
         error: false,
       }));
-      // console.log('false')
     }
   }, [inputCity]);
 
@@ -521,7 +518,6 @@ export default function AreaForm(props: IPageParams) {
   }
   const handleSelectNeighborhood = useCallback(
     (event: any, value1: any) => {
-      // console.log(value1);
       const found = state.neighborhoods.findIndex((item: any) => {
         return item._id === value1._id;
       });

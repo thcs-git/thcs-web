@@ -197,7 +197,7 @@ const IntegrationForm = (props: IComponent) => {
     },
   });
   function onSubmit(data: any) {
-    console.log("SUBMITTTTTTTTTTT", data);
+    // o
   }
 
   return (

@@ -95,7 +95,6 @@ export function* updateArea({ payload: { data } }: any) {
   }
 }
 export function* getCitys({ payload: { value } }: any) {
-  console.log(value);
   try {
     const response: AxiosResponse = yield call(
       apiSollar.get as any,
@@ -104,7 +103,6 @@ export function* getCitys({ payload: { value } }: any) {
         headers: { token },
       }
     );
-    console.log(response.data.data);
     yield put(loadSuccessGetCitys(response.data.data));
   } catch (error) {
     yield put(loadFailure());
@@ -120,7 +118,6 @@ export function* getDistrict({ payload: { value } }: any) {
         headers: { token },
       }
     );
-    console.log(response);
     yield put(loadSuccessGetDistricts(response.data.data));
   } catch (error) {
     yield put(loadFailure());
@@ -147,7 +144,6 @@ export function* getDistricts() {
 
 export function* getPoints({ payload: { value } }: any) {
   try {
-    console.log("value", value);
     const response: AxiosResponse = yield call(
       apiSollar.get as any,
       `/points?patientarea_id=${value}`,

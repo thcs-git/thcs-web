@@ -35,7 +35,6 @@ interface Irows {
 
 const TabList = (props: IComponent) => {
   const { cells, customerState, rows, rowsItems } = props;
-  console.log(rowsItems);
 
   return (
     <Table tableCells={cells}>
