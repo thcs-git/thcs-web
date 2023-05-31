@@ -33,6 +33,7 @@ import theme from "../../theme/theme";
 import { formatDate } from "../../helpers/date";
 import LOCALSTORAGE from "../../helpers/constants/localStorage";
 import SESSIONSTORAGE from "../../helpers/constants/sessionStorage";
+import moment from "moment";
 
 interface ICellProps {
   name: string;
@@ -655,7 +656,7 @@ const TableComponent = (props: ITableProps) => {
                         : handleEmpty(care.patient_id?.name)}
                     </Link>
                   </TableCell>
-                  <TableCell>{handleEmpty(care?.area)}</TableCell>
+                  <TableCell>{handleEmpty(care?.description_ori)}</TableCell>
                   <TableCell align="center">
                     {handleEmpty(care.patient_id?.fiscal_number)}
                   </TableCell>
@@ -663,8 +664,7 @@ const TableComponent = (props: ITableProps) => {
                   <TableCell align="center">
                     {care?.created_at
                       ? formatDate(
-                          care?.created_at ?? "",
-                          "DD/MM/YYYY HH:mm:ss"
+                          moment(care?.created_at).subtract(3, "h") ?? "", "DD/MM/YYYY HH:mm"
                         )
                       : "-"}
                   </TableCell>
